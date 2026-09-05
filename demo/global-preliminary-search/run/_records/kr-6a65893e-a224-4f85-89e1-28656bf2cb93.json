@@ -1,0 +1,177 @@
+{
+  "uri": "/mark/kr/6a65893e-a224-4f85-89e1-28656bf2cb93",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "6a65893e-a224-4f85-89e1-28656bf2cb93",
+  "applicationNumber": "40-2018-0113745",
+  "registrationNumber": "4015278860000",
+  "applicationDate": "2018-08-16",
+  "registrationDate": "2019-10-02",
+  "expiryDate": "2029-10-02",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-10-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "보리",
+  "markTransliteration": "BORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "cd-rom, dvd, 기록된 컴퓨터소프트웨어, 기록된 컴퓨터프로그램, 내려받기 가능한 전자학습지, 내려받기 가능한 전자서적, 내려받기 가능한 전자신문, 내려받기 가능한 전자음악, 노광된 필름, 노광된영화필름, 녹음된 테이프(음악이 녹음된 것은제외한다), 녹음된 테이프(음악이 녹음된 것을말한다), 녹화된 테이프(음악이 녹음된 것은 제외한다), 녹화된 테이프(음악이 녹화된 것을 말한다), 만화영화, 슬라이드필름, 영사된 필름, 음악이 녹음된컴팩트디스크, 내려받기 가능한 멀티미디어 파일, 컴퓨터매체에 기록된 전자출판물",
+      "translation_language": "en",
+      "translation": "cd-rom, dvd, recorded computer software, recorded computer program, downloadable electronic learning paper, downloadable electronic book, downloadable electronic newspaper, downloadable electronic music, exposed film, exposed movie film, recording Tapes (except where music is recorded), tapes recorded (meaning that music has been recorded), tapes recorded (except where music is recorded), tapes recorded (where music is recorded), cartoons Movies, slide films, projected films, compact discs with music, downloadable multimedia files, electronic publications on computer media"
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "ko",
+      "description": "건축 및 구축물모형, 그림엽서, 글씨, 노래책, 달력, 도표, 동식물모형, 만화책, 멜로디연하장, 문방구, 브로마이드, 사진, 서적, 소책자, 신문, 악보, 연감(年鑑), 연하장, 엽서, 음악교재, 인쇄된 서식용지, 일기장, 잡지, 정기간행물, 지도, 카탈로그, 티켓, 팜플렛, 포스터, 학습용 모형, 학습지, 핸드북, 회보, 회화",
+      "translation_language": "en",
+      "translation": "Architecture and Structures Models, Postcards, Letters, Songbooks, Calendars, Charts, Fauna Models, Comic Books, Melody Greeting Cards, Stationery, Bromide, Photos, Books, Booklets, Newspapers, Sheet Music, Yearbooks, New Year's Cards, Postcards, Music Materials, Printed forms, diaries, magazines, periodicals, maps, catalogs, tickets, brochures, posters, study models, worksheets, handbooks, newsletters, conversations"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ko",
+      "description": "가방 도매업, 가방 중개업, 가방 판매알선업, 겉옷 중개업, 겉옷 도매업, 겉옷 판매알선업, 과자 도매업, 과자 중개업, 과자 판매알선업, 교과서 소매업, 교과서 도매업, 교과서 중개업, 교과서 판매대행업, 교과서 판매알선업, 넥타이 소매업, 넥타이 중개업, 넥타이 판매대행업, 넥타이 판매알선업, 도정(搗精)한 곡물 판매알선업, 도정(搗精)한 곡물 소매업, 도정(搗精)한 곡물 중개업, 도정(搗精)한 곡물 판매대행업, 목도리 소매업, 목도리 중개업, 목도리 판매대행업, 목도리 판매알선업, 미가공 곡물 판매알선업, 미가공 곡물 도매업, 미가공 곡물 중개업, 미가공 곡물 판매대행업, 방한용 귀마개 판매알선업, 방한용 귀마개 소매업, 방한용 귀마개 중개업, 방한용 귀마개 판매대행업, 비전기식 보온용 발싸개 판매대행업, 비전기식 보온용 발싸개 소매업, 빵 판매대행업, 빵 소매업, 서적 구매대행서비스업, 서적 판매알선업, 서적 도매업, 서적 중개업, 서적 판매대행업, 서적 소매업, 셔츠 중개업, 속옷 도매업, 속옷 판매대행업, 숄 소매업, 숄 판매대행업, 숄 중개업, 숄 판매알선업, 스웨터 소매업, 스웨터 판매알선업, 스카프 판매대행업, 양말 중개업, 양말 판매대행업, 양말 도매업, 양말 소매업, 양말 판매알선업, 완구 소매업, 완구 도매업, 완구 중개업, 완구 판매대행업, 완구 판매알선업, 외투(스포츠전용 의류 및 한복은 제외) 소매업, 외투(스포츠전용 의류 및 한복은 제외) 판매대행업, 유아용 직물제 기저귀 중개업, 유아용 직물제 기저귀 소매업, 유아용 직물제 기저귀 도매업, 유아용 직물제 기저귀 판매대행업, 유아용 직물제 기저귀 판매알선업, 음반/음악이 수록된 전자매체 소매업, 인터넷을 이용한 정보검색업, 인터넷을 이용한 내려받기 가능한 전자서적 소매업, 인터넷을 이용한 내려받기 가능한 전자서적 중개업, 인터넷을 이용한 내려받기 가능한 전자서적 판매대행업, 인터넷을 이용한 내려받기 가능한 전자서적 판매알선업, 전기식 보온용 발싸개 판매알선업, 전기식 보온용 발싸개 도매업, 전기식 보온용 발싸개 중개업, 정기간행물 판매대행업, 정기간행물 도매업, 정기간행물 소매업, 정기간행물 중개업, 정기간행물 판매알선업, 정보의 컴퓨터데이터베이스구축업, 정보의 데이터베이스가공편집업, 지갑 소매업, 지갑판매대행업, 커피 판매대행업, 커피 도매업, 커피 소매업, 커피 중개업, 커피 판매알선업, 컴퓨터화된 파일관리업",
+      "translation_language": "en",
+      "translation": "Bag wholesale business, bag brokerage business, bag brokerage business, outerwear brokerage business, outerwear wholesale business, outerwear sales mediation business, confectionery wholesale business, sweets brokerage business, snack sales mediation business, textbook retail business, textbook wholesale business, textbook brokerage business, textbook sales agency, textbook sales mediation business, tie retail business, Tie brokerage business, tie sales agency business, tie sales brokerage business, polished grain sales brokerage business, milled grain retail business, milled grain brokerage business, polished grain sales agency business, scarf retail business, scarf brokerage business, scarf sales agency, scarf sales brokerage business, raw grain sales mediation business, raw grain wholesale business, raw grain brokerage business, unprocessed grain sales agency business, cold protection earplug sales agency business, cold winter earplug retail business, cold winter earplugs brokerage business, cold winter earplugs sales agency, non-electric thermal insulation footstools Sales agency business, non-electric thermal insulation footwrap retail business, bread sales agency business, bread retail business, book purchase agency service business, book sales brokerage business, book wholesale business, book brokerage business, book sales agency business, book retail business, shirt brokerage business, underwear wholesale business, underwear sales agency business, shawl Retail business, shawl sales agency, shawl brokerage business, shawl sales agency business, sweater retail business, sweater sales agency business, scarf sales agency business, socks brokerage business, socks sales agency business, socks wholesale business, socks retail business, socks sales agency business, toy retail business, toy wholesale business, toy brokerage business, Toy sales agency, toy sales brokerage business, outerwear (excluding sportswear and hanbok) retail business, outerwear (excluding sportswear and hanbok) sales agency, baby fabric diaper brokerage business, infant textile diaper retail business, infant textile diaper wholesale business, baby fabric diaper sales agency, baby fabric diaper sales mediation business, electronic media retail business containing records/music, information retrieval business using the Internet, electronic book retail business that can be downloaded using the Internet, electronic book brokerage business that can be downloaded using the Internet, e-books that can be downloaded using the Internet, e-books that can be downloaded through the Internet Wholesale business, electric insulation foot wrap brokerage business, periodical sales agency business, periodical wholesale business, periodical retail business, periodical publication brokerage business, periodical sales mediation business, information computer database construction business, information database processing and editing business, wallet retail business, wallet sales agency business, coffee sales agency business, coffee wholesale business, coffee retail business, coffee brokerage business, coffee sales brokerage business, computerized file management business"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "교과서출판업, 비디오녹화촬영업, 비디오테이프대여업, 사진보도업, 사진촬영업, 서적출판업, 실습훈련업, 영농기술지도업, 영화필름대여업, 온라인 전자 출판물 제공업(읽기전용을 말한다), 온라인 전자서적 및잡지출판업, 전자탁상 출판업, 직업지도업",
+      "translation_language": "en",
+      "translation": "Textbook publishing business, video recording business, video tape rental business, photo reporting business, photography business, book publishing business, practical training business, agricultural technology guidance business, movie film rental business, online electronic publication service business (refer to read only), online electronic book And magazine publishing, electronic desk publishing, vocational guidance"
+    }
+  ],
+  "owner": "BORI PUBLISHING CO., LTD",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "김윤배 (KIM, Yoon Bae)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기도 파주시",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "BORI PUBLISHING CO., LTD",
+        "applicantNativeName": "주식회사 도서출판보리"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "cd-rom, dvd, recorded computer software, recorded computer program, downloadable electronic learning paper, downloadable electronic book, downloadable electronic newspaper, downloadable electronic music, exposed film, exposed movie film, recording Tapes (except where music is recorded), tapes recorded (meaning that music has been recorded), tapes recorded (except where music is recorded), tapes recorded (where music is recorded), cartoons Movies, slide films, projected films, compact discs with music, downloadable multimedia files, electronic publications on computer media",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "cd-rom, dvd, 기록된 컴퓨터소프트웨어, 기록된 컴퓨터프로그램, 내려받기 가능한 전자학습지, 내려받기 가능한 전자서적, 내려받기 가능한 전자신문, 내려받기 가능한 전자음악, 노광된 필름, 노광된영화필름, 녹음된 테이프(음악이 녹음된 것은제외한다), 녹음된 테이프(음악이 녹음된 것을말한다), 녹화된 테이프(음악이 녹음된 것은 제외한다), 녹화된 테이프(음악이 녹화된 것을 말한다), 만화영화, 슬라이드필름, 영사된 필름, 음악이 녹음된컴팩트디스크, 내려받기 가능한 멀티미디어 파일, 컴퓨터매체에 기록된 전자출판물"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Architecture and Structures Models, Postcards, Letters, Songbooks, Calendars, Charts, Fauna Models, Comic Books, Melody Greeting Cards, Stationery, Bromide, Photos, Books, Booklets, Newspapers, Sheet Music, Yearbooks, New Year's Cards, Postcards, Music Materials, Printed forms, diaries, magazines, periodicals, maps, catalogs, tickets, brochures, posters, study models, worksheets, handbooks, newsletters, conversations",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "건축 및 구축물모형, 그림엽서, 글씨, 노래책, 달력, 도표, 동식물모형, 만화책, 멜로디연하장, 문방구, 브로마이드, 사진, 서적, 소책자, 신문, 악보, 연감(年鑑), 연하장, 엽서, 음악교재, 인쇄된 서식용지, 일기장, 잡지, 정기간행물, 지도, 카탈로그, 티켓, 팜플렛, 포스터, 학습용 모형, 학습지, 핸드북, 회보, 회화"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Bag wholesale business, bag brokerage business, bag brokerage business, outerwear brokerage business, outerwear wholesale business, outerwear sales mediation business, confectionery wholesale business, sweets brokerage business, snack sales mediation business, textbook retail business, textbook wholesale business, textbook brokerage business, textbook sales agency, textbook sales mediation business, tie retail business, Tie brokerage business, tie sales agency business, tie sales brokerage business, polished grain sales brokerage business, milled grain retail business, milled grain brokerage business, polished grain sales agency business, scarf retail business, scarf brokerage business, scarf sales agency, scarf sales brokerage business, raw grain sales mediation business, raw grain wholesale business, raw grain brokerage business, unprocessed grain sales agency business, cold protection earplug sales agency business, cold winter earplug retail business, cold winter earplugs brokerage business, cold winter earplugs sales agency, non-electric thermal insulation footstools Sales agency business, non-electric thermal insulation footwrap retail business, bread sales agency business, bread retail business, book purchase agency service business, book sales brokerage business, book wholesale business, book brokerage business, book sales agency business, book retail business, shirt brokerage business, underwear wholesale business, underwear sales agency business, shawl Retail business, shawl sales agency, shawl brokerage business, shawl sales agency business, sweater retail business, sweater sales agency business, scarf sales agency business, socks brokerage business, socks sales agency business, socks wholesale business, socks retail business, socks sales agency business, toy retail business, toy wholesale business, toy brokerage business, Toy sales agency, toy sales brokerage business, outerwear (excluding sportswear and hanbok) retail business, outerwear (excluding sportswear and hanbok) sales agency, baby fabric diaper brokerage business, infant textile diaper retail business, infant textile diaper wholesale business, baby fabric diaper sales agency, baby fabric diaper sales mediation business, electronic media retail business containing records/music, information retrieval business using the Internet, electronic book retail business that can be downloaded using the Internet, electronic book brokerage business that can be downloaded using the Internet, e-books that can be downloaded using the Internet, e-books that can be downloaded through the Internet Wholesale business, electric insulation foot wrap brokerage business, periodical sales agency business, periodical wholesale business, periodical retail business, periodical publication brokerage business, periodical sales mediation business, information computer database construction business, information database processing and editing business, wallet retail business, wallet sales agency business, coffee sales agency business, coffee wholesale business, coffee retail business, coffee brokerage business, coffee sales brokerage business, computerized file management business",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "가방 도매업, 가방 중개업, 가방 판매알선업, 겉옷 중개업, 겉옷 도매업, 겉옷 판매알선업, 과자 도매업, 과자 중개업, 과자 판매알선업, 교과서 소매업, 교과서 도매업, 교과서 중개업, 교과서 판매대행업, 교과서 판매알선업, 넥타이 소매업, 넥타이 중개업, 넥타이 판매대행업, 넥타이 판매알선업, 도정(搗精)한 곡물 판매알선업, 도정(搗精)한 곡물 소매업, 도정(搗精)한 곡물 중개업, 도정(搗精)한 곡물 판매대행업, 목도리 소매업, 목도리 중개업, 목도리 판매대행업, 목도리 판매알선업, 미가공 곡물 판매알선업, 미가공 곡물 도매업, 미가공 곡물 중개업, 미가공 곡물 판매대행업, 방한용 귀마개 판매알선업, 방한용 귀마개 소매업, 방한용 귀마개 중개업, 방한용 귀마개 판매대행업, 비전기식 보온용 발싸개 판매대행업, 비전기식 보온용 발싸개 소매업, 빵 판매대행업, 빵 소매업, 서적 구매대행서비스업, 서적 판매알선업, 서적 도매업, 서적 중개업, 서적 판매대행업, 서적 소매업, 셔츠 중개업, 속옷 도매업, 속옷 판매대행업, 숄 소매업, 숄 판매대행업, 숄 중개업, 숄 판매알선업, 스웨터 소매업, 스웨터 판매알선업, 스카프 판매대행업, 양말 중개업, 양말 판매대행업, 양말 도매업, 양말 소매업, 양말 판매알선업, 완구 소매업, 완구 도매업, 완구 중개업, 완구 판매대행업, 완구 판매알선업, 외투(스포츠전용 의류 및 한복은 제외) 소매업, 외투(스포츠전용 의류 및 한복은 제외) 판매대행업, 유아용 직물제 기저귀 중개업, 유아용 직물제 기저귀 소매업, 유아용 직물제 기저귀 도매업, 유아용 직물제 기저귀 판매대행업, 유아용 직물제 기저귀 판매알선업, 음반/음악이 수록된 전자매체 소매업, 인터넷을 이용한 정보검색업, 인터넷을 이용한 내려받기 가능한 전자서적 소매업, 인터넷을 이용한 내려받기 가능한 전자서적 중개업, 인터넷을 이용한 내려받기 가능한 전자서적 판매대행업, 인터넷을 이용한 내려받기 가능한 전자서적 판매알선업, 전기식 보온용 발싸개 판매알선업, 전기식 보온용 발싸개 도매업, 전기식 보온용 발싸개 중개업, 정기간행물 판매대행업, 정기간행물 도매업, 정기간행물 소매업, 정기간행물 중개업, 정기간행물 판매알선업, 정보의 컴퓨터데이터베이스구축업, 정보의 데이터베이스가공편집업, 지갑 소매업, 지갑판매대행업, 커피 판매대행업, 커피 도매업, 커피 소매업, 커피 중개업, 커피 판매알선업, 컴퓨터화된 파일관리업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Textbook publishing business, video recording business, video tape rental business, photo reporting business, photography business, book publishing business, practical training business, agricultural technology guidance business, movie film rental business, online electronic publication service business (refer to read only), online electronic book And magazine publishing, electronic desk publishing, vocational guidance",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "교과서출판업, 비디오녹화촬영업, 비디오테이프대여업, 사진보도업, 사진촬영업, 서적출판업, 실습훈련업, 영농기술지도업, 영화필름대여업, 온라인 전자 출판물 제공업(읽기전용을 말한다), 온라인 전자서적 및잡지출판업, 전자탁상 출판업, 직업지도업"
+        }
+      ]
+    },
+    "id": "6a65893e-a224-4f85-89e1-28656bf2cb93",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250724",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "(Interbrain Patent & Law Firm)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김윤배 (KIM, Yoon Bae)"
+      },
+      {
+        "representativeAddress": "# Seocho-daero, Seocho-gu, Seoul, Republic of Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "특허법인인터브레인 (Interbrain Patent & Law Firm)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180816",
+        "applicationNumber": "40-2018-0113745"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20291002",
+      "lastPublicationDate": "20191010",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20191002",
+        "registrationNumber": "4015278860000"
+      }
+    },
+    "version": "20250724020759",
+    "wordMarkSpecification": {
+      "markTransliteration": "BORI",
+      "markVerbalElementText": "보리"
+    }
+  },
+  "_uri": "/mark/kr/6a65893e-a224-4f85-89e1-28656bf2cb93",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.211Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

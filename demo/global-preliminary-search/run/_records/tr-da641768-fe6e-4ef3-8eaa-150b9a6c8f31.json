@@ -1,0 +1,113 @@
+{
+  "uri": "/mark/tr/da641768-fe6e-4ef3-8eaa-150b9a6c8f31",
+  "provider": "clarivate",
+  "office": "tr",
+  "guid": "da641768-fe6e-4ef3-8eaa-150b9a6c8f31",
+  "applicationNumber": "2023/103268",
+  "registrationNumber": "2023 103268",
+  "applicationDate": "2023-08-09",
+  "registrationDate": null,
+  "expiryDate": "2033-08-09",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-01-31",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "heaven organizasyon",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "tr",
+      "description": "Sempozyum, konferans, kongre ve seminer düzenleme, idare hizmetleri.Spor, kültür ve eğlence hizmetleri (sinema, spor karşılaşmaları, tiyatro, müze, konser gibi kültür ve eğlence etkinlikleri için bilet sağlama hizmetleri dahil). Düğün, sünnet, kına ve nişan organizasyonları için eğlence hizmeti sağlama.",
+      "translation_language": "en",
+      "translation": "Symposium, conference, congress and seminar organization and administration services. Sports, culture and entertainment services (including ticketing services for cultural and entertainment events such as cinema, sports matches, theatre, museum, concert). Providing entertainment services for weddings, circumcision, henna and engagement organizations."
+    }
+  ],
+  "owner": "BAYRAM ÖZEL",
+  "ownerNative": null,
+  "ownerCountry": "TR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "TR",
+        "applicantAddressCountryName": "Turkey",
+        "applicantName": "BAYRAM ÖZEL"
+      }
+    ],
+    "applicationLanguageCode": "tr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Symposium, conference, congress and seminar organization and administration services. Sports, culture and entertainment services (including ticketing services for cultural and entertainment events such as cinema, sports matches, theatre, museum, concert). Providing entertainment services for weddings, circumcision, henna and engagement organizations.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Sempozyum, konferans, kongre ve seminer düzenleme, idare hizmetleri.Spor, kültür ve eğlence hizmetleri (sinema, spor karşılaşmaları, tiyatro, müze, konser gibi kültür ve eğlence etkinlikleri için bilet sağlama hizmetleri dahil). Düğün, sünnet, kına ve nişan organizasyonları için eğlence hizmeti sağlama."
+        }
+      ]
+    },
+    "id": "da641768-fe6e-4ef3-8eaa-150b9a6c8f31",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "487"
+      }
+    ],
+    "recordLastUpdated": "20260115",
+    "registrationOfficeCode": "TR",
+    "registrationOfficeName": "Turkey",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230809",
+        "applicationNumber": "2023/103268"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330809",
+      "lastPublicationDate": "20240131",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "2023 103268"
+      }
+    },
+    "version": "20260115020144",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "heaven organizasyon"
+    }
+  },
+  "_uri": "/mark/tr/da641768-fe6e-4ef3-8eaa-150b9a6c8f31",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.829Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

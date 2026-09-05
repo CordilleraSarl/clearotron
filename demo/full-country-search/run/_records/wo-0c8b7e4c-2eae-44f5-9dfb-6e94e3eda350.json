@@ -1,0 +1,210 @@
+{
+  "uri": "/mark/wo/0c8b7e4c-2eae-44f5-9dfb-6e94e3eda350",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "0c8b7e4c-2eae-44f5-9dfb-6e94e3eda350",
+  "applicationNumber": null,
+  "registrationNumber": "1574910",
+  "applicationDate": null,
+  "registrationDate": "2020-12-14",
+  "expiryDate": "2030-12-14",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-02-11",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MiGLO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Electronic, electro technical and electromagnetic modules, parts, and components therefore including integrated circuits; computer and semiconductor chips; wireless transmitters and receivers; wireless communication devices for data or audio transmission; electronic sensors; ear buds; wearable computers worn on the wrist; wearable digital electronic devices in the form of a wristwatch, wrist band and bangle, namely, a wearable digital electronic device comprised primarily of software and a wrist band mounted touchscreen and also featuring a wrist watch for the wireless receipt, storage and transmission of data and messages, and for keeping track of and managing personal information.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Modules électroniques, électrotechniques et électromagnétiques, leurs parties et composants, y compris circuits intégrés; puces informatiques et à semi-conducteurs; émetteurs et récepteurs sans fil; dispositifs de communication sans fil pour la transmission audio ou de données; capteurs électroniques; écouteurs-boutons; ordinateurs à porter au poignet; dispositifs électroniques numériques à porter sur soi sous forme de montres-bracelets, serre-poignets ou bracelets, à savoir dispositifs électroniques numériques à porter sur soi comprenant essentiellement un logiciel et un écran tactile monté sur un serre-poignet et comportant également une montre-bracelet pour la réception, le stockage et la transmission sans fil de données et messages, et pour le suivi et la gestion d'informations personnelles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Módulos electrónicos, electrotécnicos y electromagnéticos, sus partes y sus componentes, incluidos circuitos integrados; chips informáticos y de semiconductores; transmisores y receptores inalámbricos; dispositivos de comunicación inalámbrica de datos o transmisión de audio; sensores electrónicos; auriculares tipo botón; ordenadores que se llevan en la muñeca; dispositivos electrónicos digitales portátiles en forma de relojes de pulsera, muñequeras y de banda, a saber, dispositivos electrónicos digitales portátiles compuestos principalmente de software y un teclado digital montado sobre una muñequera, asimismo con reloj para la recepción, almacenamiento y transmisión inalámbrica de datos y mensajes, así como para el seguimiento y la gestión de información personal.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20201209",
+          "basicApplicationNumber": "1431183"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "BX"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CH",
+      "CO",
+      "GB",
+      "ID",
+      "IL",
+      "IN",
+      "JP",
+      "KR",
+      "MX",
+      "NZ",
+      "SG",
+      "TH",
+      "TR",
+      "RU",
+      "OA",
+      "RS"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20201209",
+            "basicApplicationNumber": "1431183"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "BX"
+      }
+    ],
+    "cmMarkImageEUclassification": [
+      "20.05.25"
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CH",
+      "CO",
+      "GB",
+      "ID",
+      "IL",
+      "IN",
+      "JP",
+      "KR",
+      "MX",
+      "NZ",
+      "SG",
+      "TH",
+      "TR",
+      "RU",
+      "OA",
+      "RS"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electronic, electro technical and electromagnetic modules, parts, and components therefore including integrated circuits; computer and semiconductor chips; wireless transmitters and receivers; wireless communication devices for data or audio transmission; electronic sensors; ear buds; wearable computers worn on the wrist; wearable digital electronic devices in the form of a wristwatch, wrist band and bangle, namely, a wearable digital electronic device comprised primarily of software and a wrist band mounted touchscreen and also featuring a wrist watch for the wireless receipt, storage and transmission of data and messages, and for keeping track of and managing personal information."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Modules électroniques, électrotechniques et électromagnétiques, leurs parties et composants, y compris circuits intégrés; puces informatiques et à semi-conducteurs; émetteurs et récepteurs sans fil; dispositifs de communication sans fil pour la transmission audio ou de données; capteurs électroniques; écouteurs-boutons; ordinateurs à porter au poignet; dispositifs électroniques numériques à porter sur soi sous forme de montres-bracelets, serre-poignets ou bracelets, à savoir dispositifs électroniques numériques à porter sur soi comprenant essentiellement un logiciel et un écran tactile monté sur un serre-poignet et comportant également une montre-bracelet pour la réception, le stockage et la transmission sans fil de données et messages, et pour le suivi et la gestion d'informations personnelles."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Módulos electrónicos, electrotécnicos y electromagnéticos, sus partes y sus componentes, incluidos circuitos integrados; chips informáticos y de semiconductores; transmisores y receptores inalámbricos; dispositivos de comunicación inalámbrica de datos o transmisión de audio; sensores electrónicos; auriculares tipo botón; ordenadores que se llevan en la muñeca; dispositivos electrónicos digitales portátiles en forma de relojes de pulsera, muñequeras y de banda, a saber, dispositivos electrónicos digitales portátiles compuestos principalmente de software y un teclado digital montado sobre una muñequera, asimismo con reloj para la recepción, almacenamiento y transmisión inalámbrica de datos y mensajes, así como para el seguimiento y la gestión de información personal."
+        }
+      ]
+    },
+    "id": "0c8b7e4c-2eae-44f5-9dfb-6e94e3eda350",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.11",
+      "27.05"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "04"
+      }
+    ],
+    "recordLastUpdated": "20260823",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices, Anna van Buerenplein 21 A NL-2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20301214",
+      "lastPublicationDate": "20210211",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20201214",
+        "registrationNumber": "1574910"
+      }
+    },
+    "version": "20260823020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MiGLO"
+    }
+  },
+  "_uri": "/mark/wo/0c8b7e4c-2eae-44f5-9dfb-6e94e3eda350",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.458Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

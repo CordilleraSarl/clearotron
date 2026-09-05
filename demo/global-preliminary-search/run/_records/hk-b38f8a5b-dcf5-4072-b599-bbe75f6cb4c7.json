@@ -1,0 +1,136 @@
+{
+  "uri": "/mark/hk/b38f8a5b-dcf5-4072-b599-bbe75f6cb4c7",
+  "provider": "clarivate",
+  "office": "hk",
+  "guid": "b38f8a5b-dcf5-4072-b599-bbe75f6cb4c7",
+  "applicationNumber": "301022831",
+  "registrationNumber": "301022831",
+  "applicationDate": "2007-12-28",
+  "registrationDate": "2007-12-28",
+  "expiryDate": "2027-12-27",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VONCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    36
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Scientific, nautical, surveying, photographic, cinematographic, optical, weighing, measuring, signalling, checking (supervision), life-saving and teaching apparatus and instruments; apparatus and instruments for conducting, switching, transforming, accumulating, regulating or controlling electricity; apparatus for recording, transmission or reproduction of sound or images; magnetic data carriers, recording discs; automatic vending machines and mechanisms for coin-operated apparatus; cash registers, calculating machines, data processing equipment and computers; fire-extinguishing apparatus",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Paper, cardboard and goods made from these materials, not included in other classes; printed matter; bookbinding material; photographs; stationery; adhesives for stationery or household purposes; artists' materials; paint brushes; typewriters and office requisites (except furniture); instructional and teaching material (except apparatus); plastic materials for packaging (not included in other classes); printers' type; printing blocks",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Insurance; financial affairs; monetary affairs; real estate affairs",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Vontobel Holding AG",
+  "ownerNative": null,
+  "ownerCountry": "CH",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Gotthardstrasse 43, CH-8002 (Switzerland)",
+        "applicantAddressCountryCode": "CH",
+        "applicantAddressCountryName": "Switzerland",
+        "applicantName": "Vontobel Holding AG"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific, nautical, surveying, photographic, cinematographic, optical, weighing, measuring, signalling, checking (supervision), life-saving and teaching apparatus and instruments; apparatus and instruments for conducting, switching, transforming, accumulating, regulating or controlling electricity; apparatus for recording, transmission or reproduction of sound or images; magnetic data carriers, recording discs; automatic vending machines and mechanisms for coin-operated apparatus; cash registers, calculating machines, data processing equipment and computers; fire-extinguishing apparatus"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Paper, cardboard and goods made from these materials, not included in other classes; printed matter; bookbinding material; photographs; stationery; adhesives for stationery or household purposes; artists' materials; paint brushes; typewriters and office requisites (except furniture); instructional and teaching material (except apparatus); plastic materials for packaging (not included in other classes); printers' type; printing blocks"
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Insurance; financial affairs; monetary affairs; real estate affairs"
+        }
+      ]
+    },
+    "id": "b38f8a5b-dcf5-4072-b599-bbe75f6cb4c7",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20240213",
+    "registrationOfficeCode": "HK",
+    "registrationOfficeName": "Hong Kong",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20071228",
+        "applicationNumber": "301022831"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20271227",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20071228",
+        "registrationNumber": "301022831"
+      }
+    },
+    "version": "20240213114309",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VONCORE"
+    }
+  },
+  "_uri": "/mark/hk/b38f8a5b-dcf5-4072-b599-bbe75f6cb4c7",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.818Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/kr/a59ef335-9570-4757-8770-26b208dc24b1",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "a59ef335-9570-4757-8770-26b208dc24b1",
+  "applicationNumber": "40-2026-0073326",
+  "registrationNumber": null,
+  "applicationDate": "2026-04-14",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "enqor",
+  "markTransliteration": "enqor",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "고정/이동 교신국 및 장치간 음성/데이터/이미지 전송용 컴퓨터 소프트웨어 애플리케이션, 내려받기 가능한 컴퓨터 소프트웨어, 무선콘텐츠 전송용 컴퓨터소프트웨어, 문서관리용 컴퓨터프로그램, 스마트폰용 애플리케이션 소프트웨어, 운영시스템용 프로그램, 이동전화기용/스마트폰/휴대폰/태블릿용 컴퓨터응용소프트웨어, 인터넷채팅룸용 컴퓨터소프트웨어 애플리케이션, 컴퓨터 전자 상거래 소프트웨어, 화상통화용 컴퓨터소프트웨어 애플리케이션",
+      "translation_language": "en",
+      "translation": "Computer software applications for voice/data/image transmission between fixed/mobile communication stations and devices, downloadable computer software, computer software for wireless content transmission, computer programs for document management, application software for smartphones, programs for operating systems, computer application software for mobile phones/smart phones/cellular phones/tablets, computer software applications for Internet chat rooms, computer e-commerce software, computer software applications for video calls."
+    }
+  ],
+  "owner": "Align Networks Inc.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "특허법인테헤란 (TEHERAN PATENT FIRM)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 강남구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Align Networks Inc.",
+        "applicantNativeName": "주식회사 얼라인네트웍스"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software applications for voice/data/image transmission between fixed/mobile communication stations and devices, downloadable computer software, computer software for wireless content transmission, computer programs for document management, application software for smartphones, programs for operating systems, computer application software for mobile phones/smart phones/cellular phones/tablets, computer software applications for Internet chat rooms, computer e-commerce software, computer software applications for video calls.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "고정/이동 교신국 및 장치간 음성/데이터/이미지 전송용 컴퓨터 소프트웨어 애플리케이션, 내려받기 가능한 컴퓨터 소프트웨어, 무선콘텐츠 전송용 컴퓨터소프트웨어, 문서관리용 컴퓨터프로그램, 스마트폰용 애플리케이션 소프트웨어, 운영시스템용 프로그램, 이동전화기용/스마트폰/휴대폰/태블릿용 컴퓨터응용소프트웨어, 인터넷채팅룸용 컴퓨터소프트웨어 애플리케이션, 컴퓨터 전자 상거래 소프트웨어, 화상통화용 컴퓨터소프트웨어 애플리케이션"
+        }
+      ]
+    },
+    "id": "a59ef335-9570-4757-8770-26b208dc24b1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260430",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 강남구 테헤란로 *층(대치동, 케이티선릉타워웨스트)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "특허법인테헤란 (TEHERAN PATENT FIRM)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260414",
+        "applicationNumber": "40-2026-0073326"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLIED"
+    },
+    "version": "20260430020255",
+    "wordMarkSpecification": {
+      "markTransliteration": "enqor",
+      "markVerbalElementText": "enqor"
+    }
+  },
+  "_uri": "/mark/kr/a59ef335-9570-4757-8770-26b208dc24b1",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:13.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

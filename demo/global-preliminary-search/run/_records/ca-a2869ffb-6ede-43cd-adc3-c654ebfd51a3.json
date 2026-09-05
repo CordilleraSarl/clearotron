@@ -1,0 +1,205 @@
+{
+  "uri": "/mark/ca/a2869ffb-6ede-43cd-adc3-c654ebfd51a3",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "a2869ffb-6ede-43cd-adc3-c654ebfd51a3",
+  "applicationNumber": "1286718",
+  "registrationNumber": null,
+  "applicationDate": "2006-01-19",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2007-07-05",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "QOPI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "(1) Quality improvement services, namely, assessment program for oncology practices for purposes of documenting concordance with quality measures, implementing best practices, and documenting improvement.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "AMERICAN SOCIETY OF CLINICAL ONCOLOGY",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "GOWLING WLG (CANADA) LLP",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States",
+      "priorityDate": "20050720",
+      "priorityNumber": "78/674180",
+      "priorityText": "Priority Filing Date: July 20, 2005, Country or Office: UNITED STATES OF AMERICA, Application No. 78/674180 in association with the same kind on wares marked (1)"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1900 Duke Street, Suite 200, Alexandria, VA 22314",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressLines": [
+          "1900 Duke Street, Suite 200",
+          "Alexandria, VA 22314"
+        ],
+        "applicantName": "AMERICAN SOCIETY OF CLINICAL ONCOLOGY"
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Priority Filing Date: July 20, 2005, Country or Office: UNITED STATES OF AMERICA, Application No. 78/674180 in association with the same kind on wares marked (1)",
+        "typeDescription": "Priority"
+      },
+      {
+        "text": "Used in UNITED STATES OF AMERICA on wares marked (1)",
+        "typeDescription": "Foreign Usage"
+      },
+      {
+        "text": "Proposed Use in CANADA on wares marked (1)",
+        "typeDescription": "Proposed Use"
+      },
+      {
+        "text": "Filed in UNITED STATES OF AMERICA on July 20, 2005, under No. 78/674180 on wares marked (1)",
+        "typeDescription": "Foreign Application"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Quality improvement services, namely, assessment program for oncology practices for purposes of documenting concordance with quality measures, implementing best practices, and documenting improvement."
+        }
+      ]
+    },
+    "id": "a2869ffb-6ede-43cd-adc3-c654ebfd51a3",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20070705",
+        "descriptionText": "Withdrawn by Owner"
+      },
+      {
+        "date": "20060605",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20061005"
+      },
+      {
+        "date": "20060605",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20060120",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20060120",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20060119",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "1900 Duke Street, Suite 200, Alexandria, VA 22314",
+        "addressLines": [
+          "1900 Duke Street, Suite 200",
+          "Alexandria, VA 22314"
+        ],
+        "countryName": "United States",
+        "name": "AMERICAN SOCIETY OF CLINICAL ONCOLOGY"
+      }
+    ],
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States",
+        "priorityDate": "20050720",
+        "priorityNumber": "78/674180",
+        "priorityText": "Priority Filing Date: July 20, 2005, Country or Office: UNITED STATES OF AMERICA, Application No. 78/674180 in association with the same kind on wares marked (1)"
+      }
+    ],
+    "priorityDate": "20050720",
+    "recordLastUpdated": "20250624",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "GOWLING WLG (CANADA) LLP",
+          "SUITE 2600, 160 ELGIN STREET",
+          "OTTAWA",
+          "ONTARIO K1P1C3"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "GOWLING WLG (CANADA) LLP",
+        "representativeReferenceNumber": "06679490CA"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20070705",
+      "active": false,
+      "application": {
+        "applicationDate": "20060119",
+        "applicationNumber": "1286718"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "formalisationDate": "20060120",
+      "markCurrentStatus": "Withdrawn by Owner"
+    },
+    "subjectHeadings": [
+      "QOPI",
+      "OPI, Q",
+      "PI, QO"
+    ],
+    "version": "20250624150546",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOPI",
+      "markVerbalElementTextFormal": "QOPI"
+    }
+  },
+  "_uri": "/mark/ca/a2869ffb-6ede-43cd-adc3-c654ebfd51a3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:04.037Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

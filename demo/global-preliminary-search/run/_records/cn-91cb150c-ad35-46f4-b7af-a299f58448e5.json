@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/cn/91cb150c-ad35-46f4-b7af-a299f58448e5",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "91cb150c-ad35-46f4-b7af-a299f58448e5",
+  "applicationNumber": "19080344",
+  "registrationNumber": "19080344",
+  "applicationDate": "2016-02-04",
+  "registrationDate": "2017-05-28",
+  "expiryDate": "2027-05-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-02-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "IORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "计算机外围设备;智能卡(集成电路卡);计算机",
+      "translation_language": "en",
+      "translation": "Computer Peripherals; Smart Cards (Integrated Circuit Cards); Computers"
+    }
+  ],
+  "owner": "Shenzhen Technology Co., Ltd. crazy person",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市宝安区西乡街道银田工业区一格商务大厦5A09",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Technology Co., Ltd. crazy person",
+        "applicantNativeName": "深圳市疯狂者科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer Peripherals; Smart Cards (Integrated Circuit Cards); Computers",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计算机外围设备;智能卡(集成电路卡);计算机"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        }
+      ]
+    },
+    "id": "91cb150c-ad35-46f4-b7af-a299f58448e5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1541"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "中技细软（北京）知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20160204",
+        "applicationNumber": "19080344"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270527",
+      "lastPublicationDate": "20170227",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20170528",
+        "registrationNumber": "19080344"
+      }
+    },
+    "version": "20251002135637",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "IORI"
+    }
+  },
+  "_uri": "/mark/cn/91cb150c-ad35-46f4-b7af-a299f58448e5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:47.226Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

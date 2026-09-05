@@ -1,0 +1,134 @@
+{
+  "uri": "/mark/xs/4d645c94-5a9a-4067-90d8-c4617c4d2a20",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "4d645c94-5a9a-4067-90d8-c4617c4d2a20",
+  "applicationNumber": null,
+  "registrationNumber": "231671",
+  "applicationDate": null,
+  "registrationDate": "1999-09-20",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "THE PERFECT WAVE NORTH SHORE'S ARTISTIC TEAM",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Beauty salon",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "THE PERFECT WAVE BEAUTY CO., INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "66-590 KAMEHAMEHA HWY #1D, HALEIWA, HI, 96712",
+        "applicantAddressCity": "HALEIWA",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "96712",
+        "applicantAddressStateName": "HAWAII",
+        "applicantAddressStreet": "66-590 KAMEHAMEHA HWY #1D",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "THE PERFECT WAVE BEAUTY CO., INC.",
+        "applicantStateOfIncorporation": "HAWAII"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Beauty salon"
+        }
+      ]
+    },
+    "id": "4d645c94-5a9a-4067-90d8-c4617c4d2a20",
+    "ipRightKind": "tmk",
+    "kindMark": "SERVICE MARK",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "THE WORDS \"THE PERFECT WAVE NORTH SHORE'S ARTISTIC TEAM\" AND A DESIGN OF A WOMAN IN PROFILE HEAD & NECK ONLY WITH HAIR IN A WAVE BOB, POUTY LIPS, DIAGONAL TRIANGLE.",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "66-590 KAMEHAMEHA HWY #1D, HALEIWA, HI, 96712",
+        "city": "HALEIWA",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "CORPORATION",
+        "name": "THE PERFECT WAVE BEAUTY CO., INC.",
+        "postalCode": "96712",
+        "stateName": "HAWAII",
+        "stateOfIncorporation": "HAWAII",
+        "street": "66-590 KAMEHAMEHA HWY #1D"
+      }
+    ],
+    "recordLastUpdated": "20241207",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": false,
+      "cmNormalisedStatus": "EXPIRED",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "NONRENEWED"
+        ]
+      },
+      "markCurrentStatus": "NONRENEWED",
+      "registration": {
+        "registrationDate": "19990920",
+        "registrationNumber": "231671"
+      }
+    },
+    "usStateOfficeCode": "HI",
+    "usStateOfficeName": "HAWAII",
+    "version": "20241207071654",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "THE PERFECT WAVE NORTH SHORE'S ARTISTIC TEAM"
+    }
+  },
+  "_uri": "/mark/xs/4d645c94-5a9a-4067-90d8-c4617c4d2a20",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.833Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

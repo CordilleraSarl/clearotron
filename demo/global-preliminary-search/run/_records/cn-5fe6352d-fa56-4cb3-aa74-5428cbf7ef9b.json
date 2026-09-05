@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/cn/5fe6352d-fa56-4cb3-aa74-5428cbf7ef9b",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "5fe6352d-fa56-4cb3-aa74-5428cbf7ef9b",
+  "applicationNumber": "6939336",
+  "registrationNumber": "6939336",
+  "applicationDate": "2008-09-05",
+  "registrationDate": "2010-12-14",
+  "expiryDate": "2030-12-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2010-09-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIQ",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "半导体;集成电路;微处理器;定制的微处理器;可进行软件编程的微处理器;特殊应用程序的集成电路;多芯信息处理机(多芯中央处理装置)",
+      "translation_language": "en",
+      "translation": "Semiconductors; integrated circuits; microprocessors; custom microprocessors; software-programmable microprocessors; application-specific integrated circuits; multi-core information processors (multi-core central processing units)"
+    }
+  ],
+  "owner": "NXP USA,INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "20080609"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 WILLIAM CANNON DRIVE WEST,AUSTIN,TEXAS 78735,USA",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA,INC.",
+        "applicantNativeName": "恩智浦美国有限责任公司;NXP USA,INC."
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductors; integrated circuits; microprocessors; custom microprocessors; software-programmable microprocessors; application-specific integrated circuits; multi-core information processors (multi-core central processing units)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "半导体;集成电路;微处理器;定制的微处理器;可进行软件编程的微处理器;特殊应用程序的集成电路;多芯信息处理机(多芯中央处理装置)"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        }
+      ]
+    },
+    "id": "5fe6352d-fa56-4cb3-aa74-5428cbf7ef9b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityDate": "20080609"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "1231"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京市柳沈律师事务所"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20080905",
+        "applicationNumber": "6939336"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20301213",
+      "lastPublicationDate": "20100913",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20101214",
+        "registrationNumber": "6939336"
+      },
+      "renewalPublishedDate": "20201127"
+    },
+    "version": "20251002005833",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIQ"
+    }
+  },
+  "_uri": "/mark/cn/5fe6352d-fa56-4cb3-aa74-5428cbf7ef9b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.398Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

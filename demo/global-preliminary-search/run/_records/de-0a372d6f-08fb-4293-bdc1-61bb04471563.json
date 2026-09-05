@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/de/0a372d6f-08fb-4293-bdc1-61bb04471563",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "0a372d6f-08fb-4293-bdc1-61bb04471563",
+  "applicationNumber": "302025124991.8",
+  "registrationNumber": "302025124991",
+  "applicationDate": "2025-11-27",
+  "registrationDate": "2026-04-28",
+  "expiryDate": "2035-11-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-05-29",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "STYLIZED LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        37
+      ],
+      "language": "de",
+      "description": "Bauwesen; Bauleitung [Bauaufsicht]; Bauberatung; Bauführungsdienstleistungen [Bauaufsicht]; Bauaufsicht für Bauprojekte; Projektmanagement im Bauwesen [Bauaufsicht]; Bauaufsicht während der Bauarbeiten; Baustellenprojektmanagement beim Gebäudebau [Bauaufsicht]; Instandhaltung von Bauten; Reparatur von Bauten; Sanierungsarbeiten an Bauten; Renovierung von Bauten; Reparaturarbeiten an Bauten; Sanierung von Bauten; Bauaufsicht für Grundstücksprojekte; Bauaufsicht für Gebäudeabriss; Bauaufsicht von Renovierungsarbeiten; Auskünfte in Bauangelegenheiten; Beratung bezüglich dem Bau von öffentlichen Bauwerken; Leitung von Bauprojekten vor Ort; Beratung in Bezug auf den Bau von Gebäuden und anderen Bauwerken; Auskünfte in Bezug auf das Bauwesen; Beratung bei der Ausführung von Bauvorhaben; Leitung von Bauarbeiten [Oberaufsicht] vor Ort; Oberaufsicht [Leitung] bei Bauarbeiten vor Ort; Beratung bei der Leitung von Bauarbeiten; Zurverfügungstellen von Bauinformationen auf elektronischem Weg; Beratungsdienste in Bezug auf den Bau von Gebäuden; Beratung und Erteilen von Auskünften in Bezug zu Bauarbeiten; Beratung in Bezug auf den Bau von Wohn- und anderen Gebäuden",
+      "translation_language": "en",
+      "translation": "Construction; Construction supervision; Construction consulting; Construction management services; Construction supervision for building projects; Construction project management; Construction supervision during construction; Site project management in building construction; Maintenance of buildings; Repair of buildings; Refurbishment of buildings; Renovation of buildings; Repair work on buildings; Refurbishment of buildings; Construction supervision for land projects; Construction supervision for building demolition; Construction supervision of renovation work; Information on construction matters; Advice regarding the construction of public works; On-site management of construction projects; Advice relating to the construction of buildings and other structures; Information relating to construction; Advice on the execution of construction projects; On-site management of construction work; On-site supervision; Advice on the management of construction work; Provision of construction information electronically; Consulting services relating to the construction of buildings; Advice and provision of information relating to construction work; Consulting services relating to the construction of residential and other buildings"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Dienstleistungen von Ingenieuren, insbesondere im Bereich der Sanitärtechnik, Heizungstechnik, Raumluft- und Klimatechnik, Mess- und Regeltechnik, Elektrotechnik, Sicherheitstechnik, energetische Inspektion, technische Beratung, technische Bewertung, technische Energieberatung, technische Schadensdokumentation, Erforschung von Schadensursachen [Erstellung von technischen Gutachten], Erstellung von technischen Konzepten zur Schadensbeseitigung, Erstellung von technischen Sanierungskonzepten und technischen Gutachten",
+      "translation_language": "en",
+      "translation": "Engineering services, in particular in the fields of plumbing, heating, ventilation and air conditioning, measurement and control technology, electrical engineering, safety engineering, energy inspection, technical consulting, technical assessment, technical energy consulting, technical damage documentation, investigation of the causes of damage [preparation of technical reports], preparation of technical concepts for damage remediation, preparation of technical remediation concepts and technical reports"
+    }
+  ],
+  "owner": "FEBEMA Holding GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "Schneiders & Behrendt PartmbB, Rechts- und Patentanwälte",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "20355 Hamburg",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "FEBEMA Holding GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Construction; Construction supervision; Construction consulting; Construction management services; Construction supervision for building projects; Construction project management; Construction supervision during construction; Site project management in building construction; Maintenance of buildings; Repair of buildings; Refurbishment of buildings; Renovation of buildings; Repair work on buildings; Refurbishment of buildings; Construction supervision for land projects; Construction supervision for building demolition; Construction supervision of renovation work; Information on construction matters; Advice regarding the construction of public works; On-site management of construction projects; Advice relating to the construction of buildings and other structures; Information relating to construction; Advice on the execution of construction projects; On-site management of construction work; On-site supervision; Advice on the management of construction work; Provision of construction information electronically; Consulting services relating to the construction of buildings; Advice and provision of information relating to construction work; Consulting services relating to the construction of residential and other buildings",
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Bauwesen; Bauleitung [Bauaufsicht]; Bauberatung; Bauführungsdienstleistungen [Bauaufsicht]; Bauaufsicht für Bauprojekte; Projektmanagement im Bauwesen [Bauaufsicht]; Bauaufsicht während der Bauarbeiten; Baustellenprojektmanagement beim Gebäudebau [Bauaufsicht]; Instandhaltung von Bauten; Reparatur von Bauten; Sanierungsarbeiten an Bauten; Renovierung von Bauten; Reparaturarbeiten an Bauten; Sanierung von Bauten; Bauaufsicht für Grundstücksprojekte; Bauaufsicht für Gebäudeabriss; Bauaufsicht von Renovierungsarbeiten; Auskünfte in Bauangelegenheiten; Beratung bezüglich dem Bau von öffentlichen Bauwerken; Leitung von Bauprojekten vor Ort; Beratung in Bezug auf den Bau von Gebäuden und anderen Bauwerken; Auskünfte in Bezug auf das Bauwesen; Beratung bei der Ausführung von Bauvorhaben; Leitung von Bauarbeiten [Oberaufsicht] vor Ort; Oberaufsicht [Leitung] bei Bauarbeiten vor Ort; Beratung bei der Leitung von Bauarbeiten; Zurverfügungstellen von Bauinformationen auf elektronischem Weg; Beratungsdienste in Bezug auf den Bau von Gebäuden; Beratung und Erteilen von Auskünften in Bezug zu Bauarbeiten; Beratung in Bezug auf den Bau von Wohn- und anderen Gebäuden"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Engineering services, in particular in the fields of plumbing, heating, ventilation and air conditioning, measurement and control technology, electrical engineering, safety engineering, energy inspection, technical consulting, technical assessment, technical energy consulting, technical damage documentation, investigation of the causes of damage [preparation of technical reports], preparation of technical concepts for damage remediation, preparation of technical remediation concepts and technical reports",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Dienstleistungen von Ingenieuren, insbesondere im Bereich der Sanitärtechnik, Heizungstechnik, Raumluft- und Klimatechnik, Mess- und Regeltechnik, Elektrotechnik, Sicherheitstechnik, energetische Inspektion, technische Beratung, technische Bewertung, technische Energieberatung, technische Schadensdokumentation, Erforschung von Schadensursachen [Erstellung von technischen Gutachten], Erstellung von technischen Konzepten zur Schadensbeseitigung, Erstellung von technischen Sanierungskonzepten und technischen Gutachten"
+        }
+      ]
+    },
+    "id": "0a372d6f-08fb-4293-bdc1-61bb04471563",
+    "ipRightKind": "tmk",
+    "markFeature": "STYLIZED LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "22"
+      }
+    ],
+    "recordLastUpdated": "20260609",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Schneiders & Behrendt PartmbB, Rechts- und Patentanwälte, Gerard-Mortier-Platz 6, 44793 Bochum"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "44793 Bochum",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "Schneiders & Behrendt PartmbB, Rechts- und Patentanwälte"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251127",
+        "applicationNumber": "302025124991.8"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20351127",
+      "lastPublicationDate": "20260529",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20260428",
+        "registrationNumber": "302025124991"
+      }
+    },
+    "version": "20260609020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOR"
+    }
+  },
+  "_uri": "/mark/de/0a372d6f-08fb-4293-bdc1-61bb04471563",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:24.142Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

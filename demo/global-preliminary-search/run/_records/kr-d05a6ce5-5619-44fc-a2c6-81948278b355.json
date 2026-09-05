@@ -1,0 +1,123 @@
+{
+  "uri": "/mark/kr/d05a6ce5-5619-44fc-a2c6-81948278b355",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "d05a6ce5-5619-44fc-a2c6-81948278b355",
+  "applicationNumber": "40-2012-0041060",
+  "registrationNumber": "4009404360000",
+  "applicationDate": "2012-06-27",
+  "registrationDate": "2012-11-08",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "EORI",
+  "markTransliteration": "EORI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "내려받기 가능한 전자 출판물,내려받기 가능한 컴퓨터프로그램,녹화된 테이프{음악이 아닌 것},만화영화,음악이 아닌 것이 수록된 전자매체{컴퓨터 소프트웨어는 제외},이동전화기용 컴퓨터 응용소프트웨어,컴퓨터 게임 프로그램,컴퓨터 소프트웨어",
+      "translation_language": "en",
+      "translation": "Downloadable electronic publications, downloadable computer programs, recorded tapes {not music}, animated movies, non-musical electronic media {excluding computer software}, computer application software for mobile phones, Computer software"
+    }
+  ],
+  "owner": "NHC MEDIA Co., Ltd",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "김종수 (KIM Jong soo)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 금천구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "NHC MEDIA Co., Ltd",
+        "applicantNativeName": "(주)엔에이치씨미디어"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Downloadable electronic publications, downloadable computer programs, recorded tapes {not music}, animated movies, non-musical electronic media {excluding computer software}, computer application software for mobile phones, Computer software",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "내려받기 가능한 전자 출판물,내려받기 가능한 컴퓨터프로그램,녹화된 테이프{음악이 아닌 것},만화영화,음악이 아닌 것이 수록된 전자매체{컴퓨터 소프트웨어는 제외},이동전화기용 컴퓨터 응용소프트웨어,컴퓨터 게임 프로그램,컴퓨터 소프트웨어"
+        }
+      ]
+    },
+    "id": "d05a6ce5-5619-44fc-a2c6-81948278b355",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "03.01.04",
+      "03.01.16",
+      "05.03.13"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "JoyTower, , Teheran-ro -gil, Gangnam-gu, Seoul, SEOUL - Rep. of KOREA(DAESIN international patent & Law office)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김종수 (KIM Jong soo)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120627",
+        "applicationNumber": "40-2012-0041060"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20121108",
+        "registrationNumber": "4009404360000"
+      }
+    },
+    "version": "20250625171853",
+    "wordMarkSpecification": {
+      "markTransliteration": "EORI",
+      "markVerbalElementText": "EORI"
+    }
+  },
+  "_uri": "/mark/kr/d05a6ce5-5619-44fc-a2c6-81948278b355",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:13.069Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "uri": "/mark/cn/9e68f5b4-5cb9-48b3-8934-f3b64545c37c",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "9e68f5b4-5cb9-48b3-8934-f3b64545c37c",
+  "applicationNumber": "21644545",
+  "registrationNumber": "21644545",
+  "applicationDate": "2016-10-21",
+  "registrationDate": "2018-07-07",
+  "expiryDate": "2028-07-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-04-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "七日",
+  "markTransliteration": "qi ri",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "电池;电池充电器;电池开关（电）;电解装置;电瓶;发电用太阳能电池板;防盗报警器;太阳能电池;移动电源（可充电电池）;运载工具用蓄电池",
+      "translation_language": "en",
+      "translation": "Battery; battery charger; battery switch (electric); electrolysis device; battery; power generation solar panel; burglar alarm; solar cell; mobile power (rechargeable battery);"
+    }
+  ],
+  "owner": "Tianjin seven days of new energy Technology Co., Ltd",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "天津市滨海新区经济技术开发区第五大街泰华路12号泰达中小企业发展中心3716房间",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Tianjin seven days of new energy Technology Co., Ltd",
+        "applicantNativeName": "天津七日新能源科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Battery; battery charger; battery switch (electric); electrolysis device; battery; power generation solar panel; burglar alarm; solar cell; mobile power (rechargeable battery);",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "电池;电池充电器;电池开关（电）;电解装置;电瓶;发电用太阳能电池板;防盗报警器;太阳能电池;移动电源（可充电电池）;运载工具用蓄电池"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Apparatus for electroplating and electrolysers",
+        "Warning equipments, bells",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0915",
+          "subNatGoodsServicesDescription": "Apparatus for electroplating and electrolysers"
+        },
+        {
+          "subNatClassNumber": "0920",
+          "subNatGoodsServicesDescription": "Warning equipments, bells"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "9e68f5b4-5cb9-48b3-8934-f3b64545c37c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1594"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "保定市佳朋知识产权代理有限责任公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20161021",
+        "applicationNumber": "21644545"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280706",
+      "lastPublicationDate": "20180406",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180707",
+        "registrationNumber": "21644545"
+      }
+    },
+    "version": "20251002172907",
+    "wordMarkSpecification": {
+      "markTransliteration": "qi ri",
+      "markVerbalElementText": "七日"
+    }
+  },
+  "_uri": "/mark/cn/9e68f5b4-5cb9-48b3-8934-f3b64545c37c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:38.359Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

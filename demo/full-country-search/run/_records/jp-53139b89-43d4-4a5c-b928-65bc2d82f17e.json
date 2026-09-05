@@ -1,0 +1,157 @@
+{
+  "uri": "/mark/jp/53139b89-43d4-4a5c-b928-65bc2d82f17e",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "53139b89-43d4-4a5c-b928-65bc2d82f17e",
+  "applicationNumber": "H06-113590",
+  "registrationNumber": "3300650",
+  "applicationDate": "1994-11-11",
+  "registrationDate": "1997-05-02",
+  "expiryDate": "2027-05-02",
+  "renewalDate": null,
+  "lastPublicationDate": "1996-11-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＣｏｌｄＦｉｒｅ",
+  "markTransliteration": "KOORUDOFAIA",
+  "markTranslation": "COLDFIRE",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "電気磁気測定器，電気通信機械器具，電子応用機械器具及びその部品，電池，電線及びケーブル",
+      "translation_language": "en",
+      "translation": "Electromagnetism measuring instruments, telecommunication machinery equipment, electronic appliances appliances and parts thereof, batteries, wires and cables"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "ONUKI SHINSUKE",
+  "priorities": [
+    {
+      "priorityDate": "19941111"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electromagnetism measuring instruments, telecommunication machinery equipment, electronic appliances appliances and parts thereof, batteries, wires and cables",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "電気磁気測定器，電気通信機械器具，電子応用機械器具及びその部品，電池，電線及びケーブル"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11A03",
+          "natGoodsServicesDescription": "Batteries"
+        },
+        {
+          "natClassNumber": "11A04",
+          "natGoodsServicesDescription": "Electric or magnetic measuring machines and instruments"
+        },
+        {
+          "natClassNumber": "11A05",
+          "natGoodsServicesDescription": "Electric wires and cables"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Electrical communication apparatus and instruments"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, instruments and parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        }
+      ]
+    },
+    "id": "53139b89-43d4-4a5c-b928-65bc2d82f17e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19941111"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "ONUKI SHINSUKE",
+        "representativeNativeName": "大貫　進介"
+      },
+      {
+        "representativeName": "HONJO  YOSHINORI",
+        "representativeNativeName": "本城　雅則"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19941111",
+        "applicationNumber": "H06-113590"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270502",
+      "lastPublicationDate": "19961120",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "19970502",
+        "registrationNumber": "3300650"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "COLDFIRE",
+      "markTransliteration": "KOORUDOFAIA",
+      "markVerbalElementText": "ＣｏｌｄＦｉｒｅ"
+    }
+  },
+  "_uri": "/mark/jp/53139b89-43d4-4a5c-b928-65bc2d82f17e",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.461Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

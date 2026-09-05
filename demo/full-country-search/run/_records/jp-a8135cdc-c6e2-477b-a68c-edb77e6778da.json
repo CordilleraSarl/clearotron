@@ -1,0 +1,149 @@
+{
+  "uri": "/mark/jp/a8135cdc-c6e2-477b-a68c-edb77e6778da",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "a8135cdc-c6e2-477b-a68c-edb77e6778da",
+  "applicationNumber": "2004-042889",
+  "registrationNumber": "4887553",
+  "applicationDate": "2004-04-21",
+  "registrationDate": "2005-08-12",
+  "expiryDate": "2015-08-12",
+  "renewalDate": null,
+  "lastPublicationDate": "2005-09-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＶＥＮＴＵＲＩ",
+  "markTransliteration": "BENCHURI BENTSURI",
+  "markTranslation": "VENTURI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "コンピュータ，コンピュータソフトウェア，その他の電子応用機械器具及びその部品，電気通信機械器具",
+      "translation_language": "en",
+      "translation": "Computer, computer software, other electronic applied equipment and parts thereof, telecommunications machine tools"
+    }
+  ],
+  "owner": "VENTURI WIRELESS INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "TANIGUCHI NOBORU",
+  "priorities": [
+    {
+      "priorityDate": "20040421"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "VENTURI WIRELESS INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "ヴェンチュリ　ワイヤレス　インコーポレーテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer, computer software, other electronic applied equipment and parts thereof, telecommunications machine tools",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "コンピュータ，コンピュータソフトウェア，その他の電子応用機械器具及びその部品，電気通信機械器具"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Electrical communication apparatus and instruments"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, instruments and parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        }
+      ]
+    },
+    "id": "a8135cdc-c6e2-477b-a68c-edb77e6778da",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20040421"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "TANIGUCHI NOBORU",
+        "representativeNativeName": "谷口　登"
+      },
+      {
+        "representativeName": "OSAKABE MASAKO",
+        "representativeNativeName": "長賀部　雅子"
+      },
+      {
+        "representativeName": "HINO MAMI",
+        "representativeNativeName": "日野　真美"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040421",
+        "applicationNumber": "2004-042889"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20150812",
+      "lastPublicationDate": "20050913",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20050812",
+        "registrationNumber": "4887553"
+      }
+    },
+    "version": "20240320135907",
+    "wordMarkSpecification": {
+      "markTranslation": "VENTURI",
+      "markTransliteration": "BENCHURI BENTSURI",
+      "markVerbalElementText": "ＶＥＮＴＵＲＩ"
+    }
+  },
+  "_uri": "/mark/jp/a8135cdc-c6e2-477b-a68c-edb77e6778da",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:44.264Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

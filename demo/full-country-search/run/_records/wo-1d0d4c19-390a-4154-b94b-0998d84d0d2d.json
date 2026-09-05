@@ -1,0 +1,269 @@
+{
+  "uri": "/mark/wo/1d0d4c19-390a-4154-b94b-0998d84d0d2d",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "1d0d4c19-390a-4154-b94b-0998d84d0d2d",
+  "applicationNumber": null,
+  "registrationNumber": "1539070",
+  "applicationDate": null,
+  "registrationDate": "2020-05-26",
+  "expiryDate": "2030-05-26",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-07-02",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "UNQORK",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education services, namely, conducting seminars, classes, workshops, online courses, and conferences in the fields of software as a service (SaaS), platform as a service (PaaS), infrastructure as a service (IaaS) and application platform as a service (aPaaS) for providing a development environment and software configuration tools to build, design, implement, and maintain business applications using a visual interface.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Software as a service (SaaS), platform as a service (PaaS), infrastructure as a service (IaaS) and application platform as a service (aPaaS) for providing a development environment and software configuration tools to build, design, implement, monitor and maintain business applications using a visual interface; software as a service (SaaS), platform as a service (PaaS), infrastructure as a service (IaaS) and application platform as a service (aPaaS) for rendering, serving, reporting and displaying of business applications; software as a service (SaaS), platform as a service (PaaS), infrastructure as a service (IaaS) and application platform as a service (aPaaS) for application programming interface creation and execution; software as a service (SaaS), platform as a service (PaaS), infrastructure as a service (IaaS) and application platform as a service (aPaaS) for workflow creation, orchestration, and execution; software as a service (SaaS), platform as a service (PaaS), infrastructure as a service (IaaS) and application platform as a service (aPaaS) for the generation and delivery of documents; software as a service (SaaS), platform as a service (PaaS), infrastructure as a service (IaaS) and application platform as a service (aPaaS) for ingestion of paper and scanned images of documents; technical support services for computer software, namely, providing updates, upgrades, patches, fixes, and technical documentation; computer services, namely, providing data as a service through a customizable software platform for compiling, analyzing, integrating, transforming and providing access to data and information.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Services d'éducation, à savoir animation de séminaires, leçons, ateliers, cours en ligne et conférences dans les domaines des logiciels en tant que service (SaaS), plateformes en tant que service (PaaS), infrastructures en tant que service (IaaS) et plateformes d'applications en tant que service (aPaaS) pour la mise à disposition d'un environnement de développement et d'outils de configuration logicielle pour la construction, la conception, l'implémentation et la maintenance d'applications d'affaires à l'aide d'une interface visuelle.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Logiciels en tant que service (SaaS), plateformes en tant que service (PaaS), infrastructures en tant que service (IaaS) et plateformes d'applications en tant que service (aPaaS) pour la mise à disposition d'un environnement de développement et d'outils de configuration logicielle pour la construction, la conception, l'implémentation, la surveillance et la maintenance d'applications d'affaires à l'aide d'une interface visuelle; logiciels en tant que service (SaaS), plateformes en tant que service (PaaS), infrastructures en tant que service (IaaS) et plateformes d'applications en tant que service (aPaaS) pour la prestation, le service, le compte rendu et l'affichage d'applications d'affaires; logiciels en tant que service (SaaS), plateformes en tant que service (PaaS), infrastructures en tant que service (IaaS) et plateformes d'applications en tant que service (aPaaS) pour l'exécution et la création d'interfaces de programmation pour applications; logiciels en tant que service (SaaS), plateformes en tant que service (PaaS), infrastructures en tant que service (IaaS) et plateformes d'applications en tant que service (aPaaS) pour l'exécution, l'orchestration et la création de flux de travail; logiciels en tant que service (SaaS), plateformes en tant que service (PaaS), infrastructures en tant que service (IaaS) et plateformes d'applications en tant que service (aPaaS) pour la production et livraison de documents; logiciels en tant que service (SaaS), plateformes en tant que service (PaaS), infrastructures en tant que service (IaaS) et plateformes d'applications en tant que service (aPaaS) pour l'ingestion de papier et d'images scannées de documents; services d'assistance technique pour logiciels informatiques, à savoir mise à disposition de mises à jour, mises à niveau, correctifs, corrections et documentation technique; services informatiques, à savoir mise à disposition de données en tant que service par le biais d'une plateforme logicielle personnalisable pour la compilation, l'analyse, l'intégration, la transformation et la fourniture d'accès à des données et informations.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de educación, a saber, realización de seminarios, clases, talleres, cursos en línea y conferencias en los ámbitos del software como servicio (SaaS), las plataformas como servicio (PaaS), las infraestructuras como servicio (IaaS) las plataformas de aplicaciones como servicio (aPaaS), para la puesta a disposición de un entorno de desarrollo y herramientas de configuración de software para construir, diseñar, ejecutar y mantener aplicaciones comerciales mediante una interfaz visual.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Software como servicio (SaaS), plataforma como servicio (PaaS), infraestructura como servicio (IaaS) y plataforma de aplicaciones como servicio (aPaaS), para la puesta a disposición de un entorno de desarrollo y herramientas de configuración de software para construir, diseñar, ejecutar y mantener aplicaciones comerciales mediante una interfaz visual; software como servicio (SaaS), plataforma como servicio (PaaS), infraestructura como servicio (IaaS) y plataforma de aplicaciones como servicio (aPaaS) para representar, servir, informar y visualizar aplicaciones empresariales; software como servicio (SaaS), plataforma como servicio (PaaS), infraestructura como servicio (IaaS) y plataforma de aplicaciones como servicio (aPaaS) para crear y ejecutar interfaces de programación de aplicaciones; software como servicio (SaaS), plataforma como servicio (PaaS), infraestructura como servicio (IaaS) y plataforma de aplicaciones como servicio (aPaaS) para crear, orquestar y ejecutar flujos de trabajo; software como servicio (SaaS), plataforma como servicio (PaaS), infraestructura como servicio (IaaS) y plataforma de aplicaciones como servicio (aPaaS) para generar y distribuir documentos; software como servicio (SaaS), plataforma como servicio (PaaS), infraestructura como servicio (IaaS) y plataforma de aplicaciones como servicio (aPaaS) para incorporar imágenes en papel o escaneadas de documentos; servicios de asistencia técnica para software informático, a saber, puesta a disposición de actualizaciones, mejoras, parches, correcciones y documentación técnica; servicios informáticos, a saber, suministro de datos como servicio mediante una plataforma de software personalizable para recopilar, analizar, integrar, transformar y suministrar acceso a datos e información.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Unqork Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20200508",
+      "priorityNumber": "88906731"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20200508",
+          "basicApplicationNumber": "88906731"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "US"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "BR",
+      "CA",
+      "CH",
+      "CN",
+      "CO",
+      "CU",
+      "EG",
+      "GB",
+      "ID",
+      "IL",
+      "IN",
+      "JP",
+      "KR",
+      "MX",
+      "MY",
+      "NZ",
+      "OM",
+      "PH",
+      "SG",
+      "TH",
+      "RU",
+      "UA",
+      "GE",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "85 Fifth Avenue, Sixth Floor New York, NY 10003",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Unqork Inc."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20200508",
+            "basicApplicationNumber": "88906731"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "US"
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "BR",
+      "CA",
+      "CH",
+      "CN",
+      "CO",
+      "CU",
+      "EG",
+      "GB",
+      "ID",
+      "IL",
+      "IN",
+      "JP",
+      "KR",
+      "MX",
+      "MY",
+      "NZ",
+      "OM",
+      "PH",
+      "SG",
+      "TH",
+      "RU",
+      "UA",
+      "GE",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education services, namely, conducting seminars, classes, workshops, online courses, and conferences in the fields of software as a service (SaaS), platform as a service (PaaS), infrastructure as a service (IaaS) and application platform as a service (aPaaS) for providing a development environment and software configuration tools to build, design, implement, and maintain business applications using a visual interface."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software as a service (SaaS), platform as a service (PaaS), infrastructure as a service (IaaS) and application platform as a service (aPaaS) for providing a development environment and software configuration tools to build, design, implement, monitor and maintain business applications using a visual interface; software as a service (SaaS), platform as a service (PaaS), infrastructure as a service (IaaS) and application platform as a service (aPaaS) for rendering, serving, reporting and displaying of business applications; software as a service (SaaS), platform as a service (PaaS), infrastructure as a service (IaaS) and application platform as a service (aPaaS) for application programming interface creation and execution; software as a service (SaaS), platform as a service (PaaS), infrastructure as a service (IaaS) and application platform as a service (aPaaS) for workflow creation, orchestration, and execution; software as a service (SaaS), platform as a service (PaaS), infrastructure as a service (IaaS) and application platform as a service (aPaaS) for the generation and delivery of documents; software as a service (SaaS), platform as a service (PaaS), infrastructure as a service (IaaS) and application platform as a service (aPaaS) for ingestion of paper and scanned images of documents; technical support services for computer software, namely, providing updates, upgrades, patches, fixes, and technical documentation; computer services, namely, providing data as a service through a customizable software platform for compiling, analyzing, integrating, transforming and providing access to data and information."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services d'éducation, à savoir animation de séminaires, leçons, ateliers, cours en ligne et conférences dans les domaines des logiciels en tant que service (SaaS), plateformes en tant que service (PaaS), infrastructures en tant que service (IaaS) et plateformes d'applications en tant que service (aPaaS) pour la mise à disposition d'un environnement de développement et d'outils de configuration logicielle pour la construction, la conception, l'implémentation et la maintenance d'applications d'affaires à l'aide d'une interface visuelle."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciels en tant que service (SaaS), plateformes en tant que service (PaaS), infrastructures en tant que service (IaaS) et plateformes d'applications en tant que service (aPaaS) pour la mise à disposition d'un environnement de développement et d'outils de configuration logicielle pour la construction, la conception, l'implémentation, la surveillance et la maintenance d'applications d'affaires à l'aide d'une interface visuelle; logiciels en tant que service (SaaS), plateformes en tant que service (PaaS), infrastructures en tant que service (IaaS) et plateformes d'applications en tant que service (aPaaS) pour la prestation, le service, le compte rendu et l'affichage d'applications d'affaires; logiciels en tant que service (SaaS), plateformes en tant que service (PaaS), infrastructures en tant que service (IaaS) et plateformes d'applications en tant que service (aPaaS) pour l'exécution et la création d'interfaces de programmation pour applications; logiciels en tant que service (SaaS), plateformes en tant que service (PaaS), infrastructures en tant que service (IaaS) et plateformes d'applications en tant que service (aPaaS) pour l'exécution, l'orchestration et la création de flux de travail; logiciels en tant que service (SaaS), plateformes en tant que service (PaaS), infrastructures en tant que service (IaaS) et plateformes d'applications en tant que service (aPaaS) pour la production et livraison de documents; logiciels en tant que service (SaaS), plateformes en tant que service (PaaS), infrastructures en tant que service (IaaS) et plateformes d'applications en tant que service (aPaaS) pour l'ingestion de papier et d'images scannées de documents; services d'assistance technique pour logiciels informatiques, à savoir mise à disposition de mises à jour, mises à niveau, correctifs, corrections et documentation technique; services informatiques, à savoir mise à disposition de données en tant que service par le biais d'une plateforme logicielle personnalisable pour la compilation, l'analyse, l'intégration, la transformation et la fourniture d'accès à des données et informations."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de educación, a saber, realización de seminarios, clases, talleres, cursos en línea y conferencias en los ámbitos del software como servicio (SaaS), las plataformas como servicio (PaaS), las infraestructuras como servicio (IaaS) las plataformas de aplicaciones como servicio (aPaaS), para la puesta a disposición de un entorno de desarrollo y herramientas de configuración de software para construir, diseñar, ejecutar y mantener aplicaciones comerciales mediante una interfaz visual."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software como servicio (SaaS), plataforma como servicio (PaaS), infraestructura como servicio (IaaS) y plataforma de aplicaciones como servicio (aPaaS), para la puesta a disposición de un entorno de desarrollo y herramientas de configuración de software para construir, diseñar, ejecutar y mantener aplicaciones comerciales mediante una interfaz visual; software como servicio (SaaS), plataforma como servicio (PaaS), infraestructura como servicio (IaaS) y plataforma de aplicaciones como servicio (aPaaS) para representar, servir, informar y visualizar aplicaciones empresariales; software como servicio (SaaS), plataforma como servicio (PaaS), infraestructura como servicio (IaaS) y plataforma de aplicaciones como servicio (aPaaS) para crear y ejecutar interfaces de programación de aplicaciones; software como servicio (SaaS), plataforma como servicio (PaaS), infraestructura como servicio (IaaS) y plataforma de aplicaciones como servicio (aPaaS) para crear, orquestar y ejecutar flujos de trabajo; software como servicio (SaaS), plataforma como servicio (PaaS), infraestructura como servicio (IaaS) y plataforma de aplicaciones como servicio (aPaaS) para generar y distribuir documentos; software como servicio (SaaS), plataforma como servicio (PaaS), infraestructura como servicio (IaaS) y plataforma de aplicaciones como servicio (aPaaS) para incorporar imágenes en papel o escaneadas de documentos; servicios de asistencia técnica para software informático, a saber, puesta a disposición de actualizaciones, mejoras, parches, correcciones y documentación técnica; servicios informáticos, a saber, suministro de datos como servicio mediante una plataforma de software personalizable para recopilar, analizar, integrar, transformar y suministrar acceso a datos e información."
+        }
+      ]
+    },
+    "id": "1d0d4c19-390a-4154-b94b-0998d84d0d2d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20200508",
+        "priorityNumber": "88906731"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "25"
+      }
+    ],
+    "recordLastUpdated": "20260614",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300526",
+      "lastPublicationDate": "20200702",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20200526",
+        "registrationNumber": "1539070"
+      }
+    },
+    "version": "20260614020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "UNQORK"
+    }
+  },
+  "_uri": "/mark/wo/1d0d4c19-390a-4154-b94b-0998d84d0d2d",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.707Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

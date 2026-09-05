@@ -1,0 +1,330 @@
+{
+  "uri": "/mark/jp/160e83ee-896b-47c5-bd73-3b5d68120e5c",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "160e83ee-896b-47c5-bd73-3b5d68120e5c",
+  "applicationNumber": "2021-064492",
+  "registrationNumber": "6472759",
+  "applicationDate": "2021-05-26",
+  "registrationDate": "2021-11-17",
+  "expiryDate": "2031-11-17",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-12-07",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ｉｏｒｉ",
+  "markTransliteration": "IORI",
+  "markTranslation": "IORI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    38,
+    41,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "電気通信機械器具，電子応用機械器具及びその部品，電子計算機用プログラム，業務用テレビゲーム機用プログラム，家庭用テレビゲーム機用プログラム，インターネットを利用して受信し及び保存することができる音楽ファイル，インターネットを利用して受信し及び保存することができる画像ファイル，電子出版物",
+      "translation_language": "en",
+      "translation": "Telecommunications machinery and equipment, electronic application machinery and equipment and their parts, computer programs, commercial video game console programs, home video game console programs, music files that can be received and stored using the Internet, Image files and electronic publications that can be received and saved using the Internet"
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": null,
+      "description": "電気通信，電子計算機端末による通信，電話による通信，放送，電気通信装置の貸与",
+      "translation_language": "en",
+      "translation": "Telecommunications, computer terminal communication, telephone communication, broadcasting, telecommunications equipment rental"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "興行の企画・運営又は開催（映画・演芸・演劇・音楽の演奏の興行及びスポーツ・競馬・競輪・競艇・小型自動車競走の興行に関するものを除く。），映画・演芸・演劇又は音楽の演奏の興行の企画又は運営，興行（歌劇・音楽会）の企画・運営，コンサートの企画又は運営，スポーツの興行の企画・運営又は開催，興行におけるチケットの手配，インターネットを利用して行う映像の提供，インターネットを利用して行う音楽の提供，セミナーの企画・運営又は開催，技芸・スポーツ又は知識の教授，電子出版物の提供，図書及び記録の供覧，書籍の制作，娯楽の提供，娯楽分野における情報の提供",
+      "translation_language": "en",
+      "translation": "Planning, management or holding of entertainment (excluding those related to entertainment of movies, entertainment, drama, music performances and sports, horse racing, bicycle races, boat races, small car races), movies, entertainment, drama or music performances Planning or management of entertainment, planning and operation of entertainment (drama / concert), planning or operation of concerts, planning, operation or holding of entertainment of sports, arrangement of tickets at entertainment, provision of images using the Internet, Providing music using the Internet, planning, managing or holding seminars, teaching arts / sports or knowledge, providing electronic publications, viewing books and records, producing books, providing entertainment, information in the entertainment field Offer"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "電子計算機用プログラムの提供，オンラインによるアプリケーションソフトウェアの提供（ＳａａＳ），電子計算機のプログラムの設計・作成又は保守，ウェブサイトの作成又は保守，コンピュータ技術に関する助言",
+      "translation_language": "en",
+      "translation": "Providing computer programs, providing online application software (Software as a Service), designing, creating or maintaining computer programs, creating or maintaining websites, advice on computer technology"
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": null,
+      "description": "オンラインによるソーシャルネットワーキングサービスの提供",
+      "translation_language": "en",
+      "translation": "Provide online social networking service"
+    }
+  ],
+  "owner": "K.K. APPBREW",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "OGAI HIROSHI",
+  "priorities": [
+    {
+      "priorityDate": "20210526"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "BUNKYOU TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "K.K. APPBREW",
+        "applicantNativeAddress": "東京都文京区",
+        "applicantNativeName": "株式会社ＡｐｐＢｒｅｗ"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Telecommunications machinery and equipment, electronic application machinery and equipment and their parts, computer programs, commercial video game console programs, home video game console programs, music files that can be received and stored using the Internet, Image files and electronic publications that can be received and saved using the Internet",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "電気通信機械器具，電子応用機械器具及びその部品，電子計算機用プログラム，業務用テレビゲーム機用プログラム，家庭用テレビゲーム機用プログラム，インターネットを利用して受信し及び保存することができる音楽ファイル，インターネットを利用して受信し及び保存することができる画像ファイル，電子出版物"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Telecommunications, computer terminal communication, telephone communication, broadcasting, telecommunications equipment rental",
+          "intClassNumber": "38",
+          "intGoodsServicesDescription": "電気通信，電子計算機端末による通信，電話による通信，放送，電気通信装置の貸与"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Planning, management or holding of entertainment (excluding those related to entertainment of movies, entertainment, drama, music performances and sports, horse racing, bicycle races, boat races, small car races), movies, entertainment, drama or music performances Planning or management of entertainment, planning and operation of entertainment (drama / concert), planning or operation of concerts, planning, operation or holding of entertainment of sports, arrangement of tickets at entertainment, provision of images using the Internet, Providing music using the Internet, planning, managing or holding seminars, teaching arts / sports or knowledge, providing electronic publications, viewing books and records, producing books, providing entertainment, information in the entertainment field Offer",
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "興行の企画・運営又は開催（映画・演芸・演劇・音楽の演奏の興行及びスポーツ・競馬・競輪・競艇・小型自動車競走の興行に関するものを除く。），映画・演芸・演劇又は音楽の演奏の興行の企画又は運営，興行（歌劇・音楽会）の企画・運営，コンサートの企画又は運営，スポーツの興行の企画・運営又は開催，興行におけるチケットの手配，インターネットを利用して行う映像の提供，インターネットを利用して行う音楽の提供，セミナーの企画・運営又は開催，技芸・スポーツ又は知識の教授，電子出版物の提供，図書及び記録の供覧，書籍の制作，娯楽の提供，娯楽分野における情報の提供"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Providing computer programs, providing online application software (Software as a Service), designing, creating or maintaining computer programs, creating or maintaining websites, advice on computer technology",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "電子計算機用プログラムの提供，オンラインによるアプリケーションソフトウェアの提供（ＳａａＳ），電子計算機のプログラムの設計・作成又は保守，ウェブサイトの作成又は保守，コンピュータ技術に関する助言"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provide online social networking service",
+          "intClassNumber": "45",
+          "intGoodsServicesDescription": "オンラインによるソーシャルネットワーキングサービスの提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "09G53",
+          "natGoodsServicesDescription": "Game programs for arcade video game machines"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Telecommunication machines and apparatus; Personal digital assistants"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door closing control systems; Electron microscopes"
+        },
+        {
+          "natClassNumber": "24A01",
+          "natGoodsServicesDescription": "Game programs for home video game machines; Electronic circuits and CD-ROMs recorded with programs for hand-held games with liquid crystal displays"
+        },
+        {
+          "natClassNumber": "24E02",
+          "natGoodsServicesDescription": "Phonograph records; Downloadable music files; Downloadable image files; Recorded video discs and video tapes"
+        },
+        {
+          "natClassNumber": "26A01",
+          "natGoodsServicesDescription": "Electronic publications"
+        },
+        {
+          "natClassNumber": "26D01",
+          "natGoodsServicesDescription": "Downloadable image files; Recorded video discs and video tapes; Electronic publications; Exposed cinematographic films; Exposed slide films; Slide film mounts"
+        },
+        {
+          "natClassNumber": "38A01",
+          "natGoodsServicesDescription": "Telecommunication, other than broadcasting"
+        },
+        {
+          "natClassNumber": "38B01",
+          "natGoodsServicesDescription": "Broadcasting"
+        },
+        {
+          "natClassNumber": "38D01",
+          "natGoodsServicesDescription": "Rental of telecommunication equipment including telephones and facsimile apparatus"
+        },
+        {
+          "natClassNumber": "41A01",
+          "natGoodsServicesDescription": "Educational and instruction services relating to arts, crafts, sports or general knowledge"
+        },
+        {
+          "natClassNumber": "41A03",
+          "natGoodsServicesDescription": "Arranging, conducting and organization of seminars"
+        },
+        {
+          "natClassNumber": "41C02",
+          "natGoodsServicesDescription": "Providing electronic publications; Services of reference libraries for literature and documentary records; Book rental"
+        },
+        {
+          "natClassNumber": "41D01",
+          "natGoodsServicesDescription": "Publication of books"
+        },
+        {
+          "natClassNumber": "41E01",
+          "natGoodsServicesDescription": "Arranging and planning of movies, shows, plays or musical performances"
+        },
+        {
+          "natClassNumber": "41E02",
+          "natGoodsServicesDescription": "Providing videos from the internet, not downloadable; Movie theatre presentations or movie film production and distribution"
+        },
+        {
+          "natClassNumber": "41E03",
+          "natGoodsServicesDescription": "Providing digital music from the Internet, not downloadable; Presentation of live show performances; Direction or presentation of plays; Presentation of musical performances"
+        },
+        {
+          "natClassNumber": "41E04",
+          "natGoodsServicesDescription": "Production of radio or television programs"
+        },
+        {
+          "natClassNumber": "41E05",
+          "natGoodsServicesDescription": "Production of videotape film in the field of education, culture, entertainment or sports [not for movies or television programs and not for advertising or publicity]"
+        },
+        {
+          "natClassNumber": "41F01",
+          "natGoodsServicesDescription": "Organization, arranging and conducting of sports competitions"
+        },
+        {
+          "natClassNumber": "41F06",
+          "natGoodsServicesDescription": "Organization of entertainment events excluding movies, shows, plays, musical performances, sports, horse races, bicycle races, boat races and auto races"
+        },
+        {
+          "natClassNumber": "41G01",
+          "natGoodsServicesDescription": "Organization, arranging and conducting of horse races"
+        },
+        {
+          "natClassNumber": "41G02",
+          "natGoodsServicesDescription": "Organization, arranging and conducting of bicycle races"
+        },
+        {
+          "natClassNumber": "41G03",
+          "natGoodsServicesDescription": "Organization, arranging and conducting of boat races"
+        },
+        {
+          "natClassNumber": "41G04",
+          "natGoodsServicesDescription": "Organization, arranging and conducting of auto races"
+        },
+        {
+          "natClassNumber": "41K01",
+          "natGoodsServicesDescription": "Providing amusement facilities"
+        },
+        {
+          "natClassNumber": "41L01",
+          "natGoodsServicesDescription": "Booking of seats for shows"
+        },
+        {
+          "natClassNumber": "42N03",
+          "natGoodsServicesDescription": "Designing of machines, apparatus, instruments [including their parts] or systems composed of such machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42Q02",
+          "natGoodsServicesDescription": "Research on building construction or city planning; Testing or research on prevention of pollution; Testing or research on electricity; Testing or research on civil engineering"
+        },
+        {
+          "natClassNumber": "42Q99",
+          "natGoodsServicesDescription": "Testing or research on machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        },
+        {
+          "natClassNumber": "42H01",
+          "natGoodsServicesDescription": "Marriage partner introduction or dating services"
+        }
+      ]
+    },
+    "id": "160e83ee-896b-47c5-bd73-3b5d68120e5c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20210526"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "OGAI HIROSHI",
+        "representativeNativeName": "大谷　寛"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210526",
+        "applicationNumber": "2021-064492"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311117",
+      "lastPublicationDate": "20211207",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20211117",
+        "registrationNumber": "6472759"
+      }
+    },
+    "version": "20230427111428",
+    "wordMarkSpecification": {
+      "markTranslation": "IORI",
+      "markTransliteration": "IORI",
+      "markVerbalElementText": "ｉｏｒｉ"
+    }
+  },
+  "_uri": "/mark/jp/160e83ee-896b-47c5-bd73-3b5d68120e5c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:47.226Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

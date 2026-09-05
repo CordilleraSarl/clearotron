@@ -1,0 +1,303 @@
+{
+  "uri": "/mark/ca/5d91885b-d21c-4400-a3f0-18f3d2998d46",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "5d91885b-d21c-4400-a3f0-18f3d2998d46",
+  "applicationNumber": "1410384",
+  "registrationNumber": "TMA807840",
+  "applicationDate": "2008-09-11",
+  "registrationDate": "2011-09-28",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2010-10-27"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIQ",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "(1) Semiconductors, integrated circuits, microprocessors, software programmable microprocessors, multicore processors, application-specific integrated circuits.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA Inc.",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "SMART & BIGGAR LP",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States",
+      "priorityDate": "20080609",
+      "priorityNumber": "77/494,217",
+      "priorityText": "Priority Filing Date: June 09, 2008, Country or Office: UNITED STATES OF AMERICA, Application No. 77/494,217 in association with the same kind on wares marked (1)"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin, TX 78735",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressLines": [
+          "6501 William Cannon Drive West",
+          "Austin, TX 78735"
+        ],
+        "applicantName": "NXP USA Inc."
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Priority Filing Date: June 09, 2008, Country or Office: UNITED STATES OF AMERICA, Application No. 77/494,217 in association with the same kind on wares marked (1)",
+        "typeDescription": "Priority"
+      },
+      {
+        "text": "Used in UNITED STATES OF AMERICA on wares marked (1)",
+        "typeDescription": "Foreign Usage"
+      },
+      {
+        "text": "Registered in or for UNITED STATES OF AMERICA on April 13, 2010, under No. 3,775,471 on wares marked (1)",
+        "typeDescription": "Foreign Registration"
+      },
+      {
+        "text": "Declaration of Use filed September 08, 2011 on wares marked (1)",
+        "typeDescription": "Declaration of Use Info"
+      }
+    ],
+    "footNotes": [
+      "Merger and Address / Fusionnement et adresse",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 21 août/Aug 2017",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 07 nov/Nov 2016",
+      "COMMENTS / COMMENTAIRES: FROM: Freescale Semiconductor, Inc.",
+      "TO: NXP USA Inc.",
+      "Voir Preuve au dossier/See evidence on File No. 1663578"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Semiconductors, integrated circuits, microprocessors, software programmable microprocessors, multicore processors, application-specific integrated circuits."
+        }
+      ]
+    },
+    "id": "5d91885b-d21c-4400-a3f0-18f3d2998d46",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20260421",
+        "descriptionText": "Agent changed",
+        "information": "Transferred From: 2502 To: 59"
+      },
+      {
+        "date": "20251016",
+        "descriptionText": "287",
+        "information": "Nice Classification"
+      },
+      {
+        "date": "20170821",
+        "descriptionText": "Amendment to Registration",
+        "information": "Merger and address / Voir Preuve au dossier/See evidence on File No. 1663578"
+      },
+      {
+        "date": "20110928",
+        "descriptionText": "Registered",
+        "responseDate": "20260928"
+      },
+      {
+        "date": "20110211",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20110911"
+      },
+      {
+        "date": "20110211",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20101027",
+        "descriptionText": "Advertised",
+        "information": "Vol.57 Issue 2922"
+      },
+      {
+        "date": "20101021",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20100831",
+        "descriptionText": "Approval Notice Sent",
+        "responseDate": "20100928"
+      },
+      {
+        "date": "20100428",
+        "descriptionText": "Extension of Time",
+        "information": "Request Letter Date: 2010/03/23",
+        "responseDate": "20100925"
+      },
+      {
+        "date": "20091125",
+        "descriptionText": "Rep for Service Name Changed"
+      },
+      {
+        "date": "20091125",
+        "descriptionText": "Agent Name Changed"
+      },
+      {
+        "date": "20090925",
+        "descriptionText": "Correspondence Created",
+        "responseDate": "20100325"
+      },
+      {
+        "date": "20090602",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20091002"
+      },
+      {
+        "date": "20090602",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20090309",
+        "descriptionText": "Rep for Service Name Changed"
+      },
+      {
+        "date": "20090309",
+        "descriptionText": "Agent Name Changed"
+      },
+      {
+        "date": "20080916",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20080912",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20080911",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "6501 William Cannon Drive West, Austin, Texas 78735",
+        "addressLines": [
+          "6501 William Cannon Drive West",
+          "Austin, Texas 78735"
+        ],
+        "countryName": "United States",
+        "name": "Freescale Semiconductor, Inc."
+      }
+    ],
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States",
+        "priorityDate": "20080609",
+        "priorityNumber": "77/494,217",
+        "priorityText": "Priority Filing Date: June 09, 2008, Country or Office: UNITED STATES OF AMERICA, Application No. 77/494,217 in association with the same kind on wares marked (1)"
+      }
+    ],
+    "priorityDate": "20080609",
+    "publications": [
+      {
+        "publicationIssue": "2922",
+        "publicationVolume": "57"
+      }
+    ],
+    "recordLastUpdated": "20260429",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "SMART & BIGGAR LP",
+          "Scotia Plaza, 40 King Street West",
+          "40th Floor",
+          "Toronto",
+          "ONTARIO M5H3Y2"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "SMART & BIGGAR LP",
+        "representativeReferenceNumber": "11548-274"
+      }
+    ],
+    "status": {
+      "active": true,
+      "allowanceDate": [
+        "20110211"
+      ],
+      "application": {
+        "applicationDate": "20080911",
+        "applicationNumber": "1410384"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "extension": {
+        "approvalDate": [
+          "20100428"
+        ],
+        "dueDate": "20100925"
+      },
+      "formalisationDate": "20080916",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20260928",
+      "publicationDate": [
+        "20101027"
+      ],
+      "registration": {
+        "registrationDate": "20110928",
+        "registrationNumber": "TMA807840"
+      }
+    },
+    "subjectHeadings": [
+      "QORIQ"
+    ],
+    "version": "20260429130542",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIQ",
+      "markVerbalElementTextFormal": "QORIQ"
+    }
+  },
+  "_uri": "/mark/ca/5d91885b-d21c-4400-a3f0-18f3d2998d46",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.397Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

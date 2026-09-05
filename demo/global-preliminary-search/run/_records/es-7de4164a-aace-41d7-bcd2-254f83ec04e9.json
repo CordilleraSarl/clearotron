@@ -1,0 +1,134 @@
+{
+  "uri": "/mark/es/7de4164a-aace-41d7-bcd2-254f83ec04e9",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "7de4164a-aace-41d7-bcd2-254f83ec04e9",
+  "applicationNumber": "4172084 M9",
+  "registrationNumber": "4172084 M9",
+  "applicationDate": "2022-05-27",
+  "registrationDate": "2023-01-25",
+  "expiryDate": "2032-05-26",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-06-22",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "RoRi",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de edicion de textos; correccion de manuscritos",
+      "translation_language": "en",
+      "translation": "TEXT EDITING SERVICES; CORRECTION OF MANUSCRIPTS"
+    }
+  ],
+  "owner": "REDONDO RODRÍGUEZ, LAURA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "GÓMEZ CALVO, MARINA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "REDONDO RODRÍGUEZ, LAURA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "cmMarkImageEUclassification": [
+      "05.05.19",
+      "26.01.01",
+      "26.01.04",
+      "26.01.22",
+      "29.02.00",
+      "37.01.09"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "TEXT EDITING SERVICES; CORRECTION OF MANUSCRIPTS",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de edicion de textos; correccion de manuscritos"
+        }
+      ]
+    },
+    "id": "7de4164a-aace-41d7-bcd2-254f83ec04e9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "03.07.19",
+      "26.01.19",
+      "27.05.01",
+      "27.05.07",
+      "29.01.01",
+      "29.01.06",
+      "29.01.08"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "6189"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "representatives": [
+      {
+        "representativeName": "GÓMEZ CALVO, MARINA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220527",
+        "applicationNumber": "4172084 M9"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320526",
+      "lastPublicationDate": "20220622",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20230125",
+        "registrationNumber": "4172084 M9"
+      }
+    },
+    "version": "20260427170613",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RoRi"
+    }
+  },
+  "_uri": "/mark/es/7de4164a-aace-41d7-bcd2-254f83ec04e9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:43.691Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

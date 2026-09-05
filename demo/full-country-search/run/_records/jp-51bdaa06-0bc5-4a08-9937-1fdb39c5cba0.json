@@ -1,0 +1,207 @@
+{
+  "uri": "/mark/jp/51bdaa06-0bc5-4a08-9937-1fdb39c5cba0",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "51bdaa06-0bc5-4a08-9937-1fdb39c5cba0",
+  "applicationNumber": "2020-152046",
+  "registrationNumber": "6714848",
+  "applicationDate": "2020-12-09",
+  "registrationDate": "2023-07-06",
+  "expiryDate": "2033-07-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-07-14",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＡＤＡＰＴ　ｂｙ　ａｌｉｇｎ",
+  "markTransliteration": "ADAPUTOBAIARAIN",
+  "markTranslation": "ADAPT BY ALIGN",
+  "markFeature": "DESIGN AND COLOR",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "事業の管理に関する助言を含む事業に関する助言並びにそれに関する報告書の作成及び情報の提供，事業の運営及び事業に関する情報の提供並びにそれらに関する報告書の作成，広告・マーケティング・販売促進のための企画及びその実行の代理並びにそれらに関する報告書の作成及び情報の提供，歯科及び矯正歯科医療の開発及び管理についての事業に関する助言並びにそれに関する報告書の作成及び情報の提供，販売促進用報奨制度及び顧客優待計画の運営・実施及び管理並びにそれらに関する報告書の作成及び情報の提供，事業のための顧客褒賞プログラムの設立及び管理についての事業に関する助言並びにそれに関する報告書の作成及び情報の提供，事業のための報奨制度及び顧客優待計画に関する助言及び情報の提供並びにそれらに関する報告書の作成，歯科・矯正歯科及び口腔医療の分野における医師のあっせん，経営の診断又は経営に関する助言，事業の管理，市場調査又は分析，商品の販売に関する情報の提供，職業のあっせん",
+      "translation_language": "en",
+      "translation": "Advice on business, including advice on business management, preparation of reports and provision of information thereon, provision of information on business operation and business, preparation of reports on them, planning and preparation for advertising, marketing and sales promotion Acting on behalf of the implementation thereof, preparation of reports and provision of information thereon, advice on business concerning the development and management of dental and orthodontic treatment, preparation of reports and provision of information regarding this, promotional incentives and customer benefits Operation, implementation and management of plans, preparation of reports and provision of information regarding them, business advice on the establishment and management of customer reward programs for businesses, preparation of reports and provision of information regarding them, for business provision of advice and information on reward systems and customer preferential treatment plans, preparation of reports related to them, referral of doctors in the fields of dentistry, orthodontics and oral medicine, diagnosis of management or advice on management, business management, market research or Analysis, provision of information on sales of goods, job placement"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "矯正歯科及び歯科治療サービス用のアプリケーションサービスプロバイダー（ＡＳＰ）によるコンピュータソフトウェアの作成・設計及びホスティング，医師・患者及び将来の患者の間のインスタントメッセージ通信用ソフトウェアの設計及び開発，電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供",
+      "translation_language": "en",
+      "translation": "Creation, design and hosting of computer software by application service providers (ASPs) for orthodontic and dental care services; design and development of software for instant messaging communication between doctors, patients and prospective patients; computer program design・Creation or maintenance, provision of computer programs"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": null,
+      "description": "矯正歯科医療及び歯科医療，個人向けの矯正歯科治療計画の設計及び作成，歯科及び矯正歯科治療の分野における助言，技術・材料及び製品を内容とする歯科医療及び矯正歯科医療に関する指導及び情報の提供，矯正歯科・歯内治療・小児歯科・歯周治療及び回復歯科治療に関する指導及び助言（インターネット又はエクストラネットを介してオンラインで提供されるものを含む。），医療情報の提供",
+      "translation_language": "en",
+      "translation": "Orthodontic and dental care, design and preparation of personalized orthodontic treatment plans, advice in the field of dentistry and orthodontic treatment, guidance and information on dentistry and orthodontic care, including techniques, materials and products , guidance and advice on orthodontics, endodontics, pediatric dentistry, periodontal and restorative dentistry (including those provided online via the Internet or extranets), provision of medical information"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YAMAMOTO HIDESAKU",
+  "priorities": [
+    {
+      "priorityDate": "20201012"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advice on business, including advice on business management, preparation of reports and provision of information thereon, provision of information on business operation and business, preparation of reports on them, planning and preparation for advertising, marketing and sales promotion Acting on behalf of the implementation thereof, preparation of reports and provision of information thereon, advice on business concerning the development and management of dental and orthodontic treatment, preparation of reports and provision of information regarding this, promotional incentives and customer benefits Operation, implementation and management of plans, preparation of reports and provision of information regarding them, business advice on the establishment and management of customer reward programs for businesses, preparation of reports and provision of information regarding them, for business provision of advice and information on reward systems and customer preferential treatment plans, preparation of reports related to them, referral of doctors in the fields of dentistry, orthodontics and oral medicine, diagnosis of management or advice on management, business management, market research or Analysis, provision of information on sales of goods, job placement",
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "事業の管理に関する助言を含む事業に関する助言並びにそれに関する報告書の作成及び情報の提供，事業の運営及び事業に関する情報の提供並びにそれらに関する報告書の作成，広告・マーケティング・販売促進のための企画及びその実行の代理並びにそれらに関する報告書の作成及び情報の提供，歯科及び矯正歯科医療の開発及び管理についての事業に関する助言並びにそれに関する報告書の作成及び情報の提供，販売促進用報奨制度及び顧客優待計画の運営・実施及び管理並びにそれらに関する報告書の作成及び情報の提供，事業のための顧客褒賞プログラムの設立及び管理についての事業に関する助言並びにそれに関する報告書の作成及び情報の提供，事業のための報奨制度及び顧客優待計画に関する助言及び情報の提供並びにそれらに関する報告書の作成，歯科・矯正歯科及び口腔医療の分野における医師のあっせん，経営の診断又は経営に関する助言，事業の管理，市場調査又は分析，商品の販売に関する情報の提供，職業のあっせん"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Creation, design and hosting of computer software by application service providers (ASPs) for orthodontic and dental care services; design and development of software for instant messaging communication between doctors, patients and prospective patients; computer program design・Creation or maintenance, provision of computer programs",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "矯正歯科及び歯科治療サービス用のアプリケーションサービスプロバイダー（ＡＳＰ）によるコンピュータソフトウェアの作成・設計及びホスティング，医師・患者及び将来の患者の間のインスタントメッセージ通信用ソフトウェアの設計及び開発，電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Orthodontic and dental care, design and preparation of personalized orthodontic treatment plans, advice in the field of dentistry and orthodontic treatment, guidance and information on dentistry and orthodontic care, including techniques, materials and products , guidance and advice on orthodontics, endodontics, pediatric dentistry, periodontal and restorative dentistry (including those provided online via the Internet or extranets), provision of medical information",
+          "intClassNumber": "44",
+          "intGoodsServicesDescription": "矯正歯科医療及び歯科医療，個人向けの矯正歯科治療計画の設計及び作成，歯科及び矯正歯科治療の分野における助言，技術・材料及び製品を内容とする歯科医療及び矯正歯科医療に関する指導及び情報の提供，矯正歯科・歯内治療・小児歯科・歯周治療及び回復歯科治療に関する指導及び助言（インターネット又はエクストラネットを介してオンラインで提供されるものを含む。），医療情報の提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "35A01",
+          "natGoodsServicesDescription": "Advertising and publicity services"
+        },
+        {
+          "natClassNumber": "35A02",
+          "natGoodsServicesDescription": "Promoting the goods and services of others through the administration of sales and promotional incentive schemes involving trading stamps"
+        },
+        {
+          "natClassNumber": "35B01",
+          "natGoodsServicesDescription": "Business management analysis or business consultancy; Business management; Marketing research or analysis; Providing information concerning commercial sales"
+        },
+        {
+          "natClassNumber": "35D01",
+          "natGoodsServicesDescription": "Employment agency services"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        },
+        {
+          "natClassNumber": "42V02",
+          "natGoodsServicesDescription": "Medical practice; Providing medical information; Physical examination; Dentistry services; Preparation and dispensing of medications"
+        }
+      ]
+    },
+    "id": "51bdaa06-0bc5-4a08-9937-1fdb39c5cba0",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN AND COLOR",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "COLOUR CLAIMED"
+      }
+    ],
+    "markImageViennaClassification": [
+      "29.01.04.01",
+      "29.01.08.01",
+      "29.01.11.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20201012"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20201209",
+        "applicationNumber": "2020-152046"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330706",
+      "lastPublicationDate": "20230714",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20230706",
+        "registrationNumber": "6714848"
+      }
+    },
+    "version": "20240320153104",
+    "wordMarkSpecification": {
+      "markTranslation": "ADAPT BY ALIGN",
+      "markTransliteration": "ADAPUTOBAIARAIN",
+      "markVerbalElementText": "ＡＤＡＰＴ　ｂｙ　ａｌｉｇｎ"
+    }
+  },
+  "_uri": "/mark/jp/51bdaa06-0bc5-4a08-9937-1fdb39c5cba0",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.738Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

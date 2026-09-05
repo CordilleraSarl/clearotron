@@ -1,0 +1,146 @@
+{
+  "uri": "/mark/cn/9ea327f9-3c9a-4415-90a0-38f180b55467",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "9ea327f9-3c9a-4415-90a0-38f180b55467",
+  "applicationNumber": "62102498",
+  "registrationNumber": "62102498",
+  "applicationDate": "2022-01-12",
+  "registrationDate": "2022-07-07",
+  "expiryDate": "2032-07-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-04-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "凯文克里斯",
+  "markTransliteration": "KAI WEN KE LI SI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "期刊出版,演出,管弦乐团,健身俱乐部(健身和体能训练),教育,培训,组织表演(演出),卡拉OK厅服务,摄影服务,教学",
+      "translation_language": "en",
+      "translation": "Periodical publishing, performances, orchestras, fitness clubs (fitness and physical training), education, training, organizing performances (performances), karaoke room services, photography services, teaching"
+    }
+  ],
+  "owner": "Wuhan Kevin Kris Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "湖北省武汉市江夏区文化大道111号通达广场21层2103室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Wuhan Kevin Kris Technology Co., Ltd.",
+        "applicantNativeName": "武汉凯文克里斯科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Periodical publishing, performances, orchestras, fitness clubs (fitness and physical training), education, training, organizing performances (performances), karaoke room services, photography services, teaching",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "期刊出版,演出,管弦乐团,健身俱乐部(健身和体能训练),教育,培训,组织表演(演出),卡拉OK厅服务,摄影服务,教学"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Publishing service",
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4104",
+          "subNatGoodsServicesDescription": "Publishing service"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "9ea327f9-3c9a-4415-90a0-38f180b55467",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1786"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京细软智谷知识产权代理有限责任公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220112",
+        "applicationNumber": "62102498"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320706",
+      "lastPublicationDate": "20220406",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220707",
+        "registrationNumber": "62102498"
+      }
+    },
+    "version": "20251004185625",
+    "wordMarkSpecification": {
+      "markTransliteration": "KAI WEN KE LI SI",
+      "markVerbalElementText": "凯文克里斯"
+    }
+  },
+  "_uri": "/mark/cn/9ea327f9-3c9a-4415-90a0-38f180b55467",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:58.826Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-transliteration-numeric"
+  }
+}

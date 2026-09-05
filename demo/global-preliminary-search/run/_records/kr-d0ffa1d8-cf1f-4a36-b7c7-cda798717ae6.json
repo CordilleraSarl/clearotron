@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/kr/d0ffa1d8-cf1f-4a36-b7c7-cda798717ae6",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "d0ffa1d8-cf1f-4a36-b7c7-cda798717ae6",
+  "applicationNumber": "40-1991-0019638",
+  "registrationNumber": null,
+  "applicationDate": "1991-07-08",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "nori",
+  "markTransliteration": "nori",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    9,
+    10,
+    14,
+    16,
+    17,
+    21,
+    24,
+    25,
+    26,
+    31
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        9,
+        10,
+        14,
+        16,
+        17,
+        21,
+        24,
+        25,
+        26,
+        31
+      ],
+      "language": "ko",
+      "description": "반바지, 방한복(파카), 스포츠셔어츠, 아동복, 유니폼, 유아복, 잠바, 청바지",
+      "translation_language": "en",
+      "translation": "Shorts, winter clothes (parka), sports shirts, children's clothes, uniforms, children's clothes, jumpers, jeans"
+    }
+  ],
+  "owner": "KANG KYUNG SOO",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "부산광역시 남구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "KANG KYUNG SOO",
+        "applicantNativeName": "강경수"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Shorts, winter clothes (parka), sports shirts, children's clothes, uniforms, children's clothes, jumpers, jeans",
+          "intClassNumber": "06,09,10,14,16,17,21,24,25,26,31",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "반바지, 방한복(파카), 스포츠셔어츠, 아동복, 유니폼, 유아복, 잠바, 청바지"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "045"
+        }
+      ]
+    },
+    "id": "d0ffa1d8-cf1f-4a36-b7c7-cda798717ae6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260804",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19910708",
+        "applicationNumber": "40-1991-0019638"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260804020851",
+    "wordMarkSpecification": {
+      "markTransliteration": "nori",
+      "markVerbalElementText": "nori"
+    }
+  },
+  "_uri": "/mark/kr/d0ffa1d8-cf1f-4a36-b7c7-cda798717ae6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.692Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,206 @@
+{
+  "uri": "/mark/th/e4b17454-30b1-4559-813a-d67b7af81cd9",
+  "provider": "clarivate",
+  "office": "th",
+  "guid": "e4b17454-30b1-4559-813a-d67b7af81cd9",
+  "applicationNumber": "330304",
+  "registrationNumber": "57334",
+  "applicationDate": "1987-05-12",
+  "registrationDate": "1997-04-21",
+  "expiryDate": "2027-05-11",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ORI ;โอริ",
+  "markTransliteration": "ORI ;",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "th",
+      "description": "ดินสอ ปากกา แฟ้มเก็บเอกสาร ไม้บรรทัด ยางลบ กาวใช้เป็นเครื่องเขียน น้ำยาลบคำผิด น้ำหมึกลบภาพถ่ายใช้ในทางเฮลิโอกราฟฟี่ ไส้ดินสอ ที่ใส่หรือยึดไส้ดินสอ หัวปากกา.",
+      "translation_language": "en",
+      "translation": "Pens, pencils, rulers, erasers, glue, file, filing a stationery correction fluid, ink delete photos in the Helio Analysis pencil holder pen or pencil holder."
+    }
+  ],
+  "owner": "Thai Ball Pen Industry Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "TH",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "TH",
+        "applicantAddressCountryName": "Thailand",
+        "applicantName": "Thai Ball Pen Industry Co., Ltd.",
+        "applicantNativeAddress": "170 ซอยศูนย์วิจัย 14 ถนนเพชรบุรีตัดใหม่ แขวงบางกะปิ เขตห้วยขวาง กรุงเทพมหานคร 10320",
+        "applicantNativeName": "บริษัท ไทยปากกาลูกลื่นอุตสาหกรรม จำกัด"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Pens, pencils, rulers, erasers, glue, file, filing a stationery correction fluid, ink delete photos in the Helio Analysis pencil holder pen or pencil holder.",
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "th",
+          "intGoodsServicesDescription": "ดินสอ ปากกา แฟ้มเก็บเอกสาร ไม้บรรทัด ยางลบ กาวใช้เป็นเครื่องเขียน น้ำยาลบคำผิด น้ำหมึกลบภาพถ่ายใช้ในทางเฮลิโอกราฟฟี่ ไส้ดินสอ ที่ใส่หรือยึดไส้ดินสอ หัวปากกา."
+        }
+      ]
+    },
+    "id": "e4b17454-30b1-4559-813a-d67b7af81cd9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250805",
+    "registrationOfficeCode": "TH",
+    "registrationOfficeName": "Thailand",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "อยู่ที่ 170 ซอยศูนย์วิจัย 14 ถนนเพชรบุรีตัดใหม่ แขวงบางกะปิ เขตห้วยขวาง",
+        "representativeNativeName": "บริษัท ไทยปากกาลูกลื่นอุตสาหกรรม จำกัด"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19870512",
+        "applicationNumber": "330304"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270511",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19970421",
+        "registrationNumber": "57334"
+      }
+    },
+    "version": "20250805175000",
+    "wordMarkSpecification": {
+      "markTransliteration": "ORI ;",
+      "markVerbalElementText": "ORI ;โอริ"
+    }
+  },
+  "_uri": "/mark/th/e4b17454-30b1-4559-813a-d67b7af81cd9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:18.948Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

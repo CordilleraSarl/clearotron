@@ -1,0 +1,298 @@
+{
+  "uri": "/mark/us/daf685e7-0cee-4e3b-aa33-9d354421aeb6",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "daf685e7-0cee-4e3b-aa33-9d354421aeb6",
+  "applicationNumber": "79414760",
+  "registrationNumber": null,
+  "applicationDate": "2024-08-26",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2025-11-10",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Probes for assessing soil nutrient content and soil health; probes for assessing soil and turf conditions; probes for analyzing the fertility and nutrient reading of soil samples; probes to determine and measure soil health and properties, quality and fertility at different depths; depth sensors; probes for environmental monitoring, soil irrigation and soil nutrient management.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Soil analysis; soil and soil samples analysis services using probes for measuring soil temperature and conditions; conducting of technical feasibility studies and technical consulting and advice relating to the use of probes for measuring soil temperature and conditions in the field of environmental science; technical environmental consultancy in the field of environmental science.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Biogénie Canada Inc.",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": "Jeffrey H. Greger",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "4535, boulevard Wilfrid-Hamel, CANA",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressStreet": "4535, boulevard Wilfrid-Hamel,",
+        "applicantJurisdictionOfIncorporation": "CANADA",
+        "applicantLegalEntity": "UNKNOWN",
+        "applicantName": "Biogénie Canada Inc.",
+        "applicantSecondaryAddressUnit": "Bureau 250                                        Québec G1P 2J7"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Probes for assessing soil nutrient content and soil health; probes for assessing soil and turf conditions; probes for analyzing the fertility and nutrient reading of soil samples; probes to determine and measure soil health and properties, quality and fertility at different depths; depth sensors; probes for environmental monitoring, soil irrigation and soil nutrient management."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Soil analysis; soil and soil samples analysis services using probes for measuring soil temperature and conditions; conducting of technical feasibility studies and technical consulting and advice relating to the use of probes for measuring soil temperature and conditions in the field of environmental science; technical environmental consultancy in the field of environmental science."
+        }
+      ]
+    },
+    "id": "daf685e7-0cee-4e3b-aa33-9d354421aeb6",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1833770",
+        "markCurrentStatus": "REQUEST FOR EXTENSION OF PROTECTION ESTABLISHED",
+        "markCurrentStatusDate": "20250116",
+        "priorityClaimDate": "20240226",
+        "protectionGrantedDate": "20260716",
+        "publicationDate": "20250116",
+        "registrationDate": "20240826",
+        "renewalDate": "20340826"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260702",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION -  PROCESSED BY IB"
+      },
+      {
+        "date": "20260615",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20260615",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION SENT TO IB"
+      },
+      {
+        "date": "20260409",
+        "descriptionText": "CHANGE OF NAME/ADDRESS REC'D FROM IB"
+      },
+      {
+        "date": "20251218",
+        "descriptionText": "NEW REPRESENTATIVE AT IB RECEIVED"
+      },
+      {
+        "date": "20251119",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20251119",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20251111",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20251111",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20251111",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20250524",
+        "descriptionText": "REFUSAL PROCESSED BY IB"
+      },
+      {
+        "date": "20250507",
+        "descriptionText": "REFUSAL PROCESSED BY MPU"
+      },
+      {
+        "date": "20250507",
+        "descriptionText": "NON-FINAL ACTION MAILED - REFUSAL SENT TO IB"
+      },
+      {
+        "date": "20250328",
+        "descriptionText": "NEW REPRESENTATIVE AT IB RECEIVED"
+      },
+      {
+        "date": "20250320",
+        "descriptionText": "NON-FINAL ACTION (IB REFUSAL) PREPARED FOR REVIEW"
+      },
+      {
+        "date": "20250320",
+        "descriptionText": "TEAS CHANGE OF OWNER ADDRESS RECEIVED"
+      },
+      {
+        "date": "20250320",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20250320",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20250320",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20250319",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20250228",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20250116",
+        "descriptionText": "SN ASSIGNED FOR SECT 66A APPL FROM IB"
+      },
+      {
+        "date": "20250116",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20250116",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "200-505, boul. du Parc-Technologique, CANA",
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "jurisdictionOfIncorporation": "CANADA",
+        "name": "Biogénie Canada Inc.",
+        "secondaryAddressUnit": "Québec G1P 4S9",
+        "street": "200-505, boul. du Parc-Technologique"
+      }
+    ],
+    "postApplicationOwners": [
+      {
+        "address": "4535, boulevard Wilfrid-Hamel, CANA",
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "jurisdictionOfIncorporation": "CANADA",
+        "legalEntity": "UNKNOWN",
+        "name": "Biogénie Canada Inc.",
+        "secondaryAddressUnit": "Bureau 250                                        Québec G1P 2J7",
+        "street": "4535, boulevard Wilfrid-Hamel,"
+      },
+      {
+        "address": "4535, boulevard Wilfrid-Hamel, CANA",
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "jurisdictionOfIncorporation": "CANADA",
+        "legalEntity": "UNKNOWN",
+        "name": "Biogénie Canada Inc.",
+        "secondaryAddressUnit": "Bureau 250                                        Québec G1P 2J7",
+        "street": "4535, boulevard Wilfrid-Hamel,"
+      }
+    ],
+    "recordLastUpdated": "20260704",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Suite 300, Tysons, VA 22102, United States",
+        "representativeCorrespondentAddressLines": [
+          "Suite 300",
+          "Tysons, VA 22102",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Jeffrey H. Greger STUDEBAKER BRACKETT PLLC, 8255 Greensboro Drive"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Suite 300, Tysons, VA 22102, United States",
+        "representativeAddressLines": [
+          "Suite 300",
+          "Tysons, VA 22102",
+          "United States"
+        ],
+        "representativeName": "Jeffrey H. Greger"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20251110",
+      "active": false,
+      "application": {
+        "applicationDate": "20240826",
+        "applicationNumber": "79414760"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20251119",
+        "markOfficialStatusEvents": [
+          "Section 66(a) (Madrid Protocol) - Filed",
+          "Section 66(a) (Madrid Protocol) - Current",
+          "International Priority Claimed",
+          "Notice of First Refusal"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260704100855",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/us/daf685e7-0cee-4e3b-aa33-9d354421aeb6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.179Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

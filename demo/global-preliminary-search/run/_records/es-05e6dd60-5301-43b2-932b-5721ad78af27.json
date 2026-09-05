@@ -1,0 +1,129 @@
+{
+  "uri": "/mark/es/05e6dd60-5301-43b2-932b-5721ad78af27",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "05e6dd60-5301-43b2-932b-5721ad78af27",
+  "applicationNumber": "3680313 M8",
+  "registrationNumber": "3680313 M8",
+  "applicationDate": "2017-08-24",
+  "registrationDate": "2018-02-05",
+  "expiryDate": "2027-08-23",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-09-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JOVEN ORQUESTA MEDITERRANEA COSTA TROPICAL",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios musicales de orquesta. Actuaciones musicales; organizacion de actividades culturales; organizacion de conciertos, certamenes y festivales musicales. Servicios de formacion y educacion musical.",
+      "translation_language": "en",
+      "translation": "ORCHESTRA MUSIC SERVICES. MUSICAL ACTIONS; ORGANIZATION OF CULTURAL ACTIVITIES; ORGANIZATION OF CONCERTS, COMPETITIONS AND MUSICAL FESTIVALS. MUSIC EDUCATION AND TRAINING SERVICES."
+    }
+  ],
+  "owner": "ASOCIACIÓN MUSICAL DE LA COSTA TROPICAL",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "ASOCIACIÓN MUSICAL DE LA COSTA TROPICAL"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "cmMarkImageEUclassification": [
+      "29.02.00",
+      "37.02.13",
+      "37.02.18",
+      "37.05.19"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "ORCHESTRA MUSIC SERVICES. MUSICAL ACTIONS; ORGANIZATION OF CULTURAL ACTIVITIES; ORGANIZATION OF CONCERTS, COMPETITIONS AND MUSICAL FESTIVALS. MUSIC EDUCATION AND TRAINING SERVICES.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios musicales de orquesta. Actuaciones musicales; organizacion de actividades culturales; organizacion de conciertos, certamenes y festivales musicales. Servicios de formacion y educacion musical."
+        }
+      ]
+    },
+    "id": "05e6dd60-5301-43b2-932b-5721ad78af27",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "AZUL VARIOS TONOS"
+      }
+    ],
+    "markImageViennaClassification": [
+      "27.05.09",
+      "27.05.10",
+      "27.05.22",
+      "29.01.04"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "5019"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170824",
+        "applicationNumber": "3680313 M8"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270823",
+      "lastPublicationDate": "20170927",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180205",
+        "registrationNumber": "3680313 M8"
+      }
+    },
+    "version": "20260427164715",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOVEN ORQUESTA MEDITERRANEA COSTA TROPICAL"
+    }
+  },
+  "_uri": "/mark/es/05e6dd60-5301-43b2-932b-5721ad78af27",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.817Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

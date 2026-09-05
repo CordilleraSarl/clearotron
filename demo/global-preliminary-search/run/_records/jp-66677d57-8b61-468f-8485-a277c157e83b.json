@@ -1,0 +1,138 @@
+{
+  "uri": "/mark/jp/66677d57-8b61-468f-8485-a277c157e83b",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "66677d57-8b61-468f-8485-a277c157e83b",
+  "applicationNumber": "2025-135886",
+  "registrationNumber": "7069754",
+  "applicationDate": "2025-11-26",
+  "registrationDate": "2026-07-31",
+  "expiryDate": "2036-07-31",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-08-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＶＥＮＯＲ",
+  "markTransliteration": "BENAA BENOORU",
+  "markTranslation": "VENOR",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "眼鏡，眼鏡ふき，眼鏡ケース，眼鏡用つる，眼鏡用レンズ，眼鏡用枠，眼鏡用容器，眼鏡用鎖，眼鏡用ひも，眼鏡の部品及び附属品，サングラス及び眼鏡の部品及び附属品，サングラス，サングラスふき，サングラス用ケース，サングラス用つる，サングラス用レンズ，サングラス用枠，サングラス用容器，サングラス用鎖，サングラス用ひも，ファッション用眼鏡",
+      "translation_language": "en",
+      "translation": "Eyeglasses, Eyeglass cloths, Eyeglass cases, Eyeglass temples, Eyeglass lenses, Eyeglass frames, Eyeglass containers, Eyeglass chains, Eyeglass straps, Eyeglass parts and accessories, Sunglasses and eyeglass parts and accessories, Sunglasses, Sunglass cloths, Sunglass cases, Sunglass temples, Sunglass lenses, Sunglass frames, Sunglass containers, Sunglass chains, Sunglass straps, Fashion glasses"
+    }
+  ],
+  "owner": "Fujiwara, Taichi",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "KISHINO SACHIKO",
+  "priorities": [
+    {
+      "priorityDate": "20251126"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "OKAYAMA OKAYAMA KEN",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "Fujiwara, Taichi",
+        "applicantNativeAddress": "岡山県岡山市",
+        "applicantNativeName": "藤原　太一"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Eyeglasses, Eyeglass cloths, Eyeglass cases, Eyeglass temples, Eyeglass lenses, Eyeglass frames, Eyeglass containers, Eyeglass chains, Eyeglass straps, Eyeglass parts and accessories, Sunglasses and eyeglass parts and accessories, Sunglasses, Sunglass cloths, Sunglass cases, Sunglass temples, Sunglass lenses, Sunglass frames, Sunglass containers, Sunglass chains, Sunglass straps, Fashion glasses",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "眼鏡，眼鏡ふき，眼鏡ケース，眼鏡用つる，眼鏡用レンズ，眼鏡用枠，眼鏡用容器，眼鏡用鎖，眼鏡用ひも，眼鏡の部品及び附属品，サングラス及び眼鏡の部品及び附属品，サングラス，サングラスふき，サングラス用ケース，サングラス用つる，サングラス用レンズ，サングラス用枠，サングラス用容器，サングラス用鎖，サングラス用ひも，ファッション用眼鏡"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "23B01",
+          "natGoodsServicesDescription": "Goggles for sports; Divers' masks; Swimming goggles; Dust protective goggles and masks"
+        }
+      ]
+    },
+    "id": "66677d57-8b61-468f-8485-a277c157e83b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20251126"
+      }
+    ],
+    "recordLastUpdated": "20260821",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "KISHINO SACHIKO",
+        "representativeNativeName": "岸野　幸子"
+      },
+      {
+        "representativeName": "ETO SATOAKI",
+        "representativeNativeName": "江藤　聡明"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251126",
+        "applicationNumber": "2025-135886"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360731",
+      "lastPublicationDate": "20260810",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260731",
+        "registrationNumber": "7069754"
+      }
+    },
+    "version": "20260821081721",
+    "wordMarkSpecification": {
+      "markTranslation": "VENOR",
+      "markTransliteration": "BENAA BENOORU",
+      "markVerbalElementText": "ＶＥＮＯＲ"
+    }
+  },
+  "_uri": "/mark/jp/66677d57-8b61-468f-8485-a277c157e83b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.828Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

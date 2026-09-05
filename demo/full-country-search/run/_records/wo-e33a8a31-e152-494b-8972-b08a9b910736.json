@@ -1,0 +1,243 @@
+{
+  "uri": "/mark/wo/e33a8a31-e152-494b-8972-b08a9b910736",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "e33a8a31-e152-494b-8972-b08a9b910736",
+  "applicationNumber": null,
+  "registrationNumber": "1311901",
+  "applicationDate": null,
+  "registrationDate": "2016-06-17",
+  "expiryDate": "2026-06-17",
+  "renewalDate": null,
+  "lastPublicationDate": "2016-09-29",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "N",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Integrated circuits; RFID chips and tags; NFC (near field communications) chips and tags; receivers and transmitters for use with RFID chips and tags; receivers and transmitters for use with (near field communications) NFC chips and tags; instruments and equipment for (NFC) near field communications; near field communication (NFC) technology- enabled readers; antennas and controllers for scanning, reading and interpreting NFC and RFID chips and tags; integrated circuits for NFC(near field communications) applications; near field communication (NFC) technology-enabled devices; mobile phones; smart cards; electronic tickets; software; radio frequency identification (RFID) credentials, namely, cards and tags, and readers for radio frequency identification credentials; electronic identification cards; contactless smart cards, electronic labels, electronic stickers and electronic tags for identification and security purposes; parts and fittings for all the aforesaid goods.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Circuits intégrés; puces et étiquette RFID; puces et étiquettes de communication en champ proche (NFC); émetteurs et récepteurs utilisés avec des puces et étiquettes d'identification par radiofréquence (RFID); émetteurs et récepteurs utilisés avec des puces et étiquettes de communication en champ proche (NFC); instruments et équipements de communication en champ proche (NFC); lecteurs à technologie de communication en champ proche (NFC); antennes et dispositifs de commande pour la numérisation, la lecture et l'interprétation de puces et d'étiquettes de communication en champ proche (NFC) et d'identification par radiofréquence (RFID); circuits intégrés pour applications de communication en champ proche (NFC); dispositifs à technologie de communication en champ proche (NFC); téléphones mobiles; cartes à puce; tickets électroniques; logiciels; titres (références) d'identification par radiofréquence (IRF), à savoir cartes et étiquettes, ainsi que lecteurs de titres (références) d'identification par radiofréquence; cartes d'identification électroniques; cartes à puce sans contact, marquages électroniques, autocollants électroniques et étiquettes électroniques pour l'identification et la sécurité; parties et garnitures de tous les produits précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Circuitos integrados; chips y etiquetas de identificación por radiofrecuencia; chips y etiquetas NFC (comunicaciones de campo cercano); receptores y transmisores de chips y etiquetas de Identificación por Radiofrecuencia; receptores y transmisores para comunicaciones de campo cercano) con chips y etiquetas de Comunicación de Campo Cercano; instrumentos y equipos de comunicaciones de campo cercano (NFC); lectores dotados de tecnología NFC (comunicación de Campo Cercano); antenas y controladores para escanear, leer e interpretar chips y etiquetas de RFID y NFC; circuitos integrados para aplicaciones NFC (comunicaciones de campo cercano); dispositivos con tecnología de comunicaciones de proximidades (NFC); teléfonos móviles; tarjetas inteligentes; billetes electrónicos; software; credenciales de identificación por radiofrecuencia (RFID), a saber, tarjetas y placas, y lectores de credenciales de identificación por radiofrecuencia; tarjetas de identificación electrónicas; tarjetas inteligentes sin contacto, etiquetas electrónicas, adhesivos electrónicos y etiquetas electrónicas para identificación y seguridad; partes y piezas accesorias de todos los productos mencionados.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO SHIELDMARK B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20151221",
+      "priorityNumber": "1323510"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20151221",
+          "basicApplicationNumber": "01323510"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "BX",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20160303",
+          "basicRegistrationNumber": "0988135"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "CH",
+      "JP",
+      "MX",
+      "NO",
+      "TR",
+      "US",
+      "UA",
+      "BY"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20151221",
+            "basicApplicationNumber": "01323510"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "BX",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20160303",
+            "basicRegistrationNumber": "0988135"
+          }
+        ]
+      }
+    ],
+    "cmMarkImageEUclassification": [
+      "01.15.21",
+      "26.11.22",
+      "29.02.00",
+      "37.01.14"
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "CH",
+      "JP",
+      "MX",
+      "NO",
+      "TR",
+      "US",
+      "UA",
+      "BY"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Integrated circuits; RFID chips and tags; NFC (near field communications) chips and tags; receivers and transmitters for use with RFID chips and tags; receivers and transmitters for use with (near field communications) NFC chips and tags; instruments and equipment for (NFC) near field communications; near field communication (NFC) technology- enabled readers; antennas and controllers for scanning, reading and interpreting NFC and RFID chips and tags; integrated circuits for NFC(near field communications) applications; near field communication (NFC) technology-enabled devices; mobile phones; smart cards; electronic tickets; software; radio frequency identification (RFID) credentials, namely, cards and tags, and readers for radio frequency identification credentials; electronic identification cards; contactless smart cards, electronic labels, electronic stickers and electronic tags for identification and security purposes; parts and fittings for all the aforesaid goods."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Circuits intégrés; puces et étiquette RFID; puces et étiquettes de communication en champ proche (NFC); émetteurs et récepteurs utilisés avec des puces et étiquettes d'identification par radiofréquence (RFID); émetteurs et récepteurs utilisés avec des puces et étiquettes de communication en champ proche (NFC); instruments et équipements de communication en champ proche (NFC); lecteurs à technologie de communication en champ proche (NFC); antennes et dispositifs de commande pour la numérisation, la lecture et l'interprétation de puces et d'étiquettes de communication en champ proche (NFC) et d'identification par radiofréquence (RFID); circuits intégrés pour applications de communication en champ proche (NFC); dispositifs à technologie de communication en champ proche (NFC); téléphones mobiles; cartes à puce; tickets électroniques; logiciels; titres (références) d'identification par radiofréquence (IRF), à savoir cartes et étiquettes, ainsi que lecteurs de titres (références) d'identification par radiofréquence; cartes d'identification électroniques; cartes à puce sans contact, marquages électroniques, autocollants électroniques et étiquettes électroniques pour l'identification et la sécurité; parties et garnitures de tous les produits précités."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Circuitos integrados; chips y etiquetas de identificación por radiofrecuencia; chips y etiquetas NFC (comunicaciones de campo cercano); receptores y transmisores de chips y etiquetas de Identificación por Radiofrecuencia; receptores y transmisores para comunicaciones de campo cercano) con chips y etiquetas de Comunicación de Campo Cercano; instrumentos y equipos de comunicaciones de campo cercano (NFC); lectores dotados de tecnología NFC (comunicación de Campo Cercano); antenas y controladores para escanear, leer e interpretar chips y etiquetas de RFID y NFC; circuitos integrados para aplicaciones NFC (comunicaciones de campo cercano); dispositivos con tecnología de comunicaciones de proximidades (NFC); teléfonos móviles; tarjetas inteligentes; billetes electrónicos; software; credenciales de identificación por radiofrecuencia (RFID), a saber, tarjetas y placas, y lectores de credenciales de identificación por radiofrecuencia; tarjetas de identificación electrónicas; tarjetas inteligentes sin contacto, etiquetas electrónicas, adhesivos electrónicos y etiquetas electrónicas para identificación y seguridad; partes y piezas accesorias de todos los productos mencionados."
+        }
+      ]
+    },
+    "id": "e33a8a31-e152-494b-8972-b08a9b910736",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "Orange and white.",
+        "markImageDescriptionLanguageCode": "en"
+      },
+      {
+        "markImageDescription": "Orange et blanc.",
+        "markImageDescriptionLanguageCode": "fr"
+      },
+      {
+        "markImageDescription": "Naranja y blanco.",
+        "markImageDescriptionLanguageCode": "es"
+      }
+    ],
+    "markImageViennaClassification": [
+      "01.15",
+      "26.04",
+      "26.11",
+      "29.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20151221",
+        "priorityNumber": "1323510"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "38"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices, Anna van Buerenplein 21A NL-2595 DA DEN HAAG",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO SHIELDMARK B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20260617",
+      "lastPublicationDate": "20160929",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20160617",
+        "registrationNumber": "1311901"
+      }
+    },
+    "version": "20250620182636",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "N"
+    }
+  },
+  "_uri": "/mark/wo/e33a8a31-e152-494b-8972-b08a9b910736",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.461Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

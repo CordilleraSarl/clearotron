@@ -1,0 +1,155 @@
+{
+  "uri": "/mark/eu/019193407",
+  "provider": "euipo",
+  "office": "EU",
+  "id": "019193407",
+  "applicationNumber": "019193407",
+  "registrationNumber": "019193407",
+  "applicationDate": "2025-05-26",
+  "registrationDate": "2025-09-14",
+  "expiryDate": "2035-05-26",
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "statusDate": "2025-09-16",
+  "markText": "KORI",
+  "markFeature": "FIGURATIVE",
+  "markKind": "INDIVIDUAL",
+  "markBasis": "EU_TRADEMARK",
+  "niceClasses": [],
+  "owner": "KORI EYES TECH SINGLE MEMBER P.C.",
+  "ownerCountry": null,
+  "representative": "Μαρία Μπουλιέρη",
+  "goodsAndServices": [
+    {
+      "classNumber": 9,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Software as a medical device [SaMD], downloadable",
+            " Application software",
+            " Software",
+            " Computer software relating to the medical field",
+            " Computer software for use in medical decision support systems",
+            " Sensors for measuring instruments",
+            " Motion sensors",
+            " Measuring sensors",
+            " Sensors for engines",
+            " Bio-sensors",
+            " Alidades",
+            " Joint angle measuring rulers",
+            " Virtual reality glasses",
+            " 3D spectacles",
+            " Diagnostic apparatus, not for medical purposes",
+            " Optical measurement apparatus",
+            " Mobile apps",
+            " Computer software applications, downloadable",
+            " Electronic measurement sensors",
+            " Retinal cameras [other than for medical use]",
+            " Mobile software",
+            " Bioinformatics software",
+            " Sensory software",
+            " Video editing software",
+            " Computer programmes for data processing",
+            " Software for mobile phones",
+            " Reporting software",
+            " Software for the integration of artificial intelligence and machine learning in the field of Big Data",
+            " Health monitoring software",
+            " Big data management software",
+            " Virtual reality software",
+            " Computer software for authorising access to databases",
+            " Computer software for creating searchable databases of information and data",
+            " Artificial intelligence software",
+            " Artificial intelligence software for healthcare",
+            " Precision measuring apparatus",
+            " Measuring apparatus",
+            " Instruments for measuring angles",
+            " Computer software for database management",
+            " Measuring apparatus and instruments",
+            " Optical frequency metrology devices",
+            " Downloadable software applications"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 10,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Keratometers",
+            " Diagnostic instruments for ophthalmology",
+            " Ophthalmic cameras for medical purposes",
+            " Pupillometers for measuring pupillary distance (PD)",
+            " Pupillometers for measuring pupillary reactivity to stimulus",
+            " Measuring devices for medical use",
+            " Precision sensors for medical use",
+            " Optometric instruments",
+            " Optomedical examination instruments",
+            " Ophthalmoscopes",
+            " Vision testing apparatus",
+            " Eye testing apparatus",
+            " Telemetry devices for medical applications"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 42,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Science and technology services",
+            " IT services",
+            " Software development",
+            " Medical research",
+            " Design and development of computer software for use with medical technology",
+            " Optical research laboratory services",
+            " Scientific technological services",
+            " Scientific research and development",
+            " Design and development of medical technology"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 44,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Ophthalmological services",
+            " Treatment of eye diseases and conditions",
+            " Human healthcare services",
+            " Medical screening",
+            " Medical assistance",
+            " Issuing of medical reports",
+            " Medical tele-reporting [medical services]",
+            " Optometry consultation",
+            " Optometry services",
+            " Home-visit optometry services",
+            " Sight-testing [opticians'] services",
+            " Vision screening services",
+            " Medical imaging services",
+            " Telemedicine services"
+          ]
+        }
+      ]
+    }
+  ],
+  "oppositions": [],
+  "cancellations": [],
+  "appeals": [],
+  "decisions": [],
+  "_provenance": {
+    "proceedings": "detail record — an empty list means none are recorded on the register"
+  },
+  "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/019193407",
+  "_uri": "/mark/eu/019193407",
+  "_receipt": {
+    "fetched_at": "2026-08-11T07:53:29.115Z",
+    "context": "prelim-tmp0001-venqori-sample-capture-screen-gate-refetch"
+  }
+}

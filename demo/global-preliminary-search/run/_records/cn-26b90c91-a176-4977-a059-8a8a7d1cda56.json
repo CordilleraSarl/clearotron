@@ -1,0 +1,151 @@
+{
+  "uri": "/mark/cn/26b90c91-a176-4977-a059-8a8a7d1cda56",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "26b90c91-a176-4977-a059-8a8a7d1cda56",
+  "applicationNumber": "41471251",
+  "registrationNumber": "41471251",
+  "applicationDate": "2019-10-08",
+  "registrationDate": "2020-08-07",
+  "expiryDate": "2030-08-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-05-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "七",
+  "markTransliteration": "SCISSOR SEVEN QI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "教育,组织角色扮演娱乐活动,电视文娱节目,广播和电视节目制作,除广告以外的版面设计,游戏厅服务,在计算机网络上提供在线游戏,娱乐服务,提供录音棚或录像棚服务,音乐制作",
+      "translation_language": "en",
+      "translation": "Education, organization of role-play entertainment activities, TV entertainment programs, radio and television program production, layouts other than advertising, game hall services, online games on computer networks, entertainment services, recording or video studio services, music Make"
+    }
+  ],
+  "owner": "Guangzhou small crazy Culture Communication Co., Ltd",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省广州市海珠区广纸路40号17-2自编233、234",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Guangzhou small crazy Culture Communication Co., Ltd",
+        "applicantNativeName": "广州小疯文化传播有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education, organization of role-play entertainment activities, TV entertainment programs, radio and television program production, layouts other than advertising, game hall services, online games on computer networks, entertainment services, recording or video studio services, music Make",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "教育,组织角色扮演娱乐活动,电视文娱节目,广播和电视节目制作,除广告以外的版面设计,游戏厅服务,在计算机网络上提供在线游戏,娱乐服务,提供录音棚或录像棚服务,音乐制作"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Publishing service",
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4104",
+          "subNatGoodsServicesDescription": "Publishing service"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "26b90c91-a176-4977-a059-8a8a7d1cda56",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "02.01.01",
+      "02.05.01",
+      "26.11.2a"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1694"
+      }
+    ],
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "广州三环专利商标代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20191008",
+        "applicationNumber": "41471251"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300806",
+      "lastPublicationDate": "20200506",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20200807",
+        "registrationNumber": "41471251"
+      }
+    },
+    "version": "20251003210229",
+    "wordMarkSpecification": {
+      "markTransliteration": "SCISSOR SEVEN QI",
+      "markVerbalElementText": "七"
+    }
+  },
+  "_uri": "/mark/cn/26b90c91-a176-4977-a059-8a8a7d1cda56",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.564Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

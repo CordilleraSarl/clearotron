@@ -1,0 +1,111 @@
+{
+  "uri": "/mark/br/f8df1b8e-9870-49f6-aed9-940e59eb6834",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "f8df1b8e-9870-49f6-aed9-940e59eb6834",
+  "applicationNumber": "930536339",
+  "registrationNumber": "930536339",
+  "applicationDate": "2023-05-24",
+  "registrationDate": "2026-07-21",
+  "expiryDate": "2036-07-21",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Above Noronha",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Serviços relacionados a produção, gravação e edição de audios e vídeos publicitários e cinematográficos, filmagens, fotografias, dublagens, mixagens, concomitantemente aos serviços de promoção e organização de eventos desportivos de paraquedismo.",
+      "translation_language": "en",
+      "translation": "Services related to the production, recording and editing of audio and advertising and cinematographic videos, filming, photographs, dubbing, mixing, concurrently with services for the promotion and organization of parachuting sports events."
+    }
+  ],
+  "owner": "FLY FACTORY PRODUCOES LTDA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "No agent available",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "FLY FACTORY PRODUCOES LTDA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Services related to the production, recording and editing of audio and advertising and cinematographic videos, filming, photographs, dubbing, mixing, concurrently with services for the promotion and organization of parachuting sports events.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços relacionados a produção, gravação e edição de audios e vídeos publicitários e cinematográficos, filmagens, fotografias, dublagens, mixagens, concomitantemente aos serviços de promoção e organização de eventos desportivos de paraquedismo."
+        }
+      ]
+    },
+    "id": "f8df1b8e-9870-49f6-aed9-940e59eb6834",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260804",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "No agent available"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230524",
+        "applicationNumber": "930536339"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360721",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20260721",
+        "registrationNumber": "930536339"
+      }
+    },
+    "version": "20260804020713",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Above Noronha"
+    }
+  },
+  "_uri": "/mark/br/f8df1b8e-9870-49f6-aed9-940e59eb6834",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

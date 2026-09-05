@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/cn/e3ef63d5-2ce2-4db0-bb67-8d38f45a9802",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "e3ef63d5-2ce2-4db0-bb67-8d38f45a9802",
+  "applicationNumber": "9505117",
+  "registrationNumber": "9505117",
+  "applicationDate": "2011-05-24",
+  "registrationDate": "2012-07-28",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2012-04-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2023-12-13",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "QOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "数据处理设备;计算机;电子出版物(可下载);计算机程序(可下载软件);内部通讯装置;导航仪器;调制解调器;手提电话;网络通讯设备;集成电路",
+      "translation_language": "en",
+      "translation": "data processing equipment; computer; electronic publication (downloadable); computer program (downloadable software); internal communication device; navigation instrument; modem; mobile phone; network communication device;"
+    }
+  ],
+  "owner": "Beijing Hua Dingxiang Trading Company",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市丰台区分中寺关家坑4号院大汉国际中心大厦A2628-1",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Beijing Hua Dingxiang Trading Company",
+        "applicantNativeName": "北京华鼎祥商贸有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "data processing equipment; computer; electronic publication (downloadable); computer program (downloadable software); internal communication device; navigation instrument; modem; mobile phone; network communication device;",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "数据处理设备;计算机;电子出版物(可下载);计算机程序(可下载软件);内部通讯装置;导航仪器;调制解调器;手提电话;网络通讯设备;集成电路"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Equipments used in communication and navigation",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        }
+      ]
+    },
+    "id": "e3ef63d5-2ce2-4db0-bb67-8d38f45a9802",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1309"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京英特普罗知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20110524",
+        "applicationNumber": "9505117"
+      },
+      "cancellationDate": "20231213",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20120427",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20120728",
+        "registrationNumber": "9505117"
+      }
+    },
+    "version": "20251002022143",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOR"
+    }
+  },
+  "_uri": "/mark/cn/e3ef63d5-2ce2-4db0-bb67-8d38f45a9802",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:24.142Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

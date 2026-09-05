@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/ae/2c9d1f9d-ec10-49f7-adbd-4997707ccd65",
+  "provider": "clarivate",
+  "office": "ae",
+  "guid": "2c9d1f9d-ec10-49f7-adbd-4997707ccd65",
+  "applicationNumber": "386162",
+  "registrationNumber": "386162",
+  "applicationDate": "2022-10-31",
+  "registrationDate": "2023-10-26",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ar",
+      "description": "متعلقة  paas الفئة: منصة كخدمة بمنصات برمجیات الحاسوب للإستخدام في مجال الأوراق المالیة وتداول الأوراق المالیة، للخدمات المالیة، لإدارة النقد، لتحلیل تكلفة المعاملات المالیة، لإدارة البیانات وإعداد التقاریر فیما یتعلق بالامتثال التنظیمي، ولإدارة البیانات فیما یتعلق بإقراض النقد أو الأوراق المالیة مقابل ضمانات من طرف إلى آخر",
+      "translation_language": "en",
+      "translation": "Related paas Category: Platform as a Service Computer software platforms for use in the field of securities and securities trading, for financial services, for cash management, for cost analysis of financial transactions, for data management and reporting in connection with regulatory compliance, and for data management in connection with the lending of cash or securities against collateral from One end to the other"
+    }
+  ],
+  "owner": null,
+  "ownerNative": null,
+  "ownerCountry": "UNKN",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20221025",
+      "priorityNumber": "97646208"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "UNKN",
+        "applicantAddressCountryName": "Unknown Applicant Country/Region",
+        "applicantNativeName": "ستیت ستریت بانك اند ترست كومباني"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Related paas Category: Platform as a Service Computer software platforms for use in the field of securities and securities trading, for financial services, for cash management, for cost analysis of financial transactions, for data management and reporting in connection with regulatory compliance, and for data management in connection with the lending of cash or securities against collateral from One end to the other",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ar",
+          "intGoodsServicesDescription": "متعلقة  paas الفئة: منصة كخدمة بمنصات برمجیات الحاسوب للإستخدام في مجال الأوراق المالیة وتداول الأوراق المالیة، للخدمات المالیة، لإدارة النقد، لتحلیل تكلفة المعاملات المالیة، لإدارة البیانات وإعداد التقاریر فیما یتعلق بالامتثال التنظیمي، ولإدارة البیانات فیما یتعلق بإقراض النقد أو الأوراق المالیة مقابل ضمانات من طرف إلى آخر"
+        }
+      ]
+    },
+    "id": "2c9d1f9d-ec10-49f7-adbd-4997707ccd65",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20221025",
+        "priorityNumber": "97646208"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "AE",
+    "registrationOfficeName": "United Arab Emirates",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "UAE",
+        "representativeAddressCountryName": "United Arab Emirates",
+        "representativeNativeName": "أبوغزالة للملكیة الفكریة"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20221031",
+        "applicationNumber": "386162"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20231026",
+        "registrationNumber": "386162"
+      }
+    },
+    "version": "20240321124745",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/ae/2c9d1f9d-ec10-49f7-adbd-4997707ccd65",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.178Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

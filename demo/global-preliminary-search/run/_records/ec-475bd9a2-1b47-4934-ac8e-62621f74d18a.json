@@ -1,0 +1,112 @@
+{
+  "uri": "/mark/ec/475bd9a2-1b47-4934-ac8e-62621f74d18a",
+  "provider": "clarivate",
+  "office": "ec",
+  "guid": "475bd9a2-1b47-4934-ac8e-62621f74d18a",
+  "applicationNumber": "2017-85447",
+  "registrationNumber": "SENADI/2018/TI/6653",
+  "applicationDate": "2017-12-28",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NOVENO RACE 9K",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Educación; formación; esparcimiento; actividades deportivas y culturales.",
+      "translation_language": "en",
+      "translation": "Education; training; recreation; sports and cultural activities."
+    }
+  ],
+  "owner": "NOBRAMTEX DEL ECUADOR CIA. LTDA.",
+  "ownerNative": null,
+  "ownerCountry": "EC",
+  "representative": "ANDRÉS CHUGÁ PORRAS",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "EC",
+        "applicantAddressCountryName": "Ecuador",
+        "applicantName": "NOBRAMTEX DEL ECUADOR CIA. LTDA."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education; training; recreation; sports and cultural activities.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Educación; formación; esparcimiento; actividades deportivas y culturales."
+        }
+      ]
+    },
+    "id": "475bd9a2-1b47-4934-ac8e-62621f74d18a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20230508",
+    "registrationOfficeCode": "EC",
+    "registrationOfficeName": "Ecuador",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "EC",
+        "representativeAddressCountryName": "Ecuador",
+        "representativeName": "ANDRÉS CHUGÁ PORRAS"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20171228",
+        "applicationNumber": "2017-85447"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "SENADI/2018/TI/6653"
+      }
+    },
+    "version": "20230508170448",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NOVENO RACE 9K"
+    }
+  },
+  "_uri": "/mark/ec/475bd9a2-1b47-4934-ac8e-62621f74d18a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

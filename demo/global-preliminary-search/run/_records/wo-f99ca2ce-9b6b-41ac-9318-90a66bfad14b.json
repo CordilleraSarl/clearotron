@@ -1,0 +1,200 @@
+{
+  "uri": "/mark/wo/f99ca2ce-9b6b-41ac-9318-90a66bfad14b",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "f99ca2ce-9b6b-41ac-9318-90a66bfad14b",
+  "applicationNumber": null,
+  "registrationNumber": "1779808",
+  "applicationDate": null,
+  "registrationDate": "2023-09-28",
+  "expiryDate": "2033-09-28",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-03-14",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        41,
+        42
+      ],
+      "language": "en",
+      "description": "09 Software; educational technology software; education software; parental control software; cyber safety software; student software; filtering and monitoring software; filtering and monitoring software for educational institution; privacy protection software; classroom management software; children's educational software; computer software concerned with children's education; computer software for education; educational computer software; middleware for management of software functions on electronic devices; access control devices; access control software; downloadable computer security software; downloadable computer software for remote monitoring and analysis; security software; system and system support software, and firmware; content control software; software for network and device security. 41 Education; digital safety education; education and training services in the field of classroom management services; cyber safety education; computer based educational services; computer education training services; education and training services in the field of digital safeguarding solutions; education and training services; education services; educational consultancy; educational services provided for teachers of children; educational services provided for children; educational services relating to digital safety; educational services in relation to computer systems; educational services in relation to online safety; online education services; training of school personnel to ensure digital security protection of students; training of educational institution personnel on the use of filtering and monitoring systems and services. 42 Computer services [terms too vague in the opinion of the International Bureau - Rule 13 [2] [b] of the Common Regulations]; educational technology services; classroom management software services [terms too vague in the opinion of the International Bureau - Rule 13 [2] [b] of the Common Regulations]; parental control software services [terms too vague in the opinion of the International Bureau - Rule 13 [2] [b] of the Common Regulations]; cyber safety software services [terms too vague in the opinion of the International Bureau - Rule 13 [2] [b] of the Common Regulations]; hosting services, software as a service, and rental of software; monitoring of computer systems for security purposes; computer and information technology consultancy services; computer security system monitoring services; computer security services for the protection against illegal network access; computer security consultancy; consultancy in the field of computer security; consultancy in the field of security software; data security services [firewalls]; design and development of internet security program; hosting multimedia educational content; internet security consultancy; IT consultancy, advisory and information services; IT services; programming of educational software; programming of internet security programs; provision of computer security risk management programs; rental of internet security programs; software development, programming and implementation; IT filtering and monitoring systems; IT filtering and monitoring services for educational institutions; content control IT services [terms too vague in the opinion of the International Bureau - Rule 13 [2] [b] of the Common Regulations].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        41,
+        42
+      ],
+      "language": "fr",
+      "description": "09 Logiciels; logiciels de technologies pédagogiques; didacticiels; Logiciels de contrôle parental; logiciels de cybersécurité; logiciels d'étudiant; logiciels de surveillance et filtrage; logiciels de surveillance et filtrage pour établissements pédagogiques; logiciels de protection de la vie privée; logiciels pour la gestion de salles de classe; logiciels éducatifs pour enfants; logiciels en rapport avec l'éducation d'enfants; logiciels informatiques pour l'éducation; didacticiels; intergiciels pour la gestion de fonctions logicielles sur des dispositifs électroniques; dispositifs de contrôle/commande d'accès; logiciels pour le contrôle d'accès; logiciels de sécurité informatique téléchargeables; logiciels informatiques téléchargeables pour la surveillance et l'analyse à distance; logiciels de sécurité; système et logiciels de support système, et micrologiciels; logiciels pour la gestion de contenus; logiciels pour la sécurité de dispositifs et réseaux. 41 Education; éducation en matière de sécurité numérique; services d'éducation et de formation dans le domaine des services de gestion de salles de classe; éducation en matière de cybersécurité; services d'enseignement par ordinateur; services de formation pédagogique par ordinateur; services d'éducation et de formation dans le domaine des solutions de sauvegarde numérique; services d'éducation et de formation; services d'éducation; services de conseillers en éducation; services d'éducation fournis à l'intention des enseignants pour enfants; services d'éducation fournis à l'intention d'enfants; services pédagogiques en lien avec la sécurité numérique; services pédagogiques en rapport avec des systèmes informatiques; services pédagogiques en rapport avec la sécurité en ligne; éducation en ligne; formation de personnel enseignant pour garantir la protection de la sécurité numérique d'étudiants; formation de personnel d'établissements pédagogiques concernant l'utilisation de services et systèmes de filtrage et de surveillance. 42 Services informatiques [termes trop vagues de l'avis du Bureau international - règle 13.2]b] du Règlement d'exécution commun]; services de technologies pédagogiques; services de logiciels pour la gestion de salles de classe [termes trop vagues de l'avis du Bureau international - règle 13.2]b] du Règlement d'exécution commun]; services de logiciels de contrôle parental [termes trop vagues de l'avis du Bureau international - règle 13.2]b] du Règlement d'exécution commun]; services de logiciels de cybersécurité [termes trop vagues de l'avis du Bureau international - règle 13.2]b] du Règlement d'exécution commun]; Services d'hébergement, logiciels en tant que service et location de logiciels; surveillance de systèmes informatiques à des fins de sécurité; services de conseillers en informatique et technologies de l'information; services de surveillance de systèmes de sécurité informatique; services de sécurité informatique pour la protection contre l'accès non autorisé à des réseaux; services de conseillers dans le domaine de la sécurité informatique; services de conseillers en matière de sécurité informatique; services de conseillers dans le domaine des logiciels de sécurité; services en matière de sécurité de données [pare-feux]; conception et développement de programmes de sécurité Internet; hébergement de contenus éducatifs multimédias; services de conseillers en matière de sécurité Internet; Prestation de conseils, informations et services de conseillers en technologies de l'information; Services de technologies de l'information; programmation de didacticiels; Programmation de programmes de sécurité pour Internet; mise à disposition de programmes de gestion des risques de sécurité informatique; location de programmes de sécurité Internet; développement, programmation et implémentation de logiciels; Systèmes de filtrage et de surveillance en matière de TI; Services de filtrage et de surveillance en matière de TI pour établissements pédagogiques; services de TI en matière de contrôle de contenus [termes trop vagues de l'avis du Bureau international - règle 13.2]b] du Règlement d'exécution commun].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        41,
+        42
+      ],
+      "language": "es",
+      "description": "09 Software; software de tecnología educativa; software educativo; software de control parental; software de seguridad cibernética; software para estudiantes; software de filtrado y monitorización; software de filtrado y monitorización para instituciones educativas; software de protección de la privacidad; software de gestión de clases; software de educación infantil; software educativo para niños; software educativo; software educativo; middleware para la gestión de funciones de software en dispositivos electrónicos; dispositivos de control de acceso; software de control de acceso; software de seguridad informática descargable; software descargable de monitorización y análisis a distancia; software de seguridad; software y firmware de soporte de sistemas y sistemas; software para el control de contenidos; software de seguridad para redes y dispositivos. 41 Educación; educación sobre seguridad digital; servicios de formación y educación en el ámbito de los servicios de gestión de clases; educación sobre ciberseguridad; servicios educativos por ordenador; servicios de formación sobre informática; servicios de formación y educación en el ámbito de las soluciones de protección digital; servicios de educación y formación; servicios de educación; consultoría en materia de educación; servicios educativos para profesores de niños; servicios educativos para niños; servicios educativos relacionados con la seguridad digital; servicios educativos en relación con sistemas informáticos; servicios educativos en relación con la seguridad en línea; servicios educativos en línea; formación de personal escolar para garantizar la seguridad digital de estudiantes; formación de personal de instituciones educativas sobre el uso de sistemas y servicios de filtración y monitorización. 42 Servicios informáticos [expresión demasiado vaga a juicio de la Oficina Internacional - Regla 13.2]b] del Reglamento Común]; servicios de tecnología educativa; servicios de software de gestión de clases [expresión demasiado vaga a juicio de la Oficina Internacional - Regla 13.2]b] del Reglamento Común]; servicios de software de control parental [expresión demasiado vaga a juicio de la Oficina Internacional - Regla 13.2]b] del Reglamento Común]; servicios de software de ciberseguridad [expresión demasiado vaga a juicio de la Oficina Internacional - Regla 13.2]b] del Reglamento Común]; servicios de alojamiento, software como servicio (SaaS), así como alquiler de software; supervisión de sistemas informáticos con fines de seguridad; consultoría en tecnologías informática y de la información; servicios de supervisión de sistemas de seguridad informática; servicios de seguridad informática para la protección contra el acceso ilegal a redes; consultoría sobre la seguridad informática; consultoría sobre seguridad informática; consultoría en software de seguridad; servicios de seguridad de datos [cortafuegos]; diseño y desarrollo de programas de seguridad en Internet; alojamiento de contenidos educativos multimedia; consultoría sobre la seguridad en Internet; servicios de consultoría, asesoramiento e información sobre tecnologías de la información; servicios de TI; programación de software educativo; creación de programas de seguridad en Internet; suministro de programas de gestión de riesgos de seguridad informática; alquiler de programas de seguridad en Internet; desarrollo, programación e implementación de software; Sistemas de filtrado y vigilancia de tecnologías de la información; Servicios de filtrado y monitorización de tecnologías de la información para instituciones educativas; servicios de tecnologías de la información de control de contenidos [expresión demasiado vaga a juicio de la Oficina Internacional - Regla 13.2]b] del Reglamento Común].",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Qoria Holdings Pty Ltd",
+  "ownerNative": null,
+  "ownerCountry": "AU",
+  "representative": "Franks & Co Limited",
+  "priorities": [
+    {
+      "priorityCountryCode": "GB",
+      "priorityCountryName": "United Kingdom",
+      "priorityDate": "20230628",
+      "priorityNumber": "UK00003927817"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20230628",
+          "basicApplicationNumber": "UK00003927817"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "GB"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "NZ",
+      "US",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "945 Wellington Street, West Perth Western Australia 6005",
+        "applicantAddressCountryCode": "AU",
+        "applicantAddressCountryName": "Australia",
+        "applicantName": "Qoria Holdings Pty Ltd"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20230628",
+            "basicApplicationNumber": "UK00003927817"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "GB"
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "NZ",
+      "US",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09,41,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "09 Software; educational technology software; education software; parental control software; cyber safety software; student software; filtering and monitoring software; filtering and monitoring software for educational institution; privacy protection software; classroom management software; children's educational software; computer software concerned with children's education; computer software for education; educational computer software; middleware for management of software functions on electronic devices; access control devices; access control software; downloadable computer security software; downloadable computer software for remote monitoring and analysis; security software; system and system support software, and firmware; content control software; software for network and device security. 41 Education; digital safety education; education and training services in the field of classroom management services; cyber safety education; computer based educational services; computer education training services; education and training services in the field of digital safeguarding solutions; education and training services; education services; educational consultancy; educational services provided for teachers of children; educational services provided for children; educational services relating to digital safety; educational services in relation to computer systems; educational services in relation to online safety; online education services; training of school personnel to ensure digital security protection of students; training of educational institution personnel on the use of filtering and monitoring systems and services. 42 Computer services [terms too vague in the opinion of the International Bureau - Rule 13 [2] [b] of the Common Regulations]; educational technology services; classroom management software services [terms too vague in the opinion of the International Bureau - Rule 13 [2] [b] of the Common Regulations]; parental control software services [terms too vague in the opinion of the International Bureau - Rule 13 [2] [b] of the Common Regulations]; cyber safety software services [terms too vague in the opinion of the International Bureau - Rule 13 [2] [b] of the Common Regulations]; hosting services, software as a service, and rental of software; monitoring of computer systems for security purposes; computer and information technology consultancy services; computer security system monitoring services; computer security services for the protection against illegal network access; computer security consultancy; consultancy in the field of computer security; consultancy in the field of security software; data security services [firewalls]; design and development of internet security program; hosting multimedia educational content; internet security consultancy; IT consultancy, advisory and information services; IT services; programming of educational software; programming of internet security programs; provision of computer security risk management programs; rental of internet security programs; software development, programming and implementation; IT filtering and monitoring systems; IT filtering and monitoring services for educational institutions; content control IT services [terms too vague in the opinion of the International Bureau - Rule 13 [2] [b] of the Common Regulations]."
+        },
+        {
+          "intClassNumber": "09,41,42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "09 Logiciels; logiciels de technologies pédagogiques; didacticiels; Logiciels de contrôle parental; logiciels de cybersécurité; logiciels d'étudiant; logiciels de surveillance et filtrage; logiciels de surveillance et filtrage pour établissements pédagogiques; logiciels de protection de la vie privée; logiciels pour la gestion de salles de classe; logiciels éducatifs pour enfants; logiciels en rapport avec l'éducation d'enfants; logiciels informatiques pour l'éducation; didacticiels; intergiciels pour la gestion de fonctions logicielles sur des dispositifs électroniques; dispositifs de contrôle/commande d'accès; logiciels pour le contrôle d'accès; logiciels de sécurité informatique téléchargeables; logiciels informatiques téléchargeables pour la surveillance et l'analyse à distance; logiciels de sécurité; système et logiciels de support système, et micrologiciels; logiciels pour la gestion de contenus; logiciels pour la sécurité de dispositifs et réseaux. 41 Education; éducation en matière de sécurité numérique; services d'éducation et de formation dans le domaine des services de gestion de salles de classe; éducation en matière de cybersécurité; services d'enseignement par ordinateur; services de formation pédagogique par ordinateur; services d'éducation et de formation dans le domaine des solutions de sauvegarde numérique; services d'éducation et de formation; services d'éducation; services de conseillers en éducation; services d'éducation fournis à l'intention des enseignants pour enfants; services d'éducation fournis à l'intention d'enfants; services pédagogiques en lien avec la sécurité numérique; services pédagogiques en rapport avec des systèmes informatiques; services pédagogiques en rapport avec la sécurité en ligne; éducation en ligne; formation de personnel enseignant pour garantir la protection de la sécurité numérique d'étudiants; formation de personnel d'établissements pédagogiques concernant l'utilisation de services et systèmes de filtrage et de surveillance. 42 Services informatiques [termes trop vagues de l'avis du Bureau international - règle 13.2]b] du Règlement d'exécution commun]; services de technologies pédagogiques; services de logiciels pour la gestion de salles de classe [termes trop vagues de l'avis du Bureau international - règle 13.2]b] du Règlement d'exécution commun]; services de logiciels de contrôle parental [termes trop vagues de l'avis du Bureau international - règle 13.2]b] du Règlement d'exécution commun]; services de logiciels de cybersécurité [termes trop vagues de l'avis du Bureau international - règle 13.2]b] du Règlement d'exécution commun]; Services d'hébergement, logiciels en tant que service et location de logiciels; surveillance de systèmes informatiques à des fins de sécurité; services de conseillers en informatique et technologies de l'information; services de surveillance de systèmes de sécurité informatique; services de sécurité informatique pour la protection contre l'accès non autorisé à des réseaux; services de conseillers dans le domaine de la sécurité informatique; services de conseillers en matière de sécurité informatique; services de conseillers dans le domaine des logiciels de sécurité; services en matière de sécurité de données [pare-feux]; conception et développement de programmes de sécurité Internet; hébergement de contenus éducatifs multimédias; services de conseillers en matière de sécurité Internet; Prestation de conseils, informations et services de conseillers en technologies de l'information; Services de technologies de l'information; programmation de didacticiels; Programmation de programmes de sécurité pour Internet; mise à disposition de programmes de gestion des risques de sécurité informatique; location de programmes de sécurité Internet; développement, programmation et implémentation de logiciels; Systèmes de filtrage et de surveillance en matière de TI; Services de filtrage et de surveillance en matière de TI pour établissements pédagogiques; services de TI en matière de contrôle de contenus [termes trop vagues de l'avis du Bureau international - règle 13.2]b] du Règlement d'exécution commun]."
+        },
+        {
+          "intClassNumber": "09,41,42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "09 Software; software de tecnología educativa; software educativo; software de control parental; software de seguridad cibernética; software para estudiantes; software de filtrado y monitorización; software de filtrado y monitorización para instituciones educativas; software de protección de la privacidad; software de gestión de clases; software de educación infantil; software educativo para niños; software educativo; software educativo; middleware para la gestión de funciones de software en dispositivos electrónicos; dispositivos de control de acceso; software de control de acceso; software de seguridad informática descargable; software descargable de monitorización y análisis a distancia; software de seguridad; software y firmware de soporte de sistemas y sistemas; software para el control de contenidos; software de seguridad para redes y dispositivos. 41 Educación; educación sobre seguridad digital; servicios de formación y educación en el ámbito de los servicios de gestión de clases; educación sobre ciberseguridad; servicios educativos por ordenador; servicios de formación sobre informática; servicios de formación y educación en el ámbito de las soluciones de protección digital; servicios de educación y formación; servicios de educación; consultoría en materia de educación; servicios educativos para profesores de niños; servicios educativos para niños; servicios educativos relacionados con la seguridad digital; servicios educativos en relación con sistemas informáticos; servicios educativos en relación con la seguridad en línea; servicios educativos en línea; formación de personal escolar para garantizar la seguridad digital de estudiantes; formación de personal de instituciones educativas sobre el uso de sistemas y servicios de filtración y monitorización. 42 Servicios informáticos [expresión demasiado vaga a juicio de la Oficina Internacional - Regla 13.2]b] del Reglamento Común]; servicios de tecnología educativa; servicios de software de gestión de clases [expresión demasiado vaga a juicio de la Oficina Internacional - Regla 13.2]b] del Reglamento Común]; servicios de software de control parental [expresión demasiado vaga a juicio de la Oficina Internacional - Regla 13.2]b] del Reglamento Común]; servicios de software de ciberseguridad [expresión demasiado vaga a juicio de la Oficina Internacional - Regla 13.2]b] del Reglamento Común]; servicios de alojamiento, software como servicio (SaaS), así como alquiler de software; supervisión de sistemas informáticos con fines de seguridad; consultoría en tecnologías informática y de la información; servicios de supervisión de sistemas de seguridad informática; servicios de seguridad informática para la protección contra el acceso ilegal a redes; consultoría sobre la seguridad informática; consultoría sobre seguridad informática; consultoría en software de seguridad; servicios de seguridad de datos [cortafuegos]; diseño y desarrollo de programas de seguridad en Internet; alojamiento de contenidos educativos multimedia; consultoría sobre la seguridad en Internet; servicios de consultoría, asesoramiento e información sobre tecnologías de la información; servicios de TI; programación de software educativo; creación de programas de seguridad en Internet; suministro de programas de gestión de riesgos de seguridad informática; alquiler de programas de seguridad en Internet; desarrollo, programación e implementación de software; Sistemas de filtrado y vigilancia de tecnologías de la información; Servicios de filtrado y monitorización de tecnologías de la información para instituciones educativas; servicios de tecnologías de la información de control de contenidos [expresión demasiado vaga a juicio de la Oficina Internacional - Regla 13.2]b] del Reglamento Común]."
+        }
+      ]
+    },
+    "id": "f99ca2ce-9b6b-41ac-9318-90a66bfad14b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "GB",
+        "priorityCountryName": "United Kingdom",
+        "priorityDate": "20230628",
+        "priorityNumber": "UK00003927817"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "09"
+      }
+    ],
+    "recordLastUpdated": "20260123",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "15-16 Jessops Riverside, Brightside Lane, Sheffield South Yorkshire S9 2RX",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Franks & Co Limited"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330928",
+      "lastPublicationDate": "20240314",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20230928",
+        "registrationNumber": "1779808"
+      }
+    },
+    "version": "20260123020016",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIA"
+    }
+  },
+  "_uri": "/mark/wo/f99ca2ce-9b6b-41ac-9318-90a66bfad14b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.400Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

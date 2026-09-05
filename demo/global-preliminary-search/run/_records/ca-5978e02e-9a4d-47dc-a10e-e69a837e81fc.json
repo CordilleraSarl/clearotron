@@ -1,0 +1,197 @@
+{
+  "uri": "/mark/ca/5978e02e-9a4d-47dc-a10e-e69a837e81fc",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "5978e02e-9a4d-47dc-a10e-e69a837e81fc",
+  "applicationNumber": "1653626",
+  "registrationNumber": null,
+  "applicationDate": "2013-11-26",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2015-05-05",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "Executive Presence is neither exclusive nor elusive",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    16,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        16,
+        41
+      ],
+      "language": "en",
+      "description": "(1) These words are used in our training manual and we intend to use it as the title of a book we are writing.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16,
+        41
+      ],
+      "language": "en",
+      "description": "(1) Corporate Class Inc is a training, consulting and coaching organization and that is where and how we intend to use these words.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Diane Craig",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "60 Bloor St.W., Ste 1100, Toronto, ONTARIO, M4W3B8",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressLines": [
+          "60 Bloor St.W.",
+          "Ste 1100",
+          "Toronto",
+          "ONTARIO"
+        ],
+        "applicantAddressPostalCode": "M4W3B8",
+        "applicantName": "Diane Craig"
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Used in CANADA since January 01, 2011 on wares marked (1) on services (1)",
+        "typeDescription": "First Use"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "16,41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) These words are used in our training manual and we intend to use it as the title of a book we are writing."
+        },
+        {
+          "intClassNumber": "16,41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Corporate Class Inc is a training, consulting and coaching organization and that is where and how we intend to use these words."
+        }
+      ]
+    },
+    "id": "5978e02e-9a4d-47dc-a10e-e69a837e81fc",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20150505",
+        "descriptionText": "Abandoned - Section 36"
+      },
+      {
+        "date": "20150217",
+        "descriptionText": "Default Notice Sent",
+        "responseDate": "20150417"
+      },
+      {
+        "date": "20140729",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20150129"
+      },
+      {
+        "date": "20140729",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20131129",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20131127",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20131126",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "60 Bloor St.W., Ste 1100, Toronto, ONTARIO, M4W3B8",
+        "addressLines": [
+          "60 Bloor St.W.",
+          "Ste 1100",
+          "Toronto",
+          "ONTARIO",
+          "M4W3B8"
+        ],
+        "countryName": "Canada",
+        "name": "Diane Craig",
+        "postalCode": "M4W3B8"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "status": {
+      "abandonmentDate": "20150505",
+      "active": false,
+      "application": {
+        "applicationDate": "20131126",
+        "applicationNumber": "1653626"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "defaultNotice": {
+        "dueDate": "20150417",
+        "sentDate": "20150217"
+      },
+      "firstUsed": [
+        {
+          "firstUsedDate": "20110101",
+          "firstUsedText": "Used in CANADA since January 01, 2011 on wares marked (1) on services (1)"
+        }
+      ],
+      "formalisationDate": "20131129",
+      "markCurrentStatus": "Abandoned - Section 36"
+    },
+    "subjectHeadings": [
+      "EXECUTIVE PRESENCE IS NEITHER EXCLUSIVE NOR ELUSIVE"
+    ],
+    "version": "20250625110120",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Executive Presence is neither exclusive nor elusive",
+      "markVerbalElementTextFormal": "Executive Presence is neither exclusive nor elusive"
+    }
+  },
+  "_uri": "/mark/ca/5978e02e-9a4d-47dc-a10e-e69a837e81fc",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/cn/0f672a50-4cfc-4781-911d-3b47a973c90a",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "0f672a50-4cfc-4781-911d-3b47a973c90a",
+  "applicationNumber": "60504978",
+  "registrationNumber": "60504978",
+  "applicationDate": "2021-11-11",
+  "registrationDate": "2022-05-07",
+  "expiryDate": "2032-05-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-02-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SEVEN OR NINE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "已录制的或可下载的计算机软件平台,可下载的计算机游戏软件,眼镜,智能手机,耳机,移动电源(可充电电池),计算机外围设备,鼠标垫,可下载的手机应用软件,可下载的计算机应用软件",
+      "translation_language": "en",
+      "translation": "Recorded or downloadable computer software platforms, downloadable computer game software, glasses, smartphones, earphones, power banks (rechargeable batteries), computer peripherals, mouse pads, downloadable mobile phone applications, downloadable computer application software"
+    }
+  ],
+  "owner": "Shenzhen Yuexing Hot Road Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市宝安区新安街道兴东社区宝城创业路北侧建设工业园J栋一层至七层104",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Yuexing Hot Road Technology Co., Ltd.",
+        "applicantNativeName": "深圳市悦行热路科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Recorded or downloadable computer software platforms, downloadable computer game software, glasses, smartphones, earphones, power banks (rechargeable batteries), computer peripherals, mouse pads, downloadable mobile phone applications, downloadable computer application software",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "已录制的或可下载的计算机软件平台,可下载的计算机游戏软件,眼镜,智能手机,耳机,移动电源(可充电电池),计算机外围设备,鼠标垫,可下载的手机应用软件,可下载的计算机应用软件"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Glasses and those accessories",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "0f672a50-4cfc-4781-911d-3b47a973c90a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1778"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳蓝邦知识产权有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20211111",
+        "applicationNumber": "60504978"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320506",
+      "lastPublicationDate": "20220206",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220507",
+        "registrationNumber": "60504978"
+      }
+    },
+    "version": "20251004173649",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEVEN OR NINE"
+    }
+  },
+  "_uri": "/mark/cn/0f672a50-4cfc-4781-911d-3b47a973c90a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

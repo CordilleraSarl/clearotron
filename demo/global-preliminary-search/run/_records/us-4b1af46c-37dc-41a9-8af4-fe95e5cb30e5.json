@@ -1,0 +1,217 @@
+{
+  "uri": "/mark/us/4b1af46c-37dc-41a9-8af4-fe95e5cb30e5",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "4b1af46c-37dc-41a9-8af4-fe95e5cb30e5",
+  "applicationNumber": "99785222",
+  "registrationNumber": null,
+  "applicationDate": "2026-04-24",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "COVEN QUEST",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Downloadable television shows and media in the form of audio and video about the paranormal and the supernatural; Downloadable podcasts in the field of the paranormal and the supernatural",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Jessica Perlman",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "Candice E. Kim",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1840 Century Park East, Suite 1900, Los Angeles, CA, 90067, USAM",
+        "applicantAddressCity": "Los Angeles",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "90067",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "1840 Century Park East, Suite 1900",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Jessica Perlman",
+        "applicantSecondaryAddressUnit": "c/o Greenberg Traurig, LLP"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Downloadable television shows and media in the form of audio and video about the paranormal and the supernatural; Downloadable podcasts in the field of the paranormal and the supernatural"
+        }
+      ]
+    },
+    "id": "4b1af46c-37dc-41a9-8af4-fe95e5cb30e5",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260812",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20260812",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20260812",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20260812",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20260812",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20260723",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20260723",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20260723",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20260722",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20260424",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20260424",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20260424",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "1840 Century Park East, Suite 1900, Los Angeles, CA, 90067, USAM",
+        "city": "Los Angeles",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Jessica Perlman",
+        "postalCode": "90067",
+        "secondaryAddressUnit": "c/o Greenberg Traurig, LLP",
+        "stateName": "CALIFORNIA",
+        "street": "1840 Century Park East, Suite 1900"
+      },
+      {
+        "address": "1840 Century Park East, Suite 1900, Los Angeles, CA, 90067, USAM",
+        "city": "Los Angeles",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Jessica Perlman",
+        "postalCode": "90067",
+        "secondaryAddressUnit": "c/o Greenberg Traurig, LLP",
+        "stateName": "CALIFORNIA",
+        "street": "1840 Century Park East, Suite 1900"
+      }
+    ],
+    "recordLastUpdated": "20260820",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Los Angeles, CA 90067, United States",
+        "representativeCorrespondentAddressLines": [
+          "Los Angeles, CA 90067",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Candice E. Kim Greenberg Traurig, LLP, 1840 Century Park East, Suite 1900"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Los Angeles, CA 90067, United States",
+        "representativeAddressLines": [
+          "Los Angeles, CA 90067",
+          "United States"
+        ],
+        "representativeName": "Candice E. Kim"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260424",
+        "applicationNumber": "99785222"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "PUBLICATION & ISSUE REVIEW COMPLETE",
+        "markOfficialStatusCode": "681",
+        "markOfficialStatusDate": "20260819",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260820180819",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "COVEN QUEST"
+    }
+  },
+  "_uri": "/mark/us/4b1af46c-37dc-41a9-8af4-fe95e5cb30e5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.567Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

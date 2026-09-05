@@ -1,0 +1,143 @@
+{
+  "uri": "/mark/br/66370899-4b84-4485-b969-f911c660c8f5",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "66370899-4b84-4485-b969-f911c660c8f5",
+  "applicationNumber": "816134120",
+  "registrationNumber": null,
+  "applicationDate": "1991-05-24",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    3,
+    5,
+    8,
+    9,
+    10,
+    14,
+    16,
+    18,
+    21,
+    22,
+    24,
+    25,
+    26,
+    28,
+    35,
+    36,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        3,
+        5,
+        8,
+        9,
+        10,
+        14,
+        16,
+        18,
+        21,
+        22,
+        24,
+        25,
+        26,
+        28,
+        35,
+        36,
+        42
+      ],
+      "language": "pt",
+      "description": "Produtos de perfumaria e de higiene, e artigos de toucador em geral.",
+      "translation_language": "en",
+      "translation": "Perfumery and hygiene products, and toiletries in general."
+    }
+  ],
+  "owner": "PASSAPORT FRANCHISING COMERCIO LTDA ME",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "No agent available",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "PASSAPORT FRANCHISING COMERCIO LTDA ME"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Perfumery and hygiene products, and toiletries in general.",
+          "intClassNumber": "03,05,08,09,10,14,16,18,21,22,24,25,26,28,35,36,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Produtos de perfumaria e de higiene, e artigos de toucador em geral."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "03.20"
+        }
+      ]
+    },
+    "id": "66370899-4b84-4485-b969-f911c660c8f5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "No agent available"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19910524",
+        "applicationNumber": "816134120"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20250630194335",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/br/66370899-4b84-4485-b969-f911c660c8f5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.811Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

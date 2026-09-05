@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/cn/70f18672-e594-4049-b3c5-ba2a517da327",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "70f18672-e594-4049-b3c5-ba2a517da327",
+  "applicationNumber": "37580605",
+  "registrationNumber": "37580605",
+  "applicationDate": "2019-04-17",
+  "registrationDate": "2020-03-14",
+  "expiryDate": "2030-03-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-12-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ZORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "光学玻璃,USB线",
+      "translation_language": "en",
+      "translation": "Optical glass, USB cable"
+    }
+  ],
+  "owner": "Fuzhou Wanrui Electronic Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "福建省福州市台江区鳌峰街道连江中路318号9#楼二层-02",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Fuzhou Wanrui Electronic Technology Co., Ltd.",
+        "applicantNativeName": "福州万锐电子科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Optical glass, USB cable",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "光学玻璃,USB线"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Optical instruments",
+        "Cables"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0911",
+          "subNatGoodsServicesDescription": "Optical instruments"
+        },
+        {
+          "subNatClassNumber": "0912",
+          "subNatGoodsServicesDescription": "Cables"
+        }
+      ]
+    },
+    "id": "70f18672-e594-4049-b3c5-ba2a517da327",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1675"
+      }
+    ],
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190417",
+        "applicationNumber": "37580605"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300313",
+      "lastPublicationDate": "20191213",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20200314",
+        "registrationNumber": "37580605"
+      }
+    },
+    "version": "20251003151503",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ZORI"
+    }
+  },
+  "_uri": "/mark/cn/70f18672-e594-4049-b3c5-ba2a517da327",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:32.138Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

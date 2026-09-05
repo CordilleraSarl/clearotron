@@ -1,0 +1,303 @@
+{
+  "uri": "/mark/wo/349e279e-0934-4e44-83de-0404bc0d89da",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "349e279e-0934-4e44-83de-0404bc0d89da",
+  "applicationNumber": null,
+  "registrationNumber": "1499008",
+  "applicationDate": null,
+  "registrationDate": "2019-09-24",
+  "expiryDate": "2029-09-24",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-11-21",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "AORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Audiovisual, optical and teaching apparatus; apparatus and instruments for recording, transmitting, reproducing or processing sound, images or data; recorded and downloadable media, computer software, blank digital or analogue recording and storage media; computers and computer peripheral devices; electronic interactive whiteboards; electronic notice boards; audio interfaces; downloadable emoticons for mobile phones; interfaces for computers; monitors [computer programs]; computer software, recorded; computer software platforms, recorded or downloadable; personal digital assistants [PDAs]; computer software applications, downloadable; computer programs, recorded; computer game software, downloadable; computer game software, recorded; computer programs, downloadable; computer operating programs, recorded; computer screen saver software, recorded or downloadable; record players; processors [central processing units]; electronic publications, downloadable; audiovisual teaching apparatus; integrated circuits; downloadable image files; downloadable music files.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Advertising; business management; arranging subscriptions to telecommunication services for others; commercial information agency services; advertising agencies; rental of advertising space; computerized file management; opinion polling; market studies; business information; commercial information and advice for consumers in the choice of products and services; business investigations; business research; marketing research; business management and organization consultancy; business organization consultancy; professional business consultancy; consultancy regarding public relations communication strategies; consultancy regarding advertising communication strategies; layout services for advertising purposes; marketing; marketing in the framework of software publishing; targeted marketing; business management of performing artists; scriptwriting for advertising purposes; news clipping services; updating and maintenance of information in registries; updating and maintenance of data in computer databases; updating of advertising material; word processing; organization of exhibitions for commercial or advertising purposes; arranging newspaper subscriptions for others; design of advertising materials; business appraisals; business management assistance; commercial intermediation services; providing business information via a web site; provision of commercial and business contact information; provision of an online marketplace for buyers and sellers of goods and services; web indexing for commercial or advertising purposes; presentation of goods on communication media, for retail purposes; media relations services; economic forecasting; sales promotion for others; production of advertising films; rental of advertising time on communication media; publicity material rental; rental of billboards [advertising boards]; publication of publicity texts; radio advertising; bill-posting; distribution of samples; dissemination of advertising matter; direct mail advertising; registration of written communications and data; writing of publicity texts; online advertising on a computer network; outdoor advertising; advertising by mail order; television advertising; compilation of statistics; compilation of information into computer databases; business inquiries; systemization of information into computer databases; advisory services for business management; corporate communications services; compiling indexes of information for commercial or advertising purposes; telemarketing services; administrative processing of purchase orders; web site traffic optimization; search engine optimization for sales promotion; pay per click advertising.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Scientific and technological services and research and design relating thereto; design and development of computer hardware and software; computer system analysis; recovery of computer data; business card design; graphic design of promotional materials; interior design; industrial design; graphic arts design; computer virus protection services; installation of computer software; research in the field of telecommunications technology; research and development of new products for others; web site design consultancy; computer security consultancy; information technology [IT] consultancy; consultancy in the design and development of computer hardware; internet security consultancy; computer software consultancy; data security consultancy; technological consultancy; updating of computer software; monitoring of computer systems to detect breakdowns; monitoring of computer systems for detecting unauthorized access or data breach; monitoring of computer systems by remote access; software as a service [SaaS]; maintenance of computer software; providing information on computer technology and programming via a web site; providing search engines for the internet; platform as a service [PaaS]; conversion of computer programs and data, other than physical conversion; conducting technical project studies; computer system design; rental of web servers; computer rental; rental of computer software; hosting computer sites [web sites]; server hosting; development of computer platforms; computer software design; software development in the framework of software publishing; creating and designing website-based indexes of information for others [information technology services]; creating and maintaining web sites for others; computer programming; technical writing; duplication of computer programs; cloud computing; outsource service providers in the field of information technology; off-site data backup; computer technology consultancy; telecommunications technology consultancy; data encryption services; electronic data storage.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Appareils audiovisuels, optiques et d'enseignement; appareils et instruments pour l'enregistrement, la transmission, la reproduction ou le traitement de son, d'images ou de données; supports enregistrés et téléchargeables, logiciels informatiques, supports d'enregistrement et de stockage numériques ou analogiques vierges; ordinateurs et périphériques d'ordinateurs; tableaux blancs interactifs électroniques; tableaux d'affichage électroniques; interfaces audio; emoticons téléchargeables pour téléphones mobiles; interfaces pour ordinateurs; moniteurs [programmes informatiques]; logiciels informatiques enregistrés; plateformes logicielles informatiques enregistrées ou téléchargeables; assistants numériques personnels; applications logicielles informatiques téléchargeables; programmes informatiques enregistrés; logiciels de jeux informatiques, téléchargeables; logiciels de jeux informatiques enregistrés; programmes informatiques, téléchargeables; programmes d'exploitation pour ordinateurs enregistrés; logiciels d'économiseurs d'écran pour ordinateurs enregistrés ou téléchargeables; tourne-disques; processeurs [unités centrales de traitement]; publications électroniques téléchargeables; appareils d'enseignement audiovisuel; circuits intégrés; fichiers d'images téléchargeables; fichiers de musique téléchargeables.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Publicité; gestion d'affaires commerciales; services d'abonnement à des services de télécommunication pour des tiers; services d'agences d'informations commerciales; agences de publicité; services de location d'espaces publicitaires; services de gestion de fichiers informatiques; sondages d'opinion; études portant sur les marchés; informations professionnelles; informations et conseils commerciaux aux consommateurs pour le choix de produits et services; investigations pour affaires; recherches dans le domaine des affaires; recherches en marketing; services de conseillers en gestion et en organisation d'entreprises; services de conseillers en organisation d'entreprises; services de conseillers professionnels en affaires; Services de conseillers concernant des stratégies de communication pour les relations publiques; services de conseillers en matière de stratégies de communication publicitaire; services de mise en page à des fins publicitaires; marketing; services de marketing dans le cadre de l'édition de logiciels; marketing ciblé; gestion commerciale d'artistes de spectacle; services de rédaction de scénarios à des fins publicitaires; services de revues de presse; services de mise à jour et maintenance d'informations dans des registres; mise à jour et maintenance de bases de données informatiques; services de mise à jour de matériel publicitaire; traitement de textes; organisation d'expositions à des fins commerciales ou publicitaires; services d'abonnement à des journaux pour des tiers; conception de matériel publicitaire; estimations dans le domaine des affaires; services d'aide à la gestion d'activités commerciales; Services d'intermédiation commerciale; mise à disposition d'informations commerciales par le biais d'un site Web; mise à disposition d'informations portant sur des contacts commerciaux et d'affaires; mise à disposition d'une place de marché en ligne pour acheteurs et vendeurs de produits et services; services d'indexation Web à des fins commerciales ou publicitaires; services de présentation de produits sur des supports de communication à des fins de vente au détail; services de relations avec les médias; prévisions économiques; promotion des ventes pour des tiers; services de production de films publicitaires; services de location de temps publicitaire sur des supports de communication; location de matériel publicitaire; location de panneaux d'affichage [panneaux publicitaires]; publication de textes publicitaires; publicité radiophonique; services d'affichage; services de distribution d'échantillons; services de diffusion de matériel publicitaire; services de publipostage; services d'enregistrement de données et communications écrites; rédaction de textes publicitaires; publicité en ligne sur réseaux informatiques; affichage publicitaire; publicité par correspondance; publicité télévisée; services de compilation de statistiques; compilation d'informations dans des bases de données informatiques; enquêtes commerciales; systématisation d'informations dans des bases de données informatiques; prestation de conseils en gestion d'activités commerciales; services de communication d'entreprises; services de compilation de répertoires d'informations à des fins commerciales ou publicitaires; services de télémarketing; services de traitement administratif de bons de commande; optimisation du trafic de sites Web; optimisation de moteurs de recherche pour la promotion des ventes; publicité par paiement au clic.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services scientifiques et technologiques, ainsi que services de recherche et conception s'y rapportant; conception et développement de matériel et logiciels informatiques; services d'analyse de systèmes informatiques; récupération de données informatiques; conception de cartes de visite; conception graphique de matériel publicitaire; architecture d'intérieur; dessin industriel; services de création d'arts graphiques; services de protection contre les virus informatiques; services d'installation de logiciels informatiques; recherche dans le domaine de la technologie des télécommunications; recherche et développement de nouveaux produits pour des tiers; services de conseillers en conception de sites Web; services de conseillers dans le domaine de la sécurité informatique; services de conseillers en matière de technologies de l'information [TI]; services de conseillers en matière de conception et développement de matériel informatique; services de conseillers en matière de sécurité Internet; services de conseillers en logiciels informatiques; services de conseillers en matière de sécurité de données; services de conseillers en technologies; mise à jour de logiciels informatiques; services de surveillance de systèmes informatiques pour la détection de pannes; surveillance de systèmes informatiques pour la détection d'accès non autorisés ou de violations de données; télésurveillance de systèmes informatiques; logiciels en tant que service [SaaS]; maintenance de logiciels informatiques; mise à disposition d'informations en matière de programmation et de technologie informatiques par le biais d'un site Web; mise à disposition de moteurs de recherche sur Internet; plateformes en tant que services [PaaS]; conversion de données et programmes informatiques, autre que conversion physique; réalisation d'études de projets techniques; conception de systèmes informatiques; location de serveurs Web; location d'ordinateurs; services de location de logiciels informatiques; services d'hébergement de sites informatiques [sites Web]; services d'hébergement sur des serveurs; développement de plateformes informatiques; services de conception de logiciels informatiques; développement dans le cadre de l'édition de logiciels; services de création et conception d'index d'information basés sur des sites Web pour des tiers [services de technologies de l'information]; création et maintenance de sites Web pour des tiers; programmation informatique; services de rédaction technique; duplication de programmes informatiques; informatique en nuage; fournisseurs de services d'externalisation dans le domaine des technologies de l'information; sauvegarde de données hors site; services de conseillers en technologies informatiques; services de conseillers en technologies des télécommunications; services de cryptage de données; services de stockage électronique de données.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Aparatos audiovisuales, ópticos y de enseñanza; aparatos e instrumentos de grabación, transmisión, reproducción o procesamiento de sonido, imágenes o datos; medios grabados y descargables, software informático, medios de almacenamiento y grabación digital o analógica en blanco; ordenadores y periféricos informáticos; pizarras blancas electrónicas interactivas; tablones de anuncios electrónicos; interfaces de sonido; emoticones descargables para teléfonos móviles; interfaces de ordenador; monitores [programas informáticos]; software [programas grabados]; plataformas de software informático grabado o descargable; organizadores personales digitales [PDA]; aplicaciones de software descargables; programas informáticos grabados; software de juegos informáticos descargables; software de juegos informáticos grabados; programas informáticos descargables; programas de sistemas operativos informáticos grabados; software de salvapantallas informático grabado o descargable; tocadiscos; procesadores [unidades centrales de procesamiento]; publicaciones electrónicas descargables; aparatos de enseñanza audiovisual; circuitos integrados; archivos de imagen descargables; archivos de música descargables.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Publicidad; gestión de negocios; suscripción a servicios de telecomunicación para terceros; servicios de agencias de información comercial; agencias publicitarias; alquiler de espacios publicitarios; gestión de archivos informáticos; sondeos de opinión; estudios de mercado; información sobre negocios; servicios de asesoramiento e información comercial para consumidores sobre la elección de productos y servicios; investigación comercial; investigación empresarial; investigación de marketing; consultoría sobre la organización y dirección de negocios; consultoría sobre organización empresarial; consultoría profesional sobre negocios; consultoría sobre estrategias de comunicación de relaciones públicas; consultoría sobre estrategias de comunicación publicitaria; servicios de composición de página con fines publicitarios; marketing; marketing en el ámbito de la edición de software; marketing selectivo; representación comercial de artistas del espectáculo; redacción de guiones con fines publicitarios; servicios de comunicados de prensa; actualización y mantenimiento de información en registros; actualización y mantenimiento de información en bases de datos informáticas; actualización de documentación publicitaria; procesamiento de textos; organización de exposiciones con fines comerciales o publicitarios; servicios de suscripción a periódicos para terceros; diseño de material publicitario; tasación de empresas; asistencia en la dirección de empresas; servicios de intermediarios en negocios comerciales; suministro de información comercial por sitios web; suministro de información sobre contactos comerciales y empresariales; puesta a disposición de mercados en línea para compradores y vendedores de productos y servicios; indexación web con fines comerciales o publicitarios; presentación de productos en todo tipo de medios de comunicación para su venta minorista; servicios de relaciones con los medios de comunicación; previsiones económicas; promoción de ventas para terceros; producción de películas publicitarias; alquiler de tiempo publicitario en medios de comunicación; alquiler de material publicitario; alquiler de vallas publicitarias; publicación de textos publicitarios; publicidad radiofónica; colocación de carteles (anuncios); distribución de muestras; difusión de anuncios publicitarios; distribución de material publicitario por correo; registro de datos y comunicaciones escritas; redacción de textos publicitarios; publicidad en línea por una red informática; publicidad exterior; publicidad por correspondencia; publicidad por televisión; recopilación de estadísticas; compilación de información en bases de datos informáticas; indagaciones sobre negocios; sistematización de información en bases de datos informáticas; asesoramiento sobre gestión empresarial; servicios de comunicación corporativa; compilación de índices de información con fines comerciales o publicitarios; servicios de telemarketing; tramitación administrativa de pedidos de compra; optimización del tráfico de sitios web; optimización de motores de búsqueda para la promoción de ventas; publicidad de pago por clic (PPC).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios científicos y tecnológicos, así como servicios de investigación y diseño conexos; diseño y desarrollo de hardware y software; análisis de sistemas informáticos; recuperación de datos informáticos; diseño de tarjetas de visita; diseño gráfico de material publicitario; diseño de interiores; diseño industrial; diseño de artes gráficas; servicios de protección antivirus (informática); instalación de software; investigación en el ámbito de las tecnologías de las telecomunicaciones; investigación y desarrollo de nuevos productos para terceros; consultoría en diseño de sitios web; consultoría sobre seguridad informática; consultoría sobre tecnologías de la información; consultoría sobre el diseño y desarrollo de hardware; consultoría sobre la seguridad en Internet; consultoría sobre software; consultoría en materia de seguridad de datos; consultoría tecnológica; actualización de software; supervisión de sistemas informáticos para detectar averías; supervisión de sistemas informáticos para la detección de accesos no autorizados o la violación de datos; monitorización a distancia de sistemas informáticos; software como servicio [SaaS]; mantenimiento de software; suministro de información sobre tecnología y programación informática en sitios web; puesta a disposición de motores de búsqueda para Internet; plataforma como servicio [PaaS]; conversión de datos y programas informáticos, excepto conversión física; dirección de estudios de proyectos técnicos; diseño de sistemas informáticos; alquiler de servidores web; alquiler de ordenadores; alquiler de software; alojamiento de sitios informáticos [sitios web]; alojamiento de servidores; desarrollo de plataformas informáticas; diseño de software; desarrollo de software en el ámbito de la edición de software; creación y diseño de índices de información basados en sitios web para terceros [servicios de tecnologías de la información]; creación y mantenimiento de sitios web para terceros; programación informática; redacción técnica; duplicación de programas informáticos; informática en la nube; proveedores de servicios de externalización en el ámbito de las tecnologías de la información; copia de seguridad de datos fuera del sitio; consultoría sobre tecnológía informática; consultoría en tecnología de telecomunicaciones; servicios de codificación de datos; almacenamiento electrónico de datos.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "\"Aori.Ru\" Joint Stock Company",
+  "ownerNative": null,
+  "ownerCountry": "RU",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "RU",
+      "priorityCountryName": "Russian Federation",
+      "priorityDate": "20190814",
+      "priorityNumber": "2019740134"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20190814",
+          "basicApplicationNumber": "2019740134"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "RU"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CA",
+      "DE",
+      "GB",
+      "IT",
+      "RO",
+      "US"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Verkhnyaya Krasnoselskaya st., 3, building 2, floor A2, space I, room 19 RU-107140 Moscow",
+        "applicantAddressCountryCode": "RU",
+        "applicantAddressCountryName": "Russian Federation",
+        "applicantName": "\"Aori.Ru\" Joint Stock Company"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20190814",
+            "basicApplicationNumber": "2019740134"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "RU"
+      }
+    ],
+    "cmMarkImageEUclassification": [
+      "24.15.01",
+      "29.02.00",
+      "37.01.18"
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CA",
+      "DE",
+      "GB",
+      "IT",
+      "RO",
+      "US"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Audiovisual, optical and teaching apparatus; apparatus and instruments for recording, transmitting, reproducing or processing sound, images or data; recorded and downloadable media, computer software, blank digital or analogue recording and storage media; computers and computer peripheral devices; electronic interactive whiteboards; electronic notice boards; audio interfaces; downloadable emoticons for mobile phones; interfaces for computers; monitors [computer programs]; computer software, recorded; computer software platforms, recorded or downloadable; personal digital assistants [PDAs]; computer software applications, downloadable; computer programs, recorded; computer game software, downloadable; computer game software, recorded; computer programs, downloadable; computer operating programs, recorded; computer screen saver software, recorded or downloadable; record players; processors [central processing units]; electronic publications, downloadable; audiovisual teaching apparatus; integrated circuits; downloadable image files; downloadable music files."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Advertising; business management; arranging subscriptions to telecommunication services for others; commercial information agency services; advertising agencies; rental of advertising space; computerized file management; opinion polling; market studies; business information; commercial information and advice for consumers in the choice of products and services; business investigations; business research; marketing research; business management and organization consultancy; business organization consultancy; professional business consultancy; consultancy regarding public relations communication strategies; consultancy regarding advertising communication strategies; layout services for advertising purposes; marketing; marketing in the framework of software publishing; targeted marketing; business management of performing artists; scriptwriting for advertising purposes; news clipping services; updating and maintenance of information in registries; updating and maintenance of data in computer databases; updating of advertising material; word processing; organization of exhibitions for commercial or advertising purposes; arranging newspaper subscriptions for others; design of advertising materials; business appraisals; business management assistance; commercial intermediation services; providing business information via a web site; provision of commercial and business contact information; provision of an online marketplace for buyers and sellers of goods and services; web indexing for commercial or advertising purposes; presentation of goods on communication media, for retail purposes; media relations services; economic forecasting; sales promotion for others; production of advertising films; rental of advertising time on communication media; publicity material rental; rental of billboards [advertising boards]; publication of publicity texts; radio advertising; bill-posting; distribution of samples; dissemination of advertising matter; direct mail advertising; registration of written communications and data; writing of publicity texts; online advertising on a computer network; outdoor advertising; advertising by mail order; television advertising; compilation of statistics; compilation of information into computer databases; business inquiries; systemization of information into computer databases; advisory services for business management; corporate communications services; compiling indexes of information for commercial or advertising purposes; telemarketing services; administrative processing of purchase orders; web site traffic optimization; search engine optimization for sales promotion; pay per click advertising."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific and technological services and research and design relating thereto; design and development of computer hardware and software; computer system analysis; recovery of computer data; business card design; graphic design of promotional materials; interior design; industrial design; graphic arts design; computer virus protection services; installation of computer software; research in the field of telecommunications technology; research and development of new products for others; web site design consultancy; computer security consultancy; information technology [IT] consultancy; consultancy in the design and development of computer hardware; internet security consultancy; computer software consultancy; data security consultancy; technological consultancy; updating of computer software; monitoring of computer systems to detect breakdowns; monitoring of computer systems for detecting unauthorized access or data breach; monitoring of computer systems by remote access; software as a service [SaaS]; maintenance of computer software; providing information on computer technology and programming via a web site; providing search engines for the internet; platform as a service [PaaS]; conversion of computer programs and data, other than physical conversion; conducting technical project studies; computer system design; rental of web servers; computer rental; rental of computer software; hosting computer sites [web sites]; server hosting; development of computer platforms; computer software design; software development in the framework of software publishing; creating and designing website-based indexes of information for others [information technology services]; creating and maintaining web sites for others; computer programming; technical writing; duplication of computer programs; cloud computing; outsource service providers in the field of information technology; off-site data backup; computer technology consultancy; telecommunications technology consultancy; data encryption services; electronic data storage."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Appareils audiovisuels, optiques et d'enseignement; appareils et instruments pour l'enregistrement, la transmission, la reproduction ou le traitement de son, d'images ou de données; supports enregistrés et téléchargeables, logiciels informatiques, supports d'enregistrement et de stockage numériques ou analogiques vierges; ordinateurs et périphériques d'ordinateurs; tableaux blancs interactifs électroniques; tableaux d'affichage électroniques; interfaces audio; emoticons téléchargeables pour téléphones mobiles; interfaces pour ordinateurs; moniteurs [programmes informatiques]; logiciels informatiques enregistrés; plateformes logicielles informatiques enregistrées ou téléchargeables; assistants numériques personnels; applications logicielles informatiques téléchargeables; programmes informatiques enregistrés; logiciels de jeux informatiques, téléchargeables; logiciels de jeux informatiques enregistrés; programmes informatiques, téléchargeables; programmes d'exploitation pour ordinateurs enregistrés; logiciels d'économiseurs d'écran pour ordinateurs enregistrés ou téléchargeables; tourne-disques; processeurs [unités centrales de traitement]; publications électroniques téléchargeables; appareils d'enseignement audiovisuel; circuits intégrés; fichiers d'images téléchargeables; fichiers de musique téléchargeables."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Publicité; gestion d'affaires commerciales; services d'abonnement à des services de télécommunication pour des tiers; services d'agences d'informations commerciales; agences de publicité; services de location d'espaces publicitaires; services de gestion de fichiers informatiques; sondages d'opinion; études portant sur les marchés; informations professionnelles; informations et conseils commerciaux aux consommateurs pour le choix de produits et services; investigations pour affaires; recherches dans le domaine des affaires; recherches en marketing; services de conseillers en gestion et en organisation d'entreprises; services de conseillers en organisation d'entreprises; services de conseillers professionnels en affaires; Services de conseillers concernant des stratégies de communication pour les relations publiques; services de conseillers en matière de stratégies de communication publicitaire; services de mise en page à des fins publicitaires; marketing; services de marketing dans le cadre de l'édition de logiciels; marketing ciblé; gestion commerciale d'artistes de spectacle; services de rédaction de scénarios à des fins publicitaires; services de revues de presse; services de mise à jour et maintenance d'informations dans des registres; mise à jour et maintenance de bases de données informatiques; services de mise à jour de matériel publicitaire; traitement de textes; organisation d'expositions à des fins commerciales ou publicitaires; services d'abonnement à des journaux pour des tiers; conception de matériel publicitaire; estimations dans le domaine des affaires; services d'aide à la gestion d'activités commerciales; Services d'intermédiation commerciale; mise à disposition d'informations commerciales par le biais d'un site Web; mise à disposition d'informations portant sur des contacts commerciaux et d'affaires; mise à disposition d'une place de marché en ligne pour acheteurs et vendeurs de produits et services; services d'indexation Web à des fins commerciales ou publicitaires; services de présentation de produits sur des supports de communication à des fins de vente au détail; services de relations avec les médias; prévisions économiques; promotion des ventes pour des tiers; services de production de films publicitaires; services de location de temps publicitaire sur des supports de communication; location de matériel publicitaire; location de panneaux d'affichage [panneaux publicitaires]; publication de textes publicitaires; publicité radiophonique; services d'affichage; services de distribution d'échantillons; services de diffusion de matériel publicitaire; services de publipostage; services d'enregistrement de données et communications écrites; rédaction de textes publicitaires; publicité en ligne sur réseaux informatiques; affichage publicitaire; publicité par correspondance; publicité télévisée; services de compilation de statistiques; compilation d'informations dans des bases de données informatiques; enquêtes commerciales; systématisation d'informations dans des bases de données informatiques; prestation de conseils en gestion d'activités commerciales; services de communication d'entreprises; services de compilation de répertoires d'informations à des fins commerciales ou publicitaires; services de télémarketing; services de traitement administratif de bons de commande; optimisation du trafic de sites Web; optimisation de moteurs de recherche pour la promotion des ventes; publicité par paiement au clic."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services scientifiques et technologiques, ainsi que services de recherche et conception s'y rapportant; conception et développement de matériel et logiciels informatiques; services d'analyse de systèmes informatiques; récupération de données informatiques; conception de cartes de visite; conception graphique de matériel publicitaire; architecture d'intérieur; dessin industriel; services de création d'arts graphiques; services de protection contre les virus informatiques; services d'installation de logiciels informatiques; recherche dans le domaine de la technologie des télécommunications; recherche et développement de nouveaux produits pour des tiers; services de conseillers en conception de sites Web; services de conseillers dans le domaine de la sécurité informatique; services de conseillers en matière de technologies de l'information [TI]; services de conseillers en matière de conception et développement de matériel informatique; services de conseillers en matière de sécurité Internet; services de conseillers en logiciels informatiques; services de conseillers en matière de sécurité de données; services de conseillers en technologies; mise à jour de logiciels informatiques; services de surveillance de systèmes informatiques pour la détection de pannes; surveillance de systèmes informatiques pour la détection d'accès non autorisés ou de violations de données; télésurveillance de systèmes informatiques; logiciels en tant que service [SaaS]; maintenance de logiciels informatiques; mise à disposition d'informations en matière de programmation et de technologie informatiques par le biais d'un site Web; mise à disposition de moteurs de recherche sur Internet; plateformes en tant que services [PaaS]; conversion de données et programmes informatiques, autre que conversion physique; réalisation d'études de projets techniques; conception de systèmes informatiques; location de serveurs Web; location d'ordinateurs; services de location de logiciels informatiques; services d'hébergement de sites informatiques [sites Web]; services d'hébergement sur des serveurs; développement de plateformes informatiques; services de conception de logiciels informatiques; développement dans le cadre de l'édition de logiciels; services de création et conception d'index d'information basés sur des sites Web pour des tiers [services de technologies de l'information]; création et maintenance de sites Web pour des tiers; programmation informatique; services de rédaction technique; duplication de programmes informatiques; informatique en nuage; fournisseurs de services d'externalisation dans le domaine des technologies de l'information; sauvegarde de données hors site; services de conseillers en technologies informatiques; services de conseillers en technologies des télécommunications; services de cryptage de données; services de stockage électronique de données."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aparatos audiovisuales, ópticos y de enseñanza; aparatos e instrumentos de grabación, transmisión, reproducción o procesamiento de sonido, imágenes o datos; medios grabados y descargables, software informático, medios de almacenamiento y grabación digital o analógica en blanco; ordenadores y periféricos informáticos; pizarras blancas electrónicas interactivas; tablones de anuncios electrónicos; interfaces de sonido; emoticones descargables para teléfonos móviles; interfaces de ordenador; monitores [programas informáticos]; software [programas grabados]; plataformas de software informático grabado o descargable; organizadores personales digitales [PDA]; aplicaciones de software descargables; programas informáticos grabados; software de juegos informáticos descargables; software de juegos informáticos grabados; programas informáticos descargables; programas de sistemas operativos informáticos grabados; software de salvapantallas informático grabado o descargable; tocadiscos; procesadores [unidades centrales de procesamiento]; publicaciones electrónicas descargables; aparatos de enseñanza audiovisual; circuitos integrados; archivos de imagen descargables; archivos de música descargables."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Publicidad; gestión de negocios; suscripción a servicios de telecomunicación para terceros; servicios de agencias de información comercial; agencias publicitarias; alquiler de espacios publicitarios; gestión de archivos informáticos; sondeos de opinión; estudios de mercado; información sobre negocios; servicios de asesoramiento e información comercial para consumidores sobre la elección de productos y servicios; investigación comercial; investigación empresarial; investigación de marketing; consultoría sobre la organización y dirección de negocios; consultoría sobre organización empresarial; consultoría profesional sobre negocios; consultoría sobre estrategias de comunicación de relaciones públicas; consultoría sobre estrategias de comunicación publicitaria; servicios de composición de página con fines publicitarios; marketing; marketing en el ámbito de la edición de software; marketing selectivo; representación comercial de artistas del espectáculo; redacción de guiones con fines publicitarios; servicios de comunicados de prensa; actualización y mantenimiento de información en registros; actualización y mantenimiento de información en bases de datos informáticas; actualización de documentación publicitaria; procesamiento de textos; organización de exposiciones con fines comerciales o publicitarios; servicios de suscripción a periódicos para terceros; diseño de material publicitario; tasación de empresas; asistencia en la dirección de empresas; servicios de intermediarios en negocios comerciales; suministro de información comercial por sitios web; suministro de información sobre contactos comerciales y empresariales; puesta a disposición de mercados en línea para compradores y vendedores de productos y servicios; indexación web con fines comerciales o publicitarios; presentación de productos en todo tipo de medios de comunicación para su venta minorista; servicios de relaciones con los medios de comunicación; previsiones económicas; promoción de ventas para terceros; producción de películas publicitarias; alquiler de tiempo publicitario en medios de comunicación; alquiler de material publicitario; alquiler de vallas publicitarias; publicación de textos publicitarios; publicidad radiofónica; colocación de carteles (anuncios); distribución de muestras; difusión de anuncios publicitarios; distribución de material publicitario por correo; registro de datos y comunicaciones escritas; redacción de textos publicitarios; publicidad en línea por una red informática; publicidad exterior; publicidad por correspondencia; publicidad por televisión; recopilación de estadísticas; compilación de información en bases de datos informáticas; indagaciones sobre negocios; sistematización de información en bases de datos informáticas; asesoramiento sobre gestión empresarial; servicios de comunicación corporativa; compilación de índices de información con fines comerciales o publicitarios; servicios de telemarketing; tramitación administrativa de pedidos de compra; optimización del tráfico de sitios web; optimización de motores de búsqueda para la promoción de ventas; publicidad de pago por clic (PPC)."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios científicos y tecnológicos, así como servicios de investigación y diseño conexos; diseño y desarrollo de hardware y software; análisis de sistemas informáticos; recuperación de datos informáticos; diseño de tarjetas de visita; diseño gráfico de material publicitario; diseño de interiores; diseño industrial; diseño de artes gráficas; servicios de protección antivirus (informática); instalación de software; investigación en el ámbito de las tecnologías de las telecomunicaciones; investigación y desarrollo de nuevos productos para terceros; consultoría en diseño de sitios web; consultoría sobre seguridad informática; consultoría sobre tecnologías de la información; consultoría sobre el diseño y desarrollo de hardware; consultoría sobre la seguridad en Internet; consultoría sobre software; consultoría en materia de seguridad de datos; consultoría tecnológica; actualización de software; supervisión de sistemas informáticos para detectar averías; supervisión de sistemas informáticos para la detección de accesos no autorizados o la violación de datos; monitorización a distancia de sistemas informáticos; software como servicio [SaaS]; mantenimiento de software; suministro de información sobre tecnología y programación informática en sitios web; puesta a disposición de motores de búsqueda para Internet; plataforma como servicio [PaaS]; conversión de datos y programas informáticos, excepto conversión física; dirección de estudios de proyectos técnicos; diseño de sistemas informáticos; alquiler de servidores web; alquiler de ordenadores; alquiler de software; alojamiento de sitios informáticos [sitios web]; alojamiento de servidores; desarrollo de plataformas informáticas; diseño de software; desarrollo de software en el ámbito de la edición de software; creación y diseño de índices de información basados en sitios web para terceros [servicios de tecnologías de la información]; creación y mantenimiento de sitios web para terceros; programación informática; redacción técnica; duplicación de programas informáticos; informática en la nube; proveedores de servicios de externalización en el ámbito de las tecnologías de la información; copia de seguridad de datos fuera del sitio; consultoría sobre tecnológía informática; consultoría en tecnología de telecomunicaciones; servicios de codificación de datos; almacenamiento electrónico de datos."
+        }
+      ]
+    },
+    "id": "349e279e-0934-4e44-83de-0404bc0d89da",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "Blue, white.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      },
+      {
+        "markImageColourClaimedText": "Bleu, blanc",
+        "markImageColourClaimedTextLanguageCode": "fr"
+      },
+      {
+        "markImageColourClaimedText": "Azul, blanco",
+        "markImageColourClaimedTextLanguageCode": "es"
+      }
+    ],
+    "markImageViennaClassification": [
+      "24.15",
+      "27.05",
+      "29.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "RU",
+        "priorityCountryName": "Russian Federation",
+        "priorityDate": "20190814",
+        "priorityNumber": "2019740134"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "45"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290924",
+      "lastPublicationDate": "20191121",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20190924",
+        "registrationNumber": "1499008"
+      }
+    },
+    "version": "20250620191043",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AORI"
+    }
+  },
+  "_uri": "/mark/wo/349e279e-0934-4e44-83de-0404bc0d89da",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:50.842Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

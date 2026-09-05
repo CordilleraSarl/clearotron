@@ -1,0 +1,497 @@
+{
+  "uri": "/mark/us/d4611e72-33d4-46d8-a696-0cecea772725",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "d4611e72-33d4-46d8-a696-0cecea772725",
+  "applicationNumber": "98881853",
+  "registrationNumber": null,
+  "applicationDate": "2024-12-03",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-07-29"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QARI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Software as a service (SAAS) services featuring software for financial risk analysis of securities namely bonds, stocks, debt, mortgages, currencies, commodities, financial derivatives, exchange-traded funds, mutual funds, annuities, pensions, structured products, and financial risk analysis of investment portfolios.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Annuity Risk Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "7659 MALL ROAD #1004, FLORENCE, KY, 41042",
+        "applicantAddressCity": "FLORENCE",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "41042",
+        "applicantAddressStateName": "KENTUCKY",
+        "applicantAddressStreet": "7659 MALL ROAD #1004",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Annuity Risk Inc."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Software as a service (SAAS) services featuring software for financial risk analysis of securities namely bonds, stocks, debt, mortgages, currencies, commodities, financial derivatives, exchange-traded funds, mutual funds, annuities, pensions, structured products, and financial risk analysis of investment portfolios."
+        }
+      ]
+    },
+    "id": "d4611e72-33d4-46d8-a696-0cecea772725",
+    "ipRightKind": "tmk",
+    "litigationInformation": {
+      "proceedings": [
+        {
+          "decision": {
+            "code": "9",
+            "date": "20251126",
+            "text": "TERMINATED"
+          },
+          "decisionBoard": "Trademark Trial and Appeal Board (TTAB)",
+          "filingDate": "20250827",
+          "identifier": "98881853",
+          "kind": "Extension of Time to Oppose",
+          "kindCode": "EXT",
+          "litigationParties": [
+            {
+              "kind": "Plaintiff",
+              "kindCode": "P",
+              "name": "BlackRock Index Services, LLC",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "00000000",
+                  "registrationNumber": "0000000"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "BOSTON",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "02110",
+                  "addressState": "MA",
+                  "addressStreet": "ONE FEDERAL STREET, 29TH FLOOR",
+                  "companyName": "DAY PITNEY LLP",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "CARRIE WEBB OLSON"
+                }
+              ]
+            },
+            {
+              "kind": "Defendant",
+              "kindCode": "D",
+              "name": "Annuity Risk Inc.",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "98881853",
+                  "markVerbalElementText": "QARI",
+                  "registrationNumber": "0000000"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "FLORENCE",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "41042",
+                  "addressState": "KY",
+                  "addressStreet": "7659 MALL ROAD #1004",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "ANNUITY RISK INC."
+                }
+              ]
+            }
+          ],
+          "proceedingEvents": [
+            {
+              "code": "T",
+              "eventDate": "20250827",
+              "text": "#2 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20250827",
+              "text": "#1 WITHDRAWAL OF ATTORNEY"
+            }
+          ]
+        },
+        {
+          "decision": {
+            "code": "2",
+            "date": "20251126",
+            "text": "PENDING"
+          },
+          "decisionBoard": "Trademark Trial and Appeal Board (TTAB)",
+          "filingDate": "20251126",
+          "identifier": "91303385",
+          "interlocutoryAttorneyName": "KEVIN G CRENNAN",
+          "kind": "Opposition",
+          "kindCode": "OPS",
+          "litigationParties": [
+            {
+              "kind": "Plaintiff",
+              "kindCode": "P",
+              "name": "BlackRock Index Services, LLC",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "86024021",
+                  "markVerbalElementText": "CORI",
+                  "registrationNumber": "4804571"
+                },
+                {
+                  "applicationNumber": "85858935",
+                  "markVerbalElementText": "CORI",
+                  "registrationNumber": "4452608"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "BOSTON",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "02110",
+                  "addressState": "MA",
+                  "addressStreet": "ONE FEDERAL STREET, 29TH FLOOR",
+                  "companyName": "DAY PITNEY LLP",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "ODETTE MARTINS"
+                }
+              ]
+            },
+            {
+              "kind": "Defendant",
+              "kindCode": "D",
+              "name": "Annuity Risk Inc.",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "98881853",
+                  "markVerbalElementText": "QARI",
+                  "registrationNumber": "0000000"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "FLORENCE",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "41042",
+                  "addressState": "KY",
+                  "addressStreet": "7659 MALL ROAD, #1004",
+                  "companyName": "ANNUITY RISK INC",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "GAURAV SINGHAL"
+                }
+              ]
+            }
+          ],
+          "proceedingEvents": [
+            {
+              "code": "W",
+              "eventDate": "20260824",
+              "text": "#16 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20260824",
+              "text": "#15 P'S MOT FOR EXTEN. OF TIME W/ CONSENT"
+            },
+            {
+              "code": "W",
+              "eventDate": "20260723",
+              "text": "#14 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20260723",
+              "text": "#13 P'S MOT FOR EXTEN. OF TIME W/ CONSENT"
+            },
+            {
+              "code": "W",
+              "eventDate": "20260624",
+              "text": "#12 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20260624",
+              "text": "#11 P'S MOT FOR EXTEN. OF TIME W/ CONSENT"
+            },
+            {
+              "code": "W",
+              "eventDate": "20260526",
+              "text": "#10 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20260526",
+              "text": "#9 P'S MOT FOR EXTEN. OF TIME W/ CONSENT"
+            },
+            {
+              "code": "W",
+              "eventDate": "20260424",
+              "text": "#8 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20260424",
+              "text": "#7 P'S MOT FOR EXTEN. OF TIME W/ CONSENT"
+            },
+            {
+              "code": "W",
+              "eventDate": "20260325",
+              "text": "#6 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20260325",
+              "text": "#5 P'S MOT FOR EXTEN. OF TIME W/ CONSENT"
+            },
+            {
+              "code": "N",
+              "eventDate": "20260124",
+              "text": "#4 ANSWER"
+            },
+            {
+              "code": "T",
+              "eventDate": "20251126",
+              "text": "#3 PENDING, INSTITUTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20251126",
+              "responseDate": "20260125",
+              "text": "#2 NOTICE AND TRIAL DATES SENT:  ANSWER DUE:"
+            },
+            {
+              "code": "N",
+              "eventDate": "20251126",
+              "text": "#1 FILED AND FEE"
+            }
+          ]
+        }
+      ]
+    },
+    "markEvents": [
+      {
+        "date": "20251126",
+        "descriptionText": "OPPOSITION INSTITUTED NO. 999999"
+      },
+      {
+        "date": "20251126",
+        "descriptionText": "EXTENSION OF TIME TO OPPOSE PROCESS - TERMINATED"
+      },
+      {
+        "date": "20250827",
+        "descriptionText": "EXTENSION OF TIME TO OPPOSE RECEIVED"
+      },
+      {
+        "date": "20250729",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20250729",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20250723",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20250625",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20250622",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20250622",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20250622",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20250522",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20250522",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20250522",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20250522",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20250517",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20241203",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "7659 MALL ROAD #1004, FLORENCE, KY, 41042",
+        "city": "FLORENCE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Annuity Risk Inc.",
+        "postalCode": "41042",
+        "stateName": "KENTUCKY",
+        "street": "7659 MALL ROAD #1004"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "7659 MALL ROAD #1004, FLORENCE, KY, 41042",
+        "city": "FLORENCE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Annuity Risk Inc.",
+        "postalCode": "41042",
+        "stateName": "KENTUCKY",
+        "street": "7659 MALL ROAD #1004"
+      },
+      {
+        "address": "7659 MALL ROAD #1004, FLORENCE, KY, 41042",
+        "city": "FLORENCE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Annuity Risk Inc.",
+        "postalCode": "41042",
+        "stateName": "KENTUCKY",
+        "street": "7659 MALL ROAD #1004"
+      }
+    ],
+    "recordLastUpdated": "20260825",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "#1004, FLORENCE, KY 41042, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "#1004",
+          "FLORENCE, KY 41042",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "GAURAV SINGHAL ANNUITY RISK INC, 7659 MALL ROAD"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "#1004, FLORENCE, KY 41042, UNITED STATES",
+        "representativeAddressLines": [
+          "#1004",
+          "FLORENCE, KY 41042",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20241203",
+        "applicationNumber": "98881853"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20241003"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20241003"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "OPPOSITION PENDING",
+        "markOfficialStatusCode": "774",
+        "markOfficialStatusDate": "20251126",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "OPPOSED",
+      "publicationDate": [
+        "20250729"
+      ],
+      "withdrawalDate": [
+        "20250711"
+      ]
+    },
+    "version": "20260825144146",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QARI"
+    }
+  },
+  "_uri": "/mark/us/d4611e72-33d4-46d8-a696-0cecea772725",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:37.009Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

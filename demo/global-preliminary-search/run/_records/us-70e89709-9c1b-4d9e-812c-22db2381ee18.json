@@ -1,0 +1,536 @@
+{
+  "uri": "/mark/us/70e89709-9c1b-4d9e-812c-22db2381ee18",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "70e89709-9c1b-4d9e-812c-22db2381ee18",
+  "applicationNumber": "73577124",
+  "registrationNumber": "1456930",
+  "applicationDate": "1986-01-10",
+  "registrationDate": "1987-09-08",
+  "expiryDate": null,
+  "renewalDate": "2017-09-08",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "1987-06-16"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Hotel, motel, inn and lodging services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "GROSVENOR PROPERTIES, LTD.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Susan N. Acquista, Esq.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20170926",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "222 Front Street, 7th Floor, SAN FRANCISCO, CA, 94111",
+        "applicantAddressCity": "SAN FRANCISCO",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "94111",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "222 Front Street, 7th Floor",
+        "applicantJurisdictionOfIncorporation": "CALIFORNIA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "GROSVENOR PROPERTIES, LTD."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Hotel, motel, inn and lodging services"
+        }
+      ]
+    },
+    "id": "70e89709-9c1b-4d9e-812c-22db2381ee18",
+    "ipRightKind": "tmk",
+    "litigationInformation": {
+      "proceedings": [
+        {
+          "decision": {
+            "code": "9",
+            "date": "19930618",
+            "text": "TERMINATED"
+          },
+          "decisionBoard": "Trademark Trial and Appeal Board (TTAB)",
+          "filingDate": "19910617",
+          "identifier": "92019906",
+          "kind": "Cancellation",
+          "kindCode": "CAN",
+          "litigationParties": [
+            {
+              "kind": "Plaintiff",
+              "kindCode": "P",
+              "name": "J. MARK GROSVENOR",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "00000000",
+                  "registrationNumber": "0000000"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "LOS ANGELES",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "90067-3150",
+                  "addressState": "CA",
+                  "addressStreet": "2049 CENTURY PARK EAST SUITE 1080",
+                  "companyName": "ARANT, KLEINBERG & LERNER",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "GENE W. ARANT"
+                }
+              ]
+            },
+            {
+              "kind": "Defendant",
+              "kindCode": "D",
+              "name": "GROSVENOR PROPERTIES, LTD.",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "73577124",
+                  "markVerbalElementText": "GROSVENOR",
+                  "registrationNumber": "1456930"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "SAN FRANCISCO",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "94104",
+                  "addressState": "CA",
+                  "addressStreet": "160 SANSOME STREET",
+                  "companyName": "SUITE 800",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "GROSVENOR PROPERTIES, LTD."
+                }
+              ]
+            }
+          ],
+          "proceedingEvents": [
+            {
+              "code": "N",
+              "eventDate": "19930618",
+              "text": "#11 TERMINATED"
+            },
+            {
+              "code": "T",
+              "eventDate": "19930614",
+              "text": "#10 BOARD'S DECISION: DISMISSED W/ PREJUDICE"
+            },
+            {
+              "code": "N",
+              "eventDate": "19930517",
+              "text": "#9 WITHDRAWAL OF PETITION FOR CANCELLATION"
+            },
+            {
+              "code": "S",
+              "eventDate": "19920310",
+              "text": "#8 SUSPENDED PENDING DISP OF CIVIL ACTION"
+            },
+            {
+              "code": "N",
+              "eventDate": "19920110",
+              "text": "#7 ANSWER"
+            },
+            {
+              "code": "W",
+              "eventDate": "19920110",
+              "text": "#6 P'S MOT TO SUSP PEND DISP CIV ACTION"
+            },
+            {
+              "code": "T",
+              "eventDate": "19911115",
+              "text": "#5 D'S MOT FOR EXTEN. OF TIME W/ CONSENT"
+            },
+            {
+              "code": "T",
+              "eventDate": "19910916",
+              "text": "#4 D'S MOT FOR EXTEN. OF TIME W/ CONSENT"
+            },
+            {
+              "code": "E",
+              "eventDate": "19910812",
+              "responseDate": "19910923",
+              "text": "#3 NOTICE SENT AND ANSWER DUE"
+            },
+            {
+              "code": "T",
+              "eventDate": "19910812",
+              "text": "#2 PENDING, INSTITUTED"
+            },
+            {
+              "code": "N",
+              "eventDate": "19910617",
+              "text": "#1 FILED AND FEE"
+            }
+          ]
+        },
+        {
+          "decision": {
+            "code": "9",
+            "date": "19870331",
+            "text": "TERMINATED"
+          },
+          "decisionBoard": "Trademark Trial and Appeal Board (TTAB)",
+          "identifier": "73577124",
+          "kind": "Ex Parte Appeal",
+          "kindCode": "EXP",
+          "litigationParties": [
+            {
+              "kind": "Plaintiff",
+              "kindCode": "P",
+              "name": "GROSVENOR PROPERTIES, LTD.",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "73577124",
+                  "markVerbalElementText": "GROSVENOR",
+                  "registrationNumber": "1456930"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "SAN DIEGO",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "92101",
+                  "addressState": "CA",
+                  "addressStreet": "1700 FIRST INTERSTATE PLAZA 401 B STREET",
+                  "companyName": "GRAY, CARY, AMES & FRYE",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "ANTHONY M. STIEGLER"
+                }
+              ]
+            }
+          ],
+          "proceedingEvents": [
+            {
+              "code": "T",
+              "eventDate": "19870331",
+              "text": "#5 APPEAL ACK; REMAND TO EXMR."
+            },
+            {
+              "code": "T",
+              "eventDate": "19870331",
+              "text": "#4 PENDING, INSTITUTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "19870204",
+              "text": "#3 SUPPL. DECLARATION"
+            },
+            {
+              "code": "T",
+              "eventDate": "19870204",
+              "text": "#2 REQUEST FOR RECONSIDERATION"
+            },
+            {
+              "code": "T",
+              "eventDate": "19870204",
+              "text": "#1 APPEAL TO BOARD"
+            }
+          ]
+        }
+      ]
+    },
+    "markEvents": [
+      {
+        "date": "20230207",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20230207",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20230207",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20170926",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20170926",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20170926",
+        "descriptionText": "REGISTERED AND RENEWED (SECOND RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20170926",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 9 - E-MAILED"
+      },
+      {
+        "date": "20170821",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20160908",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20071019",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20071019",
+        "descriptionText": "REGISTERED AND RENEWED (FIRST RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20071016",
+        "descriptionText": "ASSIGNED TO PARALEGAL"
+      },
+      {
+        "date": "20071009",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20071009",
+        "descriptionText": "REGISTERED - COMBINED SECTION 8 (10-YR) & SEC. 9 FILED"
+      },
+      {
+        "date": "20070321",
+        "descriptionText": "CASE FILE IN TICRS"
+      },
+      {
+        "date": "19940708",
+        "descriptionText": "AMENDMENT UNDER SECTION 7 - PROCESSED"
+      },
+      {
+        "date": "19940201",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "19930903",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) & SEC. 15 FILED"
+      },
+      {
+        "date": "19930614",
+        "descriptionText": "CANCELLATION DENIED NO. 999999"
+      },
+      {
+        "date": "19910812",
+        "descriptionText": "CANCELLATION INSTITUTED NO. 999999"
+      },
+      {
+        "date": "19870908",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "19870616",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "19870515",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "19870416",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "19870403",
+        "descriptionText": "JURISDICTION RESTORED TO EXAMINING ATTORNEY"
+      },
+      {
+        "date": "19870331",
+        "descriptionText": "EX PARTE APPEAL-INSTITUTED"
+      },
+      {
+        "date": "19860804",
+        "descriptionText": "FINAL REFUSAL MAILED"
+      },
+      {
+        "date": "19860612",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "19860324",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "19860306",
+        "descriptionText": "CANCELLATION TERMINATED NO. 999999"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "IN THE STATEMENT, COLUMN 2, AFTER LINE 3, \"REGISTRATION IS RESTRICTED TO EXCLUDE THE COUNTY OF SAN DIEGO. THE UNITED STATES DISTRICT COURT FOR THE SOUTHERN DISTRICT OF CALIFORNIA, CASE NO. 91-0624 IEG(M) STIPULATED CONSENT DECREE, ORDER FOR CONCURRENT USE TRADEMARK REGISTRATION AND PERMANENT INJUNCTION ENTERED APRIL 20, 1993. GROSVENOR PROPERTIES LTD. (CALIFORNIA CORPORATION) VS. GROSVENOR HOSPITALITY GROUP, INC. (CALIFORNIA CORPORATION).\" IS INSERTED.  REGISTRATION IS RESTRICTED TO EXCLUDE THE COUNTY OF SAN DIEGO. THE UNITED STATES DISTRICT COURT FOR THE SOUTHERN DISTRICT OF CALIFORNIA, CASE NO. 91-0624 IEG(M) STIPULATED CONSENT DECREE, ORDER FOR CONCURRENT USE TRADEMARK REGISTRATION AND PERMANENT INJUNCTION ENTERED APRIL 20, 1993. GROSVENOR PROPERTIES LTD. (CALIFORNIA CORPORATION) VS. GROSVENOR HOSPITALITY GROUP, INC. (CALIFORNIA CORPORATION).",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "SUITE 800, SAN FRANCISCO, CA, 94104",
+        "city": "SAN FRANCISCO",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "GROSVENOR PROPERTIES, LTD.",
+        "postalCode": "94104",
+        "secondaryAddressUnit": "160 SANSOME STREET",
+        "stateName": "CALIFORNIA",
+        "street": "SUITE 800"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "222 Front Street, 7th Floor, SAN FRANCISCO, CA, 94111",
+        "city": "SAN FRANCISCO",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "GROSVENOR PROPERTIES, LTD.",
+        "postalCode": "94111",
+        "stateName": "CALIFORNIA",
+        "street": "222 Front Street, 7th Floor"
+      },
+      {
+        "address": "222 Front Street, 7th Floor, SAN FRANCISCO, CA, 94111",
+        "city": "SAN FRANCISCO",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "GROSVENOR PROPERTIES, LTD.",
+        "postalCode": "94111",
+        "stateName": "CALIFORNIA",
+        "street": "222 Front Street, 7th Floor"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "SUITE 800, SAN FRANCISCO, CA, 94104",
+        "city": "SAN FRANCISCO",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "GROSVENOR PROPERTIES, LTD.",
+        "postalCode": "94104",
+        "secondaryAddressUnit": "160 SANSOME STREET",
+        "stateName": "CALIFORNIA",
+        "street": "SUITE 800"
+      }
+    ],
+    "recordLastUpdated": "20260107",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "San Francisco, CA 94105, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "San Francisco, CA 94105",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Susan N. Acquista, Esq. DLA PIPER LLP (US), 555 Mission Street, Suite 2400"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "San Francisco, CA 94105, UNITED STATES",
+        "representativeAddressLines": [
+          "San Francisco, CA 94105",
+          "UNITED STATES"
+        ],
+        "representativeName": "Susan N. Acquista, Esq."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19860110",
+        "applicationNumber": "73577124"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "1972"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "1972"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED AND RENEWED",
+        "markOfficialStatusCode": "800",
+        "markOfficialStatusDate": "20170926",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "19870616"
+      ],
+      "registration": {
+        "registrationDate": "19870908",
+        "registrationNumber": "1456930"
+      },
+      "renewalDate": "20170908"
+    },
+    "version": "20260107094335",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/us/70e89709-9c1b-4d9e-812c-22db2381ee18",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.833Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

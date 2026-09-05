@@ -1,0 +1,134 @@
+{
+  "uri": "/mark/jp/67ec3088-108d-4420-a68f-c5e3a4ca747e",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "67ec3088-108d-4420-a68f-c5e3a4ca747e",
+  "applicationNumber": "H04-272885",
+  "registrationNumber": "3202219",
+  "applicationDate": "1992-09-30",
+  "registrationDate": "1996-09-30",
+  "expiryDate": "2006-09-30",
+  "renewalDate": null,
+  "lastPublicationDate": "1995-09-22",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "７１５　Ｓｅｖｅｎ　ｑｕａｒｔｅｒ",
+  "markTransliteration": "NANAICHIGO SEBUNKUOOTAA",
+  "markTranslation": "715 SEVEN QUARTER",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "西洋料理を主とする飲食物の提供，茶・コ―ヒ―・ココア・清涼飲料又は果実飲料を主とする飲食物の提供",
+      "translation_language": "en",
+      "translation": "Providing foods and drinks mainly of Western food, Providing food and drinks mainly including tea · coffee · cocoa · soft drinks or fruit drinks"
+    }
+  ],
+  "owner": "JUN K.K.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "HASEGAWA YOICHI",
+  "priorities": [
+    {
+      "priorityDate": "19920930"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CHUO TOKYO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "JUN K.K.",
+        "applicantNativeAddress": "東京都中央区銀座５丁目３番１４号",
+        "applicantNativeName": "ジュン株式会社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Providing foods and drinks mainly of Western food, Providing food and drinks mainly including tea · coffee · cocoa · soft drinks or fruit drinks",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "西洋料理を主とする飲食物の提供，茶・コ―ヒ―・ココア・清涼飲料又は果実飲料を主とする飲食物の提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "42B01",
+          "natGoodsServicesDescription": "Restaurant services"
+        }
+      ]
+    },
+    "id": "67ec3088-108d-4420-a68f-c5e3a4ca747e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19920930"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "HASEGAWA YOICHI",
+        "representativeNativeName": "長谷川　洋一"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19920930",
+        "applicationNumber": "H04-272885"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20060930",
+      "lastPublicationDate": "19950922",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19960930",
+        "registrationNumber": "3202219"
+      }
+    },
+    "version": "20240320163449",
+    "wordMarkSpecification": {
+      "markTranslation": "715 SEVEN QUARTER",
+      "markTransliteration": "NANAICHIGO SEBUNKUOOTAA",
+      "markVerbalElementText": "７１５　Ｓｅｖｅｎ　ｑｕａｒｔｅｒ"
+    }
+  },
+  "_uri": "/mark/jp/67ec3088-108d-4420-a68f-c5e3a4ca747e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.561Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

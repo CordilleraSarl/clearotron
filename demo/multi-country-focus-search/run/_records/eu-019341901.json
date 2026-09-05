@@ -1,0 +1,92 @@
+{
+  "uri": "/mark/eu/019341901",
+  "provider": "euipo",
+  "office": "EU",
+  "id": "019341901",
+  "applicationNumber": "019341901",
+  "registrationNumber": "019341901",
+  "applicationDate": "2026-04-02",
+  "registrationDate": "2026-07-19",
+  "expiryDate": "2036-04-02",
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "statusDate": "2026-07-22",
+  "markText": "QORO",
+  "markFeature": "WORD",
+  "markKind": "INDIVIDUAL",
+  "markBasis": "EU_TRADEMARK",
+  "niceClasses": [],
+  "owner": "QORO LTD",
+  "ownerCountry": null,
+  "representative": "Javier Serrano Irurzun",
+  "goodsAndServices": [
+    {
+      "classNumber": 9,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Communication, networking and social networking software",
+            " Computer software platforms for social networking",
+            " Mobile apps",
+            " Social software",
+            " Media streaming software",
+            " Internet messaging software",
+            " Community software"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 35,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Advertising, marketing and promotional services",
+            " Online community management services",
+            " Event marketing",
+            " Business networking services",
+            " Online business networking services"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 42,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Design of online social networking software",
+            " Software as a service"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 45,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Online social networking services"
+          ]
+        }
+      ]
+    }
+  ],
+  "oppositions": [],
+  "cancellations": [],
+  "appeals": [],
+  "decisions": [],
+  "_provenance": {
+    "proceedings": "detail record — an empty list means none are recorded on the register"
+  },
+  "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/019341901",
+  "_uri": "/mark/eu/019341901",
+  "_receipt": {
+    "fetched_at": "2026-08-11T07:53:36.089Z",
+    "context": "prelim-tmp0001-venqori-sample-capture-screen-gate-refetch"
+  }
+}

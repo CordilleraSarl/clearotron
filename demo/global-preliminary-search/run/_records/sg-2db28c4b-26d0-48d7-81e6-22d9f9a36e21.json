@@ -1,0 +1,116 @@
+{
+  "uri": "/mark/sg/2db28c4b-26d0-48d7-81e6-22d9f9a36e21",
+  "provider": "clarivate",
+  "office": "sg",
+  "guid": "2db28c4b-26d0-48d7-81e6-22d9f9a36e21",
+  "applicationNumber": "T1208888C",
+  "registrationNumber": null,
+  "applicationDate": "2012-06-22",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2013-01-11",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "sevencore",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Virtual reality game software;computer programs for pre-recorded games;computer software, recorded;computer programmes [programs], recorded;data processing apparatus;disc memories;digital disc drives;digital signal processors;computer software for wireless content delivery;software for processing images, graphics and text;computer programs for editing images, sound and video;operating system programs;computer workstations (apparatus and installations);computer application software for mobile phones;computer game programs;computer software;integrated circuit cards (smart cards);electronic music (downloadable);electronic publications, downloadable;computer programs (downloadable software);compact discs (read-only memory)",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NORIA CO., LTD.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "ELLA CHEONG LLC",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "A-505, Pyungchon AcroTower Kuanyang-dong, 1591 Dongan-Gu Anyang-si, Gyeonggi-do, 431-060, Republic of Korea",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "NORIA CO., LTD."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Virtual reality game software;computer programs for pre-recorded games;computer software, recorded;computer programmes [programs], recorded;data processing apparatus;disc memories;digital disc drives;digital signal processors;computer software for wireless content delivery;software for processing images, graphics and text;computer programs for editing images, sound and video;operating system programs;computer workstations (apparatus and installations);computer application software for mobile phones;computer game programs;computer software;integrated circuit cards (smart cards);electronic music (downloadable);electronic publications, downloadable;computer programs (downloadable software);compact discs (read-only memory)"
+        }
+      ]
+    },
+    "id": "2db28c4b-26d0-48d7-81e6-22d9f9a36e21",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "triangle concentric circles power"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "SG",
+    "registrationOfficeName": "Singapore",
+    "representatives": [
+      {
+        "representativeAddress": "300 BEACH ROAD, #31-04/05 THE CONCOURSE SINGAPORE 199555",
+        "representativeAddressCountryCode": "SG",
+        "representativeAddressCountryName": "Singapore",
+        "representativeName": "ELLA CHEONG LLC"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120622",
+        "applicationNumber": "T1208888C"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "lastPublicationDate": "20130111",
+      "markCurrentStatus": "REMOVED"
+    },
+    "version": "20250704172744",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "sevencore"
+    }
+  },
+  "_uri": "/mark/sg/2db28c4b-26d0-48d7-81e6-22d9f9a36e21",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.730Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

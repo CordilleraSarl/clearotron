@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/br/e6f90e7a-463b-499d-ab56-7fe5f6557170",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "e6f90e7a-463b-499d-ab56-7fe5f6557170",
+  "applicationNumber": "930804228",
+  "registrationNumber": "930804228",
+  "applicationDate": "2023-06-16",
+  "registrationDate": "2025-01-07",
+  "expiryDate": "2035-01-07",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "CALCBOV ENGORDA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Aplicativos; aplicativos baixáveis.",
+      "translation_language": "en",
+      "translation": "APPLICATIONS; DOWNLOADABLE APPLICATIONS."
+    }
+  ],
+  "owner": "PHTECH AGRO BRASIL LTDA",
+  "ownerNative": null,
+  "ownerCountry": "BR",
+  "representative": "ANDRÉ JOÃO LACERDA DA SILVA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "BR",
+        "applicantAddressCountryName": "Brazil",
+        "applicantName": "PHTECH AGRO BRASIL LTDA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "APPLICATIONS; DOWNLOADABLE APPLICATIONS.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Aplicativos; aplicativos baixáveis."
+        }
+      ]
+    },
+    "id": "e6f90e7a-463b-499d-ab56-7fe5f6557170",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "03.04.02",
+      "27.05.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250701",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "ANDRÉ JOÃO LACERDA DA SILVA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230616",
+        "applicationNumber": "930804228"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350107",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20250107",
+        "registrationNumber": "930804228"
+      }
+    },
+    "version": "20250701014018",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "CALCBOV ENGORDA"
+    }
+  },
+  "_uri": "/mark/br/e6f90e7a-463b-499d-ab56-7fe5f6557170",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:51.307Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

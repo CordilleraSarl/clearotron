@@ -1,0 +1,209 @@
+{
+  "uri": "/mark/jp/59e6a10c-e21c-4556-b10d-df2488f58c97",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "59e6a10c-e21c-4556-b10d-df2488f58c97",
+  "applicationNumber": "2003-007899",
+  "registrationNumber": "4893236",
+  "applicationDate": "2003-02-04",
+  "registrationDate": "2005-09-09",
+  "expiryDate": "2035-09-09",
+  "renewalDate": null,
+  "lastPublicationDate": "2005-10-11",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＯＲＴＨＯＣＡＤ",
+  "markTransliteration": "OOSOKYADO ORUSOKYADO",
+  "markTranslation": "ORTHOCAD",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    40,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "矯正歯科用歯列模型，ブラケットの位置決定のための歯列矯正用の模型及びブラケット制作に使用するデジタル式検査機械器具",
+      "translation_language": "en",
+      "translation": "Digital orthodontic dentistry model, model for orthodontic bracket position determination and digital inspection equipment used for bracket production"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": null,
+      "description": "医療用機械器具",
+      "translation_language": "en",
+      "translation": "Medical equipment for medical use"
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": "歯列矯正用ブラケットの加工，歯列矯正用ブラケットの加工に関する情報の提供",
+      "translation_language": "en",
+      "translation": "Provision of information on processing of orthodontic brackets and processing of orthodontic brackets"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": null,
+      "description": "インターネットによる歯列矯正治療に関する情報の提供，その他の医療情報の提供，医業，健康診断，歯科医業，調剤",
+      "translation_language": "en",
+      "translation": "Providing information on orthodontic treatment via the Internet, providing other medical information, medical, medical examination, dentistry, dispensing"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "KOIDE TOSHIMI",
+  "priorities": [
+    {
+      "priorityDate": "20030204"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Digital orthodontic dentistry model, model for orthodontic bracket position determination and digital inspection equipment used for bracket production",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "矯正歯科用歯列模型，ブラケットの位置決定のための歯列矯正用の模型及びブラケット制作に使用するデジタル式検査機械器具"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Medical equipment for medical use",
+          "intClassNumber": "10",
+          "intGoodsServicesDescription": "医療用機械器具"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provision of information on processing of orthodontic brackets and processing of orthodontic brackets",
+          "intClassNumber": "40",
+          "intGoodsServicesDescription": "歯列矯正用ブラケットの加工，歯列矯正用ブラケットの加工に関する情報の提供"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Providing information on orthodontic treatment via the Internet, providing other medical information, medical, medical examination, dentistry, dispensing",
+          "intClassNumber": "44",
+          "intGoodsServicesDescription": "インターネットによる歯列矯正治療に関する情報の提供，その他の医療情報の提供，医業，健康診断，歯科医業，調剤"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "10A01",
+          "natGoodsServicesDescription": "Physical or chemical apparatus and instruments"
+        },
+        {
+          "natClassNumber": "10C01",
+          "natGoodsServicesDescription": "Measuring apparatus and instruments"
+        },
+        {
+          "natClassNumber": "10D01",
+          "natGoodsServicesDescription": "Medical apparatus and instruments"
+        },
+        {
+          "natClassNumber": "10D02"
+        },
+        {
+          "natClassNumber": "40C01",
+          "natGoodsServicesDescription": "Metal Processing services : Electroplating, Millworking, Annealing, Metal tempering, Hot dipping"
+        },
+        {
+          "natClassNumber": "42V02",
+          "natGoodsServicesDescription": "Medical services, Medical information, Physical examination, Dentistry, Preparation of medicines"
+        }
+      ]
+    },
+    "id": "59e6a10c-e21c-4556-b10d-df2488f58c97",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20030204"
+      }
+    ],
+    "recordLastUpdated": "20250919",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "KOIDE TOSHIMI",
+        "representativeNativeName": "小出　俊實"
+      },
+      {
+        "representativeName": "ISHIKAWA YOSHIO",
+        "representativeNativeName": "石川　義雄"
+      },
+      {
+        "representativeName": "SUZUE TAKEHIKO",
+        "representativeNativeName": "鈴江　武彦"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20030204",
+        "applicationNumber": "2003-007899"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350909",
+      "lastPublicationDate": "20051011",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20050909",
+        "registrationNumber": "4893236"
+      }
+    },
+    "version": "20250919084342",
+    "wordMarkSpecification": {
+      "markTranslation": "ORTHOCAD",
+      "markTransliteration": "OOSOKYADO ORUSOKYADO",
+      "markVerbalElementText": "ＯＲＴＨＯＣＡＤ"
+    }
+  },
+  "_uri": "/mark/jp/59e6a10c-e21c-4556-b10d-df2488f58c97",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.740Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

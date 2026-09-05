@@ -1,0 +1,157 @@
+{
+  "uri": "/mark/it/7e1186d2-394b-4c5b-8307-c45e78c9e4b6",
+  "provider": "clarivate",
+  "office": "it",
+  "guid": "7e1186d2-394b-4c5b-8307-c45e78c9e4b6",
+  "applicationNumber": "302016000092774",
+  "registrationNumber": "302016000092774",
+  "applicationDate": "2016-10-10",
+  "registrationDate": "2018-01-03",
+  "expiryDate": "2026-10-10",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-03-01",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Zorì",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41,
+    42,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: educazione, formazione, divertimento, attivita' sportive culturali",
+      "translation_language": "en",
+      "translation": "services subject to protection not included in the nizza-mgs classification: education, training, entertainment, cultural sporting activities"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: servizi scientifici e tecnologici e servizi di ricerca e progettazione ad essi relativi, servizi di analisi e ricerche industriali, progettazione e sviluppo hardware e software",
+      "translation_language": "en",
+      "translation": "protected services not included in the nizza-mgs classification: scientific and technological services and related research and design services, industrial analysis and research services, hardware and software design and development"
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: servizi di ristorazione (alimentari) alloggi temporanei",
+      "translation_language": "en",
+      "translation": "services subject to protection not included in the nizza-mgs classification: catering (food) services, temporary accommodation"
+    }
+  ],
+  "owner": "PIERONI FAUSTO",
+  "ownerNative": null,
+  "ownerCountry": "IT",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Terni, Terni",
+        "applicantAddressCountryCode": "IT",
+        "applicantAddressCountryName": "Italy",
+        "applicantName": "PIERONI FAUSTO"
+      }
+    ],
+    "applicationLanguageCode": "it",
+    "cmMarkImageEUclassification": [
+      "55.00.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "services subject to protection not included in the nizza-mgs classification: education, training, entertainment, cultural sporting activities",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: educazione, formazione, divertimento, attivita' sportive culturali"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "protected services not included in the nizza-mgs classification: scientific and technological services and related research and design services, industrial analysis and research services, hardware and software design and development",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: servizi scientifici e tecnologici e servizi di ricerca e progettazione ad essi relativi, servizi di analisi e ricerche industriali, progettazione e sviluppo hardware e software"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "services subject to protection not included in the nizza-mgs classification: catering (food) services, temporary accommodation",
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: servizi di ristorazione (alimentari) alloggi temporanei"
+        }
+      ]
+    },
+    "id": "7e1186d2-394b-4c5b-8307-c45e78c9e4b6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "NERO; BIANCO;"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "ZORI SCRITTA \"ZORI\""
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250403",
+    "registrationOfficeCode": "IT",
+    "registrationOfficeName": "Italy",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20161010",
+        "applicationNumber": "302016000092774"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20261010",
+      "lastPublicationDate": "20180301",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180103",
+        "registrationNumber": "302016000092774"
+      }
+    },
+    "version": "20250403185730",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Zorì"
+    }
+  },
+  "_uri": "/mark/it/7e1186d2-394b-4c5b-8307-c45e78c9e4b6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:32.138Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

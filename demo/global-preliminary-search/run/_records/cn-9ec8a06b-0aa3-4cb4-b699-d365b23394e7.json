@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/cn/9ec8a06b-0aa3-4cb4-b699-d365b23394e7",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "9ec8a06b-0aa3-4cb4-b699-d365b23394e7",
+  "applicationNumber": "5595217",
+  "registrationNumber": "5595217",
+  "applicationDate": "2006-09-11",
+  "registrationDate": "2009-08-14",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2009-05-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2022-04-20",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "KORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "眼镜,光学矫正透镜片(光),眼镜玻璃,太阳镜,眼镜盒,擦眼镜布,隐形眼镜,护目镜,眼镜架,体育用风镜",
+      "translation_language": "en",
+      "translation": "Glasses, Optical Correction Lenses (Light), Glasses for Glasses, Sunglasses, Glasses Cases, Glasses Cleaning Cloths, Contact Lenses, Goggles, Glasses Frames, Sports Goggles"
+    }
+  ],
+  "owner": "Ding Zhen",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "浙江省建德市新安江镇育新小区5幢3-106室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Ding Zhen",
+        "applicantNativeName": "丁谆"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Glasses, Optical Correction Lenses (Light), Glasses for Glasses, Sunglasses, Glasses Cases, Glasses Cleaning Cloths, Contact Lenses, Goggles, Glasses Frames, Sports Goggles",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "眼镜,光学矫正透镜片(光),眼镜玻璃,太阳镜,眼镜盒,擦眼镜布,隐形眼镜,护目镜,眼镜架,体育用风镜"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Life-saving instruments",
+        "Glasses and those accessories"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0919",
+          "subNatGoodsServicesDescription": "Life-saving instruments"
+        },
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        }
+      ]
+    },
+    "id": "9ec8a06b-0aa3-4cb4-b699-d365b23394e7",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1167"
+      }
+    ],
+    "recordLastUpdated": "20251001",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "杭州顺理商标代理有限公司"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20060911",
+        "applicationNumber": "5595217"
+      },
+      "cancellationDate": "20220420",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20090513",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20090814",
+        "registrationNumber": "5595217"
+      }
+    },
+    "version": "20251001203020",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "KORI"
+    }
+  },
+  "_uri": "/mark/cn/9ec8a06b-0aa3-4cb4-b699-d365b23394e7",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.792Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "uri": "/mark/cn/adb9e05b-6504-431f-8a58-e0ac96553afc",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "adb9e05b-6504-431f-8a58-e0ac96553afc",
+  "applicationNumber": "72298946",
+  "registrationNumber": null,
+  "applicationDate": "2023-06-17",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "GORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "光学眼镜;护目镜;骑行眼镜;太阳镜;眼镜;眼镜袋;眼镜和太阳镜用盒;眼镜框;眼镜片;运动眼镜",
+      "translation_language": "en",
+      "translation": "Optical glasses; goggles; cycling glasses; sunglasses; glasses; glasses bags; cases for glasses and sunglasses; glasses frames; glasses lenses; sports glasses"
+    }
+  ],
+  "owner": "Guangzhou Rongsheng Glasses Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省广州市花都区花城街三东大道山下安置区八队荣阳商业楼B栋2-3层",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Guangzhou Rongsheng Glasses Co., Ltd.",
+        "applicantNativeName": "广州荣晟眼镜有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Optical glasses; goggles; cycling glasses; sunglasses; glasses; glasses bags; cases for glasses and sunglasses; glasses frames; glasses lenses; sports glasses",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "光学眼镜;护目镜;骑行眼镜;太阳镜;眼镜;眼镜袋;眼镜和太阳镜用盒;眼镜框;眼镜片;运动眼镜"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Life-saving instruments",
+        "Glasses and those accessories"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0919",
+          "subNatGoodsServicesDescription": "Life-saving instruments"
+        },
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        }
+      ]
+    },
+    "id": "adb9e05b-6504-431f-8a58-e0ac96553afc",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "山东鑫华宸企业管理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230617",
+        "applicationNumber": "72298946"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251005050251",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GORI"
+    }
+  },
+  "_uri": "/mark/cn/adb9e05b-6504-431f-8a58-e0ac96553afc",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.048Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

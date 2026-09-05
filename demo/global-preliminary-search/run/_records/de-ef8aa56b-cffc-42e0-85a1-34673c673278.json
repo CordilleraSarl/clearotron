@@ -1,0 +1,172 @@
+{
+  "uri": "/mark/de/ef8aa56b-cffc-42e0-85a1-34673c673278",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "ef8aa56b-cffc-42e0-85a1-34673c673278",
+  "applicationNumber": "302023207789.9",
+  "registrationNumber": "302023207789",
+  "applicationDate": "2023-02-27",
+  "registrationDate": "2023-04-21",
+  "expiryDate": "2033-02-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-05-26",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Perspektive Nordthüringen Hier zu Hause.",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    16,
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        16
+      ],
+      "language": "de",
+      "description": "Druckereierzeugnisse, Papier- und Schreibwaren sowie Lehr- und Unterrichtsmittel; Taschen, Beutel und Waren für Verpackungs-, Einpack- und Ablagezwecke aus Papier, Pappe oder Kunststoff; Papier und Pappe",
+      "translation_language": "en",
+      "translation": "Printed matter, stationery and instructional and teaching material; Bags, pouches and goods for packaging, wrapping and filing purposes of paper, cardboard or plastic; Paper and Cardboard"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Werbung, Marketing und Verkaufsförderung",
+      "translation_language": "en",
+      "translation": "Advertising, Marketing and Promotion"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Bildung, Erziehung, Unterhaltung und sportliche Aktivitäten",
+      "translation_language": "en",
+      "translation": "Education, Education, Entertainment and Sporting Activities"
+    }
+  ],
+  "owner": "Landkreis Kyffhäuserkreis (Landratsamt Kyffhäuserkreis)",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "99706 Sondershausen",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Landkreis Kyffhäuserkreis (Landratsamt Kyffhäuserkreis)"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "cmMarkImageEUclassification": [
+      "26.04.01",
+      "26.04.02",
+      "26.04.09",
+      "29.02.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Printed matter, stationery and instructional and teaching material; Bags, pouches and goods for packaging, wrapping and filing purposes of paper, cardboard or plastic; Paper and Cardboard",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Druckereierzeugnisse, Papier- und Schreibwaren sowie Lehr- und Unterrichtsmittel; Taschen, Beutel und Waren für Verpackungs-, Einpack- und Ablagezwecke aus Papier, Pappe oder Kunststoff; Papier und Pappe"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising, Marketing and Promotion",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Werbung, Marketing und Verkaufsförderung"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education, Education, Entertainment and Sporting Activities",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Bildung, Erziehung, Unterhaltung und sportliche Aktivitäten"
+        }
+      ]
+    },
+    "id": "ef8aa56b-cffc-42e0-85a1-34673c673278",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "07.15.01",
+      "24.17.02",
+      "26.04.01",
+      "26.04.02",
+      "26.04.09",
+      "26.04.24",
+      "27.05.01",
+      "27.05.15",
+      "29.01.03",
+      "29.01.06"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "21"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Landkreis Kyffhäuserkreis (Landratsamt Kyffhäuserkreis), Markt 8, 99706 Sondershausen"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230227",
+        "applicationNumber": "302023207789.9"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330227",
+      "lastPublicationDate": "20230526",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20230421",
+        "registrationNumber": "302023207789"
+      }
+    },
+    "version": "20250627171137",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Perspektive Nordthüringen Hier zu Hause."
+    }
+  },
+  "_uri": "/mark/de/ef8aa56b-cffc-42e0-85a1-34673c673278",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.814Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

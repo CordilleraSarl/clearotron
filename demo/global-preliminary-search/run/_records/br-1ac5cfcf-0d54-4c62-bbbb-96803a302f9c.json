@@ -1,0 +1,111 @@
+{
+  "uri": "/mark/br/1ac5cfcf-0d54-4c62-bbbb-96803a302f9c",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "1ac5cfcf-0d54-4c62-bbbb-96803a302f9c",
+  "applicationNumber": "944303617",
+  "registrationNumber": null,
+  "applicationDate": "2026-07-02",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VENTORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Adaptadores elétricos;Alto - falantes;Anéis de dedo para segurar telefones celulares;Anéis de luz [ring lights] de selfie para smartphones;Aparelho de som para automóvel;Aparelho para registro de tempo;Aparelhos de telecomunicação na forma de joias;Aparelhos de telefone;Aparelhos de transmissão [telecomunicação];Aparelhos para reprodução de som;Aparelhos reguladores, elétricos;Aquecedores, autoclaves, agitadores, evaporadores e aparelhos para purificação da água para utilização exclusiva em laboratórios;Arquivos de imagem baixáveis;Balanças;Balanças de banheiro;Balanças de precisão;Cabos elétricos;Cadeados eletrônicos;Caixas de distribuição [eletricidade];Calibrador de célula para uso com gravador;Câmeras [fotografia];Campainhas elétricas;Campainhas elétricas de porta;Canetas eletrônicas para unidades de visualização;Capas para laptops;Capas para smartphones;Carregadores para acumuladores elétricos;Carregadores para telefones celulares;Carretel para microfilme;Cartões magnéticos para identificação;Chave elétrica;Chaveiros eletrônicos [aparelhos de controle remoto];Computadores;Condensadores elétricos [capacitores];Conexões elétricas;Contatos elétricos;Controles para uso com computadores, exceto para videogames;Conversores elétricos;Datador elétrico;Detectores;Estojo porta - cds;Estojos para smartphones;Etiquetas eletrônicas para mercadorias;Etiquetas eletrônicas para prateleira;Fita para computador;Fones de ouvido;Fones de ouvido para comunicação remota;Fusíveis;Impressoras para uso com computadores ' ;Instalações elétricas para controle remoto de operações industriais;Lâmpadas para quarto escuro [fotografia];Lanternas ópticas;Lanternas para smartphones;Laptops;Máquina de grampear;Máquina de registrar;Máquinas de calcular;Medidores [contadores];Microfones de alto - falante sem fio;Modems;Mouse pads [informática];Mouses de computador;Notebook [computadores];Óculos 3d;Películas protetoras adaptadas para smartphones;Pen drives;Periféricos de computador;Periódico em fita ou em cd - rom;Porta - disquete;Porta - retratos digitais;Processadores [unidades centrais de processamento] [informática];Rádios;Rádios para veículos;Redutores [eletricidade];Refratores;Relógios inteligentes.",
+      "translation_language": "en",
+      "translation": "9 Electrical adapters; Speakers; Finger rings for holding cell phones; Selfie ring lights for smartphones; Car stereo; Time recorder; Telecommunications devices in the form of jewelry; Telephone sets; Transmission devices [telecommunications]; Sound reproduction devices; Electrical regulators; Heaters, autoclaves, stirrers, evaporators and water purification devices for exclusive use in laboratories; Downloadable image files; Scales; Bathroom scales; Precision scales; Electrical cables; Electronic locks; Distribution boxes [electricity]; Cell calibrator for use with recorder; Cameras [photography]; Electric doorbells; Electric doorbells; Electronic pens for display units; Laptop cases; Smartphone cases; Chargers for electric batteries; Phone chargers Cell phones; Microfilm reels; Magnetic identification cards; Electric keys; Electronic key fobs [remote control devices]; Computers; Electrical capacitors; Electrical connections; Electrical contacts; Controls for use with computers, except for video games; Electrical converters; Electric date stamps; Detectors; CD cases; Smartphone cases; Electronic merchandise labels; Electronic shelf labels; Computer ribbon; Headphones; Headphones for remote communication; Fuses; Printers for use with computers; Electrical installations for remote control of industrial operations; Darkroom lamps [photography]; Optical flashlights; Flashlights for smartphones; Laptops; Stapling machines; Cash registers; Calculators; Meters [counters]; Wireless speakerphones; Modems; Mouse pads [Computer equipment];Computer mice;Notebooks [computers];3D glasses;Protective films adapted for smartphones;Pen drives;Computer peripherals;Recorder on tape or CD-ROM;Floppy disk drive;Digital photo frames;Processors [central processing units] [Computer equipment];Radios;Car radios;Gear switches [electricity];Refractors;Smartwatches."
+    }
+  ],
+  "owner": "VENTORI ACESSORIOS LTDA - ME.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Abraão Puridade",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "VENTORI ACESSORIOS LTDA - ME."
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "9 Electrical adapters; Speakers; Finger rings for holding cell phones; Selfie ring lights for smartphones; Car stereo; Time recorder; Telecommunications devices in the form of jewelry; Telephone sets; Transmission devices [telecommunications]; Sound reproduction devices; Electrical regulators; Heaters, autoclaves, stirrers, evaporators and water purification devices for exclusive use in laboratories; Downloadable image files; Scales; Bathroom scales; Precision scales; Electrical cables; Electronic locks; Distribution boxes [electricity]; Cell calibrator for use with recorder; Cameras [photography]; Electric doorbells; Electric doorbells; Electronic pens for display units; Laptop cases; Smartphone cases; Chargers for electric batteries; Phone chargers Cell phones; Microfilm reels; Magnetic identification cards; Electric keys; Electronic key fobs [remote control devices]; Computers; Electrical capacitors; Electrical connections; Electrical contacts; Controls for use with computers, except for video games; Electrical converters; Electric date stamps; Detectors; CD cases; Smartphone cases; Electronic merchandise labels; Electronic shelf labels; Computer ribbon; Headphones; Headphones for remote communication; Fuses; Printers for use with computers; Electrical installations for remote control of industrial operations; Darkroom lamps [photography]; Optical flashlights; Flashlights for smartphones; Laptops; Stapling machines; Cash registers; Calculators; Meters [counters]; Wireless speakerphones; Modems; Mouse pads [Computer equipment];Computer mice;Notebooks [computers];3D glasses;Protective films adapted for smartphones;Pen drives;Computer peripherals;Recorder on tape or CD-ROM;Floppy disk drive;Digital photo frames;Processors [central processing units] [Computer equipment];Radios;Car radios;Gear switches [electricity];Refractors;Smartwatches.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Adaptadores elétricos;Alto - falantes;Anéis de dedo para segurar telefones celulares;Anéis de luz [ring lights] de selfie para smartphones;Aparelho de som para automóvel;Aparelho para registro de tempo;Aparelhos de telecomunicação na forma de joias;Aparelhos de telefone;Aparelhos de transmissão [telecomunicação];Aparelhos para reprodução de som;Aparelhos reguladores, elétricos;Aquecedores, autoclaves, agitadores, evaporadores e aparelhos para purificação da água para utilização exclusiva em laboratórios;Arquivos de imagem baixáveis;Balanças;Balanças de banheiro;Balanças de precisão;Cabos elétricos;Cadeados eletrônicos;Caixas de distribuição [eletricidade];Calibrador de célula para uso com gravador;Câmeras [fotografia];Campainhas elétricas;Campainhas elétricas de porta;Canetas eletrônicas para unidades de visualização;Capas para laptops;Capas para smartphones;Carregadores para acumuladores elétricos;Carregadores para telefones celulares;Carretel para microfilme;Cartões magnéticos para identificação;Chave elétrica;Chaveiros eletrônicos [aparelhos de controle remoto];Computadores;Condensadores elétricos [capacitores];Conexões elétricas;Contatos elétricos;Controles para uso com computadores, exceto para videogames;Conversores elétricos;Datador elétrico;Detectores;Estojo porta - cds;Estojos para smartphones;Etiquetas eletrônicas para mercadorias;Etiquetas eletrônicas para prateleira;Fita para computador;Fones de ouvido;Fones de ouvido para comunicação remota;Fusíveis;Impressoras para uso com computadores ' ;Instalações elétricas para controle remoto de operações industriais;Lâmpadas para quarto escuro [fotografia];Lanternas ópticas;Lanternas para smartphones;Laptops;Máquina de grampear;Máquina de registrar;Máquinas de calcular;Medidores [contadores];Microfones de alto - falante sem fio;Modems;Mouse pads [informática];Mouses de computador;Notebook [computadores];Óculos 3d;Películas protetoras adaptadas para smartphones;Pen drives;Periféricos de computador;Periódico em fita ou em cd - rom;Porta - disquete;Porta - retratos digitais;Processadores [unidades centrais de processamento] [informática];Rádios;Rádios para veículos;Redutores [eletricidade];Refratores;Relógios inteligentes."
+        }
+      ]
+    },
+    "id": "1ac5cfcf-0d54-4c62-bbbb-96803a302f9c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "03.07.16",
+      "27.05.01",
+      "29.01.12"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260828",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "Abraão Puridade"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260702",
+        "applicationNumber": "944303617"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260828051841",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTORI"
+    }
+  },
+  "_uri": "/mark/br/1ac5cfcf-0d54-4c62-bbbb-96803a302f9c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:22.220Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,153 @@
+{
+  "uri": "/mark/xs/022c94aa-6d14-4633-8c58-49a726a01266",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "022c94aa-6d14-4633-8c58-49a726a01266",
+  "applicationNumber": null,
+  "registrationNumber": "2184869",
+  "applicationDate": null,
+  "registrationDate": "2013-03-21",
+  "expiryDate": null,
+  "renewalDate": "2018-03-16",
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2018-03-28",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "OMATIVE NORTH AMERICA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    20,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        20
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "OPTIMEZED PRODUCTIVITY SOLUTIONS, LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "P.O. BOX 58354, CINCINNATI, OH, 45258",
+        "applicantAddressCity": "CINCINNATI",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "45258",
+        "applicantAddressStateName": "OHIO",
+        "applicantAddressStreet": "P.O. BOX 58354",
+        "applicantName": "OPTIMEZED PRODUCTIVITY SOLUTIONS, LLC"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        }
+      ]
+    },
+    "id": "022c94aa-6d14-4633-8c58-49a726a01266",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADENAME",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "P.O. BOX 58354, CINCINNATI, OH, 45258",
+        "city": "CINCINNATI",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "LIMITED LIABILITY COMPANY",
+        "name": "OPTIMEZED PRODUCTIVITY SOLUTIONS, LLC",
+        "postalCode": "45258",
+        "stateName": "OHIO",
+        "street": "P.O. BOX 58354"
+      }
+    ],
+    "recordLastUpdated": "20241214",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "renewalOwners": [
+      {
+        "address": "P.O. BOX 58354, CINCINNATI, OH, 45258",
+        "city": "CINCINNATI",
+        "name": "OPTIMEZED PRODUCTIVITY SOLUTIONS, LLC",
+        "postalCode": "45258",
+        "renewalDate": "20180316",
+        "stateName": "OHIO",
+        "street": "P.O. BOX 58354"
+      }
+    ],
+    "status": {
+      "active": false,
+      "cancellationDate": "20180328",
+      "cmNormalisedStatus": "CANCELLED",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "CANCELLED"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "registration": {
+        "registrationDate": "20130321",
+        "registrationNumber": "2184869"
+      },
+      "renewalDate": "20180316"
+    },
+    "usStateOfficeCode": "OH",
+    "usStateOfficeName": "OHIO",
+    "version": "20241214113121",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "OMATIVE NORTH AMERICA"
+    }
+  },
+  "_uri": "/mark/xs/022c94aa-6d14-4633-8c58-49a726a01266",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.833Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

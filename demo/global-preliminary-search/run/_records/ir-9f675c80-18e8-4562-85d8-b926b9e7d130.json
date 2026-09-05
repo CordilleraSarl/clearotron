@@ -1,0 +1,229 @@
+{
+  "uri": "/mark/ir/9f675c80-18e8-4562-85d8-b926b9e7d130",
+  "provider": "clarivate",
+  "office": "ir",
+  "guid": "9f675c80-18e8-4562-85d8-b926b9e7d130",
+  "applicationNumber": "140150140001051332",
+  "registrationNumber": null,
+  "applicationDate": "2022-09-17",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "FORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "STYLIZED LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SHERKAT KALA AVIJHE LOTOUS ARMAN",
+  "ownerNative": null,
+  "ownerCountry": "IR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "TEHRAN",
+        "applicantAddressCountryCode": "IR",
+        "applicantAddressCountryName": "Iran",
+        "applicantName": "SHERKAT KALA AVIJHE LOTOUS ARMAN"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35"
+        },
+        {
+          "intClassNumber": "36"
+        },
+        {
+          "intClassNumber": "37"
+        },
+        {
+          "intClassNumber": "38"
+        },
+        {
+          "intClassNumber": "39"
+        },
+        {
+          "intClassNumber": "40"
+        },
+        {
+          "intClassNumber": "41"
+        },
+        {
+          "intClassNumber": "42"
+        },
+        {
+          "intClassNumber": "43"
+        },
+        {
+          "intClassNumber": "44"
+        },
+        {
+          "intClassNumber": "45"
+        }
+      ]
+    },
+    "id": "9f675c80-18e8-4562-85d8-b926b9e7d130",
+    "ipRightKind": "tmk",
+    "markFeature": "STYLIZED LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "IR",
+    "registrationOfficeName": "Iran",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220917",
+        "applicationNumber": "140150140001051332"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20230427182326",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FORI"
+    }
+  },
+  "_uri": "/mark/ir/9f675c80-18e8-4562-85d8-b926b9e7d130",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:53.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

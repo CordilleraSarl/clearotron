@@ -1,0 +1,278 @@
+{
+  "uri": "/mark/wo/4425ee6f-b53d-4126-a69d-0516e4153b67",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "4425ee6f-b53d-4126-a69d-0516e4153b67",
+  "applicationNumber": null,
+  "registrationNumber": "1217365",
+  "applicationDate": null,
+  "registrationDate": "2014-07-04",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2014-10-02",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2025-01-23",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    17,
+    25
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Clothing for protection against accidents, irradiation and fire.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "en",
+      "description": "Rubber, raw or semi-worked; gum, raw or partly processed synthetic rubber; insulating gloves.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "en",
+      "description": "Berets; underwear; underclothing; sweat-absorbent underclothing; sweat-absorbent underwear; hats; caps; aprons as clothing; waistcoats; vests; sports shoes; hoods for clothing; pockets for clothing; waterproof clothing; clothing of leather; clothing of imitations of leather; belts as clothing; gloves as clothing; mittens; trousers; pants; tee-shirts; clothing.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Vêtements de protection contre les accidents, les irradiations et le feu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "fr",
+      "description": "Caoutchouc brut ou mi-ouvré; gomme brute ou mi-ouvrée, caoutchouc synthétique; gants isolants.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "fr",
+      "description": "Bérets; sous-vêtements; vêtements de dessous; sous-vêtements absorbant la transpiration; sous-vêtements sudorifuges; chapeaux; casquettes; tabliers en tant que vêtements; gilets de costume; gilets; chaussures de sport; capuchons pour vêtements; poches pour vêtements; vêtements imperméables; vêtements en cuir; vêtements en imitations du cuir; ceintures pour l'habillement; gants en tant que vêtements; moufles; pantalons; culottes; tee-shirts; vêtements.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Ropa de protección contra los accidentes, las radiaciones y el fuego.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "es",
+      "description": "Caucho en bruto o semielaborado; goma, caucho sintético en bruto o semiprocesado; guantes aislantes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "es",
+      "description": "Boinas; ropa interior; prendas interiores; prendas interiores absorbentes del sudor; ropa interior absorbente del sudor; sombreros; gorras; delantales (prendas de vestir); chalecos; chaquetillas; zapatillas deportivas; capuchas (prendas de vestir); bolsillos de prendas de vestir; prendas de vestir impermeables; ropa de cuero; ropa de cuero de imitación; cinturones (prendas de vestir); guantes (prendas de vestir); mitones; pantalones; calzones; camisetas de manga corta; prendas de vestir.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "POLSTAR HOLDING SP. Z O.O., SP. K.",
+  "ownerNative": null,
+  "ownerCountry": "PL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20061127",
+          "basicApplicationNumber": "318335"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "PL",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20080523",
+          "basicRegistrationNumber": "205888"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "DE"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Ul. H. Modrzejewskiej 52 PL-75-734 Koszalin",
+        "applicantAddressCountryCode": "PL",
+        "applicantAddressCountryName": "Poland",
+        "applicantName": "POLSTAR HOLDING SP. Z O.O., SP. K."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20061127",
+            "basicApplicationNumber": "318335"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "PL",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20080523",
+            "basicRegistrationNumber": "205888"
+          }
+        ]
+      }
+    ],
+    "cmMarkImageEUclassification": [
+      "37.01.22"
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "DE"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Clothing for protection against accidents, irradiation and fire."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Rubber, raw or semi-worked; gum, raw or partly processed synthetic rubber; insulating gloves."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Berets; underwear; underclothing; sweat-absorbent underclothing; sweat-absorbent underwear; hats; caps; aprons as clothing; waistcoats; vests; sports shoes; hoods for clothing; pockets for clothing; waterproof clothing; clothing of leather; clothing of imitations of leather; belts as clothing; gloves as clothing; mittens; trousers; pants; tee-shirts; clothing."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Vêtements de protection contre les accidents, les irradiations et le feu."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Caoutchouc brut ou mi-ouvré; gomme brute ou mi-ouvrée, caoutchouc synthétique; gants isolants."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Bérets; sous-vêtements; vêtements de dessous; sous-vêtements absorbant la transpiration; sous-vêtements sudorifuges; chapeaux; casquettes; tabliers en tant que vêtements; gilets de costume; gilets; chaussures de sport; capuchons pour vêtements; poches pour vêtements; vêtements imperméables; vêtements en cuir; vêtements en imitations du cuir; ceintures pour l'habillement; gants en tant que vêtements; moufles; pantalons; culottes; tee-shirts; vêtements."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Ropa de protección contra los accidentes, las radiaciones y el fuego."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Caucho en bruto o semielaborado; goma, caucho sintético en bruto o semiprocesado; guantes aislantes."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Boinas; ropa interior; prendas interiores; prendas interiores absorbentes del sudor; ropa interior absorbente del sudor; sombreros; gorras; delantales (prendas de vestir); chalecos; chaquetillas; zapatillas deportivas; capuchas (prendas de vestir); bolsillos de prendas de vestir; prendas de vestir impermeables; ropa de cuero; ropa de cuero de imitación; cinturones (prendas de vestir); guantes (prendas de vestir); mitones; pantalones; calzones; camisetas de manga corta; prendas de vestir."
+        }
+      ]
+    },
+    "id": "4425ee6f-b53d-4126-a69d-0516e4153b67",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of a word GROSVENOR written in capital letters; the V letter is the biggest one in the word.",
+        "markImageDescriptionLanguageCode": "en"
+      },
+      {
+        "markImageDescription": "Cette marque se compose du mot GROSVENOR écrit en lettres majuscules; la lettre V est la plus grande du mot.",
+        "markImageDescriptionLanguageCode": "fr"
+      },
+      {
+        "markImageDescription": "La marca consiste en la palabra GROSVENOR escrita en letras mayúsculas; la V es la letra más grande de la palabra.",
+        "markImageDescriptionLanguageCode": "es"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "38"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "status": {
+      "active": false,
+      "cancellationDate": "20250123",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20141002",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20140704",
+        "registrationNumber": "1217365"
+      }
+    },
+    "version": "20250620175537",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/wo/4425ee6f-b53d-4126-a69d-0516e4153b67",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.831Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

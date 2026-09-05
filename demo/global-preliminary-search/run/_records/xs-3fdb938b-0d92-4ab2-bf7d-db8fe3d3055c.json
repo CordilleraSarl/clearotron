@@ -1,0 +1,153 @@
+{
+  "uri": "/mark/xs/3fdb938b-0d92-4ab2-bf7d-db8fe3d3055c",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "3fdb938b-0d92-4ab2-bf7d-db8fe3d3055c",
+  "applicationNumber": null,
+  "registrationNumber": "658573",
+  "applicationDate": null,
+  "registrationDate": "2015-04-22",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LOUISIANA VEIN CARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Medical office practice & vascular surgery",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "en",
+      "description": "Medical office practice & vascular surgery",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "CHRISTOPHER E. LAGRAIZE, M.D., L.L.C.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "200 CORPORATE BLVD, LAFAYETTE, LA, 70508",
+        "applicantAddressCity": "LAFAYETTE",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "70508",
+        "applicantAddressStateName": "LOUISIANA",
+        "applicantAddressStreet": "200 CORPORATE BLVD",
+        "applicantLegalEntity": "LIMITED LIABILITY COMPANY",
+        "applicantName": "CHRISTOPHER E. LAGRAIZE, M.D., L.L.C."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Medical office practice & vascular surgery"
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Medical office practice & vascular surgery"
+        }
+      ]
+    },
+    "id": "3fdb938b-0d92-4ab2-bf7d-db8fe3d3055c",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADENAME",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "LOUISIANA VEIN CARE & LOGO: THREE STACKED WAVES OF ALTERNATING COLOR AND INCREASING SIZE BESIDE \"LOUISIANA VEIN CARE\" IN GIL SANS SEMI-BOLD FONT, COLORS: BLUE: PMS 647, GREEN PMS 7724",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "200 CORPORATE BLVD, LAFAYETTE, LA, 70508",
+        "city": "LAFAYETTE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "LIMITED LIABILITY COMPANY",
+        "name": "CHRISTOPHER E. LAGRAIZE, M.D., L.L.C.",
+        "postalCode": "70508",
+        "stateName": "LOUISIANA",
+        "street": "200 CORPORATE BLVD"
+      }
+    ],
+    "recordLastUpdated": "20250712",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20150417"
+        }
+      ],
+      "firstUsedAnywhereDate": "20150417",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20150422",
+        "registrationNumber": "658573"
+      }
+    },
+    "usStateOfficeCode": "LA",
+    "usStateOfficeName": "LOUISIANA",
+    "version": "20250712111708",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LOUISIANA VEIN CARE"
+    }
+  },
+  "_uri": "/mark/xs/3fdb938b-0d92-4ab2-bf7d-db8fe3d3055c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.820Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/cn/2fd392c6-e91f-4655-8fbc-0d2df90b8b8f",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "2fd392c6-e91f-4655-8fbc-0d2df90b8b8f",
+  "applicationNumber": "43893977",
+  "registrationNumber": "43893977",
+  "applicationDate": "2020-01-17",
+  "registrationDate": "2020-10-07",
+  "expiryDate": "2030-10-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-07-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QVRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "穿戴式计算机,数据处理设备,交互式触屏终端,智能眼镜(数据处理),头戴式虚拟现实装置,智能手表(数据处理),计算机外围设备,可下载的计算机应用软件,计算机软件(已录制),已录制的或可下载的计算机软件平台",
+      "translation_language": "en",
+      "translation": "Wearable computers, data processing equipment, interactive touch screen terminals, smart glasses (data processing), head-mounted virtual reality devices, smart watches (data processing), computer peripherals, downloadable computer application software, computer software ( Recorded), recorded or downloadable computer software platform"
+    }
+  ],
+  "owner": "Qingdao Virtual Reality Research Institute Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "山东省青岛市崂山区松岭路369号108室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Qingdao Virtual Reality Research Institute Co., Ltd.",
+        "applicantNativeName": "青岛虚拟现实研究院有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Wearable computers, data processing equipment, interactive touch screen terminals, smart glasses (data processing), head-mounted virtual reality devices, smart watches (data processing), computer peripherals, downloadable computer application software, computer software ( Recorded), recorded or downloadable computer software platform",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "穿戴式计算机,数据处理设备,交互式触屏终端,智能眼镜(数据处理),头戴式虚拟现实装置,智能手表(数据处理),计算机外围设备,可下载的计算机应用软件,计算机软件(已录制),已录制的或可下载的计算机软件平台"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Apparatus for sound and images"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        }
+      ]
+    },
+    "id": "2fd392c6-e91f-4655-8fbc-0d2df90b8b8f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.03.23",
+      "26.31.2a"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1702"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "博雅智泉(北京)知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200117",
+        "applicationNumber": "43893977"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20301006",
+      "lastPublicationDate": "20200706",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20201007",
+        "registrationNumber": "43893977"
+      }
+    },
+    "version": "20251004002030",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QVRI"
+    }
+  },
+  "_uri": "/mark/cn/2fd392c6-e91f-4655-8fbc-0d2df90b8b8f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:57.806Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

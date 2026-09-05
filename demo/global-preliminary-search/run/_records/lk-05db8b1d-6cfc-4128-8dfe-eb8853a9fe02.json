@@ -1,0 +1,102 @@
+{
+  "uri": "/mark/lk/05db8b1d-6cfc-4128-8dfe-eb8853a9fe02",
+  "provider": "clarivate",
+  "office": "lk",
+  "guid": "05db8b1d-6cfc-4128-8dfe-eb8853a9fe02",
+  "applicationNumber": "246638",
+  "registrationNumber": null,
+  "applicationDate": "2019-11-20",
+  "registrationDate": null,
+  "expiryDate": "2029-11-20",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "Venora INTERNATIONAL PROJECTS Solution Providers for an Energized World",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Power and control panels, variable speed drives",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "VENORA INTERNATIONAL PROJECTS PVT LTD",
+  "ownerNative": null,
+  "ownerCountry": "LK",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "DENIYA ROAD SUWARAPOLA PILIYANDALA",
+        "applicantAddressCountryCode": "LK",
+        "applicantAddressCountryName": "Sri Lanka",
+        "applicantName": "VENORA INTERNATIONAL PROJECTS PVT LTD"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Power and control panels, variable speed drives"
+        }
+      ]
+    },
+    "id": "05db8b1d-6cfc-4128-8dfe-eb8853a9fe02",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20240911",
+    "registrationOfficeCode": "LK",
+    "registrationOfficeName": "Sri Lanka",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20191120",
+        "applicationNumber": "246638"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20291120",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20240911051943",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Venora INTERNATIONAL PROJECTS Solution Providers for an Energized World"
+    }
+  },
+  "_uri": "/mark/lk/05db8b1d-6cfc-4128-8dfe-eb8853a9fe02",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.829Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

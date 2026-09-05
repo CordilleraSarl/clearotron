@@ -1,0 +1,197 @@
+{
+  "uri": "/mark/ve/ae2793ed-194f-4d6a-a87f-d41f366bf696",
+  "provider": "clarivate",
+  "office": "ve",
+  "guid": "ae2793ed-194f-4d6a-a87f-d41f366bf696",
+  "applicationNumber": "1989-000686",
+  "registrationNumber": null,
+  "applicationDate": "1989-01-19",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "COMIVEN CORPOPORACION MINERA VENEZOLANA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "en",
+      "description": "No goods available",
+      "translation_language": "en",
+      "translation": "No goods available"
+    }
+  ],
+  "owner": "PEDRO JOSE ARMADA GONZALEZ",
+  "ownerNative": null,
+  "ownerCountry": "VE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "SAN RAFAEL, CDAD. BOLIVAR, ESTADO BOLIVAR - VENEZUELA",
+        "applicantAddressCountryCode": "VE",
+        "applicantAddressCountryName": "Venezuela",
+        "applicantName": "PEDRO JOSE ARMADA GONZALEZ"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "No goods available",
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "No goods available"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "46"
+        }
+      ]
+    },
+    "id": "ae2793ed-194f-4d6a-a87f-d41f366bf696",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "VE",
+    "registrationOfficeName": "Venezuela",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19890119",
+        "applicationNumber": "1989-000686"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK"
+    },
+    "version": "20250630171653",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "COMIVEN CORPOPORACION MINERA VENEZOLANA"
+    }
+  },
+  "_uri": "/mark/ve/ae2793ed-194f-4d6a-a87f-d41f366bf696",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.743Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

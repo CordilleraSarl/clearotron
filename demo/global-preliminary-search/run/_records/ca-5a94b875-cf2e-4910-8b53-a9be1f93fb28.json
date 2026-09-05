@@ -1,0 +1,219 @@
+{
+  "uri": "/mark/ca/5a94b875-cf2e-4910-8b53-a9be1f93fb28",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "5a94b875-cf2e-4910-8b53-a9be1f93fb28",
+  "applicationNumber": "1849140",
+  "registrationNumber": null,
+  "applicationDate": "2017-07-25",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2019-04-23",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "SOHEAVEN Qi Ye Hun",
+  "markTransliteration": null,
+  "markTranslation": "SOHEAVEN THE SOUL OF THE UNIVERSE",
+  "markFeature": "DESIGN MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "(1) Publication of books; On-line publishing of electronic books and journals; Videotaping; Vocational guidance services; Correspondence courses in the field of personal and professional development; Arranging and conducting of workshops in the field of personal and professional development",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Soheaven International Group Inc.",
+  "ownerNative": null,
+  "ownerCountry": "WS",
+  "representative": "CASSAN MACLEAN IP AGENCY INC.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Vistra Corporate Services Centre, Ground Floor NPF Building, Beach Road, Apia",
+        "applicantAddressCountryCode": "WS",
+        "applicantAddressCountryName": "Samoa",
+        "applicantAddressLines": [
+          "Vistra Corporate Services Centre",
+          "Ground Floor NPF Building",
+          "Beach Road",
+          "Apia"
+        ],
+        "applicantName": "Soheaven International Group Inc."
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Proposed Use in CANADA on services (1)",
+        "typeDescription": "Proposed Use"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Publication of books; On-line publishing of electronic books and journals; Videotaping; Vocational guidance services; Correspondence courses in the field of personal and professional development; Arranging and conducting of workshops in the field of personal and professional development"
+        }
+      ]
+    },
+    "id": "5a94b875-cf2e-4910-8b53-a9be1f93fb28",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20190423",
+        "descriptionText": "Abandoned - Section 36"
+      },
+      {
+        "date": "20190205",
+        "descriptionText": "Default Notice Sent",
+        "responseDate": "20190405"
+      },
+      {
+        "date": "20180712",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20190112"
+      },
+      {
+        "date": "20180712",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20171220",
+        "descriptionText": "Rep for Service Name Changed"
+      },
+      {
+        "date": "20171220",
+        "descriptionText": "Agent Name Changed"
+      },
+      {
+        "date": "20170727",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20170726",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20170725",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "DESIGN MARK",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Colour is claimed as a feature of the trade-mark. The colours blue and gold are claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageViennaClassification": [
+      "25.01.06",
+      "26.11.01",
+      "26.11.06",
+      "26.11.12",
+      "27.05.01",
+      "27.05.08",
+      "24.15.21",
+      "28.03.00",
+      "29.01.04",
+      "29.01.02"
+    ],
+    "markImagesAvailable": true,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Vistra Corporate Services Centre, Ground Floor NPF Building, Beach Road, Apia",
+        "addressLines": [
+          "Vistra Corporate Services Centre",
+          "Ground Floor NPF Building",
+          "Beach Road",
+          "Apia"
+        ],
+        "countryName": "Samoa",
+        "name": "Soheaven International Group Inc."
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "CASSAN MACLEAN IP AGENCY INC.",
+          "190 O'CONNOR STREET",
+          "SUITE 710",
+          "OTTAWA",
+          "ONTARIO K2P2R3"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "CASSAN MACLEAN IP AGENCY INC.",
+        "representativeReferenceNumber": "42811-0016"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20190423",
+      "active": false,
+      "application": {
+        "applicationDate": "20170725",
+        "applicationNumber": "1849140"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "defaultNotice": {
+        "dueDate": "20190405",
+        "sentDate": "20190205"
+      },
+      "formalisationDate": "20170727",
+      "markCurrentStatus": "Abandoned - Section 36"
+    },
+    "subjectHeadings": [
+      "SOHEAVEN QI YE HUN S",
+      "SO HEAVEN",
+      "ENTERPRISE",
+      "SOUL"
+    ],
+    "version": "20250625110647",
+    "wordMarkSpecification": {
+      "markTranslation": "SOHEAVEN THE SOUL OF THE UNIVERSE",
+      "markTranslationDescription": "The translation of the foreign characters is 'The soul of enterprise'. The transliteration of the foreign characters is Qi Ye Hun.",
+      "markVerbalElementCrossReferences": "SO HEAVEN QI YE HUN",
+      "markVerbalElementText": "SOHEAVEN Qi Ye Hun",
+      "markVerbalElementTextFormal": "SOHEAVEN & Design (Qi Ye Hun/the soul of enterprise)"
+    }
+  },
+  "_uri": "/mark/ca/5a94b875-cf2e-4910-8b53-a9be1f93fb28",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.562Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

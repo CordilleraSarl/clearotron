@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/au/6d8ef89e-d117-4f5b-94d0-04917d56707d",
+  "provider": "clarivate",
+  "office": "au",
+  "guid": "6d8ef89e-d117-4f5b-94d0-04917d56707d",
+  "applicationNumber": "2254385",
+  "registrationNumber": null,
+  "applicationDate": "2022-03-08",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "GROSVENOR PUBLIC SECTOR ADVISORY GROSVENOR PROPERTY ADVISORY GROSVENOR PROCUREMENT ADVISORY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Advice relating to commercial management; Advisory services relating to commercial planning; Advisory services relating to data processing; Benchmarking (evaluation of business organisation practices for business management purposes); Administration of business affairs; Administration of businesses; Business administration; Advice relating to business organisation; Business advice; Advisory services relating to business organisation; Advisory services relating to business planning; Business administration advisory services; Business advisory services; Business analysis being the conducting of productivity studies; Business analysis services; Business administration consultancy; Business consultancy; Business consultancy to firms; Business consultation; Business consulting services relating to logistics; Business data analysis; Business development services; Business efficiency expert services; Business efficiency studies; Business evaluation services; Business expertise services; Business intelligence services; Advice relating to business management; Business management advice; Advisory services relating to business management; Advisory services relating to business risk management; Business advisory services relating to the management of businesses; Business management advisory services; Business management consultancy; Business management and organisation consultancy; Business organisation consultancy; Business organisation consulting; Business planning consultancy; Business project management; Business statistical analysis; Business statistical information services; Business statistical studies; Business strategic planning; Business strategy services; Business surveys; Collation of data; Collecting business information; Collecting business statistics; Collecting information for business; Collection of commercial information; Collection of data; Collection of information relating to market analysis; Collection of information relating to market research; Collection of market research information; Collection of statistics for business; Commercial business management; Commercial management advisory services; Commercial management consultancy; Compilation of business data; Compilation of business information; Compilation of business statistics; Conducting of business research; Conducting of internal business communication surveys; Consultancy relating to business efficiency; Consultancy relating to business organisation; Consultancy relating to business planning; Business consultancy services relating to data processing; Consultancy relating to data processing; Corporate management consultancy; Cost analysis; Cost price analysis; Business data management consultancy in information analysis; Data management consultancy; Data processing for businesses; Data processing for the collection of data for business purposes; Economic analysis for business purposes; Economic forecasting analysis for business purposes; Economic information services for business purposes; Business management and organization consultancy; Business organization consultancy; Efficiency or process auditing (examining, reviewing or assessing the working of a business or organization); Evaluation of business opportunities; Evaluation of personnel requirements; Advisory services for business management; Management advisory services for businesses; Management assistance in business affairs; Business consultancy services relating to the supply of quality management systems; Consultancy relating to business document management; Consultancy relating to business management; Management consultations relating to business; Management of business projects (for others); Market analysis services; Market assessment consultancy; Market assessment services; Market reporting consultancy; Market analysis reporting services; Market reporting services; Negotiation and conclusion of commercial transactions for third parties; Negotiation of business contracts for others; Obtaining business statistics (for others); Personnel management advice; Consultancy relating to personnel management; Consultancy relating to the management of personnel; Personnel management consultancy; Preparation of business data; Preparation of business reports; Preparation of documents relating to business; Consultancy relating to the preparation of business statistics; Preparation of business statistics; Preparation of statistics (business); Price analysis services; Processing of business survey results; Procurement of contracts (for others); Professional business consultancy; Project business management and administration; Project studies for businesses; Providing business information; Provision of business assistance; Provision of business data; Provision of business information; Provision of business management assistance; Provision of business management information; Provision of business statistical information; Provision of information in relation to business management; Provision of information relating to business; Research of business information; Research services relating to business; Risk management consultancy (business); Surveys for business purposes; Writing of business project studies; Writing of business project reports; Writing of business reports",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Advisory services relating to training; Business educational services; Business training services; Commercial training services; Conducting of business conferences; Conducting seminars; Conducting training seminars; Arranging and conducting of workshops (training); Conducting workshops; Conducting workshops (training); Organisation of training courses; Providing courses of training; Providing information, including online, about training activities; Association services being the provision of training and education to members of the association; Provision of information relating to training; Provision of training; Provision of training courses; Provision of training facilities; Setting of training standards; Business training consultancy services; Consultancy services relating to training; Training consultancy",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "en",
+      "description": "Legal research; Legal consultancy services; Legal information services; Legal information research services; Legal services; Provision of legal information; Provision of legal research; Provision of legal services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Grosvenor Performance Group Pty Ltd",
+  "ownerNative": null,
+  "ownerCountry": "AU",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "L 15 379 Collins St Melbourne 3000, VIC",
+        "applicantAddressCountryCode": "AU",
+        "applicantAddressCountryName": "Australia",
+        "applicantName": "Grosvenor Performance Group Pty Ltd"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Advice relating to commercial management; Advisory services relating to commercial planning; Advisory services relating to data processing; Benchmarking (evaluation of business organisation practices for business management purposes); Administration of business affairs; Administration of businesses; Business administration; Advice relating to business organisation; Business advice; Advisory services relating to business organisation; Advisory services relating to business planning; Business administration advisory services; Business advisory services; Business analysis being the conducting of productivity studies; Business analysis services; Business administration consultancy; Business consultancy; Business consultancy to firms; Business consultation; Business consulting services relating to logistics; Business data analysis; Business development services; Business efficiency expert services; Business efficiency studies; Business evaluation services; Business expertise services; Business intelligence services; Advice relating to business management; Business management advice; Advisory services relating to business management; Advisory services relating to business risk management; Business advisory services relating to the management of businesses; Business management advisory services; Business management consultancy; Business management and organisation consultancy; Business organisation consultancy; Business organisation consulting; Business planning consultancy; Business project management; Business statistical analysis; Business statistical information services; Business statistical studies; Business strategic planning; Business strategy services; Business surveys; Collation of data; Collecting business information; Collecting business statistics; Collecting information for business; Collection of commercial information; Collection of data; Collection of information relating to market analysis; Collection of information relating to market research; Collection of market research information; Collection of statistics for business; Commercial business management; Commercial management advisory services; Commercial management consultancy; Compilation of business data; Compilation of business information; Compilation of business statistics; Conducting of business research; Conducting of internal business communication surveys; Consultancy relating to business efficiency; Consultancy relating to business organisation; Consultancy relating to business planning; Business consultancy services relating to data processing; Consultancy relating to data processing; Corporate management consultancy; Cost analysis; Cost price analysis; Business data management consultancy in information analysis; Data management consultancy; Data processing for businesses; Data processing for the collection of data for business purposes; Economic analysis for business purposes; Economic forecasting analysis for business purposes; Economic information services for business purposes; Business management and organization consultancy; Business organization consultancy; Efficiency or process auditing (examining, reviewing or assessing the working of a business or organization); Evaluation of business opportunities; Evaluation of personnel requirements; Advisory services for business management; Management advisory services for businesses; Management assistance in business affairs; Business consultancy services relating to the supply of quality management systems; Consultancy relating to business document management; Consultancy relating to business management; Management consultations relating to business; Management of business projects (for others); Market analysis services; Market assessment consultancy; Market assessment services; Market reporting consultancy; Market analysis reporting services; Market reporting services; Negotiation and conclusion of commercial transactions for third parties; Negotiation of business contracts for others; Obtaining business statistics (for others); Personnel management advice; Consultancy relating to personnel management; Consultancy relating to the management of personnel; Personnel management consultancy; Preparation of business data; Preparation of business reports; Preparation of documents relating to business; Consultancy relating to the preparation of business statistics; Preparation of business statistics; Preparation of statistics (business); Price analysis services; Processing of business survey results; Procurement of contracts (for others); Professional business consultancy; Project business management and administration; Project studies for businesses; Providing business information; Provision of business assistance; Provision of business data; Provision of business information; Provision of business management assistance; Provision of business management information; Provision of business statistical information; Provision of information in relation to business management; Provision of information relating to business; Research of business information; Research services relating to business; Risk management consultancy (business); Surveys for business purposes; Writing of business project studies; Writing of business project reports; Writing of business reports"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Advisory services relating to training; Business educational services; Business training services; Commercial training services; Conducting of business conferences; Conducting seminars; Conducting training seminars; Arranging and conducting of workshops (training); Conducting workshops; Conducting workshops (training); Organisation of training courses; Providing courses of training; Providing information, including online, about training activities; Association services being the provision of training and education to members of the association; Provision of information relating to training; Provision of training; Provision of training courses; Provision of training facilities; Setting of training standards; Business training consultancy services; Consultancy services relating to training; Training consultancy"
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Legal research; Legal consultancy services; Legal information services; Legal information research services; Legal services; Provision of legal information; Provision of legal research; Provision of legal services"
+        }
+      ]
+    },
+    "id": "6d8ef89e-d117-4f5b-94d0-04917d56707d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "DISC & CORRECT SYMBOL FORM DISC-HEAD IS LTR V"
+      }
+    ],
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "AU",
+    "registrationOfficeName": "Australia",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "L 15 379 Collins St Melbourne 3000 VIC",
+        "representativeCorrespondentAddressCountryCode": "AU",
+        "representativeCorrespondentAddressCountryName": "Australia",
+        "representativeCorrespondentName": "Grosvenor Performance Group Pty Ltd"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20220308",
+        "applicationNumber": "2254385"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "markCurrentStatus": "LAPSED: NOT ACCEPTED"
+    },
+    "version": "20250625164948",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR PUBLIC SECTOR ADVISORY GROSVENOR PROPERTY ADVISORY GROSVENOR PROCUREMENT ADVISORY"
+    }
+  },
+  "_uri": "/mark/au/6d8ef89e-d117-4f5b-94d0-04917d56707d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

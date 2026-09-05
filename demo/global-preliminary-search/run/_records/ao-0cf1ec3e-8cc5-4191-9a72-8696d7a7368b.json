@@ -1,0 +1,107 @@
+{
+  "uri": "/mark/ao/0cf1ec3e-8cc5-4191-9a72-8696d7a7368b",
+  "provider": "clarivate",
+  "office": "ao",
+  "guid": "0cf1ec3e-8cc5-4191-9a72-8696d7a7368b",
+  "applicationNumber": "71015",
+  "registrationNumber": "71015",
+  "applicationDate": "2021-12-23",
+  "registrationDate": null,
+  "expiryDate": "2031-12-23",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENCOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "DVDs; Televisores; Controlos remotos para televisores; Aparelhos para a reprodução de som; Aparelhos portáteis para reprodução de som.",
+      "translation_language": "en",
+      "translation": "DVDs; televisions; remote controls for televisions; Apparatus for reproducing sound; Portable sound reproduction apparatus."
+    }
+  ],
+  "owner": "AFRICANA DISCOUNT LIMITADA",
+  "ownerNative": null,
+  "ownerCountry": "AO",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "RUA LUTHER KING N BAIRRO MACULUSSO LUANDA",
+        "applicantAddressCountryCode": "AO",
+        "applicantAddressCountryName": "Angola",
+        "applicantName": "AFRICANA DISCOUNT LIMITADA"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "DVDs; televisions; remote controls for televisions; Apparatus for reproducing sound; Portable sound reproduction apparatus.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "DVDs; Televisores; Controlos remotos para televisores; Aparelhos para a reprodução de som; Aparelhos portáteis para reprodução de som."
+        }
+      ]
+    },
+    "id": "0cf1ec3e-8cc5-4191-9a72-8696d7a7368b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260414",
+    "registrationOfficeCode": "AO",
+    "registrationOfficeName": "Angola",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20211223",
+        "applicationNumber": "71015"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311223",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "71015"
+      }
+    },
+    "version": "20260414050020",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENCOR"
+    }
+  },
+  "_uri": "/mark/ao/0cf1ec3e-8cc5-4191-9a72-8696d7a7368b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.742Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

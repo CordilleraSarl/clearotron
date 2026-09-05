@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/cn/761134c8-6c70-4f68-87b1-e15983a66f50",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "761134c8-6c70-4f68-87b1-e15983a66f50",
+  "applicationNumber": "49046175",
+  "registrationNumber": null,
+  "applicationDate": "2020-08-19",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "七正上",
+  "markTransliteration": "SEVEN QIZHENGSHANG.COM QI ZHENG SHANG",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "替他人创建和维护网站,提供互联网搜索引擎,包装设计,计算机软件设计,网站设计咨询,网站设计,为他人提供计算机软件设计,多媒体产品的设计和开发,图像处理软件设计,计算机编程",
+      "translation_language": "en",
+      "translation": "Create and maintain websites for others, provide Internet search engines, packaging design, computer software design, website design consulting, website design, provide computer software design for others, design and development of multimedia products, image processing software design, computer programming"
+    }
+  ],
+  "owner": "Chongqing Qizhengshang Network Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "重庆市巴南区龙汇路1488号6幢2单元1-1",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Chongqing Qizhengshang Network Technology Co., Ltd.",
+        "applicantNativeName": "重庆七正上网络科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Create and maintain websites for others, provide Internet search engines, packaging design, computer software design, website design consulting, website design, provide computer software design for others, design and development of multimedia products, image processing software design, computer programming",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "替他人创建和维护网站,提供互联网搜索引擎,包装设计,计算机软件设计,网站设计咨询,网站设计,为他人提供计算机软件设计,多媒体产品的设计和开发,图像处理软件设计,计算机编程"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Registered design service",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4216",
+          "subNatGoodsServicesDescription": "Registered design service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "761134c8-6c70-4f68-87b1-e15983a66f50",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "重庆憨牛知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200819",
+        "applicationNumber": "49046175"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251004055639",
+    "wordMarkSpecification": {
+      "markTransliteration": "SEVEN QIZHENGSHANG.COM QI ZHENG SHANG",
+      "markVerbalElementText": "七正上"
+    }
+  },
+  "_uri": "/mark/cn/761134c8-6c70-4f68-87b1-e15983a66f50",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.563Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

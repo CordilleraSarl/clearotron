@@ -1,0 +1,291 @@
+{
+  "uri": "/mark/us/9b33bd31-f303-4c29-9415-c4aab8cf727c",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "9b33bd31-f303-4c29-9415-c4aab8cf727c",
+  "applicationNumber": "78801743",
+  "registrationNumber": null,
+  "applicationDate": "2006-01-29",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2007-07-13",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "DORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Computerized on-line gift ordering service which matches the gift giver's requirements with the gift recipient's wants and needs; Computerized on-line retail store services in the field of housewares; Discount stores in the field of general merchandise; Distributorships in the field of housewares; Franchising, namely, offering technical assistance in the establishment and/or operation of retail stores featuring housewares; Operating on-line marketplaces for sellers of goods and/or services; Promoting the goods and services of others by means of operating an on-line shopping mall with links to the retail web sites of others; retail discount store services in the field of general consumer merchandise; retail gift shops; retail jewelry stores; retail store services featuring a wide variety of consumer goods of others; retail store services, available through computer communications and interactive television, featuring housewares, general consumer merchandise; retail stores featuring housewares, general consumer merchandise; retail variety stores; video stores; wholesale distributorships featuring housewares; wholesale stores featuring housewares",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Electronic publishing services, namely, publication of text and graphic works of others on CD, DVD, VCR and on-line, featuring music, sports, movies, computer games; entertainment services, namely, providing prerecorded music, drama, movies, sports, amusement, commentary, broadcasting articles, and all on-line via a global computer network; on-line education credit and degree evaluation and comparison services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Dori Group, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "42-02A Bell Blvd, Bayside, NY, 11361",
+        "applicantAddressCity": "Bayside",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "11361",
+        "applicantAddressStateName": "NEW YORK",
+        "applicantAddressStreet": "42-02A Bell Blvd",
+        "applicantJurisdictionOfIncorporation": "NEW YORK",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Dori Group, Inc."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Computerized on-line gift ordering service which matches the gift giver's requirements with the gift recipient's wants and needs; Computerized on-line retail store services in the field of housewares; Discount stores in the field of general merchandise; Distributorships in the field of housewares; Franchising, namely, offering technical assistance in the establishment and/or operation of retail stores featuring housewares; Operating on-line marketplaces for sellers of goods and/or services; Promoting the goods and services of others by means of operating an on-line shopping mall with links to the retail web sites of others; retail discount store services in the field of general consumer merchandise; retail gift shops; retail jewelry stores; retail store services featuring a wide variety of consumer goods of others; retail store services, available through computer communications and interactive television, featuring housewares, general consumer merchandise; retail stores featuring housewares, general consumer merchandise; retail variety stores; video stores; wholesale distributorships featuring housewares; wholesale stores featuring housewares"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Electronic publishing services, namely, publication of text and graphic works of others on CD, DVD, VCR and on-line, featuring music, sports, movies, computer games; entertainment services, namely, providing prerecorded music, drama, movies, sports, amusement, commentary, broadcasting articles, and all on-line via a global computer network; on-line education credit and degree evaluation and comparison services"
+        }
+      ]
+    },
+    "id": "9b33bd31-f303-4c29-9415-c4aab8cf727c",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20070810",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20070810",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20070112",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20070112",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20061223",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20061223",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20061125",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20061125",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20061114",
+        "descriptionText": "FINAL REFUSAL  WRITTEN"
+      },
+      {
+        "date": "20061114",
+        "descriptionText": "FINAL REFUSAL E-MAILED"
+      },
+      {
+        "date": "20061109",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20061106",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20061106",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20060810",
+        "descriptionText": "NOTICE OF UNRESPONSIVE AMENDMENT - E-MAILED"
+      },
+      {
+        "date": "20060810",
+        "descriptionText": "REPORT UNRESPONSIVE AMENDMENT - COMPLETED"
+      },
+      {
+        "date": "20060728",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20060719",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20060719",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20060719",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20060719",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20060719",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20060202",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "42-02A Bell Blvd, Bayside, NY, 11361",
+        "city": "Bayside",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NEW YORK",
+        "legalEntity": "CORPORATION",
+        "name": "Dori Group, Inc.",
+        "postalCode": "11361",
+        "stateName": "NEW YORK",
+        "street": "42-02A Bell Blvd"
+      },
+      {
+        "address": "42-02A Bell Blvd, Bayside, NY, 11361",
+        "city": "Bayside",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NEW YORK",
+        "legalEntity": "CORPORATION",
+        "name": "Dori Group, Inc.",
+        "postalCode": "11361",
+        "stateName": "NEW YORK",
+        "street": "42-02A Bell Blvd"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "BAYSIDE, NY 11361, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "BAYSIDE, NY 11361",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "DORI GROUP INC, 42-02A BELL BLVD"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "BAYSIDE, NY 11361, UNITED STATES",
+        "representativeAddressLines": [
+          "BAYSIDE, NY 11361",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20070713",
+      "active": false,
+      "application": {
+        "applicationDate": "20060129",
+        "applicationNumber": "78801743"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "35",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20041220"
+        },
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20041220"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "35",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20041220"
+        },
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20041220"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20070810",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260110005253",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DORI"
+    }
+  },
+  "_uri": "/mark/us/9b33bd31-f303-4c29-9415-c4aab8cf727c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.997Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

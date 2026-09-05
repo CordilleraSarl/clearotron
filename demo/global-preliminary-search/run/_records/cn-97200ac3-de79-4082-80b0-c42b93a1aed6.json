@@ -1,0 +1,136 @@
+{
+  "uri": "/mark/cn/97200ac3-de79-4082-80b0-c42b93a1aed6",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "97200ac3-de79-4082-80b0-c42b93a1aed6",
+  "applicationNumber": "9588274",
+  "registrationNumber": "9588274",
+  "applicationDate": "2011-06-13",
+  "registrationDate": "2012-08-28",
+  "expiryDate": "2032-08-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2012-05-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "DORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "STYLIZED LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "分线盒(电),内部通讯装置,变压器,断路器,逆变器(电),配电箱(电),配电控制台(电),调压器,稳压电源,接线盒(电)",
+      "translation_language": "en",
+      "translation": "Junction box (electricity), internal communication device, transformer, circuit breaker, inverter (electricity), distribution box (electricity), distribution console (electricity), voltage regulator, stabilized power supply, junction box ( Electricity)"
+    }
+  ],
+  "owner": "Yueqing Dongri Electric Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "浙江省乐清市翁垟镇沙头村",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Yueqing Dongri Electric Co., Ltd.",
+        "applicantNativeName": "乐清市东日电气有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Junction box (electricity), internal communication device, transformer, circuit breaker, inverter (electricity), distribution box (electricity), distribution console (electricity), voltage regulator, stabilized power supply, junction box ( Electricity)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "分线盒(电),内部通讯装置,变压器,断路器,逆变器(电),配电箱(电),配电控制台(电),调压器,稳压电源,接线盒(电)"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Equipments used in communication and navigation",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        }
+      ]
+    },
+    "id": "97200ac3-de79-4082-80b0-c42b93a1aed6",
+    "ipRightKind": "tmk",
+    "markFeature": "STYLIZED LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1313"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "温州兴业商标事务所有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20110613",
+        "applicationNumber": "9588274"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320827",
+      "lastPublicationDate": "20120527",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20120828",
+        "registrationNumber": "9588274"
+      },
+      "renewalPublishedDate": "20211013"
+    },
+    "version": "20251002023022",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DORI"
+    }
+  },
+  "_uri": "/mark/cn/97200ac3-de79-4082-80b0-c42b93a1aed6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.998Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

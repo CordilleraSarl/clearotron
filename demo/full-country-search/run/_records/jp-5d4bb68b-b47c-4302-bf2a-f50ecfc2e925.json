@@ -1,0 +1,149 @@
+{
+  "uri": "/mark/jp/5d4bb68b-b47c-4302-bf2a-f50ecfc2e925",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "5d4bb68b-b47c-4302-bf2a-f50ecfc2e925",
+  "applicationNumber": "2011-042198",
+  "registrationNumber": "5448082",
+  "applicationDate": "2011-06-17",
+  "registrationDate": "2011-11-04",
+  "expiryDate": "2031-11-04",
+  "renewalDate": null,
+  "lastPublicationDate": "2011-12-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＡＩＲＦＡＳＴ",
+  "markTransliteration": "EAAFAASUTO EAAFASUTO",
+  "markTranslation": "AIRFAST",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "半導体，集積回路，高周波用パワートランジスタ，高周波用半導体，高周波用トランジスタ，電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Semiconductor, integrated circuit, power transistor for high frequency, semiconductor for high frequency, transistor for high frequency, electronic applied appliances and parts thereof"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "NAGAOKA AI",
+  "priorities": [
+    {
+      "priorityDate": "20110617"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductor, integrated circuit, power transistor for high frequency, semiconductor for high frequency, transistor for high frequency, electronic applied appliances and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "半導体，集積回路，高周波用パワートランジスタ，高周波用半導体，高周波用トランジスタ，電子応用機械器具及びその部品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        }
+      ]
+    },
+    "id": "5d4bb68b-b47c-4302-bf2a-f50ecfc2e925",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20110617"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "NAGAOKA AI",
+        "representativeNativeName": "永岡　愛"
+      },
+      {
+        "representativeName": "IWASE YOSHIKAZU",
+        "representativeNativeName": "岩瀬　吉和"
+      },
+      {
+        "representativeName": "SHIROYAMA YASUFUMI",
+        "representativeNativeName": "城山　康文"
+      },
+      {
+        "representativeName": "KITAGUCHI TAKAHIRO",
+        "representativeNativeName": "北口　貴大"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20110617",
+        "applicationNumber": "2011-042198"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311104",
+      "lastPublicationDate": "20111206",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20111104",
+        "registrationNumber": "5448082"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "AIRFAST",
+      "markTransliteration": "EAAFAASUTO EAAFASUTO",
+      "markVerbalElementText": "ＡＩＲＦＡＳＴ"
+    }
+  },
+  "_uri": "/mark/jp/5d4bb68b-b47c-4302-bf2a-f50ecfc2e925",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.461Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

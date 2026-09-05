@@ -52,7 +52,7 @@ Four more things run for free:
 | `node mcp-server/smoke.mjs` | Drives the real MCP server over stdio against a built fixture. Prints `SMOKE OK`. |
 | `node driver/dev-portal.mjs` | Serves a pool at `http://127.0.0.1:18899/` — archive index, reports, customer pages. Loopback only; it refuses any other host. Needs a pool to point at (`CLEAROTRON_REPORTS_DIR`). |
 | The $0 mock pipeline | A full run — intake, every stage, publish, delivery packet — on a mocked engine. Recipe in [docs/E2E.md § Tier 1](docs/E2E.md). Follow it as written; the absolute-path trap in it catches everybody. |
-| `npx clearotron demo` | Replays `examples/sample-run/` — a real run on a fictional mark — through the real publisher into `~/trademark-demo/pool` and serves it. No keys, no model, no engine. |
+| `npx clearotron demo` | Replays `demo/` — a real run on a fictional mark — through the real publisher into `~/trademark-demo/pool` and serves it. No keys, no model, no engine. |
 
 **About `npx clearotron demo`.** `npx clearotron demo --no-open --once` publishes the sample and exits without
 touching a browser. `npx clearotron demo --pool <dir>`

@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/cn/13889785-76f8-4944-b53e-ad77d0d84683",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "13889785-76f8-4944-b53e-ad77d0d84683",
+  "applicationNumber": "48155871",
+  "registrationNumber": null,
+  "applicationDate": "2020-07-16",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "柒",
+  "markTransliteration": "SEVEN QI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "娱乐服务,提供娱乐设施,综艺表演,俱乐部服务(娱乐或教育),娱乐信息,现场表演,筹划聚会(娱乐),娱乐消遣信息,游戏器具出租,提供卡拉OK服务",
+      "translation_language": "en",
+      "translation": "Entertainment services, providing entertainment facilities, variety shows, club services (entertainment or education), entertainment information, live performances, planning parties (entertainment), entertainment and pastime information, game equipment rental, providing karaoke services"
+    }
+  ],
+  "owner": "Chen Ximeng",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "黑龙江省哈尔滨市道里区丽江路2842号翠湖天地翠园4栋2单元1201室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Chen Ximeng",
+        "applicantNativeName": "陈曦萌"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Entertainment services, providing entertainment facilities, variety shows, club services (entertainment or education), entertainment information, live performances, planning parties (entertainment), entertainment and pastime information, game equipment rental, providing karaoke services",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "娱乐服务,提供娱乐设施,综艺表演,俱乐部服务(娱乐或教育),娱乐信息,现场表演,筹划聚会(娱乐),娱乐消遣信息,游戏器具出租,提供卡拉OK服务"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "13889785-76f8-4944-b53e-ad77d0d84683",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "天津玺名知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200716",
+        "applicationNumber": "48155871"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251004045705",
+    "wordMarkSpecification": {
+      "markTransliteration": "SEVEN QI",
+      "markVerbalElementText": "柒"
+    }
+  },
+  "_uri": "/mark/cn/13889785-76f8-4944-b53e-ad77d0d84683",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.563Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

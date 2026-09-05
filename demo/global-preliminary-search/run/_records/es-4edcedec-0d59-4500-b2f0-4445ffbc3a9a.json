@@ -1,0 +1,133 @@
+{
+  "uri": "/mark/es/4edcedec-0d59-4500-b2f0-4445ffbc3a9a",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "4edcedec-0d59-4500-b2f0-4445ffbc3a9a",
+  "applicationNumber": "3627512 M3",
+  "registrationNumber": "3627512 M3",
+  "applicationDate": "2016-08-22",
+  "registrationDate": "2017-02-07",
+  "expiryDate": "2026-08-21",
+  "renewalDate": null,
+  "lastPublicationDate": "2016-09-09",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JOVEN ORQUESTA DEL SUR DE ESPAÑA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de orquestas. Organizacion de eventos culturales. Enseñanza y produccion musical. Servicios de certamenes musicales. Servicios de ocio y entretenimiento.",
+      "translation_language": "en",
+      "translation": "SERVICES ORCHESTRA. ORGANIZATION OF CULTURAL EVENTS. TEACHING AND MUSICAL PRODUCTION. SERVICES musical contests. RECREATION AND ENTERTAINMENT."
+    }
+  ],
+  "owner": "HERNANDEZ VAZQUEZ EDUARDO Y OTROS",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Josefa Domínguez Cobeta",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "HERNANDEZ VAZQUEZ EDUARDO Y OTROS"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "cmMarkImageEUclassification": [
+      "24.07.00",
+      "26.01.01",
+      "26.01.04",
+      "29.02.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SERVICES ORCHESTRA. ORGANIZATION OF CULTURAL EVENTS. TEACHING AND MUSICAL PRODUCTION. SERVICES musical contests. RECREATION AND ENTERTAINMENT.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de orquestas. Organizacion de eventos culturales. Enseñanza y produccion musical. Servicios de certamenes musicales. Servicios de ocio y entretenimiento."
+        }
+      ]
+    },
+    "id": "4edcedec-0d59-4500-b2f0-4445ffbc3a9a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "AMARILLO, NEGRO, ROJO, GRIS"
+      }
+    ],
+    "markImageViennaClassification": [
+      "01.03.02",
+      "24.07.23"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "4752"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "representatives": [
+      {
+        "representativeAddress": "C/ Albasanz,72-1º-1 28037 Madrid MADRID",
+        "representativeName": "Josefa Domínguez Cobeta"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20160822",
+        "applicationNumber": "3627512 M3"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20260821",
+      "lastPublicationDate": "20160909",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20170207",
+        "registrationNumber": "3627512 M3"
+      }
+    },
+    "version": "20260427164134",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOVEN ORQUESTA DEL SUR DE ESPAÑA"
+    }
+  },
+  "_uri": "/mark/es/4edcedec-0d59-4500-b2f0-4445ffbc3a9a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

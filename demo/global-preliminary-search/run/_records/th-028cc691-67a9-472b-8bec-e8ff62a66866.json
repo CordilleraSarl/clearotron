@@ -1,0 +1,129 @@
+{
+  "uri": "/mark/th/028cc691-67a9-472b-8bec-e8ff62a66866",
+  "provider": "clarivate",
+  "office": "th",
+  "guid": "028cc691-67a9-472b-8bec-e8ff62a66866",
+  "applicationNumber": "322001",
+  "registrationNumber": "6795",
+  "applicationDate": "1996-11-13",
+  "registrationDate": "1996-11-13",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "เซไก คิว เซ เคียว",
+  "markTransliteration": "Seven Q Seven trigger sickle",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "th",
+      "description": "โรงเรียนประจำ ห้องสมุดเคลื่อนที่ จัดพิมพ์หนังสือสำนักพิมพ์ ค่ายพักทางบันเทิง ค่ายพักนักกีฬา สโมสรเพื่อการบันเทิงและ การศึกษา การจัดอภิปราย การจัดการแข่งขันด้านการบันเทิง การจัดการแข่งขันด้านกีฬา การจัดการประชุม การสอนทาง ไปรษณีย์ การให้ข้อมูลทางการศึกษา การทดสอบทางการศึกาา การให้การศึกษา การให้ข้อมูลทางธุรกิจบันเทิง การจัด นิทรรศการทางด้านบันเทิงการแสดงและการศึกษา การสร้างภาพยนต์ การสอนยิมนาสติก การให้บริการสถานส่งเสริมสุขภาพ การให้ข้อมูลทางสันทนาการ การให้บริการด้านการสอน ห้องสมุด การให้เช่าหนังสือ การแสดงสด การให้เช่าภาพยนต์ การจัด หาอุปกรณ์ประกอบพิพิธภัณฑ์ การจัดสถานที่แสดงดนตรี โรงเรียนเลี้ยงเด็ก การแสดงดนตรี การจัดการแข่งขันด้านการศึกษา พลศึกษา การผลิตเทปภาพยนต์วีดีโอ การผลิตรายการวิทุยและโทรทัศน์ การจัดพิมพ์หนังสือสำนักพิมพ์ การจัดพิมพ์นอกเหนือ จากหนังสือสำนักพิมพ์ การผลิตรายการวิทยุและโทรทัศน์ การให้เช่าเครื่องบันทึกเทปวีดีโอ การให้บริการห้องบันทึกภาพและ เสียง การให้บริการสถานที่และอุปกรณ์สันทนาการ การให้เช่าฟิล์มภาพยนต์ การจัดการและดำเนินการสัมมนา การให้เช่า วีดีโอเทป การผลิตการแสดง การสอน ธุรกิจบันเทิงทางโทรทัศน์ การผลิตละคร.",
+      "translation_language": "en",
+      "translation": "boarding school bookmobile Published Books The camp Entertainment Camp athletes Club entertainment and education to the debate. Competition Entertainment Competition Sports The conference taught by mail providing educational information. Test informal educational inte Education Providing business information, entertainment, exhibition, entertainment and educational performances. Creating Movies Teaching gymnastics Providing health facilities Providing leisure Providing instruction, library books, renting movies, live shows, renting equipment for the museum. The music venues Nursery school music competitions, educational gymnastics, theater, video cassette production. William Gibb and television program production. Publishing Books In addition to publishing Book Publisher Producing radio and television Renting video tape recorder. The offers recording services and recreational facilities. Renting a movie film Management and conduct seminars renting videotapes showing the production of teaching, business, entertainment, TV drama production."
+    }
+  ],
+  "owner": "Tono Hikari",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "Tono Hikari",
+        "applicantNativeAddress": "7 - 11, โมโมยามาโช, อตามิ, ชิซูโอกะ, ประเทศญี่ปุ่น",
+        "applicantNativeName": "โตโ โน ฮิคาริ"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "boarding school bookmobile Published Books The camp Entertainment Camp athletes Club entertainment and education to the debate. Competition Entertainment Competition Sports The conference taught by mail providing educational information. Test informal educational inte Education Providing business information, entertainment, exhibition, entertainment and educational performances. Creating Movies Teaching gymnastics Providing health facilities Providing leisure Providing instruction, library books, renting movies, live shows, renting equipment for the museum. The music venues Nursery school music competitions, educational gymnastics, theater, video cassette production. William Gibb and television program production. Publishing Books In addition to publishing Book Publisher Producing radio and television Renting video tape recorder. The offers recording services and recreational facilities. Renting a movie film Management and conduct seminars renting videotapes showing the production of teaching, business, entertainment, TV drama production.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "th",
+          "intGoodsServicesDescription": "โรงเรียนประจำ ห้องสมุดเคลื่อนที่ จัดพิมพ์หนังสือสำนักพิมพ์ ค่ายพักทางบันเทิง ค่ายพักนักกีฬา สโมสรเพื่อการบันเทิงและ การศึกษา การจัดอภิปราย การจัดการแข่งขันด้านการบันเทิง การจัดการแข่งขันด้านกีฬา การจัดการประชุม การสอนทาง ไปรษณีย์ การให้ข้อมูลทางการศึกษา การทดสอบทางการศึกาา การให้การศึกษา การให้ข้อมูลทางธุรกิจบันเทิง การจัด นิทรรศการทางด้านบันเทิงการแสดงและการศึกษา การสร้างภาพยนต์ การสอนยิมนาสติก การให้บริการสถานส่งเสริมสุขภาพ การให้ข้อมูลทางสันทนาการ การให้บริการด้านการสอน ห้องสมุด การให้เช่าหนังสือ การแสดงสด การให้เช่าภาพยนต์ การจัด หาอุปกรณ์ประกอบพิพิธภัณฑ์ การจัดสถานที่แสดงดนตรี โรงเรียนเลี้ยงเด็ก การแสดงดนตรี การจัดการแข่งขันด้านการศึกษา พลศึกษา การผลิตเทปภาพยนต์วีดีโอ การผลิตรายการวิทุยและโทรทัศน์ การจัดพิมพ์หนังสือสำนักพิมพ์ การจัดพิมพ์นอกเหนือ จากหนังสือสำนักพิมพ์ การผลิตรายการวิทยุและโทรทัศน์ การให้เช่าเครื่องบันทึกเทปวีดีโอ การให้บริการห้องบันทึกภาพและ เสียง การให้บริการสถานที่และอุปกรณ์สันทนาการ การให้เช่าฟิล์มภาพยนต์ การจัดการและดำเนินการสัมมนา การให้เช่า วีดีโอเทป การผลิตการแสดง การสอน ธุรกิจบันเทิงทางโทรทัศน์ การผลิตละคร."
+        }
+      ]
+    },
+    "id": "028cc691-67a9-472b-8bec-e8ff62a66866",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20241115",
+    "registrationOfficeCode": "TH",
+    "registrationOfficeName": "Thailand",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "11 ชั้นที่ 16 อาคารคิว. เฮ้าส์ ถนนสาทรใต้ แขวงทุ่งมหาเมฆ เขตสาทร กรุงเทพมหานคร",
+        "representativeNativeName": "นางสาวดวงเดือน ณ น่าน"
+      },
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "11 ชั้นที่ 16 อาคารคิว. เฮ้าส์ ถนนสาทรใต้ แขวงทุ่งมหาเมฆ เขตสาทร กรุงเทพมหานคร",
+        "representativeNativeName": "นายมงคล วุฒิธนากุล"
+      },
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "11 ชั้นที่ 16 อาคารคิว. เฮ้าส์ ถนนสาทรใต้ แขวงทุ่งมหาเมฆ เขตสาทร กรุงเทพมหานคร",
+        "representativeNativeName": "บริษัท ไพร้ซ์สานนท์ประภาสและวีนน์ จำกัด (ดีคอนส์)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19961113",
+        "applicationNumber": "322001"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "19961113",
+        "registrationNumber": "6795"
+      }
+    },
+    "version": "20241115204150",
+    "wordMarkSpecification": {
+      "markTransliteration": "Seven Q Seven trigger sickle",
+      "markVerbalElementText": "เซไก คิว เซ เคียว"
+    }
+  },
+  "_uri": "/mark/th/028cc691-67a9-472b-8bec-e8ff62a66866",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.567Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

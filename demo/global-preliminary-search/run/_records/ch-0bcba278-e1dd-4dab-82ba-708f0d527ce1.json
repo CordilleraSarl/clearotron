@@ -1,0 +1,137 @@
+{
+  "uri": "/mark/ch/0bcba278-e1dd-4dab-82ba-708f0d527ce1",
+  "provider": "clarivate",
+  "office": "ch",
+  "guid": "0bcba278-e1dd-4dab-82ba-708f0d527ce1",
+  "applicationNumber": "13953/2022",
+  "registrationNumber": "793052",
+  "applicationDate": "2022-10-28",
+  "registrationDate": "2023-02-10",
+  "expiryDate": "2032-10-28",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-02-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "42 Platform as a Service (PaaS) mit Computersoftware-Plattformen für den Gebrauch im Bereich der Wertpapiere und des Wertpapierhandels, für Finanzdienstleistungen, für die Bargeldverwaltung, für die Analyse von Finanztransaktionskosten, für die Datenverwaltung und die Berichterstattung im Zusammenhang mit der Einhaltung gesetzlicher Vorschriften sowie für die Datenverwaltung im Zusammenhang mit der Ausleihe von Bargeld oder Wertpapieren gegen Sicherheiten von einer Partei zur anderen.",
+      "translation_language": "en",
+      "translation": "42 Platform as a Service (PaaS) featuring computer software platforms for use in the securities and securities trading industries, financial services, cash management, financial transaction cost analysis, data management and regulatory compliance reporting, and for data management related to the lending of cash or securities against collateral from one party to another."
+    }
+  ],
+  "owner": "State Street Bank and Trust Company",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "WEINMANN ZIMMERLI",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20221025",
+      "priorityNumber": "97646208"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "One Lincoln Street, Boston, Massachusetts 02111",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "State Street Bank and Trust Company"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "42 Platform as a Service (PaaS) featuring computer software platforms for use in the securities and securities trading industries, financial services, cash management, financial transaction cost analysis, data management and regulatory compliance reporting, and for data management related to the lending of cash or securities against collateral from one party to another.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "42 Platform as a Service (PaaS) mit Computersoftware-Plattformen für den Gebrauch im Bereich der Wertpapiere und des Wertpapierhandels, für Finanzdienstleistungen, für die Bargeldverwaltung, für die Analyse von Finanztransaktionskosten, für die Datenverwaltung und die Berichterstattung im Zusammenhang mit der Einhaltung gesetzlicher Vorschriften sowie für die Datenverwaltung im Zusammenhang mit der Ausleihe von Bargeld oder Wertpapieren gegen Sicherheiten von einer Partei zur anderen."
+        }
+      ]
+    },
+    "id": "0bcba278-e1dd-4dab-82ba-708f0d527ce1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20221025",
+        "priorityNumber": "97646208"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "0210"
+      }
+    ],
+    "recordLastUpdated": "20250624",
+    "registrationOfficeCode": "CH",
+    "registrationOfficeName": "Switzerland",
+    "representatives": [
+      {
+        "representativeAddress": "Carmenstrasse 28 8032 Zürich",
+        "representativeAddressCountryCode": "CH",
+        "representativeAddressCountryName": "Switzerland",
+        "representativeName": "WEINMANN ZIMMERLI"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20221028",
+        "applicationNumber": "13953/2022"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321028",
+      "lastPublicationDate": "20230210",
+      "registration": {
+        "registrationDate": "20230210",
+        "registrationNumber": "793052"
+      }
+    },
+    "version": "20250624180616",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/ch/0bcba278-e1dd-4dab-82ba-708f0d527ce1",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.179Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

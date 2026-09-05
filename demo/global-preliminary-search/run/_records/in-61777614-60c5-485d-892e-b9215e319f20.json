@@ -1,0 +1,109 @@
+{
+  "uri": "/mark/in/61777614-60c5-485d-892e-b9215e319f20",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "61777614-60c5-485d-892e-b9215e319f20",
+  "applicationNumber": "7568080",
+  "registrationNumber": null,
+  "applicationDate": "2026-02-28",
+  "registrationDate": null,
+  "expiryDate": "2036-02-28",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "EnQorAI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Software Development Services, Software Customization Services, Software Testing, Ai As A Service [Aiaas] Featuring Software Using Artificial Intelligence For General-Purpose Reasoning.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "GREEN COLLAR AGRITECH SOLUTIONS PRIVATE LIMITED Body Incorporate",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "S. LOGANATHAN[15294]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "B 93, MAYFLOWER, SAKTHI GARDEN, NANJUNDAPURAM ROAD, NANJUNDAPURAM, COIMBATORE - 641 036, COIMBATORE DIST, TAMILNADU",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "GREEN COLLAR AGRITECH SOLUTIONS PRIVATE LIMITED Body Incorporate"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software Development Services, Software Customization Services, Software Testing, Ai As A Service [Aiaas] Featuring Software Using Artificial Intelligence For General-Purpose Reasoning."
+        }
+      ]
+    },
+    "id": "61777614-60c5-485d-892e-b9215e319f20",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260318",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "32, SUBBULAKSHMI COMPLEX, BINNY COMPOUND MAIN ROAD, TIRUPUR - 641 601.",
+        "representativeName": "S. LOGANATHAN[15294]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260228",
+        "applicationNumber": "7568080"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360228",
+      "markCurrentStatus": "FORMALITIES COMPLETED"
+    },
+    "version": "20260318020048",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "EnQorAI"
+    }
+  },
+  "_uri": "/mark/in/61777614-60c5-485d-892e-b9215e319f20",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:13.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

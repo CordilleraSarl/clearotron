@@ -1,0 +1,116 @@
+{
+  "uri": "/mark/th/7074db9c-521f-4b69-ab23-630fc43b4e6a",
+  "provider": "clarivate",
+  "office": "th",
+  "guid": "7074db9c-521f-4b69-ab23-630fc43b4e6a",
+  "applicationNumber": "924308",
+  "registrationNumber": "171128031",
+  "applicationDate": "2014-01-22",
+  "registrationDate": "2017-09-07",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "th",
+      "description": "เครื่องและอุปกรณ์ปล่อยกระแสไฟฟ้า เครื่องและอุปกรณ์จ่ายกระแสไฟฟ้า เครื่องและอุปกรณ์แปลงกระแสไฟฟ้า เครื่องและอุปกรณ์สะสมกระแสไฟฟ้า เครื่องและอุปกรณ์รักษาระดับกระแสไฟฟ้า เครื่องและอุปกรณ์ควบคุมกระแสไฟฟ้า เครื่องบันทึก การส่ง หรือทำซ้ำเสียงหรือภาพ สื่อข้อมูลระบบแม่เหล็ก จานบันทึกเสียงหรือภาพ โปรแกรมซอฟท์แวร์ แบตเตอรี่.",
+      "translation_language": "en",
+      "translation": "Electrical apparatus and apparatus Power supplies Machines and Inverters Electricity Generators & Equipment Electrical Equipment & Supplies Electric Controls A recorder for sending or reproducing audio or video. Magnetic media Plate, voice recorder or picture Battery Software Software"
+    }
+  ],
+  "owner": "Venturi Automobile",
+  "ownerNative": null,
+  "ownerCountry": "MC",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "MC",
+        "applicantAddressCountryName": "Monaco",
+        "applicantName": "Venturi Automobile",
+        "applicantNativeAddress": "7 รู เดอ กาเบียน เอ็มซี - 98000 ประเทศโมนาโก",
+        "applicantNativeName": "เวนทูริ ออโต้โมบีล"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electrical apparatus and apparatus Power supplies Machines and Inverters Electricity Generators & Equipment Electrical Equipment & Supplies Electric Controls A recorder for sending or reproducing audio or video. Magnetic media Plate, voice recorder or picture Battery Software Software",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "th",
+          "intGoodsServicesDescription": "เครื่องและอุปกรณ์ปล่อยกระแสไฟฟ้า เครื่องและอุปกรณ์จ่ายกระแสไฟฟ้า เครื่องและอุปกรณ์แปลงกระแสไฟฟ้า เครื่องและอุปกรณ์สะสมกระแสไฟฟ้า เครื่องและอุปกรณ์รักษาระดับกระแสไฟฟ้า เครื่องและอุปกรณ์ควบคุมกระแสไฟฟ้า เครื่องบันทึก การส่ง หรือทำซ้ำเสียงหรือภาพ สื่อข้อมูลระบบแม่เหล็ก จานบันทึกเสียงหรือภาพ โปรแกรมซอฟท์แวร์ แบตเตอรี่."
+        }
+      ]
+    },
+    "id": "7074db9c-521f-4b69-ab23-630fc43b4e6a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250113",
+    "registrationOfficeCode": "TH",
+    "registrationOfficeName": "Thailand",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "บริษัท ติลลิกีแอนด์กิบบินส์ อินเตอร์เนชั่นแนล จำกัด ที่อยู่ เลขที่ 1011 อาคารศุภาลัย แกรนด์ ทาวเวอร์ ชั้นที่ 20 - 26 ถนนพระราม 3",
+        "representativeNativeName": "นางดารานีย์ วัจนะวุฒิวงศ์, นายศรีลา ทองกลาง, บริษัท ติลลิกีแอนด์กิบบินส์ อินเตอร์เนชั่นแนล จำกัด, นายนันทน อินทนนท์, นางสาวสุคนธ์ทิพย์ จิตมงคลทอง"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20140122",
+        "applicationNumber": "924308"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20170907",
+        "registrationNumber": "171128031"
+      }
+    },
+    "version": "20250113000811",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/th/7074db9c-521f-4b69-ab23-630fc43b4e6a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.181Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

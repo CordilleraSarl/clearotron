@@ -1,0 +1,241 @@
+{
+  "uri": "/mark/us/55d7c298-ef02-4eaa-b484-dbc1030623c9",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "55d7c298-ef02-4eaa-b484-dbc1030623c9",
+  "applicationNumber": "77354378",
+  "registrationNumber": null,
+  "applicationDate": "2007-12-18",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2008-09-26",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "CONTACTSERVE NORTH AMERICA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    40
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Electric connectors, electric relays, electric wires, electrical harnesses, sheaths for electric cables, power switches, cut-out switches",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Wholesale distributorships featuring electrical parts and components; Retail store featuring electrical parts and components",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": "INT. CL. 40 Manufacturing services for others in the field of electrical parts and components; Assembly of products for others",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Olcotech Inc.",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": "Caroline Guy",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "8401 St-Hubert Street, Montreal, H2P1Z6, CANA",
+        "applicantAddressCity": "Montreal",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressPostalCode": "H2P1Z6",
+        "applicantAddressStreet": "8401 St-Hubert Street",
+        "applicantJurisdictionOfIncorporation": "CANADA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Olcotech Inc."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Electric connectors, electric relays, electric wires, electrical harnesses, sheaths for electric cables, power switches, cut-out switches"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Wholesale distributorships featuring electrical parts and components; Retail store featuring electrical parts and components"
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsServicesDescription": "INT. CL. 40 Manufacturing services for others in the field of electrical parts and components; Assembly of products for others"
+        }
+      ]
+    },
+    "id": "55d7c298-ef02-4eaa-b484-dbc1030623c9",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20081021",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20081021",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20080325",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20080325",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20080325",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20080325",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20080207",
+        "descriptionText": "PRELIMINARY/VOLUNTARY AMENDMENT - ENTERED"
+      },
+      {
+        "date": "20080207",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20080103",
+        "descriptionText": "TEAS VOLUNTARY AMENDMENT RECEIVED"
+      },
+      {
+        "date": "20071222",
+        "descriptionText": "NOTICE OF PSEUDO MARK MAILED"
+      },
+      {
+        "date": "20071221",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "8401 St-Hubert Street, Montreal, H2P1Z6, CANA",
+        "city": "Montreal",
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "jurisdictionOfIncorporation": "CANADA",
+        "legalEntity": "CORPORATION",
+        "name": "Olcotech Inc.",
+        "postalCode": "H2P1Z6",
+        "street": "8401 St-Hubert Street"
+      },
+      {
+        "address": "8401 St-Hubert Street, Montreal, H2P1Z6, CANA",
+        "city": "Montreal",
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "jurisdictionOfIncorporation": "CANADA",
+        "legalEntity": "CORPORATION",
+        "name": "Olcotech Inc.",
+        "postalCode": "H2P1Z6",
+        "street": "8401 St-Hubert Street"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "SUITE 1717, MONTREAL; QUEBEC, H2Z1S8, CANADA",
+        "representativeCorrespondentAddressLines": [
+          "SUITE 1717",
+          "MONTREAL; QUEBEC, H2Z1S8",
+          "CANADA"
+        ],
+        "representativeCorrespondentName": "CAROLINE GUY IPC - INTELLECTUAL PROPERTY CENTRE, 1080 BEAVER HALL HILL"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "SUITE 1717, MONTREAL; QUEBEC, H2Z1S8, CANADA",
+        "representativeAddressLines": [
+          "SUITE 1717",
+          "MONTREAL; QUEBEC, H2Z1S8",
+          "CANADA"
+        ],
+        "representativeName": "Caroline Guy"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20080926",
+      "active": false,
+      "application": {
+        "applicationDate": "20071218",
+        "applicationNumber": "77354378"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20081021",
+        "markOfficialStatusEvents": [
+          "Section 44(D)",
+          "Intent to Use - Filed",
+          "Intent to Use",
+          "Section 44(d) Currently"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260109054944",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "CONTACT SERVE NORTH AMERICA",
+      "markVerbalElementText": "CONTACTSERVE NORTH AMERICA"
+    }
+  },
+  "_uri": "/mark/us/55d7c298-ef02-4eaa-b484-dbc1030623c9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

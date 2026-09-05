@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/gb/2ecba588-d59a-41fa-8ac4-b191c1578284",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "2ecba588-d59a-41fa-8ac4-b191c1578284",
+  "applicationNumber": "UK00916932287",
+  "registrationNumber": "UK00916932287",
+  "applicationDate": "2017-06-29",
+  "registrationDate": "2018-01-30",
+  "expiryDate": "2027-06-29",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Downloadable games; downloadable bingo games; downloadable poker games; computer software and downloadable software, including downloadable software in the nature of a mobile application, all for use in bingo, poker, games, gaming, gambling, betting, sports betting, lotteries and competitions; downloadable casino games; downloadable electronic game programs and computer software platforms that may be accessed via the Internet, computers and wireless devices, all for use in the fields of bingo games, gaming, gambling, lotteries and competitions; computer and video game cassettes, cartridges, discs and programs, including interactive programs; gambling software; gaming software; betting software; sports betting software; electronic bingo pens; hand held electronic apparatus for providing internet access to selected web sites; parts and fittings for the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "en",
+      "description": "Provision of food and drink; restaurants, self-service restaurants, café and bar services; catering services; corporate hospitality, private functions and parties (room hire and provision of food and drink); restaurant, café and bar services; all of the aforesaid provided from a casino.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Rank Leisure Holdings Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Potter Clarkson LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "TOR, Saint-Cloud Way, Maidenhead SL6 8BN, Berkshire",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Rank Leisure Holdings Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Downloadable games; downloadable bingo games; downloadable poker games; computer software and downloadable software, including downloadable software in the nature of a mobile application, all for use in bingo, poker, games, gaming, gambling, betting, sports betting, lotteries and competitions; downloadable casino games; downloadable electronic game programs and computer software platforms that may be accessed via the Internet, computers and wireless devices, all for use in the fields of bingo games, gaming, gambling, lotteries and competitions; computer and video game cassettes, cartridges, discs and programs, including interactive programs; gambling software; gaming software; betting software; sports betting software; electronic bingo pens; hand held electronic apparatus for providing internet access to selected web sites; parts and fittings for the aforesaid."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Provision of food and drink; restaurants, self-service restaurants, café and bar services; catering services; corporate hospitality, private functions and parties (room hire and provision of food and drink); restaurant, café and bar services; all of the aforesaid provided from a casino."
+        }
+      ]
+    },
+    "id": "2ecba588-d59a-41fa-8ac4-b191c1578284",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "The Belgrave Centre, Talbot Street, Nottingham NG1 5GG",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Potter Clarkson LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170629",
+        "applicationNumber": "UK00916932287"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270629",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20180130",
+        "registrationNumber": "UK00916932287"
+      }
+    },
+    "version": "20250627212330",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/gb/2ecba588-d59a-41fa-8ac4-b191c1578284",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.814Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

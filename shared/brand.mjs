@@ -85,7 +85,7 @@ export const BRAND = {
  * marking only when a profile asked; render-knockout.mjs printed the short one unconditionally, in a
  * hand-rolled array join. Two copies of one firm-wide document marking, and they had already drifted on
  * BOTH the wording and the condition. `shared/brand.mjs` is the module both renderers already import and
- * is explicitly NOT frozen (driver/test/render-frozen.test.mjs:16), so the rule has one home and the
+ * is explicitly NOT frozen — the frozen-renderer guard names it as an exception — so the rule has one home and the
  * frozen renderer pays no extra hash for it.
  *
  * TWO STATES SINCE, and the surviving distinction is still the whole point:
@@ -236,6 +236,94 @@ export const bracketMark = (px = 20, fill = '#f0e8d8', accent = PALETTE.crimson)
 // CONCRETE COLOURS, not currentColor: a favicon has no CSS context to inherit from.
 const FAVICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${BRACKET_VIEWBOX}">${rects(PALETTE.ink, PALETTE.crimson)}</svg>`;
 export const FAVICON_LINK = `<link rel="icon" href="data:image/svg+xml,${encodeURIComponent(FAVICON_SVG)}">`;
+
+// ── THE SAME MARK, RASTERISED — for the one surface that has no pixels ───────────────────────────────
+//
+// Setup runs in a terminal, and the owner asked to see the logo there. The constraint that makes this
+// worth writing rather than typing: a hand-drawn bracket beside these constants is a SECOND
+// transcription, and the comment above already says why that is the defect — a copy nobody guards
+// drifts, and it drifts silently, because nothing in a build compares a picture to a picture.
+//
+// So the terminal mark is the SVG's geometry sampled onto a character grid. Change a rect and the
+// favicon, the lockup and the setup box all move together, because there is one shape.
+//
+// A cell is filled when a part covers at least `coverage` of it — AREA, not the centre point. Centre
+// sampling drops a feature thinner than a cell, and the arms here are 2 units of 24: a grid coarse
+// enough to be a sensible banner is exactly coarse enough to lose them, and the loss reads as a design
+// choice rather than a bug. Overlap is resolved by the LARGEST covering part, so where the block sits
+// against a bracket the cell takes the part that actually fills it.
+//
+// The kinds come out as data — `'bracket'`, `'block'`, `''` — never as glyphs or escape codes. What a
+// terminal can draw and what it may colour is the caller's question, and this module has no business
+// holding an opinion about a tty.
+
+/** Length of the overlap between two closed intervals; 0 when they miss. */
+const _span = (a0, a1, b0, b1) => Math.max(0, Math.min(a1, b1) - Math.max(a0, b0));
+
+/**
+ * Drop wholly-empty EDGE rows and columns, so the mark sits tight and the caller centres what it got.
+ *
+ * Edge, on both axes, and the word is load-bearing. Filtering every empty row instead closes a gap in
+ * the MIDDLE of a shape — which in a function whose only job is "the picture follows the constant" is
+ * the picture quietly disagreeing with the constant. The real mark has empty rows only at its edges,
+ * so the difference is invisible here and would surface on the first geometry that has a gap.
+ */
+function _trim(cells) {
+  if (!cells.length) return [];
+  const rowFilled = (r) => cells[r].some(Boolean);
+  const colFilled = (c) => cells.some((r) => r[c]);
+  let top = 0, bottom = cells.length - 1;
+  while (top <= bottom && !rowFilled(top)) top++;
+  while (bottom >= top && !rowFilled(bottom)) bottom--;
+  if (top > bottom) return [];
+  let lo = 0, hi = cells[0].length - 1;
+  while (lo <= hi && !colFilled(lo)) lo++;
+  while (hi >= lo && !colFilled(hi)) hi--;
+  return cells.slice(top, bottom + 1).map((r) => r.slice(lo, hi + 1));
+}
+
+/**
+ * The mark as a grid of kinds: `'bracket'`, `'block'` or `''` for empty.
+ *
+ * Defaults to the real mark. The parts are arguments so a test can rasterise a DIFFERENT geometry and
+ * watch the output follow it — pinning only the real one would go green on a function that ignored
+ * every argument and returned a literal.
+ */
+export function bracketAsciiCells({
+  cols = 18,
+  rows = 9,
+  coverage = 0.34,
+  trim = true,
+  rects = BRACKET_RECTS,
+  block = BRACKET_BLOCK,
+  viewBox = BRACKET_VIEWBOX,
+} = {}) {
+  if (!Number.isInteger(cols) || cols < 1) throw new Error(`bracketAsciiCells: cols must be a positive integer, got ${cols}`);
+  if (!Number.isInteger(rows) || rows < 1) throw new Error(`bracketAsciiCells: rows must be a positive integer, got ${rows}`);
+  if (!(coverage > 0) || coverage > 1) throw new Error(`bracketAsciiCells: coverage must be greater than 0 and at most 1, got ${coverage}`);
+  const [minX, minY, w, h] = String(viewBox).trim().split(/\s+/).map(Number);
+  if (![minX, minY, w, h].every(Number.isFinite) || !(w > 0) || !(h > 0))
+    throw new Error(`bracketAsciiCells: viewBox must be four numbers with a positive width and height, got "${viewBox}"`);
+
+  const parts = [...rects.map((r) => ({ r, kind: 'bracket' })), ...(block ? [{ r: block, kind: 'block' }] : [])];
+  const cw = w / cols, chh = h / rows, cellArea = cw * chh;
+  const out = [];
+  for (let row = 0; row < rows; row++) {
+    const y0 = minY + row * chh, y1 = y0 + chh;
+    const line = [];
+    for (let col = 0; col < cols; col++) {
+      const x0 = minX + col * cw, x1 = x0 + cw;
+      let kind = '', best = 0;
+      for (const { r, kind: k } of parts) {
+        const c = (_span(x0, x1, r.x, r.x + r.width) * _span(y0, y1, r.y, r.y + r.height)) / cellArea;
+        if (c > best) { best = c; kind = k; }
+      }
+      line.push(best >= coverage ? kind : '');
+    }
+    out.push(line);
+  }
+  return trim ? _trim(out) : out;
+}
 
 const P = PALETTE;
 const D = PALETTE_DARK;

@@ -1,0 +1,214 @@
+{
+  "uri": "/mark/jp/6554e181-36cd-49ee-8415-49d71bf2d7ac",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "6554e181-36cd-49ee-8415-49d71bf2d7ac",
+  "applicationNumber": "2021-135986",
+  "registrationNumber": "6568297",
+  "applicationDate": "2021-11-01",
+  "registrationDate": "2022-06-08",
+  "expiryDate": "2032-06-08",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-06-16",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＩＴＥＲＯ　ＬＵＭＩＮＡ",
+  "markTransliteration": "ITERORUMIINA ITERORUMINA",
+  "markTranslation": "ITERO LUMINA",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "コンピュータソフトウェア（歯及び顎の移動並びに治療計画案の描写用のデジタル画像ソフトウェア），歯のデジタル画像の捕捉用のコンピュータスキャニングソフトウェア，デジタル歯科印象用コンピュータソフトウェア，歯及び顎の３次元デジタルモデルの作成用のコンピュータソフトウェア，持ち運び可能な及び手持ち式電子機器用のコンピュータアプリケーションソフトウェア（歯科及び歯列矯正治療用の治療計画の作成並びに歯科診断用のソフトウェア），歯科及び歯列矯正の分野において使用される医療用デジタル画像の捕捉・保存・検索及び電気通信媒体を介した送信用のコンピュータソフトウェア・コンピュータハードウェア及び口腔内スキャニングカメラからなる遠隔医療用コンピュータシステム，個別にカスタマイズされた歯列矯正治療方針の作成用のコンピュータソフトウェア，歯列矯正治療方針案及びそれに関する患者のデータの提供・追跡及び修正用のコンピュータソフトウェア，個々の歯の状態の評価用・歯列矯正治療の計画立案用・修復歯科治療における歯冠及びブリッジの作成及び取付用の歯科専門家向けコンピュータソフトウェア，歯科用器具及び補綴物の設計並びに患者の治療の監視を目的とした捕捉した医療用画像の処理及び表示用のコンピュータハードウェア及びソフトウェアからなるコンピュータワークステーション，電気通信機械器具，電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Computer software (digital image software for tooth and jaw movement and depiction of treatment plans), computer scanning software for capturing digital images of teeth, computer software for digital dental impressions, creation of 3D digital models of teeth and jaws Computer software for, computer application software for portable and handheld electronic devices (software for treatment planning and dental diagnosis for dental and orthodontic treatment), used in the field of dentistry and orthodontics Remote medical computer system consisting of computer software, computer hardware and intraoral scanning camera for capturing, storing and retrieving medical digital images and transmitting via telecommunications media, personalized orthodontic treatment policy Computer software for creation, computer software for providing / tracking and correcting patient data on orthodontic treatment policy proposals, evaluation of individual tooth conditions, orthodontic treatment planning / restoration dental treatment Computer software for dental professionals for creating and mounting crowns and bridges in, computer hardware for processing and displaying captured medical images for the purpose of designing dental instruments and prostheses and monitoring patient treatment. And software computer workstations, telecommunications machinery, electronic application machinery and equipment and their parts"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": null,
+      "description": "歯列矯正器具・歯科用機械器具・口腔健康管理用医療装置及び医療用画像の捕捉用のスキャニングカメラ，医療用機械器具（「歩行補助器・松葉づえ」を除く。）",
+      "translation_language": "en",
+      "translation": "Orthodontic appliances, dental machinery, medical equipment for oral health management, scanning cameras for capturing medical images, medical machinery (excluding \"walking aids, Matsuba Zue\")"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "デジタル歯科及び歯列矯正画像に関するコンピュータデータベースの検索の代行",
+      "translation_language": "en",
+      "translation": "Searching computer databases for digital dentistry and orthodontic images"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "デジタル歯科及び歯列矯正画像の電子データの保存用記憶領域の貸与，デジタル歯科及び歯列矯正画像の検索のための検索エンジンの提供，アプリケーションサービスプロバイダー（ＡＳＰ）による歯列矯正及び歯科治療用コンピュータソフトウェアの提供及びホスティング，アプリケーションサービスプロバイダー（ＡＳＰ）による歯列矯正及び歯科治療用コンピュータソフトウェアの設計・作成又は保守，歯列矯正及び歯科治療用のオンラインによるダウンロードが不可能なコンピュータソフトウェアの一時的使用の提供，電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供",
+      "translation_language": "en",
+      "translation": "Lending storage area for storing electronic data of digital dentistry and orthodontic images, providing search engine for searching digital dentistry and orthodontic images, orthodontic and orthodontic computer by Application Service Provider (ASP) Providing and hosting software, designing, creating or maintaining computer software for orthodontics and orthodontics by an application service provider (ASP), temporary use of computer software that cannot be downloaded online for orthodontics and orthodontics Provision of computer programs, design / creation or maintenance of computer programs, provision of computer programs"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YAMAMOTO HIDESAKU",
+  "priorities": [
+    {
+      "priorityDate": "20210505"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software (digital image software for tooth and jaw movement and depiction of treatment plans), computer scanning software for capturing digital images of teeth, computer software for digital dental impressions, creation of 3D digital models of teeth and jaws Computer software for, computer application software for portable and handheld electronic devices (software for treatment planning and dental diagnosis for dental and orthodontic treatment), used in the field of dentistry and orthodontics Remote medical computer system consisting of computer software, computer hardware and intraoral scanning camera for capturing, storing and retrieving medical digital images and transmitting via telecommunications media, personalized orthodontic treatment policy Computer software for creation, computer software for providing / tracking and correcting patient data on orthodontic treatment policy proposals, evaluation of individual tooth conditions, orthodontic treatment planning / restoration dental treatment Computer software for dental professionals for creating and mounting crowns and bridges in, computer hardware for processing and displaying captured medical images for the purpose of designing dental instruments and prostheses and monitoring patient treatment. And software computer workstations, telecommunications machinery, electronic application machinery and equipment and their parts",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "コンピュータソフトウェア（歯及び顎の移動並びに治療計画案の描写用のデジタル画像ソフトウェア），歯のデジタル画像の捕捉用のコンピュータスキャニングソフトウェア，デジタル歯科印象用コンピュータソフトウェア，歯及び顎の３次元デジタルモデルの作成用のコンピュータソフトウェア，持ち運び可能な及び手持ち式電子機器用のコンピュータアプリケーションソフトウェア（歯科及び歯列矯正治療用の治療計画の作成並びに歯科診断用のソフトウェア），歯科及び歯列矯正の分野において使用される医療用デジタル画像の捕捉・保存・検索及び電気通信媒体を介した送信用のコンピュータソフトウェア・コンピュータハードウェア及び口腔内スキャニングカメラからなる遠隔医療用コンピュータシステム，個別にカスタマイズされた歯列矯正治療方針の作成用のコンピュータソフトウェア，歯列矯正治療方針案及びそれに関する患者のデータの提供・追跡及び修正用のコンピュータソフトウェア，個々の歯の状態の評価用・歯列矯正治療の計画立案用・修復歯科治療における歯冠及びブリッジの作成及び取付用の歯科専門家向けコンピュータソフトウェア，歯科用器具及び補綴物の設計並びに患者の治療の監視を目的とした捕捉した医療用画像の処理及び表示用のコンピュータハードウェア及びソフトウェアからなるコンピュータワークステーション，電気通信機械器具，電子応用機械器具及びその部品"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Orthodontic appliances, dental machinery, medical equipment for oral health management, scanning cameras for capturing medical images, medical machinery (excluding \"walking aids, Matsuba Zue\")",
+          "intClassNumber": "10",
+          "intGoodsServicesDescription": "歯列矯正器具・歯科用機械器具・口腔健康管理用医療装置及び医療用画像の捕捉用のスキャニングカメラ，医療用機械器具（「歩行補助器・松葉づえ」を除く。）"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Searching computer databases for digital dentistry and orthodontic images",
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "デジタル歯科及び歯列矯正画像に関するコンピュータデータベースの検索の代行"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Lending storage area for storing electronic data of digital dentistry and orthodontic images, providing search engine for searching digital dentistry and orthodontic images, orthodontic and orthodontic computer by Application Service Provider (ASP) Providing and hosting software, designing, creating or maintaining computer software for orthodontics and orthodontics by an application service provider (ASP), temporary use of computer software that cannot be downloaded online for orthodontics and orthodontics Provision of computer programs, design / creation or maintenance of computer programs, provision of computer programs",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "デジタル歯科及び歯列矯正画像の電子データの保存用記憶領域の貸与，デジタル歯科及び歯列矯正画像の検索のための検索エンジンの提供，アプリケーションサービスプロバイダー（ＡＳＰ）による歯列矯正及び歯科治療用コンピュータソフトウェアの提供及びホスティング，アプリケーションサービスプロバイダー（ＡＳＰ）による歯列矯正及び歯科治療用コンピュータソフトウェアの設計・作成又は保守，歯列矯正及び歯科治療用のオンラインによるダウンロードが不可能なコンピュータソフトウェアの一時的使用の提供，電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Telecommunication machines and apparatus; Personal digital assistants"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door closing control systems; Electron microscopes"
+        },
+        {
+          "natClassNumber": "10D01",
+          "natGoodsServicesDescription": "Medical apparatus and instruments, other than walking aids, and crutches"
+        },
+        {
+          "natClassNumber": "35G03",
+          "natGoodsServicesDescription": "Office functions, namely filing, in particular documents or magnetic tapes; Compilation of information into computer databases"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Compilation of information into computer databases"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        }
+      ]
+    },
+    "id": "6554e181-36cd-49ee-8415-49d71bf2d7ac",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20210505"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20211101",
+        "applicationNumber": "2021-135986"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320608",
+      "lastPublicationDate": "20220616",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20220608",
+        "registrationNumber": "6568297"
+      }
+    },
+    "version": "20240320153104",
+    "wordMarkSpecification": {
+      "markTranslation": "ITERO LUMINA",
+      "markTransliteration": "ITERORUMIINA ITERORUMINA",
+      "markVerbalElementText": "ＩＴＥＲＯ　ＬＵＭＩＮＡ"
+    }
+  },
+  "_uri": "/mark/jp/6554e181-36cd-49ee-8415-49d71bf2d7ac",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.739Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,332 @@
+{
+  "uri": "/mark/us/5308c53c-94f6-41b2-843d-12f25ae0ffca",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "5308c53c-94f6-41b2-843d-12f25ae0ffca",
+  "applicationNumber": "97099882",
+  "registrationNumber": null,
+  "applicationDate": "2021-10-29",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2022-09-13"
+  ],
+  "abandonmentDate": "2022-11-03",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "QOLI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    36,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Downloadable and recorded computer software for processing electronic payments and for transferring funds to and from others; downloadable mobile application software for transferring funds to and from others; downloadable authentication software for controlling access to and communications with computers and computer networks",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": null,
+      "description": "INT. CL. 36 Financial services, namely, electronic funds transfer; clearing and reconciling financial transactions via a global computer network and wireless networks; payment processing services, namely, providing virtual currency transaction processing services for others",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Providing temporary use of online non-downloadable software for transferring funds to and from others; providing temporary use of online non-downloadable authentication software for controlling access to and communications with computers and computer networks",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Qoli, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Ryan N. Carter",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2 Bronze Point, Swansea, IL, 62226",
+        "applicantAddressCity": "Swansea",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "62226",
+        "applicantAddressStateName": "ILLINOIS",
+        "applicantAddressStreet": "2 Bronze Point",
+        "applicantJurisdictionOfIncorporation": "ILLINOIS",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Qoli, Inc."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Downloadable and recorded computer software for processing electronic payments and for transferring funds to and from others; downloadable mobile application software for transferring funds to and from others; downloadable authentication software for controlling access to and communications with computers and computer networks"
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsServicesDescription": "INT. CL. 36 Financial services, namely, electronic funds transfer; clearing and reconciling financial transactions via a global computer network and wireless networks; payment processing services, namely, providing virtual currency transaction processing services for others"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Providing temporary use of online non-downloadable software for transferring funds to and from others; providing temporary use of online non-downloadable authentication software for controlling access to and communications with computers and computer networks"
+        }
+      ]
+    },
+    "id": "5308c53c-94f6-41b2-843d-12f25ae0ffca",
+    "ipRightKind": "tmk",
+    "litigationInformation": {
+      "proceedings": [
+        {
+          "decision": {
+            "code": "9",
+            "date": "20221112",
+            "text": "TERMINATED"
+          },
+          "decisionBoard": "Trademark Trial and Appeal Board (TTAB)",
+          "filingDate": "20221006",
+          "identifier": "97099882",
+          "kind": "Extension of Time to Oppose",
+          "kindCode": "EXT",
+          "litigationParties": [
+            {
+              "kind": "Defendant",
+              "kindCode": "D",
+              "name": "QOLI, INC.",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "97099882",
+                  "markVerbalElementText": "QOLI",
+                  "registrationNumber": "0000000"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "CEDAR RAPIDS",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "52401",
+                  "addressState": "IA",
+                  "addressStreet": "625 FIRST STREET SE, SUITE 400",
+                  "companyName": "NYEMASTER GOODE, PC",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "RYAN N. CARTER"
+                }
+              ]
+            },
+            {
+              "kind": "Plaintiff",
+              "kindCode": "P",
+              "name": "QOLO INC.",
+              "representatives": [
+                {
+                  "addressCity": "WASHINGTON",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "20004",
+                  "addressState": "DC",
+                  "addressStreet": "1299 PENNSYLVANIA AVENUE, NW, SUITE 700",
+                  "companyName": "COOLEY LLP",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "JOHN PAUL OLEKSIUK"
+                }
+              ]
+            }
+          ],
+          "proceedingEvents": [
+            {
+              "code": "T",
+              "eventDate": "20221006",
+              "text": "#2 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20221006",
+              "text": "#1 STATEMENT OF USE"
+            }
+          ]
+        }
+      ]
+    },
+    "markEvents": [
+      {
+        "date": "20221103",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - AFTER PUBLICATION"
+      },
+      {
+        "date": "20221103",
+        "descriptionText": "ABANDONMENT - AFTER PUBLICATION"
+      },
+      {
+        "date": "20221101",
+        "descriptionText": "TEAS EXPRESS ABANDONMENT RECEIVED"
+      },
+      {
+        "date": "20221006",
+        "descriptionText": "EXTENSION OF TIME TO OPPOSE RECEIVED"
+      },
+      {
+        "date": "20220913",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20220913",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20220824",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20220809",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20220808",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20211111",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20211102",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "2 Bronze Point, Swansea, IL, 62226",
+        "city": "Swansea",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "ILLINOIS",
+        "legalEntity": "CORPORATION",
+        "name": "Qoli, Inc.",
+        "postalCode": "62226",
+        "stateName": "ILLINOIS",
+        "street": "2 Bronze Point"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "2 Bronze Point, Swansea, IL, 62226",
+        "city": "Swansea",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "ILLINOIS",
+        "legalEntity": "CORPORATION",
+        "name": "Qoli, Inc.",
+        "postalCode": "62226",
+        "stateName": "ILLINOIS",
+        "street": "2 Bronze Point"
+      },
+      {
+        "address": "2 Bronze Point, Swansea, IL, 62226",
+        "city": "Swansea",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "ILLINOIS",
+        "legalEntity": "CORPORATION",
+        "name": "Qoli, Inc.",
+        "postalCode": "62226",
+        "stateName": "ILLINOIS",
+        "street": "2 Bronze Point"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "SUITE 400, CEDAR RAPIDS, IA 52401, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "SUITE 400",
+          "CEDAR RAPIDS, IA 52401",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "RYAN N. CARTER NYEMASTER GOODE, PC, 625 FIRST STREET SE"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "SUITE 400, CEDAR RAPIDS, IA 52401, UNITED STATES",
+        "representativeAddressLines": [
+          "SUITE 400",
+          "CEDAR RAPIDS, IA 52401",
+          "UNITED STATES"
+        ],
+        "representativeName": "Ryan N. Carter"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20221103",
+      "active": false,
+      "application": {
+        "applicationDate": "20211029",
+        "applicationNumber": "97099882"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-AFTER PUBLICATION",
+        "markOfficialStatusCode": "605",
+        "markOfficialStatusDate": "20221103",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED",
+      "publicationDate": [
+        "20220913"
+      ]
+    },
+    "version": "20260113080508",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOLI"
+    }
+  },
+  "_uri": "/mark/us/5308c53c-94f6-41b2-843d-12f25ae0ffca",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:02.690Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

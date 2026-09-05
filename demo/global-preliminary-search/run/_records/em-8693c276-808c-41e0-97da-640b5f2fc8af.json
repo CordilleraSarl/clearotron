@@ -1,0 +1,753 @@
+{
+  "uri": "/mark/em/8693c276-808c-41e0-97da-640b5f2fc8af",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "8693c276-808c-41e0-97da-640b5f2fc8af",
+  "applicationNumber": "16932287",
+  "registrationNumber": "16932287",
+  "applicationDate": "2017-06-29",
+  "registrationDate": "2018-01-30",
+  "expiryDate": "2027-06-29",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-10-23",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Hry s mozností stazení; Bingo hry ke stazení; Pokerové hry ke stazení; Pocítacový software a software ke stazení, vcetne softwaru ke stazení ve forme mobilní aplikace, vsechno k pouzití v bingu, pokeru, hrách, hraní, hazardních hrách, sázení, sportovním sázení, loteriích a soutezích; Kasinové hry ke stazení; Elektronické herní programy ke stazení a pocítacové softwarové platformy, ke kterým lze pristupovat prostrednictvím internetu, pocítacu a bezdrátových zarízení, vsechno k pouzití v bingu, hrách, hraní, hazardních hrách, loteriích a soutezích; Pocítacové a videoherní kazety, cartridge, disky a programy, vcetne interaktivních programu; Software pro hazardní hry; Herní software; Sázkový software; Software na sportovní sázky; Elektronická pera na bingo; Prírucní elektronické prístroje pro poskytování prístupu k internetu na vybrané webové stránky; Cásti a vybavení výse uvedeného zbozí.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "cs",
+      "description": "Poskytování jídla a nápoju; Restauracní sluzby, Samoobsluzné restaurace, Kafeteria a bar servis; Zajistování hromadného stravování (catering); Sluzby spolecného stravování, Soukromé slavnosti a vecírky (pronájem pokoju a zajistování jídel a nápoju); Sluzby restaurace, kaváren a baru; Vsechno výse uvedené je poskytováno z kasina.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Spil, som kan downloades; Bingospil, som kan downloades; Pokerspil, der kan downloades; Computersoftware og software, som kan downloades, inklusive software, som kan downloades, i form af en mobil applikation, alt til brug i forbindelse med bingo, poker, spil, arrangering af spil, spillevirksomhed, væddemål, tips, lotterier og konkurrencer; Kasinospil, der kan downloades; Elektroniske spilleprogrammer, som kan downloades, samt computersoftwareplatforme med adgang fra internet, computere og trådløse enheder, alt til brug i forbindelse med bingo, poker, spil, arrangering af spil, spillevirksomhed, væddemål, tips, lotterier og konkurrencer; Computerspil og videospil, -diske og -programmer, inklusive interaktive programmer; Software til hasardspil; Software til pengespilleautomater; Software til væddemål; Software til sportsvæddemål; Elektroniske bingomarkere; Håndholdte elektroniske apparater til tilvejebringelse af internetadgang til udvalgte websites; Dele og tilbehør til ovennævnte varer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "da",
+      "description": "Tilvejebringelse af mad og drikke; Tjenester ydet af restauranter, Selvbetjeningsrestaurantvirksomhed, Caféer og barer; Catering; Opbygning og pleje af virksomheders image, Private selskaber og partyarrangementer (udlejning af værelser og udbringning af mad og drikke); Restaurations-, café- og barvirksomhed; Alt det førnævnte i forbindelse med kasinoer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Downloadbare games; Downloadbare bingospellen; Downloadbare pokerspellen; Software en downloadbare software, waaronder downloadbare software in de vorm van een mobiele applicatie, alles voor gebruik bij bingo, poker, spellen, kansspelen, gokspelen, weddenschappen, sportweddenschappen, loterijen en wedstrijden; Downloadbare casinospellen; Downloadbare elektronische spelprogramma's en softwareplatforms die toegankelijk zijn via internet, computers en draadloze apparaten, alles voor gebruik op het gebied van bingospellen, kansspelen, gokspelen, loterijen en wedstrijden; Computer- en videospelcassettes, -cartridges, -schijven en - programma's, waaronder interactieve programma's; Software met betrekking tot gokken; Kansspelen; Software met betrekking tot wedden; Software voor weddenschappen met betrekking tot sport; Elektronische bingopennen; In de hand te houden elektronische apparaten voor toegang via internet tot geselecteerde websites; Delen, onderdelen en toebehoren van alle voorgenoemde waren.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "nl",
+      "description": "Het verstrekken van voedsel en drank; Restauratie [het verstrekken van maaltijden], Diensten van zelfbedieningsrestaurants, Diensten van café-restaurants en bars; Catering; Ontvangsten voor bedrijven, Particuliere plechtigheden en feesten (verhuur van kamers en het verstrekken van voedsel en dranken); Diensten op het gebied van restaurants, cafés en bars; Al het voornoemde geleverd vanuit een casino.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Downloadable games; downloadable bingo games; downloadable poker games; computer software and downloadable software, including downloadable software in the nature of a mobile application, all for use in bingo, poker, games, gaming, gambling, betting, sports betting, lotteries and competitions; downloadable casino games; downloadable electronic game programs and computer software platforms that may be accessed via the Internet, computers and wireless devices, all for use in the fields of bingo games, gaming, gambling, lotteries and competitions; computer and video game cassettes, cartridges, discs and programs, including interactive programs; gambling software; gaming software; betting software; sports betting software; electronic bingo pens; hand held electronic apparatus for providing internet access to selected web sites; parts and fittings for the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "en",
+      "description": "Provision of food and drink; restaurants, self-service restaurants, café and bar services; catering services; corporate hospitality, private functions and parties (room hire and provision of food and drink); restaurant, café and bar services; all of the aforesaid provided from a casino.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Allalaaditavad mängud; Allalaaditavad bingomängud; Allalaaditavad pokkerimängud; Arvutitarkvara ja allalaaditav tarkvara, sh allalaaditav tarkvara mobiilirakendustena, kõik kasutuseks bingos, pokkeris, mängudes, kasiinomängudes, hasartmängudes, kihlvedudes, spordikihlvedudes, loteriides ja võistlustel; Allalaaditavad kasiinomängud; Allalaaditavad elektroonilised mänguprogrammid ja arvutitarkvaraprogrammid sotsiaalvõrkudele, millele on juurdepääs Internetist, arvutitest ja juhtmeta seadmetest, kõik kasutuseks bingomängudes, mängudes, hasartmängudes, loteriides ja võistlustel; Arvuti- ja videomängukassetid, -kettad ja -programmid, sealhulgas interaktiivsed programmid; Hasartmängutarkvara; Mängimistarkvara; Panustustarkvara; Tarkvara spordiennustuste jaoks; Elektroonilised bingopliiatsid; Valitud veebisaitidele internetijuurdepääsu pakkumise funktsiooniga käeshoitavad elektroonilised seadmed; Osad ja lisaseadmed eelpoolmainitud toodetele.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "et",
+      "description": "Toitlustamine; Restoraniteenused, Selverestoraniteenused, Baari- ja kohvikuteenused; Toitlustusteenindus; Ärivastuvõttude teenused, Eraviisilised üritused ja vastuvõtud (ruumide rent ja toidu pakkumine ja joogid); Restorani-, kohviku- ja einelauateenused; Kõik eelnimetatud teenused pakutuna kasiinos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Ladattavat pelit; Ladattavat bingopelit; Ladattavat pokeripelit; Tietokoneohjelmistot ja ladattavat ohjelmistot, mukaan lukien ladattavat ohjelmistot matkaviestintäsovelluksen muodossa, kaikki käytettäväksi bingon, pokerin, pelien, rahapelien, uhkapelien, vedonlyöntien, urheiluun liittyvän vedonlyönnin, arpajaisten ja kilpailujen alalla; Ladattavat kasinopelit; Ladattavat elektroniset peliohjelmat ja tietokoneohjelmistoympäristöt, joita voidaan käyttää Internetin, tietokoneiden ja langattomien laitteiden välityksellä, kaikki käytettäväksi bingopelien, rahapelien, uhkapelien, arpajaisten ja kilpailujen alalla; Tietokone- ja videopelien kasetit, kotelot, levyt ja ohjelmat, mukaan lukien vuorovaikutteiset ohjelmat; Uhkapeliohjelmistot; Rahapeliohjelmistot; Vedonlyöntiohjelmistot; Urheiluvedonlyöntiohjelmistot; Elektroniset bingokynät; Kädessä pidettävät elektroniset laitteet valittujen Internetin WWW-sivustojen käyttömahdollisuuden tarjoamiseen; Edellä mainittujen osat ja tarvikkeet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "fi",
+      "description": "Ravitseminen ja juomien anniskelu; Ravintolapalvelut, Itsepalveluravintolat, Kahvila- ja baaripalvelut; Pitopalvelu; Yritysten kestityspalvelut, Yksityiset tilaisuudet ja juhlat (huoneiden vuokraus sekä ruoan ja juoman tarjoaminen); Ravintola-, kahvila- ja baaripalvelut; Kaikki edellä mainitut tarjotaan kasinosta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Jeux téléchargeables; Jeux de bingo téléchargeables; Jeux de poker téléchargeables; Logiciels et logiciels téléchargeables, y compris logiciels téléchargeables sous forme d'une application mobile, tous destinés au bingo, au poker, aux jeux, aux jeux d'argent, aux paris, aux paris sportifs, aux loteries et aux compétitions; Jeux de casino téléchargeables; Programmes de jeux électroniques téléchargeables et plates-formes logicielles accessibles par le biais de l'internet, d'ordinateurs et de dispositifs sans fil, tous destinés au bingo, aux jeux, aux jeux d'argent, aux paris, aux loteries et aux compétitions; Cassettes, cartouches, disques et programmes de jeux informatiques et vidéo, y compris programmes interactifs; Logiciels de jeux; Logiciels de jeux d'argent; Logiciels de paris; Logiciels de paris sportifs; Stylos pour bingo électronique; Appareils électroniques portables pour la fourniture d'accès à certains sites web par le biais de l'internet; Pièces et parties constitutives des produits précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "fr",
+      "description": "Mise à disposition d'aliments et de boissons; Services de restauration (alimentation), Services de restaurants en libre-service, Services de cafés et de bars; Services de traiteurs; Accueil de sociétés, Réceptions et fêtes privées (location de salles et restauration); Services de restaurant, café et bar; Tous les services précités étant fournis par un casino.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Herunterladbare Spiele; Herunterladbare Bingospiele; Herunterladbare Pokerspiele; Computersoftware und herunterladbare Software, einschließlich herunterladbare Software in Form einer mobilen Applikation, alle zur Verwendung in Bezug auf Bingo, Poker, Spiele, Glücksspiele, Wetten, Sportwetten, Lotterien und Wettbewerbe; Herunterladbare Kasinospiele; Herunterladbare elektronische Spielprogramme und Computersoftwareplattformen, die über das Internet, Computer und drahtlose Geräte zugänglich sind, alle zur Verwendung in den Bereichen Bingospiele, Spiele, Glücksspiele, Lotterien und Wettbewerbe; Computer- und Videospielkassetten, -platten und -programme, einschließlich interaktive Programme; Glücksspielesoftware; Geldspielsoftware; Wettsoftware; Software für Sportwetten; Elektronische Bingo-Stifte; Elektronische Taschengeräte zur Bereitstellung des Internetzugangs zu ausgewählten Websites; Teile und Zubehör für die obengenannten Waren.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "de",
+      "description": "Verpflegung von Gästen; Verpflegung von Gästen in Restaurants, Verpflegung von Gästen in Selbstbedienungsrestaurants, Betrieb von Cafés und Bars; Catering; Gästebetreuung für Unternehmen, Private Veranstaltungen und Partys (Vermietung von Räumen und Verpflegung von Gästen); Dienste im Rahmen des Restaurant-, Café- und Barbetriebs; Alle vorstehend genannten Dienstleistungen bereitgestellt von einem Kasino.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Igre za preuzimanje; Bingo-igre koje se mogu preuzimati; Poker igre koje se mogu preuzimati; Racunalni softver i softver koji se moze preuzimati, ukljucujuci softver koji se moze preuzimati u obliku mobilne aplikacije, sve za uporabu u bingu, pokeru, igrama, igranju, kockanju, kladenju, sportskom kladenju, lutrijama i natjecanjima; Kasino igre koje se mogu preuzeti; Programi za elektronicke igre koji se mogu preuzeti i racunalne softverske platforme kojima se moze pristupiti putem interneta, racunala i bezicnih uredaja, sve za uporabu na podrucju bingo-igara, igranja, kockanja, lutrija i natjecanja; Kasete s racunalnim i videoigrama, ulosci, diskovi i programi, ukljucujuci interaktivne programe; Softver za kockanje; Racunalni programi za igrice; Softver za kladenje; Softver za sportske oklade; Elektronicke olovke za bingo; Rucni elektronicki uredaji za pruzanje internetskog pristupa odabranim mreznim stranicama; Dijelovi i oprema za navedeno.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "hr",
+      "description": "Pruzanje hrane i pica; Usluge restorana, Restorani sa samoposluzivanjem, Usluge kafica i bara; Catering; Korporativno ugoscavanje, Privatne svecanosti i zabave (unajmljivanje prostorija i pruzanje hrane i pica); Usluge restorana, kavana i barova; Sve navedeno pruza se iz kasina.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Letöltheto játékok; Letöltheto bingójátékok; Letöltheto pókerjátékok; Számítógépes szoftverek és letöltheto szoftverek, beleértve letöltheto szoftverek mobil alkalmazás formájában, mindez az alábbiakhoz való használatra: bingó, póker, játékok, szerencsejátékok, hazárdjátékok, fogadások, sportfogadások, sorsolásos játékok és versenyek; Letöltheto kaszinójátékok; Letöltheto elektronikus játékprogramok és számítógépes szoftverplatformok, amelyek interneten, számítógépeken és vezeték nélküli eszközökön keresztül érhetok el, mindegyik bingójátékok, sorsolásos játékok és versenyek terén történo használatra; Video- és számítógépes játékkazetták, cartridge-ek, lemezek és programok, beleértve interaktív programok; Játékszoftver; Játékszoftver; Fogadó szoftver; Szoftverek sportfogadásokhoz; Elektronikus bingótollak; Kézi elektronikus készülékek, amelyek kiválasztott weboldalakhoz biztosítanak internet-hozzáférést; A fent említett áruk alkatrészei és szerelvényei.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "hu",
+      "description": "Étel- és italellátás; Éttermi szolgáltatások, Önkiszolgáló éttermek, Kávéházi és bárban nyújtott szolgáltatások; Vendéglátás; Vállalati vendéglátó/hosztessz szolgáltatások, Privát estélyek és partik (szobák bérbeadása, valamint ételekrol és italokról való gondoskodás); Étteremben, kávézoben és bárban nyújtott szolgáltatások; Az összes fent említett kaszinóból történo biztosítása.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Giochi scaricabili; Giochi di bingo scaricabili; Giochi di poker scaricabili; Software e software scaricabili, compresi software scaricabili sotto forma di un'applicazione mobile, tutti per il bingo, il poker, giochi, giochi d'azzardo, giochi di denaro, scommesse, scommesse sportive, lotterie e concorsi; Giochi da casinò scaricabili; Programmi per giochi elettronici scaricabili e piattaforme software accessibili tramite Internet, computer e dispositivi senza fili, tutti da usare nel settore dei giochi di bingo, dei giochi d'azzardo, dei giochi di denaro, delle lotterie e dei concorsi; Cassette, cartucce, dischi e programmi, compresi programmi interattivi, di giochi per computer e videogiochi; Software per giochi d'azzardo; Software di giochi d'azzardo; Software per scommesse; Software per scommesse in ambito sportivo; Pennarelli per bingo elettronico; Apparecchi elettronici tascabili per la fornitura di accesso Internet a siti Web selezionati; Parti ed accessori per tutti i suddetti articoli.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "it",
+      "description": "Fornitura di alimenti e bevande; Servizi di ristoranti, Servizi di ristoranti self-service, Bar e bar-ristoranti; Catering; Ospitalità aziendale, Cerimonie e feste private (locazione di locali e fornitura di alimenti e bevande); Servizi di ristoranti, caffè e bar; Tutti i suddetti sono forniti da un casinò.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Atsisiunciami zaidimai; Atsisiunciami bingo zaidimai; Atsisiunciamieji pokerio zaidimai; Kompiuteriu programine iranga ir atsisiunciamoji programine iranga, iskaitant atsisiunciamaja programine iranga, butent mobilioji aplikacija, viskas skirta naudoti bingo, pokerio, zaidimu, azartiniu zaidimu, losimu, lazybu, sportiniu lazybu, loteriju ir varzybu reikmems; Parsisiunciamieji losimo namu zaidimai; Parsisiunciamos elektroniniu zaidimu programos ir kompiuteriu programines irangos platformos, prie kuriu galima prisijungti internetu, kompiuteriais ir bevieliais prietaisais, viskas susije su bingo, pokeriu, zaidimais, azartiniais zaidimais, losimais, loterijomis ir varzybomis; Kompiuteriniu ir vaizdo zaidimu kasetes, diskai ir programos, iskaitant interaktyvias programas; Losimu programine iranga; Losimu programine iranga; Lazybu programine iranga; Sporto lazyboms skirta programine iranga; Elektroniniai bingo rasikliai; Delniniai elektroniniai aparatai, skirti interneto prieigai prie pasirinktu svetainiu teikti; Auksciau nurodytu prekiu dalys ir reikmenys.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "lt",
+      "description": "Maisto ir gerimu parupinimas; Restoranai, Savitarnos restoranu paslaugos, Baru, kaviniu paslaugos; Viesojo maitinimo paslaugos; Firmos ivaizdzio formavimo paslaugos, Asmenines veiklos ir vakareliai (kambariu nuoma ir maisto bei gerimu teikimas); Restoranu, kaviniu ir baru paslaugos; Visos minetos paslautos teikiamos losimo namuose.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Lejupieladejamas speles; Lejupieladejamas bingo speles; Lejupladejamas pokera speles; Datoru programmaturas un lejupieladejamas programmaturas, tostarp lejupieladejamas programmaturas mobilo lietotnu veida, viss izmantosanai bingo, pokera, azartspeles, speles uz naudu, deribas, sporta deribas, loterijas un sacensibas; Lejupieladejamas kazino speles; Lejupieladejamas elektronisko spelu programmas un datora programmaturas platformas, kuram var pieklut ar interneta, datoru un bezvadu iericu starpniecibu, viss izmantosanai bingo, pokera, azartspeles, speles uz naudu, deribas, sporta deribas, loterijas un sacensibas; Datoru un video spelu kasetes, kasetnes, diski un programmas, tostarp interaktivas programmas; Azartspelu programmatura; Programmu nodrosinajumi spelem; Deribu programmatura; Programmatura sporta deribam; Elektroniskas bingo pildspalvas; Rokas elektroniskas iekartas interneta piekluves nodrosinasanai izveletam timekla vietnem; Ieprieks mineto precu dalas un armatura.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "lv",
+      "description": "Apgade ar uzturu; Restoranu pakalpojumi, Pasapkalposanas restoranu pakalpojumi, Kafejnicas un bara pakalpojumi; Edienu sagatavosana un piegade pec pasutijuma; Korporativa viesmiliba, Privati pasakumi un ballites (telpu noma un partikas un dzerienu ire); Restoranu, kafejnicu un baru pakalpojumi; Visu ieprieks mineto nodrosina kazino.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Loghob li jista' jitnizzel; Loghob tal-bingo li jista' jitnizzel; Loghob tal-powker li jista' jitnizzel; Softwer tal-kompjuter u softwer li jista' jitnizzel, inkluz softwer li jista' jitnizzel fl-ghamla ta' applikazzjoni mobbli, kollha ghall-uzu fit-tombla, powker, loghob, loghob tal-azzard, imhatri, imhatri fuq l-isports, lotteriji u kompetizzjonijiet; Loghob tal-kazino li jista' jitnizzel; Programmi ta' loghob elettroniku li jistghu jitnizzlu u pjattaformi ta' softwer tal-kompjuter li wiehed jista' jaccessahom permezz tal-Internet, kompjuters u taghmir minghajr fili, kollha ghall-uzu fl-oqsma tal-loghob tat-tombla, loghob, loghob tal-azzard, lotteriji u kompetizzjonijiet; Kasetts, skratac, diski u programmi tal-loghob tal-kompjuter u tal-vidjogejms, inkluzi programmi interattivi; Softwer tal-loghob ta' l-azzard; Softwer tal-loghbiet; Softwer ta' l-imhatri; Softwer ghal-loghob tal-imhatri; Pinen elettronici tat-tombla; Apparat elettroniku li jinzamm fl-idejn ghall-provvista ta' access ghall-Internet lil siti web maghzula; Partijiet u fittings ghall-oggetti msemmija qabel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "mt",
+      "description": "Il-provvista ta' ikel u xorb; Servizzi ta' restorant, Ristoranti fejn wiehed jinqeda wahdu, Servizzi ta' kafetteriji, bars; Catering; Servizzi ta' ospitalità ghall-kumpanniji, Funzjonijiet privati u festini (kiri ta' kmamar u l-provvista ta' ikel u xorb); Servizzi ta' restorant, kafè u bar; Dak kollu msemmi qabel ipprovdut minn kazinò.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Gry do pobrania; Gry bingo do pobrania; Gry z rodziny pokera do pobrania; Oprogramowanie komputerowe i oprogramowanie do pobrania, w tym oprogramowanie do pobrania w formie aplikacji mobilnej, wszystkie do uzytku w zakresie bingo, pokera, gier, gier, hazardu, zakladów, zakladów sportowych, loterii i konkursów; Gry kasynowe do pobrania; Programy gier elektronicznych do pobrania i platformy oprogramowania komputerowego dostepne za posrednictwem internetu, komputerów i urzadzen bezprzewodowych, wszystkie do uzytku w dziedzinie gier bingo, gier, hazardu, loterii i konkursów; Kasety, kartridze, dyski i programy gier komputerowych i wideo, w tym programy interaktywne; Oprogramowanie gier hazardowych; Oprogramowanie gier; Oprogramowanie loterii; Oprogramowanie do obstawiania zakladów sportowych; Pióra do bingo elektronicznego; Podreczne elektroniczne urzadzenia do zapewniania dostepu do wybranych stron internetowych; Czesci i osprzet do uprzednio wymienionych towarów.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "pl",
+      "description": "Uslugi zaopatrzenia w zywnosc i napoje; Uslugi restauracyjne, Restauracje samoobslugowe, Uslugi swiadczone przez kawiarnie i bary; Obsluga gastronomiczna z wlasnym zapleczem, produktami i transportem; Goscinnosc zbiorowa, Prywatne przyjecia i imprezy (wynajem pomieszczen i zaopatrzenie w zywnosc i napoje); Restauracje, kawiarnie i bary; Wszystkie wyzej wymienione udostepniane z kasyna.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Jogos transferíveis; Jogos de bingo descarregáveis; Jogos de póquer descarregáveis; Software e software descarregável, incluindo software descarregável sob a forma de uma aplicação móvel, tudo para uso em bingo, póquer, jogos, jogos de azar, apostas, apostas desportivas, lotarias e concursos; Jogos de casino descarregáveis; Programas de jogos eletrónicos descarregáveis e plataformas de software acessíveis através da Internet, de computadores e de dispositivos sem fios, tudo para uso em jogos de bingo, jogos de azar, lotarias e concursos; Cassetes, cartuchos, discos e programas de jogos de computador e de vídeo, incluindo programas interativos; Software de jogos de azar; Software de jogos a dinheiro; Software para apostas; Software para apostas desportivas; Marcadores para bingo eletrónico; Aparelhos eletrónicos portáteis para fornecimento de acesso a determinados sítios Web; Peças e acessórios para os artigos atrás referidos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "pt",
+      "description": "Serviços de fornecimento de alimentos e bebidas; Serviços de restaurantes, Serviços de restaurantes self-service, Serviços de café e de bar; Catering; Serviços de acolhimento de empresas, Receções e festas privadas (aluguer de espaços e fornecimento de refeições e bebidas); Serviços de restaurante, café e bar; Todos os serviços atrás referidos prestados em casinos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Jocuri descarcabile; Jocuri de bingo descarcabile; Jocuri de poker descarcabile; Software de calculator si software descarcabil, inclusiv software descarcabil sub forma unei aplicatii mobile, toate destinate utilizarii la bingo, poker, jocuri, jocuri, jocuri de noroc, pariuri, pariuri sportive, loterii si concursuri; Jocuri de cazino descarcabile; Programe de jocuri electronice descarcabile si platforme de software pentru calculator pot fi accesate prin Internet, calculatoare si dispozitive fara fir, toate destinate utilizarii în domeniile jocurilor de bingo, jocurilor, jocurilor de noroc, loteriilor si competitiilor; Casete, cartuse, discuri si programe de jocuri de calculator si video, inclusiv programe interactive; Software pentru jocuri de noroc; Software pentru jocuri; Software pentru pariuri; Software pentru pariuri sportive; Stilouri de bingo electronice; Aparate de mâna electronice pentru furnizarea accesului pe internet la site-uri web selectate; Parti si accesorii pentru articolele mentionate mai sus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "ro",
+      "description": "Asigurarea de hrana si bauturi; Restaurante [servirea mesei], Restaurante cu autoservire, Servicii de cafenele si bar; Catering; Servicii de protocol, Petreceri si receptii private (închiriere de camere si alimentatie publica); Servicii de restaurant, cafenea si bar; Toate cele susmentionate furnizate dintr-un cazino.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Hry na prevzatie; Hry typu bingo s moznostou stiahnutia; Pokerové hry s moznostou prevzatia; Pocítacový softvér a softvér s moznostou stiahnutia vrátane softvéru s moznostou stiahnutia v podobe mobilnej aplikácie, vsetky súvisia s bingom, pokerom, hrami, hraním, hazardnými hrami, stávkovaním, sportovým stávkovaním, lotériami a sútazami; Kasínové hry s moznostou prevzatia; Elektronické herné programy a pocítacové softvérové platformy s moznostou stiahnutia, ku ktorým mozno pristupovat prostredníctvom internetu, pocítacov a bezdrôtových zariadení, vsetky sú urcené na pouzitie v oblasti binga, hrania, hazardných hier, lotérií a sútazí; Pocítacové herné a videoherné kazety, disky a programy vrátane interaktívnych programov; Softvér pre hazardné hry; Softvér na vyuzitie v herniach; Stávkovací softvér; Softvér na uzatváranie stávok; Perá pre elektronické bingo; Vreckové elektronické prístroje pre poskytovanie internetového prístupu k vybraným webovým stránkam; Casti a súcasti pre uvedené tovary.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "sk",
+      "description": "Stravovacie sluzby; Restauracné (stravovacie) sluzby, Samoobsluzné jedálne, Sluzby kaviarní, bary; Catering; Sluzby v oblasti podnikového stravovania a ubytovania, Súkromné podujatia a oslavy (prenájom miestností a poskytovanie jedla a nápojov); Restaurácie (jedálne), sluzby kaviarne a baru; Vsetky vyssie uvedené sluzby sú poskytované v kasíne.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Prenosljive igre; Nalozljive igre tombole; Prenosljive poker igre; Racunalniska programska oprema in nalozljiva programska oprema, vkljucno z nalozljivo programsko opremo v obliki mobilne aplikacije, vse za uporabo pri tomboli, pokru, igrah, igranju, igrah na sreco, stavah, sportnih stavah, loteriji in tekmovanjih; Prenosljive igralniske igre; Nalozljivi programi za elektronske igre in platforme racunalniske programske opreme, ki so dostopne prek interneta, racunalnikov in brezzicnih naprav, vse za uporabo na podrocju iger tombole, igranja, iger na sreco, loterije in tekmovanj; Kasete, kartuse, diski in programi za racunalniske in video igre, vkljucno z interaktivnimi programi; Programska oprema za hazard; Programska oprema za igre na sreco; Programska oprema za stave; Programska oprema za stave; Elektronska peresa za tombolo; Rocni elektronski aparati za nudenje internetnega dostopa do izbranih spletnih mest; Deli in montazna oprema za omenjeno blago.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "sl",
+      "description": "Nudenje hrane in pijace; Storitve restavracij, Samopostrezne restavracije, Storitve kavarn, barov; Catering; Storitve reprezentacije podjetja, Zasebni sprejemi in zabave (najem sob ter nudenje hrane in pijace); Storitve restavracij, kavarn in barov; Vse navedeno nudi igralnica.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Juegos descargables; Juegos de bingo descargables; Juegos de póquer descargables; Software de ordenador y software descargable, incluyendo software descargable en forma de aplicación de móvil, todos para su uso en el bingo, póquer, juegos, juegos de azar, juegos de apuestas, apuestas, apuestas deportivas, loterías y competiciones; Juegos de casino descargables; Programas de juegos electrónicos descargables y plataformas de software de ordenador a los que se puede acceder a través de Internet, ordenadores y dispositivos inalámbricos, todos para su uso en los ámbitos de los juegos de bingo, juegos de azar, juegos de apuestas, loterías y competiciones; Casetes, cartuchos, discos y programas de videojuegos y juegos de ordenador, incluyendo programas interactivos; Software de juegos de apuestas; Software de juegos por dinero; Software de apuestas; Programas informáticos para apuestas deportivas; Bolígrafos electrónicos de bingo; Aparatos electrónicos de mano para facilitar el acceso por Internet a sitios web seleccionados; Parts and fittings for the aforesaid goods.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "es",
+      "description": "Suministro de comidas y bebidas; Servicios de restaurantes, Servicios de restaurantes de autoservicio, Servicios de bar y de cafetería; Servicios de catering; Alojamiento y restauración para grupos, Actos y fiestas privados (alquiler de habitaciones y suministro de comidas y bebidas); Servicios de restaurante, café y bar; Todos los mencionados se prestan en un casino.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Nedladdningsbara spel; Nedladdningsbara bingospel; Nedladdningsbara pokerspel; Datorprogram och nedladdningsbar programvara, inklusive nedladdningsbar programvara i form av en mobil applikation, allt för användning i bingospel, pokerspel, spel, speltjänster, hasardspel, lotterier och tävlingar; Nerladdningsbara kasinospel; Nedladdningsbara elektroniska spelprogram och datorprogramvaruplattformar tillgängliga via Internet, datorer och trådlösa anordningar, samtliga för användning i bingospel, pokerspel, spel, speltjänster, hasardspel, lotterier och tävlingar; Dator- och videospelkassetter, patroner, skivor och program, inklusive interaktiva program; Programvara för hasardspel; Programvara för hasardspel; Vadslagningsprogramvara; Programvara för sportvadslagning; Elektroniska bingopennor; Handhållna elektroniska apparater för upplåtande av åtkomst till internet till utvalda webbplatser; Delar och tillbehör till ovan nämnda varor.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "sw",
+      "description": "Utskänkning av mat och dryck; Restauranger, Självserveringsrestauranger, Kafé- och bartjänster; Catering; Företagsvärdtjänster, Privata tillställningar och fester (rumsuthyrning och utskänkning av mat och dryck); Restaurang-, kafé- och bartjänster; Samtliga nämnda avseende ett kasino.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Rank Leisure Holdings Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Potter Clarkson KB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "TOR, Saint-Cloud Way,Maidenhead, Berkshire, SL6 8BN",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Rank Leisure Holdings Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Hry s mozností stazení; Bingo hry ke stazení; Pokerové hry ke stazení; Pocítacový software a software ke stazení, vcetne softwaru ke stazení ve forme mobilní aplikace, vsechno k pouzití v bingu, pokeru, hrách, hraní, hazardních hrách, sázení, sportovním sázení, loteriích a soutezích; Kasinové hry ke stazení; Elektronické herní programy ke stazení a pocítacové softwarové platformy, ke kterým lze pristupovat prostrednictvím internetu, pocítacu a bezdrátových zarízení, vsechno k pouzití v bingu, hrách, hraní, hazardních hrách, loteriích a soutezích; Pocítacové a videoherní kazety, cartridge, disky a programy, vcetne interaktivních programu; Software pro hazardní hry; Herní software; Sázkový software; Software na sportovní sázky; Elektronická pera na bingo; Prírucní elektronické prístroje pro poskytování prístupu k internetu na vybrané webové stránky; Cásti a vybavení výse uvedeného zbozí."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Poskytování jídla a nápoju; Restauracní sluzby, Samoobsluzné restaurace, Kafeteria a bar servis; Zajistování hromadného stravování (catering); Sluzby spolecného stravování, Soukromé slavnosti a vecírky (pronájem pokoju a zajistování jídel a nápoju); Sluzby restaurace, kaváren a baru; Vsechno výse uvedené je poskytováno z kasina."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Spil, som kan downloades; Bingospil, som kan downloades; Pokerspil, der kan downloades; Computersoftware og software, som kan downloades, inklusive software, som kan downloades, i form af en mobil applikation, alt til brug i forbindelse med bingo, poker, spil, arrangering af spil, spillevirksomhed, væddemål, tips, lotterier og konkurrencer; Kasinospil, der kan downloades; Elektroniske spilleprogrammer, som kan downloades, samt computersoftwareplatforme med adgang fra internet, computere og trådløse enheder, alt til brug i forbindelse med bingo, poker, spil, arrangering af spil, spillevirksomhed, væddemål, tips, lotterier og konkurrencer; Computerspil og videospil, -diske og -programmer, inklusive interaktive programmer; Software til hasardspil; Software til pengespilleautomater; Software til væddemål; Software til sportsvæddemål; Elektroniske bingomarkere; Håndholdte elektroniske apparater til tilvejebringelse af internetadgang til udvalgte websites; Dele og tilbehør til ovennævnte varer."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Tilvejebringelse af mad og drikke; Tjenester ydet af restauranter, Selvbetjeningsrestaurantvirksomhed, Caféer og barer; Catering; Opbygning og pleje af virksomheders image, Private selskaber og partyarrangementer (udlejning af værelser og udbringning af mad og drikke); Restaurations-, café- og barvirksomhed; Alt det førnævnte i forbindelse med kasinoer."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Downloadbare games; Downloadbare bingospellen; Downloadbare pokerspellen; Software en downloadbare software, waaronder downloadbare software in de vorm van een mobiele applicatie, alles voor gebruik bij bingo, poker, spellen, kansspelen, gokspelen, weddenschappen, sportweddenschappen, loterijen en wedstrijden; Downloadbare casinospellen; Downloadbare elektronische spelprogramma's en softwareplatforms die toegankelijk zijn via internet, computers en draadloze apparaten, alles voor gebruik op het gebied van bingospellen, kansspelen, gokspelen, loterijen en wedstrijden; Computer- en videospelcassettes, -cartridges, -schijven en - programma's, waaronder interactieve programma's; Software met betrekking tot gokken; Kansspelen; Software met betrekking tot wedden; Software voor weddenschappen met betrekking tot sport; Elektronische bingopennen; In de hand te houden elektronische apparaten voor toegang via internet tot geselecteerde websites; Delen, onderdelen en toebehoren van alle voorgenoemde waren."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Het verstrekken van voedsel en drank; Restauratie [het verstrekken van maaltijden], Diensten van zelfbedieningsrestaurants, Diensten van café-restaurants en bars; Catering; Ontvangsten voor bedrijven, Particuliere plechtigheden en feesten (verhuur van kamers en het verstrekken van voedsel en dranken); Diensten op het gebied van restaurants, cafés en bars; Al het voornoemde geleverd vanuit een casino."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Downloadable games; downloadable bingo games; downloadable poker games; computer software and downloadable software, including downloadable software in the nature of a mobile application, all for use in bingo, poker, games, gaming, gambling, betting, sports betting, lotteries and competitions; downloadable casino games; downloadable electronic game programs and computer software platforms that may be accessed via the Internet, computers and wireless devices, all for use in the fields of bingo games, gaming, gambling, lotteries and competitions; computer and video game cassettes, cartridges, discs and programs, including interactive programs; gambling software; gaming software; betting software; sports betting software; electronic bingo pens; hand held electronic apparatus for providing internet access to selected web sites; parts and fittings for the aforesaid."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Provision of food and drink; restaurants, self-service restaurants, café and bar services; catering services; corporate hospitality, private functions and parties (room hire and provision of food and drink); restaurant, café and bar services; all of the aforesaid provided from a casino."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Allalaaditavad mängud; Allalaaditavad bingomängud; Allalaaditavad pokkerimängud; Arvutitarkvara ja allalaaditav tarkvara, sh allalaaditav tarkvara mobiilirakendustena, kõik kasutuseks bingos, pokkeris, mängudes, kasiinomängudes, hasartmängudes, kihlvedudes, spordikihlvedudes, loteriides ja võistlustel; Allalaaditavad kasiinomängud; Allalaaditavad elektroonilised mänguprogrammid ja arvutitarkvaraprogrammid sotsiaalvõrkudele, millele on juurdepääs Internetist, arvutitest ja juhtmeta seadmetest, kõik kasutuseks bingomängudes, mängudes, hasartmängudes, loteriides ja võistlustel; Arvuti- ja videomängukassetid, -kettad ja -programmid, sealhulgas interaktiivsed programmid; Hasartmängutarkvara; Mängimistarkvara; Panustustarkvara; Tarkvara spordiennustuste jaoks; Elektroonilised bingopliiatsid; Valitud veebisaitidele internetijuurdepääsu pakkumise funktsiooniga käeshoitavad elektroonilised seadmed; Osad ja lisaseadmed eelpoolmainitud toodetele."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Toitlustamine; Restoraniteenused, Selverestoraniteenused, Baari- ja kohvikuteenused; Toitlustusteenindus; Ärivastuvõttude teenused, Eraviisilised üritused ja vastuvõtud (ruumide rent ja toidu pakkumine ja joogid); Restorani-, kohviku- ja einelauateenused; Kõik eelnimetatud teenused pakutuna kasiinos."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Ladattavat pelit; Ladattavat bingopelit; Ladattavat pokeripelit; Tietokoneohjelmistot ja ladattavat ohjelmistot, mukaan lukien ladattavat ohjelmistot matkaviestintäsovelluksen muodossa, kaikki käytettäväksi bingon, pokerin, pelien, rahapelien, uhkapelien, vedonlyöntien, urheiluun liittyvän vedonlyönnin, arpajaisten ja kilpailujen alalla; Ladattavat kasinopelit; Ladattavat elektroniset peliohjelmat ja tietokoneohjelmistoympäristöt, joita voidaan käyttää Internetin, tietokoneiden ja langattomien laitteiden välityksellä, kaikki käytettäväksi bingopelien, rahapelien, uhkapelien, arpajaisten ja kilpailujen alalla; Tietokone- ja videopelien kasetit, kotelot, levyt ja ohjelmat, mukaan lukien vuorovaikutteiset ohjelmat; Uhkapeliohjelmistot; Rahapeliohjelmistot; Vedonlyöntiohjelmistot; Urheiluvedonlyöntiohjelmistot; Elektroniset bingokynät; Kädessä pidettävät elektroniset laitteet valittujen Internetin WWW-sivustojen käyttömahdollisuuden tarjoamiseen; Edellä mainittujen osat ja tarvikkeet."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Ravitseminen ja juomien anniskelu; Ravintolapalvelut, Itsepalveluravintolat, Kahvila- ja baaripalvelut; Pitopalvelu; Yritysten kestityspalvelut, Yksityiset tilaisuudet ja juhlat (huoneiden vuokraus sekä ruoan ja juoman tarjoaminen); Ravintola-, kahvila- ja baaripalvelut; Kaikki edellä mainitut tarjotaan kasinosta."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Jeux téléchargeables; Jeux de bingo téléchargeables; Jeux de poker téléchargeables; Logiciels et logiciels téléchargeables, y compris logiciels téléchargeables sous forme d'une application mobile, tous destinés au bingo, au poker, aux jeux, aux jeux d'argent, aux paris, aux paris sportifs, aux loteries et aux compétitions; Jeux de casino téléchargeables; Programmes de jeux électroniques téléchargeables et plates-formes logicielles accessibles par le biais de l'internet, d'ordinateurs et de dispositifs sans fil, tous destinés au bingo, aux jeux, aux jeux d'argent, aux paris, aux loteries et aux compétitions; Cassettes, cartouches, disques et programmes de jeux informatiques et vidéo, y compris programmes interactifs; Logiciels de jeux; Logiciels de jeux d'argent; Logiciels de paris; Logiciels de paris sportifs; Stylos pour bingo électronique; Appareils électroniques portables pour la fourniture d'accès à certains sites web par le biais de l'internet; Pièces et parties constitutives des produits précités."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Mise à disposition d'aliments et de boissons; Services de restauration (alimentation), Services de restaurants en libre-service, Services de cafés et de bars; Services de traiteurs; Accueil de sociétés, Réceptions et fêtes privées (location de salles et restauration); Services de restaurant, café et bar; Tous les services précités étant fournis par un casino."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Herunterladbare Spiele; Herunterladbare Bingospiele; Herunterladbare Pokerspiele; Computersoftware und herunterladbare Software, einschließlich herunterladbare Software in Form einer mobilen Applikation, alle zur Verwendung in Bezug auf Bingo, Poker, Spiele, Glücksspiele, Wetten, Sportwetten, Lotterien und Wettbewerbe; Herunterladbare Kasinospiele; Herunterladbare elektronische Spielprogramme und Computersoftwareplattformen, die über das Internet, Computer und drahtlose Geräte zugänglich sind, alle zur Verwendung in den Bereichen Bingospiele, Spiele, Glücksspiele, Lotterien und Wettbewerbe; Computer- und Videospielkassetten, -platten und -programme, einschließlich interaktive Programme; Glücksspielesoftware; Geldspielsoftware; Wettsoftware; Software für Sportwetten; Elektronische Bingo-Stifte; Elektronische Taschengeräte zur Bereitstellung des Internetzugangs zu ausgewählten Websites; Teile und Zubehör für die obengenannten Waren."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Verpflegung von Gästen; Verpflegung von Gästen in Restaurants, Verpflegung von Gästen in Selbstbedienungsrestaurants, Betrieb von Cafés und Bars; Catering; Gästebetreuung für Unternehmen, Private Veranstaltungen und Partys (Vermietung von Räumen und Verpflegung von Gästen); Dienste im Rahmen des Restaurant-, Café- und Barbetriebs; Alle vorstehend genannten Dienstleistungen bereitgestellt von einem Kasino."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Igre za preuzimanje; Bingo-igre koje se mogu preuzimati; Poker igre koje se mogu preuzimati; Racunalni softver i softver koji se moze preuzimati, ukljucujuci softver koji se moze preuzimati u obliku mobilne aplikacije, sve za uporabu u bingu, pokeru, igrama, igranju, kockanju, kladenju, sportskom kladenju, lutrijama i natjecanjima; Kasino igre koje se mogu preuzeti; Programi za elektronicke igre koji se mogu preuzeti i racunalne softverske platforme kojima se moze pristupiti putem interneta, racunala i bezicnih uredaja, sve za uporabu na podrucju bingo-igara, igranja, kockanja, lutrija i natjecanja; Kasete s racunalnim i videoigrama, ulosci, diskovi i programi, ukljucujuci interaktivne programe; Softver za kockanje; Racunalni programi za igrice; Softver za kladenje; Softver za sportske oklade; Elektronicke olovke za bingo; Rucni elektronicki uredaji za pruzanje internetskog pristupa odabranim mreznim stranicama; Dijelovi i oprema za navedeno."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Pruzanje hrane i pica; Usluge restorana, Restorani sa samoposluzivanjem, Usluge kafica i bara; Catering; Korporativno ugoscavanje, Privatne svecanosti i zabave (unajmljivanje prostorija i pruzanje hrane i pica); Usluge restorana, kavana i barova; Sve navedeno pruza se iz kasina."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Letöltheto játékok; Letöltheto bingójátékok; Letöltheto pókerjátékok; Számítógépes szoftverek és letöltheto szoftverek, beleértve letöltheto szoftverek mobil alkalmazás formájában, mindez az alábbiakhoz való használatra: bingó, póker, játékok, szerencsejátékok, hazárdjátékok, fogadások, sportfogadások, sorsolásos játékok és versenyek; Letöltheto kaszinójátékok; Letöltheto elektronikus játékprogramok és számítógépes szoftverplatformok, amelyek interneten, számítógépeken és vezeték nélküli eszközökön keresztül érhetok el, mindegyik bingójátékok, sorsolásos játékok és versenyek terén történo használatra; Video- és számítógépes játékkazetták, cartridge-ek, lemezek és programok, beleértve interaktív programok; Játékszoftver; Játékszoftver; Fogadó szoftver; Szoftverek sportfogadásokhoz; Elektronikus bingótollak; Kézi elektronikus készülékek, amelyek kiválasztott weboldalakhoz biztosítanak internet-hozzáférést; A fent említett áruk alkatrészei és szerelvényei."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Étel- és italellátás; Éttermi szolgáltatások, Önkiszolgáló éttermek, Kávéházi és bárban nyújtott szolgáltatások; Vendéglátás; Vállalati vendéglátó/hosztessz szolgáltatások, Privát estélyek és partik (szobák bérbeadása, valamint ételekrol és italokról való gondoskodás); Étteremben, kávézoben és bárban nyújtott szolgáltatások; Az összes fent említett kaszinóból történo biztosítása."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Giochi scaricabili; Giochi di bingo scaricabili; Giochi di poker scaricabili; Software e software scaricabili, compresi software scaricabili sotto forma di un'applicazione mobile, tutti per il bingo, il poker, giochi, giochi d'azzardo, giochi di denaro, scommesse, scommesse sportive, lotterie e concorsi; Giochi da casinò scaricabili; Programmi per giochi elettronici scaricabili e piattaforme software accessibili tramite Internet, computer e dispositivi senza fili, tutti da usare nel settore dei giochi di bingo, dei giochi d'azzardo, dei giochi di denaro, delle lotterie e dei concorsi; Cassette, cartucce, dischi e programmi, compresi programmi interattivi, di giochi per computer e videogiochi; Software per giochi d'azzardo; Software di giochi d'azzardo; Software per scommesse; Software per scommesse in ambito sportivo; Pennarelli per bingo elettronico; Apparecchi elettronici tascabili per la fornitura di accesso Internet a siti Web selezionati; Parti ed accessori per tutti i suddetti articoli."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Fornitura di alimenti e bevande; Servizi di ristoranti, Servizi di ristoranti self-service, Bar e bar-ristoranti; Catering; Ospitalità aziendale, Cerimonie e feste private (locazione di locali e fornitura di alimenti e bevande); Servizi di ristoranti, caffè e bar; Tutti i suddetti sono forniti da un casinò."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Atsisiunciami zaidimai; Atsisiunciami bingo zaidimai; Atsisiunciamieji pokerio zaidimai; Kompiuteriu programine iranga ir atsisiunciamoji programine iranga, iskaitant atsisiunciamaja programine iranga, butent mobilioji aplikacija, viskas skirta naudoti bingo, pokerio, zaidimu, azartiniu zaidimu, losimu, lazybu, sportiniu lazybu, loteriju ir varzybu reikmems; Parsisiunciamieji losimo namu zaidimai; Parsisiunciamos elektroniniu zaidimu programos ir kompiuteriu programines irangos platformos, prie kuriu galima prisijungti internetu, kompiuteriais ir bevieliais prietaisais, viskas susije su bingo, pokeriu, zaidimais, azartiniais zaidimais, losimais, loterijomis ir varzybomis; Kompiuteriniu ir vaizdo zaidimu kasetes, diskai ir programos, iskaitant interaktyvias programas; Losimu programine iranga; Losimu programine iranga; Lazybu programine iranga; Sporto lazyboms skirta programine iranga; Elektroniniai bingo rasikliai; Delniniai elektroniniai aparatai, skirti interneto prieigai prie pasirinktu svetainiu teikti; Auksciau nurodytu prekiu dalys ir reikmenys."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Maisto ir gerimu parupinimas; Restoranai, Savitarnos restoranu paslaugos, Baru, kaviniu paslaugos; Viesojo maitinimo paslaugos; Firmos ivaizdzio formavimo paslaugos, Asmenines veiklos ir vakareliai (kambariu nuoma ir maisto bei gerimu teikimas); Restoranu, kaviniu ir baru paslaugos; Visos minetos paslautos teikiamos losimo namuose."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Lejupieladejamas speles; Lejupieladejamas bingo speles; Lejupladejamas pokera speles; Datoru programmaturas un lejupieladejamas programmaturas, tostarp lejupieladejamas programmaturas mobilo lietotnu veida, viss izmantosanai bingo, pokera, azartspeles, speles uz naudu, deribas, sporta deribas, loterijas un sacensibas; Lejupieladejamas kazino speles; Lejupieladejamas elektronisko spelu programmas un datora programmaturas platformas, kuram var pieklut ar interneta, datoru un bezvadu iericu starpniecibu, viss izmantosanai bingo, pokera, azartspeles, speles uz naudu, deribas, sporta deribas, loterijas un sacensibas; Datoru un video spelu kasetes, kasetnes, diski un programmas, tostarp interaktivas programmas; Azartspelu programmatura; Programmu nodrosinajumi spelem; Deribu programmatura; Programmatura sporta deribam; Elektroniskas bingo pildspalvas; Rokas elektroniskas iekartas interneta piekluves nodrosinasanai izveletam timekla vietnem; Ieprieks mineto precu dalas un armatura."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Apgade ar uzturu; Restoranu pakalpojumi, Pasapkalposanas restoranu pakalpojumi, Kafejnicas un bara pakalpojumi; Edienu sagatavosana un piegade pec pasutijuma; Korporativa viesmiliba, Privati pasakumi un ballites (telpu noma un partikas un dzerienu ire); Restoranu, kafejnicu un baru pakalpojumi; Visu ieprieks mineto nodrosina kazino."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Loghob li jista' jitnizzel; Loghob tal-bingo li jista' jitnizzel; Loghob tal-powker li jista' jitnizzel; Softwer tal-kompjuter u softwer li jista' jitnizzel, inkluz softwer li jista' jitnizzel fl-ghamla ta' applikazzjoni mobbli, kollha ghall-uzu fit-tombla, powker, loghob, loghob tal-azzard, imhatri, imhatri fuq l-isports, lotteriji u kompetizzjonijiet; Loghob tal-kazino li jista' jitnizzel; Programmi ta' loghob elettroniku li jistghu jitnizzlu u pjattaformi ta' softwer tal-kompjuter li wiehed jista' jaccessahom permezz tal-Internet, kompjuters u taghmir minghajr fili, kollha ghall-uzu fl-oqsma tal-loghob tat-tombla, loghob, loghob tal-azzard, lotteriji u kompetizzjonijiet; Kasetts, skratac, diski u programmi tal-loghob tal-kompjuter u tal-vidjogejms, inkluzi programmi interattivi; Softwer tal-loghob ta' l-azzard; Softwer tal-loghbiet; Softwer ta' l-imhatri; Softwer ghal-loghob tal-imhatri; Pinen elettronici tat-tombla; Apparat elettroniku li jinzamm fl-idejn ghall-provvista ta' access ghall-Internet lil siti web maghzula; Partijiet u fittings ghall-oggetti msemmija qabel."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Il-provvista ta' ikel u xorb; Servizzi ta' restorant, Ristoranti fejn wiehed jinqeda wahdu, Servizzi ta' kafetteriji, bars; Catering; Servizzi ta' ospitalità ghall-kumpanniji, Funzjonijiet privati u festini (kiri ta' kmamar u l-provvista ta' ikel u xorb); Servizzi ta' restorant, kafè u bar; Dak kollu msemmi qabel ipprovdut minn kazinò."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Gry do pobrania; Gry bingo do pobrania; Gry z rodziny pokera do pobrania; Oprogramowanie komputerowe i oprogramowanie do pobrania, w tym oprogramowanie do pobrania w formie aplikacji mobilnej, wszystkie do uzytku w zakresie bingo, pokera, gier, gier, hazardu, zakladów, zakladów sportowych, loterii i konkursów; Gry kasynowe do pobrania; Programy gier elektronicznych do pobrania i platformy oprogramowania komputerowego dostepne za posrednictwem internetu, komputerów i urzadzen bezprzewodowych, wszystkie do uzytku w dziedzinie gier bingo, gier, hazardu, loterii i konkursów; Kasety, kartridze, dyski i programy gier komputerowych i wideo, w tym programy interaktywne; Oprogramowanie gier hazardowych; Oprogramowanie gier; Oprogramowanie loterii; Oprogramowanie do obstawiania zakladów sportowych; Pióra do bingo elektronicznego; Podreczne elektroniczne urzadzenia do zapewniania dostepu do wybranych stron internetowych; Czesci i osprzet do uprzednio wymienionych towarów."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi zaopatrzenia w zywnosc i napoje; Uslugi restauracyjne, Restauracje samoobslugowe, Uslugi swiadczone przez kawiarnie i bary; Obsluga gastronomiczna z wlasnym zapleczem, produktami i transportem; Goscinnosc zbiorowa, Prywatne przyjecia i imprezy (wynajem pomieszczen i zaopatrzenie w zywnosc i napoje); Restauracje, kawiarnie i bary; Wszystkie wyzej wymienione udostepniane z kasyna."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Jogos transferíveis; Jogos de bingo descarregáveis; Jogos de póquer descarregáveis; Software e software descarregável, incluindo software descarregável sob a forma de uma aplicação móvel, tudo para uso em bingo, póquer, jogos, jogos de azar, apostas, apostas desportivas, lotarias e concursos; Jogos de casino descarregáveis; Programas de jogos eletrónicos descarregáveis e plataformas de software acessíveis através da Internet, de computadores e de dispositivos sem fios, tudo para uso em jogos de bingo, jogos de azar, lotarias e concursos; Cassetes, cartuchos, discos e programas de jogos de computador e de vídeo, incluindo programas interativos; Software de jogos de azar; Software de jogos a dinheiro; Software para apostas; Software para apostas desportivas; Marcadores para bingo eletrónico; Aparelhos eletrónicos portáteis para fornecimento de acesso a determinados sítios Web; Peças e acessórios para os artigos atrás referidos."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de fornecimento de alimentos e bebidas; Serviços de restaurantes, Serviços de restaurantes self-service, Serviços de café e de bar; Catering; Serviços de acolhimento de empresas, Receções e festas privadas (aluguer de espaços e fornecimento de refeições e bebidas); Serviços de restaurante, café e bar; Todos os serviços atrás referidos prestados em casinos."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Jocuri descarcabile; Jocuri de bingo descarcabile; Jocuri de poker descarcabile; Software de calculator si software descarcabil, inclusiv software descarcabil sub forma unei aplicatii mobile, toate destinate utilizarii la bingo, poker, jocuri, jocuri, jocuri de noroc, pariuri, pariuri sportive, loterii si concursuri; Jocuri de cazino descarcabile; Programe de jocuri electronice descarcabile si platforme de software pentru calculator pot fi accesate prin Internet, calculatoare si dispozitive fara fir, toate destinate utilizarii în domeniile jocurilor de bingo, jocurilor, jocurilor de noroc, loteriilor si competitiilor; Casete, cartuse, discuri si programe de jocuri de calculator si video, inclusiv programe interactive; Software pentru jocuri de noroc; Software pentru jocuri; Software pentru pariuri; Software pentru pariuri sportive; Stilouri de bingo electronice; Aparate de mâna electronice pentru furnizarea accesului pe internet la site-uri web selectate; Parti si accesorii pentru articolele mentionate mai sus."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Asigurarea de hrana si bauturi; Restaurante [servirea mesei], Restaurante cu autoservire, Servicii de cafenele si bar; Catering; Servicii de protocol, Petreceri si receptii private (închiriere de camere si alimentatie publica); Servicii de restaurant, cafenea si bar; Toate cele susmentionate furnizate dintr-un cazino."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Hry na prevzatie; Hry typu bingo s moznostou stiahnutia; Pokerové hry s moznostou prevzatia; Pocítacový softvér a softvér s moznostou stiahnutia vrátane softvéru s moznostou stiahnutia v podobe mobilnej aplikácie, vsetky súvisia s bingom, pokerom, hrami, hraním, hazardnými hrami, stávkovaním, sportovým stávkovaním, lotériami a sútazami; Kasínové hry s moznostou prevzatia; Elektronické herné programy a pocítacové softvérové platformy s moznostou stiahnutia, ku ktorým mozno pristupovat prostredníctvom internetu, pocítacov a bezdrôtových zariadení, vsetky sú urcené na pouzitie v oblasti binga, hrania, hazardných hier, lotérií a sútazí; Pocítacové herné a videoherné kazety, disky a programy vrátane interaktívnych programov; Softvér pre hazardné hry; Softvér na vyuzitie v herniach; Stávkovací softvér; Softvér na uzatváranie stávok; Perá pre elektronické bingo; Vreckové elektronické prístroje pre poskytovanie internetového prístupu k vybraným webovým stránkam; Casti a súcasti pre uvedené tovary."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Stravovacie sluzby; Restauracné (stravovacie) sluzby, Samoobsluzné jedálne, Sluzby kaviarní, bary; Catering; Sluzby v oblasti podnikového stravovania a ubytovania, Súkromné podujatia a oslavy (prenájom miestností a poskytovanie jedla a nápojov); Restaurácie (jedálne), sluzby kaviarne a baru; Vsetky vyssie uvedené sluzby sú poskytované v kasíne."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Prenosljive igre; Nalozljive igre tombole; Prenosljive poker igre; Racunalniska programska oprema in nalozljiva programska oprema, vkljucno z nalozljivo programsko opremo v obliki mobilne aplikacije, vse za uporabo pri tomboli, pokru, igrah, igranju, igrah na sreco, stavah, sportnih stavah, loteriji in tekmovanjih; Prenosljive igralniske igre; Nalozljivi programi za elektronske igre in platforme racunalniske programske opreme, ki so dostopne prek interneta, racunalnikov in brezzicnih naprav, vse za uporabo na podrocju iger tombole, igranja, iger na sreco, loterije in tekmovanj; Kasete, kartuse, diski in programi za racunalniske in video igre, vkljucno z interaktivnimi programi; Programska oprema za hazard; Programska oprema za igre na sreco; Programska oprema za stave; Programska oprema za stave; Elektronska peresa za tombolo; Rocni elektronski aparati za nudenje internetnega dostopa do izbranih spletnih mest; Deli in montazna oprema za omenjeno blago."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Nudenje hrane in pijace; Storitve restavracij, Samopostrezne restavracije, Storitve kavarn, barov; Catering; Storitve reprezentacije podjetja, Zasebni sprejemi in zabave (najem sob ter nudenje hrane in pijace); Storitve restavracij, kavarn in barov; Vse navedeno nudi igralnica."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Juegos descargables; Juegos de bingo descargables; Juegos de póquer descargables; Software de ordenador y software descargable, incluyendo software descargable en forma de aplicación de móvil, todos para su uso en el bingo, póquer, juegos, juegos de azar, juegos de apuestas, apuestas, apuestas deportivas, loterías y competiciones; Juegos de casino descargables; Programas de juegos electrónicos descargables y plataformas de software de ordenador a los que se puede acceder a través de Internet, ordenadores y dispositivos inalámbricos, todos para su uso en los ámbitos de los juegos de bingo, juegos de azar, juegos de apuestas, loterías y competiciones; Casetes, cartuchos, discos y programas de videojuegos y juegos de ordenador, incluyendo programas interactivos; Software de juegos de apuestas; Software de juegos por dinero; Software de apuestas; Programas informáticos para apuestas deportivas; Bolígrafos electrónicos de bingo; Aparatos electrónicos de mano para facilitar el acceso por Internet a sitios web seleccionados; Parts and fittings for the aforesaid goods."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Suministro de comidas y bebidas; Servicios de restaurantes, Servicios de restaurantes de autoservicio, Servicios de bar y de cafetería; Servicios de catering; Alojamiento y restauración para grupos, Actos y fiestas privados (alquiler de habitaciones y suministro de comidas y bebidas); Servicios de restaurante, café y bar; Todos los mencionados se prestan en un casino."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Nedladdningsbara spel; Nedladdningsbara bingospel; Nedladdningsbara pokerspel; Datorprogram och nedladdningsbar programvara, inklusive nedladdningsbar programvara i form av en mobil applikation, allt för användning i bingospel, pokerspel, spel, speltjänster, hasardspel, lotterier och tävlingar; Nerladdningsbara kasinospel; Nedladdningsbara elektroniska spelprogram och datorprogramvaruplattformar tillgängliga via Internet, datorer och trådlösa anordningar, samtliga för användning i bingospel, pokerspel, spel, speltjänster, hasardspel, lotterier och tävlingar; Dator- och videospelkassetter, patroner, skivor och program, inklusive interaktiva program; Programvara för hasardspel; Programvara för hasardspel; Vadslagningsprogramvara; Programvara för sportvadslagning; Elektroniska bingopennor; Handhållna elektroniska apparater för upplåtande av åtkomst till internet till utvalda webbplatser; Delar och tillbehör till ovan nämnda varor."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Utskänkning av mat och dryck; Restauranger, Självserveringsrestauranger, Kafé- och bartjänster; Catering; Företagsvärdtjänster, Privata tillställningar och fester (rumsuthyrning och utskänkning av mat och dryck); Restaurang-, kafé- och bartjänster; Samtliga nämnda avseende ett kasino."
+        }
+      ]
+    },
+    "id": "8693c276-808c-41e0-97da-640b5f2fc8af",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "201"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Riddargatan 10,Stockholm, 114 35",
+        "representativeAddressCountryCode": "SE",
+        "representativeAddressCountryName": "Sweden",
+        "representativeName": "Potter Clarkson KB"
+      }
+    ],
+    "secondLanguageCode": "fr",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170629",
+        "applicationNumber": "16932287"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270629",
+      "lastPublicationDate": "20171023",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20180130",
+        "registrationNumber": "16932287"
+      }
+    },
+    "version": "20260511192004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/em/8693c276-808c-41e0-97da-640b5f2fc8af",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.827Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

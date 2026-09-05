@@ -1,0 +1,148 @@
+{
+  "uri": "/mark/fr/25768f46-b007-41e0-a0ed-4a93226cf6cd",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "25768f46-b007-41e0-a0ed-4a93226cf6cd",
+  "applicationNumber": "26 5242256",
+  "registrationNumber": "26 5242256",
+  "applicationDate": "2026-03-27",
+  "registrationDate": null,
+  "expiryDate": "2036-03-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-07-31",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Avenora",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": ": Travaux de bureau ; Comptabilité ; Services de photocopie ; Services de bureaux de placement ; Portage salarial ; Service de gestion informatisée de fichiers ; Optimisation du trafic pour des sites internet ; Audits d'entreprises (analyses commerciales) ; Services d'intermédiation commerciale",
+      "translation_language": "en",
+      "translation": "Office work; Accounting; Photocopying services; Employment agency services; Payroll management; Computerized file management services; Website traffic optimization; Business audits (commercial analysis); Commercial intermediation services"
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "fr",
+      "description": ": Services d'assurance ; Services bancaires ; Services bancaires en ligne ; Services de caisses de prévoyance ; Emission de cartes de crédit ; Services de paiement par porte-monnaie électronique ; Estimations immobilières ; Gestion financière ; Gérance de biens immobiliers ; Services de bien immobiliers ; Services de financement ; Analyse financière ; Constitution de capitaux ; Investissement de capitaux ; Consultation en matière financière ; Estimations financières (assurances, banques, immobilier) ; Placement de fonds",
+      "translation_language": "en",
+      "translation": "Insurance services; Banking services; Online banking services; Pension fund services; Credit card issuance; Electronic wallet payment services; Real estate appraisals; Financial management; Real estate management; Real estate services; Financing services; Financial analysis; Capital formation; Capital investment; Financial consulting; Financial appraisals (insurance, banking, real estate); Investment of funds"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": ": Expertises (travaux d'ingénieurs) ; Recherches scientifiques ; Recherches technologiques ; Développement de logiciels ; Recherche et développement de nouveaux produits pour des tiers ; Conduite d'études de projets techniques ; Architecture ; Décoration intèrieure ; Elaboration (conception) de logiciels ; Installation de logiciels ; Maintenance de logiciels ; Mise à jour de logiciels ; Location de logiciels ; Fourniture de logiciels non téléchargeables en ligne ; Programmation informatique ; Analyse de systèmes informatiques ; Conception de systèmes informatiques ; Services de conseillers en matière de conception et de développement de matériel informatique ; Numérisation de documents ; Logiciels en tant que services (SaaS) ; Mise à disposition de systèmes informatiques virtuels par l'informatique en nuage ; Services d'assistance en technologie de l'information (TI) (dépannage de logiciels) ; Hébergement de serveurs ; Contrôle technique de véhicules automobiles ; Services de conception d'art graphique ; Stylisme (esthétique industrielle) ; Authentification d'oeuvres d'art ; Audits en matière d'énergie ; Stockage électronique de données.",
+      "translation_language": "en",
+      "translation": "Expertise (engineering work); Scientific research; Technological research; Software development; Research and development of new products for third parties; Conducting technical project studies; Architecture; Interior design; Software development (design); Software installation; Software maintenance; Software updates; Software rental; Provision of software not available for online download; Computer programming; Computer systems analysis; Computer systems design; Consulting services for the design and development of computer hardware; Document digitization; Software as a Service (SaaS); Provisioning of virtual computer systems via cloud computing; Information technology (IT) support services (software troubleshooting); Server hosting; Technical inspection of motor vehicles; Graphic art design services; Styling (industrial aesthetics); Authentication of works of art; Energy audits; Electronic data storage."
+    }
+  ],
+  "owner": "Nathan Haas Agissant pour le compte de \"Avenora\", Société en cours de formation",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "57360 Amnéville",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "Nathan Haas Agissant pour le compte de \"Avenora\", Société en cours de formation"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Office work; Accounting; Photocopying services; Employment agency services; Payroll management; Computerized file management services; Website traffic optimization; Business audits (commercial analysis); Commercial intermediation services",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Travaux de bureau ; Comptabilité ; Services de photocopie ; Services de bureaux de placement ; Portage salarial ; Service de gestion informatisée de fichiers ; Optimisation du trafic pour des sites internet ; Audits d'entreprises (analyses commerciales) ; Services d'intermédiation commerciale"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Insurance services; Banking services; Online banking services; Pension fund services; Credit card issuance; Electronic wallet payment services; Real estate appraisals; Financial management; Real estate management; Real estate services; Financing services; Financial analysis; Capital formation; Capital investment; Financial consulting; Financial appraisals (insurance, banking, real estate); Investment of funds",
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Services d'assurance ; Services bancaires ; Services bancaires en ligne ; Services de caisses de prévoyance ; Emission de cartes de crédit ; Services de paiement par porte-monnaie électronique ; Estimations immobilières ; Gestion financière ; Gérance de biens immobiliers ; Services de bien immobiliers ; Services de financement ; Analyse financière ; Constitution de capitaux ; Investissement de capitaux ; Consultation en matière financière ; Estimations financières (assurances, banques, immobilier) ; Placement de fonds"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Expertise (engineering work); Scientific research; Technological research; Software development; Research and development of new products for third parties; Conducting technical project studies; Architecture; Interior design; Software development (design); Software installation; Software maintenance; Software updates; Software rental; Provision of software not available for online download; Computer programming; Computer systems analysis; Computer systems design; Consulting services for the design and development of computer hardware; Document digitization; Software as a Service (SaaS); Provisioning of virtual computer systems via cloud computing; Information technology (IT) support services (software troubleshooting); Server hosting; Technical inspection of motor vehicles; Graphic art design services; Styling (industrial aesthetics); Authentication of works of art; Energy audits; Electronic data storage.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Expertises (travaux d'ingénieurs) ; Recherches scientifiques ; Recherches technologiques ; Développement de logiciels ; Recherche et développement de nouveaux produits pour des tiers ; Conduite d'études de projets techniques ; Architecture ; Décoration intèrieure ; Elaboration (conception) de logiciels ; Installation de logiciels ; Maintenance de logiciels ; Mise à jour de logiciels ; Location de logiciels ; Fourniture de logiciels non téléchargeables en ligne ; Programmation informatique ; Analyse de systèmes informatiques ; Conception de systèmes informatiques ; Services de conseillers en matière de conception et de développement de matériel informatique ; Numérisation de documents ; Logiciels en tant que services (SaaS) ; Mise à disposition de systèmes informatiques virtuels par l'informatique en nuage ; Services d'assistance en technologie de l'information (TI) (dépannage de logiciels) ; Hébergement de serveurs ; Contrôle technique de véhicules automobiles ; Services de conception d'art graphique ; Stylisme (esthétique industrielle) ; Authentification d'oeuvres d'art ; Audits en matière d'énergie ; Stockage électronique de données."
+        }
+      ]
+    },
+    "id": "25768f46-b007-41e0-a0ed-4a93226cf6cd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "31"
+      }
+    ],
+    "recordLastUpdated": "20260802",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260327",
+        "applicationNumber": "26 5242256"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360327",
+      "lastPublicationDate": "20260731",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "26 5242256"
+      }
+    },
+    "version": "20260802020005",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Avenora"
+    }
+  },
+  "_uri": "/mark/fr/25768f46-b007-41e0-a0ed-4a93226cf6cd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.817Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

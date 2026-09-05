@@ -1,0 +1,127 @@
+{
+  "uri": "/mark/gb/6aee2451-6f5d-4a3b-9c18-d98fe842c09e",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "6aee2451-6f5d-4a3b-9c18-d98fe842c09e",
+  "applicationNumber": "4358238",
+  "registrationNumber": "4358238",
+  "applicationDate": "2026-03-20",
+  "registrationDate": "2026-06-12",
+  "expiryDate": "2036-03-20",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Yori",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Downloadable mobile application software for relationship support, wellness education and menstrual cycle awareness.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Providing online non-downloadable software for relationship support and wellness education; software as a service (SaaS) services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Scott Deering",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "45 Park Avenue, NORMANTON Wf62dr, West Yorkshire",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Scott Deering"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Downloadable mobile application software for relationship support, wellness education and menstrual cycle awareness."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing online non-downloadable software for relationship support and wellness education; software as a service (SaaS) services."
+        }
+      ]
+    },
+    "id": "6aee2451-6f5d-4a3b-9c18-d98fe842c09e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2026/014"
+      }
+    ],
+    "recordLastUpdated": "20260618",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260320",
+        "applicationNumber": "4358238"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360320",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260612",
+        "registrationNumber": "4358238"
+      }
+    },
+    "version": "20260618020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Yori"
+    }
+  },
+  "_uri": "/mark/gb/6aee2451-6f5d-4a3b-9c18-d98fe842c09e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:45.802Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "uri": "/mark/hk/51282701-4da2-4e15-ae1e-50a44eaad78b",
+  "provider": "clarivate",
+  "office": "hk",
+  "guid": "51282701-4da2-4e15-ae1e-50a44eaad78b",
+  "applicationNumber": "305574934",
+  "registrationNumber": "305574934",
+  "applicationDate": "2021-03-26",
+  "registrationDate": "2021-03-26",
+  "expiryDate": "2031-03-25",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "bo ri",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    5,
+    9,
+    10
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        5
+      ],
+      "language": "en",
+      "description": "醫用免疫分析試劑；醫藥製劑；醫用生物製劑；醫用化學製劑；生化藥品；血液製品；醫用診斷製劑；醫用或獸醫用化學試劑；藥用化學製劑；醫療基因檢測用試劑；用於檢測朊病毒基因突變的醫用製劑；獸醫基因檢測用試劑。",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "光學掃描儀；科學用核酸測序儀；基因擴增儀；基因組信息分析儀；生物識別掃描儀；用於檢測研究用生物樣品中的病原體和毒素的實驗室儀器；實驗室用恒溫培養箱；實驗室用層析設備；理化試驗和成分分析用儀器和量器；恒溫器；測量儀器；用於檢測基因序列的實驗室設備；試管；實驗室用移液器吸頭；科學裝置用隔膜。",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "en",
+      "description": "醫療分析儀器；醫用分析儀；醫用基因檢測設備；醫用恒溫箱；醫療器械和儀器；醫用測試儀；理療設備；診斷和治療期同位素設備和器械；醫用導管。",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Hangzhou Bioer Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "中國 浙江省杭州市 濱江區高新技術產業開發區濱安路1192號",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Hangzhou Bioer Technology Co., Ltd."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "05",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "醫用免疫分析試劑；醫藥製劑；醫用生物製劑；醫用化學製劑；生化藥品；血液製品；醫用診斷製劑；醫用或獸醫用化學試劑；藥用化學製劑；醫療基因檢測用試劑；用於檢測朊病毒基因突變的醫用製劑；獸醫基因檢測用試劑。"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "光學掃描儀；科學用核酸測序儀；基因擴增儀；基因組信息分析儀；生物識別掃描儀；用於檢測研究用生物樣品中的病原體和毒素的實驗室儀器；實驗室用恒溫培養箱；實驗室用層析設備；理化試驗和成分分析用儀器和量器；恒溫器；測量儀器；用於檢測基因序列的實驗室設備；試管；實驗室用移液器吸頭；科學裝置用隔膜。"
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "醫療分析儀器；醫用分析儀；醫用基因檢測設備；醫用恒溫箱；醫療器械和儀器；醫用測試儀；理療設備；診斷和治療期同位素設備和器械；醫用導管。"
+        }
+      ]
+    },
+    "id": "51282701-4da2-4e15-ae1e-50a44eaad78b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "HK",
+    "registrationOfficeName": "Hong Kong",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210326",
+        "applicationNumber": "305574934"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310325",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20210326",
+        "registrationNumber": "305574934"
+      }
+    },
+    "version": "20230427090306",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "bo ri"
+    }
+  },
+  "_uri": "/mark/hk/51282701-4da2-4e15-ae1e-50a44eaad78b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.211Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

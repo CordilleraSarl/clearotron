@@ -1,0 +1,166 @@
+{
+  "uri": "/mark/cn/52dcb67e-a6fc-4251-86be-88a28068fbee",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "52dcb67e-a6fc-4251-86be-88a28068fbee",
+  "applicationNumber": "75827600",
+  "registrationNumber": "75827600",
+  "applicationDate": "2023-12-15",
+  "registrationDate": "2024-06-14",
+  "expiryDate": "2034-06-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-03-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "可闻可立",
+  "markTransliteration": "KE WEN KE LI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "材料测试;服装设计;工业品外观设计;技术研究;建筑设计;提供互联网搜索引擎;为他人创建和维护网站;医学研究;艺术品鉴定;质量评估",
+      "translation_language": "en",
+      "translation": "Material testing; clothing design; industrial design; technical research; architectural design; providing Internet search engines; creating and maintaining websites for others; medical research; artwork appraisal; quality assessment"
+    }
+  ],
+  "owner": "Guangzhou Quanxin Health Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省广州市越秀区正南路锦荣街23号1楼自编号101",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Guangzhou Quanxin Health Technology Co., Ltd.",
+        "applicantNativeName": "广州全心卫生科技有限责任公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Material testing; clothing design; industrial design; technical research; architectural design; providing Internet search engines; creating and maintaining websites for others; medical research; artwork appraisal; quality assessment",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "材料测试;服装设计;工业品外观设计;技术研究;建筑设计;提供互联网搜索引擎;为他人创建和维护网站;医学研究;艺术品鉴定;质量评估"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Biological research service",
+        "Survey service",
+        "Registered design service",
+        "Design and information service for architecture",
+        "Dress designing service",
+        "Computer programming, and concerned services",
+        "Authenticating service for works of art"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4212",
+          "subNatGoodsServicesDescription": "Biological research service"
+        },
+        {
+          "subNatClassNumber": "4214",
+          "subNatGoodsServicesDescription": "Survey service"
+        },
+        {
+          "subNatClassNumber": "4216",
+          "subNatGoodsServicesDescription": "Registered design service"
+        },
+        {
+          "subNatClassNumber": "4217",
+          "subNatGoodsServicesDescription": "Design and information service for architecture"
+        },
+        {
+          "subNatClassNumber": "4218",
+          "subNatGoodsServicesDescription": "Dress designing service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        },
+        {
+          "subNatClassNumber": "4224",
+          "subNatGoodsServicesDescription": "Authenticating service for works of art"
+        }
+      ]
+    },
+    "id": "52dcb67e-a6fc-4251-86be-88a28068fbee",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1879"
+      }
+    ],
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "广州知用商务服务有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20231215",
+        "applicationNumber": "75827600"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340613",
+      "lastPublicationDate": "20240313",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20240614",
+        "registrationNumber": "75827600"
+      }
+    },
+    "version": "20251005221214",
+    "wordMarkSpecification": {
+      "markTransliteration": "KE WEN KE LI",
+      "markVerbalElementText": "可闻可立"
+    }
+  },
+  "_uri": "/mark/cn/52dcb67e-a6fc-4251-86be-88a28068fbee",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:58.826Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-transliteration-numeric"
+  }
+}

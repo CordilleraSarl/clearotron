@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/kr/86984f42-fdc8-4be4-8dc4-ca8c2f0e1ce2",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "86984f42-fdc8-4be4-8dc4-ca8c2f0e1ce2",
+  "applicationNumber": "41-2000-0030844",
+  "registrationNumber": null,
+  "applicationDate": "2000-12-08",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "도리 정통일본식 돈가스와 우동 (とうり DoRi)",
+  "markTransliteration": "DoRi",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "간이식당업, 관광음식점업, 레스토랑업, 서양음식점경영업, 셀프서비스식당업, 식당체인업, 일본음식점경영업, 중국음식점경영업, 한국식유흥주점경영업, 한식점경영업",
+      "translation_language": "en",
+      "translation": "Eatery business, tourist restaurant business, restaurant business, Western restaurant business, self-service restaurant business, restaurant chain business, Japanese restaurant business, Chinese restaurant business, Korean entertainment bar business, Korean restaurant business"
+    }
+  ],
+  "owner": "JOO KWANG CHO",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "안진석 (AHN, Jin Suk)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기도 안성시",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "JOO KWANG CHO",
+        "applicantNativeName": "주광조"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Eatery business, tourist restaurant business, restaurant business, Western restaurant business, self-service restaurant business, restaurant chain business, Japanese restaurant business, Chinese restaurant business, Korean entertainment bar business, Korean restaurant business",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "간이식당업, 관광음식점업, 레스토랑업, 서양음식점경영업, 셀프서비스식당업, 식당체인업, 일본음식점경영업, 중국음식점경영업, 한국식유흥주점경영업, 한식점경영업"
+        }
+      ]
+    },
+    "id": "86984f42-fdc8-4be4-8dc4-ca8c2f0e1ce2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "08.05.10"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260806",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 서초구 서초대로**길 **, 현대기림오피스텔 *호 오세오국제특허법률사무소 (서초동)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "안진석 (AHN, Jin Suk)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20001208",
+        "applicationNumber": "41-2000-0030844"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260806021233",
+    "wordMarkSpecification": {
+      "markTransliteration": "DoRi",
+      "markVerbalElementText": "도리 정통일본식 돈가스와 우동 (とうり DoRi)"
+    }
+  },
+  "_uri": "/mark/kr/86984f42-fdc8-4be4-8dc4-ca8c2f0e1ce2",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.999Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

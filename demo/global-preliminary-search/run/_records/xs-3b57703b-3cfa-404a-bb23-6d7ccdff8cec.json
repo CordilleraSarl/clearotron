@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/xs/3b57703b-3cfa-404a-bb23-6d7ccdff8cec",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "3b57703b-3cfa-404a-bb23-6d7ccdff8cec",
+  "applicationNumber": null,
+  "registrationNumber": "63200",
+  "applicationDate": null,
+  "registrationDate": "1988-10-04",
+  "expiryDate": null,
+  "renewalDate": "2003-10-04",
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "HAMBURGER HEAVEN ORIGINAL DOUBLE DECKER",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Restaurant services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "HAMBURGER HEAVEN, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "281 NORTH YORK ROAD, ELMHURST, IL, 60126",
+        "applicantAddressCity": "ELMHURST",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "60126",
+        "applicantAddressStateName": "ILLINOIS",
+        "applicantAddressStreet": "281 NORTH YORK ROAD",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "HAMBURGER HEAVEN, INC.",
+        "applicantStateOfIncorporation": "ILLINOIS"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Restaurant services"
+        }
+      ]
+    },
+    "id": "3b57703b-3cfa-404a-bb23-6d7ccdff8cec",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADEMARK",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "281 NORTH YORK ROAD, ELMHURST, IL, 60126",
+        "city": "ELMHURST",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "CORPORATION",
+        "name": "HAMBURGER HEAVEN, INC.",
+        "postalCode": "60126",
+        "stateName": "ILLINOIS",
+        "stateOfIncorporation": "ILLINOIS",
+        "street": "281 NORTH YORK ROAD"
+      }
+    ],
+    "recordLastUpdated": "20251202",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsedAnywhereDate": "19820402",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "RENEWED"
+        ]
+      },
+      "markCurrentStatus": "RENEWED",
+      "registration": {
+        "registrationDate": "19881004",
+        "registrationNumber": "63200"
+      },
+      "renewalDate": "20031004"
+    },
+    "usStateOfficeCode": "IL",
+    "usStateOfficeName": "ILLINOIS",
+    "version": "20251202115332",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "HAMBURGER HEAVEN ORIGINAL DOUBLE DECKER"
+    }
+  },
+  "_uri": "/mark/xs/3b57703b-3cfa-404a-bb23-6d7ccdff8cec",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.833Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

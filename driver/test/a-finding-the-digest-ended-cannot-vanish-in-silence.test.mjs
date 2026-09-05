@@ -18,8 +18,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { silentlyLostFindings } from "../record-carry.mjs";
 
-const URI = "/mark/us/USAFI99C21E4456BC11EEBD8294F128BE1AC0";
-const OTHER = "/mark/us/USAFIEF536D06354611F0AF9220677C5FC470";
+const URI = "/mark/us/ceeeef5e-ac9f-482b-93a6-9b09165ee1cc";
+const OTHER = "/mark/us/ac1100e2-8bce-4731-81dd-7694769f829c";
 const recon = (rows) => ({ computable: true, top_slice: rows, residual: [] });
 const endedFinding = (uri, mark) => ({ ending: "finding", mark_text: mark, position_records: [uri] });
 
@@ -106,8 +106,8 @@ test("1955 an EMPTY population is its own state, not a clean answer", () => {
 // The e2e lane drove the merged check against archived artifacts and found a run where the
 // reconciliation carried ONE finding-ended position while the digest's typed calls recorded NINE
 // finding rows, sharing nothing. `checked 1, matched 1, lost 0` — looked, and found nothing.
-const DIGEST_A = "/mark/gb/GBRII63A8238C18FA11F19F5B005056B79F9E";
-const DIGEST_B = "/mark/jp/JAPAI863CCDAA67F911E9BD12005056B74373";
+const DIGEST_A = "/mark/gb/c3154106-158a-4756-b8f6-116bc310172f";
+const DIGEST_B = "/mark/jp/310027f2-0562-46fe-abea-385f068a8150";
 
 test("2141 populations that share NOTHING are not computable — the answer cannot be trusted", () => {
   const r = silentlyLostFindings({

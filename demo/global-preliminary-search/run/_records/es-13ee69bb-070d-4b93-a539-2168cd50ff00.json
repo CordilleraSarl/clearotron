@@ -1,0 +1,126 @@
+{
+  "uri": "/mark/es/13ee69bb-070d-4b93-a539-2168cd50ff00",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "13ee69bb-070d-4b93-a539-2168cd50ff00",
+  "applicationNumber": "3077032 M7",
+  "registrationNumber": "3077032 M7",
+  "applicationDate": "2013-05-20",
+  "registrationDate": "2013-09-18",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2013-06-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2025-11-26",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "GRUPO TREVENQUE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios cientificos y tecnologicos, asi como servicios de investigacion y diseño en estos ambitos; servicios de analisis e investigacion industriales; diseño y desarrollo de equipos informaticos y de software.",
+      "translation_language": "en",
+      "translation": "SCIENTIFIC AND TECHNOLOGICAL SERVICES, AS WELL AS RESEARCH AND DESIGN SERVICES IN THESE FIELDS; INDUSTRIAL ANALYSIS AND INVESTIGATION SERVICES; DESIGN AND DEVELOPMENT OF COMPUTER EQUIPMENT AND SOFTWARE."
+    }
+  ],
+  "owner": "TREVENQUE SISTEMAS DE INFORMACION S.L.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "TREVENQUE SISTEMAS DE INFORMACION S.L."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "cmMarkImageEUclassification": [
+      "29.02.00",
+      "37.01.07"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SCIENTIFIC AND TECHNOLOGICAL SERVICES, AS WELL AS RESEARCH AND DESIGN SERVICES IN THESE FIELDS; INDUSTRIAL ANALYSIS AND INVESTIGATION SERVICES; DESIGN AND DEVELOPMENT OF COMPUTER EQUIPMENT AND SOFTWARE.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios cientificos y tecnologicos, asi como servicios de investigacion y diseño en estos ambitos; servicios de analisis e investigacion industriales; diseño y desarrollo de equipos informaticos y de software."
+        }
+      ]
+    },
+    "id": "13ee69bb-070d-4b93-a539-2168cd50ff00",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "PANTONE: VERDE CLARO: 388C; VERDE OSCURO: 360C COLOR PANTALLA: VERDE CLARO: 168R 224G OB; VERDE OSCURO: 0R 153G 0BCOLOR WEB: VERDE CLARO: #A8E000; VERDE OSCURO: #009900 TIPOGRAFIA: NEWS GOTHIC"
+      }
+    ],
+    "markImageViennaClassification": [
+      "27.05.09",
+      "27.05.10",
+      "27.05.21"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "3942"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20130520",
+        "applicationNumber": "3077032 M7"
+      },
+      "cancellationDate": "20251126",
+      "cmNormalisedStatus": "CANCELLED",
+      "lastPublicationDate": "20130606",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20130918",
+        "registrationNumber": "3077032 M7"
+      }
+    },
+    "version": "20260427163114",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GRUPO TREVENQUE"
+    }
+  },
+  "_uri": "/mark/es/13ee69bb-070d-4b93-a539-2168cd50ff00",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.565Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

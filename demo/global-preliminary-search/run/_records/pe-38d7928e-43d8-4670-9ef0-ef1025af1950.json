@@ -1,0 +1,124 @@
+{
+  "uri": "/mark/pe/38d7928e-43d8-4670-9ef0-ef1025af1950",
+  "provider": "clarivate",
+  "office": "pe",
+  "guid": "38d7928e-43d8-4670-9ef0-ef1025af1950",
+  "applicationNumber": "970465-2022",
+  "registrationNumber": "S00143463",
+  "applicationDate": "2022-09-23",
+  "registrationDate": "2022-11-25",
+  "expiryDate": "2032-11-25",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Q'ORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "servicios de entretenimiento; servicios culturales, educativos y recreativos de galerías de arte; exhibición de obras artísticas; servicios de exhibición de obras artísticas en galerías; organización y dirección de conferencias.",
+      "translation_language": "en",
+      "translation": "entertainment services; cultural, educational and recreational services of art galleries; exhibition of artistic works; exhibition services of artistic works in galleries; organization and management of conferences."
+    }
+  ],
+  "owner": "LORA CORONADO DIEGO MIGUEL",
+  "ownerNative": null,
+  "ownerCountry": "UNKN",
+  "representative": "Flores Yapuchura Ányela Yésica",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "LIMA - LIMA - MIRAFLORES",
+        "applicantAddressCountryCode": "UNKN",
+        "applicantAddressCountryName": "Unknown Applicant Country/Region",
+        "applicantName": "LORA CORONADO DIEGO MIGUEL"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "entertainment services; cultural, educational and recreational services of art galleries; exhibition of artistic works; exhibition services of artistic works in galleries; organization and management of conferences.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "servicios de entretenimiento; servicios culturales, educativos y recreativos de galerías de arte; exhibición de obras artísticas; servicios de exhibición de obras artísticas en galerías; organización y dirección de conferencias."
+        }
+      ]
+    },
+    "id": "38d7928e-43d8-4670-9ef0-ef1025af1950",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "24.17.01",
+      "26.03.23",
+      "27.01.01",
+      "27.05.17",
+      "27.05.21"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260811",
+    "registrationOfficeCode": "PE",
+    "registrationOfficeName": "Peru",
+    "representatives": [
+      {
+        "representativeAddress": "LIMA - LIMA - BRENA",
+        "representativeAddressCountryCode": "PE",
+        "representativeAddressCountryName": "Peru",
+        "representativeName": "Flores Yapuchura Ányela Yésica"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220923",
+        "applicationNumber": "970465-2022"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321125",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20221125",
+        "registrationNumber": "S00143463"
+      }
+    },
+    "version": "20260811020445",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Q'ORI"
+    }
+  },
+  "_uri": "/mark/pe/38d7928e-43d8-4670-9ef0-ef1025af1950",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.399Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

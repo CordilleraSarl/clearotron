@@ -1,0 +1,589 @@
+{
+  "uri": "/mark/us/88796489-e61a-4d3a-8e20-8efb6aa0f37f",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "88796489-e61a-4d3a-8e20-8efb6aa0f37f",
+  "applicationNumber": "88510214",
+  "registrationNumber": "6624629",
+  "applicationDate": "2019-07-11",
+  "registrationDate": "2022-01-25",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2021-11-09"
+  ],
+  "abandonmentDate": "2020-10-20",
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Downloadable computer software applications for the purchase of subscription insurance policies and extended warranties for mobile phones, smartphones, mobile computing and communication devices, tablets, computers and consumer electronic device replacement, repair and maintenance; Downloadable computer software applications for the provision of insurance services, namely, underwriting extended warranty contracts in the field of mobile phones, smartphones, mobile computing and communication devices, tablets, computers and consumer electronics",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ASSURANT, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "CAMI BOYD",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "28 LIBERTY STREET, NEW YORK, NY, 10005",
+        "applicantAddressCity": "NEW YORK",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "10005",
+        "applicantAddressStateName": "NEW YORK",
+        "applicantAddressStreet": "28 LIBERTY STREET",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "ASSURANT, INC."
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "28 LIBERTY STREET, NEW YORK, NEW YORK, 10005",
+            "city": "NEW YORK",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "ASSURANT, INC.",
+            "postalCode": "10005",
+            "stateName": "NEW YORK",
+            "street": "28 LIBERTY STREET"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "LORICA, LLC"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "ALSTON & BIRD LLP, 101 SOUTH TRYON STREET, SUITE 4000, CHARLOTTE, NC 28280-4000",
+            "addressLines": [
+              "MICHELE M. GLESSNER",
+              "ALSTON & BIRD LLP",
+              "101 SOUTH TRYON STREET, SUITE 4000",
+              "CHARLOTTE, NC 28280-4000"
+            ],
+            "name": "MICHELE M. GLESSNER"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20210830",
+        "recordedDate": "20210920",
+        "reelFrameNumber": "7425/0434"
+      },
+      {
+        "assignees": [
+          {
+            "address": "8600 W. BRYN MAWR AVE., STE. 440N, CHICAGO, ILLINOIS, 60631",
+            "city": "CHICAGO",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "LORICA, LLC",
+            "postalCode": "60631",
+            "stateName": "ILLINOIS",
+            "street": "8600 W. BRYN MAWR AVE., STE. 440N"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "HYLA, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "10000 N. CENTRAL EXPWY, SUITE 1000, DALLAS, TX 75231",
+            "addressLines": [
+              "CAMI BOYD",
+              "10000 N. CENTRAL EXPWY, SUITE 1000",
+              "DALLAS, TX 75231"
+            ],
+            "name": "CAMI BOYD"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20190628",
+        "recordedDate": "20191223",
+        "reelFrameNumber": "6824/0532"
+      },
+      {
+        "assignees": [
+          {
+            "address": "55 ALMADEN BOULEVARD, SAN JOSE, CALIFORNIA, 95113",
+            "city": "SAN JOSE",
+            "jurisdictionOfIncorporation": "ARIZONA",
+            "legalEntity": "CORPORATION",
+            "name": "WESTERN ALLIANCE BANK",
+            "postalCode": "95113",
+            "secondaryAddressUnit": "SUITE 100",
+            "stateName": "CALIFORNIA",
+            "street": "55 ALMADEN BOULEVARD"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "FLIPSWAP SERVICES, LLC"
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "HYLA, INC.",
+            "previousName": "FORMERLY ERECYCLING GROUP, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "ERV, LLC"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "C/O COOLEY LLP, 4401 EASTGATE MALL, SAN DIEGO, CA 92121",
+            "addressLines": [
+              "DEREK MONTEBLANCO",
+              "C/O COOLEY LLP",
+              "4401 EASTGATE MALL",
+              "SAN DIEGO, CA 92121"
+            ],
+            "name": "DEREK MONTEBLANCO"
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "20191211",
+        "recordedDate": "20191220",
+        "reelFrameNumber": "6823/0765"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "26.07.11",
+      "26.07.37",
+      "26.07.53",
+      "26.07.54",
+      "29.07.05"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Downloadable computer software applications for the purchase of subscription insurance policies and extended warranties for mobile phones, smartphones, mobile computing and communication devices, tablets, computers and consumer electronic device replacement, repair and maintenance; Downloadable computer software applications for the provision of insurance services, namely, underwriting extended warranty contracts in the field of mobile phones, smartphones, mobile computing and communication devices, tablets, computers and consumer electronics"
+        }
+      ]
+    },
+    "id": "88796489-e61a-4d3a-8e20-8efb6aa0f37f",
+    "ipRightKind": "tmk",
+    "litigationInformation": {
+      "proceedings": [
+        {
+          "decision": {
+            "code": "9",
+            "date": "20211102",
+            "text": "TERMINATED"
+          },
+          "decisionBoard": "Trademark Trial and Appeal Board (TTAB)",
+          "filingDate": "20210521",
+          "identifier": "88510214",
+          "kind": "Ex Parte Appeal",
+          "kindCode": "EXP",
+          "litigationParties": [
+            {
+              "kind": "Plaintiff",
+              "kindCode": "P",
+              "name": "LORICA, LLC",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "88510214",
+                  "markVerbalElementText": "LORI",
+                  "registrationNumber": "0000000"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "DALLAS",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "75231",
+                  "addressState": "TX",
+                  "addressStreet": "10000 N. CENTRAL EXPWY, SUITE 1000",
+                  "companyName": "MUSGROVE LAW FIRM PC",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "CAMI BOYD"
+                }
+              ]
+            }
+          ],
+          "proceedingEvents": [
+            {
+              "code": "N",
+              "eventDate": "20211102",
+              "text": "#5 TERMINATED"
+            },
+            {
+              "code": "D",
+              "eventDate": "20211102",
+              "text": "#4 BOARD'S DECISION: DISMISSED AS MOOT"
+            },
+            {
+              "code": "T",
+              "eventDate": "20210820",
+              "text": "#3 PENDING, INSTITUTED"
+            },
+            {
+              "code": "X",
+              "eventDate": "20210820",
+              "text": "#2 APPEAL ACKNOWLEDGED: CASE REMANDED"
+            },
+            {
+              "code": "X",
+              "eventDate": "20210521",
+              "text": "#1 APPEAL TO BOARD"
+            }
+          ]
+        }
+      ]
+    },
+    "markEvents": [
+      {
+        "date": "20220125",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20211109",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20211109",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20211020",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20211005",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20210922",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20210820",
+        "descriptionText": "JURISDICTION RESTORED TO EXAMINING ATTORNEY"
+      },
+      {
+        "date": "20210820",
+        "descriptionText": "EX PARTE APPEAL-INSTITUTED"
+      },
+      {
+        "date": "20210819",
+        "descriptionText": "PETITION GRANTED - TTAB APPEAL FILED"
+      },
+      {
+        "date": "20210819",
+        "descriptionText": "NOTICE OF REVIVAL - E-MAILED"
+      },
+      {
+        "date": "20210521",
+        "descriptionText": "EXPARTE APPEAL RECEIVED AT TTAB"
+      },
+      {
+        "date": "20210421",
+        "descriptionText": "PETITION INQUIRY LETTER MAILED"
+      },
+      {
+        "date": "20210405",
+        "descriptionText": "TEAS RESPONSE TO PETITION DEFICIENCY RECEIVED"
+      },
+      {
+        "date": "20210304",
+        "descriptionText": "PETITION INQUIRY LETTER MAILED"
+      },
+      {
+        "date": "20210303",
+        "descriptionText": "ASSIGNED TO PETITION STAFF"
+      },
+      {
+        "date": "20201103",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20201103",
+        "descriptionText": "TEAS PETITION TO REVIVE RECEIVED"
+      },
+      {
+        "date": "20201029",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20201029",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20200417",
+        "descriptionText": "FINAL REFUSAL  WRITTEN"
+      },
+      {
+        "date": "20200417",
+        "descriptionText": "NOTIFICATION OF FINAL REFUSAL EMAILED"
+      },
+      {
+        "date": "20200417",
+        "descriptionText": "FINAL REFUSAL E-MAILED"
+      },
+      {
+        "date": "20200327",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20200327",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20200327",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20200108",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20190927",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20190927",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20190927",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20190926",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20190719",
+        "descriptionText": "NOTICE OF DESIGN SEARCH CODE E-MAILED"
+      },
+      {
+        "date": "20190718",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20190715",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "The color(s) dark purple and light purple is/are claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of two double stacked diamond shapes, with one diamond stacked on top of the other, with the word \"Lori\" placed to the right of the stacked diamonds. The top diamond is represented in a dark purple color. The bottom stacked diamond is presented in a lighter purple color. The word \"Lori\" is presented in the same dark purple color as the top stacked diamond shape.",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Park West 1&2, 1507 LBJ Frwy, Ste. 500, Farmers Branch, TX, 75234",
+        "city": "Farmers Branch",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Hyla, Inc.",
+        "postalCode": "75234",
+        "stateName": "TEXAS",
+        "street": "Park West 1&2, 1507 LBJ Frwy, Ste. 500"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "28 LIBERTY STREET, NEW YORK, NY, 10005",
+        "city": "NEW YORK",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "ASSURANT, INC.",
+        "postalCode": "10005",
+        "stateName": "NEW YORK",
+        "street": "28 LIBERTY STREET"
+      },
+      {
+        "address": "28 LIBERTY STREET, NEW YORK, NY, 10005",
+        "city": "NEW YORK",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "ASSURANT, INC.",
+        "postalCode": "10005",
+        "stateName": "NEW YORK",
+        "street": "28 LIBERTY STREET"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "28 LIBERTY STREET, NEW YORK, NY, 10005",
+        "city": "NEW YORK",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "ASSURANT, INC.",
+        "postalCode": "10005",
+        "stateName": "NEW YORK",
+        "street": "28 LIBERTY STREET"
+      }
+    ],
+    "postApplicationOwners": [
+      {
+        "address": "28 LIBERTY STREET, NEW YORK, NY, 10005",
+        "city": "NEW YORK",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "ASSURANT, INC.",
+        "postalCode": "10005",
+        "stateName": "NEW YORK",
+        "street": "28 LIBERTY STREET"
+      },
+      {
+        "address": "CHICAGO, IL, 60631",
+        "city": "CHICAGO",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "LORICA, LLC",
+        "postalCode": "60631",
+        "secondaryAddressUnit": "8600 W. BRYN MAWR AVE., STE. 440N",
+        "stateName": "ILLINOIS"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "SUITE 1000, DALLAS, TX 75231, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "SUITE 1000",
+          "DALLAS, TX 75231",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "CAMI BOYD MUSGROVE LAW FIRM PC, 10000 N. CENTRAL EXPWY"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "SUITE 1000, DALLAS, TX 75231, UNITED STATES",
+        "representativeAddressLines": [
+          "SUITE 1000",
+          "DALLAS, TX 75231",
+          "UNITED STATES"
+        ],
+        "representativeName": "CAMI BOYD"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20201020",
+      "active": true,
+      "application": {
+        "applicationDate": "20190711",
+        "applicationNumber": "88510214"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20190124"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20190124"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20220125",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT",
+          "Color Drawing Filed",
+          "Color Drawing Currently"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20211109"
+      ],
+      "registration": {
+        "registrationDate": "20220125",
+        "registrationNumber": "6624629"
+      }
+    },
+    "version": "20260113072618",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LORI"
+    }
+  },
+  "_uri": "/mark/us/88796489-e61a-4d3a-8e20-8efb6aa0f37f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.453Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

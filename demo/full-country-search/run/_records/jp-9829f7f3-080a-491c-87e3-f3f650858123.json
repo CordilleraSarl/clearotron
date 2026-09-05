@@ -1,0 +1,182 @@
+{
+  "uri": "/mark/jp/9829f7f3-080a-491c-87e3-f3f650858123",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "9829f7f3-080a-491c-87e3-f3f650858123",
+  "applicationNumber": "2018-047599",
+  "registrationNumber": "6133859",
+  "applicationDate": "2018-04-13",
+  "registrationDate": "2019-03-29",
+  "expiryDate": "2029-03-29",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-04-23",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "コンピュータソフトウェア（歯の移動及び治療計画案の描写用のデジタル画像ソフトウェア），個別にカスタマイズされた歯列矯正治療方針の作成用のコンピュータソフトウェア，歯列矯正治療方針案及びこれに関する患者データの提供・追跡及び修正用のコンピュータソフトウェア，電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Computer software (digital image software for depiction of tooth movement and treatment plan draft), computer software for individually customized orthodontic treatment policy preparation, orthodontic treatment policy plan and patient data related thereto Computer software for tracking and modification, electronic appliances appliances and parts thereof"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "他人のためのコンピュータハードウェア及びソフトウェアシステムの選択・実装及び使用に関する助言，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，アプリケーションサービスプロバイダーによる歯列矯正又は歯科治療用コンピュータソフトウェアの提供，オンラインによるダウンロード不可能な歯列矯正又は歯科治療用コンピュータソフトウェアの一時的な使用の提供，コンピュータによるデータの情報処理，電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供",
+      "translation_language": "en",
+      "translation": "Advice on selection, implementation and use of computer hardware and software system for others, advice on implementation and use, precise operation according to electronic computers / automobiles and other uses thereof requires highly specialized knowledge, technology or experience Introduction and explanation on machine performance and operation method etc., application of orthodontic or dental treatment computer software by a service provider, temporary use of online downloadable orthodontic or dental treatment computer software Provide information processing of data by computer, design / create / maintain program of electronic computer, provide program for electronic computer"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YAMAMOTO HIDESAKU",
+  "priorities": [
+    {
+      "priorityDate": "20180413"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software (digital image software for depiction of tooth movement and treatment plan draft), computer software for individually customized orthodontic treatment policy preparation, orthodontic treatment policy plan and patient data related thereto Computer software for tracking and modification, electronic appliances appliances and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "コンピュータソフトウェア（歯の移動及び治療計画案の描写用のデジタル画像ソフトウェア），個別にカスタマイズされた歯列矯正治療方針の作成用のコンピュータソフトウェア，歯列矯正治療方針案及びこれに関する患者データの提供・追跡及び修正用のコンピュータソフトウェア，電子応用機械器具及びその部品"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advice on selection, implementation and use of computer hardware and software system for others, advice on implementation and use, precise operation according to electronic computers / automobiles and other uses thereof requires highly specialized knowledge, technology or experience Introduction and explanation on machine performance and operation method etc., application of orthodontic or dental treatment computer software by a service provider, temporary use of online downloadable orthodontic or dental treatment computer software Provide information processing of data by computer, design / create / maintain program of electronic computer, provide program for electronic computer",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "他人のためのコンピュータハードウェア及びソフトウェアシステムの選択・実装及び使用に関する助言，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，アプリケーションサービスプロバイダーによる歯列矯正又は歯科治療用コンピュータソフトウェアの提供，オンラインによるダウンロード不可能な歯列矯正又は歯科治療用コンピュータソフトウェアの一時的な使用の提供，コンピュータによるデータの情報処理，電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door closing control systems; Electron microscopes"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42P03",
+          "natGoodsServicesDescription": "Technological advice relating to computers, automobiles and industrial machines"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        }
+      ]
+    },
+    "id": "9829f7f3-080a-491c-87e3-f3f650858123",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN ONLY",
+    "markImageViennaClassification": [
+      "05.05.19.00",
+      "05.05.20.00",
+      "05.05.21.00",
+      "25.07.01.00",
+      "25.07.08.00",
+      "26.03.03.00",
+      "26.03.04.00",
+      "26.03.05.00",
+      "26.03.06.00",
+      "26.04.04.00",
+      "26.04.06.00",
+      "26.04.08.00",
+      "26.04.09.00",
+      "26.07.15.00",
+      "26.13.25.05"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20180413"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180413",
+        "applicationNumber": "2018-047599"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290329",
+      "lastPublicationDate": "20190423",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20190329",
+        "registrationNumber": "6133859"
+      }
+    },
+    "version": "20240320153104"
+  },
+  "_uri": "/mark/jp/9829f7f3-080a-491c-87e3-f3f650858123",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.741Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

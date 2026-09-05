@@ -36,10 +36,10 @@ const SCORE = join(REPO, "scripts", "score.mjs");
 
 // ── verbatim retrieved records (register-named-band.json, evidence run) ───────────────────────────
 const RETRIEVED = [
-  { mark: "TIKI", record_id: "/mark/us/USAFI4B8B404C89E311EABDF6005056B74373" },
-  { mark: "TIKI TWIST", record_id: "/mark/us/USAFI1DD680D901A311F1974020677C5FC470" },
-  { mark: "TIKITONK", record_id: "/mark/us/USAFIC10EEC5A3BF911EE957D20677C5FC470" },
-  { mark: "TIKI TROPICS", record_id: "/mark/us/USAFI160A07CD5BC111E5A6A9D3849796FD22" },
+  { mark: "TIKI", record_id: "/mark/us/9fd04b1f-5c8f-4eca-98da-b66a15959c28" },
+  { mark: "TIKI TWIST", record_id: "/mark/us/d074651d-d49a-46c1-9c95-8b6a6f0880f0" },
+  { mark: "TIKITONK", record_id: "/mark/us/ff288bc8-0977-4dba-ba0c-a0eeb02dd3bf" },
+  { mark: "TIKI TROPICS", record_id: "/mark/us/9d5baa5c-efae-4f0b-bbb4-635e78483c9a" },
 ];
 
 // The reference's register table, in scope order.
@@ -109,7 +109,7 @@ test("a proprietor's own record with a leading element is withheld, not 'never r
     { mark: "CORAL FREEZE", owner: "Shasta Beverages", classes: [32] },
   ];
   const retrieved = [{ mark: "SB TIKI PUNCH", owner: "Shasta Beverages, LLC",
-    record_id: "/mark/us/USAFI1DD680D901A311F1974020677C5FC470" }];
+    record_id: "/mark/us/d074651d-d49a-46c1-9c95-8b6a6f0880f0" }];
   const b = scoreRecall({ reference, findings: [], retrieved, scopeClasses: ["32"] });
 
   assert.deepEqual(b.withheld.map((r) => r.mark), ["TIKI PUNCH"], "the held record is withheld");
@@ -127,7 +127,7 @@ test("owner agreement is REQUIRED for that relaxation — an absent owner keeps 
   // one) must score exactly as it did before, or the fix quietly rewrites history it was never shown.
   const reference = [{ mark: "TIKI PUNCH", owner: "Shasta Beverages", classes: [32] }];
   const noOwner = scoreRecall({ reference, findings: [],
-    retrieved: [{ mark: "SB TIKI PUNCH", record_id: "/mark/us/USAFI1DD680D901A311F1974020677C5FC470" }],
+    retrieved: [{ mark: "SB TIKI PUNCH", record_id: "/mark/us/d074651d-d49a-46c1-9c95-8b6a6f0880f0" }],
     scopeClasses: ["32"] });
   assert.deepEqual(noOwner.withheld, [], "no owner on the record, so no relaxation");
   assert.deepEqual(noOwner.lost.map((r) => r.mark), ["TIKI PUNCH"]);

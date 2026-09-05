@@ -1,0 +1,159 @@
+{
+  "uri": "/mark/xk/838e4106-b20e-4574-b4b4-a62b22624935",
+  "provider": "clarivate",
+  "office": "xk",
+  "guid": "838e4106-b20e-4574-b4b4-a62b22624935",
+  "applicationNumber": "KS/M/2025/1789",
+  "registrationNumber": "M/37655",
+  "applicationDate": "2025-10-28",
+  "registrationDate": "2026-07-15",
+  "expiryDate": "2035-10-28",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "nori",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    39,
+    41,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        39
+      ],
+      "language": "sq",
+      "description": "Shërbime të shpërndarjes dhe dorëzimit të ushqimit dhe pijeve të përgatitura për konsum",
+      "translation_language": "en",
+      "translation": "Distribution and delivery services of food and beverages prepared for consumption"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sq",
+      "description": "Ofrim i shërbimeve te aktivitete argëtuese dhe kulturore; planifikim dhe organizimi i ahengjeve, mbrëmjeve muzikore [zbavitje]; organizimi i mbrëmjeve dhe aktiviteteve për qëllim rekreacioni; organizim i konferencave dhe seminareve",
+      "translation_language": "en",
+      "translation": "Provision of entertainment and cultural activities services; planning and organisation of parties, musical evenings [entertainment]; organisation of evenings and activities for recreational purposes; organisation of conferences and seminars"
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "sq",
+      "description": "Shërbime restoranti, grill dhe pasta bar;ofrimi i ushqimit dhe pijeve për konsum në vend;shërbime të përgatitjes së ushqimit dhe pijeve;shërbime të restoranteve me ushqim të gatuar dhe të shpejtë;shërbime të bareve dhe kafeterive;shërbime catering për ushqim dhe pije",
+      "translation_language": "en",
+      "translation": "Restaurant, grill and pastry bar services; providing food and drink for consumption on site; food and drink preparation services; cooked and fast food restaurant services; bar and cafeteria services; catering services for food and drink"
+    }
+  ],
+  "owner": "Pro Guest Group SH.P.K.",
+  "ownerNative": null,
+  "ownerCountry": "XK",
+  "representative": "Gentiana Lahi ADAS Counsel Kosovo LLC",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "XK",
+        "applicantAddressCountryName": "Kosovo",
+        "applicantName": "Pro Guest Group SH.P.K.",
+        "applicantNativeAddress": "Rr, Milaim Bajrami, p.n., Suharekë",
+        "applicantNativeName": "Pro Guest Group SH.P.K."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Distribution and delivery services of food and beverages prepared for consumption",
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "sq",
+          "intGoodsServicesDescription": "Shërbime të shpërndarjes dhe dorëzimit të ushqimit dhe pijeve të përgatitura për konsum"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provision of entertainment and cultural activities services; planning and organisation of parties, musical evenings [entertainment]; organisation of evenings and activities for recreational purposes; organisation of conferences and seminars",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sq",
+          "intGoodsServicesDescription": "Ofrim i shërbimeve te aktivitete argëtuese dhe kulturore; planifikim dhe organizimi i ahengjeve, mbrëmjeve muzikore [zbavitje]; organizimi i mbrëmjeve dhe aktiviteteve për qëllim rekreacioni; organizim i konferencave dhe seminareve"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Restaurant, grill and pastry bar services; providing food and drink for consumption on site; food and drink preparation services; cooked and fast food restaurant services; bar and cafeteria services; catering services for food and drink",
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "sq",
+          "intGoodsServicesDescription": "Shërbime restoranti, grill dhe pasta bar;ofrimi i ushqimit dhe pijeve për konsum në vend;shërbime të përgatitjes së ushqimit dhe pijeve;shërbime të restoranteve me ushqim të gatuar dhe të shpejtë;shërbime të bareve dhe kafeterive;shërbime catering për ushqim dhe pije"
+        }
+      ]
+    },
+    "id": "838e4106-b20e-4574-b4b4-a62b22624935",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260827",
+    "registrationOfficeCode": "XK",
+    "registrationOfficeName": "Kosovo",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "XK",
+        "representativeAddressCountryName": "Kosovo",
+        "representativeName": "Gentiana Lahi ADAS Counsel Kosovo LLC",
+        "representativeNativeAddress": "Republika e Kosovës",
+        "representativeNativeName": "Gentiana Lahi ADAS Counsel Kosovo LLC"
+      },
+      {
+        "representativeAddressCountryCode": "XK",
+        "representativeAddressCountryName": "Kosovo",
+        "representativeName": "Trim Gjota - 'ADAS Counsel Kosovo' L.L.C",
+        "representativeNativeAddress": "Rr. Agim Ramadani A1. Nr. 5 10000 Prishtinë",
+        "representativeNativeName": "Trim Gjota - 'ADAS Counsel Kosovo' L.L.C"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251028",
+        "applicationNumber": "KS/M/2025/1789"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20351028",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20260715",
+        "registrationNumber": "M/37655"
+      }
+    },
+    "version": "20260827090113",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "nori"
+    }
+  },
+  "_uri": "/mark/xk/838e4106-b20e-4574-b4b4-a62b22624935",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.691Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

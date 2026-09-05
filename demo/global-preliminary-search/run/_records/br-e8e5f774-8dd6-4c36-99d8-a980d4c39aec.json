@@ -1,0 +1,161 @@
+{
+  "uri": "/mark/br/e8e5f774-8dd6-4c36-99d8-a980d4c39aec",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "e8e5f774-8dd6-4c36-99d8-a980d4c39aec",
+  "applicationNumber": "817129596",
+  "registrationNumber": "817129596",
+  "applicationDate": "1993-04-06",
+  "registrationDate": "1995-01-31",
+  "expiryDate": "2035-01-31",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "AVENORTE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    3,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    16,
+    18,
+    21,
+    22,
+    24,
+    25,
+    28,
+    32,
+    33,
+    35,
+    36,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        3,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16,
+        18,
+        21,
+        22,
+        24,
+        25,
+        28,
+        32,
+        33,
+        35,
+        36,
+        42
+      ],
+      "language": "pt",
+      "description": "Serviços auxiliares ao comércio de mercadorias, inclusive à importação e à exportação.",
+      "translation_language": "en",
+      "translation": "Services auxiliary to trade in goods, including import and export."
+    }
+  ],
+  "owner": "KAEFER AGRO INDUSTRIAL LTDA",
+  "ownerNative": null,
+  "ownerCountry": "BR",
+  "representative": "TILLVITZ MARCAS E PATENTES S/S LTDA.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "BR",
+        "applicantAddressCountryName": "Brazil",
+        "applicantName": "KAEFER AGRO INDUSTRIAL LTDA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Services auxiliary to trade in goods, including import and export.",
+          "intClassNumber": "03,07,08,09,10,11,12,14,16,18,21,22,24,25,28,32,33,35,36,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços auxiliares ao comércio de mercadorias, inclusive à importação e à exportação."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "40.15"
+        }
+      ]
+    },
+    "id": "e8e5f774-8dd6-4c36-99d8-a980d4c39aec",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "03.07.21",
+      "25.05.01",
+      "26.07.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "TILLVITZ MARCAS E PATENTES S/S LTDA."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19930406",
+        "applicationNumber": "817129596"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350131",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19950131",
+        "registrationNumber": "817129596"
+      }
+    },
+    "version": "20250630195706",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENORTE"
+    }
+  },
+  "_uri": "/mark/br/e8e5f774-8dd6-4c36-99d8-a980d4c39aec",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.811Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

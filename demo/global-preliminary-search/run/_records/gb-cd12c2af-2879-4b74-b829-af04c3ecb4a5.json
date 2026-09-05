@@ -1,0 +1,218 @@
+{
+  "uri": "/mark/gb/cd12c2af-2879-4b74-b829-af04c3ecb4a5",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "cd12c2af-2879-4b74-b829-af04c3ecb4a5",
+  "applicationNumber": "UK00908862261",
+  "registrationNumber": "UK00908862261",
+  "applicationDate": "2010-02-05",
+  "registrationDate": "2010-07-27",
+  "expiryDate": "2030-02-05",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR CONTRACTS.COM",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    17,
+    20,
+    24,
+    26,
+    37,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        17
+      ],
+      "language": "en",
+      "description": "Adhesive materials in the form of films; adhesive films; safety curtains of asbestos, plastics or rubber; smoke curtains.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "en",
+      "description": "Blinds; screens in the nature of blinds; articles for hanging blinds; clamps for fixing blinds; fittings for blinds; holders for use in securing blinds; operating devices for blinds; plastic hardware for blinds; pulleys for blinds; rails for blinds; tracks for blinds; rods for blinds; slats for blinds; articles for hanging curtains; clamps for fixing curtains; fittings for curtains; holders for use in securing curtains; operating devices for curtains; plastic hardware for curtains; pulleys for curtains; rails for curtains; tracks for curtains; rods for curtains; curtains; embraces for holding back curtains; curtain hooks; poles for curtains; rings for curtains; articles for hanging drapery; clamps for fixing drapery; fittings for drapery; holders for use in securing drapery; operating devices for drapery; plastic hardware for drapery; pulleys for drapery; rails for drapery; tracks for drapery; rods for drapery; embraces for holding back drapery; drapery hooks; poles for drapery; rings for drapery; drapery hardware; parts, fittings and accessories for the aforesaid included in Class 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "en",
+      "description": "Curtains; blinds of textile; drapes; drapery; warp knitted textile blast nets made from nylon and polyester; parts, fittings and accessories for the aforesaid included in Class 24.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "en",
+      "description": "Snap hooks.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Cleaning, installation, maintenance and repair of blinds, curtains, screens, drapes, drapery, nets and film; consultancy, advisory and information services relating to the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "en",
+      "description": "Custom manufacture of blinds, curtains, screens, drapes, drapery, nets and film; treatment of materials for blinds, curtains, screens, drapes, drapery, nets and film; consultancy, advisory and information services relating to the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Design of blinds, curtains, screens, drapes, drapery, nets and film; consultancy, advisory and information services relating to the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Grosvenor Contracts (London) Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Stobbs",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Unit 23-24 Old Jamaica Road Business Estate, Old Jamaica Road, London SE16 4TE",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Grosvenor Contracts (London) Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "25.05.01",
+      "26.04.02",
+      "26.04.12",
+      "26.04.22"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Adhesive materials in the form of films; adhesive films; safety curtains of asbestos, plastics or rubber; smoke curtains."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Blinds; screens in the nature of blinds; articles for hanging blinds; clamps for fixing blinds; fittings for blinds; holders for use in securing blinds; operating devices for blinds; plastic hardware for blinds; pulleys for blinds; rails for blinds; tracks for blinds; rods for blinds; slats for blinds; articles for hanging curtains; clamps for fixing curtains; fittings for curtains; holders for use in securing curtains; operating devices for curtains; plastic hardware for curtains; pulleys for curtains; rails for curtains; tracks for curtains; rods for curtains; curtains; embraces for holding back curtains; curtain hooks; poles for curtains; rings for curtains; articles for hanging drapery; clamps for fixing drapery; fittings for drapery; holders for use in securing drapery; operating devices for drapery; plastic hardware for drapery; pulleys for drapery; rails for drapery; tracks for drapery; rods for drapery; embraces for holding back drapery; drapery hooks; poles for drapery; rings for drapery; drapery hardware; parts, fittings and accessories for the aforesaid included in Class 20."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Curtains; blinds of textile; drapes; drapery; warp knitted textile blast nets made from nylon and polyester; parts, fittings and accessories for the aforesaid included in Class 24."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Snap hooks."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Cleaning, installation, maintenance and repair of blinds, curtains, screens, drapes, drapery, nets and film; consultancy, advisory and information services relating to the aforesaid."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Custom manufacture of blinds, curtains, screens, drapes, drapery, nets and film; treatment of materials for blinds, curtains, screens, drapes, drapery, nets and film; consultancy, advisory and information services relating to the aforesaid."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Design of blinds, curtains, screens, drapes, drapery, nets and film; consultancy, advisory and information services relating to the aforesaid."
+        }
+      ]
+    },
+    "id": "cd12c2af-2879-4b74-b829-af04c3ecb4a5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.02",
+      "26.04.05",
+      "26.04.22",
+      "26.04.24",
+      "26.04.98"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Building 1000, Cambridge Research Park, Cambridge CB25 9PD",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Stobbs"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20100205",
+        "applicationNumber": "UK00908862261"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300205",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20100727",
+        "registrationNumber": "UK00908862261"
+      }
+    },
+    "version": "20250627204136",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR CONTRACTS.COM"
+    }
+  },
+  "_uri": "/mark/gb/cd12c2af-2879-4b74-b829-af04c3ecb4a5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.814Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

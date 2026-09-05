@@ -1,0 +1,292 @@
+{
+  "uri": "/mark/us/ed45433e-ebac-4342-986b-e5f89daeea6b",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "ed45433e-ebac-4342-986b-e5f89daeea6b",
+  "applicationNumber": "88251399",
+  "registrationNumber": "5807019",
+  "applicationDate": "2019-01-07",
+  "registrationDate": "2019-07-16",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2019-04-30"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2026-01-30",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VINKORO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Bags adapted for laptops; Cases for pocket calculators; Cell phone cases; Cell phone covers; Computer bags; Covers for PDAs; Display screen protectors for providing shade and privacy specially adapted to electronic devices, namely, laptops, cell phones and personal digital assistants; Flip covers for smart phones; Leather protective covers specially adapted for personal electronic devices, namely, cell phones, MP3 players and personal digital assistants; Mouse pads; Protective films adapted for smartphones; Protective cases for smartphones; Protective covers for smartphones; Stands adapted for tablet computers; Waterproof cases for smart phones; Cases for mobile phones; Cases for smartphones; Covers for tablet computers; Covers for smartphones; Sleeves for laptops",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Liu De'an",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Dormitory of TCL Company, Shenzhen, Guangdong, 518000, CHIN",
+        "applicantAddressCity": "Shenzhen, Guangdong",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantAddressPostalCode": "518000",
+        "applicantAddressStreet": "Dormitory of TCL Company,",
+        "applicantJurisdictionOfIncorporation": "CHINA",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Liu De'an",
+        "applicantSecondaryAddressUnit": "Shekou, Nanshan District,"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Bags adapted for laptops; Cases for pocket calculators; Cell phone cases; Cell phone covers; Computer bags; Covers for PDAs; Display screen protectors for providing shade and privacy specially adapted to electronic devices, namely, laptops, cell phones and personal digital assistants; Flip covers for smart phones; Leather protective covers specially adapted for personal electronic devices, namely, cell phones, MP3 players and personal digital assistants; Mouse pads; Protective films adapted for smartphones; Protective cases for smartphones; Protective covers for smartphones; Stands adapted for tablet computers; Waterproof cases for smart phones; Cases for mobile phones; Cases for smartphones; Covers for tablet computers; Covers for smartphones; Sleeves for laptops"
+        }
+      ]
+    },
+    "id": "ed45433e-ebac-4342-986b-e5f89daeea6b",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260130",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20240716",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20190716",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20190430",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20190430",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20190410",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20190323",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20190323",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20190127",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20190110",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Dormitory of TCL Company, Shenzhen, Guangdong, 518000, CHIN",
+        "city": "Shenzhen, Guangdong",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Liu De'an",
+        "postalCode": "518000",
+        "secondaryAddressUnit": "Shekou, Nanshan District,",
+        "street": "Dormitory of TCL Company,"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "Dormitory of TCL Company, Shenzhen, Guangdong, 518000, CHIN",
+        "city": "Shenzhen, Guangdong",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Liu De'an",
+        "postalCode": "518000",
+        "secondaryAddressUnit": "Shekou, Nanshan District,",
+        "street": "Dormitory of TCL Company,"
+      },
+      {
+        "address": "Dormitory of TCL Company, Shenzhen, Guangdong, 518000, CHIN",
+        "city": "Shenzhen, Guangdong",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Liu De'an",
+        "postalCode": "518000",
+        "secondaryAddressUnit": "Shekou, Nanshan District,",
+        "street": "Dormitory of TCL Company,"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Dormitory of TCL Company, Shenzhen, Guangdong, 518000, CHIN",
+        "city": "Shenzhen, Guangdong",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Liu De'an",
+        "postalCode": "518000",
+        "secondaryAddressUnit": "Shekou, Nanshan District,",
+        "street": "Dormitory of TCL Company,"
+      }
+    ],
+    "recordLastUpdated": "20260225",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "90740226",
+            "markCurrentStatus": "Pending",
+            "markVerbalElementText": "VINKO",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "90740226",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "VINKO",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "90740226",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "VINKO",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "90740226",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "VINKO",
+            "refusalStatus": "Refused"
+          }
+        ],
+        "refusalStatus": "Cited"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "CITY OF INDUSTRY, CA 91748, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "CITY OF INDUSTRY, CA 91748",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "JIANG JUN PACIFIC LAW GROUP, LLP, 17700 CASTLETON ST. SUITE 128,"
+      }
+    ],
+    "representatives": [
+      {
+        "domesticRepresentativeName": "Jiang Jun",
+        "representativeAddress": "CITY OF INDUSTRY, CA 91748, UNITED STATES",
+        "representativeAddressLines": [
+          "CITY OF INDUSTRY, CA 91748",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20190107",
+        "applicationNumber": "88251399"
+      },
+      "cancellationDate": "20260130",
+      "cancellationPublicationDate": "20260224",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20181010"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20181010"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20260130",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20190430"
+      ],
+      "registration": {
+        "registrationDate": "20190716",
+        "registrationNumber": "5807019"
+      }
+    },
+    "version": "20260225091111",
+    "wordMarkSpecification": {
+      "markTranslationDescription": "The wording \"Vinkoro\" has no meaning in a foreign language.",
+      "markVerbalElementText": "VINKORO"
+    }
+  },
+  "_uri": "/mark/us/ed45433e-ebac-4342-986b-e5f89daeea6b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.807Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

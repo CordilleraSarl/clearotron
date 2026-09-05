@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/gb/385d68f0-633f-4bc3-bbab-f3c764de740a",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "385d68f0-633f-4bc3-bbab-f3c764de740a",
+  "applicationNumber": "4135551",
+  "registrationNumber": null,
+  "applicationDate": "2024-12-11",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "I Love North Shields.",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Merchandising.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Magazine publishing.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "I Love North Shields",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "10 Block A, Shepherds Quay, NORTH SHIELDS ne296le, Tyne and Wear",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "I Love North Shields"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Merchandising."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Magazine publishing."
+        }
+      ]
+    },
+    "id": "385d68f0-633f-4bc3-bbab-f3c764de740a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20241211",
+        "applicationNumber": "4135551"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "markCurrentStatus": "REFUSED"
+    },
+    "version": "20250627223936",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "I Love North Shields."
+    }
+  },
+  "_uri": "/mark/gb/385d68f0-633f-4bc3-bbab-f3c764de740a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.814Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

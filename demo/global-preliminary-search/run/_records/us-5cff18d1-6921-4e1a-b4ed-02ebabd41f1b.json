@@ -1,0 +1,291 @@
+{
+  "uri": "/mark/us/5cff18d1-6921-4e1a-b4ed-02ebabd41f1b",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "5cff18d1-6921-4e1a-b4ed-02ebabd41f1b",
+  "applicationNumber": "85520040",
+  "registrationNumber": "4221037",
+  "applicationDate": "2012-01-19",
+  "registrationDate": "2012-10-09",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2012-07-24"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2019-05-10",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "INVENQUERY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Providing an online webhosting platform to allow multiple users to offer, advertise, promote and sell durable consumer goods; providing application service provider (ASP) services featuring software that allows multiple users to offer, advertise, promote and sell durable consumer goods; application service provider (ASP) services featuring computer software in the field of electronic commerce and transactions, namely, software to facilitate management or customer order transactions, manage retail order operations, display images of products and product information, facilitate customer online orders, manage and control product inventory, process payments, and process shipments and deliveries of goods",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "InvenQuery, LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Dianne M. Smith-Misemer and Jennifer C. Bailey",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "3500 West 75th Street, Suite 110, Prairie Village, KS, 66208",
+        "applicantAddressCity": "Prairie Village",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "66208",
+        "applicantAddressStateName": "KANSAS",
+        "applicantAddressStreet": "3500 West 75th Street, Suite 110",
+        "applicantJurisdictionOfIncorporation": "KANSAS",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "InvenQuery, LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Providing an online webhosting platform to allow multiple users to offer, advertise, promote and sell durable consumer goods; providing application service provider (ASP) services featuring software that allows multiple users to offer, advertise, promote and sell durable consumer goods; application service provider (ASP) services featuring computer software in the field of electronic commerce and transactions, namely, software to facilitate management or customer order transactions, manage retail order operations, display images of products and product information, facilitate customer online orders, manage and control product inventory, process payments, and process shipments and deliveries of goods"
+        }
+      ]
+    },
+    "id": "5cff18d1-6921-4e1a-b4ed-02ebabd41f1b",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20190510",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20121009",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20120724",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20120704",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20120619",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20120618",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20120530",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20120530",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20120529",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20120529",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20120504",
+        "descriptionText": "PRIORITY ACTION MAILED"
+      },
+      {
+        "date": "20120503",
+        "descriptionText": "PRIORITY ACTION WRITTEN"
+      },
+      {
+        "date": "20120426",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20120301",
+        "descriptionText": "TEAS CHANGE OF OWNER ADDRESS RECEIVED"
+      },
+      {
+        "date": "20120301",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20120125",
+        "descriptionText": "NOTICE OF PSEUDO MARK MAILED"
+      },
+      {
+        "date": "20120124",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20120123",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "3500 West 75th Street, Suite 110, Prairie Village, KS, 66208",
+        "city": "Prairie Village",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "KANSAS",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "InvenQuery, LLC",
+        "postalCode": "66208",
+        "stateName": "KANSAS",
+        "street": "3500 West 75th Street, Suite 110"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "3500 West 75th Street, Suite 110, Prairie Village, KS, 66208",
+        "city": "Prairie Village",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "KANSAS",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "InvenQuery, LLC",
+        "postalCode": "66208",
+        "stateName": "KANSAS",
+        "street": "3500 West 75th Street, Suite 110"
+      },
+      {
+        "address": "3500 West 75th Street, Suite 110, Prairie Village, KS, 66208",
+        "city": "Prairie Village",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "KANSAS",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "InvenQuery, LLC",
+        "postalCode": "66208",
+        "stateName": "KANSAS",
+        "street": "3500 West 75th Street, Suite 110"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "3500 West 75th Street, Suite 110, Prairie Village, KS, 66208",
+        "city": "Prairie Village",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "KANSAS",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "InvenQuery, LLC",
+        "postalCode": "66208",
+        "stateName": "KANSAS",
+        "street": "3500 West 75th Street, Suite 110"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "OVERLAND PARK, KS 66210-1697, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "OVERLAND PARK, KS 66210-1697",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "DIANNE M. SMITH-MISEMER AND JENNIFER C. BAILEY HOVEY WILLIAMS LLP, 10801 MASTIN ST STE 1000"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "OVERLAND PARK, KS 66210-1697, UNITED STATES",
+        "representativeAddressLines": [
+          "OVERLAND PARK, KS 66210-1697",
+          "UNITED STATES"
+        ],
+        "representativeName": "Dianne M. Smith-Misemer and Jennifer C. Bailey"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120119",
+        "applicationNumber": "85520040"
+      },
+      "cancellationDate": "20190510",
+      "cancellationPublicationDate": "20190618",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20120113"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20120113"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20190510",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20120724"
+      ],
+      "registration": {
+        "registrationDate": "20121009",
+        "registrationNumber": "4221037"
+      }
+    },
+    "version": "20260110131623",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "INVENQUERY"
+    }
+  },
+  "_uri": "/mark/us/5cff18d1-6921-4e1a-b4ed-02ebabd41f1b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.567Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

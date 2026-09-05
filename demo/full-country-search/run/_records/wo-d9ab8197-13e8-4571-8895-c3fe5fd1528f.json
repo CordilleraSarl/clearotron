@@ -1,0 +1,222 @@
+{
+  "uri": "/mark/wo/d9ab8197-13e8-4571-8895-c3fe5fd1528f",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "d9ab8197-13e8-4571-8895-c3fe5fd1528f",
+  "applicationNumber": null,
+  "registrationNumber": "1234426",
+  "applicationDate": null,
+  "registrationDate": "2014-10-20",
+  "expiryDate": "2034-10-20",
+  "renewalDate": "2024-10-20",
+  "lastPublicationDate": "2024-10-03",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NTAG",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Integrated circuits; rfid chips and tags; receivers and transmitters for use with rfid chips and tags; communication apparatus, instruments and equipment for (nfc) near field communications and integrated circuits for nfc (near field communications) applications; parts and fittings for all the aforesaid goods.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Circuits intégrés; puces et étiquette RFID; récepteurs et transmetteurs à utiliser avec des puces et étiquettes RFID; appareils, instruments et équipements de communication pour communications en champ proche (CCP), ainsi que circuits intégrés pour applications de communications en champ proche (CCP); parties et garnitures de tous les produits précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Circuitos integrados; chips y etiquetas de identificación por radiofrecuencia; receptores y transmisores para utilizar con chips y etiquetas de identificación por radiofrecuencia; aparatos, instrumentos y equipos de comunicación para comunicaciones de campo cercano y circuitos integrados para aplicaciones de comunicaciones de campo cercano; partes y piezas accesorias de todos los productos mencionados.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20140425",
+      "priorityNumber": "1288465"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20140425",
+          "basicApplicationNumber": "01288465"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "BX",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20140709",
+          "basicRegistrationNumber": "0955762"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CH",
+      "IN",
+      "JP",
+      "KR",
+      "MX",
+      "NO",
+      "SG",
+      "US",
+      "UA",
+      "BY",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20140425",
+            "basicApplicationNumber": "01288465"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "BX",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20140709",
+            "basicRegistrationNumber": "0955762"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CH",
+      "IN",
+      "JP",
+      "KR",
+      "MX",
+      "NO",
+      "SG",
+      "US",
+      "UA",
+      "BY",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Integrated circuits; rfid chips and tags; receivers and transmitters for use with rfid chips and tags; communication apparatus, instruments and equipment for (nfc) near field communications and integrated circuits for nfc (near field communications) applications; parts and fittings for all the aforesaid goods."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Circuits intégrés; puces et étiquette RFID; récepteurs et transmetteurs à utiliser avec des puces et étiquettes RFID; appareils, instruments et équipements de communication pour communications en champ proche (CCP), ainsi que circuits intégrés pour applications de communications en champ proche (CCP); parties et garnitures de tous les produits précités."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Circuitos integrados; chips y etiquetas de identificación por radiofrecuencia; receptores y transmisores para utilizar con chips y etiquetas de identificación por radiofrecuencia; aparatos, instrumentos y equipos de comunicación para comunicaciones de campo cercano y circuitos integrados para aplicaciones de comunicaciones de campo cercano; partes y piezas accesorias de todos los productos mencionados."
+        }
+      ]
+    },
+    "id": "d9ab8197-13e8-4571-8895-c3fe5fd1528f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20140425",
+        "priorityNumber": "1288465"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "38"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices, Anna van Buerenplein 21A NL-2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20341020",
+      "lastPublicationDate": "20241003",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20141020",
+        "registrationNumber": "1234426"
+      },
+      "renewalDate": "20241020",
+      "renewalPublishedDate": "20241003"
+    },
+    "version": "20250620175932",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NTAG"
+    }
+  },
+  "_uri": "/mark/wo/d9ab8197-13e8-4571-8895-c3fe5fd1528f",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.460Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

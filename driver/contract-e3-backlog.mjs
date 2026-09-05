@@ -749,7 +749,7 @@ export const E3_BACKLOG = [
   // so that it had something of its own dictating to anchor on.
   //
   // The conversion is pinned to the ARTIFACT, not to this registry's wording: report-card-frame.test.mjs
-  // recomposes every card in examples/sample-run and asserts byte-equality with the delivered report.md,
+  // recomposes every card in demo and asserts byte-equality with the delivered report.md,
   // meta-line order included. contract-e3-baseline.json's report-card ceiling drops 2 → 1 in the same
   // commit, per the shrink guard's own instruction.
   //

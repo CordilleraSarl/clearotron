@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/kr/2417954f-6f1e-4dfc-9999-82e864367088",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "2417954f-6f1e-4dfc-9999-82e864367088",
+  "applicationNumber": "40-1984-0014596",
+  "registrationNumber": null,
+  "applicationDate": "1984-09-25",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "벤추리 (VENTURI)",
+  "markTransliteration": "VENTURI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    9,
+    10,
+    14,
+    16,
+    17,
+    21,
+    24,
+    25,
+    26,
+    31
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        9,
+        10,
+        14,
+        16,
+        17,
+        21,
+        24,
+        25,
+        26,
+        31
+      ],
+      "language": "ko",
+      "description": "모자, 목걸이, 반코우트, 블라우스, 손수건, 스타킹, 신사복, 오우버코우트, 작업복, 카아디건, 콤비네이션내의, 혁대",
+      "translation_language": "en",
+      "translation": "Hat, necklace, half coat, blouse, handkerchief, stockings, men's suit, overcoat, work clothes, cardigan, combination underwear, belt."
+    }
+  ],
+  "owner": "LEE JAE SEOUNG",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 동대문구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "LEE JAE SEOUNG",
+        "applicantNativeName": "이재성"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Hat, necklace, half coat, blouse, handkerchief, stockings, men's suit, overcoat, work clothes, cardigan, combination underwear, belt.",
+          "intClassNumber": "06,09,10,14,16,17,21,24,25,26,31",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "모자, 목걸이, 반코우트, 블라우스, 손수건, 스타킹, 신사복, 오우버코우트, 작업복, 카아디건, 콤비네이션내의, 혁대"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "045"
+        }
+      ]
+    },
+    "id": "2417954f-6f1e-4dfc-9999-82e864367088",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260715",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19840925",
+        "applicationNumber": "40-1984-0014596"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260715020529",
+    "wordMarkSpecification": {
+      "markTransliteration": "VENTURI",
+      "markVerbalElementText": "벤추리 (VENTURI)"
+    }
+  },
+  "_uri": "/mark/kr/2417954f-6f1e-4dfc-9999-82e864367088",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.179Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

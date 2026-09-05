@@ -1,0 +1,160 @@
+{
+  "uri": "/mark/cn/4234a542-bfc0-441a-8f31-609b13e3df44",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "4234a542-bfc0-441a-8f31-609b13e3df44",
+  "applicationNumber": "65122995",
+  "registrationNumber": "65122995",
+  "applicationDate": "2022-06-07",
+  "registrationDate": "2022-11-28",
+  "expiryDate": "2032-11-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-08-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "IORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "安排和组织会议;安排和组织学术讨论会;动物训练;就业指导(教育或培训顾问);流动图书馆;商业知识和技能的传授(培训);书籍出版;提供不可下载的在线视频;提供培训和教育考试(教育认证服务);为艺术家提供模特服务",
+      "translation_language": "en",
+      "translation": "Arranging and organizing meetings; arranging and organizing colloquiums; animal training; career guidance (education or training consultants); mobile libraries; imparting business knowledge and skills (training); publishing of books; providing non-downloadable online videos; providing Training and education exams (educational certification services); modeling services for artists"
+    }
+  ],
+  "owner": "Wuhan Chuangyan Technology Consulting Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "湖北省武汉市洪山区黄家湖西路3号武汉工商学院弘德科教楼312室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Wuhan Chuangyan Technology Consulting Co., Ltd.",
+        "applicantNativeName": "武汉创研科技咨询有限责任公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Arranging and organizing meetings; arranging and organizing colloquiums; animal training; career guidance (education or training consultants); mobile libraries; imparting business knowledge and skills (training); publishing of books; providing non-downloadable online videos; providing Training and education exams (educational certification services); modeling services for artists",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "安排和组织会议;安排和组织学术讨论会;动物训练;就业指导(教育或培训顾问);流动图书馆;商业知识和技能的传授(培训);书籍出版;提供不可下载的在线视频;提供培训和教育考试(教育认证服务);为艺术家提供模特服务"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Library service",
+        "Publishing service",
+        "Amusement and sports service",
+        "Training of animals",
+        "Other service included in this class"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4103",
+          "subNatGoodsServicesDescription": "Library service"
+        },
+        {
+          "subNatClassNumber": "4104",
+          "subNatGoodsServicesDescription": "Publishing service"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        },
+        {
+          "subNatClassNumber": "4106",
+          "subNatGoodsServicesDescription": "Training of animals"
+        },
+        {
+          "subNatClassNumber": "4107",
+          "subNatGoodsServicesDescription": "Other service included in this class"
+        }
+      ]
+    },
+    "id": "4234a542-bfc0-441a-8f31-609b13e3df44",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1805"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "武汉标管家知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220607",
+        "applicationNumber": "65122995"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321127",
+      "lastPublicationDate": "20220827",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20221128",
+        "registrationNumber": "65122995"
+      }
+    },
+    "version": "20251004221844",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "IORI"
+    }
+  },
+  "_uri": "/mark/cn/4234a542-bfc0-441a-8f31-609b13e3df44",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:47.225Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

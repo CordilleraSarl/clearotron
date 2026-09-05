@@ -165,10 +165,13 @@ test("a $HOME symlinked into a real pool does not get past the guard", () => {
   rmSync(root, { recursive: true, force: true });
 });
 
-test("a missing frozen example says what a frozen example is and how to make one", () => {
+test("a missing frozen demo says what a frozen demo is and how to make one", () => {
   // An absent artifact must read as an absence with a next step, not as a stack trace.
+  // — the noun is "demo" throughout now, on the owner's one-term ruling, and the
+  // message names the products this tree actually has rather than only the path it could not open.
   const r = runDemo(["--run-dir", join(tmpdir(), "definitely-not-a-sample-dir"), "--once"]);
   assert.equal(r.code, 1, r.out);
-  assert.match(r.out, /no frozen example at/, r.out);
+  assert.match(r.out, /no frozen demo at/, r.out);
   assert.match(r.out, /freeze-example-run\.mjs/, r.out);
+  assert.match(r.out, /Products with a demo in this tree:/, r.out);
 });

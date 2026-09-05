@@ -1,0 +1,186 @@
+{
+  "uri": "/mark/jp/3b7a6b10-9d38-426e-afab-f4f7ef51ff3b",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "3b7a6b10-9d38-426e-afab-f4f7ef51ff3b",
+  "applicationNumber": "S59-040245",
+  "registrationNumber": "1940967",
+  "applicationDate": "1984-04-20",
+  "registrationDate": "1987-03-27",
+  "expiryDate": "1997-03-27",
+  "renewalDate": null,
+  "lastPublicationDate": "1985-11-21",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ヨリイ",
+  "markTransliteration": "YORII",
+  "markTranslation": "YORI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    2,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    16,
+    17,
+    20,
+    21,
+    26,
+    28
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        2,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        16,
+        17,
+        20,
+        21,
+        26,
+        28
+      ],
+      "language": null,
+      "description": "電気機械器具、電気通信機械器具、電子応用機械器具（医療機械器具に属するものを除く）電気材料",
+      "translation_language": "en",
+      "translation": "Electrical machinery equipment, telecommunication machinery equipment, electronic appliances and appliances (excluding those belonging to medical machinery and equipment) Electrical materials"
+    }
+  ],
+  "owner": "K.K. YORII ELECTRONICS",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19840420"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "OSATO SAITAMA KEN",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "K.K. YORII ELECTRONICS",
+        "applicantNativeAddress": "埼玉県大里郡寄居町大字桜沢３８３０番地",
+        "applicantNativeName": "株式会社ヨリイ・エレクトロニクス"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electrical machinery equipment, telecommunication machinery equipment, electronic appliances and appliances (excluding those belonging to medical machinery and equipment) Electrical materials",
+          "intClassNumber": "02,06,07,08,09,10,11,12,16,17,20,21,26,28",
+          "intGoodsServicesDescription": "電気機械器具、電気通信機械器具、電子応用機械器具（医療機械器具に属するものを除く）電気材料"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11A01"
+        },
+        {
+          "natClassNumber": "11A02"
+        },
+        {
+          "natClassNumber": "11A03"
+        },
+        {
+          "natClassNumber": "11A04"
+        },
+        {
+          "natClassNumber": "11A05"
+        },
+        {
+          "natClassNumber": "11A06"
+        },
+        {
+          "natClassNumber": "11A07"
+        },
+        {
+          "natClassNumber": "11A08"
+        },
+        {
+          "natClassNumber": "11B01"
+        },
+        {
+          "natClassNumber": "11C01"
+        },
+        {
+          "natClassNumber": "11C02"
+        },
+        {
+          "natClassNumber": "11D01"
+        }
+      ]
+    },
+    "id": "3b7a6b10-9d38-426e-afab-f4f7ef51ff3b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19840420"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19840420",
+        "applicationNumber": "S59-040245"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "19970327",
+      "lastPublicationDate": "19851121",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19870327",
+        "registrationNumber": "1940967"
+      }
+    },
+    "version": "20230427105501",
+    "wordMarkSpecification": {
+      "markTranslation": "YORI",
+      "markTransliteration": "YORII",
+      "markVerbalElementText": "ヨリイ"
+    }
+  },
+  "_uri": "/mark/jp/3b7a6b10-9d38-426e-afab-f4f7ef51ff3b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:45.803Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

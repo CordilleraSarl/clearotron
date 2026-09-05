@@ -1,0 +1,172 @@
+{
+  "uri": "/mark/de/56fc2910-e5f2-4758-9378-537d6e814eaa",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "56fc2910-e5f2-4758-9378-537d6e814eaa",
+  "applicationNumber": "30465555.4",
+  "registrationNumber": "30465555",
+  "applicationDate": "2004-11-18",
+  "registrationDate": "2005-03-30",
+  "expiryDate": "2034-11-30",
+  "renewalDate": "2024-12-01",
+  "lastPublicationDate": "2005-04-29",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "OQ ORIGINAL QUALITY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    11,
+    37
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Elektrische Regel-, Steuer-, Bedienungs-, Mess-, Kontroll-, Anzeige-, Signalapparate und -instrumente und daraus bestehende Systeme, vorgenannte Waren, soweit in Klasse 9 enthalten; Teile der vorgenannten Waren; Messgeräte zur Erfassung von Zustandsgrößen von Heizungsgeräten und Brennern; Regel- und Sicherheitsgeräte für vorgenannte Waren, soweit in Klasse 9 enthalten; Solargeneratoren zur Stromerzeugung und aus diesem zusammengestellte Anlagen für die Stromerzeugung; Geräte zur Telekommunikation im Zusammenhang mit der Überwachung, Regelung und Bedienung von vorgenannten Waren; Geräte zur Übertragung von elektrischen, optischen und akustischen Signalen; EDV-Programme; Planungssoftware; Berechnungssoftware;",
+      "translation_language": "en",
+      "translation": "Electric regulating, control, operating, measuring, checking (supervision), indicating, signaling apparatus and instruments and systems consisting thereof, the aforesaid goods, included in class 9; Parts of the aforesaid goods; Measuring devices for recording state variables of heating appliances and burners; Regulating and safety devices for the aforesaid goods, included in class 9; Solar generators for generating electricity and installations for generating electricity composed thereof; Telecommunication apparatus in connection with the monitoring, regulation and operation of the aforesaid goods; Apparatus for transmitting electrical, optical and acoustic signals; Computer programs; Planning software; Calculation software;"
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "de",
+      "description": "Heizungsgeräte und aus Heizungsgeräten zusammengestellte Heizungssysteme; Klima-, Kühl- und Lüftungsgeräte und -anlagen; Warmwassergeräte; kombinierte Heizungs-, Kühl-, Klima-, Warmwasser-, Ventilations- und Lüftungsgeräte und -anlagen; Dampferzeugungs-, Wasserleitungs- und Sanitärgeräte und -anlagen; Heizkessel; Heizungsregler; Durchlaufwassererhitzer; Lufterhitzer; Brenner, insbesondere für fossile und nachwachsende Brennstoffe; Zubehör für Heizungsgeräte und Brenner, soweit in Klasse 11 enthalten; Blockheizkraftwerke; Wärmepumpen, nämlich Luft-, Erdwärme-, Elektro-, Gas-, Solar- und Wasserwärmepumpen; Brennstoffzellen für Heizzwecke; Warmwasserbereiter und -speicher; Wärmespeicher; Wärmeaustauscher; Solarheizungsanlagen und -einzelkomponenten; Solarkollektoren für Heizzwecke; Flächenheizkörper; Radiatoren; Wand-, Decken- und Fußbodenheizkörper und aus diesen Geräten zusammengesetzte Systeme; Zubehör- und Ersatzteile für vorgenannte Waren, soweit in Klasse 11 enthalten;",
+      "translation_language": "en",
+      "translation": "Heating apparatus and heating systems consisting of heating apparatus; Air conditioning, refrigerating and ventilating apparatus and installations; Water heaters; combined heating, cooling, air conditioning, hot water, ventilating and ventilating apparatus and installations; Steam generating, water supply and sanitary apparatus and installations; Boiler; Heating controller; water heaters; Air heaters; Burners, in particular for fossil and renewable fuels; Accessories for heating apparatus and burners, included in class 11; Cogeneration; Heat pumps, namely, air, geothermal, electric, gas, solar and water heat pumps; Fuel cells for heating purposes; Water heaters and storage; Heat storage; Heat exchangers; Solar heating installations and individual components; Solar collectors for heating purposes; Panel heater; radiators; Wall, ceiling and floor radiators and systems composed of these devices; Accessories and spare parts for the aforesaid goods, included in class 11;"
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "de",
+      "description": "Montage, Einbau, Installation, Wartung, Reparatur, Service für vorgenannte Waren.",
+      "translation_language": "en",
+      "translation": "Assembly, installation, installation, maintenance, repair, servicing of the aforesaid goods."
+    }
+  ],
+  "owner": "Bosch Thermotechnik GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "35576 Wetzlar",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Bosch Thermotechnik GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "cmMarkImageEUclassification": [
+      "26.01.02",
+      "26.01.04",
+      "26.03.23",
+      "26.07.03",
+      "37.02.15",
+      "37.02.22",
+      "37.05.19"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electric regulating, control, operating, measuring, checking (supervision), indicating, signaling apparatus and instruments and systems consisting thereof, the aforesaid goods, included in class 9; Parts of the aforesaid goods; Measuring devices for recording state variables of heating appliances and burners; Regulating and safety devices for the aforesaid goods, included in class 9; Solar generators for generating electricity and installations for generating electricity composed thereof; Telecommunication apparatus in connection with the monitoring, regulation and operation of the aforesaid goods; Apparatus for transmitting electrical, optical and acoustic signals; Computer programs; Planning software; Calculation software;",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Elektrische Regel-, Steuer-, Bedienungs-, Mess-, Kontroll-, Anzeige-, Signalapparate und -instrumente und daraus bestehende Systeme, vorgenannte Waren, soweit in Klasse 9 enthalten; Teile der vorgenannten Waren; Messgeräte zur Erfassung von Zustandsgrößen von Heizungsgeräten und Brennern; Regel- und Sicherheitsgeräte für vorgenannte Waren, soweit in Klasse 9 enthalten; Solargeneratoren zur Stromerzeugung und aus diesem zusammengestellte Anlagen für die Stromerzeugung; Geräte zur Telekommunikation im Zusammenhang mit der Überwachung, Regelung und Bedienung von vorgenannten Waren; Geräte zur Übertragung von elektrischen, optischen und akustischen Signalen; EDV-Programme; Planungssoftware; Berechnungssoftware;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Heating apparatus and heating systems consisting of heating apparatus; Air conditioning, refrigerating and ventilating apparatus and installations; Water heaters; combined heating, cooling, air conditioning, hot water, ventilating and ventilating apparatus and installations; Steam generating, water supply and sanitary apparatus and installations; Boiler; Heating controller; water heaters; Air heaters; Burners, in particular for fossil and renewable fuels; Accessories for heating apparatus and burners, included in class 11; Cogeneration; Heat pumps, namely, air, geothermal, electric, gas, solar and water heat pumps; Fuel cells for heating purposes; Water heaters and storage; Heat storage; Heat exchangers; Solar heating installations and individual components; Solar collectors for heating purposes; Panel heater; radiators; Wall, ceiling and floor radiators and systems composed of these devices; Accessories and spare parts for the aforesaid goods, included in class 11;",
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Heizungsgeräte und aus Heizungsgeräten zusammengestellte Heizungssysteme; Klima-, Kühl- und Lüftungsgeräte und -anlagen; Warmwassergeräte; kombinierte Heizungs-, Kühl-, Klima-, Warmwasser-, Ventilations- und Lüftungsgeräte und -anlagen; Dampferzeugungs-, Wasserleitungs- und Sanitärgeräte und -anlagen; Heizkessel; Heizungsregler; Durchlaufwassererhitzer; Lufterhitzer; Brenner, insbesondere für fossile und nachwachsende Brennstoffe; Zubehör für Heizungsgeräte und Brenner, soweit in Klasse 11 enthalten; Blockheizkraftwerke; Wärmepumpen, nämlich Luft-, Erdwärme-, Elektro-, Gas-, Solar- und Wasserwärmepumpen; Brennstoffzellen für Heizzwecke; Warmwasserbereiter und -speicher; Wärmespeicher; Wärmeaustauscher; Solarheizungsanlagen und -einzelkomponenten; Solarkollektoren für Heizzwecke; Flächenheizkörper; Radiatoren; Wand-, Decken- und Fußbodenheizkörper und aus diesen Geräten zusammengesetzte Systeme; Zubehör- und Ersatzteile für vorgenannte Waren, soweit in Klasse 11 enthalten;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Assembly, installation, installation, maintenance, repair, servicing of the aforesaid goods.",
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Montage, Einbau, Installation, Wartung, Reparatur, Service für vorgenannte Waren."
+        }
+      ]
+    },
+    "id": "56fc2910-e5f2-4758-9378-537d6e814eaa",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "24.17.01",
+      "27.05.09",
+      "27.05.10"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "05402",
+        "publicationVolume": "17"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Wernerstr. 1, 70469 Stuttgart",
+        "representativeCorrespondentName": "Robert Bosch GmbH Abt. C/IPT"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20041118",
+        "applicationNumber": "30465555.4"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20341130",
+      "lastPublicationDate": "20050429",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20050330",
+        "registrationNumber": "30465555"
+      },
+      "renewalDate": "20241201",
+      "renewalPublishedDate": "20241213"
+    },
+    "version": "20250627143724",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "OQ ORIGINAL QUALITY"
+    }
+  },
+  "_uri": "/mark/de/56fc2910-e5f2-4758-9378-537d6e814eaa",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.399Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

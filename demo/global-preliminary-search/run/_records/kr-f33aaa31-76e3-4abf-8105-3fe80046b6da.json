@@ -1,0 +1,174 @@
+{
+  "uri": "/mark/kr/f33aaa31-76e3-4abf-8105-3fe80046b6da",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "f33aaa31-76e3-4abf-8105-3fe80046b6da",
+  "applicationNumber": "45-2006-0001874",
+  "registrationNumber": "4500203430000",
+  "applicationDate": "2006-05-22",
+  "registrationDate": "2007-06-27",
+  "expiryDate": "2027-06-27",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FORI",
+  "markTransliteration": "FORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7
+      ],
+      "language": "ko",
+      "description": "동력작동식 차량조립라인에 있어서의 자동차/군사차량/산업차량 부품 검사용 자동화 기기,동력작동식 차량조립라인에 있어서의 자동차/군사차량/산업차량 부품 고정용 자동화 기기,동력작동식 차량조립라인에 있어서의 자동차/군사차량/산업차량 부품 이동용 자동화 기기,동력작동식 차량조립라인에 있어서의 자동차/군사차량/산업차량 부품 조립용 자동화 기기,동력작동식 차량조립라인에 있어서의 자동차/군사차량/산업차량 부품 테스트용 자동화 기기",
+      "translation_language": "en",
+      "translation": "Automated equipment for inspection of automobile/military vehicle/industrial vehicle parts in a power-operated vehicle assembly line, automation equipment for fixing automobile/military vehicle/industrial vehicle parts in a power-operated vehicle assembly line, and power-operated vehicle assembly line Automated equipment for moving parts of automobiles/military vehicles/industrial vehicles in a power-operated vehicle assembly line, automation equipment for assembling automobiles/military vehicles/industrial vehicle parts in a power-operated vehicle assembly line /Automated equipment for testing parts of industrial vehicles"
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "ko",
+      "description": "동력작동식 차량조립라인 자동화장비의 주문제작업",
+      "translation_language": "en",
+      "translation": "Order-made work of automated equipment for motorized vehicle assembly line"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "동력작동식 차량조립라인 자동화장비의 주문설계업",
+      "translation_language": "en",
+      "translation": "Order design business of power operated vehicle assembly line automation equipment"
+    }
+  ],
+  "owner": "Fori Automation, Inc",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "양영준 (YANG, Young June)",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20060517",
+      "priorityNumber": "78/886,041"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미국 미시간 쉘비 타운쉽 윙 드라이브",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Fori Automation, Inc",
+        "applicantNativeName": "포리 오토메이션, 인코포레이티드"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Automated equipment for inspection of automobile/military vehicle/industrial vehicle parts in a power-operated vehicle assembly line, automation equipment for fixing automobile/military vehicle/industrial vehicle parts in a power-operated vehicle assembly line, and power-operated vehicle assembly line Automated equipment for moving parts of automobiles/military vehicles/industrial vehicles in a power-operated vehicle assembly line, automation equipment for assembling automobiles/military vehicles/industrial vehicle parts in a power-operated vehicle assembly line /Automated equipment for testing parts of industrial vehicles",
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "동력작동식 차량조립라인에 있어서의 자동차/군사차량/산업차량 부품 검사용 자동화 기기,동력작동식 차량조립라인에 있어서의 자동차/군사차량/산업차량 부품 고정용 자동화 기기,동력작동식 차량조립라인에 있어서의 자동차/군사차량/산업차량 부품 이동용 자동화 기기,동력작동식 차량조립라인에 있어서의 자동차/군사차량/산업차량 부품 조립용 자동화 기기,동력작동식 차량조립라인에 있어서의 자동차/군사차량/산업차량 부품 테스트용 자동화 기기"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Order-made work of automated equipment for motorized vehicle assembly line",
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "동력작동식 차량조립라인 자동화장비의 주문제작업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Order design business of power operated vehicle assembly line automation equipment",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "동력작동식 차량조립라인 자동화장비의 주문설계업"
+        }
+      ]
+    },
+    "id": "f33aaa31-76e3-4abf-8105-3fe80046b6da",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20060517",
+        "priorityNumber": "78/886,041"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "F, Seyang B/D, Naeja-dong, Jongno-gu, Seoul, Korea(KIM & CHANG)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "양영준 (YANG, Young June)"
+      },
+      {
+        "representativeAddress": "Jeongdong Building, F, Jeongdong-gil, Jung-gu, Seoul Korea(KIM & CHANG)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "고이화 (KOH,YEE HWA)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20060522",
+        "applicationNumber": "45-2006-0001874"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270627",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20070627",
+        "registrationNumber": "4500203430000"
+      }
+    },
+    "version": "20250625161109",
+    "wordMarkSpecification": {
+      "markTransliteration": "FORI",
+      "markVerbalElementText": "FORI"
+    }
+  },
+  "_uri": "/mark/kr/f33aaa31-76e3-4abf-8105-3fe80046b6da",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:53.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

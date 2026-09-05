@@ -1,0 +1,198 @@
+{
+  "uri": "/mark/us/437e81a9-9093-4eab-aa1b-9979165fc0e2",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "437e81a9-9093-4eab-aa1b-9979165fc0e2",
+  "applicationNumber": "99748376",
+  "registrationNumber": null,
+  "applicationDate": "2026-04-07",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Entertainment services in the nature of live visual and audio performances by namely, providing live immersive performance experiences featuring biometric-responsive audio and visual environments; production of immersive artistic experiences; organizing and conducting workshops, classes, and events in the fields of biometric technology, meditation, and immersive art; entertainment services in the nature of live musical performances.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Nathalie Bonin",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "355 North Maple Street, Burbank, CA, 91505, USAM",
+        "applicantAddressCity": "Burbank",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "91505",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "355 North Maple Street",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Nathalie Bonin",
+        "applicantSecondaryAddressUnit": "Apt 214"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Entertainment services in the nature of live visual and audio performances by namely, providing live immersive performance experiences featuring biometric-responsive audio and visual environments; production of immersive artistic experiences; organizing and conducting workshops, classes, and events in the fields of biometric technology, meditation, and immersive art; entertainment services in the nature of live musical performances."
+        }
+      ]
+    },
+    "id": "437e81a9-9093-4eab-aa1b-9979165fc0e2",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260825",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20260825",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20260825",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20260817",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20260730",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20260407",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20260407",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "355 North Maple Street, Burbank, CA, 91505, USAM",
+        "city": "Burbank",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Nathalie Bonin",
+        "postalCode": "91505",
+        "secondaryAddressUnit": "Apt 214",
+        "stateName": "CALIFORNIA",
+        "street": "355 North Maple Street"
+      },
+      {
+        "address": "355 North Maple Street, Burbank, CA, 91505, USAM",
+        "city": "Burbank",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Nathalie Bonin",
+        "postalCode": "91505",
+        "secondaryAddressUnit": "Apt 214",
+        "stateName": "CALIFORNIA",
+        "street": "355 North Maple Street"
+      }
+    ],
+    "recordLastUpdated": "20260827",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Apt 214, Burbank, CA 91505, United States",
+        "representativeCorrespondentAddressLines": [
+          "Apt 214",
+          "Burbank, CA 91505",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Nathalie Bonin, 355 North Maple Street"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Apt 214, Burbank, CA 91505, United States",
+        "representativeAddressLines": [
+          "Apt 214",
+          "Burbank, CA 91505",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260407",
+        "applicationNumber": "99748376"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "NON-FINAL ACTION - MAILED",
+        "markOfficialStatusCode": "641",
+        "markOfficialStatusDate": "20260825",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260827164110",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOR"
+    }
+  },
+  "_uri": "/mark/us/437e81a9-9093-4eab-aa1b-9979165fc0e2",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:24.142Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

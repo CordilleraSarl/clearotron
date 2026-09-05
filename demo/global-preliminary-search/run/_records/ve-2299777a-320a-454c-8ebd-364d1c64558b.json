@@ -1,0 +1,111 @@
+{
+  "uri": "/mark/ve/2299777a-320a-454c-8ebd-364d1c64558b",
+  "provider": "clarivate",
+  "office": "ve",
+  "guid": "2299777a-320a-454c-8ebd-364d1c64558b",
+  "applicationNumber": "1997-023549",
+  "registrationNumber": null,
+  "applicationDate": "1997-11-20",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "PROVENCOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "los servicios prestados procurando el alojamiento, el albergue y el hospedaje por hoteles, pensiones, campamentos turisticos, hogares turisticos, granjas pension, (casa de labranza turisticas), sanatorios, casa de reposo y casas de convalecencia. los servicios prestados por establecimientos que se encargan esencialmente de procurar alimentos o bebidas, preparados para el consumo, tales servicios pueden ser prestados por restaurantes, restaurantes de '.",
+      "translation_language": "en",
+      "translation": "the services provided by providing accommodation, shelter and accommodation for hotels, pensions, tourist camps, tourist homes, pension farms, (farmhouse), sanatoriums, nursing home and convalescent homes. the services provided by establishments that are essentially responsible for procuring food or beverages, prepared for consumption, such services can be provided by restaurants, restaurants."
+    }
+  ],
+  "owner": "SILEFED, S. A.",
+  "ownerNative": null,
+  "ownerCountry": "AR",
+  "representative": "ARCILA SALGADO GUSTAVO",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "BUENOS AIRES",
+        "applicantAddressCountryCode": "AR",
+        "applicantAddressCountryName": "Argentina",
+        "applicantName": "SILEFED, S. A."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "the services provided by providing accommodation, shelter and accommodation for hotels, pensions, tourist camps, tourist homes, pension farms, (farmhouse), sanatoriums, nursing home and convalescent homes. the services provided by establishments that are essentially responsible for procuring food or beverages, prepared for consumption, such services can be provided by restaurants, restaurants.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "los servicios prestados procurando el alojamiento, el albergue y el hospedaje por hoteles, pensiones, campamentos turisticos, hogares turisticos, granjas pension, (casa de labranza turisticas), sanatorios, casa de reposo y casas de convalecencia. los servicios prestados por establecimientos que se encargan esencialmente de procurar alimentos o bebidas, preparados para el consumo, tales servicios pueden ser prestados por restaurantes, restaurantes de '."
+        }
+      ]
+    },
+    "id": "2299777a-320a-454c-8ebd-364d1c64558b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "VE",
+    "registrationOfficeName": "Venezuela",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "VE",
+        "representativeAddressCountryName": "Venezuela",
+        "representativeName": "ARCILA SALGADO GUSTAVO"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19971120",
+        "applicationNumber": "1997-023549"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK"
+    },
+    "version": "20250630160732",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "PROVENCOR"
+    }
+  },
+  "_uri": "/mark/ve/2299777a-320a-454c-8ebd-364d1c64558b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.742Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

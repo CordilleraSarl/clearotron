@@ -1,0 +1,458 @@
+{
+  "uri": "/mark/us/66ae93a5-cf7d-4352-8a2c-2b34f153447b",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "66ae93a5-cf7d-4352-8a2c-2b34f153447b",
+  "applicationNumber": "76514622",
+  "registrationNumber": "2940586",
+  "applicationDate": "2003-05-08",
+  "registrationDate": "2005-04-12",
+  "expiryDate": null,
+  "renewalDate": "2015-04-12",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2003-12-23"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2025-10-24",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "NORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 conducting research and clinical trials relating to medical devices and pharmaceuticals in the field of ophthalmology",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NATIONAL OPHTHALMIC RESEARCH INSTITUTE, LLC",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Mark A. Nieds",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20150311",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "6901 INTERNATIONAL CENTER BLVD, FORT MYERS, FLORIDA, 33912",
+        "applicantAddressCity": "FORT MYERS",
+        "applicantAddressPostalCode": "33912",
+        "applicantAddressStateName": "FLORIDA",
+        "applicantAddressStreet": "6901 INTERNATIONAL CENTER BLVD",
+        "applicantJurisdictionOfIncorporation": "FLORIDA",
+        "applicantLegalEntity": "LIMITED LIABILITY COMPANY",
+        "applicantName": "NATIONAL OPHTHALMIC RESEARCH INSTITUTE, LLC"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "6901 INTERNATIONAL CENTER BLVD., FORT MYERS, FLORIDA, 33912",
+            "city": "FORT MYERS",
+            "jurisdictionOfIncorporation": "FLORIDA",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "NATIONAL OPHTHALMIC RESEARCH INSTITUTE, L.L.C.",
+            "postalCode": "33912",
+            "stateName": "FLORIDA",
+            "street": "6901 INTERNATIONAL CENTER BLVD."
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "NATIONAL BANKING ASSOCIATION",
+            "name": "BMO BANK N.A.",
+            "previousName": "FORMERLY BMO HARRIS BANK N.A."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "10 SOUTH WACKER DRIVE, 40TH FLOOR, CHICAGO, IL 60606-7507",
+            "addressLines": [
+              "MAGGIE  DEUTSCH",
+              "10 SOUTH WACKER DRIVE",
+              "40TH FLOOR",
+              "CHICAGO, IL 60606-7507"
+            ],
+            "name": "MAGGIE  DEUTSCH"
+          }
+        ],
+        "descriptionText": "RELEASE BY SECURED PARTY",
+        "executedDate": "20240517",
+        "recordedDate": "20240520",
+        "reelFrameNumber": "8435/0530"
+      },
+      {
+        "assignees": [
+          {
+            "address": "111 WEST MONROE, CHICAGO, ILLINOIS, 60603",
+            "city": "CHICAGO",
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "NATIONAL BANKING ASSOCIATION",
+            "name": "BMO HARRIS BANK N.A., AS ADMINISTRATIVE AGENT",
+            "postalCode": "60603",
+            "stateName": "ILLINOIS",
+            "street": "111 WEST MONROE"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "FLORIDA",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "NATIONAL OPHTHALMIC RESEARCH INSTITUTE, LLC"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "525 WEST MONROE STREET, CHICAGO, IL 60661",
+            "addressLines": [
+              "RAQUEL HALEEM C/O KATTEN MUCHIN ROSENMAN",
+              "525 WEST MONROE STREET",
+              "CHICAGO, IL 60661"
+            ],
+            "name": "RAQUEL HALEEM C/O KATTEN MUCHIN ROSENMAN"
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "20211001",
+        "recordedDate": "20211001",
+        "reelFrameNumber": "7439/0796"
+      },
+      {
+        "assignees": [
+          {
+            "address": "6901 INTERNATIONAL CENTER BLVD, FORT MYERS, FLORIDA, 33912",
+            "city": "FORT MYERS",
+            "jurisdictionOfIncorporation": "FLORIDA",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "NATIONAL OPHTHALMIC RESEARCH INSTITUTE, LLC",
+            "postalCode": "33912",
+            "stateName": "FLORIDA",
+            "street": "6901 INTERNATIONAL CENTER BLVD"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "FLORIDA",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "NATIONAL OPTHALMIC RESEARCH INSTITUTE, LLC"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "1715 MONROE STREET, FORT MYERS, FL 33901",
+            "addressLines": [
+              "MARK A. NIEDS",
+              "1715 MONROE STREET",
+              "FORT MYERS, FL 33901"
+            ],
+            "name": "MARK A. NIEDS"
+          }
+        ],
+        "descriptionText": "CHANGE OF NAME",
+        "executedDate": "20210831",
+        "recordedDate": "20210901",
+        "reelFrameNumber": "7422/0644"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 conducting research and clinical trials relating to medical devices and pharmaceuticals in the field of ophthalmology"
+        }
+      ]
+    },
+    "id": "66ae93a5-cf7d-4352-8a2c-2b34f153447b",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20251024",
+        "descriptionText": "CANCELLED SEC. 8 (10-YR)/EXPIRED SECTION 9"
+      },
+      {
+        "date": "20250301",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20250301",
+        "descriptionText": "REGISTERED - SEC. 7 REQUEST ABANDONED"
+      },
+      {
+        "date": "20240412",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20220110",
+        "descriptionText": "POST REGISTRATION ACTION MAILED - SEC. 7"
+      },
+      {
+        "date": "20220105",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20210922",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20210830",
+        "descriptionText": "TEAS SECTION 7 REQUEST RECEIVED"
+      },
+      {
+        "date": "20150311",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20150311",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20150311",
+        "descriptionText": "REGISTERED AND RENEWED (FIRST RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20150311",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 9 - E-MAILED"
+      },
+      {
+        "date": "20150225",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20150225",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20110201",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20110131",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20110117",
+        "descriptionText": "TEAS SECTION 8 & 15 RECEIVED"
+      },
+      {
+        "date": "20050412",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20041101",
+        "descriptionText": "LAW OFFICE REGISTRATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20041019",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20041013",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20041008",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20041008",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20040920",
+        "descriptionText": "PAPER RECEIVED"
+      },
+      {
+        "date": "20040915",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20040316",
+        "descriptionText": "NOA MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20031223",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20031203",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20031027",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20031027",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "2668 Winkler Avenue, Fort Myers, FL, 33901",
+        "city": "Fort Myers",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "FLORIDA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "National Ophthalmic Research Institute, L.L.C.",
+        "postalCode": "33901",
+        "stateName": "FLORIDA",
+        "street": "2668 Winkler Avenue"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "6901 International Center Boulevard, Fort Myers, FL, 33912",
+        "city": "Fort Myers",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "FLORIDA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "National Ophthalmic Research Institute, L.L.C.",
+        "postalCode": "33912",
+        "stateName": "FLORIDA",
+        "street": "6901 International Center Boulevard"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "2668 Winkler Avenue, Fort Myers, FL, 33901",
+        "city": "Fort Myers",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "FLORIDA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "National Ophthalmic Research Institute, L.L.C.",
+        "postalCode": "33901",
+        "stateName": "FLORIDA",
+        "street": "2668 Winkler Avenue"
+      }
+    ],
+    "postRegistrationOwners": [
+      {
+        "address": "6901 INTERNATIONAL CENTER BLVD, FORT MYERS, FL, 33912",
+        "city": "FORT MYERS",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "FLORIDA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "NATIONAL OPHTHALMIC RESEARCH INSTITUTE, LLC",
+        "postalCode": "33912",
+        "stateName": "FLORIDA",
+        "street": "6901 INTERNATIONAL CENTER BLVD"
+      }
+    ],
+    "recordLastUpdated": "20260202",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Fort Myers, FL 33901, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "Fort Myers, FL 33901",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Mark A. Nieds Henderson, Franklin, Starnes & Holt P.A., 1715 Monroe Street"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Fort Myers, FL 33901, UNITED STATES",
+        "representativeAddressLines": [
+          "Fort Myers, FL 33901",
+          "UNITED STATES"
+        ],
+        "representativeName": "Mark A. Nieds"
+      }
+    ],
+    "status": {
+      "active": false,
+      "allowanceDate": [
+        "20040316"
+      ],
+      "application": {
+        "applicationDate": "20030508",
+        "applicationNumber": "76514622"
+      },
+      "cancellationDate": "20251024",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20031103"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20031103"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20251024",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20031223"
+      ],
+      "registration": {
+        "registrationDate": "20050412",
+        "registrationNumber": "2940586"
+      },
+      "renewalDate": "20150412"
+    },
+    "version": "20260202054114",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NORI"
+    }
+  },
+  "_uri": "/mark/us/66ae93a5-cf7d-4352-8a2c-2b34f153447b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.691Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

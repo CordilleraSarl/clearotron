@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/xs/ff0d9855-76bd-4b3c-98bc-23258bc07787",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "ff0d9855-76bd-4b3c-98bc-23258bc07787",
+  "applicationNumber": null,
+  "registrationNumber": "657831",
+  "applicationDate": null,
+  "registrationDate": "2015-03-18",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LOUISIANA VEIN CARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Medical",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "CHRISTOPHER E LAGRAIZE",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "155 HOSPITAL DR, LAFAYETTE, LA, 70503",
+        "applicantAddressCity": "LAFAYETTE",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "70503",
+        "applicantAddressStateName": "LOUISIANA",
+        "applicantAddressStreet": "155 HOSPITAL DR",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "CHRISTOPHER E LAGRAIZE"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Medical"
+        }
+      ]
+    },
+    "id": "ff0d9855-76bd-4b3c-98bc-23258bc07787",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADENAME",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "155 HOSPITAL DR, LAFAYETTE, LA, 70503",
+        "city": "LAFAYETTE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "INDIVIDUAL",
+        "name": "CHRISTOPHER E LAGRAIZE",
+        "postalCode": "70503",
+        "stateName": "LOUISIANA",
+        "street": "155 HOSPITAL DR"
+      }
+    ],
+    "recordLastUpdated": "20250712",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20150317"
+        }
+      ],
+      "firstUsedAnywhereDate": "20150317",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20150318",
+        "registrationNumber": "657831"
+      }
+    },
+    "usStateOfficeCode": "LA",
+    "usStateOfficeName": "LOUISIANA",
+    "version": "20250712111708",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LOUISIANA VEIN CARE"
+    }
+  },
+  "_uri": "/mark/xs/ff0d9855-76bd-4b3c-98bc-23258bc07787",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.820Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "uri": "/mark/no/cf537955-47ef-4512-b2bb-5f37217c0b6d",
+  "provider": "clarivate",
+  "office": "no",
+  "guid": "cf537955-47ef-4512-b2bb-5f37217c0b6d",
+  "applicationNumber": "201213979",
+  "registrationNumber": null,
+  "applicationDate": "2012-10-05",
+  "registrationDate": "2013-03-27",
+  "expiryDate": "2032-10-05",
+  "renewalDate": null,
+  "lastPublicationDate": "2013-04-08",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Shoes for protection against accidents, irradiation and fire, safety shoes, protective shoes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Wholesaling and retailing in the field of shoes for protection against accidents, irradiation and fire, safety shoes, protective shoes.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Elten GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "EM",
+      "priorityCountryName": "EU trade marks",
+      "priorityDate": "20120419",
+      "priorityNumber": "010819589"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Elten GmbH"
+      }
+    ],
+    "applicationLanguageCode": "no",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Shoes for protection against accidents, irradiation and fire, safety shoes, protective shoes."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Wholesaling and retailing in the field of shoes for protection against accidents, irradiation and fire, safety shoes, protective shoes."
+        }
+      ]
+    },
+    "id": "cf537955-47ef-4512-b2bb-5f37217c0b6d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "EM",
+        "priorityCountryName": "EU trade marks",
+        "priorityDate": "20120419",
+        "priorityNumber": "010819589"
+      }
+    ],
+    "recordLastUpdated": "20250808",
+    "registrationOfficeCode": "NO",
+    "registrationOfficeName": "Norway",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20121005",
+        "applicationNumber": "201213979"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321005",
+      "lastPublicationDate": "20130408",
+      "markCurrentStatus": "GRANTED",
+      "registration": {
+        "registrationDate": "20130327"
+      }
+    },
+    "version": "20250808020004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JORI"
+    }
+  },
+  "_uri": "/mark/no/cf537955-47ef-4512-b2bb-5f37217c0b6d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:22.073Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

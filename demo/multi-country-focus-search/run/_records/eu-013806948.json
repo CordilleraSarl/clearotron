@@ -1,0 +1,88 @@
+{
+  "uri": "/mark/eu/013806948",
+  "provider": "euipo",
+  "office": "EU",
+  "id": "013806948",
+  "applicationNumber": "013806948",
+  "registrationNumber": "013806948",
+  "applicationDate": "2015-03-09",
+  "registrationDate": "2019-08-30",
+  "expiryDate": "2035-03-09",
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "statusDate": "2019-09-03",
+  "markText": "VENTURI",
+  "markFeature": "FIGURATIVE",
+  "markKind": "INDIVIDUAL",
+  "markBasis": "EU_TRADEMARK",
+  "niceClasses": [],
+  "owner": "SCHÖFFEL Sportbekleidung GmbH",
+  "ownerCountry": null,
+  "representative": "RDP RÖHL - DEHM & PARTNER",
+  "goodsAndServices": [
+    {
+      "classNumber": 23,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Yarns and threads, for textile use"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 24,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Textiles and textile goods, not included in other classes",
+            " Bed covers",
+            " Table covers"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 25,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Clothing, headgear"
+          ]
+        }
+      ]
+    }
+  ],
+  "oppositions": [
+    {
+      "oppositionNumber": "002523200",
+      "oppositionDate": "2015-05-17",
+      "status": "WITHDRAWN"
+    },
+    {
+      "oppositionNumber": "002523994",
+      "oppositionDate": "2015-05-19",
+      "status": "WITHDRAWN"
+    },
+    {
+      "oppositionNumber": "002536764",
+      "oppositionDate": "2015-06-18",
+      "status": "WITHDRAWN"
+    }
+  ],
+  "cancellations": [],
+  "appeals": [],
+  "decisions": [],
+  "_provenance": {
+    "proceedings": "detail record — an empty list means none are recorded on the register"
+  },
+  "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/013806948",
+  "_uri": "/mark/eu/013806948",
+  "_receipt": {
+    "fetched_at": "2026-08-11T08:05:52.617Z",
+    "context": "prelim-tmp0001-venqori-sample-capture-screen-gate-refetch"
+  }
+}

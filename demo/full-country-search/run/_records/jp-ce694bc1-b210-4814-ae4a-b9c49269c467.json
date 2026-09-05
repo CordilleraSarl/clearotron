@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/jp/ce694bc1-b210-4814-ae4a-b9c49269c467",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "ce694bc1-b210-4814-ae4a-b9c49269c467",
+  "applicationNumber": "2012-009292",
+  "registrationNumber": "5530675",
+  "applicationDate": "2012-02-10",
+  "registrationDate": "2012-10-26",
+  "expiryDate": "2022-10-26",
+  "renewalDate": null,
+  "lastPublicationDate": "2012-11-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＶＹＢＲＩＤ",
+  "markTransliteration": "BAIBURIDDO BIIBURIDDO",
+  "markTranslation": "VYBRID",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "半導体，集積回路，マイクロプロセッサ，マルチコアプロセッサ，ソフトウェアをプログラム可能なマイクロプロセッサ，特定用途向け集積回路，電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "A semiconductor, an integrated circuit, a microprocessor, a multi-core processor, a software programmable microprocessor, an application specific integrated circuit, an electronic applied appliance and its parts"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "NAGAOKA AI",
+  "priorities": [
+    {
+      "priorityDate": "20120210"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "A semiconductor, an integrated circuit, a microprocessor, a multi-core processor, a software programmable microprocessor, an application specific integrated circuit, an electronic applied appliance and its parts",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "半導体，集積回路，マイクロプロセッサ，マルチコアプロセッサ，ソフトウェアをプログラム可能なマイクロプロセッサ，特定用途向け集積回路，電子応用機械器具及びその部品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door closing control systems; Electron microscopes"
+        }
+      ]
+    },
+    "id": "ce694bc1-b210-4814-ae4a-b9c49269c467",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20120210"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "NAGAOKA AI",
+        "representativeNativeName": "永岡　愛"
+      },
+      {
+        "representativeName": "IWASE YOSHIKAZU",
+        "representativeNativeName": "岩瀬　吉和"
+      },
+      {
+        "representativeName": "SHIROYAMA YASUFUMI",
+        "representativeNativeName": "城山　康文"
+      },
+      {
+        "representativeName": "KITAGUCHI TAKAHIRO",
+        "representativeNativeName": "北口　貴大"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120210",
+        "applicationNumber": "2012-009292"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20221026",
+      "lastPublicationDate": "20121127",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20121026",
+        "registrationNumber": "5530675"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "VYBRID",
+      "markTransliteration": "BAIBURIDDO BIIBURIDDO",
+      "markVerbalElementText": "ＶＹＢＲＩＤ"
+    }
+  },
+  "_uri": "/mark/jp/ce694bc1-b210-4814-ae4a-b9c49269c467",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.461Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,556 @@
+{
+  "uri": "/mark/us/c821e145-c329-42b8-ab36-4f862a0522d9",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "c821e145-c329-42b8-ab36-4f862a0522d9",
+  "applicationNumber": "76250917",
+  "registrationNumber": "2520121",
+  "applicationDate": "2001-05-04",
+  "registrationDate": "2001-12-18",
+  "expiryDate": null,
+  "renewalDate": "2021-12-18",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2001-09-25"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Loud speakers systems and loud speakers",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "TECH-SOUND CO., LTD",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Mark D. Schneider",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20220415",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "4982 4TH STREET, IRWINDALE, CALIFORNIA, 91706",
+        "applicantAddressCity": "IRWINDALE",
+        "applicantAddressPostalCode": "91706",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "4982 4TH STREET",
+        "applicantJurisdictionOfIncorporation": "CALIFORNIA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "TECH-SOUND CO., LTD"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "4982 4TH STREET, IRWINDALE, CALIFORNIA, 91706",
+            "city": "IRWINDALE",
+            "jurisdictionOfIncorporation": "CALIFORNIA",
+            "legalEntity": "CORPORATION",
+            "name": "TECH-SOUND CO., LTD",
+            "postalCode": "91706",
+            "stateName": "CALIFORNIA",
+            "street": "4982 4TH STREET"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "FLORIDA",
+            "legalEntity": "CORPORATION",
+            "name": "AVMARK, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "755 West Big Beaver Road, Suite 1900, Troy, MI 48084",
+            "addressLines": [
+              "Mark D. Schneider",
+              "755 West Big Beaver Road",
+              "Suite 1900",
+              "Troy, MI 48084"
+            ],
+            "name": "Mark D. Schneider"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20260301",
+        "recordedDate": "20260701",
+        "reelFrameNumber": "9258/0661"
+      },
+      {
+        "assignees": [
+          {
+            "address": "9285 BEVINGTON LANE, ORLANDO, FLORIDA, 32827",
+            "city": "ORLANDO",
+            "jurisdictionOfIncorporation": "FLORIDA",
+            "legalEntity": "CORPORATION",
+            "name": "AVMARK, INC.",
+            "postalCode": "32827",
+            "stateName": "FLORIDA",
+            "street": "9285 BEVINGTON LANE"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "NEW JERSEY",
+            "legalEntity": "CORPORATION",
+            "name": "AVMARK, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "20 CURTIS AVENUE, WEST ORANGE, NJ 07052",
+            "addressLines": [
+              "JULES D. ZALON",
+              "20 CURTIS AVENUE",
+              "WEST ORANGE, NJ 07052"
+            ],
+            "name": "JULES D. ZALON"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20110401",
+        "recordedDate": "20111111",
+        "reelFrameNumber": "4659/0670"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Loud speakers systems and loud speakers"
+        }
+      ]
+    },
+    "id": "c821e145-c329-42b8-ab36-4f862a0522d9",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260811",
+        "descriptionText": "TEAS CHANGE OF OWNER ADDRESS RECEIVED"
+      },
+      {
+        "date": "20260811",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20260811",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20260806",
+        "descriptionText": "TEAS CHANGE OF OWNER ADDRESS RECEIVED"
+      },
+      {
+        "date": "20260806",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20260806",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20260806",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20260806",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20260806",
+        "descriptionText": "TEAS WITHDRAWAL OF ATTORNEY RECEIVED-FIRM RETAINS"
+      },
+      {
+        "date": "20260729",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20220415",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20220415",
+        "descriptionText": "REGISTERED AND RENEWED (SECOND RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20220415",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 9 - E-MAILED"
+      },
+      {
+        "date": "20220411",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20211214",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20201218",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20111216",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20111216",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20111216",
+        "descriptionText": "REGISTERED AND RENEWED (FIRST RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20111116",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20111114",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20071220",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20071219",
+        "descriptionText": "ASSIGNED TO PARALEGAL"
+      },
+      {
+        "date": "20071217",
+        "descriptionText": "TEAS SECTION 8 & 15 RECEIVED"
+      },
+      {
+        "date": "20071212",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20061229",
+        "descriptionText": "CASE FILE IN TICRS"
+      },
+      {
+        "date": "20011218",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20010925",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20010905",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20010813",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20010808",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "500 Kevin Drive, Bridaman., MI, 49106, USAM",
+        "city": "Bridaman.",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Avmark, Inc.",
+        "postalCode": "49106",
+        "stateName": "MICHIGAN",
+        "street": "500 Kevin Drive"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "9285 Bevington Lane, Orlando, FL, 32827, USAM",
+        "city": "Orlando",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Avmark, Inc.",
+        "postalCode": "32827",
+        "stateName": "FLORIDA",
+        "street": "9285 Bevington Lane"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "500 Kevin Drive, Bridaman., MI, 49106, USAM",
+        "city": "Bridaman.",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Avmark, Inc.",
+        "postalCode": "49106",
+        "stateName": "MICHIGAN",
+        "street": "500 Kevin Drive"
+      }
+    ],
+    "postRegistrationOwners": [
+      {
+        "address": "4982 4TH STREET, IRWINDALE, CA, 91706, USAM",
+        "city": "IRWINDALE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "TECH-SOUND CO., LTD",
+        "postalCode": "91706",
+        "stateName": "CALIFORNIA",
+        "street": "4982 4TH STREET"
+      }
+    ],
+    "recordLastUpdated": "20260813",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "88947873",
+            "markCurrentStatus": "Pending",
+            "markVerbalElementText": "VENTURI ASTROLAB",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88947873",
+            "markCurrentStatus": "Published",
+            "markVerbalElementText": "VENTURI ASTROLAB",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79975384",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79152582",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85515355",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES VENTURI V KILIMANJARO TO OKAVANGO MISSION NO 04",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79152582",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85515355",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES VENTURI V KILIMANJARO TO OKAVANGO MISSION NO 04",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79975384",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79152582",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79975384",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85515355",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES VENTURI V KILIMANJARO TO OKAVANGO MISSION NO 04",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79152582",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79975384",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88947873",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "VENTURI ASTROLAB",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79152582",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79975384",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85515355",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES VENTURI V KILIMANJARO TO OKAVANGO MISSION NO 04",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79152582",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79975384",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85515355",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES VENTURI V KILIMANJARO TO OKAVANGO MISSION NO 04",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88947873",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "VENTURI ASTROLAB",
+            "refusalStatus": "Refused"
+          }
+        ],
+        "refusalStatus": "Cited"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Suite 1900, Troy, MI 48084, United States",
+        "representativeCorrespondentAddressLines": [
+          "Suite 1900",
+          "Troy, MI 48084",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Mark D. Schneider Dinsmore & Shohl LLP, 755 West Big Beaver Road"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Suite 1900, Troy, MI 48084, United States",
+        "representativeAddressLines": [
+          "Suite 1900",
+          "Troy, MI 48084",
+          "United States"
+        ],
+        "representativeName": "Mark D. Schneider"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20010504",
+        "applicationNumber": "76250917"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "1975"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "1975"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED AND RENEWED",
+        "markOfficialStatusCode": "800",
+        "markOfficialStatusDate": "20220415",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20010925"
+      ],
+      "registration": {
+        "registrationDate": "20011218",
+        "registrationNumber": "2520121"
+      },
+      "renewalDate": "20211218"
+    },
+    "version": "20260813141142",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/us/c821e145-c329-42b8-ab36-4f862a0522d9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.179Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -62,7 +62,7 @@ Nothing enforces that rule on a live box; two checks only report on it, and both
 two input pairs — `prelim-driver.path`'s globs against the runner's `config.queueDirs`, `prelim-outbox.path`'s glob
 against `config.outboxDir` — reported as two verdicts, because an unwatched queue means jobs never run while an
 unwatched outbox only drops delivery back to the 55-minute completion-watch.
-`driver/test/data-plane-defaults.test.mjs` asserts both globs against the checked-in the production env example, never
+A driver arm asserts both globs against the checked-in production env example, never
 against this box's `.env`.
 
 ## Generic units and template units

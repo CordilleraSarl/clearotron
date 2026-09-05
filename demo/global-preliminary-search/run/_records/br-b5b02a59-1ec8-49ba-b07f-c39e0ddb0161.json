@@ -1,0 +1,111 @@
+{
+  "uri": "/mark/br/b5b02a59-1ec8-49ba-b07f-c39e0ddb0161",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "b5b02a59-1ec8-49ba-b07f-c39e0ddb0161",
+  "applicationNumber": "944639607",
+  "registrationNumber": null,
+  "applicationDate": "2026-07-30",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "AVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Análise de suporte e sistema [serviço de informática];Análise e processamento de dados [serviço de informática];Armazenamento eletrônico de dados;Assessoria, consultoria e informação no campo da seleção, implementação e uso dos sistemas hardware e software para terceiros;Assistência técnica em software;Atualização de software de computador;Autenticação de dados [serviço de informática];Consultoria em segurança de dados;Consultoria em software de computador;Criação de software de computação gráfica;Desenvolvimento de plataformas de computador;Desenvolvimento de softwares e componentes de softwares para terceiros para uso em ambiente virtual;Elaboração [concepção] de software de computador;Fornecimento de mecanismos de busca para a obtenção, manutenção e distribuição de dados a partir de um banco de dados localizado em uma rede mundial de computadores [desenvolvimento de um software/website para terceiros];Hospedagem de websites;Implantação de sistema [informática];Instalação de software de computador;Manutenção de software de computador;Plataforma computacional como serviço [paas];Provimento de sistemas virtuais de computador por meio de computação em nuvem;Provimento de software de computador on - line não baixável;Serviços de desenvolvimento de banco de dados [informática];Serviços de engenharia de software para processamento de dados;Serviços de programação de computador [informática] para processamento de dados;Serviços de suporte de tecnologia da informação [TI] [solução de problemas de software];Software como serviço [saas];Suporte técnico em informática, a saber instalação, manutenção e configuração de banco de dados;Tratamento de dados [serviço de informática].",
+      "translation_language": "en",
+      "translation": "Support and system analysis [IT service]; Data analysis and processing [IT service]; Electronic data storage; Advice, consulting and information in the field of selection, implementation and use of hardware and software systems for third parties; Technical assistance in software; Computer software updates; Data authentication [IT service]; Data security consulting; Computer software consulting; Creation of computer graphics software; Development of computer platforms; Development of software and software components for third parties for use in a virtual environment; Elaboration [design] of computer software; Provision of search mechanisms for obtaining, maintaining and distributing data from a database located on a worldwide computer network [development of software/website for third parties]; Website hosting; System implementation [IT]; Installation of computer software; Maintenance of computer software; Computing platform as a service [PaaS]; Provision Virtual computer systems through cloud computing; Provision of non-downloadable online computer software; Database development services [IT]; Software engineering services for data processing; Computer programming services [IT] for data processing; Information technology [IT] support services [software troubleshooting]; Software as a service [SaaS]; IT technical support, namely database installation, maintenance and configuration; Data processing [IT service]."
+    }
+  ],
+  "owner": "AVENOR CONSULTORIA E TECNOLOGIA LTDA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "DOMINUS MARCAS E PATENTES LTDA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "AVENOR CONSULTORIA E TECNOLOGIA LTDA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Support and system analysis [IT service]; Data analysis and processing [IT service]; Electronic data storage; Advice, consulting and information in the field of selection, implementation and use of hardware and software systems for third parties; Technical assistance in software; Computer software updates; Data authentication [IT service]; Data security consulting; Computer software consulting; Creation of computer graphics software; Development of computer platforms; Development of software and software components for third parties for use in a virtual environment; Elaboration [design] of computer software; Provision of search mechanisms for obtaining, maintaining and distributing data from a database located on a worldwide computer network [development of software/website for third parties]; Website hosting; System implementation [IT]; Installation of computer software; Maintenance of computer software; Computing platform as a service [PaaS]; Provision Virtual computer systems through cloud computing; Provision of non-downloadable online computer software; Database development services [IT]; Software engineering services for data processing; Computer programming services [IT] for data processing; Information technology [IT] support services [software troubleshooting]; Software as a service [SaaS]; IT technical support, namely database installation, maintenance and configuration; Data processing [IT service].",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Análise de suporte e sistema [serviço de informática];Análise e processamento de dados [serviço de informática];Armazenamento eletrônico de dados;Assessoria, consultoria e informação no campo da seleção, implementação e uso dos sistemas hardware e software para terceiros;Assistência técnica em software;Atualização de software de computador;Autenticação de dados [serviço de informática];Consultoria em segurança de dados;Consultoria em software de computador;Criação de software de computação gráfica;Desenvolvimento de plataformas de computador;Desenvolvimento de softwares e componentes de softwares para terceiros para uso em ambiente virtual;Elaboração [concepção] de software de computador;Fornecimento de mecanismos de busca para a obtenção, manutenção e distribuição de dados a partir de um banco de dados localizado em uma rede mundial de computadores [desenvolvimento de um software/website para terceiros];Hospedagem de websites;Implantação de sistema [informática];Instalação de software de computador;Manutenção de software de computador;Plataforma computacional como serviço [paas];Provimento de sistemas virtuais de computador por meio de computação em nuvem;Provimento de software de computador on - line não baixável;Serviços de desenvolvimento de banco de dados [informática];Serviços de engenharia de software para processamento de dados;Serviços de programação de computador [informática] para processamento de dados;Serviços de suporte de tecnologia da informação [TI] [solução de problemas de software];Software como serviço [saas];Suporte técnico em informática, a saber instalação, manutenção e configuração de banco de dados;Tratamento de dados [serviço de informática]."
+        }
+      ]
+    },
+    "id": "b5b02a59-1ec8-49ba-b07f-c39e0ddb0161",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.01",
+      "27.05.02",
+      "29.01.14"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260828",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "DOMINUS MARCAS E PATENTES LTDA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260730",
+        "applicationNumber": "944639607"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260828051841",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENOR"
+    }
+  },
+  "_uri": "/mark/br/b5b02a59-1ec8-49ba-b07f-c39e0ddb0161",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.811Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

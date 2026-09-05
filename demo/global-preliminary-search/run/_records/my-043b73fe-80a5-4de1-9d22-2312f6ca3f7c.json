@@ -1,0 +1,109 @@
+{
+  "uri": "/mark/my/043b73fe-80a5-4de1-9d22-2312f6ca3f7c",
+  "provider": "clarivate",
+  "office": "my",
+  "guid": "043b73fe-80a5-4de1-9d22-2312f6ca3f7c",
+  "applicationNumber": "95003509",
+  "registrationNumber": null,
+  "applicationDate": "1995-04-15",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Spectacles, spectacle frames and cases; all included in class 9.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "PHILIPPE CHARRIOL INTERNATIONAL BV",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "ELLA CHEONG & G. MIRANDAH",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "ZEEMANSSTRAAT 13 3016 CN ROTTERDAM POSTBUS 3001 KD ROTTERDAM 23169",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "PHILIPPE CHARRIOL INTERNATIONAL BV"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Spectacles, spectacle frames and cases; all included in class 9."
+        }
+      ]
+    },
+    "id": "043b73fe-80a5-4de1-9d22-2312f6ca3f7c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260901",
+    "registrationOfficeCode": "MY",
+    "registrationOfficeName": "Malaysia",
+    "representatives": [
+      {
+        "representativeAddress": "#06-03 WISMA BANDAR, NO 18, JALAN TUANKU ABDUL RAHMAN, KUALA LUMPUR 50100 Kuala Lumpur",
+        "representativeAddressCountryCode": "MY",
+        "representativeAddressCountryName": "Malaysia",
+        "representativeName": "ELLA CHEONG & G. MIRANDAH"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19950415",
+        "applicationNumber": "95003509"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20260901050117",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/my/043b73fe-80a5-4de1-9d22-2312f6ca3f7c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.180Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

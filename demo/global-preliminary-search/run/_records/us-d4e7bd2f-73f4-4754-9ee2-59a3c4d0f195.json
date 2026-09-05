@@ -1,0 +1,192 @@
+{
+  "uri": "/mark/us/d4e7bd2f-73f4-4754-9ee2-59a3c4d0f195",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "d4e7bd2f-73f4-4754-9ee2-59a3c4d0f195",
+  "applicationNumber": "50052472",
+  "registrationNumber": null,
+  "applicationDate": "2026-08-14",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "ENQOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Physical fitness instruction; Pilates instruction; Conducting pilates classes; Providing fitness and exercise studio services, namely, pilates instruction and training; Yoga instruction",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ENQOR LLC",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "5519 Albin Dr, Greenacres, FL, 33463, USAM",
+        "applicantAddressCity": "Greenacres",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "33463",
+        "applicantAddressStateName": "FLORIDA",
+        "applicantAddressStreet": "5519 Albin Dr",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "ENQOR LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Physical fitness instruction; Pilates instruction; Conducting pilates classes; Providing fitness and exercise studio services, namely, pilates instruction and training; Yoga instruction"
+        }
+      ]
+    },
+    "id": "d4e7bd2f-73f4-4754-9ee2-59a3c4d0f195",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260814",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20260814",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20260814",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "5519 Albin Dr, Greenacres, FL, 33463, USAM",
+        "city": "Greenacres",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "ENQOR LLC",
+        "postalCode": "33463",
+        "stateName": "FLORIDA",
+        "street": "5519 Albin Dr"
+      },
+      {
+        "address": "5519 Albin Dr, Greenacres, FL, 33463, USAM",
+        "city": "Greenacres",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "ENQOR LLC",
+        "postalCode": "33463",
+        "stateName": "FLORIDA",
+        "street": "5519 Albin Dr"
+      }
+    ],
+    "recordLastUpdated": "20260818",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Greenacres, FL 33463, United States",
+        "representativeCorrespondentAddressLines": [
+          "Greenacres, FL 33463",
+          "United States"
+        ],
+        "representativeCorrespondentName": "ENQOR LLC, 5519 Albin Dr"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Greenacres, FL 33463, United States",
+        "representativeAddressLines": [
+          "Greenacres, FL 33463",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260814",
+        "applicationNumber": "50052472"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "firstUsed": [
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20251223"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20260314"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "NEW APPLICATION - RECORD INITIALIZED NOT ASSIGNED TO EXAMINER",
+        "markOfficialStatusCode": "630",
+        "markOfficialStatusDate": "20260814",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260818070431",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "ENCORE",
+      "markVerbalElementText": "ENQOR"
+    }
+  },
+  "_uri": "/mark/us/d4e7bd2f-73f4-4754-9ee2-59a3c4d0f195",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:13.082Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

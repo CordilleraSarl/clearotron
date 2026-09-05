@@ -1,0 +1,1409 @@
+{
+  "uri": "/mark/em/f8aef602-5c0b-41aa-ad45-c6ccd39e1e7f",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "f8aef602-5c0b-41aa-ad45-c6ccd39e1e7f",
+  "applicationNumber": "18854038",
+  "registrationNumber": "18854038",
+  "applicationDate": "2023-03-27",
+  "registrationDate": "2023-07-29",
+  "expiryDate": "2033-03-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-04-21",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NÖRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    28,
+    41,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Aplikacní software ke stazení pro chytré telefony; Software pro pocítacové hry; Aplikacní software pro mobilní telefony; Software pro pocítacové hry; Stahovatelné elektronické publikace; Stahovatelné obrázky (soubory); Kupony do mobilních telefonu ke stazení; Software pro virtuální realitu; Náhlavní soupravy pro virtuální realitu; 3D brýle.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "cs",
+      "description": "Autícka na dálkové ovládání [hracky]; Autícka na hraní; Hracky; Panenky; Hry; Hry; Elektronické dálkove ovládané hracky; Prístroje na videohry; Herní automaty; Hrací konzoly.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "cs",
+      "description": "Poskytování her; Sluzby online her; Poskytování mobilních her; Herní sluzby prostrednictvím mobilních herních aplikací; Príprava a porádání vzdelávacích akcí; Poskytování sluzeb tematických zábavních parku; Poskytování prostor k zábavním úcelum; Poskytování on-line informací v oboru pocítacové herní zábavy; Herní sluzby poskytované prostrednictvím komunikace pres pocítacové terminály nebo mobilní telefony; Vzdelávací a skolicí sluzby vztahující se ke hrám.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "cs",
+      "description": "Kavárny; Samoobsluzné jídelny; Restaurace; Restauracní sluzby v oblasti rychlého obcerstvení; Bufety; Sluzby detských koutku v kavárnách; Bary; Catering (poskytování jídla a nápoju); Motely; Turistické ubytovny.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Downloadable applikationssoftware til smartphones; Software til spil; Applikationssoftware til mobiltelefoner; Software til spil; Elektroniske publikationer, downloadable; Downloadable billedfiler; Mobilkuponer, som kan downloades; Virtual reality-software; Virtual reality-headsets; 3D briller.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "da",
+      "description": "Fjernstyrede legetøjskøretøjer; Legetøjskøretøjer; Legetøj; Dukker; Spil; Spil; Elektronisk, fjernstyret legetøj; Apparater til videospil; Spillemaskiner af spillehalstypen; Videospillekonsoller.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "da",
+      "description": "Udbydelse af spil; Udbydelse af onlinespil; Udbydelse af spil til mobiltelefoner; Spillevirksomhed via applikationer til mobilspil; Arrangering og afholdelse af uddannelsesarrangementer; Tjenester i forbindelse med temaparker; Tilvejebringelse af underholdningsfaciliteter; Onlineoplysninger inden for underholdning i form af computerspil; Spilvirksomhed udbudt ved hjælp af kommunikation via computerterminaler eller mobiltelefoner; Uddannelses- og undervisningsvirksomhed vedrørende spil.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "da",
+      "description": "Cafévirksomhed; Cafeterievirksomhed; Tjenester ydet af restauranter; Fastfoodrestaurationsvirksomhed; Tjenester ydet af snackbarer; Cafévirksomhed som del af leg for børn; Tjenester ydet af barer; Catering; Tjenester ydet af moteller; Tjenester ydet af feriehjem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Downloadbare applicatisoftware voor smartphones; Spelsoftware; Applicatiesoftware voor mobiele telefoons; Spelsoftware; Elektronische publicaties [te downloaden]; Downloadbare beeldbestanden; Downloadbare coupons voor mobiele apparaten; Software voor virtual reality; Virtual reality headsets; 3D-brillen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "nl",
+      "description": "Voertuigen, op afstand bestuurbaar [speelgoed]; Voertuigen [speelgoed]; Speelgoed; Poppen; Spellen; Spellen; Elektronisch speelgoed met afstandbediening; Videospelapparatuur; Speelautomaten voor speelhallen; Spelconsoles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Gokspelen (Ter beschikking stellen van -); Gokspellen online; Het aanbieden van mobiele spellen; Speldiensten geleverd via mobiele spelapplicaties; Het organiseren en houden van educatieve bijeenkomsten; Themaparken; Verschaffing van faciliteiten voor amusement; Het online verstrekken van inlichtingen op het gebied van ontspanning via computerspellen; Speldiensten aangeboden door middel van communicatie via computerterminals of mobiele telefoon; Onderwijs en opleiding met betrekking tot spellen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "nl",
+      "description": "Diensten van café-restaurants; Diensten van cafetaria's; Restauratie [het verstrekken van maaltijden]; Diensten van fastfoodrestaurants; Diensten van snackbars; Diensten van speelcafé's voor kinderen; Bardiensten; Catering; Moteldiensten; Diensten van vakantiehuizen [logies].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Downloadable smart phone applications (software); downloadable software in the nature of a mobile application for playing games; application software for smart phones; computer game software; downloadable electronic publications; downloadable image files; downloadable mobile coupons; virtual reality software; virtual reality headsets; 3D spectacles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "en",
+      "description": "Remote-controlled toy vehicles; toy vehicles; toys; dolls; playthings; games; electronic remote controlled toys; video game machines; arcade game machines; game consoles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Providing games; providing online games; providing mobile games; game services through mobile game applications; arranging and conducting of educational events; providing theme park services; providing amusement facilities; providing online information in the field of computer game entertainment; game services provided by means of communications by computer terminals or mobile telephone; educational and training services relating to games.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "en",
+      "description": "Café services; cafeteria services; restaurant services; fast-food restaurant services; snack-bar services; kids play café services; bar services; food and drink catering; motel services; tourist home services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Allalaaditav rakendustarkvara nutitelefonidele; Mängude tarkvara; Mobiiltelefonide rakendustarkvara; Mängude tarkvara; Elektroonilised allalaaditavad publikatsioonid; Allalaaditavad pildifailid; Allalaaditavad mobiilikupongid; Virtuaalreaalsuse tarkvara; Virtuaalreaalsuse peakomplektid; 3D-prillid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "et",
+      "description": "Kaugjuhtimisega mängusõidukid; Mängusõidukid; Mänguasjad; Nukud; Mängud; Mängud; Elektroonilised kaugjuhitavad mänguasjad; Videomänguseadmed; Mängusaalide mänguautomaadid; Mängukonsoolid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "et",
+      "description": "Mängude pakkumine; Mänguteenused veebikeskkonnas; Mobiilimängude pakkumine; Mänguteenused mobiilimängurakenduste kaudu; Haridusürituste korraldamine ja läbiviimine; Teemapargiteenuste pakkumine; Vaba aja veetmiseks võimaluste [ruumide ja vahendite] pakkumine; Sidusteabe andmine arvutimängumeelelahutuse valdkonnas; Mänguteenuste pakkumine arvutiterminalide või mobiiltelefoni kaudu; Mängudega seotud koolitus- ja väljaõppeteenused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "et",
+      "description": "Kohvikuteenused; Selvekohvikuteenused, kafeteeriateenused; Restoraniteenused; Kiirtoidurestoranide teenused; Kiirtoidukohvikuteenused, püstijalabaariteenused; Laste mängukohvikuteenused; Baariteenused; Toitlustusteenindus; Motelliteenused; Külalismajateenused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Ladattavat sovellusohjelmistot älypuhelimiin; Peliohjelmistot; Ohjelmistosovellukset matkapuhelimiin; Peliohjelmistot; Elektroniset julkaisut [järjestelmästä toiseen poimittavat]; Ladattavat kuvatiedostot; Ladattavat mobiilikupongit; Virtuaalitodellisuusohjelmistot; Kuulokemikrofoniyhdistelmät virtuaalitodellisuutta varten; 3D-silmälasit.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "fi",
+      "description": "Radio-ohjattavat leikkiajoneuvot; Leluautot; Pelit; Nuket; Pelit; Pelit; Elektroniset kauko-ohjattavat lelut; Videopelilaitteet; Pelihallilaitteet; Pelikonsolit.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fi",
+      "description": "Pelien tarjoaminen; Online-pelipalvelut; Matkapuhelinpelien tarjoaminen; Pelipalvelut mobiilipelisovellusten välityksellä; Koulutustapahtumien suunnittelu ja toteuttaminen; Teemapuistopalvelujen tarjoaminen; Tilojen tarjoaminen ajanvietekäyttöön; Onoline-tietojen tarjoaminen tietokonepeliviihteen alalla; Pelipalvelujen tarjoaminen tietokonepäätteiden tai matkapuhelinten välityksellä tapahtuvan viestinnän avulla; Peleihin liittyvät koulutus- ja valmennuspalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "fi",
+      "description": "Kahviot; Kafeteriapalvelut; Ravintolapalvelut; Pikaruokaravintoloiden palvelut; Pikaruokalat; Kahviloiden leikkipalvelut lapsille; Baaripalvelut; Pitopalvelu; Motellit; Matkustajakodit.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciels applicatifs téléchargeables pour téléphones intelligents; Logiciels de jeux; Logiciels applicatifs pour téléphones mobiles; Logiciels de jeux; Publications électroniques téléchargeables; Fichiers d'images téléchargeables; Coupons téléchargeables pour dispositifs mobiles; Logiciels de réalité virtuelle; Casques de réalité virtuelle; Lunettes 3D.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "fr",
+      "description": "Véhicules télécommandés [jouets]; Véhicules [jouets]; Jouets; Poupées; Jeux; Jeux; Jouets électroniques télécommandés; Appareils de jeux vidéo; Machines de jeu pour salles de jeux électroniques; Consoles de jeu vidéo.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Services de jeux; Services de jeux en ligne; Fourniture de jeux mobiles; Services de jeux par le biais d'applications de jeux mobiles; Organisation et conduite d'événements à buts éducatifs; Services de parcs à thèmes; Mise à disposition d'équipements et d'installations de divertissement; Fourniture de renseignements en ligne dans le domaine du divertissement par jeux informatiques; Services de jeu fournis par le biais de moyens de communication via des terminaux informatiques ou des téléphones portables; Services d'éducation et de formation relatifs aux jeux.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "fr",
+      "description": "Services de cafés; Services de cafétérias; Services de restaurants; Services de restauration rapide; Services de snack-bars; Services de cafés avec espaces de jeux pour enfants; Services de bars; Services de traiteurs; Services de motels; Services de maisons de vacances.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Herunterladbare Anwendungssoftware für Smartphones; Spielsoftware; Anwendungssoftware für Mobiltelefone; Spielsoftware; Herunterladbare elektronische Publikationen; Bilddateien zum Herunterladen; Herunterladbare Gutscheine für mobile Geräte; Virtual-Reality-Software; Virtual-Reality-Headsets; 3D-Brillen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "de",
+      "description": "Ferngesteuerte Fahrzeuge [Spielzeuge]; Spielzeugfahrzeuge; Spielzeug; Puppen [Spielwaren]; Spiele; Spiele; Elektronisches ferngesteuertes Spielzeug; Videospielgeräte; Spielhallenautomaten; Spielkonsolen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Verleih von Spielen; Durchführung von Online-Spielen; Bereitstellung von Spielen für Mobilgeräte; Spieldienstleistungen über mobile Spieleanwendungen; Planung und Durchführung von Bildungsveranstaltungen; Betrieb von Freizeitparkanlagen; Vermietung von Einrichtungen zu Unterhaltungszwecken; Erteilen von Online-Auskünften im Bereich Computerspielunterhaltung; Über Computerterminals oder Mobiltelefone bereitgestellte Spieldienste; Ausbildungs- und Schulungsdienstleistungen im Bereich Spiele.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "de",
+      "description": "Verpflegung von Gästen in Cafés; Verpflegung von Gästen in Cafeterias; Verpflegung von Gästen in Restaurants; Verpflegung von Gästen in Fast-Food-Restaurants; Verpflegung von Gästen in Schnellimbissrestaurants [Snackbars]; Betrieb von Kindercafés; Betrieb einer Bar; Catering; Dienstleistungen von Motels; Beherbergungsdienstleistungen für Reisende.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Aplikacijski softver za pametne telefone koji se moze preuzeti; Softver za igrice; Aplikacijski softver za mobilne telefone; Softver za igrice; Elektronske publikacije koje se mogu preuzeti s Interneta; Slikovne datoteke koje se mogu preuzimati s Interneta; Mobilni kuponi koji se mogu preuzeti; Racunalni program za virtualnu stvarnost; Slusalice za generiranje virtualne stvarnosti; 3D naocale.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "hr",
+      "description": "Vozila na daljinsko upravljanje [igracke]; Autici - igracke; Igracke; Lutke; Igracke; Igracke; Elektronicke igracke s daljinskim upravljanjem; Uredaji za video igre; Automati za arkadne igre; Konzole za igre.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hr",
+      "description": "Pruzanje igara; Usluge online igranja; Pruzanje mobilnih igara; Usluge igara putem mobilnih aplikacija za igre; Dogovaranje i vodenje obrazovnih dogadaja; Pruzanje usluga zabavnog parka; Pruzanje objekata i sredstava za zabavu; Davanje online informacija na podrucju zabave racunalnim igricama; Usluge igara koje se pruzaju komunikacijom racunalnih terminala ili mobilnih telefona; Usluge obrazovanja i osposobljavanja koje se odnose na igre.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "hr",
+      "description": "Kafici; Restorani sa samoposluzivanjem; Usluge restorana; Usluge restorana brze hrane; Bifei; Usluge kafica za djecju igru; Usluge barova; Catering; Moteli; Turisticki apartmani.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Okostelefonokhoz való letöltheto szoftveralkalmazások; Játékszoftverek; Mobiltelefonos szoftveralkalmazások; Játékszoftverek; Letöltheto elektronikus kiadványok, publikációk; Letöltheto képfájlok; Letöltheto mobiltelefonos kuponok; Virtuális valóság szoftverek; Virtuális valóság headsetek; Háromdimenziós szemüvegek.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "hu",
+      "description": "Távvezérlésu játékjármuvek; Játékautók; Játékszerek; Babák; Játékok; Játékok; Elektronikus távirányítású játékok; Videojátékok; Játéktermi játékgépek; Játékkonzolok.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hu",
+      "description": "Játékszolgáltatások; Online játékszolgáltatások; Mobil játékok biztosítása; Játékszolgáltatások mobil játékalkalmazásokon keresztül; Képzési rendezvények szervezése és lebonyolítása; Vidámparki szolgáltatások; Szórakoztató létesítmények rendelkezésre bocsátása; Online felvilágosítás nyújtása a számítógépes játék szórakoztatás területén; Számítógépes terminálokon vagy mobiltelefonokon történo kommunikáció útján nyújtott játékszolgáltatások; Játékokkal kapcsolatos oktatási és képzési szolgáltatások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "hu",
+      "description": "Kávéházak; Önkiszolgáló éttermek; Éttermi szolgáltatások; Gyorséttermi szolgáltatások; Gyorséttermek, snack bárok; Gyermekeknek való játék kávéskészletek; Bár szolgáltatások; Étel és ital catering; Motelek; Turistaházak, üdülok.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Software applicativi scaricabili per smartphone; Software per giochi; Software applicativi per telefoni cellulari; Software per giochi; Pubblicazioni elettroniche [scaricabili]; Files di immagini scaricabili; Buoni scaricabili su cellulari; Software per realtà virtuale; Caschi per realtà virtuale; Occhiali per 3D.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "it",
+      "description": "Veicoli giocattolo telecomandati; Veicoli [giocattoli]; Giocattoli; Bambole; Giochi; Giochi; Giocattoli elettronici telecomandati; Apparecchi per videogiochi; Macchine da gioco per sale giochi; Console per giochi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "Fornitura di giochi; Giochi di denaro on line; Fornitura di giochi per cellulari; Servizi di giochi disponibili tramite applicazioni per giochi cellulari; Organizzazione e conduzione di manifestazioni a carattere formativo; Fornitura servizi di parchi tematici; Servizi di fornitura di strutture per il divertimento; Diffusione di informazioni on-line nell'ambito del divertimento mediante giochi per computer; Servizi di gioco forniti mediante comunicazione da terminali informatici o telefoni cellulari; Servizi di istruzione e formazione inerenti i giochi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "it",
+      "description": "Servizi di bar-caffè; Servizi di caffetterie; Servizi di ristoranti; Servizi di ristoranti fast food; Servizi di snack-bars; Bar-ristoranti con aree gioco per bambini; Servizi di bar; Servizi di catering; Servizi di motel; Servizi di case per vacanze.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Parsisiunciamoji ismaniuju telefonu taikomoji programine iranga; Kompiuteriniu zaidimu programine iranga; Mobiliuju telefonu taikomoji programine iranga; Kompiuteriniu zaidimu programine iranga; Elektroniniai leidiniai [parsisiunciamieji]; Parsisiunciamosios vaizdo rinkmenos; Parsisiunciamieji mobiliuju irenginiu kuponai; Virtualiosios realybes programine iranga; Virtualiosios realybes ausines; 3D akiniai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "lt",
+      "description": "Nuotolinio valdymo zaislines transporto priemones; Zaislines transporto priemones; Zaislai; Leles; Zaidimai; Zaidimai; Elektroniniai nuotolinio valdymo zaislai; Vaizdo zaidimu aparatai; Zaidimu salonu aparatai; Vaizdo zaidimu konsoles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lt",
+      "description": "Zaidimu teikimas; Internetiniu zaidimu paslaugos; Mobiliuju zaidimu teikimas; Zaidimu paslaugos per mobiliuju zaidimu taikomasias programas; Svietimo renginiu rengimas ir vedimas; Teminiu parku paslaugu teikimas; Pramogu patalpu su irengimais teikimas; Informacijos apie kompiuteriniu zaidimu pramogas teikimas prijungties rysiu; Zaidimu paslaugos, teikiamos komunikacijos priemonemis per terminalus ar mobiluji telefona; Svietimo ir mokymo paslaugos, susijusios su zaidimais.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "lt",
+      "description": "Kaviniu paslaugos; Kavos baru paslaugos; Restoranu paslaugos; Greito maisto restoranu paslaugos; Uzkandiniu paslaugos; Vaiku zaidimu kaviniu paslaugos; Baru paslaugos; Aprupinimas maistu ir gerimais; Moteliu paslaugos; Turizmo baziu paslaugos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Lejupieladejamas viedtalrunu lietojumprogrammas; Spelu programmatura; Mobilo talrunu lietojumprogrammatura; Spelu programmatura; Lejupieladejamas elektroniskas publikacijas; Lejupieladejamas attelu datnes (faili); Lejupieladejami mobilie kuponi; Virtualas realitates programmatura; Virtualas realitates austinas ar mikrofonu; Brilles attelu uztverei 3D formata.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "lv",
+      "description": "Talvadibas rotalu transportlidzekli; Rotalu transportlidzekli; Rotallietas; Lelles; Speles; Speles; Elektroniskas rotallietas ar talvadibu; Videospelu ierices; Arkades spelu automati; Videospelu konsoles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lv",
+      "description": "Spelu nodrosinasana; Tiessaistes spelu pakalpojumi; Mobilo spelu nodrosinasana; Spelu pakalpojumi, izmantojot mobilas spelu lietojumprogrammas; Izglitojosu pasakumu rikosana un vadisana; Tematisko parku pakalpojumu nodrosinasana; Izklaides iespeju nodrosinasana; Uzzinu sniegsana tiessaiste par izklaidi datorspelu veida; Spelu pakalpojumi, kas tiek nodrosinati, izmantojot sakaru lidzeklus, proti, terminalus un mobilos talrunus; Izglitojosi un apmacibu pakalpojumi saistiba ar spelem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "lv",
+      "description": "Kafejnicu pakalpojumi; Kafeteriju pakalpojumi; Restoranu pakalpojumi; Atras apkalposanas restoranu pakalpojumi; Uzkodu baru pakalpojumi; Bernu rotalu kafejnicu pakalpojumi; Baru pakalpojumi; Edienu sagatavosana un piegade pec pasutijuma; Motelu pakalpojumi; Turistu mitnu pakalpojumi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Softwer tal-applikazzjoni li jista' jitnizzel ghall-ismartfowns; Softwer tal-loghbiet; Sotwer tal-applikazzjonijiet ghal telefowns cellular; Softwer tal-loghbiet; Pubblikazzjonijiet elettronici, li jistghu jitnizzlu; Fajls tal-immagni li jistghu jitnizzlu; Kupuni tat-telefown cellulari li jistghu jitnizzlu; Softwer tar-realtà virtwali; Hedsets tar-realtà virtwali; Nuccalijiet 3D.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "mt",
+      "description": "Vetturi tal-loghob ikkontrollati b'mod remot; Vetturi tal-loghob; Gugarelli; Pupi; Gugarelli; Gugarelli; Gugarelli elettronici kkontrollati mill-boghod; Magni tal-loghob tal-vidjo; Magni tal-loghbiet tat-tip arcade; Consoles tal-loghbiet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "mt",
+      "description": "Il-provvista ta' loghob; Servizzi ta' loghob fuq l-internet; Provvista ta' loghob mobbli; Servizzi ta' loghob permezz ta' applikazzjonijiet tal-loghob tal-mowbajl; Tmexxija u organizzazzjoni ta' attivitajiet edukattivi; Il-provvista ta' servizzi ta' park b'tema; Provvista ta' facilitajiet ghad-divertiment; Ghoti ta' informazzjoni onlajn fil-qasam tad-divertiment b'loghob tal-kompjuter; Servizzi tal-loghob ipprovduti b'mezzi tal-komunikazzjonijiet permezz ta' terminali tal-kompjuter jew mowbajl; Servizzi edukattivi u tahrig relatati mal-loghob.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "mt",
+      "description": "Kafetteriji; Ristoranti fejn wiehed jinqeda wahdu; Servizzi ta' restorant; Servizzi ta' ristoranti li jaghmlu ikel ta' malajr; Barijiet li jaghmlu ikel hafif u ta' malajr; Servizzi ta' kafetterija bil-loghob ghat-tfal; Servizzi ta' barijiet; Catering; Motels; Djar ghat-turisti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Aplikacje do pobrania na smartfony; Oprogramowanie gier; Oprogramowanie uzytkowe do telefonów komórkowych; Oprogramowanie gier; Publikacje elektroniczne, do pobrania; Pliki graficzne do pobierania; Kupony mobilne do pobrania; Oprogramowanie rzeczywistosci wirtualnej; Zestawy na glowe do rzeczywistosci wirtualnej; Okulary 3D.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "pl",
+      "description": "Pojazdy zdalnie sterowane do zabawy; Samochody do zabawy; Zabawki; Lalki; Gry; Gry; Zdalnie sterowane zabawki elektroniczne; Sprzet do gier wideo; Automaty do gier; Konsole do gier.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pl",
+      "description": "Zapewnianie gier; Uslugi gier online; Udostepnianie gier na telefony komórkowe; Uslugi w zakresie gier przez aplikacje do gier mobilnych; Organizacja i przeprowadzanie imprez szkoleniowych; Swiadczenie uslug w zakresie parków tematycznych; Zapewnienie obiektów i sprzetu na potrzeby rozrywki; Tworzenie informacji online w zakresie rozrywki przed komputerem; Uslugi w zakresie gier swiadczone za pomoca srodków lacznosciowych przez terminale komputerowe lub telefon komórkowy; Uslugi edukacyjne i szkoleniowe zwiazane z grami.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "pl",
+      "description": "Kafeterie [bufety]; Restauracje samoobslugowe; Uslugi restauracyjne; Uslugi restauracji szybkiej obslugi; Bary szybkiej obslugi [snack-bary]; Uslugi kawiarni do zabaw dla dzieci; Uslugi barowe; Obsluga gastronomiczna z wlasnym zapleczem, produktami i transportem; Motele; Domy turystyczne.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Software aplicativo descarregável para telefones inteligentes; Software de jogos; Software aplicativo para telemóveis; Software de jogos; Publicações eletrónicas descarregáveis; Ficheiros de imagem descarregáveis; Cupões descarregáveis para dispositivos móveis; Software de realidade virtual; Headsets de realidade virtual; Óculos 3D.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "pt",
+      "description": "Veículos de brincar telecomandados; Veículos de brinquedo; Brinquedos; Bonecas; Jogos; Jogos; Brinquedos eletrónicos de controlo remoto; Aparelhos de jogos de vídeo; Máquinas de jogos de arcada; Consolas de jogos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Fornecimento de jogos; Serviços de jogos on-line; Fornecimento de jogos para dispositivos móveis; Serviços de jogos prestados através de aplicações de jogos para dispositivos móveis; Planeamento e realização de ações de formação; Fornecimento de serviços de parques temáticos; Fornecimento de instalações para entretenimento; Fornecimento de informações em linha na área do divertimento através de jogos de computador; Serviços de jogos prestados mediante comunicações por terminais informáticos ou telemóveis; Serviços de educação e formação sobre jogos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "pt",
+      "description": "Serviços de cafés; Serviços de cafeterias; Serviços de restaurantes; Serviços de restaurante de comida rápida; Serviços de snack-bares; Serviços de café com recreio para crianças; Serviços de bar; Serviços de catering; Serviços de motéis; Serviços de alojamento de turistas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Aplicatii software descarcabile pentru telefoane inteligente; Software pentru jocuri; Aplicatii software pentru telefoane mobile; Software pentru jocuri; Publicatii electronice descarcabile; Fisiere cu imagini descarcabile; Cupoane care pot fi descarcate electronic pe telefoane mobile; Software de realitate virtuala; Casti pentru realitate virtuala; Ochelari 3D.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "ro",
+      "description": "Vehicule de jucarie cu telecomanda; Vehicule [jucarii]; Jucarii; Papusi; Jocuri; Jocuri; Jucarii electronice teleghidate; Aparate pentru jocuri video; Aparate de jocuri electronice de tip arcade; Console de jocuri.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ro",
+      "description": "Punerea la dispozitie de jocuri; Servicii de jocuri online; Furnizarea de jocuri mobile; Servicii de jocuri prin aplicatii de jocuri mobile; Organizare si coordonare de evenimente educationale; Servicii oferite de parcuri tematice; Furnizare de spatii pentru divertisment; Furnizare de informatii on-line în domeniul divertismentului cu jocuri de calculator; Servicii de jocuri furnizate prin intermediul comunicatiilor, pe calculatoare sau telefoane mobile; Servicii educationale si de instruire cu privire la jocuri.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "ro",
+      "description": "Bufete cu autoservire; Restaurante cu autoservire; Restaurante [servirea mesei]; Servicii de restaurante fast-food; Snack-baruri; Servicii de cafea de jucarie pentru copii; Servicii ale barurilor; Catering; Moteluri (Servicii oferite de -); Case de vacanta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Aplikacný softvér s moznostou prevzatia pre mobilné telefóny s otvoreným operacným systémom; Pocítacové hry (softvér); Aplikacný softvér pre mobilné telefóny; Pocítacové hry (softvér); Elektronické publikácie (stahovatelné); Stahovatelné obrazové súbory; Kupóny do mobilných telefónov s moznostou stiahnutia; Softvér pre virtuálnu realitu; Súpravy okuliarov a slúchadiel na virtuálnu realitu; 3D okuliare.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "sk",
+      "description": "Dialkovo ovládané vozidlá (hracky); Vozidlá (hracky); Hracky; Bábiky; Hry; Hry; Elektronické dialkovo ovládané hracky; Hracie videoautomaty; Arkádové hracie automaty; Herné konzoly.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sk",
+      "description": "Poskytovanie sluzieb v oblasti hier; On-line herné sluzby; Poskytovanie mobilných hier; Herné sluzby prostredníctvom mobilných herných aplikácií; Plánovanie a realizácia vzdelávacích podujatí; Poskytovanie sluzieb tematických zábavných parkov; Poskytovanie priestorov pre zábavu; Udelovanie on-line informácií v oblasti zábavy pocítacových hier; Herné sluzby poskytované prostredníctvom komunikácie s pocítacovým terminálom alebo mobilným telefónom; Vzdelávanie a skolenie v oblasti hier.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "sk",
+      "description": "Kaviarne; Samoobsluzné jedálne; Restauracné (stravovacie) sluzby; Sluzby v oblasti restaurácií s rýchlym obcerstvením; Rýchle obcerstvenie (snackbary); Sluzby kaviarní s hernou pre deti; Bary (sluzby); Catering; Motely (sluzby); Turistické ubytovne.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Prenosljiva aplikacijska programska oprema za pametne telefone; Programska oprema za igrice; Namenska programska oprema za mobilne telefone; Programska oprema za igrice; Nalozljive elektronske publikacije; Nalozljive datoteke slik; Nalozljivi mobilni kuponi; Programska oprema za navidezno resnicnost; Slusalke z mikrofonom za navidezno resnicnost; 3D ocala.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "sl",
+      "description": "Vozila na daljinsko vodenje [igrace]; Avtomobilcki; Igrace; Puncke (igrace); Igrace; Igrace; Elektronske igrace na daljinsko upravljanje; Naprave za video igre; Stroji za arkadne igre; Konzole za igrice.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sl",
+      "description": "Nudenje iger; Storitve spletnega igranja; Nudenje mobilnih iger; Storitve iger prek mobilnih aplikacij za igre; Organizacija in izvajanje izobrazevalnih prireditev; Nudenje storitev tematskega parka; Nudenje prostorov in opreme za razvedrilo; Dajanje spletnih informacij na podrocju razvedrila v obliki racunalniskih iger; Storitve iger, nudene s komunikacijo prek racunalniskih terminalov ali mobilnih telefonov; Storitve izobrazevanja in usposabljanja v zvezi z igrami.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "sl",
+      "description": "Kavarne; Samopostrezne restavracije; Storitve restavracij; Storitve restavracije s hitro hrano; Bifeji; Kavarniske storitve v zvezi z otrosko igro; Storitve barov; Catering; Moteli; Turisticni domovi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software de aplicaciones descargable para teléfonos inteligentes; Software de juegos; Aplicaciones de software para teléfonos móviles; Software de juegos; Publicaciones electrónicas descargables; Archivos de imagen descargables; Cupones descargables para dispositivos móviles; Software de realidad virtual; Cascos de realidad virtual; Gafas 3D.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "es",
+      "description": "Vehículos teledirigidos [juguetes]; Vehículos de juguete; Juguetes; Muñecas; Juegos; Juegos; Juguetes electrónicos con control remoto; Aparatos de videojuegos; Máquinas recreativas para salas de juegos electrónicos; Consolas de videojuegos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Facilitación de juegos; Servicios de juegos en línea; Suministro de juegos móviles; Servicios de juegos a través de aplicaciones de juegos de móvil; Planificación y realización de actos educativos; Prestación de servicios de un parque temático; Facilitación de instalaciones para el entretenimiento; Facilitación de información en línea en el sector del entretenimiento de juegos de ordenador; Servicios de juegos prestados mediante comunicaciones desde terminales informáticos o teléfonos móviles; Servicios educación y de formación en materia de juegos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "es",
+      "description": "Servicios de cafés; Servicios de cafeterías; Servicios de restaurantes; Servicios de restaurante de comida rápida; Servicios de bares de comida rápida; Servicios de café restaurante de juguete para niños; Servicios de bar; Servicios de catering; Servicios de motel; Servicios de casas de vacaciones.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Nedladdningsbara applikationsprogramvaror för smartphones; Programvara för spel; Mjukvaror i form av appar för mobiltelefoner; Programvara för spel; Tidskrifter (elektroniska), nedladdningsbara; Nedladdningsbara bildfiler; Nerladdningsbara kuponger till mobila anordningar; Virtual reality-programvara; Hörlurar med mikrofon för virtual reality bruk; 3D-glasögon.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "sw",
+      "description": "Radiostyrda leksaksbilar; Leksaksfordon och -farkoster; Leksaker; Dockor; Spel; Spel; Elektroniska fjärrstyrda leksaker; Videospelapparater; Spelmaskiner av arkadtyp; Spelkonsoler.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sw",
+      "description": "Upplåtande av spel; Speltjänster online; Tillhandahållande av mobila spel; Speltjänster genom mobila spelapplikationer; Anordnande och genomförande av utbildningsevenemang; Upplåtande av temaparktjänster; Upplåtande av underhållningsfaciliteter; Utfärdande av direktanslutna upplysningar inom området datorspelunderhållning; Speltjänster tillhandahållna genom kommunikation via datorterminaler eller mobiltelefon; Utbildnings- och instruktionstjänster avseende spel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "sw",
+      "description": "Kafeterior; Cafeteriatjänster; Restauranger; Snabbmatsrestauranger; Snackbarer; Kafétjänster med lekhagar för barn; Cocktailbartjänster; Catering av mat och dryck; Motell; Tjänster avseende turistboenden.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NORI Park GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "J. Mathias Abrell",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Friedrich-Ebert-Anlage 35-37,Frankfurt am Main, 60327",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "NORI Park GmbH"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "55.00.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Aplikacní software ke stazení pro chytré telefony; Software pro pocítacové hry; Aplikacní software pro mobilní telefony; Software pro pocítacové hry; Stahovatelné elektronické publikace; Stahovatelné obrázky (soubory); Kupony do mobilních telefonu ke stazení; Software pro virtuální realitu; Náhlavní soupravy pro virtuální realitu; 3D brýle."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Autícka na dálkové ovládání [hracky]; Autícka na hraní; Hracky; Panenky; Hry; Hry; Elektronické dálkove ovládané hracky; Prístroje na videohry; Herní automaty; Hrací konzoly."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Poskytování her; Sluzby online her; Poskytování mobilních her; Herní sluzby prostrednictvím mobilních herních aplikací; Príprava a porádání vzdelávacích akcí; Poskytování sluzeb tematických zábavních parku; Poskytování prostor k zábavním úcelum; Poskytování on-line informací v oboru pocítacové herní zábavy; Herní sluzby poskytované prostrednictvím komunikace pres pocítacové terminály nebo mobilní telefony; Vzdelávací a skolicí sluzby vztahující se ke hrám."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Kavárny; Samoobsluzné jídelny; Restaurace; Restauracní sluzby v oblasti rychlého obcerstvení; Bufety; Sluzby detských koutku v kavárnách; Bary; Catering (poskytování jídla a nápoju); Motely; Turistické ubytovny."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Downloadable applikationssoftware til smartphones; Software til spil; Applikationssoftware til mobiltelefoner; Software til spil; Elektroniske publikationer, downloadable; Downloadable billedfiler; Mobilkuponer, som kan downloades; Virtual reality-software; Virtual reality-headsets; 3D briller."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Fjernstyrede legetøjskøretøjer; Legetøjskøretøjer; Legetøj; Dukker; Spil; Spil; Elektronisk, fjernstyret legetøj; Apparater til videospil; Spillemaskiner af spillehalstypen; Videospillekonsoller."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Udbydelse af spil; Udbydelse af onlinespil; Udbydelse af spil til mobiltelefoner; Spillevirksomhed via applikationer til mobilspil; Arrangering og afholdelse af uddannelsesarrangementer; Tjenester i forbindelse med temaparker; Tilvejebringelse af underholdningsfaciliteter; Onlineoplysninger inden for underholdning i form af computerspil; Spilvirksomhed udbudt ved hjælp af kommunikation via computerterminaler eller mobiltelefoner; Uddannelses- og undervisningsvirksomhed vedrørende spil."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Cafévirksomhed; Cafeterievirksomhed; Tjenester ydet af restauranter; Fastfoodrestaurationsvirksomhed; Tjenester ydet af snackbarer; Cafévirksomhed som del af leg for børn; Tjenester ydet af barer; Catering; Tjenester ydet af moteller; Tjenester ydet af feriehjem."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Downloadbare applicatisoftware voor smartphones; Spelsoftware; Applicatiesoftware voor mobiele telefoons; Spelsoftware; Elektronische publicaties [te downloaden]; Downloadbare beeldbestanden; Downloadbare coupons voor mobiele apparaten; Software voor virtual reality; Virtual reality headsets; 3D-brillen."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Voertuigen, op afstand bestuurbaar [speelgoed]; Voertuigen [speelgoed]; Speelgoed; Poppen; Spellen; Spellen; Elektronisch speelgoed met afstandbediening; Videospelapparatuur; Speelautomaten voor speelhallen; Spelconsoles."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Gokspelen (Ter beschikking stellen van -); Gokspellen online; Het aanbieden van mobiele spellen; Speldiensten geleverd via mobiele spelapplicaties; Het organiseren en houden van educatieve bijeenkomsten; Themaparken; Verschaffing van faciliteiten voor amusement; Het online verstrekken van inlichtingen op het gebied van ontspanning via computerspellen; Speldiensten aangeboden door middel van communicatie via computerterminals of mobiele telefoon; Onderwijs en opleiding met betrekking tot spellen."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Diensten van café-restaurants; Diensten van cafetaria's; Restauratie [het verstrekken van maaltijden]; Diensten van fastfoodrestaurants; Diensten van snackbars; Diensten van speelcafé's voor kinderen; Bardiensten; Catering; Moteldiensten; Diensten van vakantiehuizen [logies]."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Downloadable smart phone applications (software); downloadable software in the nature of a mobile application for playing games; application software for smart phones; computer game software; downloadable electronic publications; downloadable image files; downloadable mobile coupons; virtual reality software; virtual reality headsets; 3D spectacles."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Remote-controlled toy vehicles; toy vehicles; toys; dolls; playthings; games; electronic remote controlled toys; video game machines; arcade game machines; game consoles."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing games; providing online games; providing mobile games; game services through mobile game applications; arranging and conducting of educational events; providing theme park services; providing amusement facilities; providing online information in the field of computer game entertainment; game services provided by means of communications by computer terminals or mobile telephone; educational and training services relating to games."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Café services; cafeteria services; restaurant services; fast-food restaurant services; snack-bar services; kids play café services; bar services; food and drink catering; motel services; tourist home services."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Allalaaditav rakendustarkvara nutitelefonidele; Mängude tarkvara; Mobiiltelefonide rakendustarkvara; Mängude tarkvara; Elektroonilised allalaaditavad publikatsioonid; Allalaaditavad pildifailid; Allalaaditavad mobiilikupongid; Virtuaalreaalsuse tarkvara; Virtuaalreaalsuse peakomplektid; 3D-prillid."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Kaugjuhtimisega mängusõidukid; Mängusõidukid; Mänguasjad; Nukud; Mängud; Mängud; Elektroonilised kaugjuhitavad mänguasjad; Videomänguseadmed; Mängusaalide mänguautomaadid; Mängukonsoolid."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Mängude pakkumine; Mänguteenused veebikeskkonnas; Mobiilimängude pakkumine; Mänguteenused mobiilimängurakenduste kaudu; Haridusürituste korraldamine ja läbiviimine; Teemapargiteenuste pakkumine; Vaba aja veetmiseks võimaluste [ruumide ja vahendite] pakkumine; Sidusteabe andmine arvutimängumeelelahutuse valdkonnas; Mänguteenuste pakkumine arvutiterminalide või mobiiltelefoni kaudu; Mängudega seotud koolitus- ja väljaõppeteenused."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Kohvikuteenused; Selvekohvikuteenused, kafeteeriateenused; Restoraniteenused; Kiirtoidurestoranide teenused; Kiirtoidukohvikuteenused, püstijalabaariteenused; Laste mängukohvikuteenused; Baariteenused; Toitlustusteenindus; Motelliteenused; Külalismajateenused."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Ladattavat sovellusohjelmistot älypuhelimiin; Peliohjelmistot; Ohjelmistosovellukset matkapuhelimiin; Peliohjelmistot; Elektroniset julkaisut [järjestelmästä toiseen poimittavat]; Ladattavat kuvatiedostot; Ladattavat mobiilikupongit; Virtuaalitodellisuusohjelmistot; Kuulokemikrofoniyhdistelmät virtuaalitodellisuutta varten; 3D-silmälasit."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Radio-ohjattavat leikkiajoneuvot; Leluautot; Pelit; Nuket; Pelit; Pelit; Elektroniset kauko-ohjattavat lelut; Videopelilaitteet; Pelihallilaitteet; Pelikonsolit."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Pelien tarjoaminen; Online-pelipalvelut; Matkapuhelinpelien tarjoaminen; Pelipalvelut mobiilipelisovellusten välityksellä; Koulutustapahtumien suunnittelu ja toteuttaminen; Teemapuistopalvelujen tarjoaminen; Tilojen tarjoaminen ajanvietekäyttöön; Onoline-tietojen tarjoaminen tietokonepeliviihteen alalla; Pelipalvelujen tarjoaminen tietokonepäätteiden tai matkapuhelinten välityksellä tapahtuvan viestinnän avulla; Peleihin liittyvät koulutus- ja valmennuspalvelut."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Kahviot; Kafeteriapalvelut; Ravintolapalvelut; Pikaruokaravintoloiden palvelut; Pikaruokalat; Kahviloiden leikkipalvelut lapsille; Baaripalvelut; Pitopalvelu; Motellit; Matkustajakodit."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciels applicatifs téléchargeables pour téléphones intelligents; Logiciels de jeux; Logiciels applicatifs pour téléphones mobiles; Logiciels de jeux; Publications électroniques téléchargeables; Fichiers d'images téléchargeables; Coupons téléchargeables pour dispositifs mobiles; Logiciels de réalité virtuelle; Casques de réalité virtuelle; Lunettes 3D."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Véhicules télécommandés [jouets]; Véhicules [jouets]; Jouets; Poupées; Jeux; Jeux; Jouets électroniques télécommandés; Appareils de jeux vidéo; Machines de jeu pour salles de jeux électroniques; Consoles de jeu vidéo."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de jeux; Services de jeux en ligne; Fourniture de jeux mobiles; Services de jeux par le biais d'applications de jeux mobiles; Organisation et conduite d'événements à buts éducatifs; Services de parcs à thèmes; Mise à disposition d'équipements et d'installations de divertissement; Fourniture de renseignements en ligne dans le domaine du divertissement par jeux informatiques; Services de jeu fournis par le biais de moyens de communication via des terminaux informatiques ou des téléphones portables; Services d'éducation et de formation relatifs aux jeux."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de cafés; Services de cafétérias; Services de restaurants; Services de restauration rapide; Services de snack-bars; Services de cafés avec espaces de jeux pour enfants; Services de bars; Services de traiteurs; Services de motels; Services de maisons de vacances."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Herunterladbare Anwendungssoftware für Smartphones; Spielsoftware; Anwendungssoftware für Mobiltelefone; Spielsoftware; Herunterladbare elektronische Publikationen; Bilddateien zum Herunterladen; Herunterladbare Gutscheine für mobile Geräte; Virtual-Reality-Software; Virtual-Reality-Headsets; 3D-Brillen."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Ferngesteuerte Fahrzeuge [Spielzeuge]; Spielzeugfahrzeuge; Spielzeug; Puppen [Spielwaren]; Spiele; Spiele; Elektronisches ferngesteuertes Spielzeug; Videospielgeräte; Spielhallenautomaten; Spielkonsolen."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Verleih von Spielen; Durchführung von Online-Spielen; Bereitstellung von Spielen für Mobilgeräte; Spieldienstleistungen über mobile Spieleanwendungen; Planung und Durchführung von Bildungsveranstaltungen; Betrieb von Freizeitparkanlagen; Vermietung von Einrichtungen zu Unterhaltungszwecken; Erteilen von Online-Auskünften im Bereich Computerspielunterhaltung; Über Computerterminals oder Mobiltelefone bereitgestellte Spieldienste; Ausbildungs- und Schulungsdienstleistungen im Bereich Spiele."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Verpflegung von Gästen in Cafés; Verpflegung von Gästen in Cafeterias; Verpflegung von Gästen in Restaurants; Verpflegung von Gästen in Fast-Food-Restaurants; Verpflegung von Gästen in Schnellimbissrestaurants [Snackbars]; Betrieb von Kindercafés; Betrieb einer Bar; Catering; Dienstleistungen von Motels; Beherbergungsdienstleistungen für Reisende."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Aplikacijski softver za pametne telefone koji se moze preuzeti; Softver za igrice; Aplikacijski softver za mobilne telefone; Softver za igrice; Elektronske publikacije koje se mogu preuzeti s Interneta; Slikovne datoteke koje se mogu preuzimati s Interneta; Mobilni kuponi koji se mogu preuzeti; Racunalni program za virtualnu stvarnost; Slusalice za generiranje virtualne stvarnosti; 3D naocale."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Vozila na daljinsko upravljanje [igracke]; Autici - igracke; Igracke; Lutke; Igracke; Igracke; Elektronicke igracke s daljinskim upravljanjem; Uredaji za video igre; Automati za arkadne igre; Konzole za igre."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Pruzanje igara; Usluge online igranja; Pruzanje mobilnih igara; Usluge igara putem mobilnih aplikacija za igre; Dogovaranje i vodenje obrazovnih dogadaja; Pruzanje usluga zabavnog parka; Pruzanje objekata i sredstava za zabavu; Davanje online informacija na podrucju zabave racunalnim igricama; Usluge igara koje se pruzaju komunikacijom racunalnih terminala ili mobilnih telefona; Usluge obrazovanja i osposobljavanja koje se odnose na igre."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Kafici; Restorani sa samoposluzivanjem; Usluge restorana; Usluge restorana brze hrane; Bifei; Usluge kafica za djecju igru; Usluge barova; Catering; Moteli; Turisticki apartmani."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Okostelefonokhoz való letöltheto szoftveralkalmazások; Játékszoftverek; Mobiltelefonos szoftveralkalmazások; Játékszoftverek; Letöltheto elektronikus kiadványok, publikációk; Letöltheto képfájlok; Letöltheto mobiltelefonos kuponok; Virtuális valóság szoftverek; Virtuális valóság headsetek; Háromdimenziós szemüvegek."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Távvezérlésu játékjármuvek; Játékautók; Játékszerek; Babák; Játékok; Játékok; Elektronikus távirányítású játékok; Videojátékok; Játéktermi játékgépek; Játékkonzolok."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Játékszolgáltatások; Online játékszolgáltatások; Mobil játékok biztosítása; Játékszolgáltatások mobil játékalkalmazásokon keresztül; Képzési rendezvények szervezése és lebonyolítása; Vidámparki szolgáltatások; Szórakoztató létesítmények rendelkezésre bocsátása; Online felvilágosítás nyújtása a számítógépes játék szórakoztatás területén; Számítógépes terminálokon vagy mobiltelefonokon történo kommunikáció útján nyújtott játékszolgáltatások; Játékokkal kapcsolatos oktatási és képzési szolgáltatások."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Kávéházak; Önkiszolgáló éttermek; Éttermi szolgáltatások; Gyorséttermi szolgáltatások; Gyorséttermek, snack bárok; Gyermekeknek való játék kávéskészletek; Bár szolgáltatások; Étel és ital catering; Motelek; Turistaházak, üdülok."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Software applicativi scaricabili per smartphone; Software per giochi; Software applicativi per telefoni cellulari; Software per giochi; Pubblicazioni elettroniche [scaricabili]; Files di immagini scaricabili; Buoni scaricabili su cellulari; Software per realtà virtuale; Caschi per realtà virtuale; Occhiali per 3D."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Veicoli giocattolo telecomandati; Veicoli [giocattoli]; Giocattoli; Bambole; Giochi; Giochi; Giocattoli elettronici telecomandati; Apparecchi per videogiochi; Macchine da gioco per sale giochi; Console per giochi."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Fornitura di giochi; Giochi di denaro on line; Fornitura di giochi per cellulari; Servizi di giochi disponibili tramite applicazioni per giochi cellulari; Organizzazione e conduzione di manifestazioni a carattere formativo; Fornitura servizi di parchi tematici; Servizi di fornitura di strutture per il divertimento; Diffusione di informazioni on-line nell'ambito del divertimento mediante giochi per computer; Servizi di gioco forniti mediante comunicazione da terminali informatici o telefoni cellulari; Servizi di istruzione e formazione inerenti i giochi."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di bar-caffè; Servizi di caffetterie; Servizi di ristoranti; Servizi di ristoranti fast food; Servizi di snack-bars; Bar-ristoranti con aree gioco per bambini; Servizi di bar; Servizi di catering; Servizi di motel; Servizi di case per vacanze."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Parsisiunciamoji ismaniuju telefonu taikomoji programine iranga; Kompiuteriniu zaidimu programine iranga; Mobiliuju telefonu taikomoji programine iranga; Kompiuteriniu zaidimu programine iranga; Elektroniniai leidiniai [parsisiunciamieji]; Parsisiunciamosios vaizdo rinkmenos; Parsisiunciamieji mobiliuju irenginiu kuponai; Virtualiosios realybes programine iranga; Virtualiosios realybes ausines; 3D akiniai."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Nuotolinio valdymo zaislines transporto priemones; Zaislines transporto priemones; Zaislai; Leles; Zaidimai; Zaidimai; Elektroniniai nuotolinio valdymo zaislai; Vaizdo zaidimu aparatai; Zaidimu salonu aparatai; Vaizdo zaidimu konsoles."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Zaidimu teikimas; Internetiniu zaidimu paslaugos; Mobiliuju zaidimu teikimas; Zaidimu paslaugos per mobiliuju zaidimu taikomasias programas; Svietimo renginiu rengimas ir vedimas; Teminiu parku paslaugu teikimas; Pramogu patalpu su irengimais teikimas; Informacijos apie kompiuteriniu zaidimu pramogas teikimas prijungties rysiu; Zaidimu paslaugos, teikiamos komunikacijos priemonemis per terminalus ar mobiluji telefona; Svietimo ir mokymo paslaugos, susijusios su zaidimais."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Kaviniu paslaugos; Kavos baru paslaugos; Restoranu paslaugos; Greito maisto restoranu paslaugos; Uzkandiniu paslaugos; Vaiku zaidimu kaviniu paslaugos; Baru paslaugos; Aprupinimas maistu ir gerimais; Moteliu paslaugos; Turizmo baziu paslaugos."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Lejupieladejamas viedtalrunu lietojumprogrammas; Spelu programmatura; Mobilo talrunu lietojumprogrammatura; Spelu programmatura; Lejupieladejamas elektroniskas publikacijas; Lejupieladejamas attelu datnes (faili); Lejupieladejami mobilie kuponi; Virtualas realitates programmatura; Virtualas realitates austinas ar mikrofonu; Brilles attelu uztverei 3D formata."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Talvadibas rotalu transportlidzekli; Rotalu transportlidzekli; Rotallietas; Lelles; Speles; Speles; Elektroniskas rotallietas ar talvadibu; Videospelu ierices; Arkades spelu automati; Videospelu konsoles."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Spelu nodrosinasana; Tiessaistes spelu pakalpojumi; Mobilo spelu nodrosinasana; Spelu pakalpojumi, izmantojot mobilas spelu lietojumprogrammas; Izglitojosu pasakumu rikosana un vadisana; Tematisko parku pakalpojumu nodrosinasana; Izklaides iespeju nodrosinasana; Uzzinu sniegsana tiessaiste par izklaidi datorspelu veida; Spelu pakalpojumi, kas tiek nodrosinati, izmantojot sakaru lidzeklus, proti, terminalus un mobilos talrunus; Izglitojosi un apmacibu pakalpojumi saistiba ar spelem."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Kafejnicu pakalpojumi; Kafeteriju pakalpojumi; Restoranu pakalpojumi; Atras apkalposanas restoranu pakalpojumi; Uzkodu baru pakalpojumi; Bernu rotalu kafejnicu pakalpojumi; Baru pakalpojumi; Edienu sagatavosana un piegade pec pasutijuma; Motelu pakalpojumi; Turistu mitnu pakalpojumi."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Softwer tal-applikazzjoni li jista' jitnizzel ghall-ismartfowns; Softwer tal-loghbiet; Sotwer tal-applikazzjonijiet ghal telefowns cellular; Softwer tal-loghbiet; Pubblikazzjonijiet elettronici, li jistghu jitnizzlu; Fajls tal-immagni li jistghu jitnizzlu; Kupuni tat-telefown cellulari li jistghu jitnizzlu; Softwer tar-realtà virtwali; Hedsets tar-realtà virtwali; Nuccalijiet 3D."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Vetturi tal-loghob ikkontrollati b'mod remot; Vetturi tal-loghob; Gugarelli; Pupi; Gugarelli; Gugarelli; Gugarelli elettronici kkontrollati mill-boghod; Magni tal-loghob tal-vidjo; Magni tal-loghbiet tat-tip arcade; Consoles tal-loghbiet."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Il-provvista ta' loghob; Servizzi ta' loghob fuq l-internet; Provvista ta' loghob mobbli; Servizzi ta' loghob permezz ta' applikazzjonijiet tal-loghob tal-mowbajl; Tmexxija u organizzazzjoni ta' attivitajiet edukattivi; Il-provvista ta' servizzi ta' park b'tema; Provvista ta' facilitajiet ghad-divertiment; Ghoti ta' informazzjoni onlajn fil-qasam tad-divertiment b'loghob tal-kompjuter; Servizzi tal-loghob ipprovduti b'mezzi tal-komunikazzjonijiet permezz ta' terminali tal-kompjuter jew mowbajl; Servizzi edukattivi u tahrig relatati mal-loghob."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Kafetteriji; Ristoranti fejn wiehed jinqeda wahdu; Servizzi ta' restorant; Servizzi ta' ristoranti li jaghmlu ikel ta' malajr; Barijiet li jaghmlu ikel hafif u ta' malajr; Servizzi ta' kafetterija bil-loghob ghat-tfal; Servizzi ta' barijiet; Catering; Motels; Djar ghat-turisti."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Aplikacje do pobrania na smartfony; Oprogramowanie gier; Oprogramowanie uzytkowe do telefonów komórkowych; Oprogramowanie gier; Publikacje elektroniczne, do pobrania; Pliki graficzne do pobierania; Kupony mobilne do pobrania; Oprogramowanie rzeczywistosci wirtualnej; Zestawy na glowe do rzeczywistosci wirtualnej; Okulary 3D."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Pojazdy zdalnie sterowane do zabawy; Samochody do zabawy; Zabawki; Lalki; Gry; Gry; Zdalnie sterowane zabawki elektroniczne; Sprzet do gier wideo; Automaty do gier; Konsole do gier."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Zapewnianie gier; Uslugi gier online; Udostepnianie gier na telefony komórkowe; Uslugi w zakresie gier przez aplikacje do gier mobilnych; Organizacja i przeprowadzanie imprez szkoleniowych; Swiadczenie uslug w zakresie parków tematycznych; Zapewnienie obiektów i sprzetu na potrzeby rozrywki; Tworzenie informacji online w zakresie rozrywki przed komputerem; Uslugi w zakresie gier swiadczone za pomoca srodków lacznosciowych przez terminale komputerowe lub telefon komórkowy; Uslugi edukacyjne i szkoleniowe zwiazane z grami."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Kafeterie [bufety]; Restauracje samoobslugowe; Uslugi restauracyjne; Uslugi restauracji szybkiej obslugi; Bary szybkiej obslugi [snack-bary]; Uslugi kawiarni do zabaw dla dzieci; Uslugi barowe; Obsluga gastronomiczna z wlasnym zapleczem, produktami i transportem; Motele; Domy turystyczne."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Software aplicativo descarregável para telefones inteligentes; Software de jogos; Software aplicativo para telemóveis; Software de jogos; Publicações eletrónicas descarregáveis; Ficheiros de imagem descarregáveis; Cupões descarregáveis para dispositivos móveis; Software de realidade virtual; Headsets de realidade virtual; Óculos 3D."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Veículos de brincar telecomandados; Veículos de brinquedo; Brinquedos; Bonecas; Jogos; Jogos; Brinquedos eletrónicos de controlo remoto; Aparelhos de jogos de vídeo; Máquinas de jogos de arcada; Consolas de jogos."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Fornecimento de jogos; Serviços de jogos on-line; Fornecimento de jogos para dispositivos móveis; Serviços de jogos prestados através de aplicações de jogos para dispositivos móveis; Planeamento e realização de ações de formação; Fornecimento de serviços de parques temáticos; Fornecimento de instalações para entretenimento; Fornecimento de informações em linha na área do divertimento através de jogos de computador; Serviços de jogos prestados mediante comunicações por terminais informáticos ou telemóveis; Serviços de educação e formação sobre jogos."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de cafés; Serviços de cafeterias; Serviços de restaurantes; Serviços de restaurante de comida rápida; Serviços de snack-bares; Serviços de café com recreio para crianças; Serviços de bar; Serviços de catering; Serviços de motéis; Serviços de alojamento de turistas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Aplicatii software descarcabile pentru telefoane inteligente; Software pentru jocuri; Aplicatii software pentru telefoane mobile; Software pentru jocuri; Publicatii electronice descarcabile; Fisiere cu imagini descarcabile; Cupoane care pot fi descarcate electronic pe telefoane mobile; Software de realitate virtuala; Casti pentru realitate virtuala; Ochelari 3D."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Vehicule de jucarie cu telecomanda; Vehicule [jucarii]; Jucarii; Papusi; Jocuri; Jocuri; Jucarii electronice teleghidate; Aparate pentru jocuri video; Aparate de jocuri electronice de tip arcade; Console de jocuri."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Punerea la dispozitie de jocuri; Servicii de jocuri online; Furnizarea de jocuri mobile; Servicii de jocuri prin aplicatii de jocuri mobile; Organizare si coordonare de evenimente educationale; Servicii oferite de parcuri tematice; Furnizare de spatii pentru divertisment; Furnizare de informatii on-line în domeniul divertismentului cu jocuri de calculator; Servicii de jocuri furnizate prin intermediul comunicatiilor, pe calculatoare sau telefoane mobile; Servicii educationale si de instruire cu privire la jocuri."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Bufete cu autoservire; Restaurante cu autoservire; Restaurante [servirea mesei]; Servicii de restaurante fast-food; Snack-baruri; Servicii de cafea de jucarie pentru copii; Servicii ale barurilor; Catering; Moteluri (Servicii oferite de -); Case de vacanta."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Aplikacný softvér s moznostou prevzatia pre mobilné telefóny s otvoreným operacným systémom; Pocítacové hry (softvér); Aplikacný softvér pre mobilné telefóny; Pocítacové hry (softvér); Elektronické publikácie (stahovatelné); Stahovatelné obrazové súbory; Kupóny do mobilných telefónov s moznostou stiahnutia; Softvér pre virtuálnu realitu; Súpravy okuliarov a slúchadiel na virtuálnu realitu; 3D okuliare."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Dialkovo ovládané vozidlá (hracky); Vozidlá (hracky); Hracky; Bábiky; Hry; Hry; Elektronické dialkovo ovládané hracky; Hracie videoautomaty; Arkádové hracie automaty; Herné konzoly."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Poskytovanie sluzieb v oblasti hier; On-line herné sluzby; Poskytovanie mobilných hier; Herné sluzby prostredníctvom mobilných herných aplikácií; Plánovanie a realizácia vzdelávacích podujatí; Poskytovanie sluzieb tematických zábavných parkov; Poskytovanie priestorov pre zábavu; Udelovanie on-line informácií v oblasti zábavy pocítacových hier; Herné sluzby poskytované prostredníctvom komunikácie s pocítacovým terminálom alebo mobilným telefónom; Vzdelávanie a skolenie v oblasti hier."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Kaviarne; Samoobsluzné jedálne; Restauracné (stravovacie) sluzby; Sluzby v oblasti restaurácií s rýchlym obcerstvením; Rýchle obcerstvenie (snackbary); Sluzby kaviarní s hernou pre deti; Bary (sluzby); Catering; Motely (sluzby); Turistické ubytovne."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Prenosljiva aplikacijska programska oprema za pametne telefone; Programska oprema za igrice; Namenska programska oprema za mobilne telefone; Programska oprema za igrice; Nalozljive elektronske publikacije; Nalozljive datoteke slik; Nalozljivi mobilni kuponi; Programska oprema za navidezno resnicnost; Slusalke z mikrofonom za navidezno resnicnost; 3D ocala."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Vozila na daljinsko vodenje [igrace]; Avtomobilcki; Igrace; Puncke (igrace); Igrace; Igrace; Elektronske igrace na daljinsko upravljanje; Naprave za video igre; Stroji za arkadne igre; Konzole za igrice."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Nudenje iger; Storitve spletnega igranja; Nudenje mobilnih iger; Storitve iger prek mobilnih aplikacij za igre; Organizacija in izvajanje izobrazevalnih prireditev; Nudenje storitev tematskega parka; Nudenje prostorov in opreme za razvedrilo; Dajanje spletnih informacij na podrocju razvedrila v obliki racunalniskih iger; Storitve iger, nudene s komunikacijo prek racunalniskih terminalov ali mobilnih telefonov; Storitve izobrazevanja in usposabljanja v zvezi z igrami."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Kavarne; Samopostrezne restavracije; Storitve restavracij; Storitve restavracije s hitro hrano; Bifeji; Kavarniske storitve v zvezi z otrosko igro; Storitve barov; Catering; Moteli; Turisticni domovi."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software de aplicaciones descargable para teléfonos inteligentes; Software de juegos; Aplicaciones de software para teléfonos móviles; Software de juegos; Publicaciones electrónicas descargables; Archivos de imagen descargables; Cupones descargables para dispositivos móviles; Software de realidad virtual; Cascos de realidad virtual; Gafas 3D."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Vehículos teledirigidos [juguetes]; Vehículos de juguete; Juguetes; Muñecas; Juegos; Juegos; Juguetes electrónicos con control remoto; Aparatos de videojuegos; Máquinas recreativas para salas de juegos electrónicos; Consolas de videojuegos."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Facilitación de juegos; Servicios de juegos en línea; Suministro de juegos móviles; Servicios de juegos a través de aplicaciones de juegos de móvil; Planificación y realización de actos educativos; Prestación de servicios de un parque temático; Facilitación de instalaciones para el entretenimiento; Facilitación de información en línea en el sector del entretenimiento de juegos de ordenador; Servicios de juegos prestados mediante comunicaciones desde terminales informáticos o teléfonos móviles; Servicios educación y de formación en materia de juegos."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de cafés; Servicios de cafeterías; Servicios de restaurantes; Servicios de restaurante de comida rápida; Servicios de bares de comida rápida; Servicios de café restaurante de juguete para niños; Servicios de bar; Servicios de catering; Servicios de motel; Servicios de casas de vacaciones."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Nedladdningsbara applikationsprogramvaror för smartphones; Programvara för spel; Mjukvaror i form av appar för mobiltelefoner; Programvara för spel; Tidskrifter (elektroniska), nedladdningsbara; Nedladdningsbara bildfiler; Nerladdningsbara kuponger till mobila anordningar; Virtual reality-programvara; Hörlurar med mikrofon för virtual reality bruk; 3D-glasögon."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Radiostyrda leksaksbilar; Leksaksfordon och -farkoster; Leksaker; Dockor; Spel; Spel; Elektroniska fjärrstyrda leksaker; Videospelapparater; Spelmaskiner av arkadtyp; Spelkonsoler."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Upplåtande av spel; Speltjänster online; Tillhandahållande av mobila spel; Speltjänster genom mobila spelapplikationer; Anordnande och genomförande av utbildningsevenemang; Upplåtande av temaparktjänster; Upplåtande av underhållningsfaciliteter; Utfärdande av direktanslutna upplysningar inom området datorspelunderhållning; Speltjänster tillhandahållna genom kommunikation via datorterminaler eller mobiltelefon; Utbildnings- och instruktionstjänster avseende spel."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Kafeterior; Cafeteriatjänster; Restauranger; Snabbmatsrestauranger; Snackbarer; Kafétjänster med lekhagar för barn; Cocktailbartjänster; Catering av mat och dryck; Motell; Tjänster avseende turistboenden."
+        }
+      ]
+    },
+    "id": "f8aef602-5c0b-41aa-ad45-c6ccd39e1e7f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "25.05.99",
+      "29.01.02",
+      "29.01.03",
+      "29.01.04",
+      "29.01.99"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "74"
+      }
+    ],
+    "recordLastUpdated": "20260512",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Europa-Allee 2,Frankfurt am Main, 60327",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "J. Mathias Abrell"
+      }
+    ],
+    "secondLanguageCode": "de",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230327",
+        "applicationNumber": "18854038"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330327",
+      "lastPublicationDate": "20230421",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20230729",
+        "registrationNumber": "18854038"
+      }
+    },
+    "version": "20260512004848",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NÖRI"
+    }
+  },
+  "_uri": "/mark/em/f8aef602-5c0b-41aa-ad45-c6ccd39e1e7f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.692Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

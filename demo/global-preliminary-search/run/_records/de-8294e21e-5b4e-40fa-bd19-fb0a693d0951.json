@@ -1,0 +1,164 @@
+{
+  "uri": "/mark/de/8294e21e-5b4e-40fa-bd19-fb0a693d0951",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "8294e21e-5b4e-40fa-bd19-fb0a693d0951",
+  "applicationNumber": "302015047918.7",
+  "registrationNumber": "302015047918",
+  "applicationDate": "2015-07-25",
+  "registrationDate": "2015-11-17",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2015-12-18",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2025-08-01",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "venQver",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7
+      ],
+      "language": "de",
+      "description": "Motoren, Antriebe und allgemeine Maschinenteile; Ventile für Maschinen; Pumpen, Kompressoren und Ventilatoren",
+      "translation_language": "en",
+      "translation": "Motors, drives and general machine parts; Valves for machines; Pumps, compressors and fans"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "wissenschaftliche und industrielle Forschung auf biochemischem, diagnostischem oder pharmazeutischem Gebiet; Dienstleistungen eines biochemischen oder pharmazeutischen Labors, insbesondere Steuerung des Flüssigkeitsstroms innerhalb eines Schlauchsystems für Medizinprodukte",
+      "translation_language": "en",
+      "translation": "scientific and industrial research in biochemical, diagnostic or pharmaceutical fields; Services of a biochemical or pharmaceutical laboratory, in particular control of the fluid flow within a hose system for medical devices"
+    }
+  ],
+  "owner": "Cell.Copedia GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "04109 Leipzig",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Cell.Copedia GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "cmMarkImageEUclassification": [
+      "25.05.01",
+      "26.01.01",
+      "26.01.12",
+      "29.02.00",
+      "37.02.22"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Motors, drives and general machine parts; Valves for machines; Pumps, compressors and fans",
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Motoren, Antriebe und allgemeine Maschinenteile; Ventile für Maschinen; Pumpen, Kompressoren und Ventilatoren"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "scientific and industrial research in biochemical, diagnostic or pharmaceutical fields; Services of a biochemical or pharmaceutical laboratory, in particular control of the fluid flow within a hose system for medical devices",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "wissenschaftliche und industrielle Forschung auf biochemischem, diagnostischem oder pharmazeutischem Gebiet; Dienstleistungen eines biochemischen oder pharmazeutischen Labors, insbesondere Steuerung des Flüssigkeitsstroms innerhalb eines Schlauchsystems für Medizinprodukte"
+        }
+      ]
+    },
+    "id": "8294e21e-5b4e-40fa-bd19-fb0a693d0951",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "grau, rot"
+      }
+    ],
+    "markImageViennaClassification": [
+      "24.17.20",
+      "26.02.07",
+      "26.02.09",
+      "27.05.01",
+      "27.05.04",
+      "27.05.09",
+      "27.05.10",
+      "27.05.11",
+      "27.05.13",
+      "29.01.01",
+      "29.01.06",
+      "29.01.08",
+      "29.01.13"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "51"
+      }
+    ],
+    "recordLastUpdated": "20260512",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Cell.Copedia GmbH, Bosestr. 4, 04109 Leipzig"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20150725",
+        "applicationNumber": "302015047918.7"
+      },
+      "cancellationDate": "20250801",
+      "cmNormalisedStatus": "CANCELLED",
+      "lastPublicationDate": "20151218",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20151117",
+        "registrationNumber": "302015047918"
+      }
+    },
+    "version": "20260512020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "venQver"
+    }
+  },
+  "_uri": "/mark/de/8294e21e-5b4e-40fa-bd19-fb0a693d0951",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.566Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

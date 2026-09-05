@@ -1,0 +1,166 @@
+{
+  "uri": "/mark/jp/802346ea-c16a-4940-89f2-c785a6f54f12",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "802346ea-c16a-4940-89f2-c785a6f54f12",
+  "applicationNumber": "2004-019443",
+  "registrationNumber": "4802098",
+  "applicationDate": "2004-03-02",
+  "registrationDate": "2004-09-10",
+  "expiryDate": "2024-09-10",
+  "renewalDate": null,
+  "lastPublicationDate": "2004-10-12",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＢｉｑＯｒｃａ",
+  "markTransliteration": "BIKKUOOKA BIKKUORUKA",
+  "markTranslation": "BIQORCA",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "電子計算機用プログラム，電子出版物",
+      "translation_language": "en",
+      "translation": "Electronic computer program, electronic publication"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供",
+      "translation_language": "en",
+      "translation": "Designing, creating or maintaining programs of electronic computers, providing programs for electronic computers"
+    }
+  ],
+  "owner": "MITSUBISHI ELECTRIC SOFTWARE K.K.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "OIWA MASUO",
+  "priorities": [
+    {
+      "priorityDate": "20040302"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "MINATO-KU TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "MITSUBISHI ELECTRIC SOFTWARE K.K.",
+        "applicantNativeAddress": "東京都港区",
+        "applicantNativeName": "三菱電機ソフトウエア株式会社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electronic computer program, electronic publication",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "電子計算機用プログラム，電子出版物"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Designing, creating or maintaining programs of electronic computers, providing programs for electronic computers",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, instruments and parts"
+        },
+        {
+          "natClassNumber": "26A01",
+          "natGoodsServicesDescription": "Electronic Publications"
+        },
+        {
+          "natClassNumber": "26D01",
+          "natGoodsServicesDescription": "Cinematographic films, Slide films, Transparencies, Prerecorded videodiscs or tapes, Electronic Publishments"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer programming, Maintenance of computer software. Designing / maintenance of website"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Renting or leasing of computers, Provision of computer programs"
+        }
+      ]
+    },
+    "id": "802346ea-c16a-4940-89f2-c785a6f54f12",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20040302"
+      }
+    ],
+    "recordLastUpdated": "20250926",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "OIWA MASUO",
+        "representativeNativeName": "大岩　増雄"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040302",
+        "applicationNumber": "2004-019443"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20240910",
+      "lastPublicationDate": "20041012",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20040910",
+        "registrationNumber": "4802098"
+      }
+    },
+    "version": "20250926080556",
+    "wordMarkSpecification": {
+      "markTranslation": "BIQORCA",
+      "markTransliteration": "BIKKUOOKA BIKKUORUKA",
+      "markVerbalElementText": "ＢｉｑＯｒｃａ"
+    }
+  },
+  "_uri": "/mark/jp/802346ea-c16a-4940-89f2-c785a6f54f12",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.709Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/no/f541f61b-287a-426e-9c17-e572400168cd",
+  "provider": "clarivate",
+  "office": "no",
+  "guid": "f541f61b-287a-426e-9c17-e572400168cd",
+  "applicationNumber": "201501249",
+  "registrationNumber": "281522",
+  "applicationDate": "2015-01-28",
+  "registrationDate": "2015-04-22",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2015-04-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "nive Normedi Institute for Virtual Education",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "no",
+      "description": "Demonstrasjoner av varer",
+      "translation_language": "en",
+      "translation": "Product demonstrations"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "no",
+      "description": "Undervisning, Utdanning, Veiledning, Coaching, Akademier",
+      "translation_language": "en",
+      "translation": "Teaching, Education, Guidance, Coaching, Academies"
+    }
+  ],
+  "owner": "NORMEDI NORDIC AS",
+  "ownerNative": null,
+  "ownerCountry": "NO",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "3120 NØTTERØY",
+        "applicantAddressCountryCode": "NO",
+        "applicantAddressCountryName": "Norway",
+        "applicantName": "NORMEDI NORDIC AS"
+      }
+    ],
+    "applicationLanguageCode": "no",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Product demonstrations",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "no",
+          "intGoodsServicesDescription": "Demonstrasjoner av varer"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Teaching, Education, Guidance, Coaching, Academies",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "no",
+          "intGoodsServicesDescription": "Undervisning, Utdanning, Veiledning, Coaching, Akademier"
+        }
+      ]
+    },
+    "id": "f541f61b-287a-426e-9c17-e572400168cd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "16.01.06",
+      "26.01.10"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250821",
+    "registrationOfficeCode": "NO",
+    "registrationOfficeName": "Norway",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20150128",
+        "applicationNumber": "201501249"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "lastPublicationDate": "20150427",
+      "markCurrentStatus": "CEASED",
+      "registration": {
+        "registrationDate": "20150422",
+        "registrationNumber": "281522"
+      }
+    },
+    "version": "20250821020014",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "nive Normedi Institute for Virtual Education"
+    }
+  },
+  "_uri": "/mark/no/f541f61b-287a-426e-9c17-e572400168cd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.829Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

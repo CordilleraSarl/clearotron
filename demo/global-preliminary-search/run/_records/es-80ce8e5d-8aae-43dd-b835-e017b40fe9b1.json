@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/es/80ce8e5d-8aae-43dd-b835-e017b40fe9b1",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "80ce8e5d-8aae-43dd-b835-e017b40fe9b1",
+  "applicationNumber": "2927003 M0",
+  "registrationNumber": "2927003 M0",
+  "applicationDate": "2010-04-27",
+  "registrationDate": "2010-08-27",
+  "expiryDate": "2030-04-26",
+  "renewalDate": "2020-04-21",
+  "lastPublicationDate": "2010-05-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JOVEN ORQUESTA BARROCA DE ANDALUCIA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de educacion, formacion y esparcimiento; actividades deportivas y culturales.",
+      "translation_language": "en",
+      "translation": "EDUCATION, TRAINING AND LEISURE SERVICES; SPORTS AND CULTURAL ACTIVITIES."
+    }
+  ],
+  "owner": "CONSORCIO ORQUESTA CIUDAD DE MALAGA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "UNGRIA LOPEZ, JAVIER",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "CONSORCIO ORQUESTA CIUDAD DE MALAGA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "EDUCATION, TRAINING AND LEISURE SERVICES; SPORTS AND CULTURAL ACTIVITIES.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de educacion, formacion y esparcimiento; actividades deportivas y culturales."
+        }
+      ]
+    },
+    "id": "80ce8e5d-8aae-43dd-b835-e017b40fe9b1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "3183"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "representatives": [
+      {
+        "representativeAddress": "AV. RAMON Y CAJAL, 78 - 28043 - MADRID",
+        "representativeName": "UNGRIA LOPEZ, JAVIER"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20100427",
+        "applicationNumber": "2927003 M0"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300426",
+      "lastPublicationDate": "20100510",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20100827",
+        "registrationNumber": "2927003 M0"
+      },
+      "renewalDate": "20200421",
+      "renewalPublishedDate": "20200428"
+    },
+    "version": "20260427161529",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOVEN ORQUESTA BARROCA DE ANDALUCIA"
+    }
+  },
+  "_uri": "/mark/es/80ce8e5d-8aae-43dd-b835-e017b40fe9b1",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

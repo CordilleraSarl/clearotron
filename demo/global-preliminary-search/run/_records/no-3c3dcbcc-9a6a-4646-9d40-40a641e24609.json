@@ -1,0 +1,199 @@
+{
+  "uri": "/mark/no/3c3dcbcc-9a6a-4646-9d40-40a641e24609",
+  "provider": "clarivate",
+  "office": "no",
+  "guid": "3c3dcbcc-9a6a-4646-9d40-40a641e24609",
+  "applicationNumber": "19883964",
+  "registrationNumber": null,
+  "applicationDate": "1988-09-02",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ACTIVE NORWAY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "no",
+      "description": "Ikke angitt",
+      "translation_language": "en",
+      "translation": "Not specified"
+    }
+  ],
+  "owner": "Hanna Høllesli, Stavanger",
+  "ownerNative": null,
+  "ownerCountry": "NO",
+  "representative": "HÅMSØ PATENTBYRÅ AS",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "NO",
+        "applicantAddressCountryName": "Norway",
+        "applicantName": "Hanna Høllesli, Stavanger"
+      }
+    ],
+    "applicationLanguageCode": "no",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Not specified",
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "no",
+          "intGoodsServicesDescription": "Ikke angitt"
+        }
+      ]
+    },
+    "id": "3c3dcbcc-9a6a-4646-9d40-40a641e24609",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250810",
+    "registrationOfficeCode": "NO",
+    "registrationOfficeName": "Norway",
+    "representatives": [
+      {
+        "representativeAddress": "4068 STAVANGER",
+        "representativeAddressCountryCode": "NO",
+        "representativeAddressCountryName": "Norway",
+        "representativeName": "HÅMSØ PATENTBYRÅ AS"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19880902",
+        "applicationNumber": "19883964"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "FINALLY SHELVED"
+    },
+    "version": "20250810020004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ACTIVE NORWAY"
+    }
+  },
+  "_uri": "/mark/no/3c3dcbcc-9a6a-4646-9d40-40a641e24609",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.829Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

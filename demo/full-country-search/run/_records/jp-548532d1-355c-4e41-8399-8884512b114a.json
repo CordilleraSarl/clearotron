@@ -1,0 +1,234 @@
+{
+  "uri": "/mark/jp/548532d1-355c-4e41-8399-8884512b114a",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "548532d1-355c-4e41-8399-8884512b114a",
+  "applicationNumber": "2014-083219",
+  "registrationNumber": "5780575",
+  "applicationDate": "2014-10-02",
+  "registrationDate": "2015-07-24",
+  "expiryDate": "2025-07-24",
+  "renewalDate": null,
+  "lastPublicationDate": "2015-08-25",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＩＮＶＩＳＡＬＩＧＮ　ｉ７",
+  "markTransliteration": "INBISARAIN INBIZARAINAINANA INBIZARAINAISEBUN",
+  "markTranslation": "INVISALIGN I7",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    5,
+    9,
+    10,
+    40,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        5
+      ],
+      "language": null,
+      "description": "歯科用材料",
+      "translation_language": "en",
+      "translation": "Dental material"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "画像取得及び画像処理のためのコンピュータソフトウェア，歯の三次元モデルの作成及び歯の診断・分析・評価・治療のための歯科用コンピュータソフトウェア，電気通信機械器具，電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Computer software for image acquisition and image processing, dental computer software for making three-dimensional models of teeth and diagnosis, analysis, evaluation and treatment of teeth, telecommunications machine tools, electronic appliances appliances and parts thereof"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": null,
+      "description": "歯列矯正治療に関連する歯科用機械器具及び修復歯科用機械器具並びにそれらの部品及び附属品，歯科用機械器具並びにその部品及び附属品，歯列矯正器具（歯科用機械器具）並びにその部品及び附属品，歯列矯正器具並びにその部品及び附属品を保管・洗浄及び輸送するための専用容器，歯科用プライヤー，歯科用ドリル，歯科用ポリッシングホイール，歯科用バー，歯科用の歯のエナメル質の厚み及び寸法測定計器，歯科用材料の分配目的に使用される歯科用機械器具並びにその部品及び附属品，歯科用バイトトレー，歯科用ピック，歯科用クリップ，歯科用鏡，人工歯，歯科用補綴器具及びその部品及び附属品，歯を真っ直ぐにし及び不正咬合の治療に使用する歯列矯正ワイヤー・ブラケット，その他の歯を真っ直ぐにし及び不正咬合の治療に使用する歯列矯正機械器具及びその部品及び附属品，歯を真っすぐにし不正咬合を治療するために使用される歯列矯正装置・歯列矯正器具及びブレース（歯列矯正具）並びにそれらの部品及び附属品，歯科用の歯列矯正機械器具，歯列矯正用デジタルスキャナー，レーザー光線・光学スキャナ及びコンピュータスクリーンからなる歯列矯正用機械器具，レーザー光線及び光学式スキャニングにより、歯及び口腔内の三次元画像を捕らえる医療用カメラ，患者治療のモニタリング用並びに歯列矯正器具及び歯科用補綴物の設計のための捕捉した医療用画像の表示用のコンピュータソフトウェア及びコンピュータハードウェアから成る医療用機械器具，歯列矯正の分野において使用される三次元デジタル画像の捕捉用のコンピュータソフトウェア及びコンピュータハードウェア（中央処理装置・記憶保存ドライブモニター及び口内スキャナー）から成る医療用機械器具，医療用機械器具",
+      "translation_language": "en",
+      "translation": "Dental machinery and restorative dental machinery and equipment related to orthodontic treatment and parts and accessories thereof, dental machinery and equipment and parts and accessories thereof, orthodontic appliances (dental machinery and equipment) Dedicated container for storing, cleaning and transporting accessories, orthodontic appliances and parts and accessories thereof, dental pliers, dental drills, dental polishing wheels, dental bars, dental tooth enamel Thickness and dimension measurement instruments, dental machinery and equipment used for the purpose of dispensing dental materials and parts and accessories thereof, dental bite tray, dental pick, dental clip, dental mirror, artificial tooth, dental prosthesis Instruments and their parts and accessories, orthodontic wire and brackets for straightening the teeth and treating malocclusion, other straightening and malocclusion of the teeth Orthodontic appliances and their parts and accessories used for treatment, orthodontic appliances and orthodontic appliances and braces (orthodontic appliances) used to straighten the teeth and treat malocclusion and their By orthodontic machine tools consisting of parts and accessories, dental orthodontic appliances, orthodontic digital scanner, laser beam / optical scanner and computer screen, laser beam and optical scanning, third order in the teeth and oral cavity A medical camera for capturing an original image, a medical instrument comprising computer software and computer hardware for the display of captured medical images for the monitoring of patient care and the design of orthodontic instruments and dental prostheses, Computer software for capturing 3D digital images used in the field of orthodontics Medical care purposes consisting of hardware and computer hardware (a central processing unit and memory storage drive monitoring and mouth scanners), medical machinery"
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": "受託による歯列矯正器具及び歯科人工装具の製造，歯の技工，義肢又は義歯の加工（「医療材料の加工」を含む。）",
+      "translation_language": "en",
+      "translation": "Production of orthodontic appliances and dental prostheses by consignment, dental techniques, prostheses or denture processing (including \"processing of medical materials\")"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": null,
+      "description": "歯科医業，医業，歯列矯正歯科医業，歯科治療，歯列矯正治療，歯周歯科医業及び治療，歯内歯科医業及び治療，小児歯科医業及び治療，個人のための歯列矯正治療計画を立案及び作成する医業，歯科及び歯列矯正に関する助言，歯科医業及び歯列矯正医業に関する情報の提供，歯列矯正治療・歯内治療・小児歯科治療・歯周治療及び歯科修復治療に関する助言及び相談（インターネット又はエクストラネットを通じてオンラインにより提供されるものを含む。），医療情報の提供",
+      "translation_language": "en",
+      "translation": "Plan orthodontic treatment plan for dentist, medical, orthodontic dentistry, dental treatment, orthodontic treatment, periodontal dentistry and treatment, endodontic dentistry and treatment, pediatric dentistry and treatment, individuals And advice on dentistry and orthodontics to be created, providing information on dentistry and orthodontic medicine, advice and consultation on orthodontic treatment / endodontic treatment / pediatric dental treatment / periodontal treatment and dental restoration treatment ( Including on-line provision through the Internet or extranet), provision of medical information"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YAMAMOTO HIDESAKU",
+  "priorities": [
+    {
+      "priorityDate": "20141002"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dental material",
+          "intClassNumber": "05",
+          "intGoodsServicesDescription": "歯科用材料"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software for image acquisition and image processing, dental computer software for making three-dimensional models of teeth and diagnosis, analysis, evaluation and treatment of teeth, telecommunications machine tools, electronic appliances appliances and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "画像取得及び画像処理のためのコンピュータソフトウェア，歯の三次元モデルの作成及び歯の診断・分析・評価・治療のための歯科用コンピュータソフトウェア，電気通信機械器具，電子応用機械器具及びその部品"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dental machinery and restorative dental machinery and equipment related to orthodontic treatment and parts and accessories thereof, dental machinery and equipment and parts and accessories thereof, orthodontic appliances (dental machinery and equipment) Dedicated container for storing, cleaning and transporting accessories, orthodontic appliances and parts and accessories thereof, dental pliers, dental drills, dental polishing wheels, dental bars, dental tooth enamel Thickness and dimension measurement instruments, dental machinery and equipment used for the purpose of dispensing dental materials and parts and accessories thereof, dental bite tray, dental pick, dental clip, dental mirror, artificial tooth, dental prosthesis Instruments and their parts and accessories, orthodontic wire and brackets for straightening the teeth and treating malocclusion, other straightening and malocclusion of the teeth Orthodontic appliances and their parts and accessories used for treatment, orthodontic appliances and orthodontic appliances and braces (orthodontic appliances) used to straighten the teeth and treat malocclusion and their By orthodontic machine tools consisting of parts and accessories, dental orthodontic appliances, orthodontic digital scanner, laser beam / optical scanner and computer screen, laser beam and optical scanning, third order in the teeth and oral cavity A medical camera for capturing an original image, a medical instrument comprising computer software and computer hardware for the display of captured medical images for the monitoring of patient care and the design of orthodontic instruments and dental prostheses, Computer software for capturing 3D digital images used in the field of orthodontics Medical care purposes consisting of hardware and computer hardware (a central processing unit and memory storage drive monitoring and mouth scanners), medical machinery",
+          "intClassNumber": "10",
+          "intGoodsServicesDescription": "歯列矯正治療に関連する歯科用機械器具及び修復歯科用機械器具並びにそれらの部品及び附属品，歯科用機械器具並びにその部品及び附属品，歯列矯正器具（歯科用機械器具）並びにその部品及び附属品，歯列矯正器具並びにその部品及び附属品を保管・洗浄及び輸送するための専用容器，歯科用プライヤー，歯科用ドリル，歯科用ポリッシングホイール，歯科用バー，歯科用の歯のエナメル質の厚み及び寸法測定計器，歯科用材料の分配目的に使用される歯科用機械器具並びにその部品及び附属品，歯科用バイトトレー，歯科用ピック，歯科用クリップ，歯科用鏡，人工歯，歯科用補綴器具及びその部品及び附属品，歯を真っ直ぐにし及び不正咬合の治療に使用する歯列矯正ワイヤー・ブラケット，その他の歯を真っ直ぐにし及び不正咬合の治療に使用する歯列矯正機械器具及びその部品及び附属品，歯を真っすぐにし不正咬合を治療するために使用される歯列矯正装置・歯列矯正器具及びブレース（歯列矯正具）並びにそれらの部品及び附属品，歯科用の歯列矯正機械器具，歯列矯正用デジタルスキャナー，レーザー光線・光学スキャナ及びコンピュータスクリーンからなる歯列矯正用機械器具，レーザー光線及び光学式スキャニングにより、歯及び口腔内の三次元画像を捕らえる医療用カメラ，患者治療のモニタリング用並びに歯列矯正器具及び歯科用補綴物の設計のための捕捉した医療用画像の表示用のコンピュータソフトウェア及びコンピュータハードウェアから成る医療用機械器具，歯列矯正の分野において使用される三次元デジタル画像の捕捉用のコンピュータソフトウェア及びコンピュータハードウェア（中央処理装置・記憶保存ドライブモニター及び口内スキャナー）から成る医療用機械器具，医療用機械器具"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Production of orthodontic appliances and dental prostheses by consignment, dental techniques, prostheses or denture processing (including \"processing of medical materials\")",
+          "intClassNumber": "40",
+          "intGoodsServicesDescription": "受託による歯列矯正器具及び歯科人工装具の製造，歯の技工，義肢又は義歯の加工（「医療材料の加工」を含む。）"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Plan orthodontic treatment plan for dentist, medical, orthodontic dentistry, dental treatment, orthodontic treatment, periodontal dentistry and treatment, endodontic dentistry and treatment, pediatric dentistry and treatment, individuals And advice on dentistry and orthodontics to be created, providing information on dentistry and orthodontic medicine, advice and consultation on orthodontic treatment / endodontic treatment / pediatric dental treatment / periodontal treatment and dental restoration treatment ( Including on-line provision through the Internet or extranet), provision of medical information",
+          "intClassNumber": "44",
+          "intGoodsServicesDescription": "歯科医業，医業，歯列矯正歯科医業，歯科治療，歯列矯正治療，歯周歯科医業及び治療，歯内歯科医業及び治療，小児歯科医業及び治療，個人のための歯列矯正治療計画を立案及び作成する医業，歯科及び歯列矯正に関する助言，歯科医業及び歯列矯正医業に関する情報の提供，歯列矯正治療・歯内治療・小児歯科治療・歯周治療及び歯科修復治療に関する助言及び相談（インターネット又はエクストラネットを通じてオンラインにより提供されるものを含む。），医療情報の提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "01C03",
+          "natGoodsServicesDescription": "Dental materials"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Telecommunication machines and apparatus; Personal digital assistants"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door opening and closing control systems; Electron microscopes"
+        },
+        {
+          "natClassNumber": "10D01",
+          "natGoodsServicesDescription": "Medical apparatus and instruments, other than walking aids, and crutches"
+        },
+        {
+          "natClassNumber": "10D02",
+          "natGoodsServicesDescription": "Walking aids for medical purposes; Crutches"
+        },
+        {
+          "natClassNumber": "40C10",
+          "natGoodsServicesDescription": "Processing of artificial limbs or artificial teeth, including processing of medical materials"
+        },
+        {
+          "natClassNumber": "40H99",
+          "natGoodsServicesDescription": "Other processing that do not correspond to any of the listed similar group code(s) for the processing"
+        },
+        {
+          "natClassNumber": "42V02",
+          "natGoodsServicesDescription": "Medical practice; Providing medical information; Physical examination; Dental practice; Dispense medicine"
+        }
+      ]
+    },
+    "id": "548532d1-355c-4e41-8399-8884512b114a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20141002"
+      }
+    ],
+    "recordLastUpdated": "20260807",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20141002",
+        "applicationNumber": "2014-083219"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20250724",
+      "lastPublicationDate": "20150825",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20150724",
+        "registrationNumber": "5780575"
+      }
+    },
+    "version": "20260807084744",
+    "wordMarkSpecification": {
+      "markTranslation": "INVISALIGN I7",
+      "markTransliteration": "INBISARAIN INBIZARAINAINANA INBIZARAINAISEBUN",
+      "markVerbalElementText": "ＩＮＶＩＳＡＬＩＧＮ　ｉ７"
+    }
+  },
+  "_uri": "/mark/jp/548532d1-355c-4e41-8399-8884512b114a",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.741Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

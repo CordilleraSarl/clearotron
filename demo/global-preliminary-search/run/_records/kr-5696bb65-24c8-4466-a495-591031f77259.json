@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/kr/5696bb65-24c8-4466-a495-591031f77259",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "5696bb65-24c8-4466-a495-591031f77259",
+  "applicationNumber": "40-2020-0209170",
+  "registrationNumber": null,
+  "applicationDate": "2020-11-19",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "FOrI",
+  "markTransliteration": "FOrI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "usb케이블, 기록된 무선단말기용 지능형애플리케이션프로그램, 내려받기 가능한 스마트폰용 애플리케이션(소프트웨어), 내려받기 가능한 멀티미디어 파일, 디지털 센서, 무선통신기기 및 장치, 스피커선, 원격제어장치, 음성인식 스피커, 음성인식용 소프트웨어, 음향 또는 영상의 전송 및 재생용 장치, 인공지능 비서형 소프트웨어, 전기제어기기, 카메라, 통신허브, 프로젝터, 홈네트워크기기, 홈오토메이션용 서버, 홈오토메이션용 전자제어시스템",
+      "translation_language": "en",
+      "translation": "USB cable, intelligent application program for recorded wireless terminals, downloadable applications (software) for smartphones, downloadable multimedia files, digital sensors, wireless communication devices and devices, speaker wires, remote control devices, voice recognition speakers, voice recognition software, devices for transmitting and reproducing sound or images, artificial intelligence assistant type software, electrical control devices, cameras, communication hubs, projectors, home network devices, servers for home automation, home automation devices electronic control system"
+    }
+  ],
+  "owner": "NECON",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "이선택 (Lee, Suntaek)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경상북도 구미시",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "NECON",
+        "applicantNativeName": "주식회사 네콘"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "USB cable, intelligent application program for recorded wireless terminals, downloadable applications (software) for smartphones, downloadable multimedia files, digital sensors, wireless communication devices and devices, speaker wires, remote control devices, voice recognition speakers, voice recognition software, devices for transmitting and reproducing sound or images, artificial intelligence assistant type software, electrical control devices, cameras, communication hubs, projectors, home network devices, servers for home automation, home automation devices electronic control system",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "usb케이블, 기록된 무선단말기용 지능형애플리케이션프로그램, 내려받기 가능한 스마트폰용 애플리케이션(소프트웨어), 내려받기 가능한 멀티미디어 파일, 디지털 센서, 무선통신기기 및 장치, 스피커선, 원격제어장치, 음성인식 스피커, 음성인식용 소프트웨어, 음향 또는 영상의 전송 및 재생용 장치, 인공지능 비서형 소프트웨어, 전기제어기기, 카메라, 통신허브, 프로젝터, 홈네트워크기기, 홈오토메이션용 서버, 홈오토메이션용 전자제어시스템"
+        }
+      ]
+    },
+    "id": "5696bb65-24c8-4466-a495-591031f77259",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "04.05.21",
+      "24.17.02",
+      "26.02.07"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "경상북도 구미시 수출대로 (공단동) 호(공단동, 세원테크노밸리)(선택특허법률사무소)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "이선택 (Lee, Suntaek)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20201119",
+        "applicationNumber": "40-2020-0209170"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260625021118",
+    "wordMarkSpecification": {
+      "markTransliteration": "FOrI",
+      "markVerbalElementText": "FOrI"
+    }
+  },
+  "_uri": "/mark/kr/5696bb65-24c8-4466-a495-591031f77259",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:53.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

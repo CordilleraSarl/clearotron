@@ -1,0 +1,186 @@
+{
+  "uri": "/mark/jp/6d467812-13f3-43fd-ab73-27a68d8b1c0b",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "6d467812-13f3-43fd-ab73-27a68d8b1c0b",
+  "applicationNumber": "2022-050135",
+  "registrationNumber": "6620904",
+  "applicationDate": "2022-04-28",
+  "registrationDate": "2022-09-28",
+  "expiryDate": "2032-09-28",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-10-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＱＵＲＩ",
+  "markTransliteration": "KURI KYURI KYUURI",
+  "markTranslation": "QURI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "電子計算機用プログラム，機械学習のための電子計算機用プログラム，量子コンピュータ用プログラム，コンピュータソフトウェア，量子コンピュータをシミュレーションするためのコンピュータソフトウェア，量子コンピュータをエミュレーションするためのコンピュータソフトウェア，物質の元素・状態・構造又は界面の研究又は解析のためのコンピュータソフトウェア，機械学習のためのコンピュータソフトウェア，量子コンピュータ用ソフトウェア，量子計算を用いた科学計算用または数理応用用のソフトウェア，コンピュータソフトウェアプラットフォーム，機械学習のためのコンピュータソフトウェアプラットフォーム，量子コンピュータ用ソフトウェアプラットフォーム，コンピュータハードウェア，機械学習のためのコンピュータハードウェア，量子コンピュータ用ハードウェア，演算装置（中央処理装置），電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Computer programs, computer programs for machine learning, quantum computer programs, computer software, computer software for simulating quantum computers, computer software for emulating quantum computers, elements, states, and structures of substances Or computer software for interface research or analysis, computer software for machine learning, software for quantum computers, software for scientific or mathematical applications using quantum computation, computer software platforms, computers for machine learning Software platform, software platform for quantum computers, computer hardware, computer hardware for machine learning, hardware for quantum computers, arithmetic equipment (central processing equipment), electronic application machinery and equipment and their parts"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "電子計算機用プログラムの提供，量子コンピュータをシミュレーションするための電子計算機用プログラムの提供，量子コンピュータをエミュレーションするための電子計算機用プログラムの提供，物質の元素・状態・構造又は界面の研究又は解析のための電子計算機用プログラムの提供，機械学習のための電子計算機用プログラムの提供，量子コンピュータ用プログラムの提供，電子計算機の提供又は貸与，機械学習のための電子計算機の提供又は貸与，量子コンピュータの提供又は貸与，クラウドコンピューティング，クラウドコンピューティングに関する助言・指導又は情報の提供，電子計算機のプログラムの設計・作成又は保守，機械学習のための電子計算機用プログラムの設計・作成又は保守，量子コンピュータのプログラムの設計・作成又は保守，電子計算機のプログラムの設計・作成又は保守に関する助言・指導又は情報の提供，量子コンピュータのプログラムの設計・作成又は保守に関する助言・指導又は情報の提供，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，量子コンピュータの性能・操作方法等に関する紹介及び説明，量子コンピュータのためのコンピュータソフトウェア又はコンピュータハードウェアに関する研究又は開発，量子コンピュータのためのコンピュータソフトウェア又はコンピュータハードウェアに関する研究又は開発に関する助言・指導又は情報の提供，機械学習のためのコンピュータソフトウェア又はコンピュータハードウェアに関する研究又は開発，機械学習のためのコンピュータソフトウェア又はコンピュータハードウェアに関する研究又は開発に関する助言・指導又は情報の提供，量子計算を用いた科学計算または数理応用に関する研究，量子計算を用いた科学計算または数理応用の研究に関する助言・指導又は情報の提供，物質の元素・状態・構造又は界面の研究，物質の元素・状態・構造又は界面の研究に関する助言・指導又は情報の提供，物質の元素・状態・構造又は界面の分析，物質の元素・状態・構造又は界面の分析に関する助言・指導又は情報の提供，医薬品・化粧品又は食品の試験・検査又は研究，医薬品・化粧品又は食品の試験・検査又は研究に関する助言・指導又は情報の提供，化学反応の研究，化学反応の研究に関する助言・指導又は情報の提供",
+      "translation_language": "en",
+      "translation": "To provide computer programs, computer programs to simulate quantum computers, computer programs to emulate quantum computers, and research or analysis of elements, states, structures, or interfaces of substances. Provision of computer programs, provision of computer programs for machine learning, provision of quantum computer programs, provision or lending of electronic computers, provision or lending of electronic computers for machine learning, provision of quantum computers Or lending, cloud computing, advice / guidance or information provision regarding cloud computing, design / creation / maintenance of computer programs, design / creation / maintenance of computer programs for machine learning, quantum computer programs. Design / creation or maintenance, advice / guidance or information provision regarding the design / creation or maintenance of computer programs, advice / guidance or information provision regarding design / creation or maintenance of quantum computer programs, computers / automobiles, etc. Introducing and explaining the performance and operation methods of machines that require highly specialized knowledge, technology or experience in order to perform accurate operations according to their applications, and introducing and explaining the performance and operation methods of quantum computers. Explanation, research or development on computer software or computer hardware for quantum computers, advice / guidance or information on research or development on computer software or computer hardware for quantum computers, computer software for machine learning or Research or development on computer hardware, computer software for machine learning or provision of advice / guidance or information on research or development on computer hardware, research on scientific or mathematical applications using quantum computation, using quantum computation Providing advice / guidance or information on research on scientific calculations or mathematical applications, research on elements / states / structures or interfaces of materials, advice / guidance or information on research on elements / states / structures or interfaces of materials, Analysis of elements / states / structures or interfaces, advice / guidance or provision of information on analysis of elements / states / structures or interfaces of substances, testing / inspection or research of pharmaceuticals / cosmetics or foods, testing of pharmaceuticals / cosmetics or foods Advice / guidance or information provision regarding inspection or research, research on chemical reactions, advice / advice on research on chemical reactions Guidance or provision of information"
+    }
+  ],
+  "owner": "K.K. QUNASYS",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "TAIYO, NAKAJIMA & KATO",
+  "priorities": [
+    {
+      "priorityDate": "20220428"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "BUNKYOU TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "K.K. QUNASYS",
+        "applicantNativeAddress": "東京都文京区",
+        "applicantNativeName": "株式会社ＱｕｎａＳｙｓ"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer programs, computer programs for machine learning, quantum computer programs, computer software, computer software for simulating quantum computers, computer software for emulating quantum computers, elements, states, and structures of substances Or computer software for interface research or analysis, computer software for machine learning, software for quantum computers, software for scientific or mathematical applications using quantum computation, computer software platforms, computers for machine learning Software platform, software platform for quantum computers, computer hardware, computer hardware for machine learning, hardware for quantum computers, arithmetic equipment (central processing equipment), electronic application machinery and equipment and their parts",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "電子計算機用プログラム，機械学習のための電子計算機用プログラム，量子コンピュータ用プログラム，コンピュータソフトウェア，量子コンピュータをシミュレーションするためのコンピュータソフトウェア，量子コンピュータをエミュレーションするためのコンピュータソフトウェア，物質の元素・状態・構造又は界面の研究又は解析のためのコンピュータソフトウェア，機械学習のためのコンピュータソフトウェア，量子コンピュータ用ソフトウェア，量子計算を用いた科学計算用または数理応用用のソフトウェア，コンピュータソフトウェアプラットフォーム，機械学習のためのコンピュータソフトウェアプラットフォーム，量子コンピュータ用ソフトウェアプラットフォーム，コンピュータハードウェア，機械学習のためのコンピュータハードウェア，量子コンピュータ用ハードウェア，演算装置（中央処理装置），電子応用機械器具及びその部品"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "To provide computer programs, computer programs to simulate quantum computers, computer programs to emulate quantum computers, and research or analysis of elements, states, structures, or interfaces of substances. Provision of computer programs, provision of computer programs for machine learning, provision of quantum computer programs, provision or lending of electronic computers, provision or lending of electronic computers for machine learning, provision of quantum computers Or lending, cloud computing, advice / guidance or information provision regarding cloud computing, design / creation / maintenance of computer programs, design / creation / maintenance of computer programs for machine learning, quantum computer programs. Design / creation or maintenance, advice / guidance or information provision regarding the design / creation or maintenance of computer programs, advice / guidance or information provision regarding design / creation or maintenance of quantum computer programs, computers / automobiles, etc. Introducing and explaining the performance and operation methods of machines that require highly specialized knowledge, technology or experience in order to perform accurate operations according to their applications, and introducing and explaining the performance and operation methods of quantum computers. Explanation, research or development on computer software or computer hardware for quantum computers, advice / guidance or information on research or development on computer software or computer hardware for quantum computers, computer software for machine learning or Research or development on computer hardware, computer software for machine learning or provision of advice / guidance or information on research or development on computer hardware, research on scientific or mathematical applications using quantum computation, using quantum computation Providing advice / guidance or information on research on scientific calculations or mathematical applications, research on elements / states / structures or interfaces of materials, advice / guidance or information on research on elements / states / structures or interfaces of materials, Analysis of elements / states / structures or interfaces, advice / guidance or provision of information on analysis of elements / states / structures or interfaces of substances, testing / inspection or research of pharmaceuticals / cosmetics or foods, testing of pharmaceuticals / cosmetics or foods Advice / guidance or information provision regarding inspection or research, research on chemical reactions, advice / advice on research on chemical reactions Guidance or provision of information",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "電子計算機用プログラムの提供，量子コンピュータをシミュレーションするための電子計算機用プログラムの提供，量子コンピュータをエミュレーションするための電子計算機用プログラムの提供，物質の元素・状態・構造又は界面の研究又は解析のための電子計算機用プログラムの提供，機械学習のための電子計算機用プログラムの提供，量子コンピュータ用プログラムの提供，電子計算機の提供又は貸与，機械学習のための電子計算機の提供又は貸与，量子コンピュータの提供又は貸与，クラウドコンピューティング，クラウドコンピューティングに関する助言・指導又は情報の提供，電子計算機のプログラムの設計・作成又は保守，機械学習のための電子計算機用プログラムの設計・作成又は保守，量子コンピュータのプログラムの設計・作成又は保守，電子計算機のプログラムの設計・作成又は保守に関する助言・指導又は情報の提供，量子コンピュータのプログラムの設計・作成又は保守に関する助言・指導又は情報の提供，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，量子コンピュータの性能・操作方法等に関する紹介及び説明，量子コンピュータのためのコンピュータソフトウェア又はコンピュータハードウェアに関する研究又は開発，量子コンピュータのためのコンピュータソフトウェア又はコンピュータハードウェアに関する研究又は開発に関する助言・指導又は情報の提供，機械学習のためのコンピュータソフトウェア又はコンピュータハードウェアに関する研究又は開発，機械学習のためのコンピュータソフトウェア又はコンピュータハードウェアに関する研究又は開発に関する助言・指導又は情報の提供，量子計算を用いた科学計算または数理応用に関する研究，量子計算を用いた科学計算または数理応用の研究に関する助言・指導又は情報の提供，物質の元素・状態・構造又は界面の研究，物質の元素・状態・構造又は界面の研究に関する助言・指導又は情報の提供，物質の元素・状態・構造又は界面の分析，物質の元素・状態・構造又は界面の分析に関する助言・指導又は情報の提供，医薬品・化粧品又は食品の試験・検査又は研究，医薬品・化粧品又は食品の試験・検査又は研究に関する助言・指導又は情報の提供，化学反応の研究，化学反応の研究に関する助言・指導又は情報の提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door closing control systems; Electron microscopes"
+        },
+        {
+          "natClassNumber": "42N03",
+          "natGoodsServicesDescription": "Designing of machines, apparatus, instruments [including their parts] or systems composed of such machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42P03",
+          "natGoodsServicesDescription": "Technological advice relating to computers, automobiles and industrial machines"
+        },
+        {
+          "natClassNumber": "42Q01",
+          "natGoodsServicesDescription": "Testing, inspection or research of pharmaceuticals, cosmetics or foodstuffs"
+        },
+        {
+          "natClassNumber": "42Q02",
+          "natGoodsServicesDescription": "Research on building construction or city planning; Testing or research on prevention of pollution; Testing or research on electricity; Testing or research on civil engineering"
+        },
+        {
+          "natClassNumber": "42Q03",
+          "natGoodsServicesDescription": "Testing, inspection or research on agriculture, livestock breeding or fisheries"
+        },
+        {
+          "natClassNumber": "42Q99",
+          "natGoodsServicesDescription": "Testing or research on machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        }
+      ]
+    },
+    "id": "6d467812-13f3-43fd-ab73-27a68d8b1c0b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20220428"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "TAIYO, NAKAJIMA & KATO",
+        "representativeNativeName": "特許業務法人太陽国際特許事務所"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220428",
+        "applicationNumber": "2022-050135"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320928",
+      "lastPublicationDate": "20221006",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20220928",
+        "registrationNumber": "6620904"
+      }
+    },
+    "version": "20240320140914",
+    "wordMarkSpecification": {
+      "markTranslation": "QURI",
+      "markTransliteration": "KURI KYURI KYUURI",
+      "markVerbalElementText": "ＱＵＲＩ"
+    }
+  },
+  "_uri": "/mark/jp/6d467812-13f3-43fd-ab73-27a68d8b1c0b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:07.495Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

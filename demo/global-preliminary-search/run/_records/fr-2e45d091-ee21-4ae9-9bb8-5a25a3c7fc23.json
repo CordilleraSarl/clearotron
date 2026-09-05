@@ -1,0 +1,222 @@
+{
+  "uri": "/mark/fr/2e45d091-ee21-4ae9-9bb8-5a25a3c7fc23",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "2e45d091-ee21-4ae9-9bb8-5a25a3c7fc23",
+  "applicationNumber": "18 4510033",
+  "registrationNumber": "18 4510033",
+  "applicationDate": "2018-12-20",
+  "registrationDate": null,
+  "expiryDate": "2028-12-19",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-01-11",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QOBI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    7,
+    9,
+    11,
+    35,
+    39,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6
+      ],
+      "language": "fr",
+      "description": ": Bouteille métallique de gaz industriels et médicaux ",
+      "translation_language": "en",
+      "translation": "Metal cylinder of industrial and medical gases"
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "fr",
+      "description": ": Machines et appareils de soudage et de coupage à gaz, chalumeau à gaz pour le soudage et le coupage, régulateurs de pression pour les machines à souder et à couper ",
+      "translation_language": "en",
+      "translation": "Gas welding and cutting machines and apparatus, gas torch for welding and cutting, pressure regulators for welding and cutting machines"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": ": Logiciels et applications digitales en lien avec les gaz industriels et médicaux, leur mise en oeuvre et les équipements liés; Logiciels et applications digitales en lien avec le soudage et la fabrication métallique ; Appareils et instruments scientifiques, de mesure et de contrôle pour la fourniture et la distribution de gaz industriels et médicaux. Instruments de mesure et d’indication du niveau de gaz industriels et médicaux. Débitmètres de gaz industriels et médicaux; Gazomètres [instruments de mesure] pour gaz industriels et médicaux ; Indicateurs de pression de gaz pour gaz industriels et médicaux ; Appareils et instruments de coupage et de soudage à l'arc électrique, poste de soudure électrique, électrodes pour la soudure, masques de soudeurs ",
+      "translation_language": "en",
+      "translation": "Software and digital applications related to industrial and medical gases, their implementation and related equipment; Software and digital applications related to welding and metal fabrication; Scientific, measuring and control apparatus and instruments for the supply and distribution of industrial and medical gases. Instruments for measuring and indicating the level of industrial and medical gases. industrial and medical gas flow meters; Gasometers [measuring instruments] for industrial and medical gases; Gas pressure indicators for industrial and medical gases; Electric arc cutting and welding apparatus and instruments, electric welding station, welding electrodes, welding masks"
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "fr",
+      "description": ": Chapeau et robinet détendeur équipant des bouteilles de gaz industriels et médicaux; Robinets de débit de gaz industriels et médicaux; Vannes de débit de gaz industriels et médicaux; Régulateurs de gaz industriels et médicaux; Accessoires de réglage et de sûreté pour conduites de gaz , appareils à gaz et installations de gaz, tous pour des gaz industriels et médicaux; Tête de bouteille de gaz composée d’appareils et instruments pour la distribution de gaz industriels et médicaux et sa régulation ",
+      "translation_language": "en",
+      "translation": "Cap and regulator valve fitted to industrial and medical gas cylinders; industrial and medical gas flow valves; industrial and medical gas flow valves; industrial and medical gas regulators; Regulating and safety accessories for gas pipes, gas apparatus and gas installations, all for industrial and medical gases; Gas cylinder head consisting of apparatus and instruments for the distribution of industrial and medical gases and its regulation"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": ": Services de promotion en ligne, de suivi de commandes (traitement administratif de commandes) et de vente en ligne de gaz industriels et médicaux ainsi que les équipements et services liés. Services de fourniture d'information commerciale (telles que factures, état des stocks, analyse de la consommation, fiches sécurité) pour des gaz industriels et médicaux ainsi que les équipements et services liés ; gestion de stocks, de distribution, de réapprovisionnements de bouteilles de gaz industriels et médicaux ; services de traçabilité de bouteilles de gaz industriels et médicaux ; services de traçabilité de gaz industriels et médicaux ; services d’information sur le niveau de gaz de bouteilles de gaz industriels et médicaux ",
+      "translation_language": "en",
+      "translation": "Online promotion services, order tracking (administrative processing of orders) and online sale of industrial and medical gases as well as related equipment and services. Commercial information provision services (such as invoices, stock status, consumption analysis, safety data sheets) for industrial and medical gases as well as related equipment and services; inventory management, distribution, replenishment of industrial and medical gas cylinders; traceability services for industrial and medical gas cylinders; traceability services for industrial and medical gases; gas level information services for industrial and medical gas cylinders"
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": "fr",
+      "description": ": Services de transport, d'entreposage et de mise à disposition de bouteilles de gaz industriels et médicaux; Services d'approvisionnement (livraison) et de distribution (livraison) de gaz industriels et médicaux. Services de location d'appareils et instruments scientifiques, de mesure et de contrôle pour la fourniture et la distribution de gaz industriels et médicaux; services de location de tête de bouteille de gaz composée d’appareils et instruments pour la distribution de gaz industriels et médicaux et sa régulation ",
+      "translation_language": "en",
+      "translation": "Transportation, storage and provision of industrial and medical gas cylinders; Supply (delivery) and distribution (delivery) services of industrial and medical gases. Rental services of scientific, measuring and control apparatus and instruments for the supply and distribution of industrial and medical gases; gas cylinder head rental services consisting of apparatus and instruments for the distribution of industrial and medical gases and its regulation"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": ": Services d'ingénierie et consultation pour la mise en oeuvre de gaz industriels et médicaux. Recherche, expertise techniques et spécialisées, conception de procédés industriels (travaux d'ingénieurs) et de prestations d'ingénieur pour le compte de tiers, tous ces services étant en lien avec les gaz industriels et médicaux. Services d'analyses chimiques en lien avec des gaz industriels et médicaux; Plateforme en tant que service (PaaS) comprenant une plateforme logicielle permettant le suivi de procédés de fabrication, de la qualité et de la productivité dans les activités liées à la mise en oeuvre des gaz industriels et médicaux, notamment le soudage et la fabrication métallique.",
+      "translation_language": "en",
+      "translation": "Engineering and consulting services for the implementation of industrial and medical gases. Research, technical and specialized expertise, design of industrial processes (engineering work) and engineering services on behalf of third parties, all these services being related to industrial and medical gases. chemical analysis services relating to industrial and medical gases; Platform as a service (PaaS) comprising a software platform allowing the monitoring of manufacturing processes, quality and productivity in activities related to the implementation of industrial and medical gases, in particular welding and metal fabrication."
+    }
+  ],
+  "owner": "L'AIR LIQUIDE SOCIÉTÉ ANONYME POUR L'ETUDE ET L'EXPLOITATION DES PROCÉDÉS GEORGES CLAUDE",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "L'AIR LIQUIDE SOCIÉTÉ ANONYME POUR L'ETUDE ET L'EXPLOITATION DES PROCÉDÉS GEORGES CLAUDE, Monsieur Julien LOSSER",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "75 Quai d'Orsay, 75007 Paris",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "L'AIR LIQUIDE SOCIÉTÉ ANONYME POUR L'ETUDE ET L'EXPLOITATION DES PROCÉDÉS GEORGES CLAUDE"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Metal cylinder of industrial and medical gases",
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Bouteille métallique de gaz industriels et médicaux "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Gas welding and cutting machines and apparatus, gas torch for welding and cutting, pressure regulators for welding and cutting machines",
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Machines et appareils de soudage et de coupage à gaz, chalumeau à gaz pour le soudage et le coupage, régulateurs de pression pour les machines à souder et à couper "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Software and digital applications related to industrial and medical gases, their implementation and related equipment; Software and digital applications related to welding and metal fabrication; Scientific, measuring and control apparatus and instruments for the supply and distribution of industrial and medical gases. Instruments for measuring and indicating the level of industrial and medical gases. industrial and medical gas flow meters; Gasometers [measuring instruments] for industrial and medical gases; Gas pressure indicators for industrial and medical gases; Electric arc cutting and welding apparatus and instruments, electric welding station, welding electrodes, welding masks",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Logiciels et applications digitales en lien avec les gaz industriels et médicaux, leur mise en oeuvre et les équipements liés; Logiciels et applications digitales en lien avec le soudage et la fabrication métallique ; Appareils et instruments scientifiques, de mesure et de contrôle pour la fourniture et la distribution de gaz industriels et médicaux. Instruments de mesure et d’indication du niveau de gaz industriels et médicaux. Débitmètres de gaz industriels et médicaux; Gazomètres [instruments de mesure] pour gaz industriels et médicaux ; Indicateurs de pression de gaz pour gaz industriels et médicaux ; Appareils et instruments de coupage et de soudage à l'arc électrique, poste de soudure électrique, électrodes pour la soudure, masques de soudeurs "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Cap and regulator valve fitted to industrial and medical gas cylinders; industrial and medical gas flow valves; industrial and medical gas flow valves; industrial and medical gas regulators; Regulating and safety accessories for gas pipes, gas apparatus and gas installations, all for industrial and medical gases; Gas cylinder head consisting of apparatus and instruments for the distribution of industrial and medical gases and its regulation",
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Chapeau et robinet détendeur équipant des bouteilles de gaz industriels et médicaux; Robinets de débit de gaz industriels et médicaux; Vannes de débit de gaz industriels et médicaux; Régulateurs de gaz industriels et médicaux; Accessoires de réglage et de sûreté pour conduites de gaz , appareils à gaz et installations de gaz, tous pour des gaz industriels et médicaux; Tête de bouteille de gaz composée d’appareils et instruments pour la distribution de gaz industriels et médicaux et sa régulation "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Online promotion services, order tracking (administrative processing of orders) and online sale of industrial and medical gases as well as related equipment and services. Commercial information provision services (such as invoices, stock status, consumption analysis, safety data sheets) for industrial and medical gases as well as related equipment and services; inventory management, distribution, replenishment of industrial and medical gas cylinders; traceability services for industrial and medical gas cylinders; traceability services for industrial and medical gases; gas level information services for industrial and medical gas cylinders",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Services de promotion en ligne, de suivi de commandes (traitement administratif de commandes) et de vente en ligne de gaz industriels et médicaux ainsi que les équipements et services liés. Services de fourniture d'information commerciale (telles que factures, état des stocks, analyse de la consommation, fiches sécurité) pour des gaz industriels et médicaux ainsi que les équipements et services liés ; gestion de stocks, de distribution, de réapprovisionnements de bouteilles de gaz industriels et médicaux ; services de traçabilité de bouteilles de gaz industriels et médicaux ; services de traçabilité de gaz industriels et médicaux ; services d’information sur le niveau de gaz de bouteilles de gaz industriels et médicaux "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Transportation, storage and provision of industrial and medical gas cylinders; Supply (delivery) and distribution (delivery) services of industrial and medical gases. Rental services of scientific, measuring and control apparatus and instruments for the supply and distribution of industrial and medical gases; gas cylinder head rental services consisting of apparatus and instruments for the distribution of industrial and medical gases and its regulation",
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Services de transport, d'entreposage et de mise à disposition de bouteilles de gaz industriels et médicaux; Services d'approvisionnement (livraison) et de distribution (livraison) de gaz industriels et médicaux. Services de location d'appareils et instruments scientifiques, de mesure et de contrôle pour la fourniture et la distribution de gaz industriels et médicaux; services de location de tête de bouteille de gaz composée d’appareils et instruments pour la distribution de gaz industriels et médicaux et sa régulation "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Engineering and consulting services for the implementation of industrial and medical gases. Research, technical and specialized expertise, design of industrial processes (engineering work) and engineering services on behalf of third parties, all these services being related to industrial and medical gases. chemical analysis services relating to industrial and medical gases; Platform as a service (PaaS) comprising a software platform allowing the monitoring of manufacturing processes, quality and productivity in activities related to the implementation of industrial and medical gases, in particular welding and metal fabrication.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Services d'ingénierie et consultation pour la mise en oeuvre de gaz industriels et médicaux. Recherche, expertise techniques et spécialisées, conception de procédés industriels (travaux d'ingénieurs) et de prestations d'ingénieur pour le compte de tiers, tous ces services étant en lien avec les gaz industriels et médicaux. Services d'analyses chimiques en lien avec des gaz industriels et médicaux; Plateforme en tant que service (PaaS) comprenant une plateforme logicielle permettant le suivi de procédés de fabrication, de la qualité et de la productivité dans les activités liées à la mise en oeuvre des gaz industriels et médicaux, notamment le soudage et la fabrication métallique."
+        }
+      ]
+    },
+    "id": "2e45d091-ee21-4ae9-9bb8-5a25a3c7fc23",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00472",
+        "publicationVolume": "02"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeName": "L'AIR LIQUIDE SOCIÉTÉ ANONYME POUR L'ETUDE ET L'EXPLOITATION DES PROCÉDÉS GEORGES CLAUDE, Monsieur Julien LOSSER"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20181220",
+        "applicationNumber": "18 4510033"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20281219",
+      "lastPublicationDate": "20190111",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "18 4510033"
+      }
+    },
+    "version": "20250426162928",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOBI"
+    }
+  },
+  "_uri": "/mark/fr/2e45d091-ee21-4ae9-9bb8-5a25a3c7fc23",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:39.642Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

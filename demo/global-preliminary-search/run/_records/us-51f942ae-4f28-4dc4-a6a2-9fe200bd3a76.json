@@ -1,0 +1,300 @@
+{
+  "uri": "/mark/us/51f942ae-4f28-4dc4-a6a2-9fe200bd3a76",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "51f942ae-4f28-4dc4-a6a2-9fe200bd3a76",
+  "applicationNumber": "88248397",
+  "registrationNumber": null,
+  "applicationDate": "2019-01-03",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2019-06-04"
+  ],
+  "abandonmentDate": "2021-03-08",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "IMPROVENORTH",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 business services, namely, formulating and disseminating best practices for quality control and safety in the medical and healthcare field",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 providing quality control and safety services, namely, providing quality control for others in the medical and healthcare field in the nature of providing error reduction and quality improvement programs for the purpose of identifying opportunities for improvements in quality and patient safety in the medical and healthcare field",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NORTHWELL HEALTH, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Holly Pekowsky",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "NEW HYDE PARK, NY, 11042",
+        "applicantAddressCity": "NEW HYDE PARK",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "11042",
+        "applicantAddressStateName": "NEW YORK",
+        "applicantJurisdictionOfIncorporation": "NEW YORK",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "NORTHWELL HEALTH, INC.",
+        "applicantSecondaryAddressUnit": "2000 MARCUS AVENUE"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 business services, namely, formulating and disseminating best practices for quality control and safety in the medical and healthcare field"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 providing quality control and safety services, namely, providing quality control for others in the medical and healthcare field in the nature of providing error reduction and quality improvement programs for the purpose of identifying opportunities for improvements in quality and patient safety in the medical and healthcare field"
+        }
+      ]
+    },
+    "id": "51f942ae-4f28-4dc4-a6a2-9fe200bd3a76",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20210308",
+        "descriptionText": "ABANDONMENT - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20210308",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20200716",
+        "descriptionText": "NOTICE OF APPROVAL OF EXTENSION REQUEST E-MAILED"
+      },
+      {
+        "date": "20200714",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20200714",
+        "descriptionText": "SOU EXTENSION 2 FILED"
+      },
+      {
+        "date": "20200714",
+        "descriptionText": "SOU EXTENSION 2 GRANTED"
+      },
+      {
+        "date": "20200128",
+        "descriptionText": "NOTICE OF APPROVAL OF EXTENSION REQUEST E-MAILED"
+      },
+      {
+        "date": "20200124",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20200124",
+        "descriptionText": "SOU EXTENSION 1 FILED"
+      },
+      {
+        "date": "20200124",
+        "descriptionText": "SOU EXTENSION 1 GRANTED"
+      },
+      {
+        "date": "20190730",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20190604",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20190604",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20190515",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20190426",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20190415",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20190411",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20190411",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20190411",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20190325",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20190325",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20190325",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20190321",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20190124",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20190107",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "2000 MARCUS AVENUE, NEW HYDE PARK, NY, 11042",
+        "city": "NEW HYDE PARK",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NEW YORK",
+        "legalEntity": "CORPORATION",
+        "name": "NORTHWELL HEALTH, INC.",
+        "postalCode": "11042",
+        "stateName": "NEW YORK",
+        "street": "2000 MARCUS AVENUE"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "NEW HYDE PARK, NY, 11042",
+        "city": "NEW HYDE PARK",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NEW YORK",
+        "legalEntity": "CORPORATION",
+        "name": "NORTHWELL HEALTH, INC.",
+        "postalCode": "11042",
+        "secondaryAddressUnit": "2000 MARCUS AVENUE",
+        "stateName": "NEW YORK"
+      },
+      {
+        "address": "NEW HYDE PARK, NY, 11042",
+        "city": "NEW HYDE PARK",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NEW YORK",
+        "legalEntity": "CORPORATION",
+        "name": "NORTHWELL HEALTH, INC.",
+        "postalCode": "11042",
+        "secondaryAddressUnit": "2000 MARCUS AVENUE",
+        "stateName": "NEW YORK"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "NEW YORK, NY 10016, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "NEW YORK, NY 10016",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Holly Pekowsky AMSTER, ROTHSTEIN & EBENSTEIN LLP, 90 PARK AVENUE, 21ST FLOOR"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "NEW YORK, NY 10016, UNITED STATES",
+        "representativeAddressLines": [
+          "NEW YORK, NY 10016",
+          "UNITED STATES"
+        ],
+        "representativeName": "Holly Pekowsky"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20210308",
+      "active": false,
+      "application": {
+        "applicationDate": "20190103",
+        "applicationNumber": "88248397"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-NO STATEMENT OF USE FILED",
+        "markOfficialStatusCode": "606",
+        "markOfficialStatusDate": "20210308",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED",
+      "publicationDate": [
+        "20190604"
+      ]
+    },
+    "version": "20260113072005",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "IMPROVE NORTH",
+      "markVerbalElementText": "IMPROVENORTH"
+    }
+  },
+  "_uri": "/mark/us/51f942ae-4f28-4dc4-a6a2-9fe200bd3a76",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

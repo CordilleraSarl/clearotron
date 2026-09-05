@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/es/dc24ba93-17e3-43b8-b78c-d0cd453e3820",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "dc24ba93-17e3-43b8-b78c-d0cd453e3820",
+  "applicationNumber": "2169098 M7",
+  "registrationNumber": "2169098 M7",
+  "applicationDate": "1998-06-17",
+  "registrationDate": "1998-11-05",
+  "expiryDate": "2028-06-16",
+  "renewalDate": "2018-07-17",
+  "lastPublicationDate": "1998-08-01",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JOVEN ORQUESTA DE LA GENERALITAT VALENCIANA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Educacion, formacion, esparcimiento, actividades deportivas y culturales, en especial los servicios de creacion y consolidacion de estructuras musicales, tanto en equipos de trabajo como en infraestructuras en torno al mundo de la musica, la opera, la danza y otras expresiones artisticas populares; el desarrollo de los recursos humanos que hacen posible el hecho artistico. Organizacion de giras orquestales. Programas de clases magistrales para musicos, aprovechando la visita de grandes maestros de la musica, ballet, opera. La musica en el cine, como edicion monografica, asi como ciclos especiales de la filmoteca. Co-produccion de series televisivas, asi como la edicion de libros, discos y videos de opera y ballet.",
+      "translation_language": "en",
+      "translation": "EDUCATION, TRAINING, LEISURE, SPORTS AND CULTURAL ACTIVITIES, ESPECIALLY THE SERVICES OF CREATION AND CONSOLIDATION OF MUSICAL STRUCTURES, BOTH IN WORK TEAMS AND IN INFRASTRUCTURES AROUND THE WORLD OF MUSIC, OPERA, DANCE AND OTHER POPULAR ARTISTIC EXPRESSIONS; THE DEVELOPMENT OF HUMAN RESOURCES THAT MAKE THE ARTISTIC FACT POSSIBLE. ORCHESTRAS ORGANIZATION. PROGRAMS OF MASTER CLASSES FOR MUSICIANS, TAKING ADVANTAGE OF THE VISIT OF GREAT TEACHERS OF THE MUSIC, BALLET, OPERA. THE MUSIC IN THE CINEMA, AS A MONOGRAPHIC EDITION, AS WELL AS SPECIAL CYCLES OF THE FILM. CO-PRODUCTION OF TELEVISION SERIES, AS WELL AS THE EDITION OF BOOKS, DISCS AND VIDEOS OF OPERA AND BALLET."
+    }
+  ],
+  "owner": "GENERALITAT VALENCIANA. CONSELLERIA DE CULTURA I ESPORT",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "ISERN JARA, JORGE",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "GENERALITAT VALENCIANA. CONSELLERIA DE CULTURA I ESPORT"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "EDUCATION, TRAINING, LEISURE, SPORTS AND CULTURAL ACTIVITIES, ESPECIALLY THE SERVICES OF CREATION AND CONSOLIDATION OF MUSICAL STRUCTURES, BOTH IN WORK TEAMS AND IN INFRASTRUCTURES AROUND THE WORLD OF MUSIC, OPERA, DANCE AND OTHER POPULAR ARTISTIC EXPRESSIONS; THE DEVELOPMENT OF HUMAN RESOURCES THAT MAKE THE ARTISTIC FACT POSSIBLE. ORCHESTRAS ORGANIZATION. PROGRAMS OF MASTER CLASSES FOR MUSICIANS, TAKING ADVANTAGE OF THE VISIT OF GREAT TEACHERS OF THE MUSIC, BALLET, OPERA. THE MUSIC IN THE CINEMA, AS A MONOGRAPHIC EDITION, AS WELL AS SPECIAL CYCLES OF THE FILM. CO-PRODUCTION OF TELEVISION SERIES, AS WELL AS THE EDITION OF BOOKS, DISCS AND VIDEOS OF OPERA AND BALLET.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Educacion, formacion, esparcimiento, actividades deportivas y culturales, en especial los servicios de creacion y consolidacion de estructuras musicales, tanto en equipos de trabajo como en infraestructuras en torno al mundo de la musica, la opera, la danza y otras expresiones artisticas populares; el desarrollo de los recursos humanos que hacen posible el hecho artistico. Organizacion de giras orquestales. Programas de clases magistrales para musicos, aprovechando la visita de grandes maestros de la musica, ballet, opera. La musica en el cine, como edicion monografica, asi como ciclos especiales de la filmoteca. Co-produccion de series televisivas, asi como la edicion de libros, discos y videos de opera y ballet."
+        }
+      ]
+    },
+    "id": "dc24ba93-17e3-43b8-b78c-d0cd453e3820",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "27304",
+        "publicationVolume": "2672"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "representatives": [
+      {
+        "representativeName": "ISERN JARA, JORGE"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19980617",
+        "applicationNumber": "2169098 M7"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280616",
+      "lastPublicationDate": "19980801",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19981105",
+        "registrationNumber": "2169098 M7"
+      },
+      "renewalDate": "20180717",
+      "renewalPublishedDate": "20180723"
+    },
+    "version": "20260427150825",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOVEN ORQUESTA DE LA GENERALITAT VALENCIANA"
+    }
+  },
+  "_uri": "/mark/es/dc24ba93-17e3-43b8-b78c-d0cd453e3820",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

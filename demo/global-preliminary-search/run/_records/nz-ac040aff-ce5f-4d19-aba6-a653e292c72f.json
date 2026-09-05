@@ -1,0 +1,113 @@
+{
+  "uri": "/mark/nz/ac040aff-ce5f-4d19-aba6-a653e292c72f",
+  "provider": "clarivate",
+  "office": "nz",
+  "guid": "ac040aff-ce5f-4d19-aba6-a653e292c72f",
+  "applicationNumber": "706240",
+  "registrationNumber": "706240",
+  "applicationDate": "2003-12-19",
+  "registrationDate": "2005-07-07",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "GROSVENOR RESEARCH",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education and training; arranging and conducting of seminars; provision of the above mentioned services over the Internet.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "BOOSTER FINANCIAL SERVICES LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "NZ",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Level 19, Aon Centre, 1 Willis Street, Wellington 6011",
+        "applicantAddressCountryCode": "NZ",
+        "applicantAddressCountryName": "New Zealand",
+        "applicantName": "BOOSTER FINANCIAL SERVICES LIMITED"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education and training; arranging and conducting of seminars; provision of the above mentioned services over the Internet."
+        }
+      ]
+    },
+    "id": "ac040aff-ce5f-4d19-aba6-a653e292c72f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250626",
+    "registrationOfficeCode": "NZ",
+    "registrationOfficeName": "New Zealand",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "18 Viaduct Harbour Avenue Private Bag 92101 Auckland 1142",
+        "representativeCorrespondentAddressCountryCode": "NZ",
+        "representativeCorrespondentAddressCountryName": "New Zealand",
+        "representativeCorrespondentName": "Dentons Kensington Swan"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20031219",
+        "applicationNumber": "706240"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED",
+      "registration": {
+        "registrationDate": "20050707",
+        "registrationNumber": "706240"
+      }
+    },
+    "version": "20250626155951",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR RESEARCH"
+    }
+  },
+  "_uri": "/mark/nz/ac040aff-ce5f-4d19-aba6-a653e292c72f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.828Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

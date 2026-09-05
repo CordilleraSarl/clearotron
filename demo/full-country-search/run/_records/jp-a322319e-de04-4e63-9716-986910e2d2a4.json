@@ -1,0 +1,178 @@
+{
+  "uri": "/mark/jp/a322319e-de04-4e63-9716-986910e2d2a4",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "a322319e-de04-4e63-9716-986910e2d2a4",
+  "applicationNumber": "2005-011871",
+  "registrationNumber": "4917725",
+  "applicationDate": "2005-02-14",
+  "registrationDate": "2005-12-22",
+  "expiryDate": "2035-12-22",
+  "renewalDate": null,
+  "lastPublicationDate": "2006-01-31",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＣＬＩＮＣＨＥＣＫ",
+  "markTransliteration": "KURINCHEKKU",
+  "markTranslation": "CLINCHECK",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "歯列矯正機械器具の使用に関する指導・訓練，技芸・スポーツ又は知識の教授，セミナーの企画・運営又は開催，電子出版物の提供，図書及び記録の供覧",
+      "translation_language": "en",
+      "translation": "Instruction and training on the use of orthodontic appliances, professors of arts and sports or knowledge, planning and management of seminars, holding of electronic publications, viewing of books and records"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": null,
+      "description": "審美歯科医業，矯正歯科医業，歯科医業，審美歯科医業・矯正歯科医業及び歯科医業に関するコンサルティング，医業，医療情報の提供，健康診断，調剤，栄養の指導，医療用機械器具の貸与",
+      "translation_language": "en",
+      "translation": "Cosmetic dentist, orthodontist, dentist, aesthetic dentist medical, orthodontic dental medical and dentistry consulting, medical, medical information provision, health diagnosis, dispensing, nutrition guidance, lending of medical machinery and equipment"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YASUMURA TAKAAKI",
+  "priorities": [
+    {
+      "priorityDate": "20050214"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Instruction and training on the use of orthodontic appliances, professors of arts and sports or knowledge, planning and management of seminars, holding of electronic publications, viewing of books and records",
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "歯列矯正機械器具の使用に関する指導・訓練，技芸・スポーツ又は知識の教授，セミナーの企画・運営又は開催，電子出版物の提供，図書及び記録の供覧"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Cosmetic dentist, orthodontist, dentist, aesthetic dentist medical, orthodontic dental medical and dentistry consulting, medical, medical information provision, health diagnosis, dispensing, nutrition guidance, lending of medical machinery and equipment",
+          "intClassNumber": "44",
+          "intGoodsServicesDescription": "審美歯科医業，矯正歯科医業，歯科医業，審美歯科医業・矯正歯科医業及び歯科医業に関するコンサルティング，医業，医療情報の提供，健康診断，調剤，栄養の指導，医療用機械器具の貸与"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "41A01",
+          "natGoodsServicesDescription": "Providing educational or instruction services for arts, crafts, sports, science"
+        },
+        {
+          "natClassNumber": "41A03",
+          "natGoodsServicesDescription": "Seminar planning, management, promotion"
+        },
+        {
+          "natClassNumber": "41C02",
+          "natGoodsServicesDescription": "Public reference libraries, Provision of electronic publications"
+        },
+        {
+          "natClassNumber": "42V02",
+          "natGoodsServicesDescription": "Medical services, Medical information, Physical examination, Dentistry, Preparation of medicines"
+        },
+        {
+          "natClassNumber": "42V03",
+          "natGoodsServicesDescription": "Dietary / nutritional guidance"
+        },
+        {
+          "natClassNumber": "42X09",
+          "natGoodsServicesDescription": "Rental or leasing of machines / apparatus for medical use"
+        }
+      ]
+    },
+    "id": "a322319e-de04-4e63-9716-986910e2d2a4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20050214"
+      }
+    ],
+    "recordLastUpdated": "20251219",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YASUMURA TAKAAKI",
+        "representativeNativeName": "安村　高明"
+      },
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20050214",
+        "applicationNumber": "2005-011871"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20351222",
+      "lastPublicationDate": "20060131",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20051222",
+        "registrationNumber": "4917725"
+      }
+    },
+    "version": "20251219082124",
+    "wordMarkSpecification": {
+      "markTranslation": "CLINCHECK",
+      "markTransliteration": "KURINCHEKKU",
+      "markVerbalElementText": "ＣＬＩＮＣＨＥＣＫ"
+    }
+  },
+  "_uri": "/mark/jp/a322319e-de04-4e63-9716-986910e2d2a4",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.741Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

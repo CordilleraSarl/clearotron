@@ -1,0 +1,156 @@
+{
+  "uri": "/mark/cn/f0264885-2d0b-40d5-9427-33e979c227d3",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "f0264885-2d0b-40d5-9427-33e979c227d3",
+  "applicationNumber": "22926863",
+  "registrationNumber": "22926863",
+  "applicationDate": "2017-02-24",
+  "registrationDate": "2018-02-28",
+  "expiryDate": "2028-02-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-11-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "文克利",
+  "markTransliteration": "WENKOLY wen ke li",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "计算机,计算机外围设备,智能手表(数据处理),可下载的手机应用软件,平板电脑,智能手机,照相机(摄影),电子芯片,体育用头盔,眼镜",
+      "translation_language": "en",
+      "translation": "Computers, computer peripherals, smart watches (data processing), downloadable mobile application software, tablets, smartphones, cameras (photography), electronic chips, sports helmets, glasses"
+    }
+  ],
+  "owner": "Yongzhi Motor (Shenzhen) Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市宝安区松岗街道红星社区格布统建楼3栋10层1019号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Yongzhi Motor (Shenzhen) Co., Ltd.",
+        "applicantNativeName": "永治电机（深圳）有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computers, computer peripherals, smart watches (data processing), downloadable mobile application software, tablets, smartphones, cameras (photography), electronic chips, sports helmets, glasses",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计算机,计算机外围设备,智能手表(数据处理),可下载的手机应用软件,平板电脑,智能手机,照相机(摄影),电子芯片,体育用头盔,眼镜"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Equipments used in communication and navigation",
+        "Apparatus and instruments for photographic and cinematographic",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Life-saving instruments",
+        "Glasses and those accessories"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0919",
+          "subNatGoodsServicesDescription": "Life-saving instruments"
+        },
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        }
+      ]
+    },
+    "id": "f0264885-2d0b-40d5-9427-33e979c227d3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1577"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "福建省华硕知识产权有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170224",
+        "applicationNumber": "22926863"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280227",
+      "lastPublicationDate": "20171127",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180228",
+        "registrationNumber": "22926863"
+      }
+    },
+    "version": "20251002190826",
+    "wordMarkSpecification": {
+      "markTransliteration": "WENKOLY wen ke li",
+      "markVerbalElementText": "文克利"
+    }
+  },
+  "_uri": "/mark/cn/f0264885-2d0b-40d5-9427-33e979c227d3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:58.825Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-transliteration-numeric"
+  }
+}

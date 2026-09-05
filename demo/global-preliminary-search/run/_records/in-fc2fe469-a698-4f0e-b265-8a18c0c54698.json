@@ -1,0 +1,109 @@
+{
+  "uri": "/mark/in/fc2fe469-a698-4f0e-b265-8a18c0c54698",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "fc2fe469-a698-4f0e-b265-8a18c0c54698",
+  "applicationNumber": "6948810",
+  "registrationNumber": null,
+  "applicationDate": "2025-04-10",
+  "registrationDate": null,
+  "expiryDate": "2035-04-10",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "ElevenQ",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Scientific and technological services and research and design relating thereto; Industrial analysis and research services; Design and development of computer hardware and software",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SUNIL SACHDEVA Single Firm",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "KUNAL KHANNA & CO.[21792]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Kh No. 17/17, 23/24, Sukoon Farm, Gadaipur Jonapur Mandi Road, Near Gyan Kunj Public School, Chattar Pur, Chattarpur, South Delhi, Delhi - 110074",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "SUNIL SACHDEVA Single Firm"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific and technological services and research and design relating thereto; Industrial analysis and research services; Design and development of computer hardware and software"
+        }
+      ]
+    },
+    "id": "fc2fe469-a698-4f0e-b265-8a18c0c54698",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "45/11, EAST PATEL NAGAR, NEW DELHI - 110008",
+        "representativeName": "KUNAL KHANNA & CO.[21792]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250410",
+        "applicationNumber": "6948810"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20350410",
+      "markCurrentStatus": "FORMALITIES COMPLETED"
+    },
+    "version": "20250710174754",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ElevenQ"
+    }
+  },
+  "_uri": "/mark/in/fc2fe469-a698-4f0e-b265-8a18c0c54698",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.559Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

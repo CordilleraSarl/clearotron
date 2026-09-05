@@ -1,0 +1,186 @@
+{
+  "uri": "/mark/gb/424cabe5-9b51-401e-b33e-934dea51473d",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "424cabe5-9b51-401e-b33e-934dea51473d",
+  "applicationNumber": "4432955",
+  "registrationNumber": null,
+  "applicationDate": "2026-08-19",
+  "registrationDate": null,
+  "expiryDate": "2036-08-19",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "Wori",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    41,
+    42,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software; computer programmes; computer applications; software applications for mobile devices; computer software to enable searching and retrieval of data; downloadable applications for mobile devices; downloadable videos; data, images, graphics, text, programs or information stored on electronic, magnetic and/or optical means; mobile apps; instructional and teaching apparatus and instruments; instructional, teaching and training materials in electronic form; downloadable media; downloadable electronic publications.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Advertising; business management, organization and administration; office functions; human resources management; serving as a human resources department for others; employment services; recruitment services; personnel management and employment services; information, advisory and consultancy services in relation to the aforementioned services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education; providing of training; sporting and cultural activities; fitness and exercise instruction; fitness and exercise training services; provision of exercise facilities; provision of educational services relating to exercise; provision of information relating to physical exercises via an online web site; conducting courses, seminars and workshops; organisation of webinars; providing educational information online from a database or via the Internet; provision of online electronic publications (non-downloadable); information, advisory and consultancy services in relation to the aforementioned services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Software as a service [Saas]; platform as a service [PaaS]; computer software maintenance services; development and design of mobile applications; providing temporary use of non-downloadable software applications accessible via a web site; provision of scientific information; electronic data storage; information, advisory and consultancy services in relation to the aforementioned services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "en",
+      "description": "Medical services; health advice and information services; providing information in the field of health via a website; preparation of reports relating to health; provision of exercise services and facilities for health rehabilitation purposes; information, advisory and consultancy services in relation to the aforementioned services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "en",
+      "description": "Online social networking services; online social networking services accessible by means of downloadable mobile applications; information, advisory and consultancy services in relation to the aforementioned services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Health Assured Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Group In-House Legal",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "The Peninsula, Victoria Place, Manchester M4 4FB",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Health Assured Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software; computer programmes; computer applications; software applications for mobile devices; computer software to enable searching and retrieval of data; downloadable applications for mobile devices; downloadable videos; data, images, graphics, text, programs or information stored on electronic, magnetic and/or optical means; mobile apps; instructional and teaching apparatus and instruments; instructional, teaching and training materials in electronic form; downloadable media; downloadable electronic publications."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Advertising; business management, organization and administration; office functions; human resources management; serving as a human resources department for others; employment services; recruitment services; personnel management and employment services; information, advisory and consultancy services in relation to the aforementioned services."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education; providing of training; sporting and cultural activities; fitness and exercise instruction; fitness and exercise training services; provision of exercise facilities; provision of educational services relating to exercise; provision of information relating to physical exercises via an online web site; conducting courses, seminars and workshops; organisation of webinars; providing educational information online from a database or via the Internet; provision of online electronic publications (non-downloadable); information, advisory and consultancy services in relation to the aforementioned services."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software as a service [Saas]; platform as a service [PaaS]; computer software maintenance services; development and design of mobile applications; providing temporary use of non-downloadable software applications accessible via a web site; provision of scientific information; electronic data storage; information, advisory and consultancy services in relation to the aforementioned services."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Medical services; health advice and information services; providing information in the field of health via a website; preparation of reports relating to health; provision of exercise services and facilities for health rehabilitation purposes; information, advisory and consultancy services in relation to the aforementioned services."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Online social networking services; online social networking services accessible by means of downloadable mobile applications; information, advisory and consultancy services in relation to the aforementioned services."
+        }
+      ]
+    },
+    "id": "424cabe5-9b51-401e-b33e-934dea51473d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260827",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Peninsula Business Services Ltd, The Peninsula, Victoria Place, 2 Cheetham Hill Road, Irlam M4 4FB, Greater Manchester",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Group In-House Legal"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260819",
+        "applicationNumber": "4432955"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360819",
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260827020004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Wori"
+    }
+  },
+  "_uri": "/mark/gb/424cabe5-9b51-401e-b33e-934dea51473d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:55.751Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

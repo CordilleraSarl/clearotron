@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/cn/27b5f811-4b4f-413f-b797-77f140a86e97",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "27b5f811-4b4f-413f-b797-77f140a86e97",
+  "applicationNumber": "80930227",
+  "registrationNumber": null,
+  "applicationDate": "2024-09-14",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "FORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "安全令牌(加密装置);电子出版物(可下载);黑匣子(数据记录仪);可下载的电子钱包;可下载的计算机程序;可下载的计算机应用软件;可下载的手机应用软件;可下载的音乐文件;可下载的影像文件;移动电话用可下载图像",
+      "translation_language": "en",
+      "translation": "Security tokens (encryption devices); electronic publications (downloadable); black boxes (data recorders); downloadable electronic wallets; downloadable computer programs; downloadable computer application software; downloadable mobile phone application software; downloadable music files; downloadable video files; downloadable images for mobile phones"
+    }
+  ],
+  "owner": "Hainan Yueai Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "海南省海口市秀英区西秀镇长滨东四街10号广粤锦泰首座1栋A座2102",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Hainan Yueai Technology Co., Ltd.",
+        "applicantNativeName": "海南悦爱科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Security tokens (encryption devices); electronic publications (downloadable); black boxes (data recorders); downloadable electronic wallets; downloadable computer programs; downloadable computer application software; downloadable mobile phone application software; downloadable music files; downloadable video files; downloadable images for mobile phones",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "安全令牌(加密装置);电子出版物(可下载);黑匣子(数据记录仪);可下载的电子钱包;可下载的计算机程序;可下载的计算机应用软件;可下载的手机应用软件;可下载的音乐文件;可下载的影像文件;移动电话用可下载图像"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        }
+      ]
+    },
+    "id": "27b5f811-4b4f-413f-b797-77f140a86e97",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京秦云科技有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240914",
+        "applicationNumber": "80930227"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251005121442",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FORI"
+    }
+  },
+  "_uri": "/mark/cn/27b5f811-4b4f-413f-b797-77f140a86e97",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:53.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

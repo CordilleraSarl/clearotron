@@ -1,0 +1,218 @@
+{
+  "uri": "/mark/ca/f13255e4-7e84-4e8c-bfb2-45ad174b6042",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "f13255e4-7e84-4e8c-bfb2-45ad174b6042",
+  "applicationNumber": "1615607",
+  "registrationNumber": null,
+  "applicationDate": "2013-02-25",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2015-04-08"
+  ],
+  "abandonmentDate": "2016-03-16",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "VENQUE CRAFT CO.",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    18,
+    28
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        18,
+        28
+      ],
+      "language": "en",
+      "description": "(1) Backpacks, travel bags, luggage bags, wallets, purses, snow/ski bags, sports bags, day packs, tote bags,duffel bags, book bags, school bags, shoulder bags, gym bags, Computer bags, leather bags, electronic device cases , for consumers.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "VENQUE CRAFT CO.LTD.",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNIT 301, 100 HARRISON GARDEN BLVD, TORONTO, ONTARIO, M2N0C2",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressLines": [
+          "UNIT 301",
+          "100 HARRISON GARDEN BLVD",
+          "TORONTO",
+          "ONTARIO"
+        ],
+        "applicantAddressPostalCode": "M2N0C2",
+        "applicantName": "VENQUE CRAFT CO.LTD."
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Proposed Use in CANADA on wares marked (1)",
+        "typeDescription": "Proposed Use"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09,18,28",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Backpacks, travel bags, luggage bags, wallets, purses, snow/ski bags, sports bags, day packs, tote bags,duffel bags, book bags, school bags, shoulder bags, gym bags, Computer bags, leather bags, electronic device cases , for consumers."
+        }
+      ]
+    },
+    "id": "f13255e4-7e84-4e8c-bfb2-45ad174b6042",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20160316",
+        "descriptionText": "Abandoned - Subsection 40(3)"
+      },
+      {
+        "date": "20150724",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20160225"
+      },
+      {
+        "date": "20150724",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20150408",
+        "descriptionText": "Advertised",
+        "information": "Vol.62 Issue 3154"
+      },
+      {
+        "date": "20150319",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20150129",
+        "descriptionText": "Approval Notice Sent",
+        "responseDate": "20150226"
+      },
+      {
+        "date": "20140703",
+        "descriptionText": "Correspondence Created",
+        "responseDate": "20150103"
+      },
+      {
+        "date": "20130930",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20140330"
+      },
+      {
+        "date": "20130930",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20130228",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20130226",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20130225",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "UNIT 301, 100 HARRISON GARDEN BLVD, TORONTO, ONTARIO, M2N0C2",
+        "addressLines": [
+          "UNIT 301",
+          "100 HARRISON GARDEN BLVD",
+          "TORONTO",
+          "ONTARIO",
+          "M2N0C2"
+        ],
+        "countryName": "Canada",
+        "name": "VENQUE CRAFT CO.LTD.",
+        "postalCode": "M2N0C2"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3154",
+        "publicationVolume": "62"
+      }
+    ],
+    "recordLastUpdated": "20250624",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "status": {
+      "abandonmentDate": "20160316",
+      "active": false,
+      "allowanceDate": [
+        "20150724"
+      ],
+      "application": {
+        "applicationDate": "20130225",
+        "applicationNumber": "1615607"
+      },
+      "approvalDate": "20150319",
+      "cmNormalisedStatus": "ABANDONED",
+      "formalisationDate": "20130228",
+      "markCurrentStatus": "Abandoned - Section 40(3)",
+      "publicationDate": [
+        "20150408"
+      ],
+      "registrationFee": {
+        "dueDate": "20160225",
+        "requestDate": "20150724"
+      }
+    },
+    "subjectHeadings": [
+      "VENQUE CRAFT CO."
+    ],
+    "version": "20250624151515",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "VENQUE CRAFT CO",
+      "markVerbalElementText": "VENQUE CRAFT CO.",
+      "markVerbalElementTextFormal": "VENQUE CRAFT CO."
+    }
+  },
+  "_uri": "/mark/ca/f13255e4-7e84-4e8c-bfb2-45ad174b6042",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.562Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

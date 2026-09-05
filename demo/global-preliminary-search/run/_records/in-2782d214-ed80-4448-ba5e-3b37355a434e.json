@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/in/2782d214-ed80-4448-ba5e-3b37355a434e",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "2782d214-ed80-4448-ba5e-3b37355a434e",
+  "applicationNumber": "4678034",
+  "registrationNumber": null,
+  "applicationDate": "2020-09-28",
+  "registrationDate": null,
+  "expiryDate": "2030-09-28",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SEVENORBITS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Technology Service And Design & Development of Computer and Mobile Software",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NEAT WIND INDUSTRIES LIMITED Body Incorporate",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "LAW PROTECTOR[14326]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "L-121, MIDC, Ahmednagar - 414111",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "NEAT WIND INDUSTRIES LIMITED Body Incorporate"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Technology Service And Design & Development of Computer and Mobile Software"
+        }
+      ]
+    },
+    "id": "2782d214-ed80-4448-ba5e-3b37355a434e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1971"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "Dhumal Nivas, Behind Kamla Nehru Hospital, Near Barane School, 104, Mangalwar peth, Pune - 411 011",
+        "representativeName": "LAW PROTECTOR[14326]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200928",
+        "applicationNumber": "4678034"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300928",
+      "markCurrentStatus": "REGISTERED"
+    },
+    "version": "20250710151704",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEVENORBITS"
+    }
+  },
+  "_uri": "/mark/in/2782d214-ed80-4448-ba5e-3b37355a434e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.828Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,156 @@
+{
+  "uri": "/mark/bx/ea1dbac7-8ad8-47d2-b2ef-7c8f57d08861",
+  "provider": "clarivate",
+  "office": "bx",
+  "guid": "ea1dbac7-8ad8-47d2-b2ef-7c8f57d08861",
+  "applicationNumber": "1268466",
+  "registrationNumber": "938210",
+  "applicationDate": "2013-05-16",
+  "registrationDate": "2013-08-12",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2013-08-12",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "VENCARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "Zakelijke bemiddeling bij in- en verkoop, alsmede import en export van zorghulpmiddelen; reclame; beheer van commerciële zaken; zakelijke administratie; administratieve diensten; bemiddeling in commerciële zaken bij het verhandelen van verpleegkundige producten, verpleegartikelen, medische producten, toestellen, zorgmiddelen en hulpmiddelen, alsmede van orthopedische instrumenten en hulpmiddelen; administratieve diensten; advisering inzake commerciële zaken; administratieve diensten bij het afsluiten van contracten; bedrijfseconomische en bedrijfsorganisatorische advisering; voornoemde diensten te verlenen aan organisaties die zich bezig houden met zorgverlening; marktonderzoek en -analyse ten doel hebbende het vaststellen van de behoefte aan diverse vormen van zorgverlening.",
+      "translation_language": "en",
+      "translation": "Business mediation in the purchase and sale, as well as import and export of care aids; commercial break; business management; business administration; administrative services; mediation in commercial matters in the trading of nursing products, nursing articles, medical products, appliances, care means and aids, as well as orthopedic instruments and aids; administrative services; business advice; administrative services for the conclusion of contracts; business economics and business organization consultancy; providing the aforesaid services to organizations involved in healthcare; market research and analysis for the purpose of determining the need for various forms of care."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Wetenschappelijke en technologische diensten, alsmede bijbehorende onderzoeks- en ontwerpdiensten, met name verband houdende met de ontwikkeling en productie van zorghulpmiddelen; wetenschappelijke studies en onderzoeken, ook op medisch gebied en daaraan gerelateerde gebieden.",
+      "translation_language": "en",
+      "translation": "Scientific and technological services, and related research and design services, in particular related to the development and production of healthcare aids; scientific studies and research, including in the medical field and related fields."
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "nl",
+      "description": "Diensten op het gebied van de gezondheidszorg, waaronder medische diensten; medische en paramedische verzorging; uitlenen en verhuur van medisch en/of verplegend materiaal voor thuisverpleging en verzorging; verhuur en uitleen van verpleegkundige materialen en instrumenten; het geven van voorlichting en informatie over gezondheidszorg; diensten van gezondheidszorginstellingen; voorlichting en advisering inzake medische zorgverlening; medische advisering verband houdende met vraagstukken inzake voorzieningen en aanpassingen ten behoeve van de (thuis)verzorging en (thuis)verpleging; dienstverlening op het gebied van (thuis)verpleging.",
+      "translation_language": "en",
+      "translation": "Health care services, including medical services; medical and paramedical care; lending and rental of medical and/or nursing equipment for home nursing and care; rental and loan of nursing materials and instruments; providing education and information about health care; health care facility services; information and advice relating to medical care; medical advice relating to issues relating to facilities and adaptations for the purpose of (home) care and (home) nursing; home nursing services."
+    }
+  ],
+  "owner": "Vencare Holding BV",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Kopersteden 24-1, 7547 TK Enschede",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "Vencare Holding BV"
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Business mediation in the purchase and sale, as well as import and export of care aids; commercial break; business management; business administration; administrative services; mediation in commercial matters in the trading of nursing products, nursing articles, medical products, appliances, care means and aids, as well as orthopedic instruments and aids; administrative services; business advice; administrative services for the conclusion of contracts; business economics and business organization consultancy; providing the aforesaid services to organizations involved in healthcare; market research and analysis for the purpose of determining the need for various forms of care.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Zakelijke bemiddeling bij in- en verkoop, alsmede import en export van zorghulpmiddelen; reclame; beheer van commerciële zaken; zakelijke administratie; administratieve diensten; bemiddeling in commerciële zaken bij het verhandelen van verpleegkundige producten, verpleegartikelen, medische producten, toestellen, zorgmiddelen en hulpmiddelen, alsmede van orthopedische instrumenten en hulpmiddelen; administratieve diensten; advisering inzake commerciële zaken; administratieve diensten bij het afsluiten van contracten; bedrijfseconomische en bedrijfsorganisatorische advisering; voornoemde diensten te verlenen aan organisaties die zich bezig houden met zorgverlening; marktonderzoek en -analyse ten doel hebbende het vaststellen van de behoefte aan diverse vormen van zorgverlening."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific and technological services, and related research and design services, in particular related to the development and production of healthcare aids; scientific studies and research, including in the medical field and related fields.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Wetenschappelijke en technologische diensten, alsmede bijbehorende onderzoeks- en ontwerpdiensten, met name verband houdende met de ontwikkeling en productie van zorghulpmiddelen; wetenschappelijke studies en onderzoeken, ook op medisch gebied en daaraan gerelateerde gebieden."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Health care services, including medical services; medical and paramedical care; lending and rental of medical and/or nursing equipment for home nursing and care; rental and loan of nursing materials and instruments; providing education and information about health care; health care facility services; information and advice relating to medical care; medical advice relating to issues relating to facilities and adaptations for the purpose of (home) care and (home) nursing; home nursing services.",
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Diensten op het gebied van de gezondheidszorg, waaronder medische diensten; medische en paramedische verzorging; uitlenen en verhuur van medisch en/of verplegend materiaal voor thuisverpleging en verzorging; verhuur en uitleen van verpleegkundige materialen en instrumenten; het geven van voorlichting en informatie over gezondheidszorg; diensten van gezondheidszorginstellingen; voorlichting en advisering inzake medische zorgverlening; medische advisering verband houdende met vraagstukken inzake voorzieningen en aanpassingen ten behoeve van de (thuis)verzorging en (thuis)verpleging; dienstverlening op het gebied van (thuis)verpleging."
+        }
+      ]
+    },
+    "id": "ea1dbac7-8ad8-47d2-b2ef-7c8f57d08861",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "0812"
+      }
+    ],
+    "recordLastUpdated": "20250623",
+    "registrationOfficeCode": "BX",
+    "registrationOfficeName": "Benelux",
+    "representatives": [
+      {
+        "representativeAddress": "Nachtwachtlaan 20, 1058 EA Amsterdam",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20130516",
+        "applicationNumber": "1268466"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20130812",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20130812",
+        "registrationNumber": "938210"
+      }
+    },
+    "version": "20250623181245",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENCARE"
+    }
+  },
+  "_uri": "/mark/bx/ea1dbac7-8ad8-47d2-b2ef-7c8f57d08861",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

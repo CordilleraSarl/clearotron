@@ -1,0 +1,127 @@
+{
+  "uri": "/mark/br/ec3c5563-3c5c-438e-8e51-f5d935d61f33",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "ec3c5563-3c5c-438e-8e51-f5d935d61f33",
+  "applicationNumber": "813645638",
+  "registrationNumber": null,
+  "applicationDate": "1987-08-12",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "GORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    5,
+    29,
+    30,
+    31,
+    32,
+    33,
+    35,
+    36,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        5,
+        29,
+        30,
+        31,
+        32,
+        33,
+        35,
+        36,
+        42
+      ],
+      "language": "pt",
+      "description": "Bebidas, xaropes e sucos concentrados.",
+      "translation_language": "en",
+      "translation": "Drinks, syrups and concentrated juices."
+    }
+  ],
+  "owner": "INDUSTRIAL DE BEBIDAS SABARA LTDA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "No agent available",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "INDUSTRIAL DE BEBIDAS SABARA LTDA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Drinks, syrups and concentrated juices.",
+          "intClassNumber": "05,29,30,31,32,33,35,36,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Bebidas, xaropes e sucos concentrados."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "35.10"
+        }
+      ]
+    },
+    "id": "ec3c5563-3c5c-438e-8e51-f5d935d61f33",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "No agent available"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19870812",
+        "applicationNumber": "813645638"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20250630193554",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GORI"
+    }
+  },
+  "_uri": "/mark/br/ec3c5563-3c5c-438e-8e51-f5d935d61f33",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.048Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

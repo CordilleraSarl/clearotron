@@ -1,0 +1,126 @@
+{
+  "uri": "/mark/ru/7f73b466-6d4f-4586-8f98-00bc7b6c5aa9",
+  "provider": "clarivate",
+  "office": "ru",
+  "guid": "7f73b466-6d4f-4586-8f98-00bc7b6c5aa9",
+  "applicationNumber": "2001724914",
+  "registrationNumber": "232624",
+  "applicationDate": "2001-08-16",
+  "registrationDate": "2002-12-21",
+  "expiryDate": "2031-08-16",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ЛОРИ",
+  "markTransliteration": "LORI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    29,
+    30,
+    31,
+    32,
+    33,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        29,
+        30,
+        31,
+        32,
+        33,
+        35,
+        42
+      ],
+      "language": "ru",
+      "description": "29 - мясо, рыба, птица и дичь; мясные экстракты; овощи и фрукты консервированные, сушеные и подвергнутые тепловой обработке; желе, варенье, компоты; яйца, молоко и молочные продукты; масла и жиры пищевые. 30 - кофе, чай, какао, сахар, рис, тапиока [маниока], саго, заменители кофе; мука и зерновые продукты, хлебобулочные изделия, кондитерские изделия, мороженое; мед, сироп из патоки; дрожжи, пекарные порошки; соль, горчица; уксус, соусы [приправы]; пряности; пищевой лед. 31 - сельскохозяйственные, садовые, лесные и зерновые продукты, не относящиеся к другим классам; животные; свежие фрукты и овощи; семена, живые растения и цветы; корма для животных, солод. 32 - пиво; минеральные и газированные воды и прочие безалкогольные напитки; фруктовые напитки и фруктовые соки; сиропы и прочие составы для изготовления напитков. 33 - алкогольные напитки [за исключением пива]. 35 - сбыт товаров 29, 30, 31, 32, 33 классов через посредников. 42 - реализация товаров 29, 30, 31, 32, 33 классов.",
+      "translation_language": "en",
+      "translation": "29 - Meat, fish, poultry and game; meat extracts; fruits and vegetables, canned, dried and cooked; jellies, jams, compotes; eggs, milk and milk products; edible oils and fats. 30 - Coffee, tea, cocoa, sugar, rice, tapioca [cassava], sago, coffee substitutes; flour and cereals, bread, pastry and confectionery, ices; honey, molasses syrup; yeast, baking powder; salt, mustard; vinegar, sauces [condiments]; spices; edible ice. 31 - Agricultural, horticultural, forestry products and grains not included in other classes; animals; fresh fruits and vegetables; seeds, natural plants and flowers; feed for animals, malt. 32 - beer; mineral and aerated waters and other non-alcoholic drinks; fruit drinks and fruit juices; syrups and other preparations for making beverages. 33 - Alcoholic beverages [except beer]. 35 - sale of goods 29, 30, 31, 32, 33 classes through intermediaries. 42 - sale of goods 29, 30, 31, 32, 33 classes."
+    }
+  ],
+  "owner": "LIKO 98",
+  "ownerNative": null,
+  "ownerCountry": "RU",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "RU",
+        "applicantAddressCountryName": "Russian Federation",
+        "applicantName": "LIKO 98",
+        "applicantNativeName": "Общество с ограниченной ответственностью \"ЛИКО-98\" Москва"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "29 - Meat, fish, poultry and game; meat extracts; fruits and vegetables, canned, dried and cooked; jellies, jams, compotes; eggs, milk and milk products; edible oils and fats. 30 - Coffee, tea, cocoa, sugar, rice, tapioca [cassava], sago, coffee substitutes; flour and cereals, bread, pastry and confectionery, ices; honey, molasses syrup; yeast, baking powder; salt, mustard; vinegar, sauces [condiments]; spices; edible ice. 31 - Agricultural, horticultural, forestry products and grains not included in other classes; animals; fresh fruits and vegetables; seeds, natural plants and flowers; feed for animals, malt. 32 - beer; mineral and aerated waters and other non-alcoholic drinks; fruit drinks and fruit juices; syrups and other preparations for making beverages. 33 - Alcoholic beverages [except beer]. 35 - sale of goods 29, 30, 31, 32, 33 classes through intermediaries. 42 - sale of goods 29, 30, 31, 32, 33 classes.",
+          "intClassNumber": "29,30,31,32,33,35,42",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "29 - мясо, рыба, птица и дичь; мясные экстракты; овощи и фрукты консервированные, сушеные и подвергнутые тепловой обработке; желе, варенье, компоты; яйца, молоко и молочные продукты; масла и жиры пищевые. 30 - кофе, чай, какао, сахар, рис, тапиока [маниока], саго, заменители кофе; мука и зерновые продукты, хлебобулочные изделия, кондитерские изделия, мороженое; мед, сироп из патоки; дрожжи, пекарные порошки; соль, горчица; уксус, соусы [приправы]; пряности; пищевой лед. 31 - сельскохозяйственные, садовые, лесные и зерновые продукты, не относящиеся к другим классам; животные; свежие фрукты и овощи; семена, живые растения и цветы; корма для животных, солод. 32 - пиво; минеральные и газированные воды и прочие безалкогольные напитки; фруктовые напитки и фруктовые соки; сиропы и прочие составы для изготовления напитков. 33 - алкогольные напитки [за исключением пива]. 35 - сбыт товаров 29, 30, 31, 32, 33 классов через посредников. 42 - реализация товаров 29, 30, 31, 32, 33 классов."
+        }
+      ]
+    },
+    "id": "7f73b466-6d4f-4586-8f98-00bc7b6c5aa9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "05.07.13",
+      "27.05.23",
+      "02.01.07"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250705",
+    "registrationOfficeCode": "RU",
+    "registrationOfficeName": "Russian Federation",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20010816",
+        "applicationNumber": "2001724914"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310816",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20021221",
+        "registrationNumber": "232624"
+      }
+    },
+    "version": "20250705070033",
+    "wordMarkSpecification": {
+      "markTransliteration": "LORI",
+      "markVerbalElementText": "ЛОРИ"
+    }
+  },
+  "_uri": "/mark/ru/7f73b466-6d4f-4586-8f98-00bc7b6c5aa9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.453Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

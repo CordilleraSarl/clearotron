@@ -1,0 +1,133 @@
+{
+  "uri": "/mark/br/b0b16870-d5ca-4c57-b920-9ec1eb4ad22b",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "b0b16870-d5ca-4c57-b920-9ec1eb4ad22b",
+  "applicationNumber": "817411267",
+  "registrationNumber": null,
+  "applicationDate": "1993-08-02",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "DORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    5,
+    29,
+    30,
+    31,
+    32,
+    33,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        5,
+        29,
+        30,
+        31,
+        32,
+        33,
+        35,
+        42
+      ],
+      "language": "pt",
+      "description": "Frutas, verduras, legumes e cereais. Gorduras e óleos comestíveis. Condimentos, especiarias e essências alimentícias. Frutas, verduras, legumes e cereais. Gorduras e óleos comestíveis. Condimentos, especiarias e essências alimentícias. Frutas, verduras, legumes e cereais. Gorduras e óleos comestíveis. Condimentos, especiarias e essências alimentícias.",
+      "translation_language": "en",
+      "translation": "Fruits, vegetables, legumes and cereals. Edible fats and oils. Condiments, spices and food essences. Fruits, vegetables, legumes and cereals. Edible fats and oils. Condiments, spices and food essences. Fruits, vegetables, legumes and cereals. Edible fats and oils. Condiments, spices and food essences."
+    }
+  ],
+  "owner": "DORI ALIMENTOS S. A",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "ESCRITÓRIO ANTARES S/C LTDA.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "DORI ALIMENTOS S. A"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Fruits, vegetables, legumes and cereals. Edible fats and oils. Condiments, spices and food essences. Fruits, vegetables, legumes and cereals. Edible fats and oils. Condiments, spices and food essences. Fruits, vegetables, legumes and cereals. Edible fats and oils. Condiments, spices and food essences.",
+          "intClassNumber": "01,05,29,30,31,32,33,35,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Frutas, verduras, legumes e cereais. Gorduras e óleos comestíveis. Condimentos, especiarias e essências alimentícias. Frutas, verduras, legumes e cereais. Gorduras e óleos comestíveis. Condimentos, especiarias e essências alimentícias. Frutas, verduras, legumes e cereais. Gorduras e óleos comestíveis. Condimentos, especiarias e essências alimentícias."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "29.30"
+        },
+        {
+          "natClassNumber": "29.40"
+        },
+        {
+          "natClassNumber": "29.50"
+        }
+      ]
+    },
+    "id": "b0b16870-d5ca-4c57-b920-9ec1eb4ad22b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "ESCRITÓRIO ANTARES S/C LTDA."
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19930802",
+        "applicationNumber": "817411267"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20250630195706",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DORI"
+    }
+  },
+  "_uri": "/mark/br/b0b16870-d5ca-4c57-b920-9ec1eb4ad22b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.998Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

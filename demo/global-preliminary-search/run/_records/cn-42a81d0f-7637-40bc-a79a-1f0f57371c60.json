@@ -1,0 +1,245 @@
+{
+  "uri": "/mark/cn/42a81d0f-7637-40bc-a79a-1f0f57371c60",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "42a81d0f-7637-40bc-a79a-1f0f57371c60",
+  "applicationNumber": "23382085",
+  "registrationNumber": null,
+  "applicationDate": "2017-04-01",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "BORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Beijing Bo Rui Huatong Technology Co., Ltd",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市海淀区西小口路66号中关村东升科技园B-2楼一层",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Beijing Bo Rui Huatong Technology Co., Ltd",
+        "applicantNativeName": "北京博瑞华通科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Providing food, beverage, and accommodation services",
+        "Providing housing facilities services",
+        "Medical services. Retirement homes",
+        "Services for sanitary and beauty propose",
+        "Services provided for animals",
+        "Agriculture and horticulture services",
+        "Legal services",
+        "Security service",
+        "Research and development service",
+        "Geological surveys, research and development service",
+        "Chemical research service",
+        "Biological research service",
+        "Meteorological information service",
+        "Survey service",
+        "Picture processing and treating services",
+        "Registered design service",
+        "Design and information service for architecture",
+        "Dress designing service",
+        "Entertainment and physical exercise services",
+        "Computer programming, and concerned services",
+        "Child care service. Providing personnel service. Education",
+        "Entertainment and physical exercise services",
+        "Entertainment and physical exercise services",
+        "Authenticating service for works of art",
+        "Sewage processing service",
+        "Undertaking service",
+        "Other services included in this class"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4201",
+          "subNatGoodsServicesDescription": "Providing food, beverage, and accommodation services"
+        },
+        {
+          "subNatClassNumber": "4202",
+          "subNatGoodsServicesDescription": "Providing housing facilities services"
+        },
+        {
+          "subNatClassNumber": "4203",
+          "subNatGoodsServicesDescription": "Medical services. Retirement homes"
+        },
+        {
+          "subNatClassNumber": "4204",
+          "subNatGoodsServicesDescription": "Services for sanitary and beauty propose"
+        },
+        {
+          "subNatClassNumber": "4205",
+          "subNatGoodsServicesDescription": "Services provided for animals"
+        },
+        {
+          "subNatClassNumber": "4206",
+          "subNatGoodsServicesDescription": "Agriculture and horticulture services"
+        },
+        {
+          "subNatClassNumber": "4207",
+          "subNatGoodsServicesDescription": "Legal services"
+        },
+        {
+          "subNatClassNumber": "4208",
+          "subNatGoodsServicesDescription": "Security service"
+        },
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4210",
+          "subNatGoodsServicesDescription": "Geological surveys, research and development service"
+        },
+        {
+          "subNatClassNumber": "4211",
+          "subNatGoodsServicesDescription": "Chemical research service"
+        },
+        {
+          "subNatClassNumber": "4212",
+          "subNatGoodsServicesDescription": "Biological research service"
+        },
+        {
+          "subNatClassNumber": "4213",
+          "subNatGoodsServicesDescription": "Meteorological information service"
+        },
+        {
+          "subNatClassNumber": "4214",
+          "subNatGoodsServicesDescription": "Survey service"
+        },
+        {
+          "subNatClassNumber": "4215",
+          "subNatGoodsServicesDescription": "Picture processing and treating services"
+        },
+        {
+          "subNatClassNumber": "4216",
+          "subNatGoodsServicesDescription": "Registered design service"
+        },
+        {
+          "subNatClassNumber": "4217",
+          "subNatGoodsServicesDescription": "Design and information service for architecture"
+        },
+        {
+          "subNatClassNumber": "4218",
+          "subNatGoodsServicesDescription": "Dress designing service"
+        },
+        {
+          "subNatClassNumber": "4219",
+          "subNatGoodsServicesDescription": "Entertainment and physical exercise services"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        },
+        {
+          "subNatClassNumber": "4221",
+          "subNatGoodsServicesDescription": "Child care service. Providing personnel service. Education"
+        },
+        {
+          "subNatClassNumber": "4222",
+          "subNatGoodsServicesDescription": "Entertainment and physical exercise services"
+        },
+        {
+          "subNatClassNumber": "4223",
+          "subNatGoodsServicesDescription": "Entertainment and physical exercise services"
+        },
+        {
+          "subNatClassNumber": "4224",
+          "subNatGoodsServicesDescription": "Authenticating service for works of art"
+        },
+        {
+          "subNatClassNumber": "4225",
+          "subNatGoodsServicesDescription": "Sewage processing service"
+        },
+        {
+          "subNatClassNumber": "4226",
+          "subNatGoodsServicesDescription": "Undertaking service"
+        },
+        {
+          "subNatClassNumber": "4227",
+          "subNatGoodsServicesDescription": "Other services included in this class"
+        }
+      ]
+    },
+    "id": "42a81d0f-7637-40bc-a79a-1f0f57371c60",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京勤达行管理咨询有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170401",
+        "applicationNumber": "23382085"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251002194353",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "BORI"
+    }
+  },
+  "_uri": "/mark/cn/42a81d0f-7637-40bc-a79a-1f0f57371c60",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.211Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

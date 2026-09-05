@@ -1,0 +1,103 @@
+{
+  "uri": "/mark/ru/d60a1264-7079-44d0-8526-fe7834369ee8",
+  "provider": "clarivate",
+  "office": "ru",
+  "guid": "d60a1264-7079-44d0-8526-fe7834369ee8",
+  "applicationNumber": "2026758555",
+  "registrationNumber": null,
+  "applicationDate": "2026-04-29",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "AVENORIS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ru",
+      "description": "трансформаторы [электричество]; преобразователи электрические; приборы регулирующие электрические; выпрямители тока; спиртомеры; аноды; вилки штепсельные электрические; разрядник искровой; молниеотводы; регулируемый источник питания; регуляторы напряжения.",
+      "translation_language": "en",
+      "translation": "transformers [electricity]; electrical converters; electrical control devices; current rectifiers; alcohol meters; anodes; electrical plugs; spark arrester; lightning rods; adjustable power supply; voltage regulators."
+    }
+  ],
+  "owner": "SHANGHAI DOMANI INDUSTRIAL CO",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "SHANGHAI",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "SHANGHAI DOMANI INDUSTRIAL CO"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "transformers [electricity]; electrical converters; electrical control devices; current rectifiers; alcohol meters; anodes; electrical plugs; spark arrester; lightning rods; adjustable power supply; voltage regulators.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "трансформаторы [электричество]; преобразователи электрические; приборы регулирующие электрические; выпрямители тока; спиртомеры; аноды; вилки штепсельные электрические; разрядник искровой; молниеотводы; регулируемый источник питания; регуляторы напряжения."
+        }
+      ]
+    },
+    "id": "d60a1264-7079-44d0-8526-fe7834369ee8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260610",
+    "registrationOfficeCode": "RU",
+    "registrationOfficeName": "Russian Federation",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260429",
+        "applicationNumber": "2026758555"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260610020256",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENORIS"
+    }
+  },
+  "_uri": "/mark/ru/d60a1264-7079-44d0-8526-fe7834369ee8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.828Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

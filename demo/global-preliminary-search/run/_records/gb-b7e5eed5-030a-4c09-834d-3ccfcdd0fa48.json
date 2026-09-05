@@ -1,0 +1,126 @@
+{
+  "uri": "/mark/gb/b7e5eed5-030a-4c09-834d-3ccfcdd0fa48",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "b7e5eed5-030a-4c09-834d-3ccfcdd0fa48",
+  "applicationNumber": "3088378",
+  "registrationNumber": "3088378",
+  "applicationDate": "2015-01-07",
+  "registrationDate": "2015-05-29",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "Creative North",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Trade Fairs; Provision of Business Information.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Providing of Training; Cultural Activities.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Creative North Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Flat 5, Riverview, Portland Place, INVERNESS IV1 1NE",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Creative North Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Trade Fairs; Provision of Business Information."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing of Training; Cultural Activities."
+        }
+      ]
+    },
+    "id": "b7e5eed5-030a-4c09-834d-3ccfcdd0fa48",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2015/012"
+      }
+    ],
+    "recordLastUpdated": "20260122",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20150107",
+        "applicationNumber": "3088378"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ARCHIVED",
+      "registration": {
+        "registrationDate": "20150529",
+        "registrationNumber": "3088378"
+      }
+    },
+    "version": "20260122020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Creative North"
+    }
+  },
+  "_uri": "/mark/gb/b7e5eed5-030a-4c09-834d-3ccfcdd0fa48",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.815Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "uri": "/mark/cl/a9b3a2ad-5c44-47a4-a3c4-5c72e0ee3acf",
+  "provider": "clarivate",
+  "office": "cl",
+  "guid": "a9b3a2ad-5c44-47a4-a3c4-5c72e0ee3acf",
+  "applicationNumber": "1318399",
+  "registrationNumber": "1308180",
+  "applicationDate": "2019-03-25",
+  "registrationDate": "2019-10-17",
+  "expiryDate": "2029-10-17",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Qiri",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "(Concedida) Asesoramiento de eficiencia empresarial; asistencia a empresas industriales o comerciales en la gestión de su negocio; servicios de consultoría relativa a la publicidad; servicios de consultoría y asesoramiento en gestión de negocios.",
+      "translation_language": "en",
+      "translation": "(Granted) Business efficiency advice; assistance to industrial or commercial companies in the management of their business; consulting services relating to advertising; consulting and advisory services in business management."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "(Concedida) Desarrollo de software informático; diseño industrial y diseño gráfico; investigación y desarrollo de software informático; servicios de consultoría en el ámbito del desarrollo tecnológico.",
+      "translation_language": "en",
+      "translation": "(Granted) Computer software development; industrial design and graphic design; computer software research and development; consulting services in the field of technological development."
+    }
+  ],
+  "owner": "JUAN ANDRE HILDALGO UGALDE",
+  "ownerNative": null,
+  "ownerCountry": "CL",
+  "representative": "EUGENIO HERNAN DOUSSOULIN ESCOBAR",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "ARICA",
+        "applicantAddressCountryCode": "CL",
+        "applicantAddressCountryName": "Chile",
+        "applicantName": "JUAN ANDRE HILDALGO UGALDE"
+      },
+      {
+        "applicantAddress": "ARICA",
+        "applicantAddressCountryCode": "CL",
+        "applicantAddressCountryName": "Chile",
+        "applicantName": "UNIVERSIDAD DE TARAPACA"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "(Granted) Business efficiency advice; assistance to industrial or commercial companies in the management of their business; consulting services relating to advertising; consulting and advisory services in business management.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "(Concedida) Asesoramiento de eficiencia empresarial; asistencia a empresas industriales o comerciales en la gestión de su negocio; servicios de consultoría relativa a la publicidad; servicios de consultoría y asesoramiento en gestión de negocios."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "(Granted) Computer software development; industrial design and graphic design; computer software research and development; consulting services in the field of technological development.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "(Concedida) Desarrollo de software informático; diseño industrial y diseño gráfico; investigación y desarrollo de software informático; servicios de consultoría en el ámbito del desarrollo tecnológico."
+        }
+      ]
+    },
+    "id": "a9b3a2ad-5c44-47a4-a3c4-5c72e0ee3acf",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "La etiqueta consiste en la palabra 'Qiri' en color 'luz verde mar' (Código Hexadecimal de color: #13beac). De esta palabra, sólo la letra inicial ('Q') se encuentra en mayúscula, mientras que el resto de la palabra ('iri') aparece en minúsculas. Cada trazo que conforma el logotipo tiene el mismo grosor, así como también cuentan con terminaciones redondeadas. La letra inicial 'Q' contiene un trazo vertical redondeado en su interior. Bajo las letras 'iri' está posicionado un trazo curvo que representa una sonrisa, lo que en conjunto con dichas letras estructura la forma de un rostro. La etiqueta consiste en la palabra 'Qiri' en color 'luz verde mar' (Código Hexadecimal de color: #13beac). De esta palabra, sólo la letra inicial ('Q') se encuentra en mayúscula, mientras que el resto de la palabra ('iri') aparece en minúsculas. Cada trazo que conforma el logotipo tiene el mismo grosor, así como también cuentan con terminaciones redondeadas. La letra inicial 'Q' contiene un trazo vertical redondeado en su interior. Bajo las letras 'iri' está posicionado un trazo curvo que representa una sonrisa, lo que en conjunto con dichas letras estructura la forma de un rostro."
+      }
+    ],
+    "markImageViennaClassification": [
+      "26.11.12",
+      "27.05.23",
+      "29.01.03"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260615",
+    "registrationOfficeCode": "CL",
+    "registrationOfficeName": "Chile",
+    "representatives": [
+      {
+        "representativeAddress": "ARICA",
+        "representativeAddressCountryCode": "CL",
+        "representativeAddressCountryName": "Chile",
+        "representativeName": "EUGENIO HERNAN DOUSSOULIN ESCOBAR"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190325",
+        "applicationNumber": "1318399"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20291017",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20191017",
+        "registrationNumber": "1308180"
+      }
+    },
+    "version": "20260615161030",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Qiri"
+    }
+  },
+  "_uri": "/mark/cl/a9b3a2ad-5c44-47a4-a3c4-5c72e0ee3acf",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:38.359Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

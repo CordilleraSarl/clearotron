@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/pe/d9a65b2b-d926-47fe-8949-8e36b52235ad",
+  "provider": "clarivate",
+  "office": "pe",
+  "guid": "d9a65b2b-d926-47fe-8949-8e36b52235ad",
+  "applicationNumber": "962953-2022",
+  "registrationNumber": "P00331144",
+  "applicationDate": "2022-08-03",
+  "registrationDate": "2022-09-29",
+  "expiryDate": "2032-09-29",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIINTI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "aparatos e instrumentos científicos, náuticos, geodésicos, fotográficos, cinematográficos, ópticos, de pesaje, de medición, de señalización, de control (inspección), de salvamento y de enseñanza; aparatos e instrumentos de conducción, distribución, transformación, acumulación, regulación o control de la electricidad; aparatos de grabación, transmisión o reproducción de sonido o imágenes; soportes de registro magnéticos, discos acústicos; discos compactos, dvd y otros soportes de grabación digitales; mecanismos para aparatos de previo pago; cajas registradoras, máquinas de calcular, equipos de procesamiento de datos, ordenadores; software; extintores, criptograficas descargables para recibir y gastar criptomonedas.",
+      "translation_language": "en",
+      "translation": "scientific, nautical, surveying, photographic, cinematographic, optical, weighing, measuring, signalling, control (inspection), life-saving and teaching apparatus and instruments; Apparatus and instruments for conduction, distribution, transformation, accumulation, regulation or control of electricity; apparatus for recording, transmission or reproduction of sound or images; magnetic record carriers, recording discs; compact discs, dvd and other digital recording media; mechanisms for pre-paid devices; cash registers, calculating machines, data processing equipment, computers; software; fire extinguishers, downloadable cryptographic to receive and spend cryptocurrencies."
+    }
+  ],
+  "owner": "ANDINA NATURAL Y DISTRIBUCION E. I. R. L.",
+  "ownerNative": null,
+  "ownerCountry": "UNKN",
+  "representative": "LLANOS FARFAN LUIS ENRIQUE",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "LIMA - LIMA - SAN ISIDRO",
+        "applicantAddressCountryCode": "UNKN",
+        "applicantAddressCountryName": "Unknown Applicant Country/Region",
+        "applicantName": "ANDINA NATURAL Y DISTRIBUCION E. I. R. L."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "scientific, nautical, surveying, photographic, cinematographic, optical, weighing, measuring, signalling, control (inspection), life-saving and teaching apparatus and instruments; Apparatus and instruments for conduction, distribution, transformation, accumulation, regulation or control of electricity; apparatus for recording, transmission or reproduction of sound or images; magnetic record carriers, recording discs; compact discs, dvd and other digital recording media; mechanisms for pre-paid devices; cash registers, calculating machines, data processing equipment, computers; software; fire extinguishers, downloadable cryptographic to receive and spend cryptocurrencies.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "aparatos e instrumentos científicos, náuticos, geodésicos, fotográficos, cinematográficos, ópticos, de pesaje, de medición, de señalización, de control (inspección), de salvamento y de enseñanza; aparatos e instrumentos de conducción, distribución, transformación, acumulación, regulación o control de la electricidad; aparatos de grabación, transmisión o reproducción de sonido o imágenes; soportes de registro magnéticos, discos acústicos; discos compactos, dvd y otros soportes de grabación digitales; mecanismos para aparatos de previo pago; cajas registradoras, máquinas de calcular, equipos de procesamiento de datos, ordenadores; software; extintores, criptograficas descargables para recibir y gastar criptomonedas."
+        }
+      ]
+    },
+    "id": "d9a65b2b-d926-47fe-8949-8e36b52235ad",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260811",
+    "registrationOfficeCode": "PE",
+    "registrationOfficeName": "Peru",
+    "representatives": [
+      {
+        "representativeAddress": "LIMA - LIMA - SAN ISIDRO",
+        "representativeAddressCountryCode": "PE",
+        "representativeAddressCountryName": "Peru",
+        "representativeName": "LLANOS FARFAN LUIS ENRIQUE"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220803",
+        "applicationNumber": "962953-2022"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320929",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220929",
+        "registrationNumber": "P00331144"
+      }
+    },
+    "version": "20260811020445",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIINTI"
+    }
+  },
+  "_uri": "/mark/pe/d9a65b2b-d926-47fe-8949-8e36b52235ad",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.399Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

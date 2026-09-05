@@ -1,0 +1,189 @@
+{
+  "uri": "/mark/de/c8d42318-d780-483f-9a5e-d00cc9ade9f7",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "c8d42318-d780-483f-9a5e-d00cc9ade9f7",
+  "applicationNumber": "302018006318.3",
+  "registrationNumber": "302018006318",
+  "applicationDate": "2018-03-13",
+  "registrationDate": "2018-11-08",
+  "expiryDate": "2028-03-31",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-12-14",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "vincare",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    5,
+    9,
+    10,
+    35
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        5
+      ],
+      "language": "de",
+      "description": "Inkontinenzprodukte, insbesondere Inkontinenzhosen, Inkontinenzeinlagen, Inkontinenzwindelhosen, Inkontinenzbekleidung, Inkontinenzvorlagen",
+      "translation_language": "en",
+      "translation": "incontinence products, in particular incontinence pants, incontinence briefs, incontinence briefs, incontinence garment, incontinence briefs"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Schutz- und Sicherheitsausrüstung",
+      "translation_language": "en",
+      "translation": "protective and safety equipment"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "de",
+      "description": "Inkontinenzunterlagen; Bettschutzeinlagen; Krankenunterlagen; medizinische Bekleidung, insbesondere Einweghandschuhe für medizinische Zwecke, Mundschutz für medizinische Zwecke",
+      "translation_language": "en",
+      "translation": "incontinence briefs; Bed protection underlays; Medical records; medical clothing, in particular disposable gloves for medical purposes, mouthguards for medical purposes"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Abrechnungsdienstleistungen; Einzelhandels-, Großhandels- und Online-Versandhandelsdienstleistungen betreffend die vorgenannten Waren der Klassen 5, 9 und 10",
+      "translation_language": "en",
+      "translation": "billing services; Retailing, wholesaling and online mail order services relating to the aforesaid goods of classes 5, 9 and 10"
+    }
+  ],
+  "owner": "vincare GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "FRANZEN legal",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "28217 Bremen",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "vincare GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "cmMarkImageEUclassification": [
+      "02.09.01",
+      "24.13.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "incontinence products, in particular incontinence pants, incontinence briefs, incontinence briefs, incontinence garment, incontinence briefs",
+          "intClassNumber": "05",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Inkontinenzprodukte, insbesondere Inkontinenzhosen, Inkontinenzeinlagen, Inkontinenzwindelhosen, Inkontinenzbekleidung, Inkontinenzvorlagen"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "protective and safety equipment",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Schutz- und Sicherheitsausrüstung"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "incontinence briefs; Bed protection underlays; Medical records; medical clothing, in particular disposable gloves for medical purposes, mouthguards for medical purposes",
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Inkontinenzunterlagen; Bettschutzeinlagen; Krankenunterlagen; medizinische Bekleidung, insbesondere Einweghandschuhe für medizinische Zwecke, Mundschutz für medizinische Zwecke"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "billing services; Retailing, wholesaling and online mail order services relating to the aforesaid goods of classes 5, 9 and 10",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Abrechnungsdienstleistungen; Einzelhandels-, Großhandels- und Online-Versandhandelsdienstleistungen betreffend die vorgenannten Waren der Klassen 5, 9 und 10"
+        }
+      ]
+    },
+    "id": "c8d42318-d780-483f-9a5e-d00cc9ade9f7",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "02.09.01",
+      "24.13.01",
+      "24.13.24",
+      "27.05.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "50"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "FRANZEN legal, Altenwall 6, 28195 Bremen"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "28195 Bremen",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "FRANZEN legal"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180313",
+        "applicationNumber": "302018006318.3"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280331",
+      "lastPublicationDate": "20181214",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20181108",
+        "registrationNumber": "302018006318"
+      }
+    },
+    "version": "20250627163500",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "vincare"
+    }
+  },
+  "_uri": "/mark/de/c8d42318-d780-483f-9a5e-d00cc9ade9f7",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.820Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

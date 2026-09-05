@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/id/26c99951-dca0-4ee4-a1b9-41f1e41961dd",
+  "provider": "clarivate",
+  "office": "id",
+  "guid": "26c99951-dca0-4ee4-a1b9-41f1e41961dd",
+  "applicationNumber": "J002010046641",
+  "registrationNumber": "IDM000361593",
+  "applicationDate": "2010-12-22",
+  "registrationDate": "2020-12-03",
+  "expiryDate": "2030-12-22",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    36,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        36
+      ],
+      "language": "id",
+      "description": "Jasa manejemen aset, jasa manejemen dana, jasa penanaman modal, jasa pengelolaan tanah dan bangunan pemukiman, jasa sewa - guna tanah dan bangunan pemukiman, jasa pialang saham dan obligasi, jasa sewa - guna kantor dan bagunan untuk pengeceran, jasa sewa - guna kantor dan bangunan industri, jasa sewa - guna kantor dan bangunan komersial, jasa sewa - guna tempat kediaman, jasa - jasa keuangan;.",
+      "translation_language": "en",
+      "translation": "Asset management services, fund management services, investment services, land and residential building management services, land and residential building leasing services, stock and bond brokerage services, office and building leasing services for retail, office leasing services and industrial buildings, rental services for offices and commercial buildings, rental services for residential premises, financial services;"
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "id",
+      "description": "Jasa civil engineering, jasa dekorasi properti, rumah, bangunan, dan kantor, jasa informasi yang berhubungan dengan hal yang disebut di atas, jasa konstruksi jalan, sistem saluran air, penderekan, saluran pipa, telekomunikasi, pemanasan dan penerangan, dan sistem pengendalian lingkungan, jasa konsultasi yang berhubungan dengan yang disebut di atas, jasa melukis dan menghias, jasa mengenai sistem penyaluran air, jasa nasihat yang berhubungan dengan hal yang disebut di atas, jasa pekerjaan kelingan, jasa pekerjaan umum, jasa peletakan dan penyesuaian pipa, jasa peletakan kabel, jasa pemasangan atap, jasa pemasangan kaca, jasa pemasangan lampu jalan dan penerangan area bisnis dan pemukiman, jasa pemasangan listrik, jasa pemasangan perancah, jasa pemasangan sistem alarm, termasuk alarm keamanan dan tanda kebakaran, jasa pembaharuan (renovation) properti, rumah, bangunan, dan kantor, jasa pembahruan (refurbishment) properti, rumah, bangunan, dan kantor, jasa pembersihan jalan, sistem saluran air, penderekan, saluran pipa, telekomunikasi, pemanasan dan penerangan, dan sistem pengendalian lingkungan, jasa pembersihan properti dan bangunan, jasa pembongkaran dan konstruksi bangunan, jasa pembongkaran dan konstruksi perumahan dan real estate, jasa pembongkaran dan konstruksi properti, jasa pembongkaran dan konstruksi tanah/lahan, jasa pembuatan tembok, jasa pemeriksaan api, jasa pemlesteran, jasa penentuan penerangan jalan dan penerangan area bisnis dan pemukiman, jasa pengawasan proses pembongkaran dan konstruksi bangunan, jasa pengelolaan proyek pembangunan di lapangan, jasa pengisolasian dan pemeriksaan air, jasa pengubahan properti, rumah, bangunan, dan kantor, jasa perawatan jalan, sistem saluran air, penderekan, saluran pipa, telekomunikasi, pemanasan dan penerangan, dan sistem pengendalian lingkungan, jasa perawatan lampu jalan dan penerangan area bisnis dan pemukiman, jasa perawatan properti, rumah, bangunan, dan kantor, jasa perbaikan jalan, sistem saluran air, penderekan, saluran pipa, telekomunikasi, pemanasan dan penerangan, dan sistem pengendalian lingkungan, jasa perbaikan properti, rumah, bangunan, dan kantor, jasa perbaikan sistem alarm, termasuk alarm keamanan dan tanda kebakaran, jasa pertukangan kayu, jasa - jasa pengembangan properti;.",
+      "translation_language": "en",
+      "translation": "Civil engineering services, property decoration services, houses, buildings, and offices, information services related to the above, road construction services, plumbing systems, cranes, pipelines, telecommunications, heating and lighting, and environmental control systems, consulting services related to those mentioned above, painting and decorating services, services regarding water distribution systems, advisory services related to the matters mentioned above, riveting work services, public works services, pipe laying and adjustment services, cable laying services, roof installation services, glass installation services, street lighting and lighting installation services for business and residential areas, electrical installation services, scaffolding installation services, alarm system installation services, including security alarms and fire signs, property renovation services, houses, buildings, and offices, property renovation services, houses, buildings and offices, road cleaning services, drainage systems n water, cranes, pipelines, telecommunications, heating and lighting, and environmental control systems, property and building cleaning services, building demolition and construction services, residential and real estate demolition and construction services, property demolition and construction services, demolition and construction services land/land, wall construction services, fire inspection services, plastering services, determining street lighting services and lighting for business and residential areas, supervising services for demolition and building construction processes, construction project management services in the field, insulation and water inspection services, property conversion services , houses, buildings and offices, road maintenance services, plumbing systems, cranes, pipelines, telecommunications, heating and lighting, and environmental control systems, street lamp maintenance services and business and residential area lighting, property maintenance services, houses, buildings , and offices, road repair services, plumbing systems, pend hoists, pipelines, telecommunications, heating and lighting, and environmental control systems, property, home, building and office repair services, alarm system repair services, including security alarms and fire alerts, carpentry services, property development services;"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "id",
+      "description": "Jasa arsitektur, jasa arsitektur yang berkaitan dengan pengembangan lahan, jasa evaluasi keamanan, jasa informasi yang berkaitan dengan layanan yang disebut di atas, jasa konsultasi yang berkaitan dengan layanan yang disebut di atas, jasa nasihat yang berhubungan dengan layanan yang disebut di atas, jasa pemeriksaan bangunan, jasa perancangan tata kota, jasa perancangan yang berhubungan dengan properti pemukiman, jasa perencanaan, jasa perencanaan komunitas pemukiman, jasa perencanaan pembuatan penyediaan makanan (catering), jasa perencanaan perhotelan, jasa perencanaan perkantoran, jasa perencanaan pusat perbelanjaan, jasa perencanaan ruang, jasa perencanaan tata kota, jasa perencanaan untuk bangunan, jasa perencanaan untuk fasilitas umum, jasa perencanaan untuk parkir mobil, jasa perencanaan untuk tanah bangunan, jjasa pekerjaan survei.",
+      "translation_language": "en",
+      "translation": "Architectural services, architectural services related to land development, security evaluation services, information services related to the above-mentioned services, consulting services related to the above-mentioned services, advisory services related to the above-mentioned services, inspection services buildings, urban planning services, design services related to residential properties, planning services, residential community planning services, planning services for food supply (catering), hospitality planning services, office planning services, shopping center planning services, space planning services, services urban planning, planning services for buildings, planning services for public facilities, planning services for car parking, planning services for building land, survey work services."
+    }
+  ],
+  "owner": "GROSVENOR GROUP LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "DRA. AMALIA ROOSSENO, SH. (AMROOS & PARTNERS)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "70 GROSVENOR STREET, LONDON, W1K 3JP, UNITED KINGDOM; GB",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "GROSVENOR GROUP LIMITED"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Asset management services, fund management services, investment services, land and residential building management services, land and residential building leasing services, stock and bond brokerage services, office and building leasing services for retail, office leasing services and industrial buildings, rental services for offices and commercial buildings, rental services for residential premises, financial services;",
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "id",
+          "intGoodsServicesDescription": "Jasa manejemen aset, jasa manejemen dana, jasa penanaman modal, jasa pengelolaan tanah dan bangunan pemukiman, jasa sewa - guna tanah dan bangunan pemukiman, jasa pialang saham dan obligasi, jasa sewa - guna kantor dan bagunan untuk pengeceran, jasa sewa - guna kantor dan bangunan industri, jasa sewa - guna kantor dan bangunan komersial, jasa sewa - guna tempat kediaman, jasa - jasa keuangan;."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Civil engineering services, property decoration services, houses, buildings, and offices, information services related to the above, road construction services, plumbing systems, cranes, pipelines, telecommunications, heating and lighting, and environmental control systems, consulting services related to those mentioned above, painting and decorating services, services regarding water distribution systems, advisory services related to the matters mentioned above, riveting work services, public works services, pipe laying and adjustment services, cable laying services, roof installation services, glass installation services, street lighting and lighting installation services for business and residential areas, electrical installation services, scaffolding installation services, alarm system installation services, including security alarms and fire signs, property renovation services, houses, buildings, and offices, property renovation services, houses, buildings and offices, road cleaning services, drainage systems n water, cranes, pipelines, telecommunications, heating and lighting, and environmental control systems, property and building cleaning services, building demolition and construction services, residential and real estate demolition and construction services, property demolition and construction services, demolition and construction services land/land, wall construction services, fire inspection services, plastering services, determining street lighting services and lighting for business and residential areas, supervising services for demolition and building construction processes, construction project management services in the field, insulation and water inspection services, property conversion services , houses, buildings and offices, road maintenance services, plumbing systems, cranes, pipelines, telecommunications, heating and lighting, and environmental control systems, street lamp maintenance services and business and residential area lighting, property maintenance services, houses, buildings , and offices, road repair services, plumbing systems, pend hoists, pipelines, telecommunications, heating and lighting, and environmental control systems, property, home, building and office repair services, alarm system repair services, including security alarms and fire alerts, carpentry services, property development services;",
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "id",
+          "intGoodsServicesDescription": "Jasa civil engineering, jasa dekorasi properti, rumah, bangunan, dan kantor, jasa informasi yang berhubungan dengan hal yang disebut di atas, jasa konstruksi jalan, sistem saluran air, penderekan, saluran pipa, telekomunikasi, pemanasan dan penerangan, dan sistem pengendalian lingkungan, jasa konsultasi yang berhubungan dengan yang disebut di atas, jasa melukis dan menghias, jasa mengenai sistem penyaluran air, jasa nasihat yang berhubungan dengan hal yang disebut di atas, jasa pekerjaan kelingan, jasa pekerjaan umum, jasa peletakan dan penyesuaian pipa, jasa peletakan kabel, jasa pemasangan atap, jasa pemasangan kaca, jasa pemasangan lampu jalan dan penerangan area bisnis dan pemukiman, jasa pemasangan listrik, jasa pemasangan perancah, jasa pemasangan sistem alarm, termasuk alarm keamanan dan tanda kebakaran, jasa pembaharuan (renovation) properti, rumah, bangunan, dan kantor, jasa pembahruan (refurbishment) properti, rumah, bangunan, dan kantor, jasa pembersihan jalan, sistem saluran air, penderekan, saluran pipa, telekomunikasi, pemanasan dan penerangan, dan sistem pengendalian lingkungan, jasa pembersihan properti dan bangunan, jasa pembongkaran dan konstruksi bangunan, jasa pembongkaran dan konstruksi perumahan dan real estate, jasa pembongkaran dan konstruksi properti, jasa pembongkaran dan konstruksi tanah/lahan, jasa pembuatan tembok, jasa pemeriksaan api, jasa pemlesteran, jasa penentuan penerangan jalan dan penerangan area bisnis dan pemukiman, jasa pengawasan proses pembongkaran dan konstruksi bangunan, jasa pengelolaan proyek pembangunan di lapangan, jasa pengisolasian dan pemeriksaan air, jasa pengubahan properti, rumah, bangunan, dan kantor, jasa perawatan jalan, sistem saluran air, penderekan, saluran pipa, telekomunikasi, pemanasan dan penerangan, dan sistem pengendalian lingkungan, jasa perawatan lampu jalan dan penerangan area bisnis dan pemukiman, jasa perawatan properti, rumah, bangunan, dan kantor, jasa perbaikan jalan, sistem saluran air, penderekan, saluran pipa, telekomunikasi, pemanasan dan penerangan, dan sistem pengendalian lingkungan, jasa perbaikan properti, rumah, bangunan, dan kantor, jasa perbaikan sistem alarm, termasuk alarm keamanan dan tanda kebakaran, jasa pertukangan kayu, jasa - jasa pengembangan properti;."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Architectural services, architectural services related to land development, security evaluation services, information services related to the above-mentioned services, consulting services related to the above-mentioned services, advisory services related to the above-mentioned services, inspection services buildings, urban planning services, design services related to residential properties, planning services, residential community planning services, planning services for food supply (catering), hospitality planning services, office planning services, shopping center planning services, space planning services, services urban planning, planning services for buildings, planning services for public facilities, planning services for car parking, planning services for building land, survey work services.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "id",
+          "intGoodsServicesDescription": "Jasa arsitektur, jasa arsitektur yang berkaitan dengan pengembangan lahan, jasa evaluasi keamanan, jasa informasi yang berkaitan dengan layanan yang disebut di atas, jasa konsultasi yang berkaitan dengan layanan yang disebut di atas, jasa nasihat yang berhubungan dengan layanan yang disebut di atas, jasa pemeriksaan bangunan, jasa perancangan tata kota, jasa perancangan yang berhubungan dengan properti pemukiman, jasa perencanaan, jasa perencanaan komunitas pemukiman, jasa perencanaan pembuatan penyediaan makanan (catering), jasa perencanaan perhotelan, jasa perencanaan perkantoran, jasa perencanaan pusat perbelanjaan, jasa perencanaan ruang, jasa perencanaan tata kota, jasa perencanaan untuk bangunan, jasa perencanaan untuk fasilitas umum, jasa perencanaan untuk parkir mobil, jasa perencanaan untuk tanah bangunan, jjasa pekerjaan survei."
+        }
+      ]
+    },
+    "id": "26c99951-dca0-4ee4-a1b9-41f1e41961dd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250105",
+    "registrationOfficeCode": "ID",
+    "registrationOfficeName": "Indonesia",
+    "representatives": [
+      {
+        "representativeAddress": "JL PERMATA HIJAU RAYA B - 29 SENAYAN, JAKARTA 12210; ID",
+        "representativeAddressCountryCode": "ID",
+        "representativeAddressCountryName": "Indonesia",
+        "representativeName": "DRA. AMALIA ROOSSENO, SH. (AMROOS & PARTNERS)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20101222",
+        "applicationNumber": "J002010046641"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20301222",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20201203",
+        "registrationNumber": "IDM000361593"
+      }
+    },
+    "version": "20250105121340",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/id/26c99951-dca0-4ee4-a1b9-41f1e41961dd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.828Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

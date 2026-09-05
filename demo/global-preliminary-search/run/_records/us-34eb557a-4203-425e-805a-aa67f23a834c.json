@@ -1,0 +1,356 @@
+{
+  "uri": "/mark/us/34eb557a-4203-425e-805a-aa67f23a834c",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "34eb557a-4203-425e-805a-aa67f23a834c",
+  "applicationNumber": "75678023",
+  "registrationNumber": "2520705",
+  "applicationDate": "1999-04-09",
+  "registrationDate": "2001-12-18",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2000-09-19"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2008-09-19",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VISION-DRIVEN ORGANIZATION",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": [
+    "\"ORGANIZATION\""
+  ],
+  "niceClasses": [
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Business Consultation",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 educational services, namely, conducting classes, seminars, and workshops in the field of strategic business planning",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Bart, Christopher K.",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2150 Bromsgrove Road Unit 408, Mississauga, Ontario, L5J 4B3, CANA",
+        "applicantAddressCity": "Mississauga, Ontario",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressPostalCode": "L5J 4B3",
+        "applicantAddressStreet": "2150 Bromsgrove Road Unit 408",
+        "applicantJurisdictionOfIncorporation": "CANADA",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Bart, Christopher K."
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "1211 AVENUE OF THE AMERICAS, NEW YORK, NEW YORK, 10036",
+            "city": "NEW YORK",
+            "legalEntity": "CORPORATION",
+            "name": "CIT GROUP/COMMERCIAL SERVICES, INC., THE",
+            "postalCode": "10036",
+            "secondaryAddressUnit": "SENIOR VICE PRESIDENT",
+            "stateName": "NEW YORK",
+            "street": "1211 AVENUE OF THE AMERICAS"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "MICHAEL KORS, L.L.C."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "ELIZABETH J. MOODY, 1285 AVENUE OF THE AMERICAS, NEW YORK, NY 10019-6064",
+            "addressLines": [
+              "PAUL, WEISS, RIFKIND ET.AL.",
+              "ELIZABETH J. MOODY",
+              "1285 AVENUE OF THE AMERICAS",
+              "NEW YORK, NY 10019-6064"
+            ],
+            "name": "PAUL, WEISS, RIFKIND ET.AL."
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "20040331",
+        "recordedDate": "20040408",
+        "reelFrameNumber": "2944/0811"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Business Consultation"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 educational services, namely, conducting classes, seminars, and workshops in the field of strategic business planning"
+        }
+      ]
+    },
+    "id": "34eb557a-4203-425e-805a-aa67f23a834c",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "\"ORGANIZATION\""
+    ],
+    "markEvents": [
+      {
+        "date": "20080919",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20070112",
+        "descriptionText": "CASE FILE IN TICRS"
+      },
+      {
+        "date": "20011218",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20010806",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20010801",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20010720",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20010607",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20001212",
+        "descriptionText": "NOA MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20000919",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20000818",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20000625",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20000620",
+        "descriptionText": "EXAMINER'S AMENDMENT MAILED"
+      },
+      {
+        "date": "20000619",
+        "descriptionText": "PREVIOUS ALLOWANCE COUNT WITHDRAWN"
+      },
+      {
+        "date": "19991206",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "19991124",
+        "descriptionText": "EXAMINER'S AMENDMENT MAILED"
+      },
+      {
+        "date": "19990825",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "19990728",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "19990702",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "2150 Bromsgrove Road Unit 408, Mississauga, Ontario, L5J 4B3, CANA",
+        "city": "Mississauga, Ontario",
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "jurisdictionOfIncorporation": "CANADA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Bart, Christopher K.",
+        "postalCode": "L5J 4B3",
+        "street": "2150 Bromsgrove Road Unit 408"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "2150 Bromsgrove Road Unit 408, Mississauga, Ontario, L5J 4B3, CANA",
+        "city": "Mississauga, Ontario",
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "jurisdictionOfIncorporation": "CANADA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Bart, Christopher K.",
+        "postalCode": "L5J 4B3",
+        "street": "2150 Bromsgrove Road Unit 408"
+      },
+      {
+        "address": "2150 Bromsgrove Road Unit 408, Mississauga, Ontario, L5J 4B3, CANA",
+        "city": "Mississauga, Ontario",
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "jurisdictionOfIncorporation": "CANADA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Bart, Christopher K.",
+        "postalCode": "L5J 4B3",
+        "street": "2150 Bromsgrove Road Unit 408"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "2150 Bromsgrove Road Unit 408, Mississauga, Ontario, L5J 4B3, CANA",
+        "city": "Mississauga, Ontario",
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "jurisdictionOfIncorporation": "CANADA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Bart, Christopher K.",
+        "postalCode": "L5J 4B3",
+        "street": "2150 Bromsgrove Road Unit 408"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "ANCASTER, ON L9G 4L2, CANADA",
+        "representativeCorrespondentAddressLines": [
+          "ANCASTER, ON L9G 4L2",
+          "CANADA"
+        ],
+        "representativeCorrespondentName": "MARCEL D MONGEON, 301 SUNNYMEADE DR"
+      }
+    ],
+    "representatives": [
+      {
+        "domesticRepresentativeName": "MARCEL D. MONGEON",
+        "representativeAddress": "ANCASTER, ON L9G 4L2, CANADA",
+        "representativeAddressLines": [
+          "ANCASTER, ON L9G 4L2",
+          "CANADA"
+        ]
+      }
+    ],
+    "status": {
+      "active": false,
+      "allowanceDate": [
+        "20001212"
+      ],
+      "application": {
+        "applicationDate": "19990409",
+        "applicationNumber": "75678023"
+      },
+      "cancellationDate": "20080919",
+      "cancellationPublicationDate": "20081028",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "35",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19981201"
+        },
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19981201"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "35",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19981201"
+        },
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19981201"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20080919",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20000919"
+      ],
+      "registration": {
+        "registrationDate": "20011218",
+        "registrationNumber": "2520705"
+      }
+    },
+    "version": "20260109051403",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "VISION DRIVEN ORGANIZATION",
+      "markVerbalElementText": "VISION-DRIVEN ORGANIZATION"
+    }
+  },
+  "_uri": "/mark/us/34eb557a-4203-425e-805a-aa67f23a834c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

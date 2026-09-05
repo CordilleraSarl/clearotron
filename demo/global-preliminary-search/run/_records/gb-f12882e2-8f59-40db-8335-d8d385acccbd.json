@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/gb/f12882e2-8f59-40db-8335-d8d385acccbd",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "f12882e2-8f59-40db-8335-d8d385acccbd",
+  "applicationNumber": "3692426",
+  "registrationNumber": null,
+  "applicationDate": "2021-09-09",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "NO ORDINARY GLOVE NO ORDINARY GLOVES",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    21
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Protective and safety gloves; gloves for protection against injury, accident, irradiation or fire. .",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "en",
+      "description": "Medical gloves; medical examination gloves; gloves for medical use; gloves for medical purposes; gloves for medical examination; surgical gloves; gloves for massage; gloves for dental use; gloves for veterinary use.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "en",
+      "description": "Gloves for household purposes; gardening gloves.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Sturli Brands Global Holdings Limited",
+  "ownerNative": null,
+  "ownerCountry": "NZ",
+  "representative": "Withers & Rogers LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "5 Noel Rodgers Place , Milson, Palmerston North 4414",
+        "applicantAddressCountryCode": "NZ",
+        "applicantAddressCountryName": "New Zealand",
+        "applicantName": "Sturli Brands Global Holdings Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Protective and safety gloves; gloves for protection against injury, accident, irradiation or fire. ."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Medical gloves; medical examination gloves; gloves for medical use; gloves for medical purposes; gloves for medical examination; surgical gloves; gloves for massage; gloves for dental use; gloves for veterinary use."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Gloves for household purposes; gardening gloves."
+        }
+      ]
+    },
+    "id": "f12882e2-8f59-40db-8335-d8d385acccbd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "2 London Bridge, London SE1 9RA",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Withers & Rogers LLP"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20210909",
+        "applicationNumber": "3692426"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "markCurrentStatus": "WITHDRAWN"
+    },
+    "version": "20250627221639",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NO ORDINARY GLOVE NO ORDINARY GLOVES"
+    }
+  },
+  "_uri": "/mark/gb/f12882e2-8f59-40db-8335-d8d385acccbd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:08.765Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

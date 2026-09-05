@@ -1,0 +1,175 @@
+{
+  "uri": "/mark/gb/67e5c432-de71-4111-98b2-4432c7d85538",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "67e5c432-de71-4111-98b2-4432c7d85538",
+  "applicationNumber": "UK00800904887",
+  "registrationNumber": "UK00800904887",
+  "applicationDate": "2006-06-02",
+  "registrationDate": "2008-01-07",
+  "expiryDate": "2036-06-02",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    9,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7
+      ],
+      "language": "en",
+      "description": "Power-operated assembly line automation equipment, namely machines to move, assemble, and fasten automotive, defense and industrial parts.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Machines to test and inspect automotive, defense and industrial parts.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "en",
+      "description": "Custom manufacture of power-operated assembly line automation equipment.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Custom design of power-operated assembly line automation equipment.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Fori Automation, LLC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Foot Anstey LLP",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20060517",
+      "priorityNumber": "78886041"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "13231 - 23 Mile Road, Shelby Twp MI 48315",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Fori Automation, LLC."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Power-operated assembly line automation equipment, namely machines to move, assemble, and fasten automotive, defense and industrial parts."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Machines to test and inspect automotive, defense and industrial parts."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Custom manufacture of power-operated assembly line automation equipment."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Custom design of power-operated assembly line automation equipment."
+        }
+      ]
+    },
+    "id": "67e5c432-de71-4111-98b2-4432c7d85538",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20060517",
+        "priorityNumber": "78886041"
+      }
+    ],
+    "recordLastUpdated": "20260129",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Senate Court, Southernhay Gardens, Exeter EX1 1NT, Devon",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Foot Anstey LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20060602",
+        "applicationNumber": "UK00800904887"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360602",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20080107",
+        "registrationNumber": "UK00800904887"
+      }
+    },
+    "version": "20260129020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FORI"
+    }
+  },
+  "_uri": "/mark/gb/67e5c432-de71-4111-98b2-4432c7d85538",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:53.082Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

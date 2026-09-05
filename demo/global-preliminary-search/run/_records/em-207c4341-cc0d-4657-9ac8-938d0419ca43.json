@@ -1,0 +1,432 @@
+{
+  "uri": "/mark/em/207c4341-cc0d-4657-9ac8-938d0419ca43",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "207c4341-cc0d-4657-9ac8-938d0419ca43",
+  "applicationNumber": "7215701",
+  "registrationNumber": "7215701",
+  "applicationDate": "2008-09-05",
+  "registrationDate": "2009-05-06",
+  "expiryDate": "2028-09-05",
+  "renewalDate": null,
+  "lastPublicationDate": "2008-11-17",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIQ",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Polovodice, integrované obvody, mikroprocesory, prizpusobené mikroprocesory, softwarove programovatelné mikroprocesory, vícejádrové procesory, aplikacne specifické integrované obvody.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Halvledere, integrerede kredsløb, mikroprocessorer, speciallavede mikroprocessorer, softwareprogrammerbare mikroprocessorer, multicore-processorer, applikationsspecifikke integrerede kredsløb.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Halfgeleiders, geïntegreerde schakelingen, microprocessors, klantspecifieke microprocessors, met software programmeerbare microprocessors, multikernprocessors, toepassingsspecifieke geïntegreerde schakelingen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Semiconductors, integrated circuits, microprocessors, customized microprocessors, software programmable microprocessors, multicore processors, application-specific integrated circuits.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Pooljuhid, integraallülitused, mikroprotsessorid, kohandatud mikroprotsessorid, tarkvaraprogrammeeritavad mikroprotsessorid, mitmetuumalised protsessorid, rakendusspetsiifilised integraallülitused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Puolijohteet, integroidut piirit, mikroprosessorit, mukautettu mikroprosessorit, ohjelmistot, ohjelmoitavat mikroprosessorit, moniytimiset prosessorit, sovelluskohtaiset integroidut piirit.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Semi-conducteurs, circuits intégrés, microprocesseurs, microprocesseurs personnalisés, microprocesseurs programmables avec logiciels, processeurs multicoeurs, circuits intégrés spécifiques à des applications.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Halbleiter, integrierte Schaltkreise, Mikroprozessoren, kundenspezifische Mikroprozessoren, softwareprogrammierbare Mikroprozessoren, Multicore-Prozessoren, anwendungsspezifische integrierte Schaltkreise.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Félvezetok, integrált áramkörök, mikroprocesszorok, egyedi mikroprocesszorok, szoftverrel programozható mikroprocesszorok, többmagos processzorok, különleges alkalmazású integrált áramkörök.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Semiconduttori, circuiti integrati, microprocessori, microprocessori personalizzati, microprocessori programmabili per software, processori a più nuclei, circuiti integrati per applicazioni specifiche.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Puslaidininkiai, integrines grandines, mikroprocesoriai, pagal individualius uzsakymus gaminami mikroprocesoriai, programine iranga programuojamieji mikroprocesoriai, daugiaasiai procesoriai, specialios paskirties integrines grandines.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Pusvaditaji, integretas shemas, mikroprocesori, individuali pielagoti mikroprocesori, programmaturas programmejami mikroprocesori, vairaku pamatatminu procesori, lietotnei specifiski integretas shemas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Semikondutturi, cirkuwiti integrati, mikroprocessuri, mikroprocessuri skond l-ordni, mikroprocessuri tas-softwer li jistghu jkunu pprogrammati, processuri tat-tip multicore, cirkuwiti integrati specifici ghall-applikazzjonijiet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Pólprzewodniki, obwody scalone, mikroprocesory, mikroprocesory dostosowane do indywidualnych wymagan, mikroprocesory mozliwe do zaprogramowania za pomoca oprogramowania komputerowego, procesory wielordzeniowe, obwody scalone dla konkretnej aplikacji.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Semicondutores, circuitos integrados, microprocessadores, microprocessadores personalizados, microprocessadores programáveis por software, processadores multinucleares, circuitos integrados de aplicação específica.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Semiconductoare, circuite integrate, microprocesoare, microprocesoare personalizate, microprocesoare programabile de software, procesoare multicore, circuite integrate cu aplicatie specifica.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Polovodice, integrované obvody, mikroprocesory, zákazkovo upravené mikroprocesory, softvérovo programovatelné mikroprocesory, viacjadrové procesory, integrované obvody pre konkrétne aplikácie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Polprevodniki, integrirana vezja, mikroprocesorji, prilagojeni mikroprocesorji,programljivi mikroprocesorji za programsko opremo, vecjedrni procesorji, aplikacijska specificna integrirana vezja.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Semiconductores, circuitos integrados, microprocesadores, microprocesadores personalizados, microprocesadores programables por software, procesadores de múltiples núcleos, circuitos integrados para aplicaciones específicas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Halvledare, integrerade kretsar, mikroprocessorer, kundanpassade mikroprocessorer, programvaruprogrammerbara mikroprocessorer, flerkärnsprocessorer, tillämpningsspecifika integrerade kretsar.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "NLO SHIELDMARK B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20080609",
+      "priorityNumber": "77/494,217"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West,Austin,Texas, 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA Inc."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Polovodice, integrované obvody, mikroprocesory, prizpusobené mikroprocesory, softwarove programovatelné mikroprocesory, vícejádrové procesory, aplikacne specifické integrované obvody."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Halvledere, integrerede kredsløb, mikroprocessorer, speciallavede mikroprocessorer, softwareprogrammerbare mikroprocessorer, multicore-processorer, applikationsspecifikke integrerede kredsløb."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Halfgeleiders, geïntegreerde schakelingen, microprocessors, klantspecifieke microprocessors, met software programmeerbare microprocessors, multikernprocessors, toepassingsspecifieke geïntegreerde schakelingen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Semiconductors, integrated circuits, microprocessors, customized microprocessors, software programmable microprocessors, multicore processors, application-specific integrated circuits."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Pooljuhid, integraallülitused, mikroprotsessorid, kohandatud mikroprotsessorid, tarkvaraprogrammeeritavad mikroprotsessorid, mitmetuumalised protsessorid, rakendusspetsiifilised integraallülitused."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Puolijohteet, integroidut piirit, mikroprosessorit, mukautettu mikroprosessorit, ohjelmistot, ohjelmoitavat mikroprosessorit, moniytimiset prosessorit, sovelluskohtaiset integroidut piirit."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Semi-conducteurs, circuits intégrés, microprocesseurs, microprocesseurs personnalisés, microprocesseurs programmables avec logiciels, processeurs multicoeurs, circuits intégrés spécifiques à des applications."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Halbleiter, integrierte Schaltkreise, Mikroprozessoren, kundenspezifische Mikroprozessoren, softwareprogrammierbare Mikroprozessoren, Multicore-Prozessoren, anwendungsspezifische integrierte Schaltkreise."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Félvezetok, integrált áramkörök, mikroprocesszorok, egyedi mikroprocesszorok, szoftverrel programozható mikroprocesszorok, többmagos processzorok, különleges alkalmazású integrált áramkörök."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Semiconduttori, circuiti integrati, microprocessori, microprocessori personalizzati, microprocessori programmabili per software, processori a più nuclei, circuiti integrati per applicazioni specifiche."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Puslaidininkiai, integrines grandines, mikroprocesoriai, pagal individualius uzsakymus gaminami mikroprocesoriai, programine iranga programuojamieji mikroprocesoriai, daugiaasiai procesoriai, specialios paskirties integrines grandines."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Pusvaditaji, integretas shemas, mikroprocesori, individuali pielagoti mikroprocesori, programmaturas programmejami mikroprocesori, vairaku pamatatminu procesori, lietotnei specifiski integretas shemas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Semikondutturi, cirkuwiti integrati, mikroprocessuri, mikroprocessuri skond l-ordni, mikroprocessuri tas-softwer li jistghu jkunu pprogrammati, processuri tat-tip multicore, cirkuwiti integrati specifici ghall-applikazzjonijiet."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Pólprzewodniki, obwody scalone, mikroprocesory, mikroprocesory dostosowane do indywidualnych wymagan, mikroprocesory mozliwe do zaprogramowania za pomoca oprogramowania komputerowego, procesory wielordzeniowe, obwody scalone dla konkretnej aplikacji."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Semicondutores, circuitos integrados, microprocessadores, microprocessadores personalizados, microprocessadores programáveis por software, processadores multinucleares, circuitos integrados de aplicação específica."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Semiconductoare, circuite integrate, microprocesoare, microprocesoare personalizate, microprocesoare programabile de software, procesoare multicore, circuite integrate cu aplicatie specifica."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Polovodice, integrované obvody, mikroprocesory, zákazkovo upravené mikroprocesory, softvérovo programovatelné mikroprocesory, viacjadrové procesory, integrované obvody pre konkrétne aplikácie."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Polprevodniki, integrirana vezja, mikroprocesorji, prilagojeni mikroprocesorji,programljivi mikroprocesorji za programsko opremo, vecjedrni procesorji, aplikacijska specificna integrirana vezja."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Semiconductores, circuitos integrados, microprocesadores, microprocesadores personalizados, microprocesadores programables por software, procesadores de múltiples núcleos, circuitos integrados para aplicaciones específicas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Halvledare, integrerade kretsar, mikroprocessorer, kundanpassade mikroprocessorer, programvaruprogrammerbara mikroprocessorer, flerkärnsprocessorer, tillämpningsspecifika integrerade kretsar."
+        }
+      ]
+    },
+    "id": "207c4341-cc0d-4657-9ac8-938d0419ca43",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20080609",
+        "priorityNumber": "77/494,217"
+      }
+    ],
+    "publications": [
+      {
+        "publicationPage": "01473",
+        "publicationVolume": "46"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices. 2e étage Anna van Buerenplein 21A,Den Haag, 2595DA",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO SHIELDMARK B.V."
+      }
+    ],
+    "secondLanguageCode": "it",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20080905",
+        "applicationNumber": "7215701"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280905",
+      "lastPublicationDate": "20081117",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20090506",
+        "registrationNumber": "7215701"
+      }
+    },
+    "version": "20260511134111",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIQ"
+    }
+  },
+  "_uri": "/mark/em/207c4341-cc0d-4657-9ac8-938d0419ca43",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.395Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

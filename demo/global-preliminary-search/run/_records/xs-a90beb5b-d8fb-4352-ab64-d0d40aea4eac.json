@@ -1,0 +1,142 @@
+{
+  "uri": "/mark/xs/a90beb5b-d8fb-4352-ab64-d0d40aea4eac",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "a90beb5b-d8fb-4352-ab64-d0d40aea4eac",
+  "applicationNumber": null,
+  "registrationNumber": "10156056",
+  "applicationDate": null,
+  "registrationDate": "2011-12-27",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MISSBEEHAVEN QUILTS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    20,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        20
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SHERRI LYN BOSWORTH",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1136 S. 2ND RD, DOUGLAS, NE, 68344",
+        "applicantAddressCity": "DOUGLAS",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "68344",
+        "applicantAddressStateName": "NEBRASKA",
+        "applicantAddressStreet": "1136 S. 2ND RD",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "SHERRI LYN BOSWORTH"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        }
+      ]
+    },
+    "id": "a90beb5b-d8fb-4352-ab64-d0d40aea4eac",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADENAME",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "1136 S. 2ND RD, DOUGLAS, NE, 68344",
+        "city": "DOUGLAS",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "INDIVIDUAL",
+        "name": "SHERRI LYN BOSWORTH",
+        "postalCode": "68344",
+        "stateName": "NEBRASKA",
+        "street": "1136 S. 2ND RD"
+      }
+    ],
+    "recordLastUpdated": "20241213",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20111227",
+        "registrationNumber": "10156056"
+      }
+    },
+    "usStateOfficeCode": "NE",
+    "usStateOfficeName": "NEBRASKA",
+    "version": "20241213175724",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "MISS BEE HAVEN QUILTS, MISBEHAVING QUILTS",
+      "markVerbalElementText": "MISSBEEHAVEN QUILTS"
+    }
+  },
+  "_uri": "/mark/xs/a90beb5b-d8fb-4352-ab64-d0d40aea4eac",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.568Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

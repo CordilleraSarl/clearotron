@@ -1,0 +1,887 @@
+{
+  "uri": "/mark/us/a4000b10-2067-4aac-845f-488003e51470",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "a4000b10-2067-4aac-845f-488003e51470",
+  "applicationNumber": "78879518",
+  "registrationNumber": "3346055",
+  "applicationDate": "2006-05-09",
+  "registrationDate": "2007-11-27",
+  "expiryDate": null,
+  "renewalDate": "2017-11-27",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2007-02-06"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Computer software consultation; computer software design for others; computer software development; computer systems analysis; computer-aided engineering services for others; consultancy in the field of software design; [ consulting services in the field of design, selection, implementation and use of computer hardware and software systems for others; ] design for others in the field of computers and engineering; design, development and implementation of software; engineering; integration of computer systems and networks; [ technical support services, namely, troubleshooting of computer hardware and software problems; ] technology consultation in the field of aerospace engineering; testing or research on machines and apparatus",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "VENTURI, LLC",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Angela Holt",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20180702",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED"
+    },
+    "applicants": [
+      {
+        "applicantAddress": "360 D QUALITY CIRCLE, HUNTSVILLE, ALABAMA, 35806",
+        "applicantAddressCity": "HUNTSVILLE",
+        "applicantAddressPostalCode": "35806",
+        "applicantAddressStateName": "ALABAMA",
+        "applicantAddressStreet": "360 D QUALITY CIRCLE",
+        "applicantJurisdictionOfIncorporation": "ALABAMA",
+        "applicantLegalEntity": "LIMITED LIABILITY COMPANY",
+        "applicantName": "VENTURI, LLC",
+        "applicantSecondaryAddressUnit": "SUITE 400"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "360 D QUALITY CIRCLE, HUNTSVILLE, ALABAMA, 35806",
+            "city": "HUNTSVILLE",
+            "jurisdictionOfIncorporation": "ALABAMA",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "VENTURI, LLC",
+            "postalCode": "35806",
+            "secondaryAddressUnit": "SUITE 400",
+            "stateName": "ALABAMA",
+            "street": "360 D QUALITY CIRCLE"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "ALABAMA",
+            "legalEntity": "CORPORATION",
+            "name": "VENTURI, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "200 CLINTON AVENUE WEST, SUITE 900, HUNTSVILLE, AL 35801",
+            "addressLines": [
+              "ANGELA HOLT",
+              "200 CLINTON AVENUE WEST",
+              "SUITE 900",
+              "HUNTSVILLE, AL 35801"
+            ],
+            "name": "ANGELA HOLT"
+          }
+        ],
+        "descriptionText": "ENTITY CONVERSION",
+        "executedDate": "20190102",
+        "recordedDate": "20190819",
+        "reelFrameNumber": "6723/0748"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Computer software consultation; computer software design for others; computer software development; computer systems analysis; computer-aided engineering services for others; consultancy in the field of software design; [ consulting services in the field of design, selection, implementation and use of computer hardware and software systems for others; ] design for others in the field of computers and engineering; design, development and implementation of software; engineering; integration of computer systems and networks; [ technical support services, namely, troubleshooting of computer hardware and software problems; ] technology consultation in the field of aerospace engineering; testing or research on machines and apparatus"
+        }
+      ]
+    },
+    "id": "a4000b10-2067-4aac-845f-488003e51470",
+    "ipRightKind": "tmk",
+    "litigationInformation": {
+      "proceedings": [
+        {
+          "decision": {
+            "code": "9",
+            "date": "20140306",
+            "text": "TERMINATED"
+          },
+          "decisionBoard": "Trademark Trial and Appeal Board (TTAB)",
+          "filingDate": "20121126",
+          "identifier": "92056482",
+          "interlocutoryAttorneyName": "ROBERT COGGINS",
+          "kind": "Cancellation",
+          "kindCode": "CAN",
+          "litigationParties": [
+            {
+              "kind": "Defendant",
+              "kindCode": "D",
+              "name": "VENTURI, INC.",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "78879518",
+                  "markVerbalElementText": "VENTURI",
+                  "registrationNumber": "3346055"
+                },
+                {
+                  "applicationNumber": "78879629",
+                  "markVerbalElementText": "VENTURI AN AEROSPACE COMPANY",
+                  "registrationNumber": "3346057"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "WASHINGTON",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "20005-2018",
+                  "addressState": "DC",
+                  "addressStreet": "607 14TH STREET NW, SUITE 900",
+                  "companyName": "KILPATRICK TOWNSEND & STOCKTON LLP",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "J DAVID MAYBERRY"
+                }
+              ]
+            },
+            {
+              "kind": "Plaintiff",
+              "kindCode": "P",
+              "name": "VENTURI AUTOMOBILES",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "78315079",
+                  "markVerbalElementText": "VENTURI",
+                  "registrationNumber": "3419708"
+                },
+                {
+                  "applicationNumber": "77937538",
+                  "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+                  "registrationNumber": "0000000"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "IRVINE",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "92614",
+                  "addressState": "CA",
+                  "addressStreet": "2040 MAIN STREET, 14TH FLOOR",
+                  "companyName": "KNOBBE MARTENS OLSON & BEAR LLP",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "STACEY R HALPERN"
+                }
+              ]
+            }
+          ],
+          "proceedingEvents": [
+            {
+              "code": "T",
+              "eventDate": "20140306",
+              "text": "#20 BOARD'S DECISION: DISMISSED W/O PREJ"
+            },
+            {
+              "code": "N",
+              "eventDate": "20140227",
+              "text": "#19 WITHDRAWAL OF PETITION FOR CANCELLATION"
+            },
+            {
+              "code": "W",
+              "eventDate": "20140130",
+              "text": "#18 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20140128",
+              "text": "#17 D'S MOT FOR EXTEN. OF TIME W/ CONSENT"
+            },
+            {
+              "code": "T",
+              "eventDate": "20131121",
+              "text": "#16 D'S CHANGE OF CORRESPONDENCE ADDRESS"
+            },
+            {
+              "code": "T",
+              "eventDate": "20131121",
+              "text": "#15 D'S APPEARANCE OF COUNSEL/POWER OF ATTORNEY"
+            },
+            {
+              "code": "S",
+              "eventDate": "20131007",
+              "text": "#14 SUSPENDED"
+            },
+            {
+              "code": "W",
+              "eventDate": "20131007",
+              "text": "#13 P'S MOT TO SUSP PEND SETLMT NEGOTIATIONS"
+            },
+            {
+              "code": "S",
+              "eventDate": "20130708",
+              "text": "#12 SUSPENDED"
+            },
+            {
+              "code": "W",
+              "eventDate": "20130708",
+              "text": "#11 P'S MOT TO SUSP PEND SETLMT NEGOTIATIONS"
+            },
+            {
+              "code": "W",
+              "eventDate": "20130422",
+              "text": "#10 P'S MOT TO SUSP PEND SETLMT NEGOTIATIONS"
+            },
+            {
+              "code": "S",
+              "eventDate": "20130422",
+              "text": "#9 SUSPENDED"
+            },
+            {
+              "code": "S",
+              "eventDate": "20130227",
+              "text": "#8 SUSPENDED"
+            },
+            {
+              "code": "W",
+              "eventDate": "20130227",
+              "text": "#7 P'S MOT TO SUSP PEND SETLMT NEGOTIATIONS"
+            },
+            {
+              "code": "M",
+              "eventDate": "20121217",
+              "text": "#6 P'S MOTION TO STRIKE FROM PLEADINGS"
+            },
+            {
+              "code": "S",
+              "eventDate": "20121129",
+              "text": "#5 SUSPENDED"
+            },
+            {
+              "code": "W",
+              "eventDate": "20121129",
+              "text": "#4 P'S MOT TO SUSP PEND SETLMT NEGOTIATIONS"
+            },
+            {
+              "code": "T",
+              "eventDate": "20121127",
+              "text": "#3 PENDING, INSTITUTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20121127",
+              "responseDate": "20130106",
+              "text": "#2 NOTICE AND TRIAL DATES SENT:  ANSWER DUE:"
+            },
+            {
+              "code": "N",
+              "eventDate": "20121126",
+              "text": "#1 FILED AND FEE"
+            }
+          ]
+        }
+      ]
+    },
+    "markEvents": [
+      {
+        "date": "20190828",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20180702",
+        "descriptionText": "REGISTERED AND RENEWED (FIRST RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20180702",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20180702",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 9 - E-MAILED"
+      },
+      {
+        "date": "20180613",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION-POST REG RECEIVED"
+      },
+      {
+        "date": "20171213",
+        "descriptionText": "POST REGISTRATION ACTION MAILED - SEC. 8 & 9"
+      },
+      {
+        "date": "20171207",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20171127",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20170830",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20170830",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20161127",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20150223",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20150223",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20140306",
+        "descriptionText": "CANCELLATION DENIED NO. 999999"
+      },
+      {
+        "date": "20140306",
+        "descriptionText": "CANCELLATION TERMINATED NO. 999999"
+      },
+      {
+        "date": "20140306",
+        "descriptionText": "TTAB RELEASE CASE TO TRADEMARKS"
+      },
+      {
+        "date": "20131021",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20131021",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED"
+      },
+      {
+        "date": "20131021",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 - E-MAILED"
+      },
+      {
+        "date": "20131018",
+        "descriptionText": "TEAS CHANGE OF OWNER ADDRESS RECEIVED"
+      },
+      {
+        "date": "20131018",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20131017",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) FILED"
+      },
+      {
+        "date": "20131017",
+        "descriptionText": "TEAS SECTION 8 RECEIVED"
+      },
+      {
+        "date": "20121127",
+        "descriptionText": "CANCELLATION INSTITUTED NO. 999999"
+      },
+      {
+        "date": "20080424",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20080424",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20071127",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20071024",
+        "descriptionText": "LAW OFFICE REGISTRATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20071023",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20071023",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20071005",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20071005",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20070501",
+        "descriptionText": "NOA MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20070206",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20070117",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20061219",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20061218",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20061129",
+        "descriptionText": "AMENDMENT FROM APPLICANT ENTERED"
+      },
+      {
+        "date": "20061129",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20061103",
+        "descriptionText": "PAPER RECEIVED"
+      },
+      {
+        "date": "20061103",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20061017",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20061017",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20061011",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20060512",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "6820 Moquin Drive, Huntsville, AL, 35806",
+        "city": "Huntsville",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "ALABAMA",
+        "legalEntity": "CORPORATION",
+        "name": "Venturi, Inc.",
+        "postalCode": "35806",
+        "secondaryAddressUnit": "Suite D",
+        "stateName": "ALABAMA",
+        "street": "6820 Moquin Drive"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "360 D Quality Circle, Suite 400, Huntsville, AL, 35806",
+        "city": "Huntsville",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "ALABAMA",
+        "legalEntity": "CORPORATION",
+        "name": "Venturi, Inc.",
+        "postalCode": "35806",
+        "stateName": "ALABAMA",
+        "street": "360 D Quality Circle, Suite 400"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "6820 Moquin Drive, Huntsville, AL, 35806",
+        "city": "Huntsville",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "ALABAMA",
+        "legalEntity": "CORPORATION",
+        "name": "Venturi, Inc.",
+        "postalCode": "35806",
+        "secondaryAddressUnit": "Suite D",
+        "stateName": "ALABAMA",
+        "street": "6820 Moquin Drive"
+      }
+    ],
+    "postRegistrationOwners": [
+      {
+        "address": "360 D QUALITY CIRCLE, HUNTSVILLE, AL, 35806",
+        "city": "HUNTSVILLE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "ALABAMA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "VENTURI, LLC",
+        "postalCode": "35806",
+        "secondaryAddressUnit": "SUITE 400",
+        "stateName": "ALABAMA",
+        "street": "360 D QUALITY CIRCLE"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "88645917",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "VENTURI ASTROLAB",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88981083",
+            "markCurrentStatus": "Published",
+            "markVerbalElementText": "VENTURI ASTROLAB",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88981084",
+            "markCurrentStatus": "Published",
+            "markVerbalElementText": "VENTURI ASTROLAB",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88826101",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "VENTURI ASTROLAB",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88826123",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "VENTURI ASTROLAB",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "86917393",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VI CYBER, INC. A VENTURI COMPANY",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79975384",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79152582",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85515355",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES VENTURI V KILIMANJARO TO OKAVANGO MISSION NO 04",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79152582",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85515355",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES VENTURI V KILIMANJARO TO OKAVANGO MISSION NO 04",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88981083",
+            "markCurrentStatus": "Published",
+            "markVerbalElementText": "ASTROLAB VENTURI",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79975384",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88826101",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "ASTROLAB VENTURI",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88826123",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "VENTURI ASTROLAB",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "86917393",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VI CYBER, INC. A VENTURI COMPANY",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79152582",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79975384",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85515355",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES VENTURI V KILIMANJARO TO OKAVANGO MISSION NO 04",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "86917393",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VI CYBER, INC. A VENTURI COMPANY",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88645917",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "VENTURI ASTROLAB",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88981084",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI ASTROLAB",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79152582",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79975384",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88826101",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "ASTROLAB VENTURI",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88826123",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "VENTURI ASTROLAB",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79152582",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79975384",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85515355",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES VENTURI V KILIMANJARO TO OKAVANGO MISSION NO 04",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "86917393",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VI CYBER, INC. A VENTURI COMPANY",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88645917",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "VENTURI ASTROLAB",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88981083",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "ASTROLAB VENTURI",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88981084",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI ASTROLAB",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79152582",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79975384",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85515355",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES VENTURI V KILIMANJARO TO OKAVANGO MISSION NO 04",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "86917393",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VI CYBER, INC. A VENTURI COMPANY",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88645917",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "VENTURI ASTROLAB",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88826101",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "ASTROLAB VENTURI",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88826123",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "VENTURI ASTROLAB",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88981083",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "ASTROLAB VENTURI",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88981084",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI ASTROLAB",
+            "refusalStatus": "Refused"
+          }
+        ],
+        "refusalStatus": "Cited"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Huntsville, AL 35801, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "Huntsville, AL 35801",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Angela Holt Bradley Arant Boult Cummings LLP, Suite 900, 200 Clinton Ave."
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Huntsville, AL 35801, UNITED STATES",
+        "representativeAddressLines": [
+          "Huntsville, AL 35801",
+          "UNITED STATES"
+        ],
+        "representativeName": "Angela Holt"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20060509",
+        "applicationNumber": "78879518"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20060129"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20060313"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED AND RENEWED",
+        "markOfficialStatusCode": "800",
+        "markOfficialStatusDate": "20140306",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20070206"
+      ],
+      "registration": {
+        "registrationDate": "20071127",
+        "registrationNumber": "3346055"
+      },
+      "renewalDate": "20171127"
+    },
+    "version": "20260110044431",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/us/a4000b10-2067-4aac-845f-488003e51470",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.179Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

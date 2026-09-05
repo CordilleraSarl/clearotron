@@ -1,0 +1,129 @@
+{
+  "uri": "/mark/cn/4aec02f6-7037-4456-a193-af9394cefeac",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "4aec02f6-7037-4456-a193-af9394cefeac",
+  "applicationNumber": "75167245",
+  "registrationNumber": null,
+  "applicationDate": "2023-11-14",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "SEVEN.Q",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "安排和举办娱乐活动;安排和组织培训班;安排和组织音乐会;为艺术家提供模特服务;为娱乐目的组织时装表演;现场表演;音乐主持服务;组织表演(演出);组织文化或教育展览;组织舞会",
+      "translation_language": "en",
+      "translation": "Arranging and conducting entertainment events; arranging and organizing training courses; arranging and organizing concerts; providing modeling services to artists; organizing fashion shows for entertainment purposes; live performances; music hosting services; organizing performances (performances); organizing cultural or educational exhibitions ;Organize a dance party"
+    }
+  ],
+  "owner": "Wang qiong",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "江苏省丹阳市丹北镇西丰村汪家汪19号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Wang qiong",
+        "applicantNativeName": "汪琼"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Arranging and conducting entertainment events; arranging and organizing training courses; arranging and organizing concerts; providing modeling services to artists; organizing fashion shows for entertainment purposes; live performances; music hosting services; organizing performances (performances); organizing cultural or educational exhibitions ;Organize a dance party",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "安排和举办娱乐活动;安排和组织培训班;安排和组织音乐会;为艺术家提供模特服务;为娱乐目的组织时装表演;现场表演;音乐主持服务;组织表演(演出);组织文化或教育展览;组织舞会"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Arranging and conducting service of events",
+        "Amusement and sports service",
+        "Other service included in this class"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        },
+        {
+          "subNatClassNumber": "4107",
+          "subNatGoodsServicesDescription": "Other service included in this class"
+        }
+      ]
+    },
+    "id": "4aec02f6-7037-4456-a193-af9394cefeac",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "知域互联科技有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20231114",
+        "applicationNumber": "75167245"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251005213615",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEVEN.Q"
+    }
+  },
+  "_uri": "/mark/cn/4aec02f6-7037-4456-a193-af9394cefeac",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.563Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

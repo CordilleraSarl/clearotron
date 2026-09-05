@@ -29,7 +29,7 @@
 //     DIRECTORY the moment any file in it declares its matter — "a capture's README and its sibling
 //     evidence are part of the same artifact", in its own words. A note explaining a capture joins the
 //     capture and is swept with it.
-//   · GENERATED DIRECTORIES OVERWRITE. `providers/jx-subclass/public/` and `examples/sample-run/run/`
+//   · GENERATED DIRECTORIES OVERWRITE. `providers/jx-subclass/public/` and `demo/multi-country-focus-search/run/`
 //     are outputs. A stub inside one is either erased on the next build or silently stale.
 //
 // The ancestor README is where the decision actually lives, and — measured before this was written —

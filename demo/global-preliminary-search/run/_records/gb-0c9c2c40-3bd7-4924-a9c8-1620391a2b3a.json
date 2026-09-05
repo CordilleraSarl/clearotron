@@ -1,0 +1,160 @@
+{
+  "uri": "/mark/gb/0c9c2c40-3bd7-4924-a9c8-1620391a2b3a",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "0c9c2c40-3bd7-4924-a9c8-1620391a2b3a",
+  "applicationNumber": "UK00917969935",
+  "registrationNumber": "UK00917969935",
+  "applicationDate": "2018-10-18",
+  "registrationDate": "2019-03-05",
+  "expiryDate": "2028-10-18",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENQUIS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    38,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Electronic databases; Interactive databases; electronic and interactive databases in the field of recruitment; computer documentation in electronic form; Downloadable business materials; Downloadable electronic brochures; Downloadable electronic newsletters; Downloadable electronic publications; Downloadable electronic reports; Downloadable podcasts; Downloadable publications; Interactive DVDs; Pre-recorded CDs and DVDs; Pre-recorded CD-ROMs; Training manuals in the form of a computer program; Communications processing computer software; Computer operating programs; Computer operating software; Network access server operating software; Computer software; Database management software; Workforce management software; Business management software; computer programs, databases and software for providing a client portal, jobs board, job and business information in the field of recruitment.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Recruitment services; Personnel recruitment; Employment recruitment; Staff recruitment; Recruitment advertising; Business recruitment consultancy; Permanent staff recruitment; Professional recruitment services; Recruitment consultancy services; Personnel recruitment consultancy; Staff recruitment services; Personnel recruitment advertising; Executive recruitment services; Personnel recruitment agency services; Recruitment and placement services; Recruitment of temporary personnel; Recruitment of executive staff; Recruitment and personnel management services; Personality testing for recruitment purposes; Interviewing services [for personnel recruitment]; Recruitment of temporary technical personnel; Personnel recruitment services and employment agencies; Advisory services relating to personnel recruitment; Provision of information relating to recruitment; Providing information relating to personnel recruitment; Human resources management and recruitment services; Recruitment of high-level management personnel; Recruitment consultants in the financial services field; Advertising services relating to the recruitment of personnel; Assistance relating to recruitment and placement of staff; Management advice relating to the recruitment of staff; Providing recruitment information via a global computer network; advertising and marketing in the field of recruitment; administration of businesses; business analysis, research and information services in the field of recruitment; arranging of exhibitions for business purposes in the field of recruitment; business administration and business advice in the field of recruitment; business analysis in the field of recruitment; business consultancy and advisory services in the field of recruitment; business management in the field of recruitment; business networking in the field of recruitment; business organisation in the field of recruitment; business planning in the field of recruitment; career placement consulting services; data collection services in the field of recruitment; data processing for the collection of data for business purposes in the field of recruitment; data processing management in the field of recruitment; database management in the field of recruitment; database marketing in the field of recruitment; office functions; provision of business and commercial contract information via the Internet in the field of recruitment; provision of business assistance in the field of recruitment; provision of business information and advice in the field of recruitment and business transformation; provision of the aforesaid services online via the internet or interactive client portals and databases for business purposes; information, advisory and consultancy services relating to the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "en",
+      "description": "Providing access to a global computer information network; Providing access to a global computer network for the transfer and dissemination of information; Providing access to a worldwide computer network; Providing access to computer networks; Providing access to computer databases; Providing access to data in computer networks; Providing access to databases in computer networks; providing access to computer information networks and databases containing a client portal in the field of recruitment, business management and business transformation; Providing video conferencing services; Communication services between computers; communication services by telephone; communication services over computer networks; communication services provided electronically; communication via analogue and digital computer terminals; computer aided transmission of messages, data, text and images; Computer communication and Internet access; Computer communication services; Data communication by electronic means; Data transmission; Data transmission and data broadcasting; Data transmission and reception services via telecommunication means; E-mail services; Electrical data transmission over a global remote data processing network, including the internet; Electronic and telecommunication transmission services; Electronic file transfer; Electronic mail and facsimile transmission services; Electronic mail and mailbox services; Electronic mail-box services; Electronic mail services; International data transfer; International data transmission; On-line communication services; provision of the aforesaid services online via the internet or interactive client portals and databases for business purposes; information, advisory and consultancy services relating to the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Electronic publication; Electronic desktop publishing; Electronic online publication of periodicals and books; Electronic publication of texts and printed matter, other than publicity texts, on the Internet; Multimedia publishing; Non-downloadable electronic publications; providing on-line electronic publications; providing on-line electronic publications [non-downloadable]; arrangement of conferences for educational and training purposes in the field of recruitment; arrangement of conventions for educational and training purposes in the field of recruitment; arrangement of seminars for educational and training purposes in the field of recruitment; arranging and conducting of congresses in the field of recruitment; arranging of award ceremonies to recognise achievement in the field of recruitment; arranging of conferences relating to business in the field of recruitment; arranging of conventions for training purposes in the field of recruitment; education and training services in the field of recruitment and business management and business transformation; training courses in the field of recruitment and business management and business transformation; training in business skills in the field of recruitment and business management and business transformation; provision of the aforesaid services online via the internet or interactive client portals and databases for business purposes; information, advisory and consultancy services relating to the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Venquis Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Lane IP Limited",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Chronicle House, 72-78 Fleet Street, London, England, EC4Y 1HY, London EC4Y 1HY",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Venquis Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electronic databases; Interactive databases; electronic and interactive databases in the field of recruitment; computer documentation in electronic form; Downloadable business materials; Downloadable electronic brochures; Downloadable electronic newsletters; Downloadable electronic publications; Downloadable electronic reports; Downloadable podcasts; Downloadable publications; Interactive DVDs; Pre-recorded CDs and DVDs; Pre-recorded CD-ROMs; Training manuals in the form of a computer program; Communications processing computer software; Computer operating programs; Computer operating software; Network access server operating software; Computer software; Database management software; Workforce management software; Business management software; computer programs, databases and software for providing a client portal, jobs board, job and business information in the field of recruitment."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Recruitment services; Personnel recruitment; Employment recruitment; Staff recruitment; Recruitment advertising; Business recruitment consultancy; Permanent staff recruitment; Professional recruitment services; Recruitment consultancy services; Personnel recruitment consultancy; Staff recruitment services; Personnel recruitment advertising; Executive recruitment services; Personnel recruitment agency services; Recruitment and placement services; Recruitment of temporary personnel; Recruitment of executive staff; Recruitment and personnel management services; Personality testing for recruitment purposes; Interviewing services [for personnel recruitment]; Recruitment of temporary technical personnel; Personnel recruitment services and employment agencies; Advisory services relating to personnel recruitment; Provision of information relating to recruitment; Providing information relating to personnel recruitment; Human resources management and recruitment services; Recruitment of high-level management personnel; Recruitment consultants in the financial services field; Advertising services relating to the recruitment of personnel; Assistance relating to recruitment and placement of staff; Management advice relating to the recruitment of staff; Providing recruitment information via a global computer network; advertising and marketing in the field of recruitment; administration of businesses; business analysis, research and information services in the field of recruitment; arranging of exhibitions for business purposes in the field of recruitment; business administration and business advice in the field of recruitment; business analysis in the field of recruitment; business consultancy and advisory services in the field of recruitment; business management in the field of recruitment; business networking in the field of recruitment; business organisation in the field of recruitment; business planning in the field of recruitment; career placement consulting services; data collection services in the field of recruitment; data processing for the collection of data for business purposes in the field of recruitment; data processing management in the field of recruitment; database management in the field of recruitment; database marketing in the field of recruitment; office functions; provision of business and commercial contract information via the Internet in the field of recruitment; provision of business assistance in the field of recruitment; provision of business information and advice in the field of recruitment and business transformation; provision of the aforesaid services online via the internet or interactive client portals and databases for business purposes; information, advisory and consultancy services relating to the aforesaid."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing access to a global computer information network; Providing access to a global computer network for the transfer and dissemination of information; Providing access to a worldwide computer network; Providing access to computer networks; Providing access to computer databases; Providing access to data in computer networks; Providing access to databases in computer networks; providing access to computer information networks and databases containing a client portal in the field of recruitment, business management and business transformation; Providing video conferencing services; Communication services between computers; communication services by telephone; communication services over computer networks; communication services provided electronically; communication via analogue and digital computer terminals; computer aided transmission of messages, data, text and images; Computer communication and Internet access; Computer communication services; Data communication by electronic means; Data transmission; Data transmission and data broadcasting; Data transmission and reception services via telecommunication means; E-mail services; Electrical data transmission over a global remote data processing network, including the internet; Electronic and telecommunication transmission services; Electronic file transfer; Electronic mail and facsimile transmission services; Electronic mail and mailbox services; Electronic mail-box services; Electronic mail services; International data transfer; International data transmission; On-line communication services; provision of the aforesaid services online via the internet or interactive client portals and databases for business purposes; information, advisory and consultancy services relating to the aforesaid."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electronic publication; Electronic desktop publishing; Electronic online publication of periodicals and books; Electronic publication of texts and printed matter, other than publicity texts, on the Internet; Multimedia publishing; Non-downloadable electronic publications; providing on-line electronic publications; providing on-line electronic publications [non-downloadable]; arrangement of conferences for educational and training purposes in the field of recruitment; arrangement of conventions for educational and training purposes in the field of recruitment; arrangement of seminars for educational and training purposes in the field of recruitment; arranging and conducting of congresses in the field of recruitment; arranging of award ceremonies to recognise achievement in the field of recruitment; arranging of conferences relating to business in the field of recruitment; arranging of conventions for training purposes in the field of recruitment; education and training services in the field of recruitment and business management and business transformation; training courses in the field of recruitment and business management and business transformation; training in business skills in the field of recruitment and business management and business transformation; provision of the aforesaid services online via the internet or interactive client portals and databases for business purposes; information, advisory and consultancy services relating to the aforesaid."
+        }
+      ]
+    },
+    "id": "0c9c2c40-3bd7-4924-a9c8-1620391a2b3a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "The Forum, St Paul's, 33 Gutter Lane, London EC2V 8AS",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Lane IP Limited"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20181018",
+        "applicationNumber": "UK00917969935"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20281018",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20190305",
+        "registrationNumber": "UK00917969935"
+      }
+    },
+    "version": "20250627220057",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENQUIS"
+    }
+  },
+  "_uri": "/mark/gb/0c9c2c40-3bd7-4924-a9c8-1620391a2b3a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.566Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

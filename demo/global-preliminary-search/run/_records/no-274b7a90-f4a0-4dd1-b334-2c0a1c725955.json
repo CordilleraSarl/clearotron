@@ -1,0 +1,151 @@
+{
+  "uri": "/mark/no/274b7a90-f4a0-4dd1-b334-2c0a1c725955",
+  "provider": "clarivate",
+  "office": "no",
+  "guid": "274b7a90-f4a0-4dd1-b334-2c0a1c725955",
+  "applicationNumber": "201402038",
+  "registrationNumber": null,
+  "applicationDate": "1991-02-04",
+  "registrationDate": "2014-08-18",
+  "expiryDate": "2031-02-04",
+  "renewalDate": null,
+  "lastPublicationDate": "2014-08-25",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    12,
+    37,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        12
+      ],
+      "language": "en",
+      "description": "Motor vehicles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "All maintenance, repair and cleaning services for motor vehicles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "en",
+      "description": "Transformation services for automobiles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Consulting firm services, research services relating to styling, engineering work, development of motor vehicles.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Gildo Pierre Pallanca",
+  "ownerNative": null,
+  "ownerCountry": "MC",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "MC",
+        "applicantAddressCountryName": "Monaco",
+        "applicantName": "Gildo Pierre Pallanca"
+      }
+    ],
+    "applicationLanguageCode": "no",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Motor vehicles."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "All maintenance, repair and cleaning services for motor vehicles."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Transformation services for automobiles."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Consulting firm services, research services relating to styling, engineering work, development of motor vehicles."
+        }
+      ]
+    },
+    "id": "274b7a90-f4a0-4dd1-b334-2c0a1c725955",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250808",
+    "registrationOfficeCode": "NO",
+    "registrationOfficeName": "Norway",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19910204",
+        "applicationNumber": "201402038"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310204",
+      "lastPublicationDate": "20140825",
+      "markCurrentStatus": "GRANTED",
+      "registration": {
+        "registrationDate": "20140818"
+      }
+    },
+    "version": "20250808020004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/no/274b7a90-f4a0-4dd1-b334-2c0a1c725955",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.179Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

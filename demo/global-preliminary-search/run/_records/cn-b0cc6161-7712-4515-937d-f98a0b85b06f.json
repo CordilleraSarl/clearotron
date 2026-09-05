@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/cn/b0cc6161-7712-4515-937d-f98a0b85b06f",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "b0cc6161-7712-4515-937d-f98a0b85b06f",
+  "applicationNumber": "58191140",
+  "registrationNumber": "58191140",
+  "applicationDate": "2021-08-03",
+  "registrationDate": "2022-04-14",
+  "expiryDate": "2032-04-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-01-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "电缆,电源开关,继电器",
+      "translation_language": "en",
+      "translation": "Cables, Power Switches, Relays"
+    }
+  ],
+  "owner": "Shenzhen Le Technology Co., Ltd",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市宝安区松岗街道红星社区星际家园8-9栋8-1409",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Le Technology Co., Ltd",
+        "applicantNativeName": "深圳市乐瑞科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Cables, Power Switches, Relays",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "电缆,电源开关,继电器"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Cables",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0912",
+          "subNatGoodsServicesDescription": "Cables"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        }
+      ]
+    },
+    "id": "b0cc6161-7712-4515-937d-f98a0b85b06f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.07.13",
+      "26.01.06"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1775"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "腾讯云计算(北京)有限责任公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210803",
+        "applicationNumber": "58191140"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320413",
+      "lastPublicationDate": "20220113",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220414",
+        "registrationNumber": "58191140"
+      }
+    },
+    "version": "20251004151317",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LORI"
+    }
+  },
+  "_uri": "/mark/cn/b0cc6161-7712-4515-937d-f98a0b85b06f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.455Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

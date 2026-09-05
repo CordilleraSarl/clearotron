@@ -1,0 +1,126 @@
+{
+  "uri": "/mark/es/51bd489c-9491-4a6e-bbe4-ef9e1dd9912a",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "51bd489c-9491-4a6e-bbe4-ef9e1dd9912a",
+  "applicationNumber": "2235383 M6",
+  "registrationNumber": "2235383 M6",
+  "applicationDate": "1999-05-20",
+  "registrationDate": "2000-06-20",
+  "expiryDate": "2029-05-19",
+  "renewalDate": "2019-05-29",
+  "lastPublicationDate": "1999-07-16",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "PREVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de educacion, formacion y enseñanza. Organizacion y direccion de cursos y talleres de formacion practica. Organizacion y direccion de coloquios, conferencias, congresos, seminarios y simposiums. Edicion de textos que no sean publicitarios y publicacion de libros. Actividades didacticas relacionadas con la prevencion de riesgos laborales.",
+      "translation_language": "en",
+      "translation": "EDUCATION, TRAINING AND TEACHING SERVICES. ORGANIZATION AND DIRECTION OF PRACTICAL TRAINING COURSES AND WORKSHOPS. ORGANIZATION AND DIRECTION OF COLLOQUIES, CONFERENCES, CONGRESSES, SEMINARS AND SIMPOSIUMS. EDITING TEXTS THAT ARE NOT ADVERTISING AND PUBLISHING BOOKS. DIDACTIC ACTIVITIES RELATED TO THE PREVENTION OF LABOR RISKS."
+    }
+  ],
+  "owner": "PREVENOR, S.L.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "GONZALEZ PALMERO, FE",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "PREVENOR, S.L."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "cmMarkImageEUclassification": [
+      "02.09.14"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "EDUCATION, TRAINING AND TEACHING SERVICES. ORGANIZATION AND DIRECTION OF PRACTICAL TRAINING COURSES AND WORKSHOPS. ORGANIZATION AND DIRECTION OF COLLOQUIES, CONFERENCES, CONGRESSES, SEMINARS AND SIMPOSIUMS. EDITING TEXTS THAT ARE NOT ADVERTISING AND PUBLISHING BOOKS. DIDACTIC ACTIVITIES RELATED TO THE PREVENTION OF LABOR RISKS.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de educacion, formacion y enseñanza. Organizacion y direccion de cursos y talleres de formacion practica. Organizacion y direccion de coloquios, conferencias, congresos, seminarios y simposiums. Edicion de textos que no sean publicitarios y publicacion de libros. Actividades didacticas relacionadas con la prevencion de riesgos laborales."
+        }
+      ]
+    },
+    "id": "51bd489c-9491-4a6e-bbe4-ef9e1dd9912a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "02.09.14"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "31613",
+        "publicationVolume": "2695"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "representatives": [
+      {
+        "representativeName": "GONZALEZ PALMERO, FE"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19990520",
+        "applicationNumber": "2235383 M6"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290519",
+      "lastPublicationDate": "19990716",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20000620",
+        "registrationNumber": "2235383 M6"
+      },
+      "renewalDate": "20190529",
+      "renewalPublishedDate": "20190604"
+    },
+    "version": "20260427151543",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "PREVENOR"
+    }
+  },
+  "_uri": "/mark/es/51bd489c-9491-4a6e-bbe4-ef9e1dd9912a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

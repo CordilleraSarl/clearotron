@@ -1,0 +1,237 @@
+{
+  "uri": "/mark/us/5c3fd6c4-96b3-40e1-93f2-1720d3122a74",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "5c3fd6c4-96b3-40e1-93f2-1720d3122a74",
+  "applicationNumber": "88680483",
+  "registrationNumber": null,
+  "applicationDate": "2019-11-05",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2020-08-13",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "ENQORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Instruction in the field of a series of in-person and online art materials eduation",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Palettini LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "5 Beagle Trail, Sandy Hook, CT, 06482",
+        "applicantAddressCity": "Sandy Hook",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "06482",
+        "applicantAddressStateName": "CONNECTICUT",
+        "applicantAddressStreet": "5 Beagle Trail",
+        "applicantJurisdictionOfIncorporation": "CONNECTICUT",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "Palettini LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Instruction in the field of a series of in-person and online art materials eduation"
+        }
+      ]
+    },
+    "id": "5c3fd6c4-96b3-40e1-93f2-1720d3122a74",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20200825",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20200825",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20200212",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20200212",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20200212",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20200210",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20191112",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20191108",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "5 Beagle Trail, Sandy Hook, CT, 06482",
+        "city": "Sandy Hook",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CONNECTICUT",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Palettini LLC",
+        "postalCode": "06482",
+        "stateName": "CONNECTICUT",
+        "street": "5 Beagle Trail"
+      },
+      {
+        "address": "5 Beagle Trail, Sandy Hook, CT, 06482",
+        "city": "Sandy Hook",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CONNECTICUT",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Palettini LLC",
+        "postalCode": "06482",
+        "stateName": "CONNECTICUT",
+        "street": "5 Beagle Trail"
+      }
+    ],
+    "recordLastUpdated": "20260508",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "86926115",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "ENCORE UNIVERSITY",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "86926115",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "ENCORE UNIVERSITY",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "86926115",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "ENCORE UNIVERSITY",
+            "refusalStatus": "Cited"
+          }
+        ],
+        "refusalStatus": "Refused"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "SANDY HOOK, CT 06482, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "SANDY HOOK, CT 06482",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "PALETTINI LLC PALETTINI LLC, 5 BEAGLE TRAIL"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "SANDY HOOK, CT 06482, UNITED STATES",
+        "representativeAddressLines": [
+          "SANDY HOOK, CT 06482",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20200813",
+      "active": false,
+      "application": {
+        "applicationDate": "20191105",
+        "applicationNumber": "88680483"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20141006"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20141006"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20200825",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260508173420",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "ENCORE",
+      "markVerbalElementText": "ENQORE"
+    }
+  },
+  "_uri": "/mark/us/5c3fd6c4-96b3-40e1-93f2-1720d3122a74",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:13.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/mx/0edaf22f-def1-4f6a-a0b6-62e8386b548a",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "0edaf22f-def1-4f6a-a0b6-62e8386b548a",
+  "applicationNumber": "2935700",
+  "registrationNumber": "2592698",
+  "applicationDate": "2023-04-26",
+  "registrationDate": "2023-08-24",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Sercicios generales de capacitacion",
+      "translation_language": "en",
+      "translation": "GENERAL TRAINING SERVICES"
+    }
+  ],
+  "owner": "INSTITUTO NACIONAL DE TRANSPARENCIA, ACCESO A LA INFORMACIÓN Y PROTECCIÓN DE DATOS PERSONALES",
+  "ownerNative": null,
+  "ownerCountry": "MX",
+  "representative": "DAYANA SEVILLA OSORNIO",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "AVENIDA INSURGENTES SUR NUM. EXT. 3211, INSURGENTES CUICUILCO, COYOACAN, CIUDAD DE MÉXICO 04530",
+        "applicantAddressCountryCode": "MX",
+        "applicantAddressCountryName": "Mexico",
+        "applicantName": "INSTITUTO NACIONAL DE TRANSPARENCIA, ACCESO A LA INFORMACIÓN Y PROTECCIÓN DE DATOS PERSONALES"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "GENERAL TRAINING SERVICES",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Sercicios generales de capacitacion"
+        }
+      ]
+    },
+    "id": "0edaf22f-def1-4f6a-a0b6-62e8386b548a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.21"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1006R2",
+        "publicationYear": "2023"
+      }
+    ],
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "AVENIDA INSURGENTES SUR NUM. EXT. 3211, INSURGENTES CUICUILCO, COYOACAN, CIUDAD DE MÉXICO 04530, MEXICO"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "20 NUM. EXT. 69, MARAVILLAS, NEZAHUALCOYOTL, ESTADO DE MEXICO 57410, MEXICO",
+        "representativeName": "DAYANA SEVILLA OSORNIO"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230426",
+        "applicationNumber": "2935700"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20230824",
+        "registrationNumber": "2592698"
+      }
+    },
+    "version": "20250704193240",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FORI"
+    }
+  },
+  "_uri": "/mark/mx/0edaf22f-def1-4f6a-a0b6-62e8386b548a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:53.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

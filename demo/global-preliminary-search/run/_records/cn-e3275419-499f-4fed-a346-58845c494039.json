@@ -1,0 +1,129 @@
+{
+  "uri": "/mark/cn/e3275419-499f-4fed-a346-58845c494039",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "e3275419-499f-4fed-a346-58845c494039",
+  "applicationNumber": "65773777",
+  "registrationNumber": null,
+  "applicationDate": "2022-07-06",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "AORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "照明开关,远程控制装置,电线圈,配电箱(电),减压器(电),照明控制装置,无线局域网控制器,变压器(电),电开关,电源材料(电线、电缆)",
+      "translation_language": "en",
+      "translation": "Lighting switches, remote control devices, electric coils, distribution boxes (electricity), voltage reducers (electricity), lighting control devices, wireless LAN controllers, transformers (electricity), electric switches, power supply materials (wires, cables)"
+    }
+  ],
+  "owner": "Wenzhou Aorui Intelligent Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "浙江省温州市龙湾区永中街道永定路1188号万达商业广场1幢1302室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Wenzhou Aorui Intelligent Technology Co., Ltd.",
+        "applicantNativeName": "温州傲瑞智能科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Lighting switches, remote control devices, electric coils, distribution boxes (electricity), voltage reducers (electricity), lighting control devices, wireless LAN controllers, transformers (electricity), electric switches, power supply materials (wires, cables)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "照明开关,远程控制装置,电线圈,配电箱(电),减压器(电),照明控制装置,无线局域网控制器,变压器(电),电开关,电源材料(电线、电缆)"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Equipments used in communication and navigation",
+        "Cables",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0912",
+          "subNatGoodsServicesDescription": "Cables"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        }
+      ]
+    },
+    "id": "e3275419-499f-4fed-a346-58845c494039",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "河北诚鼎知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220706",
+        "applicationNumber": "65773777"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251004225359",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AORI"
+    }
+  },
+  "_uri": "/mark/cn/e3275419-499f-4fed-a346-58845c494039",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:50.843Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

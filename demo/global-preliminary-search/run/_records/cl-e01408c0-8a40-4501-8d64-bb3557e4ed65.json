@@ -1,0 +1,121 @@
+{
+  "uri": "/mark/cl/e01408c0-8a40-4501-8d64-bb3557e4ed65",
+  "provider": "clarivate",
+  "office": "cl",
+  "guid": "e01408c0-8a40-4501-8d64-bb3557e4ed65",
+  "applicationNumber": "1095682",
+  "registrationNumber": "1114377",
+  "applicationDate": "2014-02-19",
+  "registrationDate": "2014-07-25",
+  "expiryDate": "2034-07-25",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "(Concedida) Alojamiento de plataformas en internet; alquiler de hardware y software; consultoría en investigación científica e industrial; consultoría en software; diseño de sistemas informáticos; ingeniería civil.",
+      "translation_language": "en",
+      "translation": "(Granted) Internet platform hosting; hardware and software rental; scientific and industrial research consulting; software consulting; computer systems design; civil engineering."
+    }
+  ],
+  "owner": "N2N ITC GROUP LTDA",
+  "ownerNative": null,
+  "ownerCountry": "CL",
+  "representative": "ESTEBAN NAVARRO ROZAS",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "PROVIDENCIA",
+        "applicantAddressCountryCode": "CL",
+        "applicantAddressCountryName": "Chile",
+        "applicantName": "N2N ITC GROUP LTDA"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "(Granted) Internet platform hosting; hardware and software rental; scientific and industrial research consulting; software consulting; computer systems design; civil engineering.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "(Concedida) Alojamiento de plataformas en internet; alquiler de hardware y software; consultoría en investigación científica e industrial; consultoría en software; diseño de sistemas informáticos; ingeniería civil."
+        }
+      ]
+    },
+    "id": "e01408c0-8a40-4501-8d64-bb3557e4ed65",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "Presenta figura de evocativa de árbol a la izquierda seguido de un texto 'venturi consulting group'."
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260615",
+    "registrationOfficeCode": "CL",
+    "registrationOfficeName": "Chile",
+    "representatives": [
+      {
+        "representativeAddress": "PROVIDENCIA",
+        "representativeAddressCountryCode": "CL",
+        "representativeAddressCountryName": "Chile",
+        "representativeName": "ESTEBAN NAVARRO ROZAS"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20140219",
+        "applicationNumber": "1095682"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340725",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20140725",
+        "registrationNumber": "1114377"
+      }
+    },
+    "version": "20260615152316",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/cl/e01408c0-8a40-4501-8d64-bb3557e4ed65",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.178Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,345 @@
+{
+  "uri": "/mark/us/90e2fb60-0eb1-43fb-9b03-fc1d3895342a",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "90e2fb60-0eb1-43fb-9b03-fc1d3895342a",
+  "applicationNumber": "85102251",
+  "registrationNumber": null,
+  "applicationDate": "2010-08-06",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2011-04-05"
+  ],
+  "abandonmentDate": "2012-01-02",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "XORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Scientific research and development; research and development in the pharmaceutical and biotechnology fields; scientific, biological and medical research related to the discovery and development of monoclonal antibodies for therapeutic, diagnostic and research purposes; biochemical development of monoclonal antibodies for therapeutic, diagnostic and research purposes; development of drugs and therapeutics for research, diagnosis, and the treatment of a wide variety of diseases and other conditions, including cancer, immune disorders and infectious diseases",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "XORI Corporation",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Kevin S. Costanza",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Suite 205, Seattle, WA, 98102",
+        "applicantAddressCity": "Seattle",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "98102",
+        "applicantAddressStateName": "WASHINGTON",
+        "applicantAddressStreet": "Suite 205",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "XORI Corporation",
+        "applicantSecondaryAddressUnit": "1616 Eastlake Avenue East"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Scientific research and development; research and development in the pharmaceutical and biotechnology fields; scientific, biological and medical research related to the discovery and development of monoclonal antibodies for therapeutic, diagnostic and research purposes; biochemical development of monoclonal antibodies for therapeutic, diagnostic and research purposes; development of drugs and therapeutics for research, diagnosis, and the treatment of a wide variety of diseases and other conditions, including cancer, immune disorders and infectious diseases"
+        }
+      ]
+    },
+    "id": "90e2fb60-0eb1-43fb-9b03-fc1d3895342a",
+    "internationalMarkKeys": [
+      {
+        "applicationDate": "20110105",
+        "internationalRegistrationNumber": "1073094",
+        "markCurrentStatus": "DEATH OF INTERNATIONAL REGISTRATION",
+        "markCurrentStatusDate": "20140203",
+        "markEvents": [
+          {
+            "date": "20140221",
+            "descriptionText": "INTERNATIONAL REGISTRATION CANCELLED BY IB"
+          },
+          {
+            "date": "20140221",
+            "descriptionText": "TOTAL CEASING OF EFFECT PROCESSED BY IB"
+          },
+          {
+            "date": "20121109",
+            "descriptionText": "TOTAL CEASING OF EFFECT NOTICE SENT TO IB"
+          },
+          {
+            "date": "20121109",
+            "descriptionText": "CEASING OF EFFECT PROCESSED"
+          },
+          {
+            "date": "20120702",
+            "descriptionText": "TOTAL CEASING OF EFFECT TO BE PROCESSED"
+          },
+          {
+            "date": "20110429",
+            "descriptionText": "APPLICATION FOR IR REGISTERED BY IB"
+          },
+          {
+            "date": "20110324",
+            "descriptionText": "IRREGULARITY RESPONSE SENT TO IB"
+          },
+          {
+            "date": "20110324",
+            "descriptionText": "RESPONSE TO IRREGULARITY REVIEWED AND ACCEPTED"
+          },
+          {
+            "date": "20110323",
+            "descriptionText": "IRREGULARITY RESPONSE RECEIVED FROM APPLICANT"
+          },
+          {
+            "date": "20110224",
+            "descriptionText": "IRREGULARITY NOTICE RECEIVED FROM IB"
+          },
+          {
+            "date": "20110110",
+            "descriptionText": "IR CERTIFIED AND SENT TO IB"
+          },
+          {
+            "date": "20110106",
+            "descriptionText": "MANUALLY CERTIFIED"
+          },
+          {
+            "date": "20110105",
+            "descriptionText": "NEW APPLICATION FOR IR RECEIVED"
+          }
+        ],
+        "registrationDate": "20110105",
+        "renewalDate": "20210105",
+        "usptoReferenceNumber": "A0022720"
+      },
+      {
+        "applicationDate": "20110204",
+        "markCurrentStatus": "APPLICATION FOR INTERNATIONAL REGISTRATION MANUALLY CERTIFIED",
+        "markCurrentStatusDate": "20110207",
+        "markEvents": [
+          {
+            "date": "20110207",
+            "descriptionText": "INTERNATIONAL APPLICATION WITHDRAWN"
+          },
+          {
+            "date": "20110207",
+            "descriptionText": "MANUALLY CERTIFIED"
+          },
+          {
+            "date": "20110204",
+            "descriptionText": "NEW APPLICATION FOR IR RECEIVED"
+          }
+        ],
+        "usptoReferenceNumber": "A0023127"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20120102",
+        "descriptionText": "ABANDONMENT - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20120102",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20110531",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20110405",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20110405",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20110225",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20110224",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20110223",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20110223",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20110216",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20110208",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20101124",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20101124",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20101124",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20101122",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20100811",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20100810",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Suite 205, Seattle, WA, 98102",
+        "city": "Seattle",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "XORI Corporation",
+        "postalCode": "98102",
+        "secondaryAddressUnit": "1616 Eastlake Avenue East",
+        "stateName": "WASHINGTON",
+        "street": "Suite 205"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Suite 205, Seattle, WA, 98102",
+        "city": "Seattle",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "XORI Corporation",
+        "postalCode": "98102",
+        "secondaryAddressUnit": "1616 Eastlake Avenue East",
+        "stateName": "WASHINGTON",
+        "street": "Suite 205"
+      },
+      {
+        "address": "Suite 205, Seattle, WA, 98102",
+        "city": "Seattle",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "XORI Corporation",
+        "postalCode": "98102",
+        "secondaryAddressUnit": "1616 Eastlake Avenue East",
+        "stateName": "WASHINGTON",
+        "street": "Suite 205"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "701 5TH AVE, SEATTLE, WA 98104, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "701 5TH AVE",
+          "SEATTLE, WA 98104",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "KEVIN S. COSTANZA SEED IP LAW GROUP PLLC, STE 5400"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "701 5TH AVE, SEATTLE, WA 98104, UNITED STATES",
+        "representativeAddressLines": [
+          "701 5TH AVE",
+          "SEATTLE, WA 98104",
+          "UNITED STATES"
+        ],
+        "representativeName": "Kevin S. Costanza"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20120102",
+      "active": false,
+      "application": {
+        "applicationDate": "20100806",
+        "applicationNumber": "85102251"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-NO STATEMENT OF USE FILED",
+        "markOfficialStatusCode": "606",
+        "markOfficialStatusDate": "20120102",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED",
+      "publicationDate": [
+        "20110405"
+      ]
+    },
+    "version": "20260110074101",
+    "wordMarkSpecification": {
+      "markTranslationDescription": "The word(s) \"XORI\" has no meaning in a foreign language.",
+      "markVerbalElementText": "XORI"
+    }
+  },
+  "_uri": "/mark/us/90e2fb60-0eb1-43fb-9b03-fc1d3895342a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:18.948Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

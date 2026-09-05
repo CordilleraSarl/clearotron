@@ -1,0 +1,2033 @@
+{
+  "uri": "/mark/em/3035f4bf-7fa4-4b62-a306-4f85ca1eb9c3",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "3035f4bf-7fa4-4b62-a306-4f85ca1eb9c3",
+  "applicationNumber": "19399273",
+  "registrationNumber": null,
+  "applicationDate": "2026-07-23",
+  "registrationDate": null,
+  "expiryDate": "2036-07-23",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-08-03",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "ALVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    9,
+    11,
+    35,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "cs",
+      "description": "Hliník; Hliník a jeho slitiny; Polotovary z hliníku nebo jeho slitin; Vytlacované hliníkové profily; Hliníkové desky; Kovové konstrukce; Premístitelné konstrukce a kovové stavby; Stavby jako pevné kovové konstrukce; Kovové konstrukce budov; Kovová oplocení; Kovové ohrazovací panely; Kovové mríze k plotum; Zábradlí z kovu na balkóny; Kovová balkónová zábradlí; Kovová kování pro stavebnictví; Kovové upevnovací vybavení; Kovové úchytky; Kovové stavební materiály; Kovové architektonické výrobky pro pouzití ve stavebnictví; Tvarované kovové díly.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Fotovoltaické moduly; Fotovoltaické solární moduly; Fotoelektrické prístroje a zarízení pro výrobu elektriny ze slunecní energie; Fotovoltaické prístroje na premenu slunecního zárení na elektrickou energii; Fotovoltaické menice; Solární clánky; Baterie; Elektrické baterie; Dobíjecí baterie; Elektrické clánky a baterie; Lithium-iontové baterie; Nabíjecky; Nabíjecky baterií; Nabíjecky elektromobilu; Menice [elektrotechnika]; Prístroje na úpravu elektriny; Elektrické menice; Napájecí zdroje pro LED.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "cs",
+      "description": "LED svítidla; Lampy LED; Elektroluminiscencní diody (LED); LED osvetlovací telesa; LED pásky; Zarízení pro osvetlení se svetelnými diodami [LED]; LED lampy na venkovní osvetlení; Bodové reflektory; Bodová svetla na osvetlení domácností; Venkovní osvetlení; Osvetlení externích instalací; Príslusenství venkovního osvetlení; Svítidla k venkovnímu pouzití; Zahradní osvetlení; Venkovní elektrické osvetlovací doplnky; Nástenná svetla; Stropní svetla typu downlight; Solární lampy; Elektrická svítidla; Elektrické interiérové osvetlovací zarízení; Svítidla; Svetelné kuzely, svetlomety; Elektrické svetelné zdroje (zárovky, zárivky); Klimatizacní zarízení; Topné, ventilacní a klimatizacní systémy; Elektrická klimatizacní zarízení.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "cs",
+      "description": "Maloobchodní sluzby související s bateriemi; Maloobchodní sluzby související s akumulátory; Maloobchodní prodej svetel; Maloobchodní sluzby v oblasti fotovoltaických zarízení pro výrobu elektriny; Velkoobchodní sluzby v oblasti fotovoltaických zarízení pro výrobu elektriny; Velkoobchodní prodej svetel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "cs",
+      "description": "Instalace a údrzba fotovoltaických zarízení; Instalace fotovoltaických clánku a modulu; Výstavba komunálních solárních zarízení; Údrzba a opravy zarízení na solární energii; Instalace zarízení na ochranu proti slunci; Údrzba, opravy a obnova fotovoltaických prístroju a zarízení; Instalace prístroju pro osvetlení; Poradenské sluzby vztahující se k instalaci osvetlovacích prístroju; Instalace klimatizacních zarízení; Sluzby dodavatele klimatizací.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Projektování a vývoj fotovoltaických systému; Navrhování a vývoj fotovoltaických systému; Návrh solárních fotovoltaických systému; Navrhování osvetlovacích systému.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "da",
+      "description": "Aluminium; Aluminium og legeringer heraf; Halvforarbejdede artikler af aluminium eller legeringer heraf; Ekstruderede aluminiumssektioner; Aluminiumsfliser; Bygninger af metal; Konstruktioner og transportable bygninger af metal; Bygninger i form af faste metalkonstruktioner; Bygningskonstruktioner af metal; Hegn af metal; Hegnspaneler af metal; Metalgelændere til plankeværk; Metalgelændere til balkoner; Gelændere af metal til balkoner; Metalbeslag til bygningsbrug; Fastgørelsesanordninger af metal; Metalliske beslag; Bygningsmaterialer af metal; Arkitektoniske metalarbejder til brug ved byggeri; Formede metalstykker.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Fotovoltaiske moduler; Apparater til omdannelse af elektronisk stråling til elektrisk energi, nemlig fotovoltaiske solmoduler; Fotovoltaiske apparater og installationer til generering af solelektricitet; Fotovoltaiske apparater til omdannelse af solstråling til elektrisk energi; Fotovoltaiske vekselrettere; Solceller; Batterier; Batterier, elektriske; Genopladelige batterier; Elektriske celler og batterier; Litiumionbatterier; Opladere; Opladere til batterier; Opladere til el-biler; Vekselrettere [elektriske]; Apparater i form af elektriske omformere; Strømtransformere; LED driver.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "da",
+      "description": "LED-belysningslegemer; LED-lamper; Lysemitterende dioder [LED]-pærer; LED-belysningsarmaturer; Led-strips; LED-belysningsinstallationer; LED-lys til udendørs belysning; Spotlamper; Spotlamper til husholdningsbrug; Gadelygter; Belysning til udendørs installering; Belysningsarmaturer til udendørs belysning; Lamper til udendørs brug; Havebelysning; Elektriske belysningslysarmaturer til udendørsbrug; Væglamper; Downlights; Sollamper; Belysningslegemer; Installationer til elektrisk, indendørs belysning; Lamper; Projektørlys; Lamper, elektriske; Luftkonditioneringsanlæg; Systemer til opvarmning, ventilation og luftkonditionering; Elektriske luftkonditioneringsanlæg.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "da",
+      "description": "Detailvirksomhed med batterier; Detailhandel med akkumulatorer; Detailhandel med belysning; Detailhandel med fotovoltaiske apparater til produktion af elektricitet; Engroshandel med fotovoltaiske apparater til produktion af elektricitet; Engroshandel med belysning.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "da",
+      "description": "Installation og vedligeholdelse af fotovoltaiske anlæg; Installering af fotovoltaiske celler og -moduler; Konstruktion af solcelleanlæg til brug i forsyningsøjemed; Vedligeholdelse og reparation af solcelleanlæg; Installation af solafskærmningssystemer; Vedligeholdelse, reparation og istandsættelse af fotovoltaiske apparater og installationer; Installering af belysningsapparater; Rådgivning vedrørende installering af belysningsapparater; Installation af luftkonditioneringsapparater; Ydelser leveret af en luftkonditioneringsleverandør (installation og vedligeholdelse).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Design og udvikling af fotovoltaiske systemer; Tegning og udvikling af fotovoltaiske systemer; Design af fotovoltaiske systemer; Design af belysningssystemer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "nl",
+      "description": "Aluminium; Aluminium en legeringen daarvan; Halffabricaten van aluminium of legeringen daarvan; Profielen van geëxtrudeerd aluminium; Platen van aluminium; Constructies van metaal; Constructies en verplaatsbare constructies van metaal; Constructies, te weten vaste metalen structuren; Metaalconstructies voor de bouw; Afrasteringen van metaal; Panelen van metaal, voor hekken; Relingen van metaal voor hekwerken; Relingen van metaal voor balkons; Beslag van metaal voor de bouw; Bevestigingsmateriaal van metaal; Montagedelen van metaal; Bouwmaterialen van metaal; Metaalwerk voor de bouw; Metalen delen (Gevormde -).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Fotovoltaïsche modules; Toestellen voor het omzetten van elektronische straling in elektrische energie, te weten fotovoltaïsche zonnemodules; Fotovoltaïsche toestellen en installaties voor het opwekken van zonne-energie; Fotovoltaïsche apparatuur voor het omzetten van zonnestralen in elektrische energie; Fotovoltaïsche gelijkstroom-wisselstroomomzetters; Zonnecellen; Batterijen; Elektrische batterijen; Oplaadbare batterijen; Elektrische cellen en batterijen; Lithiumionbatterijen; Laders; Batterij-laders; Opladers voor elektrische auto's; Omzetters [elektriciteit]; Stroomconditioneerapparatuur; Stroomwisselaars; Led drivers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "nl",
+      "description": "Led-verlichting; Led-lampen; LED-lampen; Led-verlichtingsarmaturen; Led-strips; Led-landschapsverlichting; Schijnwerperlichten; Spotjes voor huishoudelijke verlichting; Buitenverlichting; Lampen voor buiteninstallaties; Verlichtingsarmaturen voor buiten; Lampen voor buitenshuis; Tuinverlichting; Elektrische verlichtingsarmaturen voor buiten; Wandverlichting; Inbouwspots; Lampen op zonne-energie; Verlichtingsarmatuur; Verlichtingsinstallaties (Elektrische -) voor binnengebruik; Lampen voor verlichting; Schijnwerpers; Elektrische lampen; Airconditioninginstallaties; VVA-systemen (verwarming, ventilatie en airconditioning); Airconditioners (Elektrische -).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "Detailhandel in batterijen; Detailhandel in accu's; Detailhandelsdiensten op het gebied van verlichting; Detailhandelsdiensten op het gebied van fotovoltaïsche toestellen voor het opwekken van elektriciteit; Groothandelsdiensten op het gebied van fotovoltaïsche toestellen voor het opwekken van elektriciteit; Groothandelsdiensten op het gebied van verlichting.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "nl",
+      "description": "Installatie en onderhoud van fotovoltaïsche installaties; Installatie van fotovoltaïsche cellen en modules; Bouw van zonne-installaties voor nutsvoorzieningen; Onderhoud en reparatie van installaties voor zonne-energie; Installatie van zonbeschermingssystemen; Onderhoud, reparatie en revisie van fotovoltaïsche apparatuur en installaties; Installatie van verlichtingsapparaten; Adviesdiensten inzake de installatie van verlichtingsapparatuur; Installatie van airconditioningapparaten; Aannemers op het gebied van klimaatregeling (Diensten van -).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Ontwerp en ontwikkeling van fotovoltaïsche systemen; Ontwerpen en ontwikkelen van fotovoltaïsche systemen; Ontwerp van fotovoltaïsche zonnesystemen; Verlichtingssystemen (Ontwerp van -).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "en",
+      "description": "Aluminium; Aluminium and its alloys; Semi-finished articles of aluminium or its alloys; Extruded aluminium sections; Aluminium slabs; Buildings of metal; Structures and transportable buildings of metal; Buildings being fixed structures of metal; Building structures of metal; Fences of metal; Metal fencing panels; Metal railings for fences; Metal railings for balconies; Railings of metal for balconies; Fittings of metal for building; Fixing devices of metal; Metallic mountings; Building materials of metal; Architectural metalwork for use in building; Shaped metal portions.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Photovoltaic modules; Photovoltaic solar modules; Photovoltaic apparatus and installations for generating solar electricity; Photovoltaic apparatus for converting solar radiation to electrical energy; Photovoltaic inverters; Solar cells; Batteries; Batteries, electric; Rechargeable batteries; Electrical cells and batteries; Lithium ion batteries; Chargers; Battery chargers; Electric-car charger; Inverters [electricity]; Power conditioning apparatus; Current transformers; LED drivers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "en",
+      "description": "LED luminaires; LED lamps; Light-emitting diode [LED] light bulbs; LED lighting fixtures; LED light strips; LED lighting installations; LED landscape lights; Spotlights; Spot lights for household illumination; Outdoor lighting; Lights for external installation; Outdoor lighting fittings; Lamps for outdoor use; Garden lighting; Outdoor electrical lighting fixtures; Wall lights; Downlights; Solar lamps; Luminaires; Electric indoor lighting installations; Lamps; Floodlights; Electric lamps; Air-conditioning installations; HVAC systems (heating, ventilation and air conditioning); Electric air conditioners.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Retail services relating to batteries; Retail services relating to accumulators; Retail services in relation to lighting; Retail services in relation to photovoltaic apparatus for generating electricity; Wholesale services in relation to photovoltaic apparatus for generating electricity; Wholesale services in relation to lighting.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Installation and maintenance of photovoltaic installations; Installation of photovoltaic cells and modules; Construction of utility solar installations; Maintenance and repair of solar power installations; Installation of sun protection systems; Maintenance, repair and reconditioning of photovoltaic apparatus and installations; Installation of lighting apparatus; Advisory services relating to the installation of lighting apparatus; Installation of apparatus for air-conditioning; Air conditioning contractor services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Design and development of photovoltaic systems; Drafting and development of photovoltaic systems; Design of solar photovoltaic systems; Design of lighting systems.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "et",
+      "description": "Alumiinium; Alumiinium ja selle sulamid; Alumiiniumist või selle sulamitest pooltooted; Pressitud alumiiniumprofiilid; Alumiiniumplaadid; Metallist ehitised, tarindid; Metallist tarindid ja transporditavad ehitised; Statsionaarsed metallehitised; Metallist ehituskonstruktsioonid; Metallist tarad, aiad, piirded; Metallist aiapaneelid; Metallist aiapiirded; Metallist rõdupiirded; Metallist ehitustarvikud; Metallkinnitid; Metallist kinnitused, paigaldused; Metallist ehitusmaterjalid; Ehituses kasutatavad arhitektuursed metalldetailid; Vormitud metallosad.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Fotogalvaanikamoodulid; Fotogalvaanilised päikesemoodulid; Päikeseelektrienergia tootmise fotogalvaanikaseadmed ja -paigaldised; Päikesekiirguse elektrienergiaks muundamise fotogalvaanilised seadmed; Fotogalvaanilised inverterid; Päikeseelemendid (fotogalvaanilised elemendid); Patareid, akud; Elektripatareid; Akupatareid; Kuivelemendid ja patareid; Liitiumioonakud; Akulaadurid; Akulaadurid, patareilaadurid; Elektriautode laadijad; Inverterid, vaheldid [elektrotehnika]; Voolu reguleerimise seadmed; Voolumuundurid; LED-draiverid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "et",
+      "description": "LED-valgustid; Valgusdioodlambid, LED-lambid; Valgusdioodidega [LED] pirnid; LED-valgustiarmatuurid; LED-ribad; Valgusdiood [LED] valgustuspaigaldised; LED-maastikuvalgustid; Kohtvalgustid; Kohtvalgustid majapidamises kasutamiseks; Välisvalgustid; Lambid välispaigalduseks; Välisvalgustusseadmed; Õuelambid; Aialambid, aiavalgustid; Elektrilised välisvalgustusseadmed; Seinavalgustid; Süvistatavad valgustid; Päikeselambid; Valgustid; Siseruumide elektrivalgustid; Lambid [valgustid]; Tulvaprozektorid; Elektrilambid; Kliimaseadmed; HVAC-süsteemid (küte, ventilatsioon ja õhu konditsioneerimine); Elektrilised kliimaseadmed.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "et",
+      "description": "Patareide jaemüügiteenused; Akude jaemüügi teenused; Valgustite jaemüügiteenused; Jaemüügiteenused seoses elektri tootmise fotogalvaaniliste seadmetega; Hulgimüügiteenused seoses fotogalvaaniliste seadmetega elektri tootmiseks; Valgustite hulgimüügiteenused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "et",
+      "description": "Fotogalvaanikaseadmestike paigaldamine ja hooldamine; Fotogalvaaniliste elementide ja moodulite paigaldamine; Tarbe-päikeserajatiste ehitamine; Päikeseenergiaseadmestike hooldus ja remont; Päikesevarjusüsteemide paigaldamine; Fotogalvaaniliste seadmete ja paigaldiste hooldamine, remontimine ning renoveerimine; Valgustusseadmete paigaldamine; Nõustamisteenused seoses valgustite paigaldamisega; Kliimaseadmete paigaldamine; Kliimaseadmetega tegelevate ettevõtjate teenused [paigaldus või parandus].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Fotogalvaaniliste süsteemide kavandamine ja arendus; Päikeseenergia fotoelemendisüsteemide kavandamine; Valgustussüsteemide projekteerimine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "fi",
+      "description": "Alumiini; Alumiini ja sen seokset; Puolivalmiit tuotteet alumiinista tai sen seoksista; Suulakepuristeet alumiinista; Alumiinilaatat; Rakennukset, metalliset; Metalliset rakenteet ja siirrettävät rakennukset; Rakennukset kiinteinä metallirakenteina; Metalliset talorakenteet; Metalliaidat; Metalliset aitapaneelit; Metallikaiteet aitoihin; Kaiteet metallista parvekkeita varten; Parvekkeiden metallikaiteet; Metallihelat rakentamiseen; Kiinnitystarvikkeet, metalliset; Metallihelat; Metalliset rakennustarvikkeet; Arkkitehtoniset metallitavarat käytettäväksi rakennuksissa; Muotoillut rakenneosat metallista.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Valosähkömoduulit; Valosähköllä toimivat aurinkomoduulit; Valosähkölaitteet ja -laitteistot aurinkosähkön tuottamiseen; Aurinkosähkölaitteet auringon säteilyn muuntamiseen sähköenergiaksi; Aurinkokennomuuntimet; Aurinkokennot; Akut ja paristot; Paristot, sähköiset; Ladattavat akut; Sähkökennot ja -akut; Litiumioniparistot; Latauslaitteet; Akkulaturit; Sähköauton laturit; Muuntimet [sähkötarvikkeina]; Tehonkäsittelylaitteet; Virranmuuntajat; LED-ajurit.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "fi",
+      "description": "LED-valaisimet; LED-lamput; LED-valaistuslaitteistot; LED-valonauhat; Led-valaistuslaitteistot; Ledimaisemavalot; Kohdelamput; Kohdevalot kotitalouksien valaistukseen; Ulkotilojen valaistus; Valaisimet ulkolaitteistoihin; Valaistustarvikkeet ulkokäyttöön; Lamput ulkokäyttöön; Puutarhavalot; Ulkokäyttöön tarkoitetut sähkövalaistuslaitteistot; Seinälamput; Downlight-valaisimet [Syväsäteilyvalaisimet]; Aurinkolamput; Valaisimet; Sähköiset sisävalaistuslaitteet; Lamput; Valonheittimet; Sähkölamput; Ilmastointilaitteistot; Lämmitys-, ilmanvaihto- ja ilmastointilaitteistot; Sähkötoimiset ilmastointilaitteet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fi",
+      "description": "Paristoihin liittyvät vähittäismyyntipalvelut; Akkuihin liittyvät vähittäismyyntipalvelut; Valaisimiin liittyvät vähittäismyyntipalvelut; Sähköntuotantoon tarkoitettuihin valokennolaitteiden vähittäismyyntipalvelut; Tukkumyyntipalvelut liittyen sähköntuotantoon tarkoitettuihin valokennolaitteisiin; Valaisimiin liittyvät tukkumyyntipalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "fi",
+      "description": "Valosähkölaitteistojen asentaminen ja huolto; Valosähkökennojen ja -moduulien asennus; Julkisten aurinkoenergiajärjestelmien rakentaminen; Aurinkoenergialaitteiden huolto ja korjaus; Aurinkosuojalaitteistojen asentaminen; Valosähkölaitteiden ja -laitteistojen kunnossapito, korjaus ja kunnostus; Valaistuslaitteiden asennus; Valaistuslaitteiden asennukseen liittyvät neuvontapalvelut; Ilmastointilaitteiden asennus; Ilmastointiurakkapalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Aurinkosähköjärjestelmien suunnittelu ja kehittäminen; Valosähköjärjestelmien luonnostelu ja kehittäminen; Aurinkosähköjärjestelmien suunnittelu; Valaistusjärjestelmien suunnittelu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "fr",
+      "description": "Aluminium; Aluminium et ses alliages; Articles semi-finis en aluminium ou ses alliages; Profilés en aluminium extrudé; Plaques d'aluminium; Constructions métalliques; Structures métalliques et constructions transportables en métal; Constructions sous forme de structures fixes en métal; Structures de construction métalliques; Clôtures métalliques; Panneaux de clôture en métal; Rambardes métalliques pour clôtures; Rambardes métalliques pour balcons; Garde-corps métalliques pour balcons; Ferrures pour la construction; Dispositifs de fixation métalliques; Fixations métalliques [quincaillerie]; Matériaux de construction métalliques; Ferronnerie architecturale destinée à la construction; Pièces profilées en métal.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Modules photovoltaïques; Modules solaires photovoltaïques; Appareils et installations photovoltaïques pour la production d'électricité solaire; Appareils photovoltaïques pour la conversion du rayonnement solaire en énergie électrique; Inverseurs photovoltaïques; Cellules solaires; Batteries; Piles électriques; Batteries rechargeables; Batteries et piles électriques; Batteries lithium-ion; Chargeurs; Chargeurs de piles et batteries; Chargeurs pour voitures électriques; Inverseurs [électricité]; Appareils de conditionnement de l'alimentation; Transformateurs de courant électrique; Pilotes DEL.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "fr",
+      "description": "Luminaires à LED; Ampoules DEL; Ampoules à diodes électroluminescentes [DEL]; Luminaires DEL; Bandes DEL; Installations d'éclairage à diodes électroluminescentes [DEL]; Lampes à LED pour espaces verts; Spots; Projecteurs à faisceau dirigé [lampes] pour éclairage domestique; Éclairage extérieur; Lampes pour installations extérieures; Appareils d'éclairage extérieur; Lampes d'extérieur; Lampes de jardin; Appareils d'éclairage électrique extérieur; Appareils d'éclairage fixés au mur; Plafonniers intensifs; Lampes solaires; Luminaires; Installations d'éclairage d'intérieur électriques; Lampes d'éclairage; Eclairages avec projecteurs; Lampes électriques; Installations de climatisation; Systèmes CVC [chauffage, ventilation et climatisation]; Climatiseurs électriques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Services de vente au détail de batteries; Services de vente au detail en rapport avec les accumulateurs; Services de vente au détail concernant l'éclairage; Services de vente au détail concernant des appareils photovoltaïques pour la production d'électricité; Services de vente en gros concernant des appareils photovoltaïques pour la production d'électricité; Services de vente en gros concernant l'éclairage.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "fr",
+      "description": "Installation et entretien d'installations photovoltaïques; Installation de modules et de cellules photovoltaïques; Construction d'installations d'énergie solaire publiques; Entretien et réparation d'installations d'énergie solaire; Installation de systèmes de protection solaire; Maintenance, réparation et remise en état d'installations et appareils photovoltaïques; Installation d'appareils d'éclairage; Services de conseils en matière d'installation d'appareils d'éclairage; Installation d'appareils de climatisation; Service d'entreprise en climatisation.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services de conception et développement de systèmes photovoltaïques; Conception et développement de systèmes photovoltaïques; Conception de systèmes solaires photovoltaïques; Conception de systèmes d'éclairage.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "de",
+      "description": "Aluminium; Aluminium und dessen Legierungen; Halbfertigerzeugnisse aus Aluminium oder dessen Legierungen; Aluminiumprofile; Aluminiumplatten; Bauten aus Metall; Bauten und transportable Bauten aus Metall; Bauten in Form von ortsfesten Konstruktionen aus Metall; Baukonstruktionen aus Metall; Zäune aus Metall; Zaunplatten aus Metall; Geländer aus Metall für Zäune; Geländer aus Metall für Balkone; Balkongeländer aus Metall; Baubeschläge aus Metall; Befestigungsteile aus Metall; Befestigungsmaterial aus Metall; Bauteile aus Metall; Metallteile für architektonische Zwecke; Metallformteile.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Photovoltaische Module; Fotovoltaische Solarmodule; Photovoltaische Geräte und Anlagen zur Erzeugung von Solarstrom; Photovoltaische Geräte für die Umwandlung von Sonnenstrahlung in elektrische Energie; Fotovoltaik-Wechselrichter; Elektrische Solarzellen; Batterien; Elektrische Batterien; Wiederaufladbare Batterien; Elektrische Zellen und Batterien; Lithiumionen-Batterien; Ladegeräte; Ladegeräte für Batterien; Ladegeräte für Elektroautos; Wechselrichter; Stromwechselrichter; Stromrichter; LED-Treiber.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "de",
+      "description": "LED-Leuchten; LED-Lampen; LED-Glühlampen; LED-Beleuchtungsanlagen; LED-Leuchtstreifen; Leuchtdioden [LED]-Beleuchtungsanlagen; LED-Landschaftsbeleuchtungen; Strahler; Strahler für Beleuchtungszwecke im Haushalt; Außenbeleuchtung; Leuchten für Außenanlagen; Außenbeleuchtungskörper; Lampen zur Verwendung im Außenbereich; Gartenleuchten; Elektrische Außenbeleuchtungskörper; Wandleuchten; Deckenleuchten; Solarleuchten; Beleuchtungseinbauten [Lampen]; Elektrische Innenbeleuchtungsanlagen; Beleuchtungslampen; Flutlichtlampen; Leuchten; Elektrische Leuchten; Mit Solarenergie betriebene Leuchten; Klimaanlagen; Heizungs-, Lüftungs- und Klimaanlagen; Elektrische Klimaanlagen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Einzelhandelsdienstleistungen in Bezug auf Batterien; Einzelhandelsdienstleistungen in Bezug auf Akkumulatoren; Einzelhandelsdienstleistungen in Bezug auf Beleuchtung; Einzelhandelsdienstleistungen in Bezug auf photovoltaische Apparate für die Erzeugung von Elektrizität; Großhandelsdienstleistungen in Bezug auf photovoltaische Apparate für die Erzeugung von Elektrizität; Großhandelsdienstleistungen in Bezug auf Beleuchtung.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "de",
+      "description": "Installation und Wartung von Photovoltaikanlagen; Installation von Photovoltaikzellen und -modulen; Bau von Solaranlagen für Versorgungszwecke; Wartung und Reparatur von Solarstromanlagen; Installation von Sonnenschutzanlagen; Wartung, Reparatur und Überholen von Photovoltaikgeräten und -anlagen; Installation von Beleuchtung; Beratung zur Installation der Beleuchtung; Installation von Klimaanlagen; Installation und Instandsetzung von Klimaanlagen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Entwurf und Entwicklung von Photovoltaikanlagen; Entwurf und Entwicklung von Fotovoltaiksystemen; Entwurf von Photovoltaikanlagen; Design von Beleuchtungssystemen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "hr",
+      "description": "Aluminij; Aluminijske legure; Polu-obradeni predmeti od aluminija ili njegovih legura; Profili od ekstrudiranog aluminija; Aluminijske ploce; Metalne gradevine; Metalne strukture i prijenosne gradevine; Gradevine kao fiksni objekti od metala; Metalne gradevinske konstrukcije; Metalne ograde; Metalni paneli za ograde; Metalne precke za ograde; Metalne precke za balkonske ograde; Metalne ograde za balkone; Okovi za gradevinske potrebe; Sredstva za pricvrscivanje od metala; Metalni okovi; Metalni gradevni materijali; Arhitektonski metalni proizvodi za uporabu u graditeljstvu; Oblikovani metalni dijelovi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Fotonaponski moduli; Fotonaponski solarni moduli; Fotonaponski uredaji i instalacije za proizvodnju sunceve energije; Fotonaponski uredaji za pretvaranje suncevog zracenja u elektricnu energiju; Fotovoltaicni pretvaraci; Solarne celije; Baterije; Elektricne baterije; Punjive baterije; Elektricne celije i baterije; Litij-ionske baterije; Punjaci; Punjaci baterija; Punjac za elektricne automobile; Elektricni invertori; Uredaji za poboljsivanje snage; Strujni transformatori; Pogonski sklop LED-a.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "hr",
+      "description": "LED rasvjeta; Svjetiljke LED; Rasvjetne zarulje sa svjetlecim diodama (LED); Rasvjetna LED tijela; LED svjetiljke na traci; Sustavi diodne [LED] rasvjete; LED svjetla za krajolik; Svjetlosni projektori; Reflektori za rasvjetu u kucanstvu; Vanjska rasvjeta; Rasvjeta za vanjske instalacije; Vanjska dodatna oprema za rasvjetu; Svjetiljke za vanjsku uporabu; Vrtna rasvjeta; Vanjske elektricne rasvjetne instalacije; Zidna rasvjeta; Stropne zarulje s usmjerenim svjetlom; Solarna lampe; Rasvjetna tijela; Elektricna unutarnja rasvjeta; Rasvjetne svjetiljke; Reflektori; Elektricne svjetiljke; Instalacije za klimatizaciju; HVAC sustavi (grijanje, ventilacija i klimatiziranje); Elektricni klima uredaji.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hr",
+      "description": "Usluge maloprodaje povezane s baterijama; Usluge maloprodaje povezane s akumulatorima; Maloprodajne usluge u vezi s osvjetljenjem; Maloprodajne usluge u vezi s fotonaponskim uredajima za proizvodnju elektricne energije; Veleprodajne usluge u vezi s fotonaponskim uredajima za proizvodnju elektricne energije; Veleprodajne usluge u vezi s osvjetljenjem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "hr",
+      "description": "Ugradnja i odrzavanje fotonaponskih instalacija; Postavljanje fotovoltaicnih celija i modula; Izgradnja komunalnih postrojenja za solarnu energiju; Odrzavanje i popravak postrojenja za proizvodnju solarne energije; Postavljanje sustava za zastitu od sunca; Odrzavanje, popravak i obnova fotovoltaicnih uredaja i sustava; Postavljanje rasvjetnih uredaja; Savjetodavne usluge koje se odnose na postavljanje rasvjetnih uredaja; Ugradnja klimatizacijskih uredaja; Usluge izvodenja klimatizacijskih sustava.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Dizajn i razvoj fotonaponskih sustava; Projektiranje i razvoj fotonaponskih sustava; Izrada nacrta solarnih fotonaponskih sustava; Projektiranje rasvjetnih sustava.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "hu",
+      "description": "Alumínium; Alumínium és ötvözetei; Félkész cikkek alumíniumból vagy annak ötvözeteibol; Préselt alumínium profilok; Alumínium lapok, táblák; Fémépítmények; Fémbol készült szerkezetek és hordozható építmények; Épületek, amelyek rögzített fémszerkezetek; Épületszerkezetek fémbol; Kerítések fémbol; Fém kerítéspanelek; Korlátok fémbol kerítésekhez; Korlátok fémbol erkélyekhez; Fémkorlátok erkélyekhez; Fémszerelvények építményekhez; Fém rögzítoeszközök; Fém állványok; Fém építoanyagok; Megmunkált fémek építkezéshez; Formázott fémdarabok.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Fotoelektromos modulok; Fotovoltaikus napmodulok; Fényelektromos berendezések és készülékek napenergiával történo áramfejlesztéshez; Fényelektromos berendezések a napsugárzás elektromos energiává történo átalakítására; Fotovoltaikus inverterek; Napelem cellák; Elemek; Elektromos elemek, akkumulátorok; Újratöltheto elemek; Galván cellák és -elemek; Lítiumion-akkumulátorok; Töltok; Elemtöltok; Elektromosautó-töltok; Inverterek, áramátalakítók [elektromosság]; Teljesítményszabályozó berendezések; Transzformátorok, áramátalakítók; LED-es meghajtók.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "hu",
+      "description": "LED-es lámpatestek, fényforrások; LED-lámpák; Fénykibocsátó diódák [LED-ek]; LED-es világítószerelvények; LED-csíkok; Fénykibocsátó diódás [LED-es] világítóberendezések; Kerti, kültéri LED lámpák; Spotlámpák; Spotlámpák háztartási használatra; Kültéri világítás; Kültéri lámpák; Kültéri világítástechnikai szerelvények; Lámpák kültéri használatra; Kerti világítás; Kültéri elektromos világítótestek; Fali világítás; Mélysugárzók, mélysugárzó lámpák; Napelemes lámpák; Világítótestek, lámpatestek; Elektromos beltéri világító berendezések; Lámpák; Reflektor lámpák, fémhalogén fényvetok; Elektromos lámpák; Légkondicionáló berendezések; HVAC rendszerek [futo, szellozteto és légkondicionáló]; Elektromos légkondicionálók.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hu",
+      "description": "Elemekhez kapcsolódó kiskereskedelmi szolgáltatások; Akkumulátorokhoz kapcsolódó kiskereskedelmi szolgáltatások; Világítással kapcsolatos kiskereskedelmi szolgáltatások; Elektromosság termelésére szolgáló fényelektromos készülékekkel kapcsolatos kiskereskedelmi szolgáltatások; Elektromosság termelését szolgáló fényelektromos készülékekkel kapcsolatos nagykereskedelmi szolgáltatások; Világítással kapcsolatos nagykereskedelmi szolgáltatások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "hu",
+      "description": "Fotovoltaikus berendezések üzembe helyezése és karbantartása; Fényelemek és fényelektromos modulok felszerelése; Napenergiát hasznosító közhasznú létesítmények építése; Napenergia-termelo berendezések karbantartása és javítása; Napvédo rendszerek felszerelése; Fényelektromos készülékek és berendezések javítása, karbantartása és felújítása; Világítóberendezések telepítése; Világítóberendezések üzembe helyezéséhez kapcsolódó tanácsadás; Légkondicionáló berendezések üzembe helyezése; Légkondicionálási, klímatechnikai vállalkozási szolgáltatások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Fotovoltaikus rendszerek tervezése és fejlesztése; Fotovillamos rendszerek megszerkesztése és fejlesztése; Napfényelektromos rendszerek tervezése; Világítórendszerek tervezése.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "it",
+      "description": "Alluminio; Alluminio e sue leghe; Articoli semilavorati in alluminio o sue leghe; Profilati estrusi in alluminio; Lastre di alluminio; Costruzioni metalliche; Strutture e costruzioni trasportabili in metallo; Costruzioni che sono strutture fisse in metallo; Strutture in metallo per edilizia; Recinti metallici; Pannelli di recinzione in metallo; Ringhiere metalliche per recinzioni; Ringhiere metalliche per balconi; Ringhiere di metallo per balconi; Guarnizioni in ferro per la costruzione; Dispositivi di fissaggio in metallo; Supporti metallici; Materiali da costruzione in metallo; Strutture architettoniche in metallo per l'edilizia; Elementi metallici sagomati.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Moduli fotovoltaici; Moduli solari fotovoltaici; Apparecchi e impianti fotovoltaici per la generazione d'elettricità solare; Apparecchi fotovoltaici per trasformare la radiazione solare in energia elettrica; Inverter fotovoltaici; Celle solari; Batterie; Batterie elettriche; Batterie ricaricabili; Pile e batterie elettriche; Batterie a ioni di litio; Caricatori; Caricabatterie; Caricatore per automobili elettriche; Invertitori [elettricità]; Apparecchi di condizionamento della potenza; Trasformatori di corrente; Driver LED.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "it",
+      "description": "Illuminazioni a LED; Lampade a LED; Lampadine a diodi elettroluminescenti [LED]; Impianti d'illuminazione a LED; Strisce led; Impianti di illuminazione a LED; Luci a LED per uso paesaggistico; Riflettori; Riflettori per illuminazione domestica; Lampade d'illuminazione pubblica; Luci per impianti esterni; Apparecchi di illuminazione per esterni; Lampade per esterno; Illuminazione per giardini; Impianti d'illuminazione elettrica per esterni; Lampade da parete; Faretti ad incasso; Lampade ad energia solare; Sistemi di illuminazione; Apparecchi d'illuminazione elettrici per interni; Lampade per illuminazione; Proiettori [illuminazione]; Lampade elettriche; Impianti di climatizzazione dell'aria; Sistemi HVAC (riscaldamento, ventilazione ed aria condizionata); Condizionatori d'aria elettrici.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "it",
+      "description": "Servizi di vendita al dettaglio riguardanti batterie; Servizi di vendita al dettaglio relativi ad accumulatori; Servizi di vendita al dettaglio in relazione all'illuminazione; Servizi di vendita al dettaglio di apparecchi fotovoltaici per generare elettricità; Servizi di vendita all'ingrosso di apparecchi fotovoltaici per generare elettricità; Servizi all'ingrosso in relazione all'illuminazione.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "it",
+      "description": "Installazione e manutenzione di impianti fotovoltaici; Installazione di cellule e moduli fotovoltaici; Costruzione di impianti solari per servizi pubblici; Manutenzione e riparazione di impianti ad energia solare; Installazione di schermature solari; Manutenzione, riparazione e ripristino di apparecchiature e impianti fotovoltaici; Installazione di apparecchiature per illuminazione; Servizi di consulenza inerenti l'installazione di impianti di illuminazione; Installazione di apparecchi di condizionamento dell'aria; Servizi di fornitori in materia di condizionamento dell'aria.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Servizi di progettazione e sviluppo di sistemi fotovoltaici; Progettazione e sviluppo di sistemi fotovoltaici; Progettazione di sistemi solari fotovoltaici; Progettazione di sistemi d'illuminazione.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "lt",
+      "description": "Aliuminis; Aliuminis ir jo lydiniai; Aliuminio arba jo lydiniu pusgaminiai; Aliuminio ekstruziniai profiliai; Aliuminines plokstes; Metaliniai statiniai; Metalines konstrukcijos ir kilnojamieji statiniai; Metaliniai statiniai (stacionarios konstrukcijos); Metalines statybines konstrukcijos; Metalines uztvaros; Metalines tvoru plokstes; Metalines tvoru grotos; Balkonu tureklai is metalo; Metaliniai balkonu tureklai; Metaline statybine armatura; Metaliniai tvirtinimo itaisai; Metalines tvirtinimo detales; Metalines statybines medziagos; Architekturiniai metalo dirbiniai (statybu reikmems); Metalines fasonines dalys.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Fotogalvaniniai moduliai; Saules fotoelementu skydeliai; Fotogalvaniniai aparatai ir irengimai, skirti saules energijai generuoti; Fotovoltiniai aparatai, saules spinduliuote paverciantys elektros energija; Fotovoltiniai apgrezikliai; Saules elementai; Baterijos; Elektrines baterijos; Ikraunamos baterijos; Elektriniai elementai ir baterijos; Licio jonu baterijos; Ikrovikliai; Bateriju ikrovimo itaisai; Elektriniu automobiliu ikrovikliai; Inverteriai [elektra]; Elektros kondicionavimo aparatai; Sroves transformatoriai; Sviesos diodu tvarkykles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "lt",
+      "description": "Sviesos diodu apsvietimo itaisai; Sviesolaidzio (LED) lempos; Sviesos diodu [LED] lemputes; Sviesos diodu apsvietimo iranga; Sviesos diodu juostos; Sviesos diodu apsvietimo irenginiai; Sviesos diodu lauko lempos; Kilnojamieji zibintai; Prozektoriai namu apsvietimo reikmems; Lauko apsvietimas; Lauko apsvietimo irenginiai; Lauko apsvietimo irenginiu priedai; Lauko lempos; Sodo zibintai; Lauko elektrinio apsvietimo itaisai; Sieniniai sviestuvai; Apsvietimo iranga imontuota i lubas; Saules energijos lempos; Apsvietimo itaisai; Elektriniai vidaus apsvietimo irenginiai; Lempos; Stadionu apsvietimo sviesos; Elektros lempos; Oro kondicionavimo irenginiai; Sildymo, vedinimo ir oro kondicionavimo sistemos; Elektriniai oro kondicionieriai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lt",
+      "description": "Mazmenine prekyba baterijomis; Mazmenines prekyba akumuliatoriais; Mazmenine prekyba apsvietimo irenginiais; Mazmenine prekyba fotovoltine iranga elektrai gaminti; Didmenine prekyba fotovoltine iranga elektrai gaminti; Didmenine prekyba apsvietimo irenginiais.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "lt",
+      "description": "Fotoelektros irenginiu montavimas ir technine prieziura; Fotovoltiniu elementu ir moduliu irengimas; Komunaliniu saules energijos irenginiu statyba; Saules energijos sistemu technine prieziura ir remontas; Nuo saules sauganciu sistemu irengimas; Fotovoltiniu aparatu ir irenginiu prieziura, remontas ir atnaujinimas; Apsvietimo aparatu irengimas; Patarimai del apsvietimo aparatu irengimo; Oro kondicionavimo irenginiu itaisymas; Oro kondicionavimo rangovo paslaugos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Fotovoltiniu sistemu projektavimas ir tobulinimas; Fotovoltiniu sistemu projektavimas ir kurimas; Saules energijos fotovoltiniu sistemu projektavimas; Apsvietimo sistemu projektavimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "lv",
+      "description": "Aluminijs; Aluminijs un ta sakausejumi; Aluminija pusfabrikati vai ta sakausejumi; Stanceti aluminija profili; Aluminija platnes; Metala buves; Metala konstrukcijas un parvietojamas metala buves; Celtnes fiksetu metala konstrukciju veida; Buvkonstrukcijas no metala; Metala zogi; Metala zogu paneli; Metala trelini zogiem; Metala margas balkoniem; Balkonu margas no metala; Metala armaturas izstradajumi buvniecibai; Fiksacijas ierices no metala; Metala uzkares; Buvmateriali no metala; Arhitektoniski izstradajumi no metala buvniecibai; Profiletas metala dalas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Fotoelektriskie moduli; Fotogalvanisko elementu paneli; Fotogalvaniskie aparati un iekartas saules elektribas generesanai; Fotoelektriskie aparati saules energijas parveidosanai elektroenergija; Fotoelektriskie invertori; Saules bateriju elementi; Akumulatoru baterijas; Elektrisko akumulatoru baterijas; Uzladejamas akumulatoru baterijas; Elektribas barosanas avoti un akumulatori; Litija-jonu baterijas; Uzlades ierices; Akumulatoru bateriju uzlades ierices; Elektrisko automobilu uzlades ierices; Invertori; Elektroenergijas kvalitates uzlabosanas ierices; Stravmaini; LED dzini.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "lv",
+      "description": "Gaismas diozu gaismekli; LED lampas; Gaismas diozu (LED) spuldzes; LED gaismekli; Led - vadu veida apgaismojums; Gaismas diozu [LED] apgaismes iekartas; Gaismas diozu lampas ara apgaismojumam; Starmesi; Prozektori majsaimniecibas apgaismosanas nolukiem; Ara apgaismojums; Ara apgaismes sistemas; Ara apgaismojuma piederumi; Ara gaismekli; Darza apgaismojums; Ara elektriskas apgaismes kermeni; Sienas gaismekli; Iebuvejamie griestu gaismekli; Saules energijas gaismekli; Gaismekli; Elektriskas iekstelpu apgaismes iekartas; Lampas; Parpludgaismas prozektori; Elektriskas lampas un spuldzes; Gaisa kondicionesanas sistemu dalas; Apkures, ventilacijas un gaisa kondicionesanas sistemas; Elektriskie gaisa kondicionetaji.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lv",
+      "description": "Bateriju mazumtirdzniecibas pakalpojumi; Akumulatoru mazumtirdzniecibas pakalpojumi; Apgaismosanas iericu mazumtirdzniecibas pakalpojumi; Fotoelektrisko elektribas generesanas iekartu mazumtirdzniecibas pakalpojumi; Fotoelektrisko elektribas generesanas iekartu vairumtirdzniecibas pakalpojumi; Apgaismosanas iekartu vairumtirdzniecibas pakalpojumi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "lv",
+      "description": "Fotoelektrisko iekartu uzstadisana un tehniska apkope; Fotovoltaikas elementu un modulu uzstadisana; Ar saules energiju darbinamu komunalu iekartu ierikosana; Saules energijas iekartu uzturesana un remonts; Sistemu ierikosana aizsardzibai pret sauli; Fotovoltaikas aparatu un instalaciju uzturesana, remonts un atjaunosana; Apgaismosanas iekartu uzstadisana; Konsultaciju pakalpojumi saistiba ar apgaismes iekartu uzstadisanu; Gaisa kondicionesanas iekartu uzstadisana; Gaisa kondicionesanas darbuznemeju pakalpojumi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Fotoelektrisko sistemu projektesanas un izstrades pakalpojumi; Fotoelektrisko sistemu projektesana un izstrade; Saules fotoelektrisko sistemu projektesana; Apgaismes sistemu projektesana.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "mt",
+      "description": "Aluminju; Aluminju u l-ligi taghhom; Oggetti nofshom lesti tal-aluminju jew il-ligi tieghu; Sezzjonijiet tal-aluminju estruzi; Blokki tal-aluminju; Bini tal-metall; Strutturi u bini trasportabbli tal-metall; Bini bhala strutturi fissi tal-metall; Strutturi tal-bini tal-metall; Cnut tal-metall; Panewijiet tac-cnut tal-metall; Poggamani tal-metall tas-sisien; Poggamani tal-metall tal-gallariji; Cnut tal-metall ghall-gallariji; Taghmir tal-metall ghall-bini; Taghmir tal-iffissar maghmul mill-metall; Muntaturi tal-metall; Materjali tal-metall ghall-bini; Oggetti tal-metall tal-arkitettura ghall-uzu fil-bini; Partijiet tal-metall iffurmati.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Moduli fotovoltajci; Moduli solari fotovoltajci; Apparat u installazzjonijiet fotovoltajci ghall-generazzjoni ta' l-elettriku solari; Apparat fotovoltajku ghall-konverzjoni ta' radjazzjoni solari f'energija elettrika; Inverters fotovoltajci; Celloli solari; Batteriji; Batteriji tal-elettriku; Batteriji li jistghu jergghu jigu ccargjati; Celloli elettrici u batteriji; Batteriji ta' joni tal-litju; Cargers; Karikaturi ghal batteriji elettrici; Carger elettroniku tal-karozzi; Invertituri [tal-elettricita]; Apparat ghall-ikkondizzjonar tal-energija; Transformers tal-kurrent; Drajvers tal-LED.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "mt",
+      "description": "Dawl LED; Lampi LED; Bozoz bid-dajowds elettroluminixxenti (LED); Partijiet fissi tad-dawl LED; Strixxi tal-LED; Installazzjonijiet tad-dawl bid-dajowds li jarmu d-dawl [LED]; Dwal LED ghall-pajsaggi; Lampi li jarmu ragg ta' dawl qawwi ghax-xenarji [spotlights]; Lampi qawwija u diretti ghat-tidwil domestiku; Dwal ta' barra; Dwal biex jitwahhlu barra; Fittjaturi tad-dawl ghal barra; Lampi ghall-uzu fuq barra; Dwal ghall-gnien; Fittjaturi tad-dawl bl-elettriku ghal barra; Dwal tal-hajt; Dwal tas-suffetti; Lampi solari; Mezzi li jdawlu; Installazzjonijiet ghat-tidwil intern jahdmu bl-elettriku; Lampi; Dwal li jdawwlu medda kbira; Sistemi ghad-dawl elettriku; Installazzjonijiet ghall-ikkondizzjonar tal-arja; Sistemi tal-HVAC (tishin, ventilazzjoni u kundizzjonar tal-arja); Kondizzjonaturi tal-arja elettrici.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' bejgh bl-imnut relatati ma' batteriji; Servizzi tal-bejgh bl-imnut relatati ma' akkumulaturi; Servizzi ta' bejgh bl-imnut fir-rigward tad-dawl; Servizzi ta' bejgh bl-imnut ghal apparat fotovoltajku li jiggenera l-elettriku; Servizzi ta' bejgh bl-ingrossa ghal apparat fotovoltajku li jiggenera l-elettriku; Servizzi ta' bejgh bl-ingrossa fir-rigward tad-dawl.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "mt",
+      "description": "Installazzjoni u manutenzjoni ta' mpjanti fotovoltajci; Installazzjoni ta' celloli u moduli fotovoltajci; Kostruzzjoni ta' installazzjonijiet ta' utilitajiet solari; Manutenzjoni u tiswija ta' installazzjonijiet tal-energija solari; Installazzjoni ta' sistemi ta' protezzjoni mix-xemx; Installazzjoni, tiswija u rikondizzjonar ta' apparat u installazzjonijiet fotovoltajci; Installazzjoni ta' apparat tad-dawl; Servizzi ta' ghoti ta' pariri relatati mal-installazzjoni ta' apparat tad-dawl; Installazzjoni ta' apparat ghall-arja kkondizzjonata; Servizzi ta' kuntrattur ghall-kondizzjonar tal-arja.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' disinn u zvilupp ta' sistemi fotovoltajci; Tfassil u zvilupp ta' sistemi fotovoltajci; Disinn ta' sistemi fotovoltajci solari; Disinn ta' sistemi tad-dawl.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "pl",
+      "description": "Aluminium [glin]; Aluminium i jego stopy; Pólprodukty z aluminium lub jego stopów; Elementy z wyciskanego aluminium; Plyty aluminiowe; Konstrukcje metalowe; Metalowe konstrukcje i budynki przenosne; Budynki bedace nieruchomymi konstrukcjami metalowymi; Konstrukcje budowlane z metalu; Ogrodzenia metalowe; Metalowe panele ogrodzeniowe; Balustrady metalowe do ogrodzen; Balustrady metalowe do balkonów; Metalowe balustrady do balkonów; Okucia stosowane w budownictwie, metalowe; Metalowe urzadzenia do mocowania; Oprawy metalowe; Materialy konstrukcyjne metalowe; Architektoniczne produkty metalowe do uzytku w budownictwie; Uksztaltowane czesci metalowe.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Moduly fotowoltaiczne; Fotowoltaiczne moduly sloneczne; Fotowoltaiczne urzadzenia i instalacje do wytwarzania energii elektrycznej z energii slonecznej; Urzadzenia fotowoltaiczne do przeksztalcania promieniowania slonecznego na energie elektryczna; Falowniki fotowoltaiczne; Ogniwa sloneczne; Baterie; Baterie, elektryczne; Baterie do ponownego ladowania; Ogniwa i baterie elektryczne; Baterie litowo-jonowe; Ladowarki; Ladowarki do baterii; Ladowarki do samochodów elektrycznych; Przemienniki, inwertory [elektrycznosc]; Aparatura do kondycjonowania energii; Przekladnik pradowy; Sterowniki LED.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "pl",
+      "description": "Urzadzenia oswietleniowe LED; Lampy LED; Zarówki LED; Oprawy oswietleniowe LED; Tasmy led; Instalacje oswietleniowe z diodami elektroluminescencyjnymi [LED]; Oswietlenie typu LED zewnetrzne [ogrody, krajobrazy]; Reflektory punktowe; Swiatla punktowe do oswietlenia domowego; Oswietlenie zewnetrzne; Swiatla do instalacji na zewnatrz; Wyposazenie oswietleniowe zewnetrzne; Lampy do uzycia na wolnym powietrzu; Oswietlenie ogrodowe; Elektryczne oprawy oswietleniowe zewnetrzne; Oswietlenie scienne; Oswietlenie sufitowe typu downlight; Lampy sloneczne; Oprawy oswietleniowe; Elektryczne instalacje oswietleniowe do wnetrz; Lampy oswietleniowe; Jupitery; Lampy elektryczne; Instalacje klimatyzacyjne; Systemy HVAC (ogrzewanie, wentylacja i klimatyzacja); Elektryczne klimatyzatory.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pl",
+      "description": "Uslugi handlu detalicznego w zakresie baterii; Uslugi handlu detalicznego w zakresie akumulatorów; Uslugi sprzedazy detalicznej w zwiazku z oswietleniem; Uslugi sprzedazy detalicznej zwiazane z urzadzeniami fotowoltaicznymi do wytwarzania energii elektrycznej; Uslugi sprzedazy hurtowej zwiazane z urzadzeniami fotowoltaicznymi do wytwarzania energii elektrycznej; Uslugi sprzedazy hurtowej w zwiazku z oswietleniem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "pl",
+      "description": "Montaz i konserwacja instalacji fotowoltaicznych; Instalacja ogniw i modulów fotowoltaicznych; Budowa uzytkowych instalacji slonecznych; Konserwacja i naprawa instalacji energii slonecznej; Instalacja oslon przeciwslonecznych; Konserwacja, naprawa i odnowa urzadzen i instalacji fotowoltaicznych; Instalacja urzadzen oswietleniowych; Uslugi doradcze zwiazane z instalacja urzadzen oswietleniowych; Instalacja urzadzen klimatyzacyjnych; Uslugi wykonawców w zakresie instalacji klimatyzacyjnych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Uslugi projektowania i rozwoju systemów fotowoltaicznych; Sporzadzanie projektów i opracowywanie systemów fotowoltaicznych; Projektowanie slonecznych systemów fotowoltaicznych; Projektowanie systemów oswietleniowych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "pt",
+      "description": "Alumínio; Ligas de alumínio; Artigos semiacabados em alumínio ou suas ligas; Perfis extrudidos de alumínio; Lajes de alumínio; Construções metálicas; Estruturas e construções transportáveis de metal; Construções sob a forma de estruturas metálicas fixas; Estruturas de construção metálicas; Cercas metálicas; Painéis de vedação metálicos; Grades de metal para cercas; Grades de metal para varandas; Balaustradas de metal para varandas; Ferragens metálicas para construção; Dispositivos de fixação em metal; Armações metálicos; Materiais de construção metálicos; Serralharia metálica para construção arquitectónica; Peças metálicas moldadas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Módulos fotovoltaicos; Módulos solares fotovoltaicos; Aparelhos e instalações fotovoltaicos para produção de energia solar; Aparelhos fotovoltaicos para a transformação de radiação solar em energia elétrica; Inversores fotovoltaicos; Células solares; Baterias; Baterias elétricas; Baterias recarregáveis; Pilhas e baterias elétricas; Baterias de ião de lítio; Carregadores; Carregadores de baterias; Carregadores para carros elétricos; Inversores [eletricidade]; Equipamento para condicionamento da potência; Transformadores de corrente elétrica; Controladores LED.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "pt",
+      "description": "Luminárias LED; Lâmpadas LED; Lâmpadas de díodos emissores de luz (LED); Luminárias de LED; Fitas LED; Instalações de iluminação por díodos eletroluminescentes [LED]; Luzes paisagísticas LED; Focos spot; Holofotes para iluminação doméstica; Iluminação exterior; Luzes para instalações exteriores; Acessórios de iluminação exterior; Lâmpadas para o exterior; Iluminação de jardins; Acessórios de iluminação elétrica no exterior; Lâmpadas de murais; Projetores de teto falso; Unidades de lâmpadas solares; Luminárias; Instalações para iluminação elétrica interior; Lâmpadas; Projetores para iluminação; Lâmpadas elétricas; Instalações de climatização [condicionamento de ar]; Sistemas de AVAC (aquecimento, ventilação e ar-condicionado); Aparelhos de ar condicionado elétricos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pt",
+      "description": "Serviços de venda a retalho relacionados com baterias; Serviços de venda a retalho relacionados com acumuladores; Serviços retalhistas relacionados com iluminação; Serviços de venda a retalho relacionados com aparelhos fotovoltaicos para produção de eletricidade; Serviços de venda grossista relacionados com aparelhos fotovoltaicos para produção de eletricidade; Serviços grossistas relacionados com iluminação.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "pt",
+      "description": "Instalação e manutenção de instalações fotovoltaicas; Instalação de células e módulos fotovoltaicos; Construção de instalações solares de utilidade pública; Manutenção e reparação de instalações de energia solar; Instalação de sistemas de proteção solar; Manutenção, reparação e recondicionamento de aparelhos e instalações fotovoltaicas; Instalação de aparelhos de iluminação; Serviços de consultoria relacionados com a instalação de aparelhos de iluminação; Instalação de aparelhos de ar condicionado; Serviços de climatização prestados por empresas contratantes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Serviços de conceção e desenvolvimento de sistemas fotovoltaicos; Elaboração de planos e desenvolvimento de sistemas fotovoltaicos; Projecto de sistemas solares fotovoltaicos; Conceção de sistemas de iluminação.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "ro",
+      "description": "Aluminiu; Aliaje de aluminiu; Articole semifinisate din aluminiu sau aliajele sale; Sectiuni de profiluri prin extruziune din aluminiu; Placi din aluminiu; Constructii metalice; Structuri si constructii metalice transportabile; Constructii care sunt structuri fixe din metal; Structuri de constructii, din metal; Garduri metalice; Panouri metalice pentru garduri; Balustrade metalice pentru garduri; Balustrade metalice pentru balcoane; Feronerie pentru constructii; Dispozitive de fixare din metal; Monturi metalice; Materiale metalice pentru constructii; Feronerie arhitecturala utilizata în constructii; Segmente metalice fasonate.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Module fotovoltaice; Module fotovoltaice solare; Aparate si instalatii fotovoltaice pentru generarea de energie solara; Aparate fotovoltaice pentru transformarea radiatiei solare în energie electrica; Invertoare fotovoltaice; Celule solare; Baterii; Baterii galvanice; Baterii reîncarcabile; Celule si baterii electrice; Baterii de ioni de litiu; Incarcatoare; Alimentatoare pentru acumulatoare; Încarcatoare pentru masini electrice; Invertoare [electricitate]; Aparate pentru conditionarea energiei electrice; Transformatoare de curent; Drivere LED.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "ro",
+      "description": "Luminatoare LED; Lampi cu LED; Becuri cu diode electroluminiscente (LED); Corpuri de iluminat cu LED; Benzi cu led; Instalatii de iluminat cu diode electroluminescente [leduri]; Lumini LED pentru iluminatul public; Reflectoare de scena; Spoturi pentru iluminatul casnic; Corpuri de iluminat pentru exterior; Instalatii de iluminat pentru exterior; Accesorii de iluminat pentru exterior; Lampi de iluminat pentru exterior; Dispozitive de iluminat pentru gradina; Accesorii pentru corpuri electrice de iluminat pentru exterior; Aplice de perete; Corpuri de iluminat care proiecteaza lumina în jos; Lampi solare; Corpuri de iluminat; Instalatii de iluminare electrice de interior; Lampi de iluminat; Proiectoare de iluminat; Lampi electrice; Instalatii de climatizare; Sisteme HVAC (încalzirea, ventilarea si climatizarea aerului); Aparate de aer conditionat electrice.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ro",
+      "description": "Servicii de vânzare cu amanuntul în legatura cu baterii; Servicii de vânzare cu amanuntul în legatura cu acumulatori; Servicii de vânzare cu amanuntul în legatura cu echipamente de iluminat; Servicii de vânzare cu amanuntul în legatura cu aparate fotovoltaice pentru producerea energiei electrice; Servicii de vânzare cu ridicata în legatura cu aparate fotovoltaice pentru producerea energiei electrice; Servicii de vânzare cu ridicata în legatura cu echipamente de iluminat.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "ro",
+      "description": "Instalare si întretinere de instalatii fotovoltaice; Instalare de celule si module fotovoltaice; Constructie de instalatii solare utilitare; Întretinere si reparare de instalatii solare; Instalare de sisteme de protectie împotriva soarelui; Întretinere, reparare si reconditionare de aparate si instalatii fotovoltaice; Instalare de instalatii de iluminat; Servicii consultative privind instalarea de aparate de iluminat; Instalare de aparate de aer conditionat; Servicii de contractare pentru instalatii de aer conditionat.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Servicii de proiectare si dezvoltare de sisteme fotovoltaice; Proiectare si dezvoltare de sisteme fotovoltaice; Concepere de sisteme fotovoltaice solare; Proiectare de sisteme de iluminat.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "sk",
+      "description": "Hliník; Hliník a jeho zliatiny; Polotovary z hliníka a zliatin hliníka; Prvky z extrudovaného hliníka; Hliníkové dosky; Kovové stavebné konstrukcie; Kovové konstrukcie a kovové prenosné stavby; Stavby ako stabilné kovové konstrukcie; Kovové kostry budov (stavebné konstrukcie); Kovové ploty; Kovové plotové panely; Kovové zábradlia pre ploty; Kovové zábradlia pre balkóny; Kovové balkónové zábradlia; Kovania pre stavebníctvo; Kovové upevnovacie prvky; Kovové príchytky a drziaky; Kovový stavebný materiál; Kovové architektonické výrobky pre budovy; Kovové tvarované diely.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Fotovoltické moduly; Fotovoltické (solárne) moduly; Solárne (fotovoltické) prístroje a zariadenia na výrobu elektriny; Fotovoltické zariadenia na premenu slnecného ziarenia na elektrickú energiu; Fotovoltické menice prúdu; Solárne clánky; Batérie; Elektrické batérie (clánky); Dobíjatelné batérie; Elektrické clánky a batérie; Lítium-iónové batérie; Nabíjacky; Nabíjacky batérií; Nabíjacky pre vozidlá na elektrický pohon; Invertory (elektrotechnika); Prístroje na úpravu elektrickej energie; Transformátory prúdu; LED ovládace.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "sk",
+      "description": "LED svietidlá; LED lampy; LED ziarovky; LED osvetlovacie zariadenia; LED-pásky; Osvetlovacie zariadenia s luminiscencnými diódami [LED]; LED svetlá pouzívané na dekoráciu v exteriéri; Bodové svetlá; Bodové svetlá na osvetlovanie domácností; Vonkajsie osvetlenie; Svetlá pre vonkajsiu montáz; Súciastky pre exteriérové osvetlenie; Lampy na vonkajsie pouzitie; Záhradné osvetlenie; Elektrické svietidlové vybavenie do exteriéru; Svetlá na priedeloch; Stropné svietidlá [downlight]; Solárne lampy; Svietidlo; Elektrické interiérové osvetlovacie zariadenia; Lampy; Reflektorové svetlá; Elektrické lampy; Klimatizacné zariadenia; Vykurovacie, vetracie a klimatizacné zariadenia; Elektrické klimatizacné zariadenia.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sk",
+      "description": "Maloobchodné sluzby súvisiace s batériami; Maloobchodné sluzby v oblasti akumulátorov; Maloobchodné sluzby so svietidlami; Maloobchodné sluzby s fotovoltickými zariadeniami na výrobu elektriny; Vel'koobchodné sluzby s fotovoltickými zariadeniami na výrobu elektriny; Velkoobchodné sluzby so svietidlami.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "sk",
+      "description": "Instalácia a údrzba fotovoltických zariadení; Instalácie fotovoltických clánkov a modulov; Stavba úzitkových solárnych zariadení; Údrzba a oprava zariadení na solárnu energiu; Instalácia systémov na ochranu proti slnku; Údrzba, oprava a generálna oprava fotovoltických prístrojov a zariadení; Instalácie osvetlovacích zariadení; Poradenské sluzby v oblasti montáze osvetlovacích zariadení; Instalácia klimatizacných zariadení; Sluzby dodávatela klimatizácie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Navrhovanie a vývoj fotovoltických systémov; Navrhovanie solárnych fotovoltických systémov; Navrhovanie osvetlovacích systémov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "sl",
+      "description": "Aluminij; Aluminij in njegove zlitine; Polizdelki iz aluminija ali njegovih zlitin; Ekstrudirani profili iz aluminija; Plosce iz aluminija; Zgradbe iz kovine; Konstrukcije in prenosne kovinske zgradbe; Zgradbe, ki so fiksne kovinske konstrukcije; Kovinske gradbene strukture; Kovinske ograje; Kovinske plosce za ograjo; Kovinske precke za ograje; Kovinske ograje za balkone; Oprema iz kovine za gradbenistvo; Kovinske pritrdilne naprave; Kovinska okovja; Kovinski gradbeni materiali; Kovinski arhitekturni izdelki za uporabo v gradbenistvu; Oblikovani kovinski deli.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Fotovoltaicni moduli; Fotovoltaicni solarni moduli; Fotonapetostni aparati in napeljave za pridobivanje soncne elektricne energije; Fotonapetostni aparati za pretvarjanje soncnega sevanja v elektricno energijo; Fotovoltaicni pretvorniki; Soncne celice; Baterije; Elektricne baterije; Baterije za ponovno polnjenje; Elektricne celice in baterije; Litij-ionske baterije; Polnilci; Elektricni polnilniki za baterije; Polnilniki za elektricne avtomobile; Inverterji [elektrika]; Aparati za uravnavanje elektricnega toka; Transformatorji toka; LED gonilniki.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "sl",
+      "description": "LED svetila; LED svetilke; Zarnice za svetlece diode (LED); Napeljave za LED osvetljavo; LED-trakovi; Napeljave za osvetljevanje z LED diodami; LED svetilke za pokrajino; Zarometi; Reflektorji za osvetljevanje gospodinjstva; Zunanja osvetljava; Luci za zunanje napeljave; Oprema za razsvetljavo na prostem; Luci, ki se uporabljajo na prostem; Vrtna osvetlitev; Elektricna oprema za zunanjo razsvetljavo; Stenske svetilke; Stropne luci z usmerjeno svetlobo; Soncne svetilke; Svetila; Elektricne instalacije za osvetljevanje notranjih prostorov; Svetilke; Reflektorji; Elektricne svetilke; Instalacije za klimatizacijo; HVAC sistemi (ogrevanje, prezracevanje in klimatizacija); Elektricne klimatske naprave.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sl",
+      "description": "Maloprodajne storitve v zvezi z akumulatorji; Storitve prodaje na drobno v zvezi z osvetljevanjem; Storitve maloprodaje v zvezi s fotovoltaicnimi aparati za proizvodnjo elektricne energije; Veleprodajne storitve v zvezi s fotovoltaicnimi aparati za proizvodnjo elektricne energije; Storitve prodaje na debelo v zvezi z osvetljevanjem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "sl",
+      "description": "Montaza in vzdrzevanje fotonapetostnih instalacij; Montaza fotovoltaicnih celic in modulov; Gradnja javnih solarnih naprav; Vzdrzevanje in popravilo naprav na soncno energijo; Montaza sistemov za zascito pred soncem; Vzdrzevanje, popravila in obnova fotovoltaicnih aparatov in napeljav; Montaza naprav za osvetljevanje; Svetovalne storitve v zvezi z montazo naprav za osvetljevanje; Montaza klimatskih naprav; Pogodbene klimatizacijske storitve.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Oblikovanje in razvoj fotovoltaicnih sistemov; Nacrtovanje in razvoj fotovoltaicnih sistemov; Oblikovanje solarnih fotovoltaicnih sistemov; Oblikovanje osvetljevalnih sistemov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "es",
+      "description": "Aluminio; Aleaciones de aluminio; Artículos semiacabados de aluminio o sus aleaciones; Perfiles de aluminio extruido; Placas de aluminio; Construcciones metálicas; Estructuras y construcciones transportables metálicas; Construcciones que son estructuras metálicas fijas; Estructuras de construcción de metal; Vallas [cercas] metálicas; Paneles metálicos de vallado; Verjas metálicas para cercas; Barandillas metálicas para balcones; Barandillas de metal para balcones; Herrajes para la construcción; Dispositivos de fijación de metal; Monturas metálicas; Materiales de construcción metálicos; Metalistería arquitectónica para la construcción; Piezas metálicas moldeadas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Módulos fotovoltaicos; Paneles solares fotovoltaicos; Aparatos e instalaciones fotovoltaicos para la generación de electricidad solar; Aparatos fotovoltaicos para transformar la radiación solar en energía eléctrica; Inversores fotovoltaicos; Células solares; Baterías; Pilas eléctricas; Baterías recargables; Pilas y baterías eléctricas; Baterías de iones de litio; Cargadores; Cargadores de pilas y baterías; Cargadores para coches eléctricos; Inversores [electricidad]; Equipos de acondicionamiento de la potencia; Transformadores de corriente; Controladores de LED.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "es",
+      "description": "Luminarias LED; Lámparas LED; Bombillas de diodos electroluminiscentes [ledes]; Apliques de iluminación led; Tiras led; Instalaciones de iluminación con LED; Luces LED de paisajismo; Focos de luz directa; Focos para iluminación doméstica; Iluminación de exteriores; Luces para instalaciones exteriores; Accesorios de alumbrado exterior; Lámparas de uso exterior; Alumbrado de jardines; Accesorios para iluminación de exteriores; Lámparas de pared; Lámparas descendentes; Lámparas solares; Luminarias; Instalaciones eléctricas de alumbrado interior; Lámparas [aparatos de iluminación]; Proyectores para iluminación; Lámparas eléctricas; Instalaciones de aire acondicionado; Equipos HVAC para tratamiento del aire (calefacción, ventilación y refrigeración); Climatizadores eléctricos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Servicios de venta al por menor en relación con baterías; Servicios de venta al por menor en relación con acumuladores; Servicios de venta al por menor de iluminación; Servicios de venta al por menor de aparatos fotovoltaicos para generar electricidad; Servicios de venta al por mayor de aparatos fotovoltaicos para generar electricidad; Servicios de venta al por mayor de iluminación.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "es",
+      "description": "Servicios de instalación y mantenimiento de instalaciones fotovoltaicas; Instalación de células y módulos fotovoltaicos; Construcción de instalaciones solares para servicios públicos; Mantenimiento y reparación de instalaciones de energía solar; Instalación de sistemas de protección solar; Mantenimiento, reparación y reacondicionamiento de instalaciones y aparatos fotovoltaicos; Instalación de aparatos de iluminación; Servicios de asesoramiento en materia de instalación de aparatos de iluminación; Instalación de aparatos de aire acondicionado; Contratistas de aire acondicionado.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios de diseño y desarrollo de sistemas fotovoltaicos; Diseño y desarrollo de sistemas fotovoltaicos; Diseño de sistemas fotovoltaicos solares; Diseño de sistemas de iluminación.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "sw",
+      "description": "Aluminium; Aluminiumlegeringar; Halvfabrikat av aluminium eller dess legeringar; Strängsprutade aluminiumprodukter; Plattor av aluminium; Byggnader av metall; Konstruktioner och flyttbara byggnader av metall; Byggnader i form av fast monterade strukturer av metall; Byggnadskonstruktioner av metall; Staket av metall; Metallstaketpaneler; Räcken av metall till staket; Räcken av metall till balkonger; Balkongräcken av metall; Metallbeslag för byggnader; Fästanordningar av metall; Metallmonteringar; Byggnadsmaterial av metall; Arkitektoniska metallarbeten för användning vid byggnation; Formade metallstycken.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Fotovoltaiska moduler; Solcellsmoduler; Fotocellapparater och -anläggningar för alstring av solelektricitet; Solcellsapparater för omvandling av solstrålning till elektrisk energi; Växelriktare för solceller; Solceller; Batterier; Batterier, elektriska; Återuppladdningsbara batterier; Elektriska celler och batterier; Litiumjonbatterier; Laddningsanordningar; Batteriladdare; Laddare för elbilar; Växelriktare [el]; Effektomvandlare; Elektriska strömriktare; LED-drivenheter.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "sw",
+      "description": "LED-ljuskällor; LED-lampor; Lysdiodslampor; LED-belysningsarmaturer; LED-strips; Belysningsanläggningar med lysdioder [LED]; LED-lampor för utomhusbelysning; Spotlights; Strålkastare för belysning i hemmen; Utomhusbelysning; Belysning för montering utomhus; Armaturer till utomhusbelysning; Lampor för utomhusbruk; Trädgårdsbelysning; Elektriska belysningsarmaturer för användning utomhus; Lampor för väggprydnad; Innertakbelysningar; Sollampenheter; Belysningar; Elektriska installationer för inomhusbelysning; Lampor; Flodljus; Elektriska lampor; Luftkonditioneringsinstallationer; HVAC-system (värme, ventilation och luftkonditionering); Elektriska luftkonditioneringsapparater.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sw",
+      "description": "Återförsäljning avseende batterier; Återförsäljning avseende ackumulatorer; Återförsäljning avseende belysning; Återförsäljning avseende fotovoltaiska apparater för alstring av elektricitet; Grosshandel avseende fotovoltaiska apparater för alstring av elektricitet; Grosshandel avseende belysningar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "sw",
+      "description": "Installation och underhåll av fotoelektromotoriska installationer; Installation av fotovoltaiska celler och moduler; Konstruktion av allmännyttiga solenergianläggningar; Underhåll och reparation av solenergianläggningar; Installation av solskyddssystem; Underhåll, reparation och renovering av fotovoltaiska apparater och anläggningar; Installation av belysningsapparater; Rådgivningstjänster avseende installation av belysningsapparater; Installation av luftkonditioneringsapparater; Entreprenörsverksamhet i förbindelse med luftkonditionering.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Design och utveckling av fotovoltaiska system; Ritning och utveckling av fotovoltaiska system; Design av solcellssystem; Design av belysningssystem.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Koch GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Bremer Straße 165,Nürnberg, 90451",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Koch GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Hliník; Hliník a jeho slitiny; Polotovary z hliníku nebo jeho slitin; Vytlacované hliníkové profily; Hliníkové desky; Kovové konstrukce; Premístitelné konstrukce a kovové stavby; Stavby jako pevné kovové konstrukce; Kovové konstrukce budov; Kovová oplocení; Kovové ohrazovací panely; Kovové mríze k plotum; Zábradlí z kovu na balkóny; Kovová balkónová zábradlí; Kovová kování pro stavebnictví; Kovové upevnovací vybavení; Kovové úchytky; Kovové stavební materiály; Kovové architektonické výrobky pro pouzití ve stavebnictví; Tvarované kovové díly."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Fotovoltaické moduly; Fotovoltaické solární moduly; Fotoelektrické prístroje a zarízení pro výrobu elektriny ze slunecní energie; Fotovoltaické prístroje na premenu slunecního zárení na elektrickou energii; Fotovoltaické menice; Solární clánky; Baterie; Elektrické baterie; Dobíjecí baterie; Elektrické clánky a baterie; Lithium-iontové baterie; Nabíjecky; Nabíjecky baterií; Nabíjecky elektromobilu; Menice [elektrotechnika]; Prístroje na úpravu elektriny; Elektrické menice; Napájecí zdroje pro LED."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "LED svítidla; Lampy LED; Elektroluminiscencní diody (LED); LED osvetlovací telesa; LED pásky; Zarízení pro osvetlení se svetelnými diodami [LED]; LED lampy na venkovní osvetlení; Bodové reflektory; Bodová svetla na osvetlení domácností; Venkovní osvetlení; Osvetlení externích instalací; Príslusenství venkovního osvetlení; Svítidla k venkovnímu pouzití; Zahradní osvetlení; Venkovní elektrické osvetlovací doplnky; Nástenná svetla; Stropní svetla typu downlight; Solární lampy; Elektrická svítidla; Elektrické interiérové osvetlovací zarízení; Svítidla; Svetelné kuzely, svetlomety; Elektrické svetelné zdroje (zárovky, zárivky); Klimatizacní zarízení; Topné, ventilacní a klimatizacní systémy; Elektrická klimatizacní zarízení."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Maloobchodní sluzby související s bateriemi; Maloobchodní sluzby související s akumulátory; Maloobchodní prodej svetel; Maloobchodní sluzby v oblasti fotovoltaických zarízení pro výrobu elektriny; Velkoobchodní sluzby v oblasti fotovoltaických zarízení pro výrobu elektriny; Velkoobchodní prodej svetel."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Instalace a údrzba fotovoltaických zarízení; Instalace fotovoltaických clánku a modulu; Výstavba komunálních solárních zarízení; Údrzba a opravy zarízení na solární energii; Instalace zarízení na ochranu proti slunci; Údrzba, opravy a obnova fotovoltaických prístroju a zarízení; Instalace prístroju pro osvetlení; Poradenské sluzby vztahující se k instalaci osvetlovacích prístroju; Instalace klimatizacních zarízení; Sluzby dodavatele klimatizací."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Projektování a vývoj fotovoltaických systému; Navrhování a vývoj fotovoltaických systému; Návrh solárních fotovoltaických systému; Navrhování osvetlovacích systému."
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Aluminium; Aluminium og legeringer heraf; Halvforarbejdede artikler af aluminium eller legeringer heraf; Ekstruderede aluminiumssektioner; Aluminiumsfliser; Bygninger af metal; Konstruktioner og transportable bygninger af metal; Bygninger i form af faste metalkonstruktioner; Bygningskonstruktioner af metal; Hegn af metal; Hegnspaneler af metal; Metalgelændere til plankeværk; Metalgelændere til balkoner; Gelændere af metal til balkoner; Metalbeslag til bygningsbrug; Fastgørelsesanordninger af metal; Metalliske beslag; Bygningsmaterialer af metal; Arkitektoniske metalarbejder til brug ved byggeri; Formede metalstykker."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Fotovoltaiske moduler; Apparater til omdannelse af elektronisk stråling til elektrisk energi, nemlig fotovoltaiske solmoduler; Fotovoltaiske apparater og installationer til generering af solelektricitet; Fotovoltaiske apparater til omdannelse af solstråling til elektrisk energi; Fotovoltaiske vekselrettere; Solceller; Batterier; Batterier, elektriske; Genopladelige batterier; Elektriske celler og batterier; Litiumionbatterier; Opladere; Opladere til batterier; Opladere til el-biler; Vekselrettere [elektriske]; Apparater i form af elektriske omformere; Strømtransformere; LED driver."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "LED-belysningslegemer; LED-lamper; Lysemitterende dioder [LED]-pærer; LED-belysningsarmaturer; Led-strips; LED-belysningsinstallationer; LED-lys til udendørs belysning; Spotlamper; Spotlamper til husholdningsbrug; Gadelygter; Belysning til udendørs installering; Belysningsarmaturer til udendørs belysning; Lamper til udendørs brug; Havebelysning; Elektriske belysningslysarmaturer til udendørsbrug; Væglamper; Downlights; Sollamper; Belysningslegemer; Installationer til elektrisk, indendørs belysning; Lamper; Projektørlys; Lamper, elektriske; Luftkonditioneringsanlæg; Systemer til opvarmning, ventilation og luftkonditionering; Elektriske luftkonditioneringsanlæg."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Detailvirksomhed med batterier; Detailhandel med akkumulatorer; Detailhandel med belysning; Detailhandel med fotovoltaiske apparater til produktion af elektricitet; Engroshandel med fotovoltaiske apparater til produktion af elektricitet; Engroshandel med belysning."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Installation og vedligeholdelse af fotovoltaiske anlæg; Installering af fotovoltaiske celler og -moduler; Konstruktion af solcelleanlæg til brug i forsyningsøjemed; Vedligeholdelse og reparation af solcelleanlæg; Installation af solafskærmningssystemer; Vedligeholdelse, reparation og istandsættelse af fotovoltaiske apparater og installationer; Installering af belysningsapparater; Rådgivning vedrørende installering af belysningsapparater; Installation af luftkonditioneringsapparater; Ydelser leveret af en luftkonditioneringsleverandør (installation og vedligeholdelse)."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Design og udvikling af fotovoltaiske systemer; Tegning og udvikling af fotovoltaiske systemer; Design af fotovoltaiske systemer; Design af belysningssystemer."
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Aluminium; Aluminium en legeringen daarvan; Halffabricaten van aluminium of legeringen daarvan; Profielen van geëxtrudeerd aluminium; Platen van aluminium; Constructies van metaal; Constructies en verplaatsbare constructies van metaal; Constructies, te weten vaste metalen structuren; Metaalconstructies voor de bouw; Afrasteringen van metaal; Panelen van metaal, voor hekken; Relingen van metaal voor hekwerken; Relingen van metaal voor balkons; Beslag van metaal voor de bouw; Bevestigingsmateriaal van metaal; Montagedelen van metaal; Bouwmaterialen van metaal; Metaalwerk voor de bouw; Metalen delen (Gevormde -)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Fotovoltaïsche modules; Toestellen voor het omzetten van elektronische straling in elektrische energie, te weten fotovoltaïsche zonnemodules; Fotovoltaïsche toestellen en installaties voor het opwekken van zonne-energie; Fotovoltaïsche apparatuur voor het omzetten van zonnestralen in elektrische energie; Fotovoltaïsche gelijkstroom-wisselstroomomzetters; Zonnecellen; Batterijen; Elektrische batterijen; Oplaadbare batterijen; Elektrische cellen en batterijen; Lithiumionbatterijen; Laders; Batterij-laders; Opladers voor elektrische auto's; Omzetters [elektriciteit]; Stroomconditioneerapparatuur; Stroomwisselaars; Led drivers."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Led-verlichting; Led-lampen; LED-lampen; Led-verlichtingsarmaturen; Led-strips; Led-landschapsverlichting; Schijnwerperlichten; Spotjes voor huishoudelijke verlichting; Buitenverlichting; Lampen voor buiteninstallaties; Verlichtingsarmaturen voor buiten; Lampen voor buitenshuis; Tuinverlichting; Elektrische verlichtingsarmaturen voor buiten; Wandverlichting; Inbouwspots; Lampen op zonne-energie; Verlichtingsarmatuur; Verlichtingsinstallaties (Elektrische -) voor binnengebruik; Lampen voor verlichting; Schijnwerpers; Elektrische lampen; Airconditioninginstallaties; VVA-systemen (verwarming, ventilatie en airconditioning); Airconditioners (Elektrische -)."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Detailhandel in batterijen; Detailhandel in accu's; Detailhandelsdiensten op het gebied van verlichting; Detailhandelsdiensten op het gebied van fotovoltaïsche toestellen voor het opwekken van elektriciteit; Groothandelsdiensten op het gebied van fotovoltaïsche toestellen voor het opwekken van elektriciteit; Groothandelsdiensten op het gebied van verlichting."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Installatie en onderhoud van fotovoltaïsche installaties; Installatie van fotovoltaïsche cellen en modules; Bouw van zonne-installaties voor nutsvoorzieningen; Onderhoud en reparatie van installaties voor zonne-energie; Installatie van zonbeschermingssystemen; Onderhoud, reparatie en revisie van fotovoltaïsche apparatuur en installaties; Installatie van verlichtingsapparaten; Adviesdiensten inzake de installatie van verlichtingsapparatuur; Installatie van airconditioningapparaten; Aannemers op het gebied van klimaatregeling (Diensten van -)."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Ontwerp en ontwikkeling van fotovoltaïsche systemen; Ontwerpen en ontwikkelen van fotovoltaïsche systemen; Ontwerp van fotovoltaïsche zonnesystemen; Verlichtingssystemen (Ontwerp van -)."
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Aluminium; Aluminium and its alloys; Semi-finished articles of aluminium or its alloys; Extruded aluminium sections; Aluminium slabs; Buildings of metal; Structures and transportable buildings of metal; Buildings being fixed structures of metal; Building structures of metal; Fences of metal; Metal fencing panels; Metal railings for fences; Metal railings for balconies; Railings of metal for balconies; Fittings of metal for building; Fixing devices of metal; Metallic mountings; Building materials of metal; Architectural metalwork for use in building; Shaped metal portions."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Photovoltaic modules; Photovoltaic solar modules; Photovoltaic apparatus and installations for generating solar electricity; Photovoltaic apparatus for converting solar radiation to electrical energy; Photovoltaic inverters; Solar cells; Batteries; Batteries, electric; Rechargeable batteries; Electrical cells and batteries; Lithium ion batteries; Chargers; Battery chargers; Electric-car charger; Inverters [electricity]; Power conditioning apparatus; Current transformers; LED drivers."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "LED luminaires; LED lamps; Light-emitting diode [LED] light bulbs; LED lighting fixtures; LED light strips; LED lighting installations; LED landscape lights; Spotlights; Spot lights for household illumination; Outdoor lighting; Lights for external installation; Outdoor lighting fittings; Lamps for outdoor use; Garden lighting; Outdoor electrical lighting fixtures; Wall lights; Downlights; Solar lamps; Luminaires; Electric indoor lighting installations; Lamps; Floodlights; Electric lamps; Air-conditioning installations; HVAC systems (heating, ventilation and air conditioning); Electric air conditioners."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Retail services relating to batteries; Retail services relating to accumulators; Retail services in relation to lighting; Retail services in relation to photovoltaic apparatus for generating electricity; Wholesale services in relation to photovoltaic apparatus for generating electricity; Wholesale services in relation to lighting."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Installation and maintenance of photovoltaic installations; Installation of photovoltaic cells and modules; Construction of utility solar installations; Maintenance and repair of solar power installations; Installation of sun protection systems; Maintenance, repair and reconditioning of photovoltaic apparatus and installations; Installation of lighting apparatus; Advisory services relating to the installation of lighting apparatus; Installation of apparatus for air-conditioning; Air conditioning contractor services."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Design and development of photovoltaic systems; Drafting and development of photovoltaic systems; Design of solar photovoltaic systems; Design of lighting systems."
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Alumiinium; Alumiinium ja selle sulamid; Alumiiniumist või selle sulamitest pooltooted; Pressitud alumiiniumprofiilid; Alumiiniumplaadid; Metallist ehitised, tarindid; Metallist tarindid ja transporditavad ehitised; Statsionaarsed metallehitised; Metallist ehituskonstruktsioonid; Metallist tarad, aiad, piirded; Metallist aiapaneelid; Metallist aiapiirded; Metallist rõdupiirded; Metallist ehitustarvikud; Metallkinnitid; Metallist kinnitused, paigaldused; Metallist ehitusmaterjalid; Ehituses kasutatavad arhitektuursed metalldetailid; Vormitud metallosad."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Fotogalvaanikamoodulid; Fotogalvaanilised päikesemoodulid; Päikeseelektrienergia tootmise fotogalvaanikaseadmed ja -paigaldised; Päikesekiirguse elektrienergiaks muundamise fotogalvaanilised seadmed; Fotogalvaanilised inverterid; Päikeseelemendid (fotogalvaanilised elemendid); Patareid, akud; Elektripatareid; Akupatareid; Kuivelemendid ja patareid; Liitiumioonakud; Akulaadurid; Akulaadurid, patareilaadurid; Elektriautode laadijad; Inverterid, vaheldid [elektrotehnika]; Voolu reguleerimise seadmed; Voolumuundurid; LED-draiverid."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "LED-valgustid; Valgusdioodlambid, LED-lambid; Valgusdioodidega [LED] pirnid; LED-valgustiarmatuurid; LED-ribad; Valgusdiood [LED] valgustuspaigaldised; LED-maastikuvalgustid; Kohtvalgustid; Kohtvalgustid majapidamises kasutamiseks; Välisvalgustid; Lambid välispaigalduseks; Välisvalgustusseadmed; Õuelambid; Aialambid, aiavalgustid; Elektrilised välisvalgustusseadmed; Seinavalgustid; Süvistatavad valgustid; Päikeselambid; Valgustid; Siseruumide elektrivalgustid; Lambid [valgustid]; Tulvaprozektorid; Elektrilambid; Kliimaseadmed; HVAC-süsteemid (küte, ventilatsioon ja õhu konditsioneerimine); Elektrilised kliimaseadmed."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Patareide jaemüügiteenused; Akude jaemüügi teenused; Valgustite jaemüügiteenused; Jaemüügiteenused seoses elektri tootmise fotogalvaaniliste seadmetega; Hulgimüügiteenused seoses fotogalvaaniliste seadmetega elektri tootmiseks; Valgustite hulgimüügiteenused."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Fotogalvaanikaseadmestike paigaldamine ja hooldamine; Fotogalvaaniliste elementide ja moodulite paigaldamine; Tarbe-päikeserajatiste ehitamine; Päikeseenergiaseadmestike hooldus ja remont; Päikesevarjusüsteemide paigaldamine; Fotogalvaaniliste seadmete ja paigaldiste hooldamine, remontimine ning renoveerimine; Valgustusseadmete paigaldamine; Nõustamisteenused seoses valgustite paigaldamisega; Kliimaseadmete paigaldamine; Kliimaseadmetega tegelevate ettevõtjate teenused [paigaldus või parandus]."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Fotogalvaaniliste süsteemide kavandamine ja arendus; Päikeseenergia fotoelemendisüsteemide kavandamine; Valgustussüsteemide projekteerimine."
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Alumiini; Alumiini ja sen seokset; Puolivalmiit tuotteet alumiinista tai sen seoksista; Suulakepuristeet alumiinista; Alumiinilaatat; Rakennukset, metalliset; Metalliset rakenteet ja siirrettävät rakennukset; Rakennukset kiinteinä metallirakenteina; Metalliset talorakenteet; Metalliaidat; Metalliset aitapaneelit; Metallikaiteet aitoihin; Kaiteet metallista parvekkeita varten; Parvekkeiden metallikaiteet; Metallihelat rakentamiseen; Kiinnitystarvikkeet, metalliset; Metallihelat; Metalliset rakennustarvikkeet; Arkkitehtoniset metallitavarat käytettäväksi rakennuksissa; Muotoillut rakenneosat metallista."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Valosähkömoduulit; Valosähköllä toimivat aurinkomoduulit; Valosähkölaitteet ja -laitteistot aurinkosähkön tuottamiseen; Aurinkosähkölaitteet auringon säteilyn muuntamiseen sähköenergiaksi; Aurinkokennomuuntimet; Aurinkokennot; Akut ja paristot; Paristot, sähköiset; Ladattavat akut; Sähkökennot ja -akut; Litiumioniparistot; Latauslaitteet; Akkulaturit; Sähköauton laturit; Muuntimet [sähkötarvikkeina]; Tehonkäsittelylaitteet; Virranmuuntajat; LED-ajurit."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "LED-valaisimet; LED-lamput; LED-valaistuslaitteistot; LED-valonauhat; Led-valaistuslaitteistot; Ledimaisemavalot; Kohdelamput; Kohdevalot kotitalouksien valaistukseen; Ulkotilojen valaistus; Valaisimet ulkolaitteistoihin; Valaistustarvikkeet ulkokäyttöön; Lamput ulkokäyttöön; Puutarhavalot; Ulkokäyttöön tarkoitetut sähkövalaistuslaitteistot; Seinälamput; Downlight-valaisimet [Syväsäteilyvalaisimet]; Aurinkolamput; Valaisimet; Sähköiset sisävalaistuslaitteet; Lamput; Valonheittimet; Sähkölamput; Ilmastointilaitteistot; Lämmitys-, ilmanvaihto- ja ilmastointilaitteistot; Sähkötoimiset ilmastointilaitteet."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Paristoihin liittyvät vähittäismyyntipalvelut; Akkuihin liittyvät vähittäismyyntipalvelut; Valaisimiin liittyvät vähittäismyyntipalvelut; Sähköntuotantoon tarkoitettuihin valokennolaitteiden vähittäismyyntipalvelut; Tukkumyyntipalvelut liittyen sähköntuotantoon tarkoitettuihin valokennolaitteisiin; Valaisimiin liittyvät tukkumyyntipalvelut."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Valosähkölaitteistojen asentaminen ja huolto; Valosähkökennojen ja -moduulien asennus; Julkisten aurinkoenergiajärjestelmien rakentaminen; Aurinkoenergialaitteiden huolto ja korjaus; Aurinkosuojalaitteistojen asentaminen; Valosähkölaitteiden ja -laitteistojen kunnossapito, korjaus ja kunnostus; Valaistuslaitteiden asennus; Valaistuslaitteiden asennukseen liittyvät neuvontapalvelut; Ilmastointilaitteiden asennus; Ilmastointiurakkapalvelut."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Aurinkosähköjärjestelmien suunnittelu ja kehittäminen; Valosähköjärjestelmien luonnostelu ja kehittäminen; Aurinkosähköjärjestelmien suunnittelu; Valaistusjärjestelmien suunnittelu."
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Aluminium; Aluminium et ses alliages; Articles semi-finis en aluminium ou ses alliages; Profilés en aluminium extrudé; Plaques d'aluminium; Constructions métalliques; Structures métalliques et constructions transportables en métal; Constructions sous forme de structures fixes en métal; Structures de construction métalliques; Clôtures métalliques; Panneaux de clôture en métal; Rambardes métalliques pour clôtures; Rambardes métalliques pour balcons; Garde-corps métalliques pour balcons; Ferrures pour la construction; Dispositifs de fixation métalliques; Fixations métalliques [quincaillerie]; Matériaux de construction métalliques; Ferronnerie architecturale destinée à la construction; Pièces profilées en métal."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Modules photovoltaïques; Modules solaires photovoltaïques; Appareils et installations photovoltaïques pour la production d'électricité solaire; Appareils photovoltaïques pour la conversion du rayonnement solaire en énergie électrique; Inverseurs photovoltaïques; Cellules solaires; Batteries; Piles électriques; Batteries rechargeables; Batteries et piles électriques; Batteries lithium-ion; Chargeurs; Chargeurs de piles et batteries; Chargeurs pour voitures électriques; Inverseurs [électricité]; Appareils de conditionnement de l'alimentation; Transformateurs de courant électrique; Pilotes DEL."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Luminaires à LED; Ampoules DEL; Ampoules à diodes électroluminescentes [DEL]; Luminaires DEL; Bandes DEL; Installations d'éclairage à diodes électroluminescentes [DEL]; Lampes à LED pour espaces verts; Spots; Projecteurs à faisceau dirigé [lampes] pour éclairage domestique; Éclairage extérieur; Lampes pour installations extérieures; Appareils d'éclairage extérieur; Lampes d'extérieur; Lampes de jardin; Appareils d'éclairage électrique extérieur; Appareils d'éclairage fixés au mur; Plafonniers intensifs; Lampes solaires; Luminaires; Installations d'éclairage d'intérieur électriques; Lampes d'éclairage; Eclairages avec projecteurs; Lampes électriques; Installations de climatisation; Systèmes CVC [chauffage, ventilation et climatisation]; Climatiseurs électriques."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de vente au détail de batteries; Services de vente au detail en rapport avec les accumulateurs; Services de vente au détail concernant l'éclairage; Services de vente au détail concernant des appareils photovoltaïques pour la production d'électricité; Services de vente en gros concernant des appareils photovoltaïques pour la production d'électricité; Services de vente en gros concernant l'éclairage."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Installation et entretien d'installations photovoltaïques; Installation de modules et de cellules photovoltaïques; Construction d'installations d'énergie solaire publiques; Entretien et réparation d'installations d'énergie solaire; Installation de systèmes de protection solaire; Maintenance, réparation et remise en état d'installations et appareils photovoltaïques; Installation d'appareils d'éclairage; Services de conseils en matière d'installation d'appareils d'éclairage; Installation d'appareils de climatisation; Service d'entreprise en climatisation."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de conception et développement de systèmes photovoltaïques; Conception et développement de systèmes photovoltaïques; Conception de systèmes solaires photovoltaïques; Conception de systèmes d'éclairage."
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Aluminium; Aluminium und dessen Legierungen; Halbfertigerzeugnisse aus Aluminium oder dessen Legierungen; Aluminiumprofile; Aluminiumplatten; Bauten aus Metall; Bauten und transportable Bauten aus Metall; Bauten in Form von ortsfesten Konstruktionen aus Metall; Baukonstruktionen aus Metall; Zäune aus Metall; Zaunplatten aus Metall; Geländer aus Metall für Zäune; Geländer aus Metall für Balkone; Balkongeländer aus Metall; Baubeschläge aus Metall; Befestigungsteile aus Metall; Befestigungsmaterial aus Metall; Bauteile aus Metall; Metallteile für architektonische Zwecke; Metallformteile."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Photovoltaische Module; Fotovoltaische Solarmodule; Photovoltaische Geräte und Anlagen zur Erzeugung von Solarstrom; Photovoltaische Geräte für die Umwandlung von Sonnenstrahlung in elektrische Energie; Fotovoltaik-Wechselrichter; Elektrische Solarzellen; Batterien; Elektrische Batterien; Wiederaufladbare Batterien; Elektrische Zellen und Batterien; Lithiumionen-Batterien; Ladegeräte; Ladegeräte für Batterien; Ladegeräte für Elektroautos; Wechselrichter; Stromwechselrichter; Stromrichter; LED-Treiber."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "LED-Leuchten; LED-Lampen; LED-Glühlampen; LED-Beleuchtungsanlagen; LED-Leuchtstreifen; Leuchtdioden [LED]-Beleuchtungsanlagen; LED-Landschaftsbeleuchtungen; Strahler; Strahler für Beleuchtungszwecke im Haushalt; Außenbeleuchtung; Leuchten für Außenanlagen; Außenbeleuchtungskörper; Lampen zur Verwendung im Außenbereich; Gartenleuchten; Elektrische Außenbeleuchtungskörper; Wandleuchten; Deckenleuchten; Solarleuchten; Beleuchtungseinbauten [Lampen]; Elektrische Innenbeleuchtungsanlagen; Beleuchtungslampen; Flutlichtlampen; Leuchten; Elektrische Leuchten; Mit Solarenergie betriebene Leuchten; Klimaanlagen; Heizungs-, Lüftungs- und Klimaanlagen; Elektrische Klimaanlagen."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Einzelhandelsdienstleistungen in Bezug auf Batterien; Einzelhandelsdienstleistungen in Bezug auf Akkumulatoren; Einzelhandelsdienstleistungen in Bezug auf Beleuchtung; Einzelhandelsdienstleistungen in Bezug auf photovoltaische Apparate für die Erzeugung von Elektrizität; Großhandelsdienstleistungen in Bezug auf photovoltaische Apparate für die Erzeugung von Elektrizität; Großhandelsdienstleistungen in Bezug auf Beleuchtung."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Installation und Wartung von Photovoltaikanlagen; Installation von Photovoltaikzellen und -modulen; Bau von Solaranlagen für Versorgungszwecke; Wartung und Reparatur von Solarstromanlagen; Installation von Sonnenschutzanlagen; Wartung, Reparatur und Überholen von Photovoltaikgeräten und -anlagen; Installation von Beleuchtung; Beratung zur Installation der Beleuchtung; Installation von Klimaanlagen; Installation und Instandsetzung von Klimaanlagen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Entwurf und Entwicklung von Photovoltaikanlagen; Entwurf und Entwicklung von Fotovoltaiksystemen; Entwurf von Photovoltaikanlagen; Design von Beleuchtungssystemen."
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Aluminij; Aluminijske legure; Polu-obradeni predmeti od aluminija ili njegovih legura; Profili od ekstrudiranog aluminija; Aluminijske ploce; Metalne gradevine; Metalne strukture i prijenosne gradevine; Gradevine kao fiksni objekti od metala; Metalne gradevinske konstrukcije; Metalne ograde; Metalni paneli za ograde; Metalne precke za ograde; Metalne precke za balkonske ograde; Metalne ograde za balkone; Okovi za gradevinske potrebe; Sredstva za pricvrscivanje od metala; Metalni okovi; Metalni gradevni materijali; Arhitektonski metalni proizvodi za uporabu u graditeljstvu; Oblikovani metalni dijelovi."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Fotonaponski moduli; Fotonaponski solarni moduli; Fotonaponski uredaji i instalacije za proizvodnju sunceve energije; Fotonaponski uredaji za pretvaranje suncevog zracenja u elektricnu energiju; Fotovoltaicni pretvaraci; Solarne celije; Baterije; Elektricne baterije; Punjive baterije; Elektricne celije i baterije; Litij-ionske baterije; Punjaci; Punjaci baterija; Punjac za elektricne automobile; Elektricni invertori; Uredaji za poboljsivanje snage; Strujni transformatori; Pogonski sklop LED-a."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "LED rasvjeta; Svjetiljke LED; Rasvjetne zarulje sa svjetlecim diodama (LED); Rasvjetna LED tijela; LED svjetiljke na traci; Sustavi diodne [LED] rasvjete; LED svjetla za krajolik; Svjetlosni projektori; Reflektori za rasvjetu u kucanstvu; Vanjska rasvjeta; Rasvjeta za vanjske instalacije; Vanjska dodatna oprema za rasvjetu; Svjetiljke za vanjsku uporabu; Vrtna rasvjeta; Vanjske elektricne rasvjetne instalacije; Zidna rasvjeta; Stropne zarulje s usmjerenim svjetlom; Solarna lampe; Rasvjetna tijela; Elektricna unutarnja rasvjeta; Rasvjetne svjetiljke; Reflektori; Elektricne svjetiljke; Instalacije za klimatizaciju; HVAC sustavi (grijanje, ventilacija i klimatiziranje); Elektricni klima uredaji."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Usluge maloprodaje povezane s baterijama; Usluge maloprodaje povezane s akumulatorima; Maloprodajne usluge u vezi s osvjetljenjem; Maloprodajne usluge u vezi s fotonaponskim uredajima za proizvodnju elektricne energije; Veleprodajne usluge u vezi s fotonaponskim uredajima za proizvodnju elektricne energije; Veleprodajne usluge u vezi s osvjetljenjem."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Ugradnja i odrzavanje fotonaponskih instalacija; Postavljanje fotovoltaicnih celija i modula; Izgradnja komunalnih postrojenja za solarnu energiju; Odrzavanje i popravak postrojenja za proizvodnju solarne energije; Postavljanje sustava za zastitu od sunca; Odrzavanje, popravak i obnova fotovoltaicnih uredaja i sustava; Postavljanje rasvjetnih uredaja; Savjetodavne usluge koje se odnose na postavljanje rasvjetnih uredaja; Ugradnja klimatizacijskih uredaja; Usluge izvodenja klimatizacijskih sustava."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Dizajn i razvoj fotonaponskih sustava; Projektiranje i razvoj fotonaponskih sustava; Izrada nacrta solarnih fotonaponskih sustava; Projektiranje rasvjetnih sustava."
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Alumínium; Alumínium és ötvözetei; Félkész cikkek alumíniumból vagy annak ötvözeteibol; Préselt alumínium profilok; Alumínium lapok, táblák; Fémépítmények; Fémbol készült szerkezetek és hordozható építmények; Épületek, amelyek rögzített fémszerkezetek; Épületszerkezetek fémbol; Kerítések fémbol; Fém kerítéspanelek; Korlátok fémbol kerítésekhez; Korlátok fémbol erkélyekhez; Fémkorlátok erkélyekhez; Fémszerelvények építményekhez; Fém rögzítoeszközök; Fém állványok; Fém építoanyagok; Megmunkált fémek építkezéshez; Formázott fémdarabok."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Fotoelektromos modulok; Fotovoltaikus napmodulok; Fényelektromos berendezések és készülékek napenergiával történo áramfejlesztéshez; Fényelektromos berendezések a napsugárzás elektromos energiává történo átalakítására; Fotovoltaikus inverterek; Napelem cellák; Elemek; Elektromos elemek, akkumulátorok; Újratöltheto elemek; Galván cellák és -elemek; Lítiumion-akkumulátorok; Töltok; Elemtöltok; Elektromosautó-töltok; Inverterek, áramátalakítók [elektromosság]; Teljesítményszabályozó berendezések; Transzformátorok, áramátalakítók; LED-es meghajtók."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "LED-es lámpatestek, fényforrások; LED-lámpák; Fénykibocsátó diódák [LED-ek]; LED-es világítószerelvények; LED-csíkok; Fénykibocsátó diódás [LED-es] világítóberendezések; Kerti, kültéri LED lámpák; Spotlámpák; Spotlámpák háztartási használatra; Kültéri világítás; Kültéri lámpák; Kültéri világítástechnikai szerelvények; Lámpák kültéri használatra; Kerti világítás; Kültéri elektromos világítótestek; Fali világítás; Mélysugárzók, mélysugárzó lámpák; Napelemes lámpák; Világítótestek, lámpatestek; Elektromos beltéri világító berendezések; Lámpák; Reflektor lámpák, fémhalogén fényvetok; Elektromos lámpák; Légkondicionáló berendezések; HVAC rendszerek [futo, szellozteto és légkondicionáló]; Elektromos légkondicionálók."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Elemekhez kapcsolódó kiskereskedelmi szolgáltatások; Akkumulátorokhoz kapcsolódó kiskereskedelmi szolgáltatások; Világítással kapcsolatos kiskereskedelmi szolgáltatások; Elektromosság termelésére szolgáló fényelektromos készülékekkel kapcsolatos kiskereskedelmi szolgáltatások; Elektromosság termelését szolgáló fényelektromos készülékekkel kapcsolatos nagykereskedelmi szolgáltatások; Világítással kapcsolatos nagykereskedelmi szolgáltatások."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Fotovoltaikus berendezések üzembe helyezése és karbantartása; Fényelemek és fényelektromos modulok felszerelése; Napenergiát hasznosító közhasznú létesítmények építése; Napenergia-termelo berendezések karbantartása és javítása; Napvédo rendszerek felszerelése; Fényelektromos készülékek és berendezések javítása, karbantartása és felújítása; Világítóberendezések telepítése; Világítóberendezések üzembe helyezéséhez kapcsolódó tanácsadás; Légkondicionáló berendezések üzembe helyezése; Légkondicionálási, klímatechnikai vállalkozási szolgáltatások."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Fotovoltaikus rendszerek tervezése és fejlesztése; Fotovillamos rendszerek megszerkesztése és fejlesztése; Napfényelektromos rendszerek tervezése; Világítórendszerek tervezése."
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Alluminio; Alluminio e sue leghe; Articoli semilavorati in alluminio o sue leghe; Profilati estrusi in alluminio; Lastre di alluminio; Costruzioni metalliche; Strutture e costruzioni trasportabili in metallo; Costruzioni che sono strutture fisse in metallo; Strutture in metallo per edilizia; Recinti metallici; Pannelli di recinzione in metallo; Ringhiere metalliche per recinzioni; Ringhiere metalliche per balconi; Ringhiere di metallo per balconi; Guarnizioni in ferro per la costruzione; Dispositivi di fissaggio in metallo; Supporti metallici; Materiali da costruzione in metallo; Strutture architettoniche in metallo per l'edilizia; Elementi metallici sagomati."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Moduli fotovoltaici; Moduli solari fotovoltaici; Apparecchi e impianti fotovoltaici per la generazione d'elettricità solare; Apparecchi fotovoltaici per trasformare la radiazione solare in energia elettrica; Inverter fotovoltaici; Celle solari; Batterie; Batterie elettriche; Batterie ricaricabili; Pile e batterie elettriche; Batterie a ioni di litio; Caricatori; Caricabatterie; Caricatore per automobili elettriche; Invertitori [elettricità]; Apparecchi di condizionamento della potenza; Trasformatori di corrente; Driver LED."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Illuminazioni a LED; Lampade a LED; Lampadine a diodi elettroluminescenti [LED]; Impianti d'illuminazione a LED; Strisce led; Impianti di illuminazione a LED; Luci a LED per uso paesaggistico; Riflettori; Riflettori per illuminazione domestica; Lampade d'illuminazione pubblica; Luci per impianti esterni; Apparecchi di illuminazione per esterni; Lampade per esterno; Illuminazione per giardini; Impianti d'illuminazione elettrica per esterni; Lampade da parete; Faretti ad incasso; Lampade ad energia solare; Sistemi di illuminazione; Apparecchi d'illuminazione elettrici per interni; Lampade per illuminazione; Proiettori [illuminazione]; Lampade elettriche; Impianti di climatizzazione dell'aria; Sistemi HVAC (riscaldamento, ventilazione ed aria condizionata); Condizionatori d'aria elettrici."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di vendita al dettaglio riguardanti batterie; Servizi di vendita al dettaglio relativi ad accumulatori; Servizi di vendita al dettaglio in relazione all'illuminazione; Servizi di vendita al dettaglio di apparecchi fotovoltaici per generare elettricità; Servizi di vendita all'ingrosso di apparecchi fotovoltaici per generare elettricità; Servizi all'ingrosso in relazione all'illuminazione."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Installazione e manutenzione di impianti fotovoltaici; Installazione di cellule e moduli fotovoltaici; Costruzione di impianti solari per servizi pubblici; Manutenzione e riparazione di impianti ad energia solare; Installazione di schermature solari; Manutenzione, riparazione e ripristino di apparecchiature e impianti fotovoltaici; Installazione di apparecchiature per illuminazione; Servizi di consulenza inerenti l'installazione di impianti di illuminazione; Installazione di apparecchi di condizionamento dell'aria; Servizi di fornitori in materia di condizionamento dell'aria."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di progettazione e sviluppo di sistemi fotovoltaici; Progettazione e sviluppo di sistemi fotovoltaici; Progettazione di sistemi solari fotovoltaici; Progettazione di sistemi d'illuminazione."
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Aliuminis; Aliuminis ir jo lydiniai; Aliuminio arba jo lydiniu pusgaminiai; Aliuminio ekstruziniai profiliai; Aliuminines plokstes; Metaliniai statiniai; Metalines konstrukcijos ir kilnojamieji statiniai; Metaliniai statiniai (stacionarios konstrukcijos); Metalines statybines konstrukcijos; Metalines uztvaros; Metalines tvoru plokstes; Metalines tvoru grotos; Balkonu tureklai is metalo; Metaliniai balkonu tureklai; Metaline statybine armatura; Metaliniai tvirtinimo itaisai; Metalines tvirtinimo detales; Metalines statybines medziagos; Architekturiniai metalo dirbiniai (statybu reikmems); Metalines fasonines dalys."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Fotogalvaniniai moduliai; Saules fotoelementu skydeliai; Fotogalvaniniai aparatai ir irengimai, skirti saules energijai generuoti; Fotovoltiniai aparatai, saules spinduliuote paverciantys elektros energija; Fotovoltiniai apgrezikliai; Saules elementai; Baterijos; Elektrines baterijos; Ikraunamos baterijos; Elektriniai elementai ir baterijos; Licio jonu baterijos; Ikrovikliai; Bateriju ikrovimo itaisai; Elektriniu automobiliu ikrovikliai; Inverteriai [elektra]; Elektros kondicionavimo aparatai; Sroves transformatoriai; Sviesos diodu tvarkykles."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Sviesos diodu apsvietimo itaisai; Sviesolaidzio (LED) lempos; Sviesos diodu [LED] lemputes; Sviesos diodu apsvietimo iranga; Sviesos diodu juostos; Sviesos diodu apsvietimo irenginiai; Sviesos diodu lauko lempos; Kilnojamieji zibintai; Prozektoriai namu apsvietimo reikmems; Lauko apsvietimas; Lauko apsvietimo irenginiai; Lauko apsvietimo irenginiu priedai; Lauko lempos; Sodo zibintai; Lauko elektrinio apsvietimo itaisai; Sieniniai sviestuvai; Apsvietimo iranga imontuota i lubas; Saules energijos lempos; Apsvietimo itaisai; Elektriniai vidaus apsvietimo irenginiai; Lempos; Stadionu apsvietimo sviesos; Elektros lempos; Oro kondicionavimo irenginiai; Sildymo, vedinimo ir oro kondicionavimo sistemos; Elektriniai oro kondicionieriai."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Mazmenine prekyba baterijomis; Mazmenines prekyba akumuliatoriais; Mazmenine prekyba apsvietimo irenginiais; Mazmenine prekyba fotovoltine iranga elektrai gaminti; Didmenine prekyba fotovoltine iranga elektrai gaminti; Didmenine prekyba apsvietimo irenginiais."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Fotoelektros irenginiu montavimas ir technine prieziura; Fotovoltiniu elementu ir moduliu irengimas; Komunaliniu saules energijos irenginiu statyba; Saules energijos sistemu technine prieziura ir remontas; Nuo saules sauganciu sistemu irengimas; Fotovoltiniu aparatu ir irenginiu prieziura, remontas ir atnaujinimas; Apsvietimo aparatu irengimas; Patarimai del apsvietimo aparatu irengimo; Oro kondicionavimo irenginiu itaisymas; Oro kondicionavimo rangovo paslaugos."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Fotovoltiniu sistemu projektavimas ir tobulinimas; Fotovoltiniu sistemu projektavimas ir kurimas; Saules energijos fotovoltiniu sistemu projektavimas; Apsvietimo sistemu projektavimas."
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Aluminijs; Aluminijs un ta sakausejumi; Aluminija pusfabrikati vai ta sakausejumi; Stanceti aluminija profili; Aluminija platnes; Metala buves; Metala konstrukcijas un parvietojamas metala buves; Celtnes fiksetu metala konstrukciju veida; Buvkonstrukcijas no metala; Metala zogi; Metala zogu paneli; Metala trelini zogiem; Metala margas balkoniem; Balkonu margas no metala; Metala armaturas izstradajumi buvniecibai; Fiksacijas ierices no metala; Metala uzkares; Buvmateriali no metala; Arhitektoniski izstradajumi no metala buvniecibai; Profiletas metala dalas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Fotoelektriskie moduli; Fotogalvanisko elementu paneli; Fotogalvaniskie aparati un iekartas saules elektribas generesanai; Fotoelektriskie aparati saules energijas parveidosanai elektroenergija; Fotoelektriskie invertori; Saules bateriju elementi; Akumulatoru baterijas; Elektrisko akumulatoru baterijas; Uzladejamas akumulatoru baterijas; Elektribas barosanas avoti un akumulatori; Litija-jonu baterijas; Uzlades ierices; Akumulatoru bateriju uzlades ierices; Elektrisko automobilu uzlades ierices; Invertori; Elektroenergijas kvalitates uzlabosanas ierices; Stravmaini; LED dzini."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Gaismas diozu gaismekli; LED lampas; Gaismas diozu (LED) spuldzes; LED gaismekli; Led - vadu veida apgaismojums; Gaismas diozu [LED] apgaismes iekartas; Gaismas diozu lampas ara apgaismojumam; Starmesi; Prozektori majsaimniecibas apgaismosanas nolukiem; Ara apgaismojums; Ara apgaismes sistemas; Ara apgaismojuma piederumi; Ara gaismekli; Darza apgaismojums; Ara elektriskas apgaismes kermeni; Sienas gaismekli; Iebuvejamie griestu gaismekli; Saules energijas gaismekli; Gaismekli; Elektriskas iekstelpu apgaismes iekartas; Lampas; Parpludgaismas prozektori; Elektriskas lampas un spuldzes; Gaisa kondicionesanas sistemu dalas; Apkures, ventilacijas un gaisa kondicionesanas sistemas; Elektriskie gaisa kondicionetaji."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Bateriju mazumtirdzniecibas pakalpojumi; Akumulatoru mazumtirdzniecibas pakalpojumi; Apgaismosanas iericu mazumtirdzniecibas pakalpojumi; Fotoelektrisko elektribas generesanas iekartu mazumtirdzniecibas pakalpojumi; Fotoelektrisko elektribas generesanas iekartu vairumtirdzniecibas pakalpojumi; Apgaismosanas iekartu vairumtirdzniecibas pakalpojumi."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Fotoelektrisko iekartu uzstadisana un tehniska apkope; Fotovoltaikas elementu un modulu uzstadisana; Ar saules energiju darbinamu komunalu iekartu ierikosana; Saules energijas iekartu uzturesana un remonts; Sistemu ierikosana aizsardzibai pret sauli; Fotovoltaikas aparatu un instalaciju uzturesana, remonts un atjaunosana; Apgaismosanas iekartu uzstadisana; Konsultaciju pakalpojumi saistiba ar apgaismes iekartu uzstadisanu; Gaisa kondicionesanas iekartu uzstadisana; Gaisa kondicionesanas darbuznemeju pakalpojumi."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Fotoelektrisko sistemu projektesanas un izstrades pakalpojumi; Fotoelektrisko sistemu projektesana un izstrade; Saules fotoelektrisko sistemu projektesana; Apgaismes sistemu projektesana."
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Aluminju; Aluminju u l-ligi taghhom; Oggetti nofshom lesti tal-aluminju jew il-ligi tieghu; Sezzjonijiet tal-aluminju estruzi; Blokki tal-aluminju; Bini tal-metall; Strutturi u bini trasportabbli tal-metall; Bini bhala strutturi fissi tal-metall; Strutturi tal-bini tal-metall; Cnut tal-metall; Panewijiet tac-cnut tal-metall; Poggamani tal-metall tas-sisien; Poggamani tal-metall tal-gallariji; Cnut tal-metall ghall-gallariji; Taghmir tal-metall ghall-bini; Taghmir tal-iffissar maghmul mill-metall; Muntaturi tal-metall; Materjali tal-metall ghall-bini; Oggetti tal-metall tal-arkitettura ghall-uzu fil-bini; Partijiet tal-metall iffurmati."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Moduli fotovoltajci; Moduli solari fotovoltajci; Apparat u installazzjonijiet fotovoltajci ghall-generazzjoni ta' l-elettriku solari; Apparat fotovoltajku ghall-konverzjoni ta' radjazzjoni solari f'energija elettrika; Inverters fotovoltajci; Celloli solari; Batteriji; Batteriji tal-elettriku; Batteriji li jistghu jergghu jigu ccargjati; Celloli elettrici u batteriji; Batteriji ta' joni tal-litju; Cargers; Karikaturi ghal batteriji elettrici; Carger elettroniku tal-karozzi; Invertituri [tal-elettricita]; Apparat ghall-ikkondizzjonar tal-energija; Transformers tal-kurrent; Drajvers tal-LED."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Dawl LED; Lampi LED; Bozoz bid-dajowds elettroluminixxenti (LED); Partijiet fissi tad-dawl LED; Strixxi tal-LED; Installazzjonijiet tad-dawl bid-dajowds li jarmu d-dawl [LED]; Dwal LED ghall-pajsaggi; Lampi li jarmu ragg ta' dawl qawwi ghax-xenarji [spotlights]; Lampi qawwija u diretti ghat-tidwil domestiku; Dwal ta' barra; Dwal biex jitwahhlu barra; Fittjaturi tad-dawl ghal barra; Lampi ghall-uzu fuq barra; Dwal ghall-gnien; Fittjaturi tad-dawl bl-elettriku ghal barra; Dwal tal-hajt; Dwal tas-suffetti; Lampi solari; Mezzi li jdawlu; Installazzjonijiet ghat-tidwil intern jahdmu bl-elettriku; Lampi; Dwal li jdawwlu medda kbira; Sistemi ghad-dawl elettriku; Installazzjonijiet ghall-ikkondizzjonar tal-arja; Sistemi tal-HVAC (tishin, ventilazzjoni u kundizzjonar tal-arja); Kondizzjonaturi tal-arja elettrici."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' bejgh bl-imnut relatati ma' batteriji; Servizzi tal-bejgh bl-imnut relatati ma' akkumulaturi; Servizzi ta' bejgh bl-imnut fir-rigward tad-dawl; Servizzi ta' bejgh bl-imnut ghal apparat fotovoltajku li jiggenera l-elettriku; Servizzi ta' bejgh bl-ingrossa ghal apparat fotovoltajku li jiggenera l-elettriku; Servizzi ta' bejgh bl-ingrossa fir-rigward tad-dawl."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Installazzjoni u manutenzjoni ta' mpjanti fotovoltajci; Installazzjoni ta' celloli u moduli fotovoltajci; Kostruzzjoni ta' installazzjonijiet ta' utilitajiet solari; Manutenzjoni u tiswija ta' installazzjonijiet tal-energija solari; Installazzjoni ta' sistemi ta' protezzjoni mix-xemx; Installazzjoni, tiswija u rikondizzjonar ta' apparat u installazzjonijiet fotovoltajci; Installazzjoni ta' apparat tad-dawl; Servizzi ta' ghoti ta' pariri relatati mal-installazzjoni ta' apparat tad-dawl; Installazzjoni ta' apparat ghall-arja kkondizzjonata; Servizzi ta' kuntrattur ghall-kondizzjonar tal-arja."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' disinn u zvilupp ta' sistemi fotovoltajci; Tfassil u zvilupp ta' sistemi fotovoltajci; Disinn ta' sistemi fotovoltajci solari; Disinn ta' sistemi tad-dawl."
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Aluminium [glin]; Aluminium i jego stopy; Pólprodukty z aluminium lub jego stopów; Elementy z wyciskanego aluminium; Plyty aluminiowe; Konstrukcje metalowe; Metalowe konstrukcje i budynki przenosne; Budynki bedace nieruchomymi konstrukcjami metalowymi; Konstrukcje budowlane z metalu; Ogrodzenia metalowe; Metalowe panele ogrodzeniowe; Balustrady metalowe do ogrodzen; Balustrady metalowe do balkonów; Metalowe balustrady do balkonów; Okucia stosowane w budownictwie, metalowe; Metalowe urzadzenia do mocowania; Oprawy metalowe; Materialy konstrukcyjne metalowe; Architektoniczne produkty metalowe do uzytku w budownictwie; Uksztaltowane czesci metalowe."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Moduly fotowoltaiczne; Fotowoltaiczne moduly sloneczne; Fotowoltaiczne urzadzenia i instalacje do wytwarzania energii elektrycznej z energii slonecznej; Urzadzenia fotowoltaiczne do przeksztalcania promieniowania slonecznego na energie elektryczna; Falowniki fotowoltaiczne; Ogniwa sloneczne; Baterie; Baterie, elektryczne; Baterie do ponownego ladowania; Ogniwa i baterie elektryczne; Baterie litowo-jonowe; Ladowarki; Ladowarki do baterii; Ladowarki do samochodów elektrycznych; Przemienniki, inwertory [elektrycznosc]; Aparatura do kondycjonowania energii; Przekladnik pradowy; Sterowniki LED."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Urzadzenia oswietleniowe LED; Lampy LED; Zarówki LED; Oprawy oswietleniowe LED; Tasmy led; Instalacje oswietleniowe z diodami elektroluminescencyjnymi [LED]; Oswietlenie typu LED zewnetrzne [ogrody, krajobrazy]; Reflektory punktowe; Swiatla punktowe do oswietlenia domowego; Oswietlenie zewnetrzne; Swiatla do instalacji na zewnatrz; Wyposazenie oswietleniowe zewnetrzne; Lampy do uzycia na wolnym powietrzu; Oswietlenie ogrodowe; Elektryczne oprawy oswietleniowe zewnetrzne; Oswietlenie scienne; Oswietlenie sufitowe typu downlight; Lampy sloneczne; Oprawy oswietleniowe; Elektryczne instalacje oswietleniowe do wnetrz; Lampy oswietleniowe; Jupitery; Lampy elektryczne; Instalacje klimatyzacyjne; Systemy HVAC (ogrzewanie, wentylacja i klimatyzacja); Elektryczne klimatyzatory."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi handlu detalicznego w zakresie baterii; Uslugi handlu detalicznego w zakresie akumulatorów; Uslugi sprzedazy detalicznej w zwiazku z oswietleniem; Uslugi sprzedazy detalicznej zwiazane z urzadzeniami fotowoltaicznymi do wytwarzania energii elektrycznej; Uslugi sprzedazy hurtowej zwiazane z urzadzeniami fotowoltaicznymi do wytwarzania energii elektrycznej; Uslugi sprzedazy hurtowej w zwiazku z oswietleniem."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Montaz i konserwacja instalacji fotowoltaicznych; Instalacja ogniw i modulów fotowoltaicznych; Budowa uzytkowych instalacji slonecznych; Konserwacja i naprawa instalacji energii slonecznej; Instalacja oslon przeciwslonecznych; Konserwacja, naprawa i odnowa urzadzen i instalacji fotowoltaicznych; Instalacja urzadzen oswietleniowych; Uslugi doradcze zwiazane z instalacja urzadzen oswietleniowych; Instalacja urzadzen klimatyzacyjnych; Uslugi wykonawców w zakresie instalacji klimatyzacyjnych."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi projektowania i rozwoju systemów fotowoltaicznych; Sporzadzanie projektów i opracowywanie systemów fotowoltaicznych; Projektowanie slonecznych systemów fotowoltaicznych; Projektowanie systemów oswietleniowych."
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Alumínio; Ligas de alumínio; Artigos semiacabados em alumínio ou suas ligas; Perfis extrudidos de alumínio; Lajes de alumínio; Construções metálicas; Estruturas e construções transportáveis de metal; Construções sob a forma de estruturas metálicas fixas; Estruturas de construção metálicas; Cercas metálicas; Painéis de vedação metálicos; Grades de metal para cercas; Grades de metal para varandas; Balaustradas de metal para varandas; Ferragens metálicas para construção; Dispositivos de fixação em metal; Armações metálicos; Materiais de construção metálicos; Serralharia metálica para construção arquitectónica; Peças metálicas moldadas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Módulos fotovoltaicos; Módulos solares fotovoltaicos; Aparelhos e instalações fotovoltaicos para produção de energia solar; Aparelhos fotovoltaicos para a transformação de radiação solar em energia elétrica; Inversores fotovoltaicos; Células solares; Baterias; Baterias elétricas; Baterias recarregáveis; Pilhas e baterias elétricas; Baterias de ião de lítio; Carregadores; Carregadores de baterias; Carregadores para carros elétricos; Inversores [eletricidade]; Equipamento para condicionamento da potência; Transformadores de corrente elétrica; Controladores LED."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Luminárias LED; Lâmpadas LED; Lâmpadas de díodos emissores de luz (LED); Luminárias de LED; Fitas LED; Instalações de iluminação por díodos eletroluminescentes [LED]; Luzes paisagísticas LED; Focos spot; Holofotes para iluminação doméstica; Iluminação exterior; Luzes para instalações exteriores; Acessórios de iluminação exterior; Lâmpadas para o exterior; Iluminação de jardins; Acessórios de iluminação elétrica no exterior; Lâmpadas de murais; Projetores de teto falso; Unidades de lâmpadas solares; Luminárias; Instalações para iluminação elétrica interior; Lâmpadas; Projetores para iluminação; Lâmpadas elétricas; Instalações de climatização [condicionamento de ar]; Sistemas de AVAC (aquecimento, ventilação e ar-condicionado); Aparelhos de ar condicionado elétricos."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de venda a retalho relacionados com baterias; Serviços de venda a retalho relacionados com acumuladores; Serviços retalhistas relacionados com iluminação; Serviços de venda a retalho relacionados com aparelhos fotovoltaicos para produção de eletricidade; Serviços de venda grossista relacionados com aparelhos fotovoltaicos para produção de eletricidade; Serviços grossistas relacionados com iluminação."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Instalação e manutenção de instalações fotovoltaicas; Instalação de células e módulos fotovoltaicos; Construção de instalações solares de utilidade pública; Manutenção e reparação de instalações de energia solar; Instalação de sistemas de proteção solar; Manutenção, reparação e recondicionamento de aparelhos e instalações fotovoltaicas; Instalação de aparelhos de iluminação; Serviços de consultoria relacionados com a instalação de aparelhos de iluminação; Instalação de aparelhos de ar condicionado; Serviços de climatização prestados por empresas contratantes."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de conceção e desenvolvimento de sistemas fotovoltaicos; Elaboração de planos e desenvolvimento de sistemas fotovoltaicos; Projecto de sistemas solares fotovoltaicos; Conceção de sistemas de iluminação."
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Aluminiu; Aliaje de aluminiu; Articole semifinisate din aluminiu sau aliajele sale; Sectiuni de profiluri prin extruziune din aluminiu; Placi din aluminiu; Constructii metalice; Structuri si constructii metalice transportabile; Constructii care sunt structuri fixe din metal; Structuri de constructii, din metal; Garduri metalice; Panouri metalice pentru garduri; Balustrade metalice pentru garduri; Balustrade metalice pentru balcoane; Feronerie pentru constructii; Dispozitive de fixare din metal; Monturi metalice; Materiale metalice pentru constructii; Feronerie arhitecturala utilizata în constructii; Segmente metalice fasonate."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Module fotovoltaice; Module fotovoltaice solare; Aparate si instalatii fotovoltaice pentru generarea de energie solara; Aparate fotovoltaice pentru transformarea radiatiei solare în energie electrica; Invertoare fotovoltaice; Celule solare; Baterii; Baterii galvanice; Baterii reîncarcabile; Celule si baterii electrice; Baterii de ioni de litiu; Incarcatoare; Alimentatoare pentru acumulatoare; Încarcatoare pentru masini electrice; Invertoare [electricitate]; Aparate pentru conditionarea energiei electrice; Transformatoare de curent; Drivere LED."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Luminatoare LED; Lampi cu LED; Becuri cu diode electroluminiscente (LED); Corpuri de iluminat cu LED; Benzi cu led; Instalatii de iluminat cu diode electroluminescente [leduri]; Lumini LED pentru iluminatul public; Reflectoare de scena; Spoturi pentru iluminatul casnic; Corpuri de iluminat pentru exterior; Instalatii de iluminat pentru exterior; Accesorii de iluminat pentru exterior; Lampi de iluminat pentru exterior; Dispozitive de iluminat pentru gradina; Accesorii pentru corpuri electrice de iluminat pentru exterior; Aplice de perete; Corpuri de iluminat care proiecteaza lumina în jos; Lampi solare; Corpuri de iluminat; Instalatii de iluminare electrice de interior; Lampi de iluminat; Proiectoare de iluminat; Lampi electrice; Instalatii de climatizare; Sisteme HVAC (încalzirea, ventilarea si climatizarea aerului); Aparate de aer conditionat electrice."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de vânzare cu amanuntul în legatura cu baterii; Servicii de vânzare cu amanuntul în legatura cu acumulatori; Servicii de vânzare cu amanuntul în legatura cu echipamente de iluminat; Servicii de vânzare cu amanuntul în legatura cu aparate fotovoltaice pentru producerea energiei electrice; Servicii de vânzare cu ridicata în legatura cu aparate fotovoltaice pentru producerea energiei electrice; Servicii de vânzare cu ridicata în legatura cu echipamente de iluminat."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Instalare si întretinere de instalatii fotovoltaice; Instalare de celule si module fotovoltaice; Constructie de instalatii solare utilitare; Întretinere si reparare de instalatii solare; Instalare de sisteme de protectie împotriva soarelui; Întretinere, reparare si reconditionare de aparate si instalatii fotovoltaice; Instalare de instalatii de iluminat; Servicii consultative privind instalarea de aparate de iluminat; Instalare de aparate de aer conditionat; Servicii de contractare pentru instalatii de aer conditionat."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de proiectare si dezvoltare de sisteme fotovoltaice; Proiectare si dezvoltare de sisteme fotovoltaice; Concepere de sisteme fotovoltaice solare; Proiectare de sisteme de iluminat."
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Hliník; Hliník a jeho zliatiny; Polotovary z hliníka a zliatin hliníka; Prvky z extrudovaného hliníka; Hliníkové dosky; Kovové stavebné konstrukcie; Kovové konstrukcie a kovové prenosné stavby; Stavby ako stabilné kovové konstrukcie; Kovové kostry budov (stavebné konstrukcie); Kovové ploty; Kovové plotové panely; Kovové zábradlia pre ploty; Kovové zábradlia pre balkóny; Kovové balkónové zábradlia; Kovania pre stavebníctvo; Kovové upevnovacie prvky; Kovové príchytky a drziaky; Kovový stavebný materiál; Kovové architektonické výrobky pre budovy; Kovové tvarované diely."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Fotovoltické moduly; Fotovoltické (solárne) moduly; Solárne (fotovoltické) prístroje a zariadenia na výrobu elektriny; Fotovoltické zariadenia na premenu slnecného ziarenia na elektrickú energiu; Fotovoltické menice prúdu; Solárne clánky; Batérie; Elektrické batérie (clánky); Dobíjatelné batérie; Elektrické clánky a batérie; Lítium-iónové batérie; Nabíjacky; Nabíjacky batérií; Nabíjacky pre vozidlá na elektrický pohon; Invertory (elektrotechnika); Prístroje na úpravu elektrickej energie; Transformátory prúdu; LED ovládace."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "LED svietidlá; LED lampy; LED ziarovky; LED osvetlovacie zariadenia; LED-pásky; Osvetlovacie zariadenia s luminiscencnými diódami [LED]; LED svetlá pouzívané na dekoráciu v exteriéri; Bodové svetlá; Bodové svetlá na osvetlovanie domácností; Vonkajsie osvetlenie; Svetlá pre vonkajsiu montáz; Súciastky pre exteriérové osvetlenie; Lampy na vonkajsie pouzitie; Záhradné osvetlenie; Elektrické svietidlové vybavenie do exteriéru; Svetlá na priedeloch; Stropné svietidlá [downlight]; Solárne lampy; Svietidlo; Elektrické interiérové osvetlovacie zariadenia; Lampy; Reflektorové svetlá; Elektrické lampy; Klimatizacné zariadenia; Vykurovacie, vetracie a klimatizacné zariadenia; Elektrické klimatizacné zariadenia."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Maloobchodné sluzby súvisiace s batériami; Maloobchodné sluzby v oblasti akumulátorov; Maloobchodné sluzby so svietidlami; Maloobchodné sluzby s fotovoltickými zariadeniami na výrobu elektriny; Vel'koobchodné sluzby s fotovoltickými zariadeniami na výrobu elektriny; Velkoobchodné sluzby so svietidlami."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Instalácia a údrzba fotovoltických zariadení; Instalácie fotovoltických clánkov a modulov; Stavba úzitkových solárnych zariadení; Údrzba a oprava zariadení na solárnu energiu; Instalácia systémov na ochranu proti slnku; Údrzba, oprava a generálna oprava fotovoltických prístrojov a zariadení; Instalácie osvetlovacích zariadení; Poradenské sluzby v oblasti montáze osvetlovacích zariadení; Instalácia klimatizacných zariadení; Sluzby dodávatela klimatizácie."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Navrhovanie a vývoj fotovoltických systémov; Navrhovanie solárnych fotovoltických systémov; Navrhovanie osvetlovacích systémov."
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Aluminij; Aluminij in njegove zlitine; Polizdelki iz aluminija ali njegovih zlitin; Ekstrudirani profili iz aluminija; Plosce iz aluminija; Zgradbe iz kovine; Konstrukcije in prenosne kovinske zgradbe; Zgradbe, ki so fiksne kovinske konstrukcije; Kovinske gradbene strukture; Kovinske ograje; Kovinske plosce za ograjo; Kovinske precke za ograje; Kovinske ograje za balkone; Oprema iz kovine za gradbenistvo; Kovinske pritrdilne naprave; Kovinska okovja; Kovinski gradbeni materiali; Kovinski arhitekturni izdelki za uporabo v gradbenistvu; Oblikovani kovinski deli."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Fotovoltaicni moduli; Fotovoltaicni solarni moduli; Fotonapetostni aparati in napeljave za pridobivanje soncne elektricne energije; Fotonapetostni aparati za pretvarjanje soncnega sevanja v elektricno energijo; Fotovoltaicni pretvorniki; Soncne celice; Baterije; Elektricne baterije; Baterije za ponovno polnjenje; Elektricne celice in baterije; Litij-ionske baterije; Polnilci; Elektricni polnilniki za baterije; Polnilniki za elektricne avtomobile; Inverterji [elektrika]; Aparati za uravnavanje elektricnega toka; Transformatorji toka; LED gonilniki."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "LED svetila; LED svetilke; Zarnice za svetlece diode (LED); Napeljave za LED osvetljavo; LED-trakovi; Napeljave za osvetljevanje z LED diodami; LED svetilke za pokrajino; Zarometi; Reflektorji za osvetljevanje gospodinjstva; Zunanja osvetljava; Luci za zunanje napeljave; Oprema za razsvetljavo na prostem; Luci, ki se uporabljajo na prostem; Vrtna osvetlitev; Elektricna oprema za zunanjo razsvetljavo; Stenske svetilke; Stropne luci z usmerjeno svetlobo; Soncne svetilke; Svetila; Elektricne instalacije za osvetljevanje notranjih prostorov; Svetilke; Reflektorji; Elektricne svetilke; Instalacije za klimatizacijo; HVAC sistemi (ogrevanje, prezracevanje in klimatizacija); Elektricne klimatske naprave."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Maloprodajne storitve v zvezi z akumulatorji; Storitve prodaje na drobno v zvezi z osvetljevanjem; Storitve maloprodaje v zvezi s fotovoltaicnimi aparati za proizvodnjo elektricne energije; Veleprodajne storitve v zvezi s fotovoltaicnimi aparati za proizvodnjo elektricne energije; Storitve prodaje na debelo v zvezi z osvetljevanjem."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Montaza in vzdrzevanje fotonapetostnih instalacij; Montaza fotovoltaicnih celic in modulov; Gradnja javnih solarnih naprav; Vzdrzevanje in popravilo naprav na soncno energijo; Montaza sistemov za zascito pred soncem; Vzdrzevanje, popravila in obnova fotovoltaicnih aparatov in napeljav; Montaza naprav za osvetljevanje; Svetovalne storitve v zvezi z montazo naprav za osvetljevanje; Montaza klimatskih naprav; Pogodbene klimatizacijske storitve."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Oblikovanje in razvoj fotovoltaicnih sistemov; Nacrtovanje in razvoj fotovoltaicnih sistemov; Oblikovanje solarnih fotovoltaicnih sistemov; Oblikovanje osvetljevalnih sistemov."
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aluminio; Aleaciones de aluminio; Artículos semiacabados de aluminio o sus aleaciones; Perfiles de aluminio extruido; Placas de aluminio; Construcciones metálicas; Estructuras y construcciones transportables metálicas; Construcciones que son estructuras metálicas fijas; Estructuras de construcción de metal; Vallas [cercas] metálicas; Paneles metálicos de vallado; Verjas metálicas para cercas; Barandillas metálicas para balcones; Barandillas de metal para balcones; Herrajes para la construcción; Dispositivos de fijación de metal; Monturas metálicas; Materiales de construcción metálicos; Metalistería arquitectónica para la construcción; Piezas metálicas moldeadas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Módulos fotovoltaicos; Paneles solares fotovoltaicos; Aparatos e instalaciones fotovoltaicos para la generación de electricidad solar; Aparatos fotovoltaicos para transformar la radiación solar en energía eléctrica; Inversores fotovoltaicos; Células solares; Baterías; Pilas eléctricas; Baterías recargables; Pilas y baterías eléctricas; Baterías de iones de litio; Cargadores; Cargadores de pilas y baterías; Cargadores para coches eléctricos; Inversores [electricidad]; Equipos de acondicionamiento de la potencia; Transformadores de corriente; Controladores de LED."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Luminarias LED; Lámparas LED; Bombillas de diodos electroluminiscentes [ledes]; Apliques de iluminación led; Tiras led; Instalaciones de iluminación con LED; Luces LED de paisajismo; Focos de luz directa; Focos para iluminación doméstica; Iluminación de exteriores; Luces para instalaciones exteriores; Accesorios de alumbrado exterior; Lámparas de uso exterior; Alumbrado de jardines; Accesorios para iluminación de exteriores; Lámparas de pared; Lámparas descendentes; Lámparas solares; Luminarias; Instalaciones eléctricas de alumbrado interior; Lámparas [aparatos de iluminación]; Proyectores para iluminación; Lámparas eléctricas; Instalaciones de aire acondicionado; Equipos HVAC para tratamiento del aire (calefacción, ventilación y refrigeración); Climatizadores eléctricos."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de venta al por menor en relación con baterías; Servicios de venta al por menor en relación con acumuladores; Servicios de venta al por menor de iluminación; Servicios de venta al por menor de aparatos fotovoltaicos para generar electricidad; Servicios de venta al por mayor de aparatos fotovoltaicos para generar electricidad; Servicios de venta al por mayor de iluminación."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de instalación y mantenimiento de instalaciones fotovoltaicas; Instalación de células y módulos fotovoltaicos; Construcción de instalaciones solares para servicios públicos; Mantenimiento y reparación de instalaciones de energía solar; Instalación de sistemas de protección solar; Mantenimiento, reparación y reacondicionamiento de instalaciones y aparatos fotovoltaicos; Instalación de aparatos de iluminación; Servicios de asesoramiento en materia de instalación de aparatos de iluminación; Instalación de aparatos de aire acondicionado; Contratistas de aire acondicionado."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de diseño y desarrollo de sistemas fotovoltaicos; Diseño y desarrollo de sistemas fotovoltaicos; Diseño de sistemas fotovoltaicos solares; Diseño de sistemas de iluminación."
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Aluminium; Aluminiumlegeringar; Halvfabrikat av aluminium eller dess legeringar; Strängsprutade aluminiumprodukter; Plattor av aluminium; Byggnader av metall; Konstruktioner och flyttbara byggnader av metall; Byggnader i form av fast monterade strukturer av metall; Byggnadskonstruktioner av metall; Staket av metall; Metallstaketpaneler; Räcken av metall till staket; Räcken av metall till balkonger; Balkongräcken av metall; Metallbeslag för byggnader; Fästanordningar av metall; Metallmonteringar; Byggnadsmaterial av metall; Arkitektoniska metallarbeten för användning vid byggnation; Formade metallstycken."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Fotovoltaiska moduler; Solcellsmoduler; Fotocellapparater och -anläggningar för alstring av solelektricitet; Solcellsapparater för omvandling av solstrålning till elektrisk energi; Växelriktare för solceller; Solceller; Batterier; Batterier, elektriska; Återuppladdningsbara batterier; Elektriska celler och batterier; Litiumjonbatterier; Laddningsanordningar; Batteriladdare; Laddare för elbilar; Växelriktare [el]; Effektomvandlare; Elektriska strömriktare; LED-drivenheter."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "LED-ljuskällor; LED-lampor; Lysdiodslampor; LED-belysningsarmaturer; LED-strips; Belysningsanläggningar med lysdioder [LED]; LED-lampor för utomhusbelysning; Spotlights; Strålkastare för belysning i hemmen; Utomhusbelysning; Belysning för montering utomhus; Armaturer till utomhusbelysning; Lampor för utomhusbruk; Trädgårdsbelysning; Elektriska belysningsarmaturer för användning utomhus; Lampor för väggprydnad; Innertakbelysningar; Sollampenheter; Belysningar; Elektriska installationer för inomhusbelysning; Lampor; Flodljus; Elektriska lampor; Luftkonditioneringsinstallationer; HVAC-system (värme, ventilation och luftkonditionering); Elektriska luftkonditioneringsapparater."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Återförsäljning avseende batterier; Återförsäljning avseende ackumulatorer; Återförsäljning avseende belysning; Återförsäljning avseende fotovoltaiska apparater för alstring av elektricitet; Grosshandel avseende fotovoltaiska apparater för alstring av elektricitet; Grosshandel avseende belysningar."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Installation och underhåll av fotoelektromotoriska installationer; Installation av fotovoltaiska celler och moduler; Konstruktion av allmännyttiga solenergianläggningar; Underhåll och reparation av solenergianläggningar; Installation av solskyddssystem; Underhåll, reparation och renovering av fotovoltaiska apparater och anläggningar; Installation av belysningsapparater; Rådgivningstjänster avseende installation av belysningsapparater; Installation av luftkonditioneringsapparater; Entreprenörsverksamhet i förbindelse med luftkonditionering."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Design och utveckling av fotovoltaiska system; Ritning och utveckling av fotovoltaiska system; Design av solcellssystem; Design av belysningssystem."
+        }
+      ]
+    },
+    "id": "3035f4bf-7fa4-4b62-a306-4f85ca1eb9c3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "144"
+      }
+    ],
+    "recordLastUpdated": "20260830",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260723",
+        "applicationNumber": "19399273"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360723",
+      "lastPublicationDate": "20260803",
+      "markCurrentStatus": "APPLICATION PUBLISHED"
+    },
+    "version": "20260830020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ALVENOR"
+    }
+  },
+  "_uri": "/mark/em/3035f4bf-7fa4-4b62-a306-4f85ca1eb9c3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.805Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

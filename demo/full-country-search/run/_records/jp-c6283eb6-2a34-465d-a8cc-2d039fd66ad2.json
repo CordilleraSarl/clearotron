@@ -1,0 +1,138 @@
+{
+  "uri": "/mark/jp/c6283eb6-2a34-465d-a8cc-2d039fd66ad2",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "c6283eb6-2a34-465d-a8cc-2d039fd66ad2",
+  "applicationNumber": "H03-057468",
+  "registrationNumber": "4109581",
+  "applicationDate": "1991-06-05",
+  "registrationDate": "1998-02-06",
+  "expiryDate": "2018-02-06",
+  "renewalDate": null,
+  "lastPublicationDate": "1998-04-09",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＭＣ６８０００",
+  "markTransliteration": "EMUSHIIROKUHACHIZEROZEROZERO",
+  "markTranslation": "MC68000",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "マイクロプロセッサ",
+      "translation_language": "en",
+      "translation": "Microprocessor"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "ONUKI SHINSUKE",
+  "priorities": [
+    {
+      "priorityDate": "19910605"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Microprocessor",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "マイクロプロセッサ"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        }
+      ]
+    },
+    "id": "c6283eb6-2a34-465d-a8cc-2d039fd66ad2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19910605"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "ONUKI SHINSUKE",
+        "representativeNativeName": "大貫　進介"
+      },
+      {
+        "representativeName": "HONJO  YOSHINORI",
+        "representativeNativeName": "本城　雅則"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19910605",
+        "applicationNumber": "H03-057468"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20180206",
+      "lastPublicationDate": "19980409",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19980206",
+        "registrationNumber": "4109581"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "MC68000",
+      "markTransliteration": "EMUSHIIROKUHACHIZEROZEROZERO",
+      "markVerbalElementText": "ＭＣ６８０００"
+    }
+  },
+  "_uri": "/mark/jp/c6283eb6-2a34-465d-a8cc-2d039fd66ad2",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.462Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

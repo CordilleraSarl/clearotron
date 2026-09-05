@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/hu/deb60b60-cb8e-4828-8b1e-8458353593da",
+  "provider": "clarivate",
+  "office": "hu",
+  "guid": "deb60b60-cb8e-4828-8b1e-8458353593da",
+  "applicationNumber": "M2201701",
+  "registrationNumber": "239835",
+  "applicationDate": "2022-06-30",
+  "registrationDate": null,
+  "expiryDate": "2032-06-30",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-02-14",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Kori",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "hu",
+      "description": "Diszkók szolgáltatásai; előadóművészek szolgáltatásai; élő előadások bemutatása.",
+      "translation_language": "en",
+      "translation": "Discotheque services;entertainer services;presentation of live performances."
+    }
+  ],
+  "owner": "Krupp Kornél",
+  "ownerNative": null,
+  "ownerCountry": "HU",
+  "representative": "Dr.,Török Zoltán György Ügyvédi Iroda",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Jószerencsét ltp. 1/C 3/1., 2084 Pilisszentiván",
+        "applicantAddressCountryCode": "HU",
+        "applicantAddressCountryName": "Hungary",
+        "applicantName": "Krupp Kornél"
+      }
+    ],
+    "applicationLanguageCode": "hu",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Discotheque services;entertainer services;presentation of live performances.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Diszkók szolgáltatásai; előadóművészek szolgáltatásai; élő előadások bemutatása."
+        }
+      ]
+    },
+    "id": "deb60b60-cb8e-4828-8b1e-8458353593da",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "HU",
+    "registrationOfficeName": "Hungary",
+    "representatives": [
+      {
+        "representativeAddress": "1137,Budapest,Szent István krt. 2. V. 26.",
+        "representativeAddressCountryCode": "HU",
+        "representativeAddressCountryName": "Hungary",
+        "representativeName": "Dr.,Török Zoltán György Ügyvédi Iroda"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220630",
+        "applicationNumber": "M2201701"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320630",
+      "lastPublicationDate": "20230214",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "239835"
+      }
+    },
+    "version": "20250620095612",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Kori"
+    }
+  },
+  "_uri": "/mark/hu/deb60b60-cb8e-4828-8b1e-8458353593da",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.791Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

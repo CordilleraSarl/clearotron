@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/gb/a6510c55-fbd8-4b34-9d7b-3b123767dbde",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "a6510c55-fbd8-4b34-9d7b-3b123767dbde",
+  "applicationNumber": "3193385",
+  "registrationNumber": "3193385",
+  "applicationDate": "2016-10-26",
+  "registrationDate": "2017-01-20",
+  "expiryDate": "2026-10-26",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QUORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Software creation;Advisory services in the field of product development and quality improvement of software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "en",
+      "description": "Security consultancy.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Quori Pte. Ltd",
+  "ownerNative": null,
+  "ownerCountry": "SG",
+  "representative": "Beck Greener LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "68 Circular Road, #02-01, 049422",
+        "applicantAddressCountryCode": "SG",
+        "applicantAddressCountryName": "Singapore",
+        "applicantName": "Quori Pte. Ltd"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software creation;Advisory services in the field of product development and quality improvement of software."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Security consultancy."
+        }
+      ]
+    },
+    "id": "a6510c55-fbd8-4b34-9d7b-3b123767dbde",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2016/046"
+      }
+    ],
+    "recordLastUpdated": "20260501",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Fulwood House, 12 Fulwood Place, London WC1V 6HR",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Beck Greener LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20161026",
+        "applicationNumber": "3193385"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20261026",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20170120",
+        "registrationNumber": "3193385"
+      }
+    },
+    "version": "20260501020014",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QUORI"
+    }
+  },
+  "_uri": "/mark/gb/a6510c55-fbd8-4b34-9d7b-3b123767dbde",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:25.704Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

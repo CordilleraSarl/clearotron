@@ -1,0 +1,162 @@
+{
+  "uri": "/mark/br/b458aebd-097a-4dd0-ae94-6c6518ad2ed2",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "b458aebd-097a-4dd0-ae94-6c6518ad2ed2",
+  "applicationNumber": "821001396",
+  "registrationNumber": "821001396",
+  "applicationDate": "1998-08-19",
+  "registrationDate": "2007-08-07",
+  "expiryDate": "2027-08-07",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "KORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    3,
+    5,
+    8,
+    9,
+    10,
+    14,
+    16,
+    18,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    28,
+    34,
+    35,
+    36,
+    37,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        3,
+        5,
+        8,
+        9,
+        10,
+        14,
+        16,
+        18,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        28,
+        34,
+        35,
+        36,
+        37,
+        40,
+        42
+      ],
+      "language": "pt",
+      "description": "Roupas e acessórios do vestuário de uso comum. Roupas e acessórios do vestuário para prática de esportes. Artigos de viagem. Roupas e acessórios do vestuário de uso comum. Roupas e acessórios do vestuário para prática de esportes. Artigos de viagem. Roupas e acessórios do vestuário de uso comum. Roupas e acessórios do vestuário para prática de esportes. Artigos de viagem.",
+      "translation_language": "en",
+      "translation": "Clothing and clothing accessories in common use. Clothing and clothing accessories for sports. Travel items. Clothing and clothing accessories in common use. Clothing and clothing accessories for sports. Travel items. Clothing and clothing accessories in common use. Clothing and clothing accessories for sports. Travel items."
+    }
+  ],
+  "owner": "GEP INDÚSTRIA E COMÉRCIO LTDA.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "PAULO C. OLIVEIRA. & CIA.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "GEP INDÚSTRIA E COMÉRCIO LTDA."
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Clothing and clothing accessories in common use. Clothing and clothing accessories for sports. Travel items. Clothing and clothing accessories in common use. Clothing and clothing accessories for sports. Travel items. Clothing and clothing accessories in common use. Clothing and clothing accessories for sports. Travel items.",
+          "intClassNumber": "03,05,08,09,10,14,16,18,21,22,23,24,25,26,28,34,35,36,37,40,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Roupas e acessórios do vestuário de uso comum. Roupas e acessórios do vestuário para prática de esportes. Artigos de viagem. Roupas e acessórios do vestuário de uso comum. Roupas e acessórios do vestuário para prática de esportes. Artigos de viagem. Roupas e acessórios do vestuário de uso comum. Roupas e acessórios do vestuário para prática de esportes. Artigos de viagem."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "25.10"
+        },
+        {
+          "natClassNumber": "25.20"
+        },
+        {
+          "natClassNumber": "25.60"
+        }
+      ]
+    },
+    "id": "b458aebd-097a-4dd0-ae94-6c6518ad2ed2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "PAULO C. OLIVEIRA. & CIA."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19980819",
+        "applicationNumber": "821001396"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270807",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20070807",
+        "registrationNumber": "821001396"
+      }
+    },
+    "version": "20250630202957",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "KORI"
+    }
+  },
+  "_uri": "/mark/br/b458aebd-097a-4dd0-ae94-6c6518ad2ed2",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.792Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

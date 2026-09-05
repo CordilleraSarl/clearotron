@@ -1,0 +1,127 @@
+{
+  "uri": "/mark/it/365b3f36-1957-4f07-b971-d29e1e9bc070",
+  "provider": "clarivate",
+  "office": "it",
+  "guid": "365b3f36-1957-4f07-b971-d29e1e9bc070",
+  "applicationNumber": "302018000022625",
+  "registrationNumber": "302018000022625",
+  "applicationDate": "2018-07-09",
+  "registrationDate": "2019-05-29",
+  "expiryDate": "2028-07-09",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-05-31",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: servizio di analisi",
+      "translation_language": "en",
+      "translation": "protected services not included in the nizza-mgs classification: analysis service"
+    }
+  ],
+  "owner": "G.O.R.I. S.P.A.",
+  "ownerNative": null,
+  "ownerCountry": "IT",
+  "representative": "GORI S.p.A.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Ercolano 80056, Napoli",
+        "applicantAddressCountryCode": "IT",
+        "applicantAddressCountryName": "Italy",
+        "applicantName": "G.O.R.I. S.P.A."
+      }
+    ],
+    "applicationLanguageCode": "it",
+    "cmMarkImageEUclassification": [
+      "25.05.01",
+      "26.01.01",
+      "26.01.12",
+      "26.02.01"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "protected services not included in the nizza-mgs classification: analysis service",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: servizio di analisi"
+        }
+      ]
+    },
+    "id": "365b3f36-1957-4f07-b971-d29e1e9bc070",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "IL LOGO GORI È RAPPRESENTATO NEL SUO INSIEME DA SEI ELEMENTI GRAFICI CHE COMPONGONO IL NOME DELL'AZIENDA GORI. IN PARTICOLARE, LA LETTERA \"O\" È RAPPRESENTATA DA UN ELEMENTO COMPOSTO DA UNA SEZIONE CIRCOLARE CARATTERIZZATA DA DUE TAGLI LATERALI ALL'ALTEZZA DELLA MEDIANA. ALL'INTERNO DEL CERCHIO VI È INSCRITTA, NELLA PARTE BASSA, UNA FORMA I CUI TRATTI CURVILINEI NE RAPPRESENTANO UN'ONDA ACQUATICA."
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250403",
+    "registrationOfficeCode": "IT",
+    "registrationOfficeName": "Italy",
+    "representatives": [
+      {
+        "representativeAddress": "VIA TRENTOLA 211 80056 Ercolano (Napoli)",
+        "representativeName": "GORI S.p.A."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180709",
+        "applicationNumber": "302018000022625"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280709",
+      "lastPublicationDate": "20190531",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20190529",
+        "registrationNumber": "302018000022625"
+      }
+    },
+    "version": "20250403190447",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GORI"
+    }
+  },
+  "_uri": "/mark/it/365b3f36-1957-4f07-b971-d29e1e9bc070",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.047Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

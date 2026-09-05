@@ -1,0 +1,138 @@
+{
+  "uri": "/mark/cn/f8717a5c-1f16-4aaa-8512-af8461e23696",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "f8717a5c-1f16-4aaa-8512-af8461e23696",
+  "applicationNumber": "42982608",
+  "registrationNumber": null,
+  "applicationDate": "2019-12-11",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "七·度·创·成",
+  "markTransliteration": "LANGUAGE SCHOOL SEVEN QI DU CHUANG CHENG",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "学校(教育),培训,教育信息,实际培训(示范),辅导(培训),学校教育服务,组织教育或娱乐竞赛,安排和组织培训班,翻译,口译服务",
+      "translation_language": "en",
+      "translation": "School (education), training, educational information, practical training (demonstration), counseling (training), school education services, organization of education or entertainment competitions, arrangement and organization of training courses, translation, interpretation services"
+    }
+  ],
+  "owner": "Tianjin Hexi District Qiducheng Training School Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "天津市河西区苏州道2号1705",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Tianjin Hexi District Qiducheng Training School Co., Ltd.",
+        "applicantNativeName": "天津河西区七度创成培训学校有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "School (education), training, educational information, practical training (demonstration), counseling (training), school education services, organization of education or entertainment competitions, arrangement and organization of training courses, translation, interpretation services",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "学校(教育),培训,教育信息,实际培训(示范),辅导(培训),学校教育服务,组织教育或娱乐竞赛,安排和组织培训班,翻译,口译服务"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "f8717a5c-1f16-4aaa-8512-af8461e23696",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "24.15.01",
+      "26.11.2a",
+      "01.01.01",
+      "01.01.10",
+      "26.07.03",
+      "01.01.05"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "天津津申商标事务所有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20191211",
+        "applicationNumber": "42982608"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251003231308",
+    "wordMarkSpecification": {
+      "markTransliteration": "LANGUAGE SCHOOL SEVEN QI DU CHUANG CHENG",
+      "markVerbalElementText": "七·度·创·成"
+    }
+  },
+  "_uri": "/mark/cn/f8717a5c-1f16-4aaa-8512-af8461e23696",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.564Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

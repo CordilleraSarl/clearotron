@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/cn/d4f7e530-c046-4bc6-a702-1f1a7bb6cd64",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "d4f7e530-c046-4bc6-a702-1f1a7bb6cd64",
+  "applicationNumber": "41721776",
+  "registrationNumber": null,
+  "applicationDate": "2019-10-18",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2020-04-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "JORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "计步器,复印机(照相、静电、热),计算机,计算机外围设备,传真机,手机,移动电话,智能眼镜(数据处理),智能手表(数据处理),手机用自拍杆",
+      "translation_language": "en",
+      "translation": "Pedometers, photocopiers (photographic, static, thermal), computers, computer peripherals, fax machines, mobile phones, mobile phones, smart glasses (data processing), smart watches (data processing), selfie sticks for mobile phones"
+    }
+  ],
+  "owner": "ANWEI ENGINEERING TECHNOLOGY LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "HK",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "RM12,20/F,HO KING COMM CTR,2-16FA YUEN ST,MONGKOK KOWLOON,HONG KONG",
+        "applicantAddressCountryCode": "HK",
+        "applicantAddressCountryName": "Hong Kong",
+        "applicantName": "ANWEI ENGINEERING TECHNOLOGY LIMITED",
+        "applicantNativeName": "安维工程科技有限公司;ANWEI ENGINEERING TECHNOLOGY LIMITED"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Pedometers, photocopiers (photographic, static, thermal), computers, computer peripherals, fax machines, mobile phones, mobile phones, smart glasses (data processing), smart watches (data processing), selfie sticks for mobile phones",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计步器,复印机(照相、静电、热),计算机,计算机外围设备,传真机,手机,移动电话,智能眼镜(数据处理),智能手表(数据处理),手机用自拍杆"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Data-processing equipments used in recording and automatic vending machines",
+        "Machines used in office (except for typewriters, duplicators and printers)",
+        "Equipments used in communication and navigation"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0902",
+          "subNatGoodsServicesDescription": "Data-processing equipments used in recording and automatic vending machines"
+        },
+        {
+          "subNatClassNumber": "0903",
+          "subNatGoodsServicesDescription": "Machines used in office (except for typewriters, duplicators and printers)"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        }
+      ]
+    },
+    "id": "d4f7e530-c046-4bc6-a702-1f1a7bb6cd64",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1692"
+      }
+    ],
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "阿里巴巴科技(北京)有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20191018",
+        "applicationNumber": "41721776"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "lastPublicationDate": "20200420",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20251003210508",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JORI"
+    }
+  },
+  "_uri": "/mark/cn/d4f7e530-c046-4bc6-a702-1f1a7bb6cd64",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:22.073Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

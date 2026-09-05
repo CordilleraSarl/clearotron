@@ -1,0 +1,159 @@
+{
+  "uri": "/mark/ba/bed11d9c-9808-466a-8af0-9888438e5b9b",
+  "provider": "clarivate",
+  "office": "ba",
+  "guid": "bed11d9c-9808-466a-8af0-9888438e5b9b",
+  "applicationNumber": "2015/001518750",
+  "registrationNumber": null,
+  "applicationDate": "2015-07-14",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "Q QORIO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bs",
+      "description": "Kompjuterski softver za objavljivanje i dijeljenje digitalnih medija i informacija putem globalne računarske i komunikacijske mreže ; kompjuterski softverski razvojni alati, kompjuterski softver za uporabu kao sučelje za programiranje aplikacija (api), kompjuterski softver za stvaranje indekse informacije, indeksa web stranica i indeksi drugih izvora informacija",
+      "translation_language": "en",
+      "translation": "Computer software for publishing and sharing digital media and information via global computer and communication networks; computer software development tools, computer software for use as an application programming interface (API), computer software for creating indexes of information, indexes of web sites and indexes of other information sources"
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "bs",
+      "description": "Telekomunikacijske usluge, naime, elektronički prijenos podataka i digitalnih poruka putem globalne računarske i komunikacijske mreže; pružanje online foruma, pričaonice i elektroničkih oglasnih ploča za prijenos poruka među korisnicima u području općeg interesa; digitalne multimedijske usluge emitiranja putem interneta, naime, objavljivanje, prikazivanje, i elektronički prijenos",
+      "translation_language": "en",
+      "translation": "Telecommunication services, namely, electronic transmission of data and digital messaging via global computer and communication networks; providing online forums, chat rooms and electronic bulletin boards for transmission of messages among users in the field of general interest; digital multimedia broadcasting services over the Internet, namely, publishing, broadcasting and electronic transfer"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bs",
+      "description": "Pružanje usluga privremenog korištenja on - line softvera, koji se ne može preuzeti, za objavljivanje i dijeljenje digitalnih medija i informacija putem globalne računarske i komunikacijske mreže; pružanje usluga privremenog korištenja on - line softverskih razvojnih alata, koji se ne mogu preuzeti; pružanje usluga privremenog korištenja on - line softvera za upotrebu kao sučelje za programiranja aplikacija (api), koji se ne može preuzeti; pružanje usluga privremenog korištenja online softvera, koji se ne može preuzeti, a koristi se za stvaranje indeksa informacija, indesksa web stranica i indeksa drugih izvora informacija; usluge tehničke podrške, naime, online rješavanje problema kompjuterskih softverskih grešaka za korisnike koji koriste programe koji se ne mogu preuzeti; pružanje web hosting platforme za druge, za organiziranje i vođenje sastanaka, društvenih događanja i interaktivni tekst, audio i video razgovori, pružanje on - line mreže okruženje koja sadrži tehnologiju koja omogućuje korisnicima da dijele podatke",
+      "translation_language": "en",
+      "translation": "Providing temporary use of services on - line of software, which can not be obtained, to publish and share digital media and information via global computer and communication networks; provision of temporary use of on - line of software development tools, which can not be downloaded; provision of temporary use of on - line software for use as an application programming interface (API), which can not be downloaded; provision of temporary use of online software, which can not be downloaded and used to create the index information, indesksa websites and indexes of other information sources; technical support services, namely, online troubleshooting of computer software bugs for the users who use programs that can not be downloaded; providing a web hosting platform for others for organizing and conducting meetings, social events and interactive text, audio and video interviews, providing on - line network environment containing technology that enables users to share data"
+    }
+  ],
+  "owner": "ANTIGRAVITY MUSIC d. o. o. Banja Luka",
+  "ownerNative": null,
+  "ownerCountry": "BA",
+  "representative": "Nusmir Huskic",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Jovana Ducica 23a, 78000 Banja Luka",
+        "applicantAddressCountryCode": "BA",
+        "applicantAddressCountryName": "Bosnia-Herzegovina",
+        "applicantName": "ANTIGRAVITY MUSIC d. o. o. Banja Luka",
+        "applicantNativeAddress": "Jovana Dučića 23a, 78000 Banja Luka",
+        "applicantNativeName": "ANTIGRAVITY MUSIC d. o. o. Banja Luka"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software for publishing and sharing digital media and information via global computer and communication networks; computer software development tools, computer software for use as an application programming interface (API), computer software for creating indexes of information, indexes of web sites and indexes of other information sources",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bs",
+          "intGoodsServicesDescription": "Kompjuterski softver za objavljivanje i dijeljenje digitalnih medija i informacija putem globalne računarske i komunikacijske mreže ; kompjuterski softverski razvojni alati, kompjuterski softver za uporabu kao sučelje za programiranje aplikacija (api), kompjuterski softver za stvaranje indekse informacije, indeksa web stranica i indeksi drugih izvora informacija"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Telecommunication services, namely, electronic transmission of data and digital messaging via global computer and communication networks; providing online forums, chat rooms and electronic bulletin boards for transmission of messages among users in the field of general interest; digital multimedia broadcasting services over the Internet, namely, publishing, broadcasting and electronic transfer",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "bs",
+          "intGoodsServicesDescription": "Telekomunikacijske usluge, naime, elektronički prijenos podataka i digitalnih poruka putem globalne računarske i komunikacijske mreže; pružanje online foruma, pričaonice i elektroničkih oglasnih ploča za prijenos poruka među korisnicima u području općeg interesa; digitalne multimedijske usluge emitiranja putem interneta, naime, objavljivanje, prikazivanje, i elektronički prijenos"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Providing temporary use of services on - line of software, which can not be obtained, to publish and share digital media and information via global computer and communication networks; provision of temporary use of on - line of software development tools, which can not be downloaded; provision of temporary use of on - line software for use as an application programming interface (API), which can not be downloaded; provision of temporary use of online software, which can not be downloaded and used to create the index information, indesksa websites and indexes of other information sources; technical support services, namely, online troubleshooting of computer software bugs for the users who use programs that can not be downloaded; providing a web hosting platform for others for organizing and conducting meetings, social events and interactive text, audio and video interviews, providing on - line network environment containing technology that enables users to share data",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bs",
+          "intGoodsServicesDescription": "Pružanje usluga privremenog korištenja on - line softvera, koji se ne može preuzeti, za objavljivanje i dijeljenje digitalnih medija i informacija putem globalne računarske i komunikacijske mreže; pružanje usluga privremenog korištenja on - line softverskih razvojnih alata, koji se ne mogu preuzeti; pružanje usluga privremenog korištenja on - line softvera za upotrebu kao sučelje za programiranja aplikacija (api), koji se ne može preuzeti; pružanje usluga privremenog korištenja online softvera, koji se ne može preuzeti, a koristi se za stvaranje indeksa informacija, indesksa web stranica i indeksa drugih izvora informacija; usluge tehničke podrške, naime, online rješavanje problema kompjuterskih softverskih grešaka za korisnike koji koriste programe koji se ne mogu preuzeti; pružanje web hosting platforme za druge, za organiziranje i vođenje sastanaka, društvenih događanja i interaktivni tekst, audio i video razgovori, pružanje on - line mreže okruženje koja sadrži tehnologiju koja omogućuje korisnicima da dijele podatke"
+        }
+      ]
+    },
+    "id": "bed11d9c-9808-466a-8af0-9888438e5b9b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "03.07.06",
+      "03.07.19",
+      "27.03.03",
+      "27.05.01",
+      "27.05.21",
+      "29.01.01",
+      "29.01.06",
+      "29.01.08"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260512",
+    "registrationOfficeCode": "BA",
+    "registrationOfficeName": "Bosnia-Herzegovina",
+    "representatives": [
+      {
+        "representativeAddress": "Dolina 2, 71000 Sarajevo",
+        "representativeAddressCountryCode": "BA",
+        "representativeAddressCountryName": "Bosnia-Herzegovina",
+        "representativeName": "Nusmir Huskic",
+        "representativeNativeAddress": "Dolina 2, 71000 Sarajevo",
+        "representativeNativeName": "Nusmir Huskić"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20150714",
+        "applicationNumber": "2015/001518750"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20260512105253",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Q QORIO"
+    }
+  },
+  "_uri": "/mark/ba/bed11d9c-9808-466a-8af0-9888438e5b9b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.399Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

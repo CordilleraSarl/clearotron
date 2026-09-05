@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/fr/73ddbace-abbf-4c2f-953b-cdfb680fb56c",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "73ddbace-abbf-4c2f-953b-cdfb680fb56c",
+  "applicationNumber": "17 4361553",
+  "registrationNumber": "17 4361553",
+  "applicationDate": "2017-05-15",
+  "registrationDate": null,
+  "expiryDate": "2027-05-14",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-06-09",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Studio EvenCore",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": ": activités sportives et culturelles.",
+      "translation_language": "en",
+      "translation": "sporting and cultural activities."
+    }
+  ],
+  "owner": "Mme. violaine bonnin",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "Mme. violaine bonnin",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "5 rue paul estival, appt A04, 31200 toulouse",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "Mme. violaine bonnin"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "sporting and cultural activities.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": activités sportives et culturelles."
+        }
+      ]
+    },
+    "id": "73ddbace-abbf-4c2f-953b-cdfb680fb56c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00093",
+        "publicationVolume": "23"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeName": "Mme. violaine bonnin"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170515",
+        "applicationNumber": "17 4361553"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270514",
+      "lastPublicationDate": "20170609",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "17 4361553"
+      }
+    },
+    "version": "20250426161850",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Studio EvenCore"
+    }
+  },
+  "_uri": "/mark/fr/73ddbace-abbf-4c2f-953b-cdfb680fb56c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.743Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

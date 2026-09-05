@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/cn/a40ca669-d0cf-4c2b-8b74-876e85593af0",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "a40ca669-d0cf-4c2b-8b74-876e85593af0",
+  "applicationNumber": "41295136",
+  "registrationNumber": null,
+  "applicationDate": "2019-09-25",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "LORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "衡器,扬声器音箱,扬声器,量具,计算机,电视机,计算机外围设备,手机壳,手机,移动电话",
+      "translation_language": "en",
+      "translation": "Weighing equipment, speakers, speakers, measuring instruments, computers, televisions, computer peripherals, mobile phone cases, mobile phones, mobile phones"
+    }
+  ],
+  "owner": "Cao Renming",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "江苏省常熟市梅李镇赵胡5",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Cao Renming",
+        "applicantNativeName": "曹仁明"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Weighing equipment, speakers, speakers, measuring instruments, computers, televisions, computer peripherals, mobile phone cases, mobile phones, mobile phones",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "衡器,扬声器音箱,扬声器,量具,计算机,电视机,计算机外围设备,手机壳,手机,移动电话"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Scales",
+        "Measures",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0904",
+          "subNatGoodsServicesDescription": "Scales"
+        },
+        {
+          "subNatClassNumber": "0905",
+          "subNatGoodsServicesDescription": "Measures"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        }
+      ]
+    },
+    "id": "a40ca669-d0cf-4c2b-8b74-876e85593af0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "阿里巴巴科技（北京）有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190925",
+        "applicationNumber": "41295136"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251003205649",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LORI"
+    }
+  },
+  "_uri": "/mark/cn/a40ca669-d0cf-4c2b-8b74-876e85593af0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.455Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

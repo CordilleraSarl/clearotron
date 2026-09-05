@@ -1,0 +1,106 @@
+{
+  "uri": "/mark/hk/5274f4d1-bd14-4879-971d-60f5ad23f735",
+  "provider": "clarivate",
+  "office": "hk",
+  "guid": "5274f4d1-bd14-4879-971d-60f5ad23f735",
+  "applicationNumber": "306092541",
+  "registrationNumber": "306092541",
+  "applicationDate": "2022-10-27",
+  "registrationDate": "2022-10-27",
+  "expiryDate": "2032-10-26",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Platform as a service (PAAS) featuring computer software platforms for use in the field of securities and trading securities, for financial services, for cash management, for financial transaction cost analysis, for data management and reporting in connection with regulatory compliance, and for data management in connection with the lending of cash or securities against collateral from one party to another.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "State Street Bank and Trust Company",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "One Lincoln Street  Boston, Massachusetts 02111 UNITED STATES OF AMERICA",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "State Street Bank and Trust Company"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Platform as a service (PAAS) featuring computer software platforms for use in the field of securities and trading securities, for financial services, for cash management, for financial transaction cost analysis, for data management and reporting in connection with regulatory compliance, and for data management in connection with the lending of cash or securities against collateral from one party to another."
+        }
+      ]
+    },
+    "id": "5274f4d1-bd14-4879-971d-60f5ad23f735",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20240212",
+    "registrationOfficeCode": "HK",
+    "registrationOfficeName": "Hong Kong",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20221027",
+        "applicationNumber": "306092541"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321026",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20221027",
+        "registrationNumber": "306092541"
+      }
+    },
+    "version": "20240212175542",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/hk/5274f4d1-bd14-4879-971d-60f5ad23f735",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.177Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

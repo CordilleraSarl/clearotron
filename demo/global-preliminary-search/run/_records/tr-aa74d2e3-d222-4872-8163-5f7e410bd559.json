@@ -1,0 +1,113 @@
+{
+  "uri": "/mark/tr/aa74d2e3-d222-4872-8163-5f7e410bd559",
+  "provider": "clarivate",
+  "office": "tr",
+  "guid": "aa74d2e3-d222-4872-8163-5f7e410bd559",
+  "applicationNumber": "2024/181604",
+  "registrationNumber": "2024 181604",
+  "applicationDate": "2024-12-30",
+  "registrationDate": null,
+  "expiryDate": "2034-12-30",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-07-31",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "qoi",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "tr",
+      "description": "Eğitim ve öğretim hizmetleri, yaşam koçluğu (eğitim) hizmetleri.Sempozyum, konferans, kongre ve seminer düzenleme, idare hizmetleri.Spor, kültür ve eğlence hizmetleri (sinema, spor karşılaşmaları, tiyatro, müze, konser gibi kültür ve eğlence etkinlikleri için bilet rezervasyonu ve bilet sağlama hizmetleri dahil). Söz, nişan, kına, düğün, doğum günü etkinlikleri için eğlence planlama hizmetleri.Dergi, kitap, gazete vb. gibi yayınların basıma hazır hale getirilmesi, okuyucuya ulaştırılmasına ilişkin hizmetler (global iletişim ağları vasıtasıyla anılan hizmetlerin sağlanması da dahil).Film, televizyon ve radyo programları yapım hizmetleri.Haber muhabirliği hizmetleri, foto-muhabirliği hizmetleri.Fotoğrafçılık hizmetleri.Tercüme hizmetleri.",
+      "translation_language": "en",
+      "translation": "Education and training services, life coaching (education) services. Symposium, conference, congress and seminar organization, administration services. Sports, culture and entertainment services (including ticket reservation and ticket provision services for cultural and entertainment events such as cinema, sports matches, theater, museum, concerts). Entertainment planning services for engagement, henna night, wedding, birthday events. Services related to preparing publications such as magazines, books, newspapers, etc. for printing and delivering them to the reader (including the provision of the services mentioned through global communication networks). Film, television and radio program production services. News reporting services, photojournalism services. Photography services. Translation services."
+    }
+  ],
+  "owner": "MAZLUM TEKİN",
+  "ownerNative": null,
+  "ownerCountry": "TR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "TR",
+        "applicantAddressCountryName": "Turkey",
+        "applicantName": "MAZLUM TEKİN"
+      }
+    ],
+    "applicationLanguageCode": "tr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education and training services, life coaching (education) services. Symposium, conference, congress and seminar organization, administration services. Sports, culture and entertainment services (including ticket reservation and ticket provision services for cultural and entertainment events such as cinema, sports matches, theater, museum, concerts). Entertainment planning services for engagement, henna night, wedding, birthday events. Services related to preparing publications such as magazines, books, newspapers, etc. for printing and delivering them to the reader (including the provision of the services mentioned through global communication networks). Film, television and radio program production services. News reporting services, photojournalism services. Photography services. Translation services.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Eğitim ve öğretim hizmetleri, yaşam koçluğu (eğitim) hizmetleri.Sempozyum, konferans, kongre ve seminer düzenleme, idare hizmetleri.Spor, kültür ve eğlence hizmetleri (sinema, spor karşılaşmaları, tiyatro, müze, konser gibi kültür ve eğlence etkinlikleri için bilet rezervasyonu ve bilet sağlama hizmetleri dahil). Söz, nişan, kına, düğün, doğum günü etkinlikleri için eğlence planlama hizmetleri.Dergi, kitap, gazete vb. gibi yayınların basıma hazır hale getirilmesi, okuyucuya ulaştırılmasına ilişkin hizmetler (global iletişim ağları vasıtasıyla anılan hizmetlerin sağlanması da dahil).Film, televizyon ve radyo programları yapım hizmetleri.Haber muhabirliği hizmetleri, foto-muhabirliği hizmetleri.Fotoğrafçılık hizmetleri.Tercüme hizmetleri."
+        }
+      ]
+    },
+    "id": "aa74d2e3-d222-4872-8163-5f7e410bd559",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "496"
+      }
+    ],
+    "recordLastUpdated": "20260120",
+    "registrationOfficeCode": "TR",
+    "registrationOfficeName": "Turkey",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20241230",
+        "applicationNumber": "2024/181604"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20341230",
+      "lastPublicationDate": "20250731",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "2024 181604"
+      }
+    },
+    "version": "20260120020017",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "qoi"
+    }
+  },
+  "_uri": "/mark/tr/aa74d2e3-d222-4872-8163-5f7e410bd559",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:01.420Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/gb/bb77631f-e595-4ba8-96ea-691ca8a0946b",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "bb77631f-e595-4ba8-96ea-691ca8a0946b",
+  "applicationNumber": "4044201",
+  "registrationNumber": "4044201",
+  "applicationDate": "2024-04-26",
+  "registrationDate": "2024-07-19",
+  "expiryDate": "2034-04-26",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QOFI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    11,
+    30
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Software for the remote control and intelligent operation of hot beverages machines.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "en",
+      "description": "Hot beverage machines; Coffee machines; Coffee capsules for electric coffee machines.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        30
+      ],
+      "language": "en",
+      "description": "Coffee beans.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Universal Brand Group (Pty) Limited",
+  "ownerNative": null,
+  "ownerCountry": "ZA",
+  "representative": "Wynne-Jones IP Limited",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "133 Eloff Street, Selby, Johannesburg 2011",
+        "applicantAddressCountryCode": "ZA",
+        "applicantAddressCountryName": "South Africa",
+        "applicantName": "Universal Brand Group (Pty) Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software for the remote control and intelligent operation of hot beverages machines."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Hot beverage machines; Coffee machines; Coffee capsules for electric coffee machines."
+        },
+        {
+          "intClassNumber": "30",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Coffee beans."
+        }
+      ]
+    },
+    "id": "bb77631f-e595-4ba8-96ea-691ca8a0946b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2024/019"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Southgate House, Southgate Street, Gloucester GL1 1UB, Gloucestershire",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Wynne-Jones IP Limited"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240426",
+        "applicationNumber": "4044201"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340426",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20240719",
+        "registrationNumber": "4044201"
+      }
+    },
+    "version": "20250627223214",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOFI"
+    }
+  },
+  "_uri": "/mark/gb/bb77631f-e595-4ba8-96ea-691ca8a0946b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:00.248Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

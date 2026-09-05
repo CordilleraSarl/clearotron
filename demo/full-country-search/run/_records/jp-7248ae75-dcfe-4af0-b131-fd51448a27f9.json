@@ -1,0 +1,143 @@
+{
+  "uri": "/mark/jp/7248ae75-dcfe-4af0-b131-fd51448a27f9",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "7248ae75-dcfe-4af0-b131-fd51448a27f9",
+  "applicationNumber": "2006-025954",
+  "registrationNumber": null,
+  "applicationDate": "2006-03-23",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＱｏＲ　Ｔｅｃｈｎｏｌｏｇｙ",
+  "markTransliteration": "KYUUOOAARUTEKUNOROJII",
+  "markTranslation": "QOR TECHNOLOGY",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "高性能な無線プロトコル技術及びラジオテクノロジーを利用した電話用及びデータ通信用のハードウェア，その他の電気通信機械器具，高性能な無線プロトコル技術及びラジオテクノロジーを利用した電話用及びデータ通信用のハードウェアを作動させるためのソフトウェア，その他の電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "High-performance wireless protocol technology and hardware for telephone and data communication using radio technology, other telecommunications machine equipment, hardware for telephone and data communication using high-performance wireless protocol technology and radio technology Software for operating the other electronic appliances and appliances and parts thereof"
+    }
+  ],
+  "owner": "ALBARYON LTD.",
+  "ownerNative": null,
+  "ownerCountry": "IL",
+  "representative": "KATO KAZUSHO",
+  "priorities": [
+    {
+      "priorityDate": "20060323"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "IL",
+        "applicantAddressCountryName": "Israel",
+        "applicantName": "ALBARYON LTD.",
+        "applicantNativeAddress": "イスラエル　テル　アヴィヴ　ラマット　ハッチャヤル　ハバルゼル　ストリート　２１エー",
+        "applicantNativeName": "アルバリオン　リミテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "High-performance wireless protocol technology and hardware for telephone and data communication using radio technology, other telecommunications machine equipment, hardware for telephone and data communication using high-performance wireless protocol technology and radio technology Software for operating the other electronic appliances and appliances and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "高性能な無線プロトコル技術及びラジオテクノロジーを利用した電話用及びデータ通信用のハードウェア，その他の電気通信機械器具，高性能な無線プロトコル技術及びラジオテクノロジーを利用した電話用及びデータ通信用のハードウェアを作動させるためのソフトウェア，その他の電子応用機械器具及びその部品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Electrical communication apparatus and instruments"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, instruments and parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        }
+      ]
+    },
+    "id": "7248ae75-dcfe-4af0-b131-fd51448a27f9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20060323"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "KATO KAZUSHO",
+        "representativeNativeName": "加藤　和詳"
+      },
+      {
+        "representativeName": "NISHIMOTO SHOICHI",
+        "representativeNativeName": "西元　勝一"
+      },
+      {
+        "representativeName": "NAKAJIMA ATSUSHI",
+        "representativeNativeName": "中島　淳"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20060323",
+        "applicationNumber": "2006-025954"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "LAPSED [EXPIRED]"
+    },
+    "version": "20230427104722",
+    "wordMarkSpecification": {
+      "markTranslation": "QOR TECHNOLOGY",
+      "markTransliteration": "KYUUOOAARUTEKUNOROJII",
+      "markVerbalElementText": "ＱｏＲ　Ｔｅｃｈｎｏｌｏｇｙ"
+    }
+  },
+  "_uri": "/mark/jp/7248ae75-dcfe-4af0-b131-fd51448a27f9",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.709Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

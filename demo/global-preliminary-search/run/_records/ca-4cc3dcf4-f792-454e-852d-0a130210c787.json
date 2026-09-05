@@ -1,0 +1,282 @@
+{
+  "uri": "/mark/ca/4cc3dcf4-f792-454e-852d-0a130210c787",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "4cc3dcf4-f792-454e-852d-0a130210c787",
+  "applicationNumber": "1509276",
+  "registrationNumber": "TMA853369",
+  "applicationDate": "2010-12-23",
+  "registrationDate": "2013-06-14",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2013-01-30"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    37,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35,
+        36,
+        37,
+        42,
+        44
+      ],
+      "language": "en",
+      "description": "(1) Property development services; development of land, buildings, properties, housing and real estate; building construction and demolition services; supervision of buildings during construction and demolition; on-site building project management services; civil engineering; fire-proofing, water-proofing and insulating services; cable laying, carpentry, electrical wiring services, glazing, masonry, painting and decorating, pipe-fitting and laying, plastering, plumbing, riveting, roofing and scaffolding erection; repair, renovation, restoration, refurbishment, decoration, maintenance and servicing of properties, buildings, houses and offices; cleaning of properties and buildings; information, advice and consultancy services relating thereto; architectural services; architectural services relating to the development of land; business and financial planning for the development of residential and commercial properties and real estate, construction planning, interior design services, industrial design, landscape design, residential property landscape design services, architectural services, residential properties design planning services; planning of residential communities, shopping centres, catering establishments, hotels, buildings, building estates, offices, public facilities and car parks; office space planning, residential space planning, retail space planning, mixed-use space planning; urban design and planning; building inspection services; land surveying, building surveying quantity surveying, provision of surveys and surveying services namely provision of real estate assessment and land survey services; safety evaluations namely inspection services in the course of construction of commercial, residential, mixed-use, and hotel property; information, advisory and consultancy services relating to the aforesaid services. \n(2) The provision, installation and maintenance of street lighting and lighting for business and residential areas; construction, maintenance, cleaning and repair of roads, drainage systems, lifts, pipelines, telecommunication, heating and lighting and environmental control systems; installation and repair of alarm systems including fire and security alarms.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Grosvenor Group Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "MARKS & CLERK",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "70 Grosvenor Street, London, W1K 3JP",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantAddressLines": [
+          "70 Grosvenor Street",
+          "London",
+          "W1K 3JP"
+        ],
+        "applicantName": "Grosvenor Group Limited"
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Used in CANADA since at least as early as 1954 on services (1)",
+        "typeDescription": "First Use"
+      },
+      {
+        "text": "Used in UNITED KINGDOM on services (2)",
+        "typeDescription": "Foreign Usage"
+      },
+      {
+        "text": "Registered in or for EUIPO (EU) on September 18, 2008, under No. 6463781 on services (2)",
+        "typeDescription": "Foreign Registration"
+      }
+    ],
+    "footNotes": [
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Name / Nom",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 17 fév/Feb 2021",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 08 oct/Oct 2020",
+      "COMMENTS / COMMENTAIRES: FROM: Grosvenor Group Limited",
+      "TO: GGL Group Number Two Limited",
+      "Voir Preuve au dossier/See evidence on File No. 1509276",
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Assignment / Cession",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 17 fév/Feb 2021",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 14 déc/Dec 2020",
+      "COMMENTS / COMMENTAIRES: FROM: GGL Group Number Two Limited",
+      "TO: Grosvenor Group Limited",
+      "Voir Preuve au dossier/See evidence on File No. 1509276"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35,36,37,42,44",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Property development services; development of land, buildings, properties, housing and real estate; building construction and demolition services; supervision of buildings during construction and demolition; on-site building project management services; civil engineering; fire-proofing, water-proofing and insulating services; cable laying, carpentry, electrical wiring services, glazing, masonry, painting and decorating, pipe-fitting and laying, plastering, plumbing, riveting, roofing and scaffolding erection; repair, renovation, restoration, refurbishment, decoration, maintenance and servicing of properties, buildings, houses and offices; cleaning of properties and buildings; information, advice and consultancy services relating thereto; architectural services; architectural services relating to the development of land; business and financial planning for the development of residential and commercial properties and real estate, construction planning, interior design services, industrial design, landscape design, residential property landscape design services, architectural services, residential properties design planning services; planning of residential communities, shopping centres, catering establishments, hotels, buildings, building estates, offices, public facilities and car parks; office space planning, residential space planning, retail space planning, mixed-use space planning; urban design and planning; building inspection services; land surveying, building surveying quantity surveying, provision of surveys and surveying services namely provision of real estate assessment and land survey services; safety evaluations namely inspection services in the course of construction of commercial, residential, mixed-use, and hotel property; information, advisory and consultancy services relating to the aforesaid services. \n(2) The provision, installation and maintenance of street lighting and lighting for business and residential areas; construction, maintenance, cleaning and repair of roads, drainage systems, lifts, pipelines, telecommunication, heating and lighting and environmental control systems; installation and repair of alarm systems including fire and security alarms."
+        }
+      ]
+    },
+    "id": "4cc3dcf4-f792-454e-852d-0a130210c787",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20250612",
+        "descriptionText": "Agent changed",
+        "information": "From: 119 To: 3272"
+      },
+      {
+        "date": "20210217",
+        "descriptionText": "Change in Title Registered",
+        "information": "Assignment / Voir Preuve au dossier/See evidence on File No. 1509276"
+      },
+      {
+        "date": "20210217",
+        "descriptionText": "Amendment to Registration",
+        "information": "Name / Voir Preuve au dossier/See evidence on File No. 1509276"
+      },
+      {
+        "date": "20130614",
+        "descriptionText": "Registered",
+        "responseDate": "20280614"
+      },
+      {
+        "date": "20130517",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20131117"
+      },
+      {
+        "date": "20130517",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20130130",
+        "descriptionText": "Advertised",
+        "information": "Vol.60 Issue 3040"
+      },
+      {
+        "date": "20130110",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20121119",
+        "descriptionText": "Approval Notice Sent",
+        "responseDate": "20121217"
+      },
+      {
+        "date": "20120207",
+        "descriptionText": "Correspondence Created",
+        "responseDate": "20120807"
+      },
+      {
+        "date": "20120103",
+        "descriptionText": "Approval Notice Sent",
+        "information": "Approval notice declared void on 2012/01/24",
+        "responseDate": "20120131"
+      },
+      {
+        "date": "20110622",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20111222"
+      },
+      {
+        "date": "20110622",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20110104",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20101224",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20101223",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "70 Grosvenor Street, London, W1K 3JP",
+        "addressLines": [
+          "70 Grosvenor Street",
+          "London",
+          "W1K 3JP"
+        ],
+        "countryName": "United Kingdom",
+        "name": "GGL Group Number Two Limited"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3040",
+        "publicationVolume": "60"
+      }
+    ],
+    "recordLastUpdated": "20250624",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "MARKS & CLERK",
+          "33 Yonge Street,",
+          "Suite 300",
+          "Toronto",
+          "ONTARIO M5E1G4"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "MARKS & CLERK"
+      }
+    ],
+    "status": {
+      "active": true,
+      "allowanceDate": [
+        "20130517"
+      ],
+      "application": {
+        "applicationDate": "20101223",
+        "applicationNumber": "1509276"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20080918",
+          "firstUsedText": "Used in CANADA since at least as early as 1954 on services (1)"
+        }
+      ],
+      "formalisationDate": "20110104",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20280614",
+      "publicationDate": [
+        "20130130"
+      ],
+      "registration": {
+        "registrationDate": "20130614",
+        "registrationNumber": "TMA853369"
+      }
+    },
+    "subjectHeadings": [
+      "GROSVENOR"
+    ],
+    "version": "20250624151428",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR",
+      "markVerbalElementTextFormal": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/ca/4cc3dcf4-f792-454e-852d-0a130210c787",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "uri": "/mark/md/261c7db5-33b3-43f3-8695-90afd7e9d6e3",
+  "provider": "clarivate",
+  "office": "md",
+  "guid": "261c7db5-33b3-43f3-8695-90afd7e9d6e3",
+  "applicationNumber": "014519",
+  "registrationNumber": "12541",
+  "applicationDate": "2004-04-08",
+  "registrationDate": "2005-07-05",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "NORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "ro",
+      "description": "publicitate; gestionarea afacerilor comerciale; administrare comercială; lucrări de birou, magazine de firmă;",
+      "translation_language": "en",
+      "translation": "advertising; business management; business administration; office work;shops for business;"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ro",
+      "description": "educaţie; instruire; divertisment; activităţi sportive şi culturale;",
+      "translation_language": "en",
+      "translation": "education; providing of training; entertainment; sports and cultural activities."
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "ro",
+      "description": "servicii de alimentaţie publică; cazare temporară.",
+      "translation_language": "en",
+      "translation": "services for providing food and drink, temporary accommodation."
+    }
+  ],
+  "owner": "CASINO NATIONAL GROUP S.R.L., întreprindere mixtă",
+  "ownerNative": null,
+  "ownerCountry": "MD",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Bd. Ştefan cel Mare nr. 4, MD-2001, Chişinău, Republica Moldova",
+        "applicantAddressCountryCode": "MD",
+        "applicantAddressCountryName": "Moldova",
+        "applicantName": "CASINO NATIONAL GROUP S.R.L., întreprindere mixtă"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "advertising; business management; business administration; office work;shops for business;",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "publicitate; gestionarea afacerilor comerciale; administrare comercială; lucrări de birou, magazine de firmă;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "education; providing of training; entertainment; sports and cultural activities.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "educaţie; instruire; divertisment; activităţi sportive şi culturale;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "services for providing food and drink, temporary accommodation.",
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "servicii de alimentaţie publică; cazare temporară."
+        }
+      ]
+    },
+    "id": "261c7db5-33b3-43f3-8695-90afd7e9d6e3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "24.17.02",
+      "26.01.16",
+      "27.05.01",
+      "27.05.09",
+      "27.05.17",
+      "28.03.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "MD",
+    "registrationOfficeName": "Moldova",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040408",
+        "applicationNumber": "014519"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20050705",
+        "registrationNumber": "12541"
+      }
+    },
+    "version": "20230427120454",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NORI"
+    }
+  },
+  "_uri": "/mark/md/261c7db5-33b3-43f3-8695-90afd7e9d6e3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.693Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

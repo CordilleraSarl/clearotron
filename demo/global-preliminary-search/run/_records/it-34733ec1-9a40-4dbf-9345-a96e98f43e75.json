@@ -1,0 +1,138 @@
+{
+  "uri": "/mark/it/34733ec1-9a40-4dbf-9345-a96e98f43e75",
+  "provider": "clarivate",
+  "office": "it",
+  "guid": "34733ec1-9a40-4dbf-9345-a96e98f43e75",
+  "applicationNumber": "302019000015247",
+  "registrationNumber": "302019000015247",
+  "applicationDate": "2019-03-05",
+  "registrationDate": "2019-09-09",
+  "expiryDate": "2029-03-05",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-09-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FAIZA BENKORTBI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    25,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        25
+      ],
+      "language": "it",
+      "description": "prodotti oggetto di protezione inclusi nella classificazione nizza: articoli di abbigliamento; calzature; prodotti oggetto di protezione inclusi nella classificazione mgs (al netto nizza): abbigliamento casual; abbigliamento da donna; abbigliamento formale; prodotti oggetto di protezione non inclusi nella classificazione nizza-mgs: abbigliamento; abbigliamento da sera; abbigliamento religioso; calzature da donna; cappelleria",
+      "translation_language": "en",
+      "translation": "products subject to protection included in the Nice classification: clothing items; footwear; protected products included in the mgs classification (net of nice): casual clothing; women&#39;s clothing; formal wear; products subject to protection not included in the nizza-mgs classification: clothing; evening wear; religious clothing; women&#39;s footwear; hat shop"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: design di abbigliamento; design di capi d'abbigliamento, calzature e cappelleria; progettazione accessori di moda; servizi di design di abbigliamento",
+      "translation_language": "en",
+      "translation": "protected services not included in the nizza-mgs classification: clothing design; design of clothing, footwear and headgear; fashion accessories design; clothing design services"
+    }
+  ],
+  "owner": "BENKORTBI ASSIDI FAIZA",
+  "ownerNative": null,
+  "ownerCountry": "IT",
+  "representative": "STUDIO ARTESE",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "San Donato Milanese 20097, MILANO",
+        "applicantAddressCountryCode": "IT",
+        "applicantAddressCountryName": "Italy",
+        "applicantName": "BENKORTBI ASSIDI FAIZA"
+      }
+    ],
+    "applicationLanguageCode": "it",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "products subject to protection included in the Nice classification: clothing items; footwear; protected products included in the mgs classification (net of nice): casual clothing; women&#39;s clothing; formal wear; products subject to protection not included in the nizza-mgs classification: clothing; evening wear; religious clothing; women&#39;s footwear; hat shop",
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "prodotti oggetto di protezione inclusi nella classificazione nizza: articoli di abbigliamento; calzature; prodotti oggetto di protezione inclusi nella classificazione mgs (al netto nizza): abbigliamento casual; abbigliamento da donna; abbigliamento formale; prodotti oggetto di protezione non inclusi nella classificazione nizza-mgs: abbigliamento; abbigliamento da sera; abbigliamento religioso; calzature da donna; cappelleria"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "protected services not included in the nizza-mgs classification: clothing design; design of clothing, footwear and headgear; fashion accessories design; clothing design services",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: design di abbigliamento; design di capi d'abbigliamento, calzature e cappelleria; progettazione accessori di moda; servizi di design di abbigliamento"
+        }
+      ]
+    },
+    "id": "34733ec1-9a40-4dbf-9345-a96e98f43e75",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "IL MARCHIO CONSISTE NELLA DENOMINAZIONE \"FAIZA BENKORTBI\""
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250403",
+    "registrationOfficeCode": "IT",
+    "registrationOfficeName": "Italy",
+    "representatives": [
+      {
+        "representativeAddress": "VIA TORINO 15 20124 Milano (MILANO)",
+        "representativeName": "STUDIO ARTESE"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190305",
+        "applicationNumber": "302019000015247"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290305",
+      "lastPublicationDate": "20190920",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20190909",
+        "registrationNumber": "302019000015247"
+      }
+    },
+    "version": "20250403191011",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FAIZA BENKORTBI"
+    }
+  },
+  "_uri": "/mark/it/34733ec1-9a40-4dbf-9345-a96e98f43e75",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:55.070Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

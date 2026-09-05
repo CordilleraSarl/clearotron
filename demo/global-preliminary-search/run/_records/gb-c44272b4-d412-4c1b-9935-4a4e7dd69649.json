@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/gb/c44272b4-d412-4c1b-9935-4a4e7dd69649",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "c44272b4-d412-4c1b-9935-4a4e7dd69649",
+  "applicationNumber": "4186991",
+  "registrationNumber": "4186991",
+  "applicationDate": "2025-04-10",
+  "registrationDate": "2025-07-04",
+  "expiryDate": "2035-04-10",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ORIGIN IQ ORIGIN.IQ",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Business brokerage services; business sale, acquisition and merger advice and consultation; advisory services relating to the buying and selling of companies and businesses; arranging business introductions; arranging business introductions relating to the buying and selling of companies and businesses; preparation of documents relating to the buying and selling of companies and businesses; business negotiations; negotiation of contracts for others; information and expert opinions relating to companies and businesses; business advice; business consultancy services; business research services; business review services; business analysis services; business evaluation services; business support services; business information services; business acquisition searches; searches relating to company information; market research services; market studies services; market analysis services; business appraisals; corporate reporting services; preparing business reports; business data collection and business data management; compilation of business data; provision of business data; database management; business data analysis; business data research; provision of commercial business information by means of a computer database; preparation of business statistical data; business information analysis; analysis of market research data and statistics; information, advisory and consultancy services in relation to all of the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Providing temporary use of non-downloadable software, software platforms and software applications; providing temporary use of non-downloadable business software; providing temporary use of non-downloadable software, software platforms and software applications, all in the field of buying and selling of companies and businesses; provision of software as a service [SaaS] and platform as a service [PaaS]; provision of software as a service [SaaS] and platform as a service [PaaS] featuring business software; provision of software as a service [SaaS] and platform as a service [PaaS], all featuring software in the field of buying and selling of companies and businesses; technical support services relating to computer software, software platforms and software applications; hosting of computerised data, files, applications and information; information, advisory and consultancy services in relation to all of the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "K3 Advisory Group Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Wilson Gunn",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "KBS House , 5 Springfield Court, Summerfield Road, Bolton BL3 2NT",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "K3 Advisory Group Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Business brokerage services; business sale, acquisition and merger advice and consultation; advisory services relating to the buying and selling of companies and businesses; arranging business introductions; arranging business introductions relating to the buying and selling of companies and businesses; preparation of documents relating to the buying and selling of companies and businesses; business negotiations; negotiation of contracts for others; information and expert opinions relating to companies and businesses; business advice; business consultancy services; business research services; business review services; business analysis services; business evaluation services; business support services; business information services; business acquisition searches; searches relating to company information; market research services; market studies services; market analysis services; business appraisals; corporate reporting services; preparing business reports; business data collection and business data management; compilation of business data; provision of business data; database management; business data analysis; business data research; provision of commercial business information by means of a computer database; preparation of business statistical data; business information analysis; analysis of market research data and statistics; information, advisory and consultancy services in relation to all of the aforesaid."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing temporary use of non-downloadable software, software platforms and software applications; providing temporary use of non-downloadable business software; providing temporary use of non-downloadable software, software platforms and software applications, all in the field of buying and selling of companies and businesses; provision of software as a service [SaaS] and platform as a service [PaaS]; provision of software as a service [SaaS] and platform as a service [PaaS] featuring business software; provision of software as a service [SaaS] and platform as a service [PaaS], all featuring software in the field of buying and selling of companies and businesses; technical support services relating to computer software, software platforms and software applications; hosting of computerised data, files, applications and information; information, advisory and consultancy services in relation to all of the aforesaid."
+        }
+      ]
+    },
+    "id": "c44272b4-d412-4c1b-9935-4a4e7dd69649",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2025/017"
+      }
+    ],
+    "recordLastUpdated": "20260412",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Centurion House, 129 Deansgate, Manchester M3 3WR",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Wilson Gunn"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250410",
+        "applicationNumber": "4186991"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350410",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20250704",
+        "registrationNumber": "4186991"
+      }
+    },
+    "version": "20260412020004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ORIGIN IQ ORIGIN.IQ"
+    }
+  },
+  "_uri": "/mark/gb/c44272b4-d412-4c1b-9935-4a4e7dd69649",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.397Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

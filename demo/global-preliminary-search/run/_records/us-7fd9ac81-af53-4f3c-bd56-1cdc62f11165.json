@@ -1,0 +1,191 @@
+{
+  "uri": "/mark/us/7fd9ac81-af53-4f3c-bd56-1cdc62f11165",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "7fd9ac81-af53-4f3c-bd56-1cdc62f11165",
+  "applicationNumber": "79455866",
+  "registrationNumber": null,
+  "applicationDate": "2026-06-08",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    36,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Computer software; computer software applications, downloadable; computer software for analysing market information; computer software for database management; computer software for application and database integration; computer software for business purposes; downloadable computer software; downloadable computer software for data processing; downloadable business management software; software and applications for mobile devices; artificial intelligence software; computer hardware and software for artificial intelligence; downloadable artificial intelligence software; downloadable artificial intelligence software for analysis; downloadable computer software using artificial intelligence for data analysis; downloadable computer software for use as a digital wallet; downloadable computer software for creating, managing, storing, accessing, sending, receiving, exchanging, validating and selling digital assets.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": null,
+      "description": "INT. CL. 36 Brokerage of carbon credits; brokerage of currencies; business liquidation services, financial; capital investment; charitable fund raising; clearing, financial; credit bureau services; issuance of credit cards; crowdfunding; deposits of valuables; e-wallet payment services; electronic funds transfer; electronic transfer of virtual currencies; exchanging money; factoring; financial analysis; financial appraisals in responding to calls for tenders; financial appraisals in responding to requests for proposals [RFPs]; financial consultancy; financial customs brokerage services; financial evaluation [insurance, banking, real estate]; financial evaluation of development costs relating to the oil, gas and mining industries; financial valuation of standing timber; financial valuation of wool; financial exchange of virtual currency; financial management; financial management of reimbursement payments for others; financial research; financial sponsorship; financial valuation of intellectual property assets; providing financial information; providing financial information via a website; financing services; fiscal valuation; instalment loans; insurance brokerage; insurance consultancy; insurance underwriting; providing insurance information; investment of funds; lending against security; loans [financing]; organization of monetary collections; mortgage banking; mutual funds; online banking; pawnbrokerage; processing of credit card payments; processing of debit card payments; provident fund services; preparation of quotes for cost estimation purposes; safe deposit services; savings bank services; securities brokerage; stock brokerage services; stock exchange quotations; stocks and bonds brokerage; issuance of tokens of value; trusteeship; fiduciary.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Artificial intelligence technology services; software as a service [SaaS]; artificial intelligence as a service [AIaaS] featuring software using artificial intelligence for business analytics; application service provider [ASP] services; consultancy relating to the design and development of information and communications technology; design and development of computer systems; design and development of operating system software; design, development and programming of computer software; computer software consulting; computer software design for others; computer website design; creating and designing web pages for others.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "QORE3 PTE. LTD.",
+  "ownerNative": null,
+  "ownerCountry": "SG",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "11 COLLYER QUAY, SING",
+        "applicantAddressCountryCode": "SG",
+        "applicantAddressCountryName": "Singapore",
+        "applicantAddressStreet": "11 COLLYER QUAY,",
+        "applicantJurisdictionOfIncorporation": "SINGAPORE",
+        "applicantName": "QORE3 PTE. LTD.",
+        "applicantSecondaryAddressUnit": "#16-02 THE ARCADE SINGAPORE 049317"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Computer software; computer software applications, downloadable; computer software for analysing market information; computer software for database management; computer software for application and database integration; computer software for business purposes; downloadable computer software; downloadable computer software for data processing; downloadable business management software; software and applications for mobile devices; artificial intelligence software; computer hardware and software for artificial intelligence; downloadable artificial intelligence software; downloadable artificial intelligence software for analysis; downloadable computer software using artificial intelligence for data analysis; downloadable computer software for use as a digital wallet; downloadable computer software for creating, managing, storing, accessing, sending, receiving, exchanging, validating and selling digital assets."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsServicesDescription": "INT. CL. 36 Brokerage of carbon credits; brokerage of currencies; business liquidation services, financial; capital investment; charitable fund raising; clearing, financial; credit bureau services; issuance of credit cards; crowdfunding; deposits of valuables; e-wallet payment services; electronic funds transfer; electronic transfer of virtual currencies; exchanging money; factoring; financial analysis; financial appraisals in responding to calls for tenders; financial appraisals in responding to requests for proposals [RFPs]; financial consultancy; financial customs brokerage services; financial evaluation [insurance, banking, real estate]; financial evaluation of development costs relating to the oil, gas and mining industries; financial valuation of standing timber; financial valuation of wool; financial exchange of virtual currency; financial management; financial management of reimbursement payments for others; financial research; financial sponsorship; financial valuation of intellectual property assets; providing financial information; providing financial information via a website; financing services; fiscal valuation; instalment loans; insurance brokerage; insurance consultancy; insurance underwriting; providing insurance information; investment of funds; lending against security; loans [financing]; organization of monetary collections; mortgage banking; mutual funds; online banking; pawnbrokerage; processing of credit card payments; processing of debit card payments; provident fund services; preparation of quotes for cost estimation purposes; safe deposit services; savings bank services; securities brokerage; stock brokerage services; stock exchange quotations; stocks and bonds brokerage; issuance of tokens of value; trusteeship; fiduciary."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Artificial intelligence technology services; software as a service [SaaS]; artificial intelligence as a service [AIaaS] featuring software using artificial intelligence for business analytics; application service provider [ASP] services; consultancy relating to the design and development of information and communications technology; design and development of computer systems; design and development of operating system software; design, development and programming of computer software; computer software consulting; computer software design for others; computer website design; creating and designing web pages for others."
+        }
+      ]
+    },
+    "id": "7fd9ac81-af53-4f3c-bd56-1cdc62f11165",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1931398",
+        "markCurrentStatus": "REQUEST FOR EXTENSION OF PROTECTION ESTABLISHED",
+        "markCurrentStatusDate": "20260806",
+        "priorityClaimDate": "20260605",
+        "protectionGrantedDate": "20280206",
+        "publicationDate": "20260806",
+        "registrationDate": "20260608",
+        "renewalDate": "20360608"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260810",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20260810",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      },
+      {
+        "date": "20260806",
+        "descriptionText": "SN ASSIGNED FOR SECT 66A APPL FROM IB"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "11 COLLYER QUAY, SING",
+        "countryCode": "SG",
+        "countryName": "Singapore",
+        "jurisdictionOfIncorporation": "SINGAPORE",
+        "name": "QORE3 PTE. LTD.",
+        "secondaryAddressUnit": "#16-02 THE ARCADE SINGAPORE 049317",
+        "street": "11 COLLYER QUAY,"
+      },
+      {
+        "address": "11 COLLYER QUAY, SING",
+        "countryCode": "SG",
+        "countryName": "Singapore",
+        "jurisdictionOfIncorporation": "SINGAPORE",
+        "name": "QORE3 PTE. LTD.",
+        "secondaryAddressUnit": "#16-02 THE ARCADE SINGAPORE 049317",
+        "street": "11 COLLYER QUAY,"
+      }
+    ],
+    "recordLastUpdated": "20260812",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260608",
+        "applicationNumber": "79455866"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "NEW APPLICATION - RECORD INITIALIZED NOT ASSIGNED TO EXAMINER",
+        "markOfficialStatusCode": "630",
+        "markOfficialStatusDate": "20260806",
+        "markOfficialStatusEvents": [
+          "Section 66(a) (Madrid Protocol) - Filed",
+          "Section 66(a) (Madrid Protocol) - Current",
+          "International Priority Claimed"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260812051203",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "cORE",
+      "markVerbalElementText": "QORE"
+    }
+  },
+  "_uri": "/mark/us/7fd9ac81-af53-4f3c-bd56-1cdc62f11165",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:55.423Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

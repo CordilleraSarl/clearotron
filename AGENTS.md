@@ -67,7 +67,7 @@ lane, leave the tree alone; if you are, this rule is not what stops you.
 **Some of the doctrine tree is under an identifier hold, and a find-and-replace makes it worse.** Real
 delivered marks are present in the worked examples and in the variant/synthesis analysis around them. The
 ruled fix is to rebuild each example whole — a fictional candidate searched against real register data, the
-way `examples/sample-run` was produced — because renaming the candidate leaves its real conflicts attached
+way `demo` was produced — because renaming the candidate leaves its real conflicts attached
 to a mark none of those companies owns, which turns a true analysis into a false public claim about named
 firms. **Do not "finish the rename."** No mass edit — including the comment sweep in
 [ADR-0005](docs/decisions/0005-comments-carry-reasoning.md) — may touch `driver/skills/**`.
@@ -75,7 +75,7 @@ firms. **Do not "finish the rename."** No mass edit — including the comment sw
 That exclusion is enforced by no script yet, which is why ADR-0005 has it written down in four places
 rather than one. This is one of the four. Do not treat any of them as the redundant copy.
 
-**`examples/sample-run/run/*.md` are generated artefacts** of a real run. Do not edit them by hand.
+**`demo/multi-country-focus-search/run/*.md` are generated artefacts** of a real run. Do not edit them by hand.
 
 **One register provider is active at a time.** There is no fallback and no default. If register work is
 unconfigured, a run refuses by name — that is deliberate, because a register that answered "no conflicts

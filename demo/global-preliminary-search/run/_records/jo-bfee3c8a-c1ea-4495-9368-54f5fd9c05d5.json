@@ -1,0 +1,121 @@
+{
+  "uri": "/mark/jo/bfee3c8a-c1ea-4495-9368-54f5fd9c05d5",
+  "provider": "clarivate",
+  "office": "jo",
+  "guid": "bfee3c8a-c1ea-4495-9368-54f5fd9c05d5",
+  "applicationNumber": "171943",
+  "registrationNumber": null,
+  "applicationDate": "2020-06-08",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "DORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Programs ( compute) ( downloadable software), Processors ( Central processing units) Data media ( Magnetic) Computer software ( recorded).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "برامج حاسوبية ( برمجيات قابلة للتنزيل), معالجات ( وحدات معالجة مركزية) وسائط تخزين بيانات مغناطيسية برمجيات حاسوبية ( مسجلة).",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Digital Gates",
+  "ownerNative": null,
+  "ownerCountry": "JO",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "city/street Amman -Dabouq-king Hussein Business park, P.O.Box: 144761, 11814",
+        "applicantAddressCountryCode": "JO",
+        "applicantAddressCountryName": "Jordan",
+        "applicantName": "Digital Gates"
+      },
+      {
+        "applicantAddress": "المدينة / الشارع - دابوق -مجمع الملك حسين للاعمال ، 11814 , ص.ب: 144761",
+        "applicantAddressCountryCode": "JO",
+        "applicantAddressCountryName": "Jordan",
+        "applicantNativeName": "المنافذ الرقمية للحلول الرقمية ذ.م.م"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Programs ( compute) ( downloadable software), Processors ( Central processing units) Data media ( Magnetic) Computer software ( recorded)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "برامج حاسوبية ( برمجيات قابلة للتنزيل), معالجات ( وحدات معالجة مركزية) وسائط تخزين بيانات مغناطيسية برمجيات حاسوبية ( مسجلة)."
+        }
+      ]
+    },
+    "id": "bfee3c8a-c1ea-4495-9368-54f5fd9c05d5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JO",
+    "registrationOfficeName": "Jordan",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200608",
+        "applicationNumber": "171943"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20230427113828",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DORI"
+    }
+  },
+  "_uri": "/mark/jo/bfee3c8a-c1ea-4495-9368-54f5fd9c05d5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.998Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

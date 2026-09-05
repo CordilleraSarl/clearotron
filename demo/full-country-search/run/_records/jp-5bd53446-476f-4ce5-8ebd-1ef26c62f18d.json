@@ -1,0 +1,149 @@
+{
+  "uri": "/mark/jp/5bd53446-476f-4ce5-8ebd-1ef26c62f18d",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "5bd53446-476f-4ce5-8ebd-1ef26c62f18d",
+  "applicationNumber": "2008-001198",
+  "registrationNumber": "5286675",
+  "applicationDate": "2008-01-10",
+  "registrationDate": "2009-12-11",
+  "expiryDate": "2029-12-11",
+  "renewalDate": null,
+  "lastPublicationDate": "2010-01-19",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＣＯＤＥＷＡＲＲＩＯＲ",
+  "markTransliteration": "KOODOUORIAA KOODOWARIAA",
+  "markTranslation": "CODEWARRIOR",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "ネットワークスイッチ・エンジンコントロールモジュール・ＣＡＴスキャン装置・工業オートメーション制御装置・航空電子工学装置・無線ハンドセット用のスタンドアロン用コンピュータプログラムの開発のためのコンパイル・デバッグ・統合開発環境・事象解析・事象追跡に用いるコンピュータソフトウェア及びその他のコンピュータソフトウェア開発支援ツール用コンピュータソフトウェア並びにコンピュータハードウェア，ダウンロード用・レジスタ用・メモリの書き込み及び読み出し用・プロセッサの実行の管理用コンピュータソフトウェア，コンパイラー用コンピュータプログラム，スタンドアロン用コンピュータプログラム開発支援用コンピュータソフトウェア，データベースシステムに用いるオブジェクト指向コンピュータソフトウェアアプリケーション開発支援用コンピュータソフトウェア，その他の電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Network Switch · Engine Control Module · CAT Scan Device · Industrial Automation Control Device · Avionics Engineering Device · Compiling · Debugging for Development of Standalone Computer Program for Wireless Handset · Computer Used for Integrated Development Environment · Event Analysis · Event Tracking Computer software and computer hardware for software and other computer software development support tools, Computer software for downloading, Register use, Memory writing and reading, Processor execution computer software, Computer program for compiler, Computer program for standalone development support Computer software for use, object oriented computer for database system Shift hardware application development support for computer software and other electronic applications machinery and equipment and parts thereof"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "IWASE YOSHIKAZU",
+  "priorities": [
+    {
+      "priorityDate": "20070723"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Network Switch · Engine Control Module · CAT Scan Device · Industrial Automation Control Device · Avionics Engineering Device · Compiling · Debugging for Development of Standalone Computer Program for Wireless Handset · Computer Used for Integrated Development Environment · Event Analysis · Event Tracking Computer software and computer hardware for software and other computer software development support tools, Computer software for downloading, Register use, Memory writing and reading, Processor execution computer software, Computer program for compiler, Computer program for standalone development support Computer software for use, object oriented computer for database system Shift hardware application development support for computer software and other electronic applications machinery and equipment and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "ネットワークスイッチ・エンジンコントロールモジュール・ＣＡＴスキャン装置・工業オートメーション制御装置・航空電子工学装置・無線ハンドセット用のスタンドアロン用コンピュータプログラムの開発のためのコンパイル・デバッグ・統合開発環境・事象解析・事象追跡に用いるコンピュータソフトウェア及びその他のコンピュータソフトウェア開発支援ツール用コンピュータソフトウェア並びにコンピュータハードウェア，ダウンロード用・レジスタ用・メモリの書き込み及び読み出し用・プロセッサの実行の管理用コンピュータソフトウェア，コンパイラー用コンピュータプログラム，スタンドアロン用コンピュータプログラム開発支援用コンピュータソフトウェア，データベースシステムに用いるオブジェクト指向コンピュータソフトウェアアプリケーション開発支援用コンピュータソフトウェア，その他の電子応用機械器具及びその部品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        }
+      ]
+    },
+    "id": "5bd53446-476f-4ce5-8ebd-1ef26c62f18d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20070723"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "IWASE YOSHIKAZU",
+        "representativeNativeName": "岩瀬　吉和"
+      },
+      {
+        "representativeName": "SHIROYAMA YASUFUMI",
+        "representativeNativeName": "城山　康文"
+      },
+      {
+        "representativeName": "MORI CHIKAKO",
+        "representativeNativeName": "森　智香子"
+      },
+      {
+        "representativeName": "KITAGUCHI TAKAHIRO",
+        "representativeNativeName": "北口　貴大"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20080110",
+        "applicationNumber": "2008-001198"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20291211",
+      "lastPublicationDate": "20100119",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20091211",
+        "registrationNumber": "5286675"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "CODEWARRIOR",
+      "markTransliteration": "KOODOUORIAA KOODOWARIAA",
+      "markVerbalElementText": "ＣＯＤＥＷＡＲＲＩＯＲ"
+    }
+  },
+  "_uri": "/mark/jp/5bd53446-476f-4ce5-8ebd-1ef26c62f18d",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.461Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

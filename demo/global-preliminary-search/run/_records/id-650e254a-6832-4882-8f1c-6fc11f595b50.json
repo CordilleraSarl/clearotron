@@ -1,0 +1,108 @@
+{
+  "uri": "/mark/id/650e254a-6832-4882-8f1c-6fc11f595b50",
+  "provider": "clarivate",
+  "office": "id",
+  "guid": "650e254a-6832-4882-8f1c-6fc11f595b50",
+  "applicationNumber": "DID2022060533",
+  "registrationNumber": "IDM001073719",
+  "applicationDate": "2022-08-13",
+  "registrationDate": "2023-04-10",
+  "expiryDate": "2032-08-13",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "AL - QORI TECHNOLOGIES",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "id",
+      "description": "Mesin pembelajaran, mesin pembelajaran bahasa, mesin pemungutan suara, perangkat lunak kecerdasan buatan yaitu perangkat lunak pembelajaran mesin perangkat lunak persepsi visual perangkat lunak pengenalan ucapan atau bahasa perangkat lunak pengambilan keputusan perangkat lunak terjemahan perangkat lunak pengenalan sentuhan perangkat lunak kueri percakapan perangkat lunak untuk mengubah bahasa alami menjadi perintah yang dapat dijalankan mesin dan asisten digital perangkat lunak, perangkat lunak komputer (software) untuk media pembelajaran, perangkat lunak pembelajaran mesin, perangkat lunak yang direkam dan dapat diunduh untuk kecerdasan buatan, pembelajaran mesin, pembelajaran algoritma, dan analisa data, program komputer untuk media pembelajaran, rekaman audio dan visual yang menampilkan musik, cerita, pertunjukkan drama, pertunjukkan non - drama, hiburan aksi secara langsung, hiburan animasi, permainan dan kegiatan pembelajaran untuk anak - anak, software simulasi pelatihan virtual reality di bidang teknologi informasi.",
+      "translation_language": "en",
+      "translation": "Learning machines, language learning machines, voting machines, artificial intelligence software i.e. machine learning software visual perception software speech or language recognition software decision making software translation software touch recognition software conversation query software software for changing languages naturally into machine-executable commands and digital assistant software, computer software (software) for learning media, machine learning software, recorded and downloadable software for artificial intelligence, machine learning, algorithm learning, and data analysis, programs computer for learning media, audio and visual recordings featuring music, stories, drama shows, non-drama shows, live action entertainment, animated entertainment, games and learning activities for children, virtual training simulation software reality in the field of information technology."
+    }
+  ],
+  "owner": "DR. ABDUL KODIR",
+  "ownerNative": null,
+  "ownerCountry": "ID",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "KEBUN RAYA RESIDENCE BLOK R NO. 14 RT. 005/RW. 010 KEL. MEKARJAYA, KEC. CIOMAS, KAB. BOGOR, JAWA TENGAH; ID",
+        "applicantAddressCountryCode": "ID",
+        "applicantAddressCountryName": "Indonesia",
+        "applicantName": "DR. ABDUL KODIR"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Learning machines, language learning machines, voting machines, artificial intelligence software i.e. machine learning software visual perception software speech or language recognition software decision making software translation software touch recognition software conversation query software software for changing languages naturally into machine-executable commands and digital assistant software, computer software (software) for learning media, machine learning software, recorded and downloadable software for artificial intelligence, machine learning, algorithm learning, and data analysis, programs computer for learning media, audio and visual recordings featuring music, stories, drama shows, non-drama shows, live action entertainment, animated entertainment, games and learning activities for children, virtual training simulation software reality in the field of information technology.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "id",
+          "intGoodsServicesDescription": "Mesin pembelajaran, mesin pembelajaran bahasa, mesin pemungutan suara, perangkat lunak kecerdasan buatan yaitu perangkat lunak pembelajaran mesin perangkat lunak persepsi visual perangkat lunak pengenalan ucapan atau bahasa perangkat lunak pengambilan keputusan perangkat lunak terjemahan perangkat lunak pengenalan sentuhan perangkat lunak kueri percakapan perangkat lunak untuk mengubah bahasa alami menjadi perintah yang dapat dijalankan mesin dan asisten digital perangkat lunak, perangkat lunak komputer (software) untuk media pembelajaran, perangkat lunak pembelajaran mesin, perangkat lunak yang direkam dan dapat diunduh untuk kecerdasan buatan, pembelajaran mesin, pembelajaran algoritma, dan analisa data, program komputer untuk media pembelajaran, rekaman audio dan visual yang menampilkan musik, cerita, pertunjukkan drama, pertunjukkan non - drama, hiburan aksi secara langsung, hiburan animasi, permainan dan kegiatan pembelajaran untuk anak - anak, software simulasi pelatihan virtual reality di bidang teknologi informasi."
+        }
+      ]
+    },
+    "id": "650e254a-6832-4882-8f1c-6fc11f595b50",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250105",
+    "registrationOfficeCode": "ID",
+    "registrationOfficeName": "Indonesia",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220813",
+        "applicationNumber": "DID2022060533"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320813",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20230410",
+        "registrationNumber": "IDM001073719"
+      }
+    },
+    "version": "20250105103754",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AL - QORI TECHNOLOGIES"
+    }
+  },
+  "_uri": "/mark/id/650e254a-6832-4882-8f1c-6fc11f595b50",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.397Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

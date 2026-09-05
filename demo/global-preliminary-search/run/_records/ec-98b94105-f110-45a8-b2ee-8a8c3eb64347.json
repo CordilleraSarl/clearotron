@@ -1,0 +1,105 @@
+{
+  "uri": "/mark/ec/98b94105-f110-45a8-b2ee-8a8c3eb64347",
+  "provider": "clarivate",
+  "office": "ec",
+  "guid": "98b94105-f110-45a8-b2ee-8a8c3eb64347",
+  "applicationNumber": "2017-52854",
+  "registrationNumber": "SENADI/2020/TI/23798",
+  "applicationDate": "2017-08-15",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "AORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Consultoría en diseño; diseño arquitectónico; diseño de interiores; diseño de productos; diseño industrial; servicios de diseño; consultoría de diseño arquitectónico; diseño de decorados para compañías de teatro;diseño de escenarios de teatro; diseño de exteriores de edificios; diseño de interiores de edificios; diseño de interiores de tiendas; diseño sets de rodaje; diseño de sets para programas de televisión; servicios arquitectónicos para diseñar edificios; servicios de asesoramiento sobre diseño de interiores.",
+      "translation_language": "en",
+      "translation": "Consulting in design; architectural design; interior design; product design; industrial design; design services; architectural design consultancy; theater stage design; stage design for theater companies; exterior design of buildings; building interior design; shop interior design; design sets; set design for television programs; architectural services for designing buildings; interior design consultancy services."
+    }
+  ],
+  "owner": "TATIANA MABEL MOYA ARMIJOS",
+  "ownerNative": null,
+  "ownerCountry": "EC",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "EC",
+        "applicantAddressCountryName": "Ecuador",
+        "applicantName": "TATIANA MABEL MOYA ARMIJOS"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Consulting in design; architectural design; interior design; product design; industrial design; design services; architectural design consultancy; theater stage design; stage design for theater companies; exterior design of buildings; building interior design; shop interior design; design sets; set design for television programs; architectural services for designing buildings; interior design consultancy services.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Consultoría en diseño; diseño arquitectónico; diseño de interiores; diseño de productos; diseño industrial; servicios de diseño; consultoría de diseño arquitectónico; diseño de decorados para compañías de teatro;diseño de escenarios de teatro; diseño de exteriores de edificios; diseño de interiores de edificios; diseño de interiores de tiendas; diseño sets de rodaje; diseño de sets para programas de televisión; servicios arquitectónicos para diseñar edificios; servicios de asesoramiento sobre diseño de interiores."
+        }
+      ]
+    },
+    "id": "98b94105-f110-45a8-b2ee-8a8c3eb64347",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20230508",
+    "registrationOfficeCode": "EC",
+    "registrationOfficeName": "Ecuador",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170815",
+        "applicationNumber": "2017-52854"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "SENADI/2020/TI/23798"
+      }
+    },
+    "version": "20230508170448",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AORI"
+    }
+  },
+  "_uri": "/mark/ec/98b94105-f110-45a8-b2ee-8a8c3eb64347",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:50.843Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

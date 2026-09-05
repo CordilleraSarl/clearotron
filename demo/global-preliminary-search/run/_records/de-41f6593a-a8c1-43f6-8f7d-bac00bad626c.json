@@ -1,0 +1,159 @@
+{
+  "uri": "/mark/de/41f6593a-a8c1-43f6-8f7d-bac00bad626c",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "41f6593a-a8c1-43f6-8f7d-bac00bad626c",
+  "applicationNumber": "302014030338.8",
+  "registrationNumber": "302014030338",
+  "applicationDate": "2014-05-23",
+  "registrationDate": "2014-09-03",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2014-10-02",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2024-06-01",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "Bobbys Klassik Choir Beethoven Orchester Bonn",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Promotion [Werbung] für Konzerte",
+      "translation_language": "en",
+      "translation": "promotion [advertising] for concerts"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Buchung von Konzerten; Darbietung von Konzerten; Durchführung von Live-Konzerten; Musikdarbietungen [Orchester]; Organisation und Veranstaltung von Konzerten; Organisation von Konzerten; Unterhaltung durch Konzerte; Unterhaltung in Form von Orchesterdarbietungen; Veranstaltung von Konzerten",
+      "translation_language": "en",
+      "translation": "booking of concerts; Performance of concerts; Conducting live concerts; Musical performances (orchestras); Organization and arranging of concerts; Organization of concerts; Entertainment by concerts; Entertainment in the form of orchestral performances; Organization of concerts"
+    }
+  ],
+  "owner": "Bundesstadt Bonn",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "53111 Bonn",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Bundesstadt Bonn"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "cmMarkImageEUclassification": [
+      "02.05.02",
+      "24.17.14",
+      "29.02.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "promotion [advertising] for concerts",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Promotion [Werbung] für Konzerte"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "booking of concerts; Performance of concerts; Conducting live concerts; Musical performances (orchestras); Organization and arranging of concerts; Organization of concerts; Entertainment by concerts; Entertainment in the form of orchestral performances; Organization of concerts",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Buchung von Konzerten; Darbietung von Konzerten; Durchführung von Live-Konzerten; Musikdarbietungen [Orchester]; Organisation und Veranstaltung von Konzerten; Organisation von Konzerten; Unterhaltung durch Konzerte; Unterhaltung in Form von Orchesterdarbietungen; Veranstaltung von Konzerten"
+        }
+      ]
+    },
+    "id": "41f6593a-a8c1-43f6-8f7d-bac00bad626c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "schwarz, rot, blau, orange, braun, weiß"
+      }
+    ],
+    "markImageViennaClassification": [
+      "02.05.02",
+      "09.07.11",
+      "22.01.21",
+      "24.17.12",
+      "26.11.12",
+      "27.05.04",
+      "27.05.07",
+      "27.05.09",
+      "27.05.10",
+      "29.01.15"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "40"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Bundesstadt Bonn Beethoven Orchester Bonn, Wachsbleiche 1, 53111 Bonn"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20140523",
+        "applicationNumber": "302014030338.8"
+      },
+      "cancellationDate": "20240601",
+      "cmNormalisedStatus": "CANCELLED",
+      "lastPublicationDate": "20141002",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20140903",
+        "registrationNumber": "302014030338"
+      }
+    },
+    "version": "20250627155735",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Bobbys Klassik Choir Beethoven Orchester Bonn"
+    }
+  },
+  "_uri": "/mark/de/41f6593a-a8c1-43f6-8f7d-bac00bad626c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.814Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

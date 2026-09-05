@@ -1,0 +1,212 @@
+{
+  "uri": "/mark/wo/1e2e8684-4c6e-41fd-b126-1b258a0e3c6c",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "1e2e8684-4c6e-41fd-b126-1b258a0e3c6c",
+  "applicationNumber": null,
+  "registrationNumber": "965998",
+  "applicationDate": null,
+  "registrationDate": "2008-03-20",
+  "expiryDate": "2028-03-20",
+  "renewalDate": "2018-03-20",
+  "lastPublicationDate": "2018-05-17",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JCOP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Software; operating systems for use in connection with NFC (Near Field Communications) technology, RFID (Radio Frequency Identification) technology and smart card technology; electronic, electrotechnical and electromagnetic modules, parts and building elements; interfaces for computers; integrated circuits (ICs), semiconductors and semiconductor elements; chips (integrated circuits); software, smart cards, control apparatus and instruments for smart cards, control apparatus and instruments for RFID (Radio Frequency Identification) chips and tags; electronic apparatus and instruments for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; antennas for scanning, reading and interpreting RFID chips and tags; electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications; parts of the aforementioned goods.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciels; systèmes d'exploitation servant aux technologies de communication en champ proche (NFC), technologies d'identification par radiofréquence et technologies de cartes à mémoire ou à microprocesseur; éléments de construction, parties et modules électroniques, électrotechniques et électromagnétiques; interfaces informatiques; circuits intégrés, semi-conducteurs et éléments semi-conducteurs; puces (circuits intégrés); logiciels, cartes à mémoire ou à microprocesseur, appareils et instruments de commande pour cartes à mémoire ou à microprocesseur, appareils et instruments de commande pour étiquettes et puces d'identification par radiofréquence; appareils et instruments électroniques pour créer, programmer, commander, coder, scanner, lire et interpréter des étiquettes et puces d'identification par radiofréquence; antennes pour scanner, lire et interpréter des étiquettes et puces d'identification par radiofréquence; éléments de construction, parties et modules électroniques, électrotechniques et électromagnétiques, ainsi que circuits intégrés pour applications de communication en champ proche; parties des produits susmentionnés.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software; sistemas operativos para ser utilizados en conexión con la tecnología NFC (comunicaciones de campo cercano), la tecnología RFID (identificación por radiofrecuencia) y la tecnología de tarjetas inteligentes; elementos de construcción, piezas y módulos electrónicos, electrotécnicos y electromagnéticos; interfaces para ordenadores; circuitos integrados (CI), semiconductores y elementos semiconductores; chips (circuitos integrados); software, tarjetas inteligentes, aparatos e instrumentos de control para tarjetas inteligentes, aparatos e instrumentos de control para chips y etiquetas RFID (identificación por radiofrecuencia); aparatos e instrumentos electrónicos para crear, programar, controlar, codificar, escanear, leer e interpretar chips y etiquetas RFID (identificación por radiofrecuencia); antenas para escanear, leer e interpretar chips y etiquetas RFID (identificación por radiofrecuencia); elementos de construcción, piezas y módulos electrónicos, electrotécnicos y electromagnéticos, así como circuitos integrados para aplicaciones NFC (comunicaciones de campo cercano); piezas de los productos antes mencionados.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20070925",
+      "priorityNumber": "1143695"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20070925",
+          "basicApplicationNumber": "1143695"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "BX",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20080207",
+          "basicRegistrationNumber": "833744"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CN",
+      "JP",
+      "KR",
+      "SG",
+      "TR",
+      "US"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20070925",
+            "basicApplicationNumber": "1143695"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "BX",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20080207",
+            "basicRegistrationNumber": "833744"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CN",
+      "JP",
+      "KR",
+      "SG",
+      "TR",
+      "US"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software; operating systems for use in connection with NFC (Near Field Communications) technology, RFID (Radio Frequency Identification) technology and smart card technology; electronic, electrotechnical and electromagnetic modules, parts and building elements; interfaces for computers; integrated circuits (ICs), semiconductors and semiconductor elements; chips (integrated circuits); software, smart cards, control apparatus and instruments for smart cards, control apparatus and instruments for RFID (Radio Frequency Identification) chips and tags; electronic apparatus and instruments for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; antennas for scanning, reading and interpreting RFID chips and tags; electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications; parts of the aforementioned goods."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciels; systèmes d'exploitation servant aux technologies de communication en champ proche (NFC), technologies d'identification par radiofréquence et technologies de cartes à mémoire ou à microprocesseur; éléments de construction, parties et modules électroniques, électrotechniques et électromagnétiques; interfaces informatiques; circuits intégrés, semi-conducteurs et éléments semi-conducteurs; puces (circuits intégrés); logiciels, cartes à mémoire ou à microprocesseur, appareils et instruments de commande pour cartes à mémoire ou à microprocesseur, appareils et instruments de commande pour étiquettes et puces d'identification par radiofréquence; appareils et instruments électroniques pour créer, programmer, commander, coder, scanner, lire et interpréter des étiquettes et puces d'identification par radiofréquence; antennes pour scanner, lire et interpréter des étiquettes et puces d'identification par radiofréquence; éléments de construction, parties et modules électroniques, électrotechniques et électromagnétiques, ainsi que circuits intégrés pour applications de communication en champ proche; parties des produits susmentionnés."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software; sistemas operativos para ser utilizados en conexión con la tecnología NFC (comunicaciones de campo cercano), la tecnología RFID (identificación por radiofrecuencia) y la tecnología de tarjetas inteligentes; elementos de construcción, piezas y módulos electrónicos, electrotécnicos y electromagnéticos; interfaces para ordenadores; circuitos integrados (CI), semiconductores y elementos semiconductores; chips (circuitos integrados); software, tarjetas inteligentes, aparatos e instrumentos de control para tarjetas inteligentes, aparatos e instrumentos de control para chips y etiquetas RFID (identificación por radiofrecuencia); aparatos e instrumentos electrónicos para crear, programar, controlar, codificar, escanear, leer e interpretar chips y etiquetas RFID (identificación por radiofrecuencia); antenas para escanear, leer e interpretar chips y etiquetas RFID (identificación por radiofrecuencia); elementos de construcción, piezas y módulos electrónicos, electrotécnicos y electromagnéticos, así como circuitos integrados para aplicaciones NFC (comunicaciones de campo cercano); piezas de los productos antes mencionados."
+        }
+      ]
+    },
+    "id": "1e2e8684-4c6e-41fd-b126-1b258a0e3c6c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20070925",
+        "priorityNumber": "1143695"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "18"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices, Anna van Buerenplein 21A NL-2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280320",
+      "lastPublicationDate": "20180517",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20080320",
+        "registrationNumber": "965998"
+      },
+      "renewalDate": "20180320",
+      "renewalPublishedDate": "20180517"
+    },
+    "version": "20250620164955",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JCOP"
+    }
+  },
+  "_uri": "/mark/wo/1e2e8684-4c6e-41fd-b126-1b258a0e3c6c",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.458Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

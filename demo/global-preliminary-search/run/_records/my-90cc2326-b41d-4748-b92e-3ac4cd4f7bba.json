@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/my/90cc2326-b41d-4748-b92e-3ac4cd4f7bba",
+  "provider": "clarivate",
+  "office": "my",
+  "guid": "90cc2326-b41d-4748-b92e-3ac4cd4f7bba",
+  "applicationNumber": "2012010756",
+  "registrationNumber": null,
+  "applicationDate": "2012-06-25",
+  "registrationDate": "2012-06-25",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "SEVENCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Virtual reality game software; computer programs for pre-recorded games; computer software, recorded; computer programmes [programs], recorded; data processing apparatus; disc memories; digital disc drives; digital signal processors; computer software for wireless content delivery; software for processing images, graphics and text; computer programs for editing images, sound and video; games (apparatus for -) adapted for use with an external display screen or monitor; operating system programs; workstations; computer application software for mobile phones; computer game programs; computer software; integrated circuit cards [smart cards]; electronic music [downloadable]; electronic publications, downloadable; computer programs [downloadable software]; compact discs [read-only memory]; all included in class 9.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Noria Co, Ltd",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "Soh Kar Liang",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "A-505, Pyungchon Acro Tower Kuanyang-dong 1591 Dongan-Gu Anyang-si Gyeonggi-do 431-060",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Noria Co, Ltd"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Virtual reality game software; computer programs for pre-recorded games; computer software, recorded; computer programmes [programs], recorded; data processing apparatus; disc memories; digital disc drives; digital signal processors; computer software for wireless content delivery; software for processing images, graphics and text; computer programs for editing images, sound and video; games (apparatus for -) adapted for use with an external display screen or monitor; operating system programs; workstations; computer application software for mobile phones; computer game programs; computer software; integrated circuit cards [smart cards]; electronic music [downloadable]; electronic publications, downloadable; computer programs [downloadable software]; compact discs [read-only memory]; all included in class 9."
+        }
+      ]
+    },
+    "id": "90cc2326-b41d-4748-b92e-3ac4cd4f7bba",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "24.17.25",
+      "26.03.01",
+      "26.03.05",
+      "26.03.16",
+      "26.03.19"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260901",
+    "registrationOfficeCode": "MY",
+    "registrationOfficeName": "Malaysia",
+    "representatives": [
+      {
+        "representativeAddress": "Ella Cheong IP Services Sdn Bhd A-31-3, Level 31, Menara UOA Bangsar No 5, Jalan Bangsar Utama 1 Wilayah Persekutuan 59000 Kuala Lumpur",
+        "representativeAddressCountryCode": "MY",
+        "representativeAddressCountryName": "Malaysia",
+        "representativeName": "Soh Kar Liang"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120625",
+        "applicationNumber": "2012010756"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20120625"
+      }
+    },
+    "version": "20260901050117",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEVENCORE"
+    }
+  },
+  "_uri": "/mark/my/90cc2326-b41d-4748-b92e-3ac4cd4f7bba",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.730Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

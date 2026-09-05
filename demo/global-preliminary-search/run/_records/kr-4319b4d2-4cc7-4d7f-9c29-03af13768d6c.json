@@ -1,0 +1,121 @@
+{
+  "uri": "/mark/kr/4319b4d2-4cc7-4d7f-9c29-03af13768d6c",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "4319b4d2-4cc7-4d7f-9c29-03af13768d6c",
+  "applicationNumber": "40-2017-0090716",
+  "registrationNumber": null,
+  "applicationDate": "2017-07-19",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "gori",
+  "markTransliteration": "GORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "광학안경",
+      "translation_language": "en",
+      "translation": "Optical glasses"
+    }
+  ],
+  "owner": "HAN, Sei Mi",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "김남혁 (KIM NAM HYUK)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 강서구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "HAN, Sei Mi",
+        "applicantNativeName": "한세미"
+      },
+      {
+        "applicantAddress": "전남광주통합특별시",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "AN, Ri Na",
+        "applicantNativeName": "안리나"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Optical glasses",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "광학안경"
+        }
+      ]
+    },
+    "id": "4319b4d2-4cc7-4d7f-9c29-03af13768d6c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260717",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 강남구 테헤란로**길**-*, 에이동 *층(대치동,세왕개발빌딩)(특허법인본)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김남혁 (KIM NAM HYUK)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20170719",
+        "applicationNumber": "40-2017-0090716"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260717020622",
+    "wordMarkSpecification": {
+      "markTransliteration": "GORI",
+      "markVerbalElementText": "gori"
+    }
+  },
+  "_uri": "/mark/kr/4319b4d2-4cc7-4d7f-9c29-03af13768d6c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.049Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

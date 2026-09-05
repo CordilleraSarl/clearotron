@@ -1,0 +1,753 @@
+{
+  "uri": "/mark/em/781a27b7-e943-49be-b3e6-ed5cc2817944",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "781a27b7-e943-49be-b3e6-ed5cc2817944",
+  "applicationNumber": "19012764",
+  "registrationNumber": "19012764",
+  "applicationDate": "2024-04-12",
+  "registrationDate": "2024-08-28",
+  "expiryDate": "2034-04-12",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-05-21",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QOFI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    11
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Pocítacový software; App; Software pro obsluhu na dálku a pro inteligentní obsluhu ohrevných zarízení pro dávkování teplých nápoju a instalace pro ohrev nebo ochlazení nápoju.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "cs",
+      "description": "Elektrické kávovary; Prístroje a zarízení na varení potravin, Zarízení pro varení a nápoje, Prístroje na ohrívání potravin, Zarízení pro ohrívání nápoju, Chlazení potravin, Prístroje na chlazení nápoju, Prístroje na konzervaci potravin a Prístroje pro konzervování nápoju; Ohrívace pro výdej horkých nápoju; Zarízení na ohrev nápoju; Kávové kapsle, prázdné, pro elektrické kávovary.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Software; Apps; Software til fjernbetjening og til intelligent betjening af opvarmningsapparater til dispensering af varme drikke og installationer til opvarmning eller afkøling af drikke.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "da",
+      "description": "Kaffemaskiner, elektriske; Apparater til madlavning, Apparater til tilberedning af drikke, Apparater til opvarmning af fødevarer, Apparater til opvarmning af drikke, Køling af næringsmidler, Køleapparater til drikkevarer, Apparater til konservering af fødevarer og Apparater til konservering af drikke; Opvarmningsapparater til udskænkning af varme drikke; Installationer til opvarmning af drikke; Tomme kaffekapsler til elektriske kaffemaskiner.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "software; apps; software voor de bediening op afstand en voor de intelligente bediening van verwarmingsapparaten voor de afgifte van warme dranken en van installaties voor het verwarmen of afkoelen van dranken.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "nl",
+      "description": "koffiemachines; apparaten voor het koken, opwarmen, afkoelen en conserveren van voedsel en dranken; verwarmingsapparaten voor de afgifte van warme dranken; apparaten voor het verwarmen van dranken; koffiecapsules, leeg, voor elektrische koffiemachines.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Software; Apps; Software for the remote and intelligent control of heating apparatus for dispensing hot beverages and of installations for heating or cooling beverages.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "en",
+      "description": "Coffee machines, electric; Appliances for cooking foodstuffs, Apparatus for cooking beverages, Apparatus for heating foodstuffs, Apparatus for heating beverages, food cooling, apparatus for chilling beverages, Apparatus to preserve food and Apparatus for preserving beverages; Heating apparatus for dispensing hot beverages; Installations for heating beverages; Coffee capsules, empty, for electric coffee machines.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Arvutitarkvara; Rakendused; Tarkvara soojade jookide kütteseadmete ning jookide soojendamise või jahutamise paigaldiste kaugjuhtimiseks ja nutijuhtimiseks.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "et",
+      "description": "Elektrilised kohvimasinad, -aparaadid; Toiduvalmistamisseadmed, Joogikeeduseadmed, Toiduainete soojendamise seadmed, Joogisoojendusseadmed, Toidu jahutamine, Joogijahutusseadmed, Toidusäilitusseadmed ja Jookide konservimisseadmed; Kuumutusseadmed kuumade jookide väljastamiseks; Seadmed jookide soojendamiseks; Tühjad kohvikapslid elektrilistele kohvimasinatele.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Ohjelmistot; Sovellukset; Ohjelmistot kuumien juomien annosteluun tarkoitettujen lämmittimien ja juomien lämmitys- tai jäähdytyslaitteistojen kauko- ja älykkääseen ohjaamiseen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "fi",
+      "description": "Kahvinkeittimet, sähkökäyttöiset; Laitteet elintarvikkeiden kypsentämiseen, Laitteet juomien keittämiseen, Laitteet elintarvikkeiden lämmittämiseen, Laitteet juomien lämmittämiseen, Ruoan jäähdytykseen, Juomien jäähdytyslaitteet, Laitteet ruokien säilytykseen ja Laitteet elintarvikkeiden säilöntään; Lämmityslaitteet lämpimien juomien annosteluun; Juomienlämmityslaitteet; Tyhjät kahvikapselit sähköisiin kahvinkeittimiin.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciel; Apps; Logiciel pour la commande à distance et intelligente d'appareils de chauffage pour la distribution de boissons chaudes et d'installations pour le chauffage ou le refroidissement de boissons.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "fr",
+      "description": "Machines à café électriques; Appareils de cuisson d'aliments, Appareils pour cuire des boissons, Appareils pour réchauffer les aliments, Appareils pour réchauffer des boissons, Refroidissement des aliments, Appareils de réfrigération pour boissons, Appareils pour la conservation des aliments et Équipements de conservation de boissons; Appareils de chauffage pour la distribution de boissons chaudes; Installations pour réchauffer les boissons; Capsules de café, vides, pour machines à café électriques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Software; Apps; Software für die Fernbedienung und für die intelligente Bedienung von Heizgeräten zur Ausgabe von Heißgetränken und von Einrichtungen zum Erhitzen oder Kühlen von Getränken.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "de",
+      "description": "Elektrische Kaffeemaschinen; Geräte zum Kochen von Nahrungsmitteln, Geräte für das Kochen von Getränken, Apparate zum Erhitzen von Nahrungsmitteln, Geräte zum Erwärmen von Getränken, Speisenkühler, Getränkekühlapparate, Apparate zur Konservierung von Speisen und Geräte zum Konservieren von Getränken; Heizgeräte zum Ausgeben von Heißgetränken; Anlagen zur Erwärmung von Getränken; Leere Kaffeekapseln für elektrische Kaffeemaschinen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Softver; Apovi; Softver za upravljanje na daljinu i za pametno upravljanje uredajima za grijanje za izdavanje toplih napitaka i upravljanje instalacijama za grijanje ili hladenje napitaka.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "hr",
+      "description": "Perkolatori [elektricni strojevi za kuhanje kave]; Aparati za kuhanje hrane, Aparati za kuhanje napitaka, Uredaj za zagrijavanje namirnica, Aparati za zagrijavanje napitaka, Aparati za hladenje hrane, Uredaji za hladenje pica, Uredaji za konzerviranje hrane i Uredaji za konzerviranje napitaka; Uredaji za grijanje za posluzivanje toplih pica; Aparati za zagrijavanje pica; Prazne kapsule za kavu za elektricne aparate za kavu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Szoftverek; Alkalmazás; Forró italok kibocsátására szolgáló melegítoberendezések, valamint italok melegítésére vagy hutésére szolgáló rendszerek távvezérlésére és intelligens üzemeltetésére szolgáló szoftver.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "hu",
+      "description": "Elektromos kávéfozok; Készülékek élelmiszerek fozéséhez, Italok fozésére szolgáló készülékek, Élelmiszer-melegíto berendezések, Italmelegítok, Ételhutés, Italhuto berendezések, Berendezések élelmiszerek tartósítására és Italok tartósítására szolgáló eszközök; Meleg italok adagolására szolgáló futoberendezés; Berendezések italok melegítéséhez; Kávékapszulák, üresen, elektromos kávéfozokhöz.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Software; App; Software per il comando a distanza e per il comando intelligente di apparecchi di riscaldamento per l'erogazione di bevande calde e di impianti per il riscaldamento e la refrigerazione di bevande.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "it",
+      "description": "Caffettiere elettriche; Macchine per cuocere alimenti, Apparecchi per la bollitura di bevande, Apparecchi per il riscaldamento di alimenti, Apparecchi per il riscaldamento di bevande, Refrigerazione di alimenti, Apparecchi per il raffreddamento di bevande, Apparecchi per conservare alimenti e Dispositivi per la conservazione di bevande; Apparecchio di riscaldamento per l'erogazione di bevande calde; Impianti per il riscaldamento delle bevande; Capsule per caffè, vuote, per macchine da caffè elettriche.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Programine iranga; Taikomosios programos; Programine iranga, skirta nuotoliniam valdymui ir pazangiam karstu gerimu ispilstymo sildymo prietaisu ir gerimu sildymo ar vesinimo irenginiu valdymui.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "lt",
+      "description": "Elektriniai kavos aparatai; Maisto gaminimo reikmenys, Gerimu virimo aparatai, Aparatai maisto produktams sildyti, Gerimu kaitinimo aparatai, Maistui vesinti, Gerimu atsaldymo aparatai, Maisto konservavimo aparatai ir Gerimu konservavimo prietaisai; Sildymo irenginiai, skirti karstiems gerimam pilstyti; Gerimu sildymo prietaisai; Tuscios elektriniu kavos aparatu kapsules.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Programmatura; Lietojumprogramma; Programmatura karsto dzerienu padeves sildisanas iericu un dzerienu sildisanas vai dzesesanas iekartu talvadibai un inteligentai darbibai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "lv",
+      "description": "Elektriskie kafijas automati; Partikas termiskas apstrades iekartas, Aparati dzerienu pagatavosanai, Ediena sildisanas ierices, Aparati dzerienu sildisanai, Partikas dzesesana, Dzerienu dzesesanas aparati, Edienu saglabasanas aparati un Ierices dzerienu konservesanai; Sildisanas aparati karsto dzerienu izsniegsanai; Dzerienu sildisanas ierices; Tuksas kafijas kapsulas elektriskajiem kafijas automatiem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Softwer; App; Software ghall-kontroll mill-boghod u intelligenti ta' hiters ghad-distribuzzjoni ta' xarba shuna u installazzjoni ghat-tishin jew ghat-tkessih ta' xorb.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "mt",
+      "description": "Perkolaturi tal-kafè tal-elettriku; Apparat ghat-tisjir tal-ikel, Apparat ghall-preparazzjoni tax-xorb, Apparat tat-tishin ghal oggetti tal-ikel, Apparat ghat-tishin tax-xorb, Tkessih ta' ikel, Apparat ghat-tkessih ta' xorb, Apparat ghall-preservazzjoni ta' l-ikel u Taghmir ghall-preservazzjoni ta' xorb; Apparat tat-tishin ghat-tferrigh ta' xorb shun; Installazzjonijiet ghat-tishin tax-xorb; Kapsuli tal-kafe, vojta, ghal magni tal-kafe li jahdmu bl-elettriku.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Oprogramowanie; Aplikacja; Oprogramowanie do zdalnego i inteligentnego sterowania podgrzewaczami do wydawania goracych napojów oraz instalacjami do podgrzewania lub chlodzenia napojów.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "pl",
+      "description": "Elektryczne zaparzacze do kawy; Urzadzenia do gotowania zywnosci, Urzadzenia do przyrzadzania napojów, Urzadzenia do podgrzewania zywnosci, Urzadzenia do podgrzewania napojów, Chlodzenie zywnosci, Urzadzenia do chlodzenia napojów, Urzadzenia do konserwacji zywnosci i Urzadzenia do konserwacji napojów; Aparatura grzewcza do wydawania goracych napojów; Instalacje do podgrzewania napojów; Kapsulki do kawy, puste, do elektrycznych ekspresów do kawy.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Software; \"apps\"; Software para comando à distância e comando inteligente de aparelhos de aquecimento para distribuição de bebidas quentes e de instalações para aquecimento ou arrefecimento de bebidas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "pt",
+      "description": "Cafeteiras elétricas; Máquinas para cozinhar alimentos, Máquinas para cozinhar bebidas, Aparelhos para aquecer alimentos, Aparelhos para aquecer bebidas, Para refrigerar alimentos, Aparelhos de arrefecimento de bebidas, Aparelhos para conservação de alimentos e Aparelhos para conservar bebidas; Aparelhos de aquecimento para bebidas quentes; Instalações para aquecimento de bebidas; Cápsulas de café vazias para máquinas de café elétricas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Software; \"apps\"; Software pentru controlul de la distanta si operarea inteligenta a aparatelor de încalzire pentru distribuirea de bauturi calde si a instalatiilor pentru încalzirea sau racirea bauturilor.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "ro",
+      "description": "Percolatoare electrice de cafea; Aparate pentru gatirea alimentelor, Aparate pentru prepararea bauturilor, Aparate pentru încalzirea alimentelor, Aparate pentru încalzirea bauturilor, Racirea alimentelor, Aparate pentru racirea bauturilor, Dispozitive de conservare a alimentelor si Aparate pentru conservarea bauturilor; Dispozitive de încalzire pentru distribuirea de bauturi calde; Instalatii de încalzire a bauturilor; Capsule de cafea goale pentru cafetiere electrice.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Softvér; Aplikácie; Pocítacový softvér na dialkové ovládanie a inteligentnú obsluhu vykurovacích zariadení na výdaj teplých nápojov a instalácie na ohrev alebo chladenie nápojov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "sk",
+      "description": "Elektrické kávovary; Zariadenia na varenie potravín, Zariadenia na varenie nápojov, Zariadenia na ohrievanie potravín, Zariadenia na ohrievanie nápojov, Chladenie potravín, Zariadenia na chladenie nápojov, Zariadenia na konzervovanie jedál a Prístroje na konzervovanie nápojov; Ohrievacie zariadenia na výdaj teplých nápojov; Zariadenia na ohrievanie nápojov; Kávové kapsuly do elektrických kávovarov (prázdne).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Programska oprema; Aplikacija; Programska oprema za daljinski nadzor in pametno upravljanje grelnikov za razdeljevanje vrocih pijac ter naprav za ogrevanje ali hlajenje pijac.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "sl",
+      "description": "Elektricni strojcki za kuhanje kave; Naprave za kuhanje zivil, Naprave za kuhanje pijac, Aparati za segrevanje zivil, Naprave za ogrevanje pijac, Hlajenje hrane, Aparati za hlajenje pijac, Aparati za konzerviranje hrane in Naprave za konzerviranje pijac; Grelniki za tocenje toplih pijac; Instalacije za segrevanje napitkov; Kavne kapsule, prazne, za elektricne kavne aparate.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software; Aplicaciones; Software para el control remoto e inteligente de calentadores para dispensar bebidas calientes y de instalaciones para calentar o enfriar bebidas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "es",
+      "description": "Máquinas de café eléctricas; Máquinas para cocinar alimentos, Aparatos para cocinar bebidas, Aparatos para calentar alimentos, Aparatos para calentar bebidas, Refrigeración de comidas, Aparatos para enfriar bebidas, Aparatos para conservar alimentos y Equipos para la conservación de bebidas; Aparatos de calentamiento de bebidas calientes; Aparatos para calentar bebidas; Cápsulas de café, vacías, para máquinas de café eléctricas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Mjukvaror; App; Programvara för fjärrstyrning och för intelligent styrning av uppvärmningsapparater för utmatning av varma drycker och av anläggningar för att värma upp eller kyla ned drycker.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "sw",
+      "description": "Kaffemaskiner, elektriska; Apparater för tillagning av livsmedel, Apparater för tillagning av drycker, Apparater för uppvärmning av livsmedel, Apparater för uppvärmning av drycker, Livsmedelskylning, Apparater för kylda drycker, Apparater för konservering av livsmedel och Anordningar för konservering av drycker; Uppvärmningsapparater för utskänkning av varma drycker; Anordning för uppvärming av drycker; Kaffekapslar, tomma, för elektriska kaffemaskiner.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Elton Labs B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "ALGEMEEN OCTROOI- EN MERKENBUREAU B.V.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Kennedyplein 200,Eindhoven, 5611 ZT",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "Elton Labs B.V."
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Pocítacový software; App; Software pro obsluhu na dálku a pro inteligentní obsluhu ohrevných zarízení pro dávkování teplých nápoju a instalace pro ohrev nebo ochlazení nápoju."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Elektrické kávovary; Prístroje a zarízení na varení potravin, Zarízení pro varení a nápoje, Prístroje na ohrívání potravin, Zarízení pro ohrívání nápoju, Chlazení potravin, Prístroje na chlazení nápoju, Prístroje na konzervaci potravin a Prístroje pro konzervování nápoju; Ohrívace pro výdej horkých nápoju; Zarízení na ohrev nápoju; Kávové kapsle, prázdné, pro elektrické kávovary."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Software; Apps; Software til fjernbetjening og til intelligent betjening af opvarmningsapparater til dispensering af varme drikke og installationer til opvarmning eller afkøling af drikke."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Kaffemaskiner, elektriske; Apparater til madlavning, Apparater til tilberedning af drikke, Apparater til opvarmning af fødevarer, Apparater til opvarmning af drikke, Køling af næringsmidler, Køleapparater til drikkevarer, Apparater til konservering af fødevarer og Apparater til konservering af drikke; Opvarmningsapparater til udskænkning af varme drikke; Installationer til opvarmning af drikke; Tomme kaffekapsler til elektriske kaffemaskiner."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "software; apps; software voor de bediening op afstand en voor de intelligente bediening van verwarmingsapparaten voor de afgifte van warme dranken en van installaties voor het verwarmen of afkoelen van dranken."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "koffiemachines; apparaten voor het koken, opwarmen, afkoelen en conserveren van voedsel en dranken; verwarmingsapparaten voor de afgifte van warme dranken; apparaten voor het verwarmen van dranken; koffiecapsules, leeg, voor elektrische koffiemachines."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software; Apps; Software for the remote and intelligent control of heating apparatus for dispensing hot beverages and of installations for heating or cooling beverages."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Coffee machines, electric; Appliances for cooking foodstuffs, Apparatus for cooking beverages, Apparatus for heating foodstuffs, Apparatus for heating beverages, food cooling, apparatus for chilling beverages, Apparatus to preserve food and Apparatus for preserving beverages; Heating apparatus for dispensing hot beverages; Installations for heating beverages; Coffee capsules, empty, for electric coffee machines."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Arvutitarkvara; Rakendused; Tarkvara soojade jookide kütteseadmete ning jookide soojendamise või jahutamise paigaldiste kaugjuhtimiseks ja nutijuhtimiseks."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Elektrilised kohvimasinad, -aparaadid; Toiduvalmistamisseadmed, Joogikeeduseadmed, Toiduainete soojendamise seadmed, Joogisoojendusseadmed, Toidu jahutamine, Joogijahutusseadmed, Toidusäilitusseadmed ja Jookide konservimisseadmed; Kuumutusseadmed kuumade jookide väljastamiseks; Seadmed jookide soojendamiseks; Tühjad kohvikapslid elektrilistele kohvimasinatele."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Ohjelmistot; Sovellukset; Ohjelmistot kuumien juomien annosteluun tarkoitettujen lämmittimien ja juomien lämmitys- tai jäähdytyslaitteistojen kauko- ja älykkääseen ohjaamiseen."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Kahvinkeittimet, sähkökäyttöiset; Laitteet elintarvikkeiden kypsentämiseen, Laitteet juomien keittämiseen, Laitteet elintarvikkeiden lämmittämiseen, Laitteet juomien lämmittämiseen, Ruoan jäähdytykseen, Juomien jäähdytyslaitteet, Laitteet ruokien säilytykseen ja Laitteet elintarvikkeiden säilöntään; Lämmityslaitteet lämpimien juomien annosteluun; Juomienlämmityslaitteet; Tyhjät kahvikapselit sähköisiin kahvinkeittimiin."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciel; Apps; Logiciel pour la commande à distance et intelligente d'appareils de chauffage pour la distribution de boissons chaudes et d'installations pour le chauffage ou le refroidissement de boissons."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Machines à café électriques; Appareils de cuisson d'aliments, Appareils pour cuire des boissons, Appareils pour réchauffer les aliments, Appareils pour réchauffer des boissons, Refroidissement des aliments, Appareils de réfrigération pour boissons, Appareils pour la conservation des aliments et Équipements de conservation de boissons; Appareils de chauffage pour la distribution de boissons chaudes; Installations pour réchauffer les boissons; Capsules de café, vides, pour machines à café électriques."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Software; Apps; Software für die Fernbedienung und für die intelligente Bedienung von Heizgeräten zur Ausgabe von Heißgetränken und von Einrichtungen zum Erhitzen oder Kühlen von Getränken."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Elektrische Kaffeemaschinen; Geräte zum Kochen von Nahrungsmitteln, Geräte für das Kochen von Getränken, Apparate zum Erhitzen von Nahrungsmitteln, Geräte zum Erwärmen von Getränken, Speisenkühler, Getränkekühlapparate, Apparate zur Konservierung von Speisen und Geräte zum Konservieren von Getränken; Heizgeräte zum Ausgeben von Heißgetränken; Anlagen zur Erwärmung von Getränken; Leere Kaffeekapseln für elektrische Kaffeemaschinen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Softver; Apovi; Softver za upravljanje na daljinu i za pametno upravljanje uredajima za grijanje za izdavanje toplih napitaka i upravljanje instalacijama za grijanje ili hladenje napitaka."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Perkolatori [elektricni strojevi za kuhanje kave]; Aparati za kuhanje hrane, Aparati za kuhanje napitaka, Uredaj za zagrijavanje namirnica, Aparati za zagrijavanje napitaka, Aparati za hladenje hrane, Uredaji za hladenje pica, Uredaji za konzerviranje hrane i Uredaji za konzerviranje napitaka; Uredaji za grijanje za posluzivanje toplih pica; Aparati za zagrijavanje pica; Prazne kapsule za kavu za elektricne aparate za kavu."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Szoftverek; Alkalmazás; Forró italok kibocsátására szolgáló melegítoberendezések, valamint italok melegítésére vagy hutésére szolgáló rendszerek távvezérlésére és intelligens üzemeltetésére szolgáló szoftver."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Elektromos kávéfozok; Készülékek élelmiszerek fozéséhez, Italok fozésére szolgáló készülékek, Élelmiszer-melegíto berendezések, Italmelegítok, Ételhutés, Italhuto berendezések, Berendezések élelmiszerek tartósítására és Italok tartósítására szolgáló eszközök; Meleg italok adagolására szolgáló futoberendezés; Berendezések italok melegítéséhez; Kávékapszulák, üresen, elektromos kávéfozokhöz."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Software; App; Software per il comando a distanza e per il comando intelligente di apparecchi di riscaldamento per l'erogazione di bevande calde e di impianti per il riscaldamento e la refrigerazione di bevande."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Caffettiere elettriche; Macchine per cuocere alimenti, Apparecchi per la bollitura di bevande, Apparecchi per il riscaldamento di alimenti, Apparecchi per il riscaldamento di bevande, Refrigerazione di alimenti, Apparecchi per il raffreddamento di bevande, Apparecchi per conservare alimenti e Dispositivi per la conservazione di bevande; Apparecchio di riscaldamento per l'erogazione di bevande calde; Impianti per il riscaldamento delle bevande; Capsule per caffè, vuote, per macchine da caffè elettriche."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Programine iranga; Taikomosios programos; Programine iranga, skirta nuotoliniam valdymui ir pazangiam karstu gerimu ispilstymo sildymo prietaisu ir gerimu sildymo ar vesinimo irenginiu valdymui."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Elektriniai kavos aparatai; Maisto gaminimo reikmenys, Gerimu virimo aparatai, Aparatai maisto produktams sildyti, Gerimu kaitinimo aparatai, Maistui vesinti, Gerimu atsaldymo aparatai, Maisto konservavimo aparatai ir Gerimu konservavimo prietaisai; Sildymo irenginiai, skirti karstiems gerimam pilstyti; Gerimu sildymo prietaisai; Tuscios elektriniu kavos aparatu kapsules."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Programmatura; Lietojumprogramma; Programmatura karsto dzerienu padeves sildisanas iericu un dzerienu sildisanas vai dzesesanas iekartu talvadibai un inteligentai darbibai."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Elektriskie kafijas automati; Partikas termiskas apstrades iekartas, Aparati dzerienu pagatavosanai, Ediena sildisanas ierices, Aparati dzerienu sildisanai, Partikas dzesesana, Dzerienu dzesesanas aparati, Edienu saglabasanas aparati un Ierices dzerienu konservesanai; Sildisanas aparati karsto dzerienu izsniegsanai; Dzerienu sildisanas ierices; Tuksas kafijas kapsulas elektriskajiem kafijas automatiem."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Softwer; App; Software ghall-kontroll mill-boghod u intelligenti ta' hiters ghad-distribuzzjoni ta' xarba shuna u installazzjoni ghat-tishin jew ghat-tkessih ta' xorb."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Perkolaturi tal-kafè tal-elettriku; Apparat ghat-tisjir tal-ikel, Apparat ghall-preparazzjoni tax-xorb, Apparat tat-tishin ghal oggetti tal-ikel, Apparat ghat-tishin tax-xorb, Tkessih ta' ikel, Apparat ghat-tkessih ta' xorb, Apparat ghall-preservazzjoni ta' l-ikel u Taghmir ghall-preservazzjoni ta' xorb; Apparat tat-tishin ghat-tferrigh ta' xorb shun; Installazzjonijiet ghat-tishin tax-xorb; Kapsuli tal-kafe, vojta, ghal magni tal-kafe li jahdmu bl-elettriku."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Oprogramowanie; Aplikacja; Oprogramowanie do zdalnego i inteligentnego sterowania podgrzewaczami do wydawania goracych napojów oraz instalacjami do podgrzewania lub chlodzenia napojów."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Elektryczne zaparzacze do kawy; Urzadzenia do gotowania zywnosci, Urzadzenia do przyrzadzania napojów, Urzadzenia do podgrzewania zywnosci, Urzadzenia do podgrzewania napojów, Chlodzenie zywnosci, Urzadzenia do chlodzenia napojów, Urzadzenia do konserwacji zywnosci i Urzadzenia do konserwacji napojów; Aparatura grzewcza do wydawania goracych napojów; Instalacje do podgrzewania napojów; Kapsulki do kawy, puste, do elektrycznych ekspresów do kawy."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Software; \"apps\"; Software para comando à distância e comando inteligente de aparelhos de aquecimento para distribuição de bebidas quentes e de instalações para aquecimento ou arrefecimento de bebidas."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Cafeteiras elétricas; Máquinas para cozinhar alimentos, Máquinas para cozinhar bebidas, Aparelhos para aquecer alimentos, Aparelhos para aquecer bebidas, Para refrigerar alimentos, Aparelhos de arrefecimento de bebidas, Aparelhos para conservação de alimentos e Aparelhos para conservar bebidas; Aparelhos de aquecimento para bebidas quentes; Instalações para aquecimento de bebidas; Cápsulas de café vazias para máquinas de café elétricas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Software; \"apps\"; Software pentru controlul de la distanta si operarea inteligenta a aparatelor de încalzire pentru distribuirea de bauturi calde si a instalatiilor pentru încalzirea sau racirea bauturilor."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Percolatoare electrice de cafea; Aparate pentru gatirea alimentelor, Aparate pentru prepararea bauturilor, Aparate pentru încalzirea alimentelor, Aparate pentru încalzirea bauturilor, Racirea alimentelor, Aparate pentru racirea bauturilor, Dispozitive de conservare a alimentelor si Aparate pentru conservarea bauturilor; Dispozitive de încalzire pentru distribuirea de bauturi calde; Instalatii de încalzire a bauturilor; Capsule de cafea goale pentru cafetiere electrice."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Softvér; Aplikácie; Pocítacový softvér na dialkové ovládanie a inteligentnú obsluhu vykurovacích zariadení na výdaj teplých nápojov a instalácie na ohrev alebo chladenie nápojov."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Elektrické kávovary; Zariadenia na varenie potravín, Zariadenia na varenie nápojov, Zariadenia na ohrievanie potravín, Zariadenia na ohrievanie nápojov, Chladenie potravín, Zariadenia na chladenie nápojov, Zariadenia na konzervovanie jedál a Prístroje na konzervovanie nápojov; Ohrievacie zariadenia na výdaj teplých nápojov; Zariadenia na ohrievanie nápojov; Kávové kapsuly do elektrických kávovarov (prázdne)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Programska oprema; Aplikacija; Programska oprema za daljinski nadzor in pametno upravljanje grelnikov za razdeljevanje vrocih pijac ter naprav za ogrevanje ali hlajenje pijac."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Elektricni strojcki za kuhanje kave; Naprave za kuhanje zivil, Naprave za kuhanje pijac, Aparati za segrevanje zivil, Naprave za ogrevanje pijac, Hlajenje hrane, Aparati za hlajenje pijac, Aparati za konzerviranje hrane in Naprave za konzerviranje pijac; Grelniki za tocenje toplih pijac; Instalacije za segrevanje napitkov; Kavne kapsule, prazne, za elektricne kavne aparate."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software; Aplicaciones; Software para el control remoto e inteligente de calentadores para dispensar bebidas calientes y de instalaciones para calentar o enfriar bebidas."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Máquinas de café eléctricas; Máquinas para cocinar alimentos, Aparatos para cocinar bebidas, Aparatos para calentar alimentos, Aparatos para calentar bebidas, Refrigeración de comidas, Aparatos para enfriar bebidas, Aparatos para conservar alimentos y Equipos para la conservación de bebidas; Aparatos de calentamiento de bebidas calientes; Aparatos para calentar bebidas; Cápsulas de café, vacías, para máquinas de café eléctricas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Mjukvaror; App; Programvara för fjärrstyrning och för intelligent styrning av uppvärmningsapparater för utmatning av varma drycker och av anläggningar för att värma upp eller kyla ned drycker."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Kaffemaskiner, elektriska; Apparater för tillagning av livsmedel, Apparater för tillagning av drycker, Apparater för uppvärmning av livsmedel, Apparater för uppvärmning av drycker, Livsmedelskylning, Apparater för kylda drycker, Apparater för konservering av livsmedel och Anordningar för konservering av drycker; Uppvärmningsapparater för utskänkning av varma drycker; Anordning för uppvärming av drycker; Kaffekapslar, tomma, för elektriska kaffemaskiner."
+        }
+      ]
+    },
+    "id": "781a27b7-e943-49be-b3e6-ed5cc2817944",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "94"
+      }
+    ],
+    "recordLastUpdated": "20260512",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Vestdijk 51,Eindhoven, 5611 CA",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "ALGEMEEN OCTROOI- EN MERKENBUREAU B.V."
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240412",
+        "applicationNumber": "19012764"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340412",
+      "lastPublicationDate": "20240521",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20240828",
+        "registrationNumber": "19012764"
+      }
+    },
+    "version": "20260512012826",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOFI"
+    }
+  },
+  "_uri": "/mark/em/781a27b7-e943-49be-b3e6-ed5cc2817944",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:00.249Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "uri": "/mark/xs/2c996821-72f7-49e0-b01c-dc8cb139137a",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "2c996821-72f7-49e0-b01c-dc8cb139137a",
+  "applicationNumber": null,
+  "registrationNumber": "10126136",
+  "applicationDate": null,
+  "registrationDate": "2009-08-12",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "URBAN ACTIVE - NORTHWEST OMAHA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education and entertainment services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NORTHWEST OMAHA FITNESS, LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1056 WELLINGTON WAY STE 200, LEXINGTON, KY, 40513",
+        "applicantAddressCity": "LEXINGTON",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "40513",
+        "applicantAddressStateName": "KENTUCKY",
+        "applicantAddressStreet": "1056 WELLINGTON WAY STE 200",
+        "applicantLegalEntity": "LIMITED LIABILITY COMPANY",
+        "applicantName": "NORTHWEST OMAHA FITNESS, LLC"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education and entertainment services"
+        }
+      ]
+    },
+    "id": "2c996821-72f7-49e0-b01c-dc8cb139137a",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADENAME",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "1056 WELLINGTON WAY STE 200, LEXINGTON, KY, 40513",
+        "city": "LEXINGTON",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "LIMITED LIABILITY COMPANY",
+        "name": "NORTHWEST OMAHA FITNESS, LLC",
+        "postalCode": "40513",
+        "stateName": "KENTUCKY",
+        "street": "1056 WELLINGTON WAY STE 200"
+      }
+    ],
+    "recordLastUpdated": "20241213",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20090812",
+        "registrationNumber": "10126136"
+      }
+    },
+    "usStateOfficeCode": "NE",
+    "usStateOfficeName": "NEBRASKA",
+    "version": "20241213180609",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "URBAN ACTIVE - NORTHWEST OMAHA"
+    }
+  },
+  "_uri": "/mark/xs/2c996821-72f7-49e0-b01c-dc8cb139137a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.833Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

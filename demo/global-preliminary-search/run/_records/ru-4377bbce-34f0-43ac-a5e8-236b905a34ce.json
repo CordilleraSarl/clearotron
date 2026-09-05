@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/ru/4377bbce-34f0-43ac-a5e8-236b905a34ce",
+  "provider": "clarivate",
+  "office": "ru",
+  "guid": "4377bbce-34f0-43ac-a5e8-236b905a34ce",
+  "applicationNumber": "2013727856",
+  "registrationNumber": "527709",
+  "applicationDate": "2013-08-14",
+  "registrationDate": "2014-11-26",
+  "expiryDate": "2033-08-14",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "aori",
+  "markTransliteration": "aori",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "ru",
+      "description": "- агентства рекламные; ведение автоматизированных баз данных; исследования маркетинговые; макетирование рекламы; маркетинг; обновление рекламных материалов; обработка текста; организация выставок в коммерческих или рекламных целях; поиск информации в компьютерных файлах для третьих лиц; презентация товаров на всех медиасредствах с целью розничной продажи; продвижение товаров для третьих лиц; производство рекламных фильмов; прокат рекламного времени в средствах массовой информации; прокат рекламных материалов; публикация рекламных текстов; распространение рекламных материалов; рассылка рекламных материалов; редактирование рекламных текстов; реклама; реклама интерактивная в компьютерной сети; сбор и предоставление статистических данных; сбор информации в компьютерных базах данных; систематизация информации в компьютерных базах данных; услуги субподрядные [коммерческая помощь].",
+      "translation_language": "en",
+      "translation": "- advertising agencies; maintenance of automated databases; marketing research; layout of advertising; marketing; updating of advertising materials; word processing; organization of exhibitions for commercial or advertising purposes; searching for information in computer files for third parties; presentation of goods on all of media for the purpose of retail sale; promotion of goods for others; production of advertising films; rental of advertising time in the media; rental of advertising material; publication of advertising texts; distribution of promotional materials; distribution of promotional materials; editing of advertising texts; advertising; interactive advertising on a computer network; collection and provision of statistical data; collection of information in computer databases; systematization of information into computer databases; subcontracting services [commercial assistance]."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ru",
+      "description": "- анализ компьютерных систем; восстановление компьютерных данных; защита информационных систем от вирусов; инсталляция программного обеспечения; исследования технические; консультации в области информационных технологий; консультации в области разработки и развития компьютерной техники; консультации по вопросам программного обеспечения; консультации в области дизайна веб-сайтов; модернизация программного обеспечения; обеспечение программное как услуга [saas]; обслуживание программного обеспечения; предоставление поисковых средств для интернета; преобразование данных и информационных программ [нефизическое преобразование]; проектирование компьютерных систем; прокат программного обеспечения; размещение компьютерных сайтов [веб-сайтов]; размещение серверов; тиражирование компьютерных программ; создание и техническое обслуживание веб-сайтов для третьих лиц; составление программ для компьютеров.",
+      "translation_language": "en",
+      "translation": "- Analysis of computer systems; recovery of computer data; protection of information systems against viruses; software installation; technical research; consultation in the field of information technology; consultation in the design and development of computer hardware; advice on software; consultation in the field of website design; software upgrades; providing software as a service [saas]; software maintenance; providing search engines for the Internet; conversion of data and information programs [non-physical conversion]; design of computer systems; rental of software; placement of computer sites [websites]; colocation; duplication of computer programs; creation and maintenance of websites for third parties; programming for computers."
+    }
+  ],
+  "owner": "BLONDINKA RU",
+  "ownerNative": null,
+  "ownerCountry": "RU",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "105005, Москва, ул. Радио, 24, корп. 1, оф. 702",
+        "applicantAddressCountryCode": "RU",
+        "applicantAddressCountryName": "Russian Federation",
+        "applicantName": "BLONDINKA RU",
+        "applicantNativeName": "Закрытое акционерное общество \"Блондинка.Ру\""
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- advertising agencies; maintenance of automated databases; marketing research; layout of advertising; marketing; updating of advertising materials; word processing; organization of exhibitions for commercial or advertising purposes; searching for information in computer files for third parties; presentation of goods on all of media for the purpose of retail sale; promotion of goods for others; production of advertising films; rental of advertising time in the media; rental of advertising material; publication of advertising texts; distribution of promotional materials; distribution of promotional materials; editing of advertising texts; advertising; interactive advertising on a computer network; collection and provision of statistical data; collection of information in computer databases; systematization of information into computer databases; subcontracting services [commercial assistance].",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- агентства рекламные; ведение автоматизированных баз данных; исследования маркетинговые; макетирование рекламы; маркетинг; обновление рекламных материалов; обработка текста; организация выставок в коммерческих или рекламных целях; поиск информации в компьютерных файлах для третьих лиц; презентация товаров на всех медиасредствах с целью розничной продажи; продвижение товаров для третьих лиц; производство рекламных фильмов; прокат рекламного времени в средствах массовой информации; прокат рекламных материалов; публикация рекламных текстов; распространение рекламных материалов; рассылка рекламных материалов; редактирование рекламных текстов; реклама; реклама интерактивная в компьютерной сети; сбор и предоставление статистических данных; сбор информации в компьютерных базах данных; систематизация информации в компьютерных базах данных; услуги субподрядные [коммерческая помощь]."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- Analysis of computer systems; recovery of computer data; protection of information systems against viruses; software installation; technical research; consultation in the field of information technology; consultation in the design and development of computer hardware; advice on software; consultation in the field of website design; software upgrades; providing software as a service [saas]; software maintenance; providing search engines for the Internet; conversion of data and information programs [non-physical conversion]; design of computer systems; rental of software; placement of computer sites [websites]; colocation; duplication of computer programs; creation and maintenance of websites for third parties; programming for computers.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- анализ компьютерных систем; восстановление компьютерных данных; защита информационных систем от вирусов; инсталляция программного обеспечения; исследования технические; консультации в области информационных технологий; консультации в области разработки и развития компьютерной техники; консультации по вопросам программного обеспечения; консультации в области дизайна веб-сайтов; модернизация программного обеспечения; обеспечение программное как услуга [saas]; обслуживание программного обеспечения; предоставление поисковых средств для интернета; преобразование данных и информационных программ [нефизическое преобразование]; проектирование компьютерных систем; прокат программного обеспечения; размещение компьютерных сайтов [веб-сайтов]; размещение серверов; тиражирование компьютерных программ; создание и техническое обслуживание веб-сайтов для третьих лиц; составление программ для компьютеров."
+        }
+      ]
+    },
+    "id": "4377bbce-34f0-43ac-a5e8-236b905a34ce",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.25"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250705",
+    "registrationOfficeCode": "RU",
+    "registrationOfficeName": "Russian Federation",
+    "representatives": [
+      {
+        "representativeNativeName": "140103, Московская область, г. Раменское, ул. Донинское шоссе, 8, кв. 136, И.В. Пантелеевой"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20130814",
+        "applicationNumber": "2013727856"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330814",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20141126",
+        "registrationNumber": "527709"
+      }
+    },
+    "version": "20250705075723",
+    "wordMarkSpecification": {
+      "markTransliteration": "aori",
+      "markVerbalElementText": "aori"
+    }
+  },
+  "_uri": "/mark/ru/4377bbce-34f0-43ac-a5e8-236b905a34ce",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:50.842Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

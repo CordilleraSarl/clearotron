@@ -1,0 +1,263 @@
+{
+  "uri": "/mark/em/40ce8bd9-9fbe-49c6-8f8a-f7bb1eb8996e",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "40ce8bd9-9fbe-49c6-8f8a-f7bb1eb8996e",
+  "applicationNumber": "394247",
+  "registrationNumber": "394247",
+  "applicationDate": "1996-10-03",
+  "registrationDate": "1998-09-28",
+  "expiryDate": "2036-10-03",
+  "renewalDate": null,
+  "lastPublicationDate": "1998-02-16",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "da",
+      "description": "Hasardspil; kasinovirksomhed; underholdning; fritidsaktiviteter; klubvirksomhed; organisering af konkurrencer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Gokspelen, gokken; casino's; ontspanning; recreatiediensten; clubs; organisatie van competities.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Gaming, gambling; casino services; amusements; recreational services; club services; organisation of competitions.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fi",
+      "description": "Peli-, uhkapeli- ja kasinopalvelut; huvitukset; ajanvietepalvelut; kerhopalvelut; kilpailujen järjestäminen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Jeux d'argent; services de casino; divertissement; services de divertissement; services de clubs; organisation de compétitions.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Spiele, Glücksspiele; Casinobetrieb; Vergnügungen; Dienstleistungen im Freizeitbereich; Betrieb von Clubs; Veranstaltung von Wettkämpfen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "Giochi di denaro, giochi d'azzardo; servizi di casinò; divertimento; servizi ricreativi; servizi di club; organizzazione di competizioni.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Jogos a dinheiro, jogos de azar; serviços de casino; divertimento; serviços recreativos; serviços de clube; organização de competições.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Juegos, apuestas; servicios de casino; diversiones; servicios recreativos; servicios de clubes; organización de competiciones.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sw",
+      "description": "Spel, hasardspel; kasinotjänster; nöjestjänster; rekreation; klubbtjänster; anordnande av tävlingar.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Rank Leisure Holdings Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Potter Clarkson KB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "TOR, Saint-Cloud Way,Maidenhead, Berkshire,Berkshire, SL6 8BN",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Rank Leisure Holdings Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Hasardspil; kasinovirksomhed; underholdning; fritidsaktiviteter; klubvirksomhed; organisering af konkurrencer."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Gokspelen, gokken; casino's; ontspanning; recreatiediensten; clubs; organisatie van competities."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Gaming, gambling; casino services; amusements; recreational services; club services; organisation of competitions."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Peli-, uhkapeli- ja kasinopalvelut; huvitukset; ajanvietepalvelut; kerhopalvelut; kilpailujen järjestäminen."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Jeux d'argent; services de casino; divertissement; services de divertissement; services de clubs; organisation de compétitions."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Spiele, Glücksspiele; Casinobetrieb; Vergnügungen; Dienstleistungen im Freizeitbereich; Betrieb von Clubs; Veranstaltung von Wettkämpfen."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Giochi di denaro, giochi d'azzardo; servizi di casinò; divertimento; servizi ricreativi; servizi di club; organizzazione di competizioni."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Jogos a dinheiro, jogos de azar; serviços de casino; divertimento; serviços recreativos; serviços de clube; organização de competições."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Juegos, apuestas; servicios de casino; diversiones; servicios recreativos; servicios de clubes; organización de competiciones."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Spel, hasardspel; kasinotjänster; nöjestjänster; rekreation; klubbtjänster; anordnande av tävlingar."
+        }
+      ]
+    },
+    "id": "40ce8bd9-9fbe-49c6-8f8a-f7bb1eb8996e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00447",
+        "publicationVolume": "10"
+      }
+    ],
+    "recordLastUpdated": "20260616",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Riddargatan 10,Stockholm, 114 35",
+        "representativeAddressCountryCode": "SE",
+        "representativeAddressCountryName": "Sweden",
+        "representativeName": "Potter Clarkson KB"
+      }
+    ],
+    "secondLanguageCode": "fr",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19961003",
+        "applicationNumber": "394247"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20361003",
+      "lastPublicationDate": "19980216",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "19980928",
+        "registrationNumber": "394247"
+      }
+    },
+    "version": "20260616020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/em/40ce8bd9-9fbe-49c6-8f8a-f7bb1eb8996e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.826Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

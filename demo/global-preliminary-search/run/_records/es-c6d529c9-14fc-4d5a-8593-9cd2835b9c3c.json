@@ -1,0 +1,124 @@
+{
+  "uri": "/mark/es/c6d529c9-14fc-4d5a-8593-9cd2835b9c3c",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "c6d529c9-14fc-4d5a-8593-9cd2835b9c3c",
+  "applicationNumber": "3110241 M7",
+  "registrationNumber": "3110241 M7",
+  "applicationDate": "2014-02-11",
+  "registrationDate": "2014-08-18",
+  "expiryDate": "2034-02-10",
+  "renewalDate": "2024-06-26",
+  "lastPublicationDate": "2014-02-25",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JOCONDE JOVEN CORO NACIONAL DE ESPAÑA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de grupo musical (entretenimiento). Educacion; formacion; servicios de entretenimiento; actividades deportivas y culturales.",
+      "translation_language": "en",
+      "translation": "MUSICAL SERVICES GROUP (ENTERTAINMENT). EDUCATION; TRAINING; Entertainment; Sporting and cultural activities."
+    }
+  ],
+  "owner": "FERNÁNDEZ HERRANZ, NURIA SOFÍA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Vicario Trinidad, Marcos",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "FERNÁNDEZ HERRANZ, NURIA SOFÍA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "MUSICAL SERVICES GROUP (ENTERTAINMENT). EDUCATION; TRAINING; Entertainment; Sporting and cultural activities.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de grupo musical (entretenimiento). Educacion; formacion; servicios de entretenimiento; actividades deportivas y culturales."
+        }
+      ]
+    },
+    "id": "c6d529c9-14fc-4d5a-8593-9cd2835b9c3c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "VERDE, ROJO, NARANJA, OCRE, VIOLETA"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "4122"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "representatives": [
+      {
+        "representativeName": "Vicario Trinidad, Marcos"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20140211",
+        "applicationNumber": "3110241 M7"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340210",
+      "lastPublicationDate": "20140225",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20140818",
+        "registrationNumber": "3110241 M7"
+      },
+      "renewalDate": "20240626",
+      "renewalPublishedDate": "20240703"
+    },
+    "version": "20260427163114",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOCONDE JOVEN CORO NACIONAL DE ESPAÑA"
+    }
+  },
+  "_uri": "/mark/es/c6d529c9-14fc-4d5a-8593-9cd2835b9c3c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.745Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

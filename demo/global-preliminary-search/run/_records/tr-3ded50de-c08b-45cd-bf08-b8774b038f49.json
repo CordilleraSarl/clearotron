@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/tr/3ded50de-c08b-45cd-bf08-b8774b038f49",
+  "provider": "clarivate",
+  "office": "tr",
+  "guid": "3ded50de-c08b-45cd-bf08-b8774b038f49",
+  "applicationNumber": "2019/50067",
+  "registrationNumber": "2019 50067",
+  "applicationDate": "2019-05-18",
+  "registrationDate": null,
+  "expiryDate": "2029-05-18",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-05-29",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "güven ortağı",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    16,
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        16,
+        35,
+        41
+      ],
+      "language": "tr",
+      "description": "Basılı yayınlar, basılı evrak: kitaplar, dergiler, gazeteler, faturalar, irsaliyeler, gelir makbuzları, takvimler, posterler, fotoğraflar, afişler, tablolar, çıkartmalar, pullar. İş yönetimi, idaresi ve bu konular ile ilgili danışmanlık, muhasebe ve mali müşavirlik hizmetleri, personel işe yerleştirme, işe alma, personel seçimi, personel temini hizmetleri, ithalat-ihracat acente hizmetleri, geçici personel görevlendirme ( başkası adına fatura yatırma, vergi yatırma, trafik işlemleri gibi iş takibi) hizmetleri. Eğitim ve öğretim hizmetleri. Sempozyum, konferans, kongre ve seminer düzenleme, idare hizmetleri. Dergi, kitap, gazete v.b.gibi yayınların basıma hazır hale getirilmesi, okuyucuya ulaştırılmasına ilişkin hizmetler (global iletişim ağları vasıtasıyla anılan hizmetlerin sağlanması da dahil).",
+      "translation_language": "en",
+      "translation": "Printed publications, printed documents: books, magazines, newspapers, invoices, waybills, income receipts, calendars, posters, photos, posters, tables, stickers, stamps. Business management, administration and consultancy, accounting and financial consultancy services, personnel recruitment, recruitment, personnel selection, personnel recruitment services, import-export agency services, temporary staff assignment (invoice on behalf of someone else, tax deposit, traffic business tracking services such as Education and training services. Organization of symposiums, conferences, congresses and seminars, administration services. Services for the publication of publications such as magazines, books, newspapers, etc. to the reader (including provision of such services through global communication networks)."
+    }
+  ],
+  "owner": "CANTEKİN EĞİTİM DANIŞMANLIK KOÇLUK HİZMETLERİ LTD. ŞTİ.",
+  "ownerNative": null,
+  "ownerCountry": "TR",
+  "representative": "KIVANÇ OK",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Alacaatlı Mah. 3336 Cad. Yıldız Sitesi No:14-100 Çankaya Ankara",
+        "applicantAddressCountryCode": "TR",
+        "applicantAddressCountryName": "Turkey",
+        "applicantName": "CANTEKİN EĞİTİM DANIŞMANLIK KOÇLUK HİZMETLERİ LTD. ŞTİ."
+      }
+    ],
+    "applicationLanguageCode": "tr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Printed publications, printed documents: books, magazines, newspapers, invoices, waybills, income receipts, calendars, posters, photos, posters, tables, stickers, stamps. Business management, administration and consultancy, accounting and financial consultancy services, personnel recruitment, recruitment, personnel selection, personnel recruitment services, import-export agency services, temporary staff assignment (invoice on behalf of someone else, tax deposit, traffic business tracking services such as Education and training services. Organization of symposiums, conferences, congresses and seminars, administration services. Services for the publication of publications such as magazines, books, newspapers, etc. to the reader (including provision of such services through global communication networks).",
+          "intClassNumber": "16,35,41",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Basılı yayınlar, basılı evrak: kitaplar, dergiler, gazeteler, faturalar, irsaliyeler, gelir makbuzları, takvimler, posterler, fotoğraflar, afişler, tablolar, çıkartmalar, pullar. İş yönetimi, idaresi ve bu konular ile ilgili danışmanlık, muhasebe ve mali müşavirlik hizmetleri, personel işe yerleştirme, işe alma, personel seçimi, personel temini hizmetleri, ithalat-ihracat acente hizmetleri, geçici personel görevlendirme ( başkası adına fatura yatırma, vergi yatırma, trafik işlemleri gibi iş takibi) hizmetleri. Eğitim ve öğretim hizmetleri. Sempozyum, konferans, kongre ve seminer düzenleme, idare hizmetleri. Dergi, kitap, gazete v.b.gibi yayınların basıma hazır hale getirilmesi, okuyucuya ulaştırılmasına ilişkin hizmetler (global iletişim ağları vasıtasıyla anılan hizmetlerin sağlanması da dahil)."
+        }
+      ]
+    },
+    "id": "3ded50de-c08b-45cd-bf08-b8774b038f49",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      }
+    ],
+    "markImageViennaClassification": [
+      "04.05.05"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "465"
+      }
+    ],
+    "recordLastUpdated": "20250708",
+    "registrationOfficeCode": "TR",
+    "registrationOfficeName": "Turkey",
+    "representatives": [
+      {
+        "representativeAddress": "ÇANKAYA MAH. AHMET İHSAN SOK. NO:3/8 - ÇANKAYA/ANKARA",
+        "representativeName": "KIVANÇ OK"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190518",
+        "applicationNumber": "2019/50067"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290518",
+      "lastPublicationDate": "20200529",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "2019 50067"
+      }
+    },
+    "version": "20250708180951",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "güven ortağı"
+    }
+  },
+  "_uri": "/mark/tr/3ded50de-c08b-45cd-bf08-b8774b038f49",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.829Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

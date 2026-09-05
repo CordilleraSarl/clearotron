@@ -1,0 +1,174 @@
+{
+  "uri": "/mark/ca/b4ae4e0e-8b3f-4f77-9d2b-cf5b35c16037",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "b4ae4e0e-8b3f-4f77-9d2b-cf5b35c16037",
+  "applicationNumber": "2173901",
+  "registrationNumber": null,
+  "applicationDate": "2022-03-19",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2025-11-24",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "Brave North Storytellers",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "(1) Educational services, namely storytelling sessions between participants, including educators, researchers, graduate students, classroom teachers, K-12 students and local community members. Language and literacy instructional activities related to shared multi-modality storytelling using social media platforms, and digital multi-media tools .",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Jia Li",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "11 Simcoe St N, 385, Oshawa, ONTARIO, L1G4R7",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressLines": [
+          "11 Simcoe St N",
+          "385",
+          "Oshawa",
+          "ONTARIO"
+        ],
+        "applicantAddressPostalCode": "L1G4R7",
+        "applicantName": "Jia Li"
+      }
+    ],
+    "categorizedTexts": {},
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Educational services, namely storytelling sessions between participants, including educators, researchers, graduate students, classroom teachers, K-12 students and local community members. Language and literacy instructional activities related to shared multi-modality storytelling using social media platforms, and digital multi-media tools ."
+        }
+      ]
+    },
+    "id": "b4ae4e0e-8b3f-4f77-9d2b-cf5b35c16037",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20251124",
+        "descriptionText": "Abandoned - Section 36"
+      },
+      {
+        "date": "20250904",
+        "descriptionText": "Default Notice Sent",
+        "responseDate": "20251104"
+      },
+      {
+        "date": "20250217",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20250817"
+      },
+      {
+        "date": "20250217",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20220715",
+        "descriptionText": "287",
+        "information": "Goods or Services Not Acceptable"
+      },
+      {
+        "date": "20220319",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20220319",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20220319",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "11 Simcoe St N, 385, Oshawa, ONTARIO, L1G4R7",
+        "addressLines": [
+          "11 Simcoe St N",
+          "385",
+          "Oshawa",
+          "ONTARIO",
+          "L1G4R7"
+        ],
+        "countryName": "Canada",
+        "name": "Jia Li",
+        "postalCode": "L1G4R7"
+      }
+    ],
+    "recordLastUpdated": "20251126",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "status": {
+      "abandonmentDate": "20251124",
+      "active": false,
+      "application": {
+        "applicationDate": "20220319",
+        "applicationNumber": "2173901"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "defaultNotice": {
+        "dueDate": "20251104",
+        "sentDate": "20250904"
+      },
+      "formalisationDate": "20220319",
+      "markCurrentStatus": "Abandoned - Section 36"
+    },
+    "subjectHeadings": [
+      "BRAVE NORTH STORYTELLERS",
+      "STORY TELLERS"
+    ],
+    "version": "20251126080115",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Brave North Storytellers",
+      "markVerbalElementTextFormal": "Brave North Storytellers"
+    }
+  },
+  "_uri": "/mark/ca/b4ae4e0e-8b3f-4f77-9d2b-cf5b35c16037",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

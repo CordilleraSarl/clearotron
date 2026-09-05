@@ -1,0 +1,165 @@
+{
+  "uri": "/mark/gb/a239de0d-2015-4bfc-99ed-2fed5baa9aac",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "a239de0d-2015-4bfc-99ed-2fed5baa9aac",
+  "applicationNumber": "3775202",
+  "registrationNumber": "3775202",
+  "applicationDate": "2022-04-07",
+  "registrationDate": "2022-08-26",
+  "expiryDate": "2032-04-07",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR WILTON",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    27,
+    35,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        27
+      ],
+      "language": "en",
+      "description": "Carpets, rugs, mats and matting, linoleum and other materials for covering existing floors; carpet underlay; floor coverings; carpet tiles and carpet runners; door mats; vinyl floor coverings and tiles; anti-slip materials for use under carpets, rugs and mats .",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Retail services connected with the sale of floor coverings, carpets, rugs, mats and accessories therefor; the bringing together, for the benefit of others, of a variety of floorcoverings, carpets, rugs, mats, anti-slip materials, stair rods, door bars, threshold bars and trims, carpet grippers and beading, carpet tape, glues and adhesives, to enable consumers to conveniently view and purchase those goods from a website or physical store.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Maintenance, repair and installation services in the field of carpets, flooring and floor coverings; installation and fitting of carpets and flooring; carpet cleaning and stain removal services; application of underlay; repair and maintenance of flooring; estimating, planning and measuring services in relation to the provision of carpets and other floor coverings; information, advisory and consultancy services relating to the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Carpet and rug design services; development and design of manufacturing methods relating to carpets and floor coverings; testing, authentication and quality control of manufactured goods; certification services relating to carpets and floor coverings; information, advisory and consultancy services relating to the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Hoobrook Holdings Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Vault IP Ltd",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Hoobrook, Chester Road South, Kidderminster DY10 1XW",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Hoobrook Holdings Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "27",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Carpets, rugs, mats and matting, linoleum and other materials for covering existing floors; carpet underlay; floor coverings; carpet tiles and carpet runners; door mats; vinyl floor coverings and tiles; anti-slip materials for use under carpets, rugs and mats ."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Retail services connected with the sale of floor coverings, carpets, rugs, mats and accessories therefor; the bringing together, for the benefit of others, of a variety of floorcoverings, carpets, rugs, mats, anti-slip materials, stair rods, door bars, threshold bars and trims, carpet grippers and beading, carpet tape, glues and adhesives, to enable consumers to conveniently view and purchase those goods from a website or physical store."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Maintenance, repair and installation services in the field of carpets, flooring and floor coverings; installation and fitting of carpets and flooring; carpet cleaning and stain removal services; application of underlay; repair and maintenance of flooring; estimating, planning and measuring services in relation to the provision of carpets and other floor coverings; information, advisory and consultancy services relating to the aforesaid."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Carpet and rug design services; development and design of manufacturing methods relating to carpets and floor coverings; testing, authentication and quality control of manufactured goods; certification services relating to carpets and floor coverings; information, advisory and consultancy services relating to the aforesaid."
+        }
+      ]
+    },
+    "id": "a239de0d-2015-4bfc-99ed-2fed5baa9aac",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2022/024"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Cavendish House, 39 Waterloo Street, Birmingham B2 5PP",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Vault IP Ltd"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220407",
+        "applicationNumber": "3775202"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320407",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20220826",
+        "registrationNumber": "3775202"
+      }
+    },
+    "version": "20250627221649",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR WILTON"
+    }
+  },
+  "_uri": "/mark/gb/a239de0d-2015-4bfc-99ed-2fed5baa9aac",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.814Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

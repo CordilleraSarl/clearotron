@@ -1,0 +1,164 @@
+{
+  "uri": "/mark/cn/5eaeb2ee-386b-4a71-97bc-4959fddfbc16",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "5eaeb2ee-386b-4a71-97bc-4959fddfbc16",
+  "applicationNumber": "10746051",
+  "registrationNumber": "10746051",
+  "applicationDate": "2012-04-10",
+  "registrationDate": "2013-06-21",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2013-03-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2024-12-27",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "凡圣品",
+  "markTransliteration": "VANCORE fan sheng pin",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "发光二极管(LED);照明设备用镇流器;芯片(集成电路);遥控装置;太阳能电池;计算机外围设备;电子公告牌;卫星导航仪器;幻灯;光学灯",
+      "translation_language": "en",
+      "translation": "Light-emitting diodes (LED); ballasts for lighting equipment; chips (integrated circuits); remote control devices; solar cells; computer peripherals; electronic bulletin boards; satellite navigation equipment; slides; optical lights"
+    }
+  ],
+  "owner": "Shenzhen Fanshengpin Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市宝安区龙华街道华联社区狮头岭龙观路鸿宇大厦十二层1222室(办公场所)",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Fanshengpin Technology Co., Ltd.",
+        "applicantNativeName": "深圳市凡圣品科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Light-emitting diodes (LED); ballasts for lighting equipment; chips (integrated circuits); remote control devices; solar cells; computer peripherals; electronic bulletin boards; satellite navigation equipment; slides; optical lights",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "发光二极管(LED);照明设备用镇流器;芯片(集成电路);遥控装置;太阳能电池;计算机外围设备;电子公告牌;卫星导航仪器;幻灯;光学灯"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Signalling apparatus and instruments",
+        "Equipments used in communication and navigation",
+        "Apparatus and instruments for photographic and cinematographic",
+        "Optical instruments",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0906",
+          "subNatGoodsServicesDescription": "Signalling apparatus and instruments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0911",
+          "subNatGoodsServicesDescription": "Optical instruments"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "5eaeb2ee-386b-4a71-97bc-4959fddfbc16",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1352"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市神州知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120410",
+        "applicationNumber": "10746051"
+      },
+      "cancellationDate": "20241227",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20130320",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20130621",
+        "registrationNumber": "10746051"
+      }
+    },
+    "version": "20251002033437",
+    "wordMarkSpecification": {
+      "markTransliteration": "VANCORE fan sheng pin",
+      "markVerbalElementText": "凡圣品"
+    }
+  },
+  "_uri": "/mark/cn/5eaeb2ee-386b-4a71-97bc-4959fddfbc16",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.819Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

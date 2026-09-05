@@ -1,0 +1,239 @@
+{
+  "uri": "/mark/jp/5f6ba9c4-8809-4d06-9619-0a38cfd6c70b",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "5f6ba9c4-8809-4d06-9619-0a38cfd6c70b",
+  "applicationNumber": "2008-010976",
+  "registrationNumber": "5227805",
+  "applicationDate": "2008-02-15",
+  "registrationDate": "2009-05-01",
+  "expiryDate": "2019-05-01",
+  "renewalDate": null,
+  "lastPublicationDate": "2009-06-09",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    41,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "コンピュータソフトウェア",
+      "translation_language": "en",
+      "translation": "Computer software"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": null,
+      "description": "歯科用機械器具",
+      "translation_language": "en",
+      "translation": "Dental machinery tools"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "歯列矯正機械器具の使用に関する教育・訓練，歯列矯正のコンピュータソフトウェアの使用に関する教育・訓練，コンピュータソフトウェアの使用に関する歯列矯正医及び開業医のための教育・訓練，その他の歯科及び歯列矯正の分野における教育・訓練，セミナー・会議・講座・研修会・講義・シンポジウム（すべて外科・医療・歯科・及び歯列矯正の技術・機械器具・用具に関する）の開催及び運営",
+      "translation_language": "en",
+      "translation": "Education and training on the use of orthodontic appliances, education / training on the use of orthodontic computer software, education / training for orthodontists and practitioners on the use of computer software, other dentistry and orthodontics Training, seminars, conferences, courses, workshops, lectures, symposiums (all related to surgery, medical, dental, and orthodontic techniques, machinery and equipment, and tools) in the field of"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "歯科学に関する研究及びこれに関する助言，他人のためのコンピュータハードウェアの設計及び他人のためのコンピュータソフトウェアシステムの設計・作成及び保守，歯科、歯列矯正技術及び歯科材料に関する研究開発及びこれに関する助言・情報の提供，歯列矯正・歯内・小児歯科・歯周療法学に関する研究及びこれに関する助言（インターネット又はエクストラネットを介するオンラインによる前記サービスの提供を含む。）",
+      "translation_language": "en",
+      "translation": "Research on dentistry and advice on this, design of computer hardware for others, designing / creation and maintenance of computer software systems for others, research and development on dentistry, orthodontic technology and dental materials and advice on this Provide information, research on orthodontics · endodontic / pediatric dentistry / periodontotherapy and advice on this (including providing the above service online via the Internet or extranet)"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": null,
+      "description": "歯科医業に関する助言，歯周病治療，矯正歯科医業，小児歯科医業，その他の歯科医業，医業，患者の歯列矯正治療計画の作成・提示する医業",
+      "translation_language": "en",
+      "translation": "Advice on dental practice, Periodontal disease treatment, Orthodontic dentistry, Pediatric dentistry, Other dentistry, Medicine, Preparation and presentation of orthodontic treatment plan of patients Medical industry"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YASUMURA TAKAAKI",
+  "priorities": [
+    {
+      "priorityDate": "20070823"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "コンピュータソフトウェア"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dental machinery tools",
+          "intClassNumber": "10",
+          "intGoodsServicesDescription": "歯科用機械器具"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education and training on the use of orthodontic appliances, education / training on the use of orthodontic computer software, education / training for orthodontists and practitioners on the use of computer software, other dentistry and orthodontics Training, seminars, conferences, courses, workshops, lectures, symposiums (all related to surgery, medical, dental, and orthodontic techniques, machinery and equipment, and tools) in the field of",
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "歯列矯正機械器具の使用に関する教育・訓練，歯列矯正のコンピュータソフトウェアの使用に関する教育・訓練，コンピュータソフトウェアの使用に関する歯列矯正医及び開業医のための教育・訓練，その他の歯科及び歯列矯正の分野における教育・訓練，セミナー・会議・講座・研修会・講義・シンポジウム（すべて外科・医療・歯科・及び歯列矯正の技術・機械器具・用具に関する）の開催及び運営"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Research on dentistry and advice on this, design of computer hardware for others, designing / creation and maintenance of computer software systems for others, research and development on dentistry, orthodontic technology and dental materials and advice on this Provide information, research on orthodontics · endodontic / pediatric dentistry / periodontotherapy and advice on this (including providing the above service online via the Internet or extranet)",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "歯科学に関する研究及びこれに関する助言，他人のためのコンピュータハードウェアの設計及び他人のためのコンピュータソフトウェアシステムの設計・作成及び保守，歯科、歯列矯正技術及び歯科材料に関する研究開発及びこれに関する助言・情報の提供，歯列矯正・歯内・小児歯科・歯周療法学に関する研究及びこれに関する助言（インターネット又はエクストラネットを介するオンラインによる前記サービスの提供を含む。）"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advice on dental practice, Periodontal disease treatment, Orthodontic dentistry, Pediatric dentistry, Other dentistry, Medicine, Preparation and presentation of orthodontic treatment plan of patients Medical industry",
+          "intClassNumber": "44",
+          "intGoodsServicesDescription": "歯科医業に関する助言，歯周病治療，矯正歯科医業，小児歯科医業，その他の歯科医業，医業，患者の歯列矯正治療計画の作成・提示する医業"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        },
+        {
+          "natClassNumber": "10D01",
+          "natGoodsServicesDescription": "Medical machines and apparatus"
+        },
+        {
+          "natClassNumber": "41A01",
+          "natGoodsServicesDescription": "Educational and instruction services relating to arts, crafts, sports or general knowledge"
+        },
+        {
+          "natClassNumber": "41A03",
+          "natGoodsServicesDescription": "Arranging, conducting and organisation of seminars"
+        },
+        {
+          "natClassNumber": "42N03",
+          "natGoodsServicesDescription": "Designing of machines, apparatus, instruments [including their parts] or systems composed of such machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42Q01",
+          "natGoodsServicesDescription": "Testing, inspection or research of pharmaceuticals, cosmetics or foodstuff"
+        },
+        {
+          "natClassNumber": "42V02",
+          "natGoodsServicesDescription": "Medical services, Providing medical information, Physical examination, Dentistry, Preparation and dispensing of medications"
+        }
+      ]
+    },
+    "id": "5f6ba9c4-8809-4d06-9619-0a38cfd6c70b",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN ONLY",
+    "markImageViennaClassification": [
+      "26.01.01.00",
+      "26.01.03.00",
+      "26.04.01.00",
+      "26.04.03.00",
+      "26.04.04.00",
+      "26.04.08.00",
+      "26.04.09.00",
+      "26.04.10.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20070823"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YASUMURA TAKAAKI",
+        "representativeNativeName": "安村　高明"
+      },
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20080215",
+        "applicationNumber": "2008-010976"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20190501",
+      "lastPublicationDate": "20090609",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20090501",
+        "registrationNumber": "5227805"
+      }
+    },
+    "version": "20240320153104"
+  },
+  "_uri": "/mark/jp/5f6ba9c4-8809-4d06-9619-0a38cfd6c70b",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.739Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

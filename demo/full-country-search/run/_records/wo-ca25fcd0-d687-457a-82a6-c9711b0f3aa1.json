@@ -1,0 +1,236 @@
+{
+  "uri": "/mark/wo/ca25fcd0-d687-457a-82a6-c9711b0f3aa1",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "ca25fcd0-d687-457a-82a6-c9711b0f3aa1",
+  "applicationNumber": null,
+  "registrationNumber": "1010430",
+  "applicationDate": null,
+  "registrationDate": "2009-06-04",
+  "expiryDate": "2029-06-04",
+  "renewalDate": "2019-06-04",
+  "lastPublicationDate": "2019-06-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MIFARE ULTRALIGHT",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Electronic, electrotechnical and electromagnetic modules, parts and building elements (not included in other classes); data processing machines, data storage apparatus; microprocessors; interfaces (for computers); integrated circuits (IC's), chips (integrated circuits), semiconductors and smart cards; controllers for smart cards; controllers for RFID (Radio frequency identification) chips and tags; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID (Radio frequency identification) chips and tags; electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID (Radio frequency identification) chips and tags; aerials for scanning, reading and interpreting RFID (Radio frequency identification) chips and tags; NFC (Near Field Communication) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for near field communication applications; electronic payment cards; data processing apparatus and software for enabling, controlling, managing and monitoring all aspects of a paperless payment and/or access system employing RFID (Radio frequency identification) and/or NFC (Near Field Communication) technology, including allowing users to recharge their payment accounts remotely; chips and other electronic hardware to be embedded in tickets, tokens and stickers; electronically coded carriers, embedded with RFID (Radio frequency identification) chips and tags; parts for all the aforesaid goods.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Modules électroniques, électrotechniques et électromagnétiques, leurs parties et éléments de construction (non compris dans d'autres classe); machines de traitement de données, appareils de stockage de données; microprocesseurs; interfaces informatiques; circuits intégrés, puces (circuits intégrés), semi-conducteurs et cartes à mémoire; appareils de commande pour cartes à mémoire; appareils de commande pour étiquettes et puces d'identification par radiofréquence; matériel informatique et logiciels pour créer, programmer, commander, coder, scanner, lire et interpréter des étiquettes et puces d'identification par radiofréquence; appareils, instruments et équipements électroniques pour créer, programmer, commander, coder, scanner, lire et interpréter des étiquettes et puces d'identification par radiofréquence; antennes pour scanner, lire et interpréter des étiquettes et puces d'identification par radiofréquence; appareils, instruments et équipements de communication en champ proche, y compris modules électroniques, électrotechniques et électromagnétiques, parties et éléments de construction et circuits intégrés pour applications de communication en champ proche; cartes de paiement électroniques; appareils de traitement de données et logiciels pour permettre, commander, gérer et surveiller tous les aspects d'un paiement dématérialisé et/ou système d'accès utilisant l'identification par radiofréquence et/ou la technologie de communication en champ proche, permettant notamment aux utilisateurs de recharger leurs comptes de paiement à distance; puces et autre matériel électronique à intégrer dans des billets (tickets), jetons et autocollants; supports codés électroniquement, dans lesquels sont intégrées des étiquettes et puces d'identification par radiofréquence; parties pour tous les produits précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Módulos electrónicos, electrotécnicos y electromagnéticos, sus partes y elementos de montaje (no comprendidos en otras clases); máquinas de procesamiento de datos, aparatos de almacenamiento de datos; microprocesadores; interfaces de ordenador; circuitos integrados (CI), chips (circuitos integrados), semiconductores y tarjetas inteligentes; controladores para tarjetas inteligentes; controladores para chips y etiquetas de identificación por radiofrecuencia (RFID); hardware y software para crear, programar, controlar, codificar, rastrear, leer e interpretar chips y etiquetas de identificación por radiofrecuencia (RFID); aparatos, instrumentos y equipos electrónicos para crear, programar, controlar, codificar, rastrear, leer e interpretar chips y etiquetas de identificación por radiofrecuencia (RFID); antenas para rastrear, leer e interpretar chips y etiquetas de identificación por radiofrecuencia (RFID); aparatos, instrumentos y equipos para tecnologías inalámbricas NFC (comunicación en campo cercano), incluidos módulos electrónicos, electrotécnicos y electromagnéticos, sus partes y elementos de montaje, así como circuitos integrados para aplicaciones destinadas a la comunicación en campo cercano; tarjetas de pago electrónicas; software y aparatos de procesamiento de datos para activar, controlar, gestionar y monitorizar todas las cuestiones relativas a sistemas de acceso y/o pago telemático que utilizan tecnologías de identificación por radiofrecuencia (RFID) y/o NFC (comunicación en campo cercano), y que permiten además al usuario recargar sus cuentas de pago a distancia; chips y hardware electrónico de otro tipo para su integración en tiques, fichas y autoadhesivos; soportes codificados electrónicamente, con etiquetas y chips de identificación por radiofrecuencia (RFID) integrados; partes de todos los productos antes mencionados.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20081204",
+      "priorityNumber": "1171993"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20081204",
+          "basicApplicationNumber": "1171993"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "BX",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20090604",
+          "basicRegistrationNumber": "864060"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CH",
+      "CN",
+      "DZ",
+      "EG",
+      "IR",
+      "JP",
+      "KR",
+      "MA",
+      "SG",
+      "TR",
+      "US",
+      "RU",
+      "HR",
+      "UA",
+      "BY",
+      "BA",
+      "EM",
+      "RS"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20081204",
+            "basicApplicationNumber": "1171993"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "BX",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20090604",
+            "basicRegistrationNumber": "864060"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CH",
+      "CN",
+      "DZ",
+      "EG",
+      "IR",
+      "JP",
+      "KR",
+      "MA",
+      "SG",
+      "TR",
+      "US",
+      "RU",
+      "HR",
+      "UA",
+      "BY",
+      "BA",
+      "EM",
+      "RS"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electronic, electrotechnical and electromagnetic modules, parts and building elements (not included in other classes); data processing machines, data storage apparatus; microprocessors; interfaces (for computers); integrated circuits (IC's), chips (integrated circuits), semiconductors and smart cards; controllers for smart cards; controllers for RFID (Radio frequency identification) chips and tags; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID (Radio frequency identification) chips and tags; electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID (Radio frequency identification) chips and tags; aerials for scanning, reading and interpreting RFID (Radio frequency identification) chips and tags; NFC (Near Field Communication) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for near field communication applications; electronic payment cards; data processing apparatus and software for enabling, controlling, managing and monitoring all aspects of a paperless payment and/or access system employing RFID (Radio frequency identification) and/or NFC (Near Field Communication) technology, including allowing users to recharge their payment accounts remotely; chips and other electronic hardware to be embedded in tickets, tokens and stickers; electronically coded carriers, embedded with RFID (Radio frequency identification) chips and tags; parts for all the aforesaid goods."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Modules électroniques, électrotechniques et électromagnétiques, leurs parties et éléments de construction (non compris dans d'autres classe); machines de traitement de données, appareils de stockage de données; microprocesseurs; interfaces informatiques; circuits intégrés, puces (circuits intégrés), semi-conducteurs et cartes à mémoire; appareils de commande pour cartes à mémoire; appareils de commande pour étiquettes et puces d'identification par radiofréquence; matériel informatique et logiciels pour créer, programmer, commander, coder, scanner, lire et interpréter des étiquettes et puces d'identification par radiofréquence; appareils, instruments et équipements électroniques pour créer, programmer, commander, coder, scanner, lire et interpréter des étiquettes et puces d'identification par radiofréquence; antennes pour scanner, lire et interpréter des étiquettes et puces d'identification par radiofréquence; appareils, instruments et équipements de communication en champ proche, y compris modules électroniques, électrotechniques et électromagnétiques, parties et éléments de construction et circuits intégrés pour applications de communication en champ proche; cartes de paiement électroniques; appareils de traitement de données et logiciels pour permettre, commander, gérer et surveiller tous les aspects d'un paiement dématérialisé et/ou système d'accès utilisant l'identification par radiofréquence et/ou la technologie de communication en champ proche, permettant notamment aux utilisateurs de recharger leurs comptes de paiement à distance; puces et autre matériel électronique à intégrer dans des billets (tickets), jetons et autocollants; supports codés électroniquement, dans lesquels sont intégrées des étiquettes et puces d'identification par radiofréquence; parties pour tous les produits précités."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Módulos electrónicos, electrotécnicos y electromagnéticos, sus partes y elementos de montaje (no comprendidos en otras clases); máquinas de procesamiento de datos, aparatos de almacenamiento de datos; microprocesadores; interfaces de ordenador; circuitos integrados (CI), chips (circuitos integrados), semiconductores y tarjetas inteligentes; controladores para tarjetas inteligentes; controladores para chips y etiquetas de identificación por radiofrecuencia (RFID); hardware y software para crear, programar, controlar, codificar, rastrear, leer e interpretar chips y etiquetas de identificación por radiofrecuencia (RFID); aparatos, instrumentos y equipos electrónicos para crear, programar, controlar, codificar, rastrear, leer e interpretar chips y etiquetas de identificación por radiofrecuencia (RFID); antenas para rastrear, leer e interpretar chips y etiquetas de identificación por radiofrecuencia (RFID); aparatos, instrumentos y equipos para tecnologías inalámbricas NFC (comunicación en campo cercano), incluidos módulos electrónicos, electrotécnicos y electromagnéticos, sus partes y elementos de montaje, así como circuitos integrados para aplicaciones destinadas a la comunicación en campo cercano; tarjetas de pago electrónicas; software y aparatos de procesamiento de datos para activar, controlar, gestionar y monitorizar todas las cuestiones relativas a sistemas de acceso y/o pago telemático que utilizan tecnologías de identificación por radiofrecuencia (RFID) y/o NFC (comunicación en campo cercano), y que permiten además al usuario recargar sus cuentas de pago a distancia; chips y hardware electrónico de otro tipo para su integración en tiques, fichas y autoadhesivos; soportes codificados electrónicamente, con etiquetas y chips de identificación por radiofrecuencia (RFID) integrados; partes de todos los productos antes mencionados."
+        }
+      ]
+    },
+    "id": "ca25fcd0-d687-457a-82a6-c9711b0f3aa1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20081204",
+        "priorityNumber": "1171993"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "23"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices, Anna van Buerenplein 21A NL-2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290604",
+      "lastPublicationDate": "20190620",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20090604",
+        "registrationNumber": "1010430"
+      },
+      "renewalDate": "20190604",
+      "renewalPublishedDate": "20190620"
+    },
+    "version": "20250620165536",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE ULTRALIGHT"
+    }
+  },
+  "_uri": "/mark/wo/ca25fcd0-d687-457a-82a6-c9711b0f3aa1",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.458Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

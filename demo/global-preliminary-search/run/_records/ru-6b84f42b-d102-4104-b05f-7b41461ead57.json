@@ -1,0 +1,127 @@
+{
+  "uri": "/mark/ru/6b84f42b-d102-4104-b05f-7b41461ead57",
+  "provider": "clarivate",
+  "office": "ru",
+  "guid": "6b84f42b-d102-4104-b05f-7b41461ead57",
+  "applicationNumber": "2001720190",
+  "registrationNumber": "242009",
+  "applicationDate": "2001-07-06",
+  "registrationDate": "2003-04-02",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2021-07-06",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "DORI ДОРИ",
+  "markTransliteration": "DORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6
+      ],
+      "language": "ru",
+      "description": "- замки для коробок, ящиков металлические; замки для транспортных средств металлические; замки висячие; замки для канатов неэлектрические металлические; замки для приводных ремней металлические; замки для сумок, портфелей и т.п. металлические; замки металлические [за исключением электрических], в том числе кодовые.",
+      "translation_language": "en",
+      "translation": "- locks for boxes, boxes of metal; locks for vehicles metal; padlocks; locks for metal, non-electric cables; locks for metal belts; locks for bags, briefcases, etc. metal; locks metal [except electric], including code."
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ru",
+      "description": "- кабели; кабели электрические; муфты концевые электрические; муфты соединительные для электрических кабелей; муфты соединительные электрические; телефонные переходники; провода магнитные; провода телеграфные; провода телефонные; провода электрические, в том числе аудио-видео шнуры; электропроводка; розетки штепсельные; разъемы штепсельные; вилки штепсельные; антенны; антенные удлинители; телефонные розетки; телефонные вилки; замки электрические, в том числе электронно-механические и кодовые.",
+      "translation_language": "en",
+      "translation": "- cables; electric cables; electrical coupling end; Couplings for electric cables; Couplings Electric; phone adapter; magnetic wires; telegraph wires; telephone wire; electrical wires, including audio and video cords; wiring; sockets; Plug connectors; Plug plugs; antenna; antenna extension; telephone sockets; telephone plugs; electric locks, including electronic, mechanical and code."
+    }
+  ],
+  "owner": "DORI",
+  "ownerNative": null,
+  "ownerCountry": "RU",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "г.Королев",
+        "applicantAddressCountryCode": "RU",
+        "applicantAddressCountryName": "Russian Federation",
+        "applicantName": "DORI",
+        "applicantNativeName": "Общество с ограниченной ответственностью \"ДОРИ+\" Московская обл."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- locks for boxes, boxes of metal; locks for vehicles metal; padlocks; locks for metal, non-electric cables; locks for metal belts; locks for bags, briefcases, etc. metal; locks metal [except electric], including code.",
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- замки для коробок, ящиков металлические; замки для транспортных средств металлические; замки висячие; замки для канатов неэлектрические металлические; замки для приводных ремней металлические; замки для сумок, портфелей и т.п. металлические; замки металлические [за исключением электрических], в том числе кодовые."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- cables; electric cables; electrical coupling end; Couplings for electric cables; Couplings Electric; phone adapter; magnetic wires; telegraph wires; telephone wire; electrical wires, including audio and video cords; wiring; sockets; Plug connectors; Plug plugs; antenna; antenna extension; telephone sockets; telephone plugs; electric locks, including electronic, mechanical and code.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- кабели; кабели электрические; муфты концевые электрические; муфты соединительные для электрических кабелей; муфты соединительные электрические; телефонные переходники; провода магнитные; провода телеграфные; провода телефонные; провода электрические, в том числе аудио-видео шнуры; электропроводка; розетки штепсельные; разъемы штепсельные; вилки штепсельные; антенны; антенные удлинители; телефонные розетки; телефонные вилки; замки электрические, в том числе электронно-механические и кодовые."
+        }
+      ]
+    },
+    "id": "6b84f42b-d102-4104-b05f-7b41461ead57",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250705",
+    "registrationOfficeCode": "RU",
+    "registrationOfficeName": "Russian Federation",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20010706",
+        "applicationNumber": "2001720190"
+      },
+      "cancellationDate": "20210706",
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20030402",
+        "registrationNumber": "242009"
+      }
+    },
+    "version": "20250705072406",
+    "wordMarkSpecification": {
+      "markTransliteration": "DORI",
+      "markVerbalElementText": "DORI ДОРИ"
+    }
+  },
+  "_uri": "/mark/ru/6b84f42b-d102-4104-b05f-7b41461ead57",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.997Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

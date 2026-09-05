@@ -1,0 +1,188 @@
+{
+  "uri": "/mark/jp/6e0b7770-5894-4de2-b4a6-826fb3c035ae",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "6e0b7770-5894-4de2-b4a6-826fb3c035ae",
+  "applicationNumber": "2011-022356",
+  "registrationNumber": "5459519",
+  "applicationDate": "2011-03-30",
+  "registrationDate": "2011-12-22",
+  "expiryDate": "2031-12-22",
+  "renewalDate": null,
+  "lastPublicationDate": "2012-01-31",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＡＯＲＩ",
+  "markTransliteration": "AORI",
+  "markTranslation": "AORI",
+  "markFeature": "DESIGN AND COLOR",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "技芸・スポーツ又は知識の教授並びにこれらに関する情報の提供，教育情報の提供，講演会・討論会・セミナー・シンポジウム・研修会・講習会・会議・フォーラム・学会の企画・運営又は開催並びにこれらに関する情報の提供，電子出版物の提供並びにこれらに関する情報の提供，図書及び記録の供覧並びにこれらに関する情報の提供，学術的資料の展示並びにこれらに関する情報の提供，自然科学に関する資料の展示並びにこれらに関する情報の提供，教育に関する資料の展示並びにこれらに関する情報の提供，インターネットを利用した画像・映像の提供，興行の企画・運営又は開催（映画・演芸・演劇・音楽の演奏の興行及びスポーツ・競馬・競輪・競艇・小型自動車競走の興行に関するものを除く。）並びにこれらに関する情報の提供，記念イベントの企画・運営又は開催並びにこれらに関する情報の提供，教育・文化・娯楽・スポーツ用ビデオの制作（映画・放送番組・広告用のものを除く。）",
+      "translation_language": "en",
+      "translation": "Provision of arts and sports or knowledge and provision of information on them, provision of educational information, lectures, discussions, seminars, symposia, workshops, seminars, conferences, forums, planning, management and holding of conferences and information on these Providing electronic publications, providing information on them, providing information on books and records, providing information on them, providing information on academic materials and providing information on them, exhibiting materials on natural science, and information on them Provision of materials related to education, provision of information on them, provision of images and images using the Internet, planning and operation of box office or organizing (boxing and entertainment of movies, entertainment, plays and music performances, sports, horse races, bicycle races, Excluding those related to the performance of race boats and small car races) and information on these Today, the provision of planning and management, or held as well as those related to information of the commemoration events, the production of education, culture, entertainment and sports video (excluding those used for movies, broadcast programs and advertising.)"
+    }
+  ],
+  "owner": "KOKURITSU UNIVERSITY JURIDICAL PERSON TOKYO UNIVERSITY",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "ISSHIKI & CO.",
+  "priorities": [
+    {
+      "priorityDate": "20110330"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "BUNKYOU TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "KOKURITSU UNIVERSITY JURIDICAL PERSON TOKYO UNIVERSITY",
+        "applicantNativeAddress": "東京都文京区",
+        "applicantNativeName": "国立大学法人　東京大学"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provision of arts and sports or knowledge and provision of information on them, provision of educational information, lectures, discussions, seminars, symposia, workshops, seminars, conferences, forums, planning, management and holding of conferences and information on these Providing electronic publications, providing information on them, providing information on books and records, providing information on them, providing information on academic materials and providing information on them, exhibiting materials on natural science, and information on them Provision of materials related to education, provision of information on them, provision of images and images using the Internet, planning and operation of box office or organizing (boxing and entertainment of movies, entertainment, plays and music performances, sports, horse races, bicycle races, Excluding those related to the performance of race boats and small car races) and information on these Today, the provision of planning and management, or held as well as those related to information of the commemoration events, the production of education, culture, entertainment and sports video (excluding those used for movies, broadcast programs and advertising.)",
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "技芸・スポーツ又は知識の教授並びにこれらに関する情報の提供，教育情報の提供，講演会・討論会・セミナー・シンポジウム・研修会・講習会・会議・フォーラム・学会の企画・運営又は開催並びにこれらに関する情報の提供，電子出版物の提供並びにこれらに関する情報の提供，図書及び記録の供覧並びにこれらに関する情報の提供，学術的資料の展示並びにこれらに関する情報の提供，自然科学に関する資料の展示並びにこれらに関する情報の提供，教育に関する資料の展示並びにこれらに関する情報の提供，インターネットを利用した画像・映像の提供，興行の企画・運営又は開催（映画・演芸・演劇・音楽の演奏の興行及びスポーツ・競馬・競輪・競艇・小型自動車競走の興行に関するものを除く。）並びにこれらに関する情報の提供，記念イベントの企画・運営又は開催並びにこれらに関する情報の提供，教育・文化・娯楽・スポーツ用ビデオの制作（映画・放送番組・広告用のものを除く。）"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "41A01",
+          "natGoodsServicesDescription": "Educational and instruction services relating to arts, crafts, sports or general knowledge"
+        },
+        {
+          "natClassNumber": "41A03",
+          "natGoodsServicesDescription": "Arranging, conducting and organisation of seminars"
+        },
+        {
+          "natClassNumber": "41C02",
+          "natGoodsServicesDescription": "Rental of electronic publications, Services of reference libraries for literature and documentary records"
+        },
+        {
+          "natClassNumber": "41C03",
+          "natGoodsServicesDescription": "Art exhibitions"
+        },
+        {
+          "natClassNumber": "41E02",
+          "natGoodsServicesDescription": "Movie showing, movie film production, or movie film distribution"
+        },
+        {
+          "natClassNumber": "41E05",
+          "natGoodsServicesDescription": "Production of video tape film in the fields of education, culture, entertainment or sports [not for movies, radio or television programs and not for advertising and publicity]"
+        },
+        {
+          "natClassNumber": "41F06",
+          "natGoodsServicesDescription": "Organization, management or arrangement of entertainment (excluding movies, shows, plays, musical performances, sports, horse races, bicycle races, boat races and autoraces)"
+        },
+        {
+          "natClassNumber": "41K02",
+          "natGoodsServicesDescription": "Providing facilities for movies, shows, plays, music or educational training"
+        }
+      ]
+    },
+    "id": "6e0b7770-5894-4de2-b4a6-826fb3c035ae",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN AND COLOR",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "COLOUR CLAIMED"
+      }
+    ],
+    "markImageViennaClassification": [
+      "01.15.09.00",
+      "01.15.24.00",
+      "26.01.01.00",
+      "26.01.03.00",
+      "26.01.13.00",
+      "26.01.18.00",
+      "26.02.05.00",
+      "26.07.01.00",
+      "26.07.25.00",
+      "26.11.02.00",
+      "26.11.06.00",
+      "26.11.12.00",
+      "29.01.04.01",
+      "29.01.04.02",
+      "29.01.11.00",
+      "29.01.12.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20110330"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "ISSHIKI & CO.",
+        "representativeNativeName": "一色国際特許業務法人"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20110330",
+        "applicationNumber": "2011-022356"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311222",
+      "lastPublicationDate": "20120131",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20111222",
+        "registrationNumber": "5459519"
+      }
+    },
+    "version": "20230427113529",
+    "wordMarkSpecification": {
+      "markTranslation": "AORI",
+      "markTransliteration": "AORI",
+      "markVerbalElementText": "ＡＯＲＩ"
+    }
+  },
+  "_uri": "/mark/jp/6e0b7770-5894-4de2-b4a6-826fb3c035ae",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:50.843Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,188 @@
+{
+  "uri": "/mark/fr/7fd338d9-5b2b-4a45-92a6-d05b37f6abdf",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "7fd338d9-5b2b-4a45-92a6-d05b37f6abdf",
+  "applicationNumber": "19 4565755",
+  "registrationNumber": "19 4565755",
+  "applicationDate": "2019-07-08",
+  "registrationDate": null,
+  "expiryDate": "2029-07-07",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-08-02",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    12,
+    18,
+    20,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6
+      ],
+      "language": "fr",
+      "description": ": Coffres métalliques ; Bahuts (coffres) métalliques ; Conteneurs métalliques pour rangement d'outils vendus vides ; Coffres à outils vides en métal ; Boîtes à outils en métal ; Rayonnages métalliques (structures) ; Étagères métalliques de rangement (structures) ; Boîtes de rangement (métal) ; Ferrures pour armoires et placards ; Garnitures en métaux communs pour armoires ; Loqueteaux métalliques de portes d'armoires ; Équerres métalliques pour meubles ; Supports (constructions) métalliques d'entreposage ; Supports fixes en métal pour essuie-mains ; Dévidoirs métalliques non mécaniques pour le rangement de chaînes ; Dévidoirs métalliques non mécaniques pour le rangement de câbles ; Tréteaux métalliques, autres que meubles ; Bacs à sable métalliques ; Jerricans métalliques ; Tôles ; Tôles métalliques ",
+      "translation_language": "en",
+      "translation": "Metal safes; Chests (chests) of metal; Metal containers for storing tools sold empty; Empty metal toolboxes; Metal toolboxes; Metal shelving (structures); Metal storage shelves (structures); Storage boxes (metal); Fittings for cabinets and cupboards; Fittings of common metals for cabinets; Metal cabinet door latches; Metal brackets for furniture; Storage supports (constructions) of metal; Fixed metal holders for hand towels; Non-mechanical metal reels for chain storage; Non-mechanical metal reels for cable storage; Trestles of metal, other than furniture; Metal sandboxes; Metal jerry cans; sheets; metal sheets"
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "fr",
+      "description": ": Ensembles de rangements pour véhicules utilitaires ; Systèmes de rangement à utiliser dans des véhicules à moteur ; Ensembles de rangement ajustés pour l'espace de chargement de véhicules ; Ensembles de rangement pour caravanes ; Boîtes de rangement destinées à être utilisées dans des véhicules ; Bacs de rangement pour voitures ; Compartiments de rangement pour coffres de véhicules ; Étagères de coffres de véhicules ; Conteneurs conçus pour coffres de véhicules ; Conteneurs conçus pour l'intérieur de véhicules ; Panneaux intérieurs pour véhicules ; Garnitures intérieures de véhicules ; Poches intérieures pour véhicules ; Intérieurs de protection pour véhicules ; Espaces de rangement fixés au dossier de siège spécialement adaptés pour l'utilisation dans les véhicules ; Grilles de séparation pour animaux pour véhicules ; Grilles de séparation pour véhicules utilitaires ; Protections métalliques de vitres de véhicules ; Servantes d'atelier (chariots) ; Diables (chariots) ; Chariots (véhicules) ; Chariots manuels ; Chariots de manutention ; Roulettes pour chariots (roues) ",
+      "translation_language": "en",
+      "translation": "Storage units for commercial vehicles; Storage systems for use in motor vehicles; Fitted storage units for vehicle cargo space; Caravan storage sets; Storage boxes for use in vehicles; Car storage bins; Storage compartments for vehicle trunks; Vehicle trunk shelves; Containers designed for vehicle trunks; Containers designed for vehicle interiors; Interior panels for vehicles; Vehicle interior trim; Interior pockets for vehicles; Protective interiors for vehicles; Storage spaces attached to the seat back specially adapted for use in vehicles; Animal separation grids for vehicles; Separation grids for commercial vehicles; Metal protections for vehicle windows; Workshop trolleys (trolleys); Devils (trolleys); Trolleys (vehicles); Manual trolleys; Handling trolleys; Trolley casters (wheels)"
+    },
+    {
+      "classes": [
+        18
+      ],
+      "language": "fr",
+      "description": ": Malles ; Mallettes ; Mallettes à roulettes ; Mallettes à casiers ; Mallettes à compartiments ajustables ; Valises ; Valises à roulettes ; Valises de transport ; Poignées de valises ; Bagages à roulettes ; Caisses de voyage ; Coffres de voyage ; Porte-documents ; Sacoches à outils vides ; Sacs à outils (vides) ",
+      "translation_language": "en",
+      "translation": "Trunks; Briefcases; Rolling cases; Locker cases; Briefcases with adjustable compartments; Suitcases; Wheeled suitcases; Transport cases; Suitcase handles; Rolling luggage; Travel crates; Travel chests; Briefcase; Tool bags empty; Tool bags (empty)"
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "fr",
+      "description": ": Mobiliers métalliques de rangement destinés aux ateliers et à l'industrie ; Meubles de rangement ; Tablettes de rangement ; Étagères de rangement ; Tiroirs de rangement (meubles) ; Boîtes de rangement (meubles) ; Modules de rangement (meubles) ; Armoires de rangement (meubles) ; Boîtes de rangement non métalliques ; Boîtes de rangement en matières plastiques ; Meubles métalliques ; Cloisons métalliques (meubles) ; Armoires ; Armoires métalliques ; Armoires murales ; Portes d'armoire ; Armoires de sécurité ; Armoires métalliques (meubles) ; Rayonnages en métal (meubles) ; Étagères en métal (meubles) ; Éléments muraux métalliques (meubles) ; Éléments modulaires métalliques (meubles) ; Tiroirs métalliques (pièces de meubles) ; Roulettes de meubles non métalliques ; Eléments modulaires non métalliques (meubles) ; Casiers de vestiaires ; Présentoirs ; Présentoirs métalliques ; Boîtes à outils non métalliques ; Coffres à outils non métalliques vides ; Coffres (meubles) ; Coffrets (meubles) ; Coffres à outils (meubles) ; Coffres non métalliques ; Coffres de rangement en matières plastiques ; Coffres de sécurité non métalliques ; Établis ; Chevalets (établis pour scier) ; Chariots (mobilier) ; Chariots de service ; Tréteaux (mobilier) ; Jerricans (non métalliques) ; Dévidoirs non métalliques ",
+      "translation_language": "en",
+      "translation": "Metal storage furniture intended for workshops and industry; Storage units ; Storage shelves; Storage shelves; Storage drawers (furniture); Storage boxes (furniture); Storage modules (furniture); Storage cabinets (furniture); storage boxes, not of metal; Plastic storage boxes; Metal furniture; Metal partitions (furniture); Cabinets; Metal cabinets; Wall cabinets; Cabinet doors; Safety cabinets; Metal cupboards (furniture); Metal shelving (furniture); Metal shelves (furniture); Metal wall units (furniture); Metallic modular elements (furniture); Metal drawers (parts of furniture); non-metallic furniture casters; Non-metallic modular elements (furniture); Changing room lockers; Displays; Metal displays; Toolboxes, not of metal; Empty non-metallic tool chests; Chests (furniture); Cabinets (furniture); Toolboxes (furniture); Safes, not of metal; plastic storage boxes; Safes, not of metal; Workbenches; Trestles (workbenches for sawing); Trolleys (furniture); Service trolleys; Trestles (furniture); Jerricans (non-metallic); Non-metallic reels"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": ": Services de conception de mobilier ; Services de conception de mobiliers pour l'intérieur des véhicules automobiles ; Services de conception de rangements pour l'aménagement intérieur des voitures.",
+      "translation_language": "en",
+      "translation": "Furniture design services; Furniture design services for motor vehicle interiors; Storage design services for car interior fittings."
+    }
+  ],
+  "owner": "SORI",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "Cabinet Hecké, Monsieur Nicolas SAUNIER",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "717 Contre Allée Route de Saint Quentin, 38210 Tullins",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "SORI"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Metal safes; Chests (chests) of metal; Metal containers for storing tools sold empty; Empty metal toolboxes; Metal toolboxes; Metal shelving (structures); Metal storage shelves (structures); Storage boxes (metal); Fittings for cabinets and cupboards; Fittings of common metals for cabinets; Metal cabinet door latches; Metal brackets for furniture; Storage supports (constructions) of metal; Fixed metal holders for hand towels; Non-mechanical metal reels for chain storage; Non-mechanical metal reels for cable storage; Trestles of metal, other than furniture; Metal sandboxes; Metal jerry cans; sheets; metal sheets",
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Coffres métalliques ; Bahuts (coffres) métalliques ; Conteneurs métalliques pour rangement d'outils vendus vides ; Coffres à outils vides en métal ; Boîtes à outils en métal ; Rayonnages métalliques (structures) ; Étagères métalliques de rangement (structures) ; Boîtes de rangement (métal) ; Ferrures pour armoires et placards ; Garnitures en métaux communs pour armoires ; Loqueteaux métalliques de portes d'armoires ; Équerres métalliques pour meubles ; Supports (constructions) métalliques d'entreposage ; Supports fixes en métal pour essuie-mains ; Dévidoirs métalliques non mécaniques pour le rangement de chaînes ; Dévidoirs métalliques non mécaniques pour le rangement de câbles ; Tréteaux métalliques, autres que meubles ; Bacs à sable métalliques ; Jerricans métalliques ; Tôles ; Tôles métalliques "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Storage units for commercial vehicles; Storage systems for use in motor vehicles; Fitted storage units for vehicle cargo space; Caravan storage sets; Storage boxes for use in vehicles; Car storage bins; Storage compartments for vehicle trunks; Vehicle trunk shelves; Containers designed for vehicle trunks; Containers designed for vehicle interiors; Interior panels for vehicles; Vehicle interior trim; Interior pockets for vehicles; Protective interiors for vehicles; Storage spaces attached to the seat back specially adapted for use in vehicles; Animal separation grids for vehicles; Separation grids for commercial vehicles; Metal protections for vehicle windows; Workshop trolleys (trolleys); Devils (trolleys); Trolleys (vehicles); Manual trolleys; Handling trolleys; Trolley casters (wheels)",
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Ensembles de rangements pour véhicules utilitaires ; Systèmes de rangement à utiliser dans des véhicules à moteur ; Ensembles de rangement ajustés pour l'espace de chargement de véhicules ; Ensembles de rangement pour caravanes ; Boîtes de rangement destinées à être utilisées dans des véhicules ; Bacs de rangement pour voitures ; Compartiments de rangement pour coffres de véhicules ; Étagères de coffres de véhicules ; Conteneurs conçus pour coffres de véhicules ; Conteneurs conçus pour l'intérieur de véhicules ; Panneaux intérieurs pour véhicules ; Garnitures intérieures de véhicules ; Poches intérieures pour véhicules ; Intérieurs de protection pour véhicules ; Espaces de rangement fixés au dossier de siège spécialement adaptés pour l'utilisation dans les véhicules ; Grilles de séparation pour animaux pour véhicules ; Grilles de séparation pour véhicules utilitaires ; Protections métalliques de vitres de véhicules ; Servantes d'atelier (chariots) ; Diables (chariots) ; Chariots (véhicules) ; Chariots manuels ; Chariots de manutention ; Roulettes pour chariots (roues) "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Trunks; Briefcases; Rolling cases; Locker cases; Briefcases with adjustable compartments; Suitcases; Wheeled suitcases; Transport cases; Suitcase handles; Rolling luggage; Travel crates; Travel chests; Briefcase; Tool bags empty; Tool bags (empty)",
+          "intClassNumber": "18",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Malles ; Mallettes ; Mallettes à roulettes ; Mallettes à casiers ; Mallettes à compartiments ajustables ; Valises ; Valises à roulettes ; Valises de transport ; Poignées de valises ; Bagages à roulettes ; Caisses de voyage ; Coffres de voyage ; Porte-documents ; Sacoches à outils vides ; Sacs à outils (vides) "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Metal storage furniture intended for workshops and industry; Storage units ; Storage shelves; Storage shelves; Storage drawers (furniture); Storage boxes (furniture); Storage modules (furniture); Storage cabinets (furniture); storage boxes, not of metal; Plastic storage boxes; Metal furniture; Metal partitions (furniture); Cabinets; Metal cabinets; Wall cabinets; Cabinet doors; Safety cabinets; Metal cupboards (furniture); Metal shelving (furniture); Metal shelves (furniture); Metal wall units (furniture); Metallic modular elements (furniture); Metal drawers (parts of furniture); non-metallic furniture casters; Non-metallic modular elements (furniture); Changing room lockers; Displays; Metal displays; Toolboxes, not of metal; Empty non-metallic tool chests; Chests (furniture); Cabinets (furniture); Toolboxes (furniture); Safes, not of metal; plastic storage boxes; Safes, not of metal; Workbenches; Trestles (workbenches for sawing); Trolleys (furniture); Service trolleys; Trestles (furniture); Jerricans (non-metallic); Non-metallic reels",
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Mobiliers métalliques de rangement destinés aux ateliers et à l'industrie ; Meubles de rangement ; Tablettes de rangement ; Étagères de rangement ; Tiroirs de rangement (meubles) ; Boîtes de rangement (meubles) ; Modules de rangement (meubles) ; Armoires de rangement (meubles) ; Boîtes de rangement non métalliques ; Boîtes de rangement en matières plastiques ; Meubles métalliques ; Cloisons métalliques (meubles) ; Armoires ; Armoires métalliques ; Armoires murales ; Portes d'armoire ; Armoires de sécurité ; Armoires métalliques (meubles) ; Rayonnages en métal (meubles) ; Étagères en métal (meubles) ; Éléments muraux métalliques (meubles) ; Éléments modulaires métalliques (meubles) ; Tiroirs métalliques (pièces de meubles) ; Roulettes de meubles non métalliques ; Eléments modulaires non métalliques (meubles) ; Casiers de vestiaires ; Présentoirs ; Présentoirs métalliques ; Boîtes à outils non métalliques ; Coffres à outils non métalliques vides ; Coffres (meubles) ; Coffrets (meubles) ; Coffres à outils (meubles) ; Coffres non métalliques ; Coffres de rangement en matières plastiques ; Coffres de sécurité non métalliques ; Établis ; Chevalets (établis pour scier) ; Chariots (mobilier) ; Chariots de service ; Tréteaux (mobilier) ; Jerricans (non métalliques) ; Dévidoirs non métalliques "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Furniture design services; Furniture design services for motor vehicle interiors; Storage design services for car interior fittings.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Services de conception de mobilier ; Services de conception de mobiliers pour l'intérieur des véhicules automobiles ; Services de conception de rangements pour l'aménagement intérieur des voitures."
+        }
+      ]
+    },
+    "id": "7fd338d9-5b2b-4a45-92a6-d05b37f6abdf",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00023",
+        "publicationVolume": "31"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeName": "Cabinet Hecké, Monsieur Nicolas SAUNIER"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190708",
+        "applicationNumber": "19 4565755"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290707",
+      "lastPublicationDate": "20190802",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "19 4565755"
+      }
+    },
+    "version": "20250426163000",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SORI"
+    }
+  },
+  "_uri": "/mark/fr/7fd338d9-5b2b-4a45-92a6-d05b37f6abdf",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:58.876Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

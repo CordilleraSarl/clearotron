@@ -1,0 +1,164 @@
+{
+  "uri": "/mark/kr/39a20fcb-ff27-417f-a1e2-25c2b69585de",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "39a20fcb-ff27-417f-a1e2-25c2b69585de",
+  "applicationNumber": "40-1996-0037700",
+  "registrationNumber": "4003902660000",
+  "applicationDate": "1996-08-26",
+  "registrationDate": "1998-01-10",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "GOLEE 고리",
+  "markTransliteration": "GOLEE",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    7,
+    8,
+    9,
+    11,
+    12,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    24,
+    26
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        7,
+        8,
+        9,
+        11,
+        12,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        24,
+        26
+      ],
+      "language": "ko",
+      "description": "가스켓,고무벨트,고무패킹,금형,링,밸브,부싱,새창으로 열림,조인트,콕",
+      "translation_language": "en",
+      "translation": "Gasket, rubber belt, rubber packing, mold, ring, valve, bushing, open in new window, joint, cock"
+    }
+  ],
+  "owner": "SIN Yong Goo",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "박형준 (Park Hyung Joon)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "광주광역시 북구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "SIN Yong Goo",
+        "applicantNativeName": "신용구"
+      },
+      {
+        "applicantAddress": "광주광역시 북구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "SHIN, YONG JIN",
+        "applicantNativeName": "신용진"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Gasket, rubber belt, rubber packing, mold, ring, valve, bushing, open in new window, joint, cock",
+          "intClassNumber": "06,07,08,09,11,12,16,17,18,19,20,21,22,24,26",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "가스켓,고무벨트,고무패킹,금형,링,밸브,부싱,새창으로 열림,조인트,콕"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "038"
+        }
+      ]
+    },
+    "id": "39a20fcb-ff27-417f-a1e2-25c2b69585de",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "F, Samho Building, , Saimdang-ro -gil, Seocho-gu, Seoul, Republic of Korea(Hansol International Patent and Law Office)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "박형준 (Park Hyung Joon)"
+      },
+      {
+        "representativeAddress": "DAEMYUNG VALEON KNOWLEDGE INDUSTRY CENTER F., Beobwon-ro, Songpa-gu, Seoul, KOREA(ASIANA IP & LAW OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "황이남 (HWANG, E-NAM)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19960826",
+        "applicationNumber": "40-1996-0037700"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19980110",
+        "registrationNumber": "4003902660000"
+      }
+    },
+    "version": "20250625145419",
+    "wordMarkSpecification": {
+      "markTransliteration": "GOLEE",
+      "markVerbalElementText": "GOLEE 고리"
+    }
+  },
+  "_uri": "/mark/kr/39a20fcb-ff27-417f-a1e2-25c2b69585de",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.049Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "policy": "open-item",
+  "rows": [
+    {
+      "ordinal": 1,
+      "mark": "enqor",
+      "applicable": true,
+      "seniorUri": "/mark/kr/a59ef335-9570-4757-8770-26b208dc24b1",
+      "rankedFrom": "record",
+      "verified": true,
+      "excludedDead": 0
+    },
+    {
+      "ordinal": 2,
+      "mark": "VENCORA",
+      "applicable": true,
+      "seniorUri": "/mark/gb/c3154106-158a-4756-b8f6-116bc310172f",
+      "rankedFrom": "record",
+      "verified": true,
+      "excludedDead": 0
+    }
+  ]
+}

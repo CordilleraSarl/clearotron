@@ -1,0 +1,107 @@
+{
+  "uri": "/mark/tw/152ef576-4a0d-468a-a978-f4ded2bbe25d",
+  "provider": "clarivate",
+  "office": "tw",
+  "guid": "152ef576-4a0d-468a-a978-f4ded2bbe25d",
+  "applicationNumber": "067002198",
+  "registrationNumber": "00102216",
+  "applicationDate": "1978-02-21",
+  "registrationDate": "1978-08-01",
+  "expiryDate": "1998-07-31",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "KORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "zh",
+      "description": "第079類:各種度量衡及其他計量器具、測量器具",
+      "translation_language": "en",
+      "translation": "Class 079: Various weights and measures and other measuring instruments and measuring instruments"
+    }
+  ],
+  "owner": "qi shun mao yi gu fen you xian gong si",
+  "ownerNative": null,
+  "ownerCountry": "TW",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "TW",
+        "applicantAddressCountryName": "Taiwan",
+        "applicantName": "qi shun mao yi gu fen you xian gong si"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 079: Various weights and measures and other measuring instruments and measuring instruments",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "zh",
+          "intGoodsServicesDescription": "第079類:各種度量衡及其他計量器具、測量器具"
+        }
+      ]
+    },
+    "id": "152ef576-4a0d-468a-a978-f4ded2bbe25d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260331",
+    "registrationOfficeCode": "TW",
+    "registrationOfficeName": "Taiwan",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19780221",
+        "applicationNumber": "067002198"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "19980731",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19780801",
+        "registrationNumber": "00102216"
+      }
+    },
+    "version": "20260331171155",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "KORI"
+    }
+  },
+  "_uri": "/mark/tw/152ef576-4a0d-468a-a978-f4ded2bbe25d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.792Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

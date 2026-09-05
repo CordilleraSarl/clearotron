@@ -1,0 +1,269 @@
+{
+  "uri": "/mark/us/81eb04da-9413-4695-bf50-35d31d6595fd",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "81eb04da-9413-4695-bf50-35d31d6595fd",
+  "applicationNumber": "97627785",
+  "registrationNumber": "7218314",
+  "applicationDate": "2022-10-11",
+  "registrationDate": "2023-11-14",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2023-08-29"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENQAKU",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Telescopes; Body fat scales for household use; Cell phone holders for vehicles; Computer keyboards; Computer stylus; Diving gloves; Electric sockets; Game headphones; Mobile phone chargers; Mouse pads; Pedometers for pets; Photographic projectors; Power cables; Power strips; Protective films adapted for computer screens; Smartphone mounts; Smartphone stabilizers; Spectacles and sunglasses; Swim goggles; Tire pressure gauges",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Wu, Jincheng",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "Xiaofang Zhong",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "No.142, Meishu, Shengshen Village, Fujian Province, 362300, CHIN",
+        "applicantAddressCity": "Fujian Province",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantAddressPostalCode": "362300",
+        "applicantAddressStreet": "No.142, Meishu, Shengshen Village",
+        "applicantJurisdictionOfIncorporation": "CHINA",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Wu, Jincheng",
+        "applicantSecondaryAddressUnit": "Xinzhen, Nan'an City"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Telescopes; Body fat scales for household use; Cell phone holders for vehicles; Computer keyboards; Computer stylus; Diving gloves; Electric sockets; Game headphones; Mobile phone chargers; Mouse pads; Pedometers for pets; Photographic projectors; Power cables; Power strips; Protective films adapted for computer screens; Smartphone mounts; Smartphone stabilizers; Spectacles and sunglasses; Swim goggles; Tire pressure gauges"
+        }
+      ]
+    },
+    "id": "81eb04da-9413-4695-bf50-35d31d6595fd",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20231114",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20231114",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20230829",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20230829",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20230809",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20230726",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20230726",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20230726",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20230726",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20230726",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20230725",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20221026",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20221014",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "No.142, Meishu, Shengshen Village, Fujian Province, 362300, CHIN",
+        "city": "Fujian Province",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Wu, Jincheng",
+        "postalCode": "362300",
+        "secondaryAddressUnit": "Xinzhen, Nan'an City",
+        "street": "No.142, Meishu, Shengshen Village"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "No.142, Meishu, Shengshen Village, Fujian Province, 362300, CHIN",
+        "city": "Fujian Province",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Wu, Jincheng",
+        "postalCode": "362300",
+        "secondaryAddressUnit": "Xinzhen, Nan'an City",
+        "street": "No.142, Meishu, Shengshen Village"
+      },
+      {
+        "address": "No.142, Meishu, Shengshen Village, Fujian Province, 362300, CHIN",
+        "city": "Fujian Province",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Wu, Jincheng",
+        "postalCode": "362300",
+        "secondaryAddressUnit": "Xinzhen, Nan'an City",
+        "street": "No.142, Meishu, Shengshen Village"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "No.142, Meishu, Shengshen Village, Fujian Province, 362300, CHIN",
+        "city": "Fujian Province",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Wu, Jincheng",
+        "postalCode": "362300",
+        "secondaryAddressUnit": "Xinzhen, Nan'an City",
+        "street": "No.142, Meishu, Shengshen Village"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "NEW YORK, NY 10001, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "NEW YORK, NY 10001",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "XIAOFANG ZHONG, 244 FIFTH AVENUE, SUITE V284"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "NEW YORK, NY 10001, UNITED STATES",
+        "representativeAddressLines": [
+          "NEW YORK, NY 10001",
+          "UNITED STATES"
+        ],
+        "representativeName": "Xiaofang Zhong"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20221011",
+        "applicationNumber": "97627785"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20211101"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20211101"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20231114",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20230829"
+      ],
+      "registration": {
+        "registrationDate": "20231114",
+        "registrationNumber": "7218314"
+      }
+    },
+    "version": "20260113174156",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENQAKU"
+    }
+  },
+  "_uri": "/mark/us/81eb04da-9413-4695-bf50-35d31d6595fd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.567Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

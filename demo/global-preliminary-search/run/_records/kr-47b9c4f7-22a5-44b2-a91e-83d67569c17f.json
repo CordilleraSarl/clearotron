@@ -1,0 +1,106 @@
+{
+  "uri": "/mark/kr/47b9c4f7-22a5-44b2-a91e-83d67569c17f",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "47b9c4f7-22a5-44b2-a91e-83d67569c17f",
+  "applicationNumber": "40-2019-0166822",
+  "registrationNumber": null,
+  "applicationDate": "2019-10-31",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "보리 (BORY)",
+  "markTransliteration": "BORY",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "가상현실소프트웨어 개발업, 게임소프트웨어개발업, 교육용 소프트웨어 프로그래밍업, 디지털 신호처리용 소프트웨어 개발업, 소프트웨어 개발/프로그래밍 및 실행업, 소프트웨어 제작업, 애플리케이션 서비스제공업, 의료분야 컴퓨터프로그래밍업, 의료진단분야의 컴퓨터 소프트웨어 기술 지원제공업, 클라우드 컴퓨팅 서비스업",
+      "translation_language": "en",
+      "translation": "Virtual reality software development, game software development, educational software programming, digital signal processing software development, software development/programming and implementation, software production, application service provision, medical computer programming, medical diagnosis computer software technology support, cloud computing service."
+    }
+  ],
+  "owner": "BORY Inc.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기도 안산시 단원구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "BORY Inc.",
+        "applicantNativeName": "보리 주식회사"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Virtual reality software development, game software development, educational software programming, digital signal processing software development, software development/programming and implementation, software production, application service provision, medical computer programming, medical diagnosis computer software technology support, cloud computing service.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "가상현실소프트웨어 개발업, 게임소프트웨어개발업, 교육용 소프트웨어 프로그래밍업, 디지털 신호처리용 소프트웨어 개발업, 소프트웨어 개발/프로그래밍 및 실행업, 소프트웨어 제작업, 애플리케이션 서비스제공업, 의료분야 컴퓨터프로그래밍업, 의료진단분야의 컴퓨터 소프트웨어 기술 지원제공업, 클라우드 컴퓨팅 서비스업"
+        }
+      ]
+    },
+    "id": "47b9c4f7-22a5-44b2-a91e-83d67569c17f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260820",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20191031",
+        "applicationNumber": "40-2019-0166822"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260820020431",
+    "wordMarkSpecification": {
+      "markTransliteration": "BORY",
+      "markVerbalElementText": "보리 (BORY)"
+    }
+  },
+  "_uri": "/mark/kr/47b9c4f7-22a5-44b2-a91e-83d67569c17f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.212Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/cn/eec2ed78-078c-4c05-b0dd-e63ef39f207f",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "eec2ed78-078c-4c05-b0dd-e63ef39f207f",
+  "applicationNumber": "80422374",
+  "registrationNumber": null,
+  "applicationDate": "2024-08-17",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "七音空间",
+  "markTransliteration": "DRAMA SEVEN QI YIN KONG JIAN",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "安排和举办娱乐活动;安排和组织现场教育论坛;安排和组织音乐会;安排娱乐活动;举办娱乐活动;为娱乐目的组织时装表演;组织表演(演出);组织和安排娱乐展览;组织角色扮演娱乐活动;组织文化表演;组织文化活动;组织文化艺术活动;组织现场表演;组织娱乐活动",
+      "translation_language": "en",
+      "translation": "Arranging and holding entertainment events; arranging and organizing live educational forums; arranging and organizing concerts; arranging entertainment events; holding entertainment events; organizing fashion shows for entertainment purposes; organizing performances (performances); organizing and arranging entertainment exhibitions; organizing role-playing entertainment events; organizing cultural performances; organizing cultural events; organizing cultural and artistic events; organizing live performances; organizing entertainment events"
+    }
+  ],
+  "owner": "Beijing Qiyin Space Culture Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市西城区太平街6号3层D-309",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Beijing Qiyin Space Culture Co., Ltd.",
+        "applicantNativeName": "北京七音空间文化有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Arranging and holding entertainment events; arranging and organizing live educational forums; arranging and organizing concerts; arranging entertainment events; holding entertainment events; organizing fashion shows for entertainment purposes; organizing performances (performances); organizing and arranging entertainment exhibitions; organizing role-playing entertainment events; organizing cultural performances; organizing cultural events; organizing cultural and artistic events; organizing live performances; organizing entertainment events",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "安排和举办娱乐活动;安排和组织现场教育论坛;安排和组织音乐会;安排娱乐活动;举办娱乐活动;为娱乐目的组织时装表演;组织表演(演出);组织和安排娱乐展览;组织角色扮演娱乐活动;组织文化表演;组织文化活动;组织文化艺术活动;组织现场表演;组织娱乐活动"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Arranging and conducting service of events"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        }
+      ]
+    },
+    "id": "eec2ed78-078c-4c05-b0dd-e63ef39f207f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "邮寄办理"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240817",
+        "applicationNumber": "80422374"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251005115245",
+    "wordMarkSpecification": {
+      "markTransliteration": "DRAMA SEVEN QI YIN KONG JIAN",
+      "markVerbalElementText": "七音空间"
+    }
+  },
+  "_uri": "/mark/cn/eec2ed78-078c-4c05-b0dd-e63ef39f207f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.564Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

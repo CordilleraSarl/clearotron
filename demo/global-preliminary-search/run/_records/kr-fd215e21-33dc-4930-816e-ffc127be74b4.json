@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/kr/fd215e21-33dc-4930-816e-ffc127be74b4",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "fd215e21-33dc-4930-816e-ffc127be74b4",
+  "applicationNumber": "40-2022-0006353",
+  "registrationNumber": "4020964400000",
+  "applicationDate": "2022-01-11",
+  "registrationDate": "2023-10-13",
+  "expiryDate": "2033-10-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-10-19",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "코리",
+  "markTransliteration": "Corey",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "가상 캐릭터의 디지털 출연 형태의 연예오락업,맞춤 캐릭터의 공연 및 출연 형태의 연예오락업,맞춤캐릭터의 라이브공연 및 출연 형태의 연예오락업,모델 제작 서비스를 포함하는 특수효과 제작업,모델업,문화쇼 및 공연의 조직 및 진행업,문화적 또는 교육적 목적의 전시회/컨벤션/컨퍼런스 조직업,버추얼 인플루언서의 tv/비디오/영화 출연 형태의 연예오락업,버추얼 인플루언서의 인터넷 출연 형태의 연예오락업,연예오락 정보제공업,연예오락서비스업,연예오락업 즉 모델 제작 서비스를 포함하는 특수 효과 제작업,영화 및 비디오 제작업,영화 및 텔레비전 분야의 연예오락업 즉 영화/비디오/애니메이션 및 컴퓨터 생성 이미지의 창작 및 제작업,오락시설 제공업,음악연예오락업,컴퓨터 그래픽 이미지로 구현된 가수/모델/유명인사의 인터넷 출연 형태의 연예오락업",
+      "translation_language": "en",
+      "translation": "Entertainment in the form of digital appearances of virtual characters, entertainment in the form of performances and appearances of custom characters, entertainment in the form of live performances and appearances of custom characters, special effects production including model production services, modeling, cultural shows and Organizing and conducting performances, organizing exhibitions/conventions/conferences for cultural or educational purposes, entertainment in the form of TV/video/movie appearances by virtual influencers, entertainment in the form of internet appearances by virtual influencers, entertainment Information provision business, entertainment service business, entertainment business, i.e. special effects production business including model production service, film and video production business, entertainment business in the field of film and television, i.e. creation and production of film/video/animation and computer-generated images, Entertainment facility provision, music entertainment, and entertainment in the form of Internet appearances of singers/models/celebrities embodied in computer graphic images"
+    }
+  ],
+  "owner": "Giantstep Inc.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "특허법인 다해 (DAHAI International Patent & Law Firm)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 강남구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Giantstep Inc.",
+        "applicantNativeName": "(주)자이언트스텝"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Entertainment in the form of digital appearances of virtual characters, entertainment in the form of performances and appearances of custom characters, entertainment in the form of live performances and appearances of custom characters, special effects production including model production services, modeling, cultural shows and Organizing and conducting performances, organizing exhibitions/conventions/conferences for cultural or educational purposes, entertainment in the form of TV/video/movie appearances by virtual influencers, entertainment in the form of internet appearances by virtual influencers, entertainment Information provision business, entertainment service business, entertainment business, i.e. special effects production business including model production service, film and video production business, entertainment business in the field of film and television, i.e. creation and production of film/video/animation and computer-generated images, Entertainment facility provision, music entertainment, and entertainment in the form of Internet appearances of singers/models/celebrities embodied in computer graphic images",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "가상 캐릭터의 디지털 출연 형태의 연예오락업,맞춤 캐릭터의 공연 및 출연 형태의 연예오락업,맞춤캐릭터의 라이브공연 및 출연 형태의 연예오락업,모델 제작 서비스를 포함하는 특수효과 제작업,모델업,문화쇼 및 공연의 조직 및 진행업,문화적 또는 교육적 목적의 전시회/컨벤션/컨퍼런스 조직업,버추얼 인플루언서의 tv/비디오/영화 출연 형태의 연예오락업,버추얼 인플루언서의 인터넷 출연 형태의 연예오락업,연예오락 정보제공업,연예오락서비스업,연예오락업 즉 모델 제작 서비스를 포함하는 특수 효과 제작업,영화 및 비디오 제작업,영화 및 텔레비전 분야의 연예오락업 즉 영화/비디오/애니메이션 및 컴퓨터 생성 이미지의 창작 및 제작업,오락시설 제공업,음악연예오락업,컴퓨터 그래픽 이미지로 구현된 가수/모델/유명인사의 인터넷 출연 형태의 연예오락업"
+        }
+      ]
+    },
+    "id": "fd215e21-33dc-4930-816e-ffc127be74b4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": ", Seoun-ro, Seocho-gu, Seoul, Republic of Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "특허법인 다해 (DAHAI International Patent & Law Firm)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220111",
+        "applicationNumber": "40-2022-0006353"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331013",
+      "lastPublicationDate": "20231019",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20231013",
+        "registrationNumber": "4020964400000"
+      }
+    },
+    "version": "20250625212210",
+    "wordMarkSpecification": {
+      "markTransliteration": "Corey",
+      "markVerbalElementText": "코리"
+    }
+  },
+  "_uri": "/mark/kr/fd215e21-33dc-4930-816e-ffc127be74b4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.792Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

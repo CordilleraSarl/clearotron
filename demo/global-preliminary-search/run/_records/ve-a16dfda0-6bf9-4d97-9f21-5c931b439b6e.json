@@ -1,0 +1,202 @@
+{
+  "uri": "/mark/ve/a16dfda0-6bf9-4d97-9f21-5c931b439b6e",
+  "provider": "clarivate",
+  "office": "ve",
+  "guid": "a16dfda0-6bf9-4d97-9f21-5c931b439b6e",
+  "applicationNumber": "1973-004871",
+  "registrationNumber": "D011293",
+  "applicationDate": "1973-01-01",
+  "registrationDate": "1974-07-10",
+  "expiryDate": "1989-07-10",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "TARVENQUETA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "en",
+      "description": "No goods available",
+      "translation_language": "en",
+      "translation": "No goods available"
+    }
+  ],
+  "owner": "TORVENCA - TORNILLOS VENEZOLANOS, COMPAÑIA ANONIMA",
+  "ownerNative": null,
+  "ownerCountry": "VE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CARACAS",
+        "applicantAddressCountryCode": "VE",
+        "applicantAddressCountryName": "Venezuela",
+        "applicantName": "TORVENCA - TORNILLOS VENEZOLANOS, COMPAÑIA ANONIMA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "No goods available",
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "No goods available"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "46"
+        }
+      ]
+    },
+    "id": "a16dfda0-6bf9-4d97-9f21-5c931b439b6e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "VE",
+    "registrationOfficeName": "Venezuela",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19730101",
+        "applicationNumber": "1973-004871"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "19890710",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19740710",
+        "registrationNumber": "D011293"
+      }
+    },
+    "version": "20250630154126",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "TARVENQUETA"
+    }
+  },
+  "_uri": "/mark/ve/a16dfda0-6bf9-4d97-9f21-5c931b439b6e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.568Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

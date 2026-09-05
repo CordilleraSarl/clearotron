@@ -13,7 +13,11 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { enablePlan } from "../../shared/client-door.mjs";
+import { unitHealthVerdict } from "../../shared/server-units.mjs";
 
 const BASE = {
   env: { TRADEMARK_MCP_TOKEN_SECRET: "x", CLIENT_MCP_HTTP_PORT: "18811" },
@@ -106,4 +110,47 @@ test("2176-F40 with no units installed, this shell IS the honest thing to read",
   const fn = src.slice(src.indexOf("function runningEnv()"), src.indexOf("/** What this deployment has"));
   assert.match(fn, /known: true, hosted: false/,
     "no units must resolve as known-and-not-hosted, never as an uncertainty a reader has to act on");
+});
+
+// ── 2203 · THE THIRD INVENTED PROBLEM, FOUND AFTER THE OTHER TWO WERE FIXED ─────────────────────────
+//
+// `connect`'s health probe required `NRestarts === "0"` on top of the state pair. That is the same
+// defect fixed in `start --background`'s health check, and fixing it there left this
+// copy standing — the class-not-the-instance failure, in the file the client goes through to get
+// enrolled. NRestarts is a LIFETIME counter incremented by systemd's OWN auto-restart, so a door that
+// crash-looped, recovered and has served ever since reads `active/running` carrying a permanent
+// non-zero count. `connect` called that door unhealthy, on every box whose door has ever gone down.
+//
+// The comment that justified it — "a restart counter above zero means it has already died at least
+// once, whatever it says right now" — is TRUE, and is the wrong question. What was asked is whether the
+// door works now.
+
+const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+
+test("2203 a door that died once and recovered is HEALTHY — the refusal connect used to invent", () => {
+  // Driven on the authority itself, not matched in connect's source: the recovered-unit case IS the
+  // finding, and a source match would go green on a verdict that still used the counter somewhere else.
+  const recovered = { activeState: "active", subState: "running", nRestarts: "15" };
+  assert.equal(unitHealthVerdict(recovered).ok, true,
+    "a running door with a lifetime restart count was called unhealthy");
+  assert.equal(unitHealthVerdict(recovered).restarts, 15, "the count is still reported as history");
+});
+
+test("2203 and a door actually looping is STILL refused — the plant, so the arm above is not a licence", () => {
+  // Removing a refusal is easy to overdo. This is the control: the state pair is what catches a real
+  // loop, and it must still catch it with the counter gone.
+  assert.equal(unitHealthVerdict({ activeState: "activating", subState: "auto-restart", nRestarts: "15" }).ok, false);
+  assert.equal(unitHealthVerdict({ activeState: "activating", subState: "auto-restart", nRestarts: "0" }).ok, false,
+    "a loop with a cleared counter must still be caught, or the fix moved the blind spot");
+  assert.equal(unitHealthVerdict({ activeState: "inactive", subState: "dead", nRestarts: "0" }).ok, false);
+});
+
+test("2203 connect holds no second opinion about health — one authority, and this is the file that had two", () => {
+  // A SOURCE-SHAPE CLAIM, and said so rather than dressed up: `unitIsHealthy` shells out to systemctl
+  // and is not exported, so what is checkable here is that it asks the shared verdict and keeps no
+  // comparison of its own. The behaviour it delegates to is driven by the two arms above.
+  const src = readFileSync(join(REPO, "bin", "connect.mjs"), "utf8");
+  const code = src.split("\n").filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l)).join("\n");
+  assert.match(code, /unitHealthVerdict\(/, "connect no longer asks the shared verdict");
+  assert.doesNotMatch(code, /NRestarts\s*===/, "connect compares NRestarts itself again — the second opinion is back");
 });

@@ -1,0 +1,123 @@
+{
+  "uri": "/mark/kr/ac66ec43-b2a3-4113-8e93-d12defcae272",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "ac66ec43-b2a3-4113-8e93-d12defcae272",
+  "applicationNumber": "41-2009-0007857",
+  "registrationNumber": "4102010490000",
+  "applicationDate": "2009-04-14",
+  "registrationDate": "2010-09-15",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "SEVEnCORE",
+  "markTransliteration": "SEVENCORE",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "게임소프트웨어개발업, 데이터베이스서버대여업, 데이터처리프로그램개발업, 드라이버 및 운영시스템소프트웨어 개발업, 멀티미디어응용 프로그래밍업, 손상된 컴퓨터프로그램복구업, 웹디자인업, 웹사이트개발업, 웹사이트관리업, 웹사이트디자인업, 웹사이트유지관리업, 웹사이트의 제작 및 유지대행업, 웹사이트호스트업, 웹서버대여업, 웹페이지디자인업, 응용소프트웨어대여업, 인터넷검색엔진제공업, 인터넷보안프로그램제공업, 자료 및 문서의 디지털처리업, 전자상거래용 웹사이트관리업, 전자상거래용 웹사이트유지관리업, 전자상거래용 컴퓨터프로그래밍업, 컴퓨터 프로그램 및 자료의 자료전환 서비스업, 컴퓨터게임소프트웨어개발업, 컴퓨터게임소프트웨어복제업, 컴퓨터게임소프트웨어유지관리업, 컴퓨터게임프로그래밍업, 컴퓨터관련 분석업, 컴퓨터관련 상담업, 컴퓨터관련 연구업, 컴퓨터관련 자문업, 컴퓨터데이터복구업, 컴퓨터대여업, 컴퓨터보안상담업, 컴퓨터소프트웨어개발업, 컴퓨터소프트웨어대여업, 컴퓨터소프트웨어디자인업, 컴퓨터소프트웨어상담업, 컴퓨터소프트웨어설계업, 컴퓨터소프트웨어설치업, 컴퓨터소프트웨어수리업, 컴퓨터소프트웨어업데이팅업, 컴퓨터소프트웨어연구업, 컴퓨터소프트웨어유지관리업, 컴퓨터소프트웨어의 자문 및 개발업, 컴퓨터시스템디자인업, 컴퓨터시스템분석업, 컴퓨터시스템의 설계 및 자문업, 컴퓨터임대업, 컴퓨터프로그래밍업, 컴퓨터프로그램 및 데이터의 자료전환업, 컴퓨터프로그램개발업, 컴퓨터프로그램복제업, 컴퓨터프로그램의 번역임대업, 컴퓨터하드웨어개발업, 컴퓨터하드웨어디자인업, 컴퓨터하드웨어상담업",
+      "translation_language": "en",
+      "translation": "Game software development business, database server rental business, data processing program development business, driver and operating system software development business, multimedia application programming business, damaged computer program recovery business, web design business, website development business, website management business, website design business, website Maintenance business, website production and maintenance agency, website host business, web server rental business, web page design business, application software rental business, internet search engine provider business, internet security program provider business, digital processing of documents and documents, web for electronic commerce Site management business, website maintenance for e-commerce, computer programming for e-commerce, data conversion service of computer programs and materials, computer game software development, computer game software replication, computer game software maintenance, computer game programming, computer Related analysis, computer consulting, computer research, computer consulting, computer data recovery, computer rental, computer security consulting, computer software development, computer software rental, computer software design, computer software consulting, computer software design, Computer software installation business, computer software repair business, computer software updating business, computer software research business, computer software maintenance business, computer software consulting and development business, computer system design business, computer system analysis business, computer system design and business consulting, computer Rental business, computer programming, computer program and data data conversion, computer program development, computer program replication, computer program translation and leasing, computer hardware development, computer hardware design, computer hardware consulting"
+    }
+  ],
+  "owner": "NORIA CO., LTD",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "김원식 (KIM, Won Shik)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기도 안양시 동안구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "NORIA CO., LTD",
+        "applicantNativeName": "주식회사 노리아"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Game software development business, database server rental business, data processing program development business, driver and operating system software development business, multimedia application programming business, damaged computer program recovery business, web design business, website development business, website management business, website design business, website Maintenance business, website production and maintenance agency, website host business, web server rental business, web page design business, application software rental business, internet search engine provider business, internet security program provider business, digital processing of documents and documents, web for electronic commerce Site management business, website maintenance for e-commerce, computer programming for e-commerce, data conversion service of computer programs and materials, computer game software development, computer game software replication, computer game software maintenance, computer game programming, computer Related analysis, computer consulting, computer research, computer consulting, computer data recovery, computer rental, computer security consulting, computer software development, computer software rental, computer software design, computer software consulting, computer software design, Computer software installation business, computer software repair business, computer software updating business, computer software research business, computer software maintenance business, computer software consulting and development business, computer system design business, computer system analysis business, computer system design and business consulting, computer Rental business, computer programming, computer program and data data conversion, computer program development, computer program replication, computer program translation and leasing, computer hardware development, computer hardware design, computer hardware consulting",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "게임소프트웨어개발업, 데이터베이스서버대여업, 데이터처리프로그램개발업, 드라이버 및 운영시스템소프트웨어 개발업, 멀티미디어응용 프로그래밍업, 손상된 컴퓨터프로그램복구업, 웹디자인업, 웹사이트개발업, 웹사이트관리업, 웹사이트디자인업, 웹사이트유지관리업, 웹사이트의 제작 및 유지대행업, 웹사이트호스트업, 웹서버대여업, 웹페이지디자인업, 응용소프트웨어대여업, 인터넷검색엔진제공업, 인터넷보안프로그램제공업, 자료 및 문서의 디지털처리업, 전자상거래용 웹사이트관리업, 전자상거래용 웹사이트유지관리업, 전자상거래용 컴퓨터프로그래밍업, 컴퓨터 프로그램 및 자료의 자료전환 서비스업, 컴퓨터게임소프트웨어개발업, 컴퓨터게임소프트웨어복제업, 컴퓨터게임소프트웨어유지관리업, 컴퓨터게임프로그래밍업, 컴퓨터관련 분석업, 컴퓨터관련 상담업, 컴퓨터관련 연구업, 컴퓨터관련 자문업, 컴퓨터데이터복구업, 컴퓨터대여업, 컴퓨터보안상담업, 컴퓨터소프트웨어개발업, 컴퓨터소프트웨어대여업, 컴퓨터소프트웨어디자인업, 컴퓨터소프트웨어상담업, 컴퓨터소프트웨어설계업, 컴퓨터소프트웨어설치업, 컴퓨터소프트웨어수리업, 컴퓨터소프트웨어업데이팅업, 컴퓨터소프트웨어연구업, 컴퓨터소프트웨어유지관리업, 컴퓨터소프트웨어의 자문 및 개발업, 컴퓨터시스템디자인업, 컴퓨터시스템분석업, 컴퓨터시스템의 설계 및 자문업, 컴퓨터임대업, 컴퓨터프로그래밍업, 컴퓨터프로그램 및 데이터의 자료전환업, 컴퓨터프로그램개발업, 컴퓨터프로그램복제업, 컴퓨터프로그램의 번역임대업, 컴퓨터하드웨어개발업, 컴퓨터하드웨어디자인업, 컴퓨터하드웨어상담업"
+        }
+      ]
+    },
+    "id": "ac66ec43-b2a3-4113-8e93-d12defcae272",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.01.05",
+      "26.03.10",
+      "26.04.11"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "SUITE Sunggok bldg. Teheran-ro, Gangnam-gu, Seoul, Korea(LIMEUNGSOO LAWOFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김원식 (KIM, Won Shik)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20090414",
+        "applicationNumber": "41-2009-0007857"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20100915",
+        "registrationNumber": "4102010490000"
+      }
+    },
+    "version": "20250625163648",
+    "wordMarkSpecification": {
+      "markTransliteration": "SEVENCORE",
+      "markVerbalElementText": "SEVEnCORE"
+    }
+  },
+  "_uri": "/mark/kr/ac66ec43-b2a3-4113-8e93-d12defcae272",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.731Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

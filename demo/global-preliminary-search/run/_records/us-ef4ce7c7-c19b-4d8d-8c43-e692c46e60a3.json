@@ -1,0 +1,400 @@
+{
+  "uri": "/mark/us/ef4ce7c7-c19b-4d8d-8c43-e692c46e60a3",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "ef4ce7c7-c19b-4d8d-8c43-e692c46e60a3",
+  "applicationNumber": "85013062",
+  "registrationNumber": "4218276",
+  "applicationDate": "2010-04-13",
+  "registrationDate": "2012-10-02",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2011-02-22"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2019-05-03",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "SEVENCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Virtual reality game software; Computer programs for pre-recorded games; Data processing apparatus; Disc memories; Digital disc drives; Digital signal processors; Computer software for wireless content delivery; Software for processing images, graphics and text; Computer programs for editing images, sound and video; hand held units and video game consoles adapted for use with an external display screen or monitor; Operating system programs; Workstations, namely, computer workstations comprised of computers, keyboards and computer docking stations; Computer application software for mobile phones for playing audio and video files and computer games; Computer game programs; Computer game software; Integrated circuit cards, namely, smart cards that are encoded smart cards featuring programming for game playing; Downloadable electronic music; Electronic publications, downloadable, namely, newsletters, books in the field of electronic gaming; Computer programs, namely, downloadable software for playing computer games; Compact discs, namely, read-only memory discs that are blank CD-rom discs, pre-recorded CD-rom discs featuring virtual reality game software",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NORIA CO., LTD.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "John K. Park",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "A-505, Pyungchon AcroTower, Anyang-si, 431-060, SKOR",
+        "applicantAddressCity": "Anyang-si",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantAddressPostalCode": "431-060",
+        "applicantAddressStreet": "A-505, Pyungchon AcroTower",
+        "applicantJurisdictionOfIncorporation": "REPUBLIC OF KOREA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "NORIA CO., LTD.",
+        "applicantSecondaryAddressUnit": "Kuanyang-dong, 1591 Dongan-Gu"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "15.05.02",
+      "15.05.04",
+      "26.01.01",
+      "26.01.10",
+      "26.05.10",
+      "26.05.32",
+      "26.05.37",
+      "26.05.61",
+      "26.11.10",
+      "26.11.37",
+      "29.05.03",
+      "29.05.09",
+      "30.01.18",
+      "30.05.04"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Virtual reality game software; Computer programs for pre-recorded games; Data processing apparatus; Disc memories; Digital disc drives; Digital signal processors; Computer software for wireless content delivery; Software for processing images, graphics and text; Computer programs for editing images, sound and video; hand held units and video game consoles adapted for use with an external display screen or monitor; Operating system programs; Workstations, namely, computer workstations comprised of computers, keyboards and computer docking stations; Computer application software for mobile phones for playing audio and video files and computer games; Computer game programs; Computer game software; Integrated circuit cards, namely, smart cards that are encoded smart cards featuring programming for game playing; Downloadable electronic music; Electronic publications, downloadable, namely, newsletters, books in the field of electronic gaming; Computer programs, namely, downloadable software for playing computer games; Compact discs, namely, read-only memory discs that are blank CD-rom discs, pre-recorded CD-rom discs featuring virtual reality game software"
+        }
+      ]
+    },
+    "id": "ef4ce7c7-c19b-4d8d-8c43-e692c46e60a3",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20190503",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20171002",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20121002",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20120829",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE E-MAILED"
+      },
+      {
+        "date": "20120828",
+        "descriptionText": "LAW OFFICE REGISTRATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20120826",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20120824",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20120821",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20120821",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20120515",
+        "descriptionText": "NOTICE OF APPROVAL OF EXTENSION REQUEST E-MAILED"
+      },
+      {
+        "date": "20120514",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20120514",
+        "descriptionText": "SOU EXTENSION 2 GRANTED"
+      },
+      {
+        "date": "20120419",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20120419",
+        "descriptionText": "SOU EXTENSION 2 FILED"
+      },
+      {
+        "date": "20111008",
+        "descriptionText": "NOTICE OF APPROVAL OF EXTENSION REQUEST E-MAILED"
+      },
+      {
+        "date": "20111006",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20111006",
+        "descriptionText": "SOU EXTENSION 1 FILED"
+      },
+      {
+        "date": "20111006",
+        "descriptionText": "SOU EXTENSION 1 GRANTED"
+      },
+      {
+        "date": "20110419",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20110222",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20110222",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20110120",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20110118",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20110118",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20110118",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20110118",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20110118",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20110111",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20110111",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20110111",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20101217",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20100719",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20100719",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20100719",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20100719",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20100420",
+        "descriptionText": "NOTICE OF DESIGN SEARCH CODE MAILED"
+      },
+      {
+        "date": "20100419",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20100416",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "The color(s) blue, white, black and gray is/are claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of the following: an inverted triangle with a blue interior and a black, gray and blue outer border, the wording \"SEVENCORE\" in white with gray shading, a white line under the wording, a design of four concentric circles in blue and white with a white interior and a blue vertical bar at the top of the inner circles, all contained within a black rectangle.",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "A-505, Pyungchon AcroTower, Anyang-si, 431-060, SKOR",
+        "city": "Anyang-si",
+        "countryCode": "KR",
+        "countryName": "South Korea",
+        "jurisdictionOfIncorporation": "REPUBLIC OF KOREA",
+        "legalEntity": "CORPORATION",
+        "name": "NORIA CO., LTD.",
+        "postalCode": "431-060",
+        "secondaryAddressUnit": "Kuanyang-dong, 1591 Dongan-Gu",
+        "street": "A-505, Pyungchon AcroTower"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "A-505, Pyungchon AcroTower, Anyang-si, 431-060, SKOR",
+        "city": "Anyang-si",
+        "countryCode": "KR",
+        "countryName": "South Korea",
+        "jurisdictionOfIncorporation": "REPUBLIC OF KOREA",
+        "legalEntity": "CORPORATION",
+        "name": "NORIA CO., LTD.",
+        "postalCode": "431-060",
+        "secondaryAddressUnit": "Kuanyang-dong, 1591 Dongan-Gu",
+        "street": "A-505, Pyungchon AcroTower"
+      },
+      {
+        "address": "A-505, Pyungchon AcroTower, Anyang-si, 431-060, SKOR",
+        "city": "Anyang-si",
+        "countryCode": "KR",
+        "countryName": "South Korea",
+        "jurisdictionOfIncorporation": "REPUBLIC OF KOREA",
+        "legalEntity": "CORPORATION",
+        "name": "NORIA CO., LTD.",
+        "postalCode": "431-060",
+        "secondaryAddressUnit": "Kuanyang-dong, 1591 Dongan-Gu",
+        "street": "A-505, Pyungchon AcroTower"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "A-505, Pyungchon AcroTower, Anyang-si, 431-060, SKOR",
+        "city": "Anyang-si",
+        "countryCode": "KR",
+        "countryName": "South Korea",
+        "jurisdictionOfIncorporation": "REPUBLIC OF KOREA",
+        "legalEntity": "CORPORATION",
+        "name": "NORIA CO., LTD.",
+        "postalCode": "431-060",
+        "secondaryAddressUnit": "Kuanyang-dong, 1591 Dongan-Gu",
+        "street": "A-505, Pyungchon AcroTower"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "LOS ANGELES, CA 90010-1415, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "LOS ANGELES, CA 90010-1415",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "JOHN K. PARK PARK LAW FIRM, 3255 WILSHIRE BLVD STE 1110"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "LOS ANGELES, CA 90010-1415, UNITED STATES",
+        "representativeAddressLines": [
+          "LOS ANGELES, CA 90010-1415",
+          "UNITED STATES"
+        ],
+        "representativeName": "John K. Park"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20100413",
+        "applicationNumber": "85013062"
+      },
+      "cancellationDate": "20190503",
+      "cancellationPublicationDate": "20190611",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20110824"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20110824"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20190503",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT",
+          "Color Drawing Filed",
+          "Color Drawing Currently"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20110222"
+      ],
+      "registration": {
+        "registrationDate": "20121002",
+        "registrationNumber": "4218276"
+      }
+    },
+    "version": "20260110074122",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "SEVEN CORE, 7 CORE",
+      "markVerbalElementText": "SEVENCORE"
+    }
+  },
+  "_uri": "/mark/us/ef4ce7c7-c19b-4d8d-8c43-e692c46e60a3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.729Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

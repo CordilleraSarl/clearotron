@@ -1,0 +1,104 @@
+{
+  "uri": "/mark/pe/1fc9ff38-3b19-4fae-a719-cb7290a2ba52",
+  "provider": "clarivate",
+  "office": "pe",
+  "guid": "1fc9ff38-3b19-4fae-a719-cb7290a2ba52",
+  "applicationNumber": "48260-2025",
+  "registrationNumber": null,
+  "applicationDate": "2025-09-11",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QORIKALLPA: MINAS Y SERVICIOS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "servicios científicos y tecnológicos, así como servicios de investigación y diseño conexos; servicios de análisis industrial, investigación industrial y diseño industrial; control de calidad y servicios de autenticación; diseño y desarrollo de hardware y software.",
+      "translation_language": "en",
+      "translation": "scientific and technological services, as well as related research and design services; industrial analysis, industrial research and industrial design services; quality control and authentication services; design and development of hardware and software."
+    }
+  ],
+  "owner": "QORIKALLPA MINAS Y SERVICIOS S. A. C.",
+  "ownerNative": null,
+  "ownerCountry": "CO",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "LIMA - LIMA - SAN ISIDRO",
+        "applicantAddressCountryCode": "CO",
+        "applicantAddressCountryName": "Colombia",
+        "applicantName": "QORIKALLPA MINAS Y SERVICIOS S. A. C."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "scientific and technological services, as well as related research and design services; industrial analysis, industrial research and industrial design services; quality control and authentication services; design and development of hardware and software.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "servicios científicos y tecnológicos, así como servicios de investigación y diseño conexos; servicios de análisis industrial, investigación industrial y diseño industrial; control de calidad y servicios de autenticación; diseño y desarrollo de hardware y software."
+        }
+      ]
+    },
+    "id": "1fc9ff38-3b19-4fae-a719-cb7290a2ba52",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "PE",
+    "registrationOfficeName": "Peru",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250911",
+        "applicationNumber": "48260-2025"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20251003021432",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIKALLPA: MINAS Y SERVICIOS"
+    }
+  },
+  "_uri": "/mark/pe/1fc9ff38-3b19-4fae-a719-cb7290a2ba52",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.399Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

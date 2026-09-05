@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/mx/bc6b9c41-a0bb-4537-8a9a-a1682726980e",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "bc6b9c41-a0bb-4537-8a9a-a1682726980e",
+  "applicationNumber": "2470095",
+  "registrationNumber": "2312414",
+  "applicationDate": "2020-12-14",
+  "registrationDate": "2021-10-19",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LLAVE NORTEÑA DEL CHOMPA GERA GERA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de entretenimiento, servicios de entretenimiento prestados por artistas del espectaculo, servicios de cantantes, grupo musical (entretenimiento), organizacion de bailes, organizacion y direccion de conciertos de musica, produccion de espectaculos, actuaciones de bandas de musica en directo, actuaciones en directo por parte de un grupo musical, direccion y organizacion de espectaculos musicales, organizacion de conciertos musicales, organizacion de eventos musicales, organizacion de espectaculos, organizacion de fiestas con fines de entretenimiento, presentacion de actuaciones de grupos musicales en directo, presentacion de espectaculos musicales, produccion de espectaculos musicales, servicios de una agencia de entretenimiento, contratacion de artistas para actos (servicios de promotor), servicios de decoracion para eventos de entretenimiento, produccion de grabaciones audiovisuales, servicios de grabacion de audio y video, alquiler de aparatos de grabacion de sonido y de video, alquiler de aparatos para la reproduccion de audio, alquiler de equipos de audio, alquiler de equipos de iluminacion para escenarios, servicios de alquiler de equipos de audio y video, alquiler de proyectores, arrendamiento de decorados para espectaculos, composicion de canciones, composicion musical, enseñanza de canto, servicios de enseñanza musical, grabacion de musica, musica no descargable en linea.",
+      "translation_language": "en",
+      "translation": "ENTERTAINMENT SERVICES, ENTERTAINMENT SERVICES PROVIDED BY SPECTACULAR ARTISTS, SINGERS SERVICES, MUSICAL GROUP (ENTERTAINMENT), DANCE ORGANIZATION, ORGANIZATION AND DIRECTION OF MUSIC CONCERTS, PERFORMANCE OF SHOWS, PRODUCTION IN SHOWS DIRECT BY PART OF A MUSICAL GROUP, DIRECTION AND ORGANIZATION OF MUSICAL SHOWS, ORGANIZATION OF MUSICAL CONCERTS, ORGANIZATION OF MUSICAL EVENTS, ORGANIZATION OF SHOWS, ORGANIZATION OF PARTIES FOR THE PURPOSE OF PRESENTATION OF PRESENTATION PERFORMANCES, PERFORMANCES OF PRESENTATION PERFORMANCES , PRODUCTION OF MUSICAL SHOWS, SERVICES OF AN ENTERTAINMENT AGENCY, HIRING OF ARTISTS FOR EVENTS (PROMOTER SERVICES), DECORATION SERVICES FOR ENTERTAINMENT EVENTS, PRODUCTION OF AUDIOVISUAL RECORDINGS, AUDIO RECORDING AND VIDEO RECORDING SERVICES, RENTALS SOUND AND VIDEO, RENTAL OF EQUIPMENT FOR THE REPRODUCTION OF AUDIO, RENTAL OF AUDIO EQUIPMENT, RENT OF LIGHTING EQUIPMENT FOR STAGES, RENTAL SERVICES OF AUDIO AND VIDEO EQUIPMENT, RENTAL OF PROJECTORS, RENTAL OF DECORATIONS FOR SHOWS, COMPOSECTONS MUSICAL, SINGING TEACHING, MUSICAL TEACHING SERVICES, MUSIC RECORDING, MUSIC NOT DOWNLOADABLE ONLINE"
+    }
+  ],
+  "owner": "GERARDO ALVAREZ ALVAREZ",
+  "ownerNative": null,
+  "ownerCountry": "MX",
+  "representative": "CASTOR ESTRADA ROBLES",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "C. GARCIA OBESO NUM. EXT. 1345, FELIX IRETA, MORELIA, MICHOACÁN 58070",
+        "applicantAddressCountryCode": "MX",
+        "applicantAddressCountryName": "Mexico",
+        "applicantName": "GERARDO ALVAREZ ALVAREZ"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "ENTERTAINMENT SERVICES, ENTERTAINMENT SERVICES PROVIDED BY SPECTACULAR ARTISTS, SINGERS SERVICES, MUSICAL GROUP (ENTERTAINMENT), DANCE ORGANIZATION, ORGANIZATION AND DIRECTION OF MUSIC CONCERTS, PERFORMANCE OF SHOWS, PRODUCTION IN SHOWS DIRECT BY PART OF A MUSICAL GROUP, DIRECTION AND ORGANIZATION OF MUSICAL SHOWS, ORGANIZATION OF MUSICAL CONCERTS, ORGANIZATION OF MUSICAL EVENTS, ORGANIZATION OF SHOWS, ORGANIZATION OF PARTIES FOR THE PURPOSE OF PRESENTATION OF PRESENTATION PERFORMANCES, PERFORMANCES OF PRESENTATION PERFORMANCES , PRODUCTION OF MUSICAL SHOWS, SERVICES OF AN ENTERTAINMENT AGENCY, HIRING OF ARTISTS FOR EVENTS (PROMOTER SERVICES), DECORATION SERVICES FOR ENTERTAINMENT EVENTS, PRODUCTION OF AUDIOVISUAL RECORDINGS, AUDIO RECORDING AND VIDEO RECORDING SERVICES, RENTALS SOUND AND VIDEO, RENTAL OF EQUIPMENT FOR THE REPRODUCTION OF AUDIO, RENTAL OF AUDIO EQUIPMENT, RENT OF LIGHTING EQUIPMENT FOR STAGES, RENTAL SERVICES OF AUDIO AND VIDEO EQUIPMENT, RENTAL OF PROJECTORS, RENTAL OF DECORATIONS FOR SHOWS, COMPOSECTONS MUSICAL, SINGING TEACHING, MUSICAL TEACHING SERVICES, MUSIC RECORDING, MUSIC NOT DOWNLOADABLE ONLINE",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de entretenimiento, servicios de entretenimiento prestados por artistas del espectaculo, servicios de cantantes, grupo musical (entretenimiento), organizacion de bailes, organizacion y direccion de conciertos de musica, produccion de espectaculos, actuaciones de bandas de musica en directo, actuaciones en directo por parte de un grupo musical, direccion y organizacion de espectaculos musicales, organizacion de conciertos musicales, organizacion de eventos musicales, organizacion de espectaculos, organizacion de fiestas con fines de entretenimiento, presentacion de actuaciones de grupos musicales en directo, presentacion de espectaculos musicales, produccion de espectaculos musicales, servicios de una agencia de entretenimiento, contratacion de artistas para actos (servicios de promotor), servicios de decoracion para eventos de entretenimiento, produccion de grabaciones audiovisuales, servicios de grabacion de audio y video, alquiler de aparatos de grabacion de sonido y de video, alquiler de aparatos para la reproduccion de audio, alquiler de equipos de audio, alquiler de equipos de iluminacion para escenarios, servicios de alquiler de equipos de audio y video, alquiler de proyectores, arrendamiento de decorados para espectaculos, composicion de canciones, composicion musical, enseñanza de canto, servicios de enseñanza musical, grabacion de musica, musica no descargable en linea."
+        }
+      ]
+    },
+    "id": "bc6b9c41-a0bb-4537-8a9a-a1682726980e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.04",
+      "26.04.07",
+      "26.04.12",
+      "26.04.16",
+      "26.04.22",
+      "26.04.24",
+      "27.05.24",
+      "25.05.25",
+      "24.11.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1022R1",
+        "publicationYear": "2021"
+      }
+    ],
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "representatives": [
+      {
+        "representativeAddress": "PASEO DE LAS YUCAS NUM. EXT. 43, PRADOS VERDES, MORELIA, MICHOACAN 58110, MEXICO",
+        "representativeName": "CASTOR ESTRADA ROBLES"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20201214",
+        "applicationNumber": "2470095"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20211019",
+        "registrationNumber": "2312414"
+      }
+    },
+    "version": "20250704185532",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LLAVE NORTEÑA DEL CHOMPA GERA GERA"
+    }
+  },
+  "_uri": "/mark/mx/bc6b9c41-a0bb-4537-8a9a-a1682726980e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

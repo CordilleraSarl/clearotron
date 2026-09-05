@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/gb/2671b357-819b-4cce-82af-fd2b76286125",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "2671b357-819b-4cce-82af-fd2b76286125",
+  "applicationNumber": "2166759",
+  "registrationNumber": "2166759",
+  "applicationDate": "1998-05-15",
+  "registrationDate": "1999-07-16",
+  "expiryDate": "2028-05-15",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR TECHNOLOGY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Electrical warning apparatus and instruments (none for vehicles), electrical and mechanical control apparatus for use with alarm apparatus; telephone apparatus and instruments; checking (supervision) apparatus; computers; electronic data input and output apparatus; parts and fittings for all the aforesaid goods but not including vehicle checking apparatus and speed indicators for vehicles.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Grosvenor Technology Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Reddie & Grose LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Unit S, The Fulcrum Centre, Vantage Way, Mannings Heath, Poole, Dorset, BH12 4NU",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Grosvenor Technology Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electrical warning apparatus and instruments (none for vehicles), electrical and mechanical control apparatus for use with alarm apparatus; telephone apparatus and instruments; checking (supervision) apparatus; computers; electronic data input and output apparatus; parts and fittings for all the aforesaid goods but not including vehicle checking apparatus and speed indicators for vehicles."
+        }
+      ]
+    },
+    "id": "2671b357-819b-4cce-82af-fd2b76286125",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "6270"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "The White Chapel Building, 10 Whitechapel High Street, London E1 8QS",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Reddie & Grose LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19980515",
+        "applicationNumber": "2166759"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280515",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "19990716",
+        "registrationNumber": "2166759"
+      }
+    },
+    "version": "20250627185204",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR TECHNOLOGY"
+    }
+  },
+  "_uri": "/mark/gb/2671b357-819b-4cce-82af-fd2b76286125",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

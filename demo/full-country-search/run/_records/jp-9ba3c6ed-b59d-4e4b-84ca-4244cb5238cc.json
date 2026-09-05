@@ -1,0 +1,202 @@
+{
+  "uri": "/mark/jp/9ba3c6ed-b59d-4e4b-84ca-4244cb5238cc",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "9ba3c6ed-b59d-4e4b-84ca-4244cb5238cc",
+  "applicationNumber": "2023-142890",
+  "registrationNumber": "6838630",
+  "applicationDate": "2023-12-25",
+  "registrationDate": "2024-08-28",
+  "expiryDate": "2034-08-28",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-09-05",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＡＮＱＯＲＳ",
+  "markTransliteration": "ANKAASU ANKOOSU",
+  "markTranslation": "ANQORS",
+  "markFeature": "DESIGN AND COLOR",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "電子計算機用プログラム，電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Program for electronic computer, electronic appliances and appliances and parts thereof"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "電子計算機のプログラムの設計・作成又は保守，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，電子計算機の貸与，電子計算機用プログラムの提供，コンピュータソフトウェアの設計・作成・保守に関する指導及び助言",
+      "translation_language": "en",
+      "translation": "Performance, operation methods, etc. of machines that require a high degree of specialized knowledge, technology, or experience in order to design, create, or maintain computer programs, and to perform accurate operations for computers, automobiles, and other applications. Introduction and explanation, lending of computer, provision of program for computer, guidance and advice on design, creation and maintenance of computer software"
+    }
+  ],
+  "owner": "SYSTEM BANK K.K.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "ISONO International Patent Office P.C.",
+  "priorities": [
+    {
+      "priorityDate": "20231225"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "SUMIDA TOKYO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "SYSTEM BANK K.K.",
+        "applicantNativeAddress": "東京都墨田区",
+        "applicantNativeName": "システムバンク株式会社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Program for electronic computer, electronic appliances and appliances and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "電子計算機用プログラム，電子応用機械器具及びその部品"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Performance, operation methods, etc. of machines that require a high degree of specialized knowledge, technology, or experience in order to design, create, or maintain computer programs, and to perform accurate operations for computers, automobiles, and other applications. Introduction and explanation, lending of computer, provision of program for computer, guidance and advice on design, creation and maintenance of computer software",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "電子計算機のプログラムの設計・作成又は保守，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，電子計算機の貸与，電子計算機用プログラムの提供，コンピュータソフトウェアの設計・作成・保守に関する指導及び助言"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door closing control systems; Electron microscopes"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42P03",
+          "natGoodsServicesDescription": "Technological advice relating to computers, automobiles and industrial machines"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        }
+      ]
+    },
+    "id": "9ba3c6ed-b59d-4e4b-84ca-4244cb5238cc",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN AND COLOR",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "COLOUR CLAIMED"
+      }
+    ],
+    "markImageViennaClassification": [
+      "01.13.01.00",
+      "01.13.15.00",
+      "18.04.01.00",
+      "18.04.02.00",
+      "26.01.01.00",
+      "26.01.01.01",
+      "26.01.05.00",
+      "26.01.06.00",
+      "26.03.23.00",
+      "26.11.03.00",
+      "26.11.07.00",
+      "26.11.08.00",
+      "26.11.09.00",
+      "26.11.10.00",
+      "26.11.12.00",
+      "27.05.01.01",
+      "27.05.01.14",
+      "27.05.01.15",
+      "27.05.01.17",
+      "27.05.01.18",
+      "27.05.01.19",
+      "27.05.08.00",
+      "27.05.23.94",
+      "29.01.04.01",
+      "29.01.04.02",
+      "29.01.11.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20231225"
+      }
+    ],
+    "recordLastUpdated": "20240920",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "ISONO International Patent Office P.C.",
+        "representativeNativeName": "弁理士法人磯野国際特許商標事務所"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20231225",
+        "applicationNumber": "2023-142890"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340828",
+      "lastPublicationDate": "20240905",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20240828",
+        "registrationNumber": "6838630"
+      }
+    },
+    "version": "20240920081628",
+    "wordMarkSpecification": {
+      "markTranslation": "ANQORS",
+      "markTransliteration": "ANKAASU ANKOOSU",
+      "markVerbalElementText": "ＡＮＱＯＲＳ"
+    }
+  },
+  "_uri": "/mark/jp/9ba3c6ed-b59d-4e4b-84ca-4244cb5238cc",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.708Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

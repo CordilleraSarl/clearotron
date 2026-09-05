@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/cn/b487d62c-4301-48bd-99a2-62c320588a87",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "b487d62c-4301-48bd-99a2-62c320588a87",
+  "applicationNumber": "72239597",
+  "registrationNumber": null,
+  "applicationDate": "2023-06-15",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "棋咖",
+  "markTransliteration": "SEVEN ELEVEN QI KA",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "棋牌室服务;棋室(围棋或将棋)",
+      "translation_language": "en",
+      "translation": "Chess room service; chess room (go or shogi)"
+    }
+  ],
+  "owner": "Hangzhou Rice Cake Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "浙江省杭州市余杭区五常街道五常大道181号1幢1#东大楼706",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Hangzhou Rice Cake Technology Co., Ltd.",
+        "applicantNativeName": "杭州年糕科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Chess room service; chess room (go or shogi)",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "棋牌室服务;棋室(围棋或将棋)"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "b487d62c-4301-48bd-99a2-62c320588a87",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "知域互联科技有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230615",
+        "applicationNumber": "72239597"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251005050054",
+    "wordMarkSpecification": {
+      "markTransliteration": "SEVEN ELEVEN QI KA",
+      "markVerbalElementText": "棋咖"
+    }
+  },
+  "_uri": "/mark/cn/b487d62c-4301-48bd-99a2-62c320588a87",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.564Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

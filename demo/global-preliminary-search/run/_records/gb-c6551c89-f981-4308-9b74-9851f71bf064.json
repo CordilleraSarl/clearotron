@@ -1,0 +1,227 @@
+{
+  "uri": "/mark/gb/c6551c89-f981-4308-9b74-9851f71bf064",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "c6551c89-f981-4308-9b74-9851f71bf064",
+  "applicationNumber": "UK00801090317",
+  "registrationNumber": "UK00801090317",
+  "applicationDate": "2010-11-25",
+  "registrationDate": "2012-07-31",
+  "expiryDate": "2030-11-25",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORT",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "STYLIZED LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    36,
+    37,
+    38,
+    40,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Adding machines; amusement apparatus adapted for use with an external display screen or monitor; anti-interference devices (electricity); anti -theft warning apparatus; apparatus for games adapted for use with an external display screen or monitor; audio and video receivers; audiovisual teaching apparatus, including teaching apparatus for participation in exchange trade; cables, electric; chips (integrated circuits); compact discs (read-only memory); computers; computer game programs; computer keyboards; computer memories; computer peripheral devices, including computer devices for direct access to exchange transactions via remote-data terminals; computer programs (downloadable software); computer software, recorded, including computer software for direct access to exchange transactions via remote-data terminals; connections, electric; control panels (electricity); couplers (data processing equipment); data processing apparatus; dna chips; disk drives for computers; distance recording apparatus; distribution consoles (electricity); electronic agendas; electric apparatus for commutation; electronic notice boards; electronic pens (visual display units); electronic publications, downloadable; encoded cards, magnetic; fibre optic cables; floppy disks; identity cards, magnetic; indicators (electricity); interfaces for computers; invoicing machines; juke boxes for computers; magnetic data media; magnetic encoders; measuring devices, electric; microprocessors; modems; monitors (computer hardware); monitoring apparatus, electric; mouse (data processing equipment); notebook computers; observation instruments; optical character readers; optical data media; printers for use with computers; processors (central processing units); readers (data processing equipment); remote control apparatus; smart cards (integrated circuit cards); sound recording apparatus; sound transmitting apparatus; switches, electric; tape recorders; teaching apparatus; theft prevention installations, electric; time clocks (time recording devices); time recording apparatus; transmitters (telecommunication); transmitters of electronic signals; transmitting sets (telecommunication); video screens; walkie-talkies; word processors.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Arranging subscriptions to telecommunication services for others; auctioneering; book-keeping; business appraisals; business information; business inquiries; business management assistance; business management and organization consultancy; business management of performing artists; business research; commercial administration of the licensing of the goods and services of others; commercial information agencies; commercial information and advice for consumers (consumer advice shop); compilation of statistics; computerized file management; cost price analysis; data search in computer files for others; demonstration of goods; drawing up of statements of accounts; economic forecasting; efficiency experts; import-export agencies; invoicing; marketing research; marketing studies; office machines and equipment rental; on-line advertising on a computer network; outsourcing services (business assistance); payroll preparation; price comparison services; procurement services for others (purchasing goods and services for other businesses); professional business consultancy; public relations; sales promotion for others; sponsorship search; systemization of information into computer databases; tax preparation; transcription.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Actuarial services; apartment house management; bail-bonding; banking; brokerage; capital investments; charitable fund raising; check (cheque) verification; clearing, financial; credit card services; debit card services; deposits of valuables; electronic funds transfer; exchanging money; factoring; fiduciary; financial analysis; financial consultancy; financial evaluation (insurance, banking, real estate); financial information; financial management; financing services; financial sponsorship; fiscal assessments; home banking; hire-purchase financing; insurance brokerage; insurance consultancy; insurance information; insurance underwriting; issuance of credit cards; issue of tokens of value; loans (financing); mutual funds; organization of collections; real estate brokers; real estate management; securities brokerage; stock exchange quotations.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Installation, maintenance and repair of computer hardware for direct acces to exchange transactions via remote-data terminals; Interference suppression in electrical apparatus; machinery installation, maintenance and repair; office repair.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "en",
+      "description": "Cellular telephone communication; computer aided transmission of messages and images; communications by computer terminals; communications by fiber (fibre) optic networks; information about telecommunication; message sending; providing access to databases; providing Internet chatrooms; providing telecommunication channels for teleshopping services; providing telecommunications connections to a global computer network; providing user access to a global computer network (service providers); rental of access time to global computer networks, including rental of hardware and software package for direct access to exchange transactions via remote-data terminals; rental of message sending apparatus; rental of modems; rental of telecommunication equipment; satellite transmission; telecommunications routing and junction services; teleconferencing services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "en",
+      "description": "Custom assembling of materials for others, including assembling of devices for direct access to exchange transactions via remote-data terminals.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Arranging and conducting of colloquiums; arranging and conducting of conferences; arranging and conducting of congresses; arranging and conducting of seminars; arranging and conducting of symposiums; arranging and conducting of workshops (training); correspondence courses; education information; educational examination; educational services; electronic desktop publishing; layout services, other than for advertising purposes; organization of exhibitions for cultural or educational purposes; practical training (demonstration), including training for usage of direct access application for direct access to exchange transactions via remote-data terminals; providing on-line electronic publications, not downloadable; publication of books; publication of electronic books and journals on-line; publication of texts, other than publicity texts); rental of videotapes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Computer programming; computer rental; computer software consultancy; computer software design; computer systems analysis; computer system design; computer virus protection services; consultancy in the field of computer hardware; conversion of data or documents from physical to electronic media; creating and maintaining web sites for others; data conversion of computer programs and data (not physical conversion); duplication of computer programs; engineering; hosting computer sites (web sites); installation of computer software; maintenance of computer software; providing search engines for the Internet; recovery of computer data; rental of computer software; rental of web servers; research and development for others); surveying; technical project studies; technical research; updating of computer software.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Obshchestvo s ogranichennoy otvetstvennostyu \"ARKA Teknolodzhiz\"",
+  "ownerNative": null,
+  "ownerCountry": "RU",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "RU",
+      "priorityCountryName": "Russian Federation",
+      "priorityDate": "20100531",
+      "priorityNumber": "2010717671"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "ul. Kommunisticheskaya, 2 RU-630099 Novosibirsk",
+        "applicantAddressCountryCode": "RU",
+        "applicantAddressCountryName": "Russian Federation",
+        "applicantName": "Obshchestvo s ogranichennoy otvetstvennostyu \"ARKA Teknolodzhiz\""
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Adding machines; amusement apparatus adapted for use with an external display screen or monitor; anti-interference devices (electricity); anti -theft warning apparatus; apparatus for games adapted for use with an external display screen or monitor; audio and video receivers; audiovisual teaching apparatus, including teaching apparatus for participation in exchange trade; cables, electric; chips (integrated circuits); compact discs (read-only memory); computers; computer game programs; computer keyboards; computer memories; computer peripheral devices, including computer devices for direct access to exchange transactions via remote-data terminals; computer programs (downloadable software); computer software, recorded, including computer software for direct access to exchange transactions via remote-data terminals; connections, electric; control panels (electricity); couplers (data processing equipment); data processing apparatus; dna chips; disk drives for computers; distance recording apparatus; distribution consoles (electricity); electronic agendas; electric apparatus for commutation; electronic notice boards; electronic pens (visual display units); electronic publications, downloadable; encoded cards, magnetic; fibre optic cables; floppy disks; identity cards, magnetic; indicators (electricity); interfaces for computers; invoicing machines; juke boxes for computers; magnetic data media; magnetic encoders; measuring devices, electric; microprocessors; modems; monitors (computer hardware); monitoring apparatus, electric; mouse (data processing equipment); notebook computers; observation instruments; optical character readers; optical data media; printers for use with computers; processors (central processing units); readers (data processing equipment); remote control apparatus; smart cards (integrated circuit cards); sound recording apparatus; sound transmitting apparatus; switches, electric; tape recorders; teaching apparatus; theft prevention installations, electric; time clocks (time recording devices); time recording apparatus; transmitters (telecommunication); transmitters of electronic signals; transmitting sets (telecommunication); video screens; walkie-talkies; word processors."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Arranging subscriptions to telecommunication services for others; auctioneering; book-keeping; business appraisals; business information; business inquiries; business management assistance; business management and organization consultancy; business management of performing artists; business research; commercial administration of the licensing of the goods and services of others; commercial information agencies; commercial information and advice for consumers (consumer advice shop); compilation of statistics; computerized file management; cost price analysis; data search in computer files for others; demonstration of goods; drawing up of statements of accounts; economic forecasting; efficiency experts; import-export agencies; invoicing; marketing research; marketing studies; office machines and equipment rental; on-line advertising on a computer network; outsourcing services (business assistance); payroll preparation; price comparison services; procurement services for others (purchasing goods and services for other businesses); professional business consultancy; public relations; sales promotion for others; sponsorship search; systemization of information into computer databases; tax preparation; transcription."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Actuarial services; apartment house management; bail-bonding; banking; brokerage; capital investments; charitable fund raising; check (cheque) verification; clearing, financial; credit card services; debit card services; deposits of valuables; electronic funds transfer; exchanging money; factoring; fiduciary; financial analysis; financial consultancy; financial evaluation (insurance, banking, real estate); financial information; financial management; financing services; financial sponsorship; fiscal assessments; home banking; hire-purchase financing; insurance brokerage; insurance consultancy; insurance information; insurance underwriting; issuance of credit cards; issue of tokens of value; loans (financing); mutual funds; organization of collections; real estate brokers; real estate management; securities brokerage; stock exchange quotations."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Installation, maintenance and repair of computer hardware for direct acces to exchange transactions via remote-data terminals; Interference suppression in electrical apparatus; machinery installation, maintenance and repair; office repair."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Cellular telephone communication; computer aided transmission of messages and images; communications by computer terminals; communications by fiber (fibre) optic networks; information about telecommunication; message sending; providing access to databases; providing Internet chatrooms; providing telecommunication channels for teleshopping services; providing telecommunications connections to a global computer network; providing user access to a global computer network (service providers); rental of access time to global computer networks, including rental of hardware and software package for direct access to exchange transactions via remote-data terminals; rental of message sending apparatus; rental of modems; rental of telecommunication equipment; satellite transmission; telecommunications routing and junction services; teleconferencing services."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Custom assembling of materials for others, including assembling of devices for direct access to exchange transactions via remote-data terminals."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Arranging and conducting of colloquiums; arranging and conducting of conferences; arranging and conducting of congresses; arranging and conducting of seminars; arranging and conducting of symposiums; arranging and conducting of workshops (training); correspondence courses; education information; educational examination; educational services; electronic desktop publishing; layout services, other than for advertising purposes; organization of exhibitions for cultural or educational purposes; practical training (demonstration), including training for usage of direct access application for direct access to exchange transactions via remote-data terminals; providing on-line electronic publications, not downloadable; publication of books; publication of electronic books and journals on-line; publication of texts, other than publicity texts); rental of videotapes."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer programming; computer rental; computer software consultancy; computer software design; computer systems analysis; computer system design; computer virus protection services; consultancy in the field of computer hardware; conversion of data or documents from physical to electronic media; creating and maintaining web sites for others; data conversion of computer programs and data (not physical conversion); duplication of computer programs; engineering; hosting computer sites (web sites); installation of computer software; maintenance of computer software; providing search engines for the Internet; recovery of computer data; rental of computer software; rental of web servers; research and development for others); surveying; technical project studies; technical research; updating of computer software."
+        }
+      ]
+    },
+    "id": "c6551c89-f981-4308-9b74-9851f71bf064",
+    "ipRightKind": "tmk",
+    "markFeature": "STYLIZED LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "RU",
+        "priorityCountryName": "Russian Federation",
+        "priorityDate": "20100531",
+        "priorityNumber": "2010717671"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20101125",
+        "applicationNumber": "UK00801090317"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20301125",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20120731",
+        "registrationNumber": "UK00801090317"
+      }
+    },
+    "version": "20250627210419",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORT"
+    }
+  },
+  "_uri": "/mark/gb/c6551c89-f981-4308-9b74-9851f71bf064",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:06.252Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

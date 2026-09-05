@@ -1,0 +1,148 @@
+{
+  "uri": "/mark/au/b12bf455-4645-4476-84f5-5f5999aa6539",
+  "provider": "clarivate",
+  "office": "au",
+  "guid": "b12bf455-4645-4476-84f5-5f5999aa6539",
+  "applicationNumber": "2516597",
+  "registrationNumber": "2516597",
+  "applicationDate": "2025-02-13",
+  "registrationDate": "2025-02-13",
+  "expiryDate": "2035-02-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-07-14",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "BBQ ORIGINS START HERE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "on-line publication of journals or diaries [blog services]; publishing of books; book publishing; publishing and editing of books; podcast entertainment",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "en",
+      "description": "preparation of food and drink; cooking of food; food preparation",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "MJ Raatz",
+  "ownerNative": null,
+  "ownerCountry": "AU",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "84 Centennial Way Forest Lake 4078, QLD",
+        "applicantAddressCountryCode": "AU",
+        "applicantAddressCountryName": "Australia",
+        "applicantName": "MJ Raatz"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "on-line publication of journals or diaries [blog services]; publishing of books; book publishing; publishing and editing of books; podcast entertainment"
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "preparation of food and drink; cooking of food; food preparation"
+        }
+      ]
+    },
+    "id": "b12bf455-4645-4476-84f5-5f5999aa6539",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "FLAME ATOP BARBECUE  2 2 CROSSED UTENSILS"
+      }
+    ],
+    "markImageViennaClassification": [
+      "26.04.04",
+      "26.04.05",
+      "26.04.22",
+      "01.15.05",
+      "11.01.09",
+      "11.01.04",
+      "13.03.07",
+      "26.01.01",
+      "26.01.06",
+      "26.01.24"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "AU",
+    "registrationOfficeName": "Australia",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "84 Centennial Way Forest Lake 4078 QLD",
+        "representativeCorrespondentAddressCountryCode": "AU",
+        "representativeCorrespondentAddressCountryName": "Australia",
+        "representativeCorrespondentName": "BBQ Origins"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250213",
+        "applicationNumber": "2516597"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350213",
+      "lastPublicationDate": "20250714",
+      "markCurrentStatus": "REGISTERED: REGISTERED/PROTECTED",
+      "registration": {
+        "registrationDate": "20250213",
+        "registrationNumber": "2516597"
+      }
+    },
+    "version": "20251003020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "BBQ ORIGINS START HERE"
+    }
+  },
+  "_uri": "/mark/au/b12bf455-4645-4476-84f5-5f5999aa6539",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.396Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

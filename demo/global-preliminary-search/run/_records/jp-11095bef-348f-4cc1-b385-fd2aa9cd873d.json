@@ -1,0 +1,332 @@
+{
+  "uri": "/mark/jp/11095bef-348f-4cc1-b385-fd2aa9cd873d",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "11095bef-348f-4cc1-b385-fd2aa9cd873d",
+  "applicationNumber": "S63-057968",
+  "registrationNumber": "2307890",
+  "applicationDate": "1988-05-23",
+  "registrationDate": "1991-04-30",
+  "expiryDate": "2011-04-30",
+  "renewalDate": null,
+  "lastPublicationDate": "1990-07-25",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＦＯＲＩ　フォ－アイ",
+  "markTransliteration": "FOOAI",
+  "markTranslation": "FORI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    5,
+    8,
+    9,
+    16,
+    17,
+    24,
+    27,
+    28,
+    34
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1
+      ],
+      "language": null,
+      "description": "試験紙",
+      "translation_language": "en",
+      "translation": "Test paper"
+    },
+    {
+      "classes": [
+        2
+      ],
+      "language": null,
+      "description": "謄写版用インキ，絵の具",
+      "translation_language": "en",
+      "translation": "Ink for mimeograph printing, paints"
+    },
+    {
+      "classes": [
+        5
+      ],
+      "language": null,
+      "description": "防虫紙",
+      "translation_language": "en",
+      "translation": "Insecticide paper"
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": null,
+      "description": "パレットナイフ",
+      "translation_language": "en",
+      "translation": "Palette knife"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "計算尺",
+      "translation_language": "en",
+      "translation": "Slide rule"
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": null,
+      "description": "紙類，書類用綴り紐（事務用のものに限る。），鉛筆用補助軸，指サック，紙製又はプラスチック製の書類用ケース，その他の文房具類",
+      "translation_language": "en",
+      "translation": "Paper, document binding string (limited to office use only), pencil auxiliary shaft, fingerstall, paper or plastic document case, other stationery"
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": null,
+      "description": "コンデンサーペーパー，石綿紙，バルカンファイバー",
+      "translation_language": "en",
+      "translation": "Capacitor paper, asbestos paper, Vulcan fiber"
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": null,
+      "description": "布製ラベル",
+      "translation_language": "en",
+      "translation": "Fabric Label"
+    },
+    {
+      "classes": [
+        27
+      ],
+      "language": null,
+      "description": "壁紙",
+      "translation_language": "en",
+      "translation": "wallpaper"
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": null,
+      "description": "昆虫採集用具",
+      "translation_language": "en",
+      "translation": "Insect collection equipment"
+    },
+    {
+      "classes": [
+        34
+      ],
+      "language": null,
+      "description": "紙巻きたばこ用紙",
+      "translation_language": "en",
+      "translation": "Cigarette paper"
+    }
+  ],
+  "owner": "GINCHO INDUSTRY K.K.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19880523"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "NAGOYA",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "GINCHO INDUSTRY K.K.",
+        "applicantNativeAddress": "名古屋市中区大須３丁目１番８０号",
+        "applicantNativeName": "銀鳥産業株式会社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Test paper",
+          "intClassNumber": "01",
+          "intGoodsServicesDescription": "試験紙"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Ink for mimeograph printing, paints",
+          "intClassNumber": "02",
+          "intGoodsServicesDescription": "謄写版用インキ，絵の具"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Insecticide paper",
+          "intClassNumber": "05",
+          "intGoodsServicesDescription": "防虫紙"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Palette knife",
+          "intClassNumber": "08",
+          "intGoodsServicesDescription": "パレットナイフ"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Slide rule",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "計算尺"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Paper, document binding string (limited to office use only), pencil auxiliary shaft, fingerstall, paper or plastic document case, other stationery",
+          "intClassNumber": "16",
+          "intGoodsServicesDescription": "紙類，書類用綴り紐（事務用のものに限る。），鉛筆用補助軸，指サック，紙製又はプラスチック製の書類用ケース，その他の文房具類"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Capacitor paper, asbestos paper, Vulcan fiber",
+          "intClassNumber": "17",
+          "intGoodsServicesDescription": "コンデンサーペーパー，石綿紙，バルカンファイバー"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Fabric Label",
+          "intClassNumber": "24",
+          "intGoodsServicesDescription": "布製ラベル"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "wallpaper",
+          "intClassNumber": "27",
+          "intGoodsServicesDescription": "壁紙"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Insect collection equipment",
+          "intClassNumber": "28",
+          "intGoodsServicesDescription": "昆虫採集用具"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Cigarette paper",
+          "intClassNumber": "34",
+          "intGoodsServicesDescription": "紙巻きたばこ用紙"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "25A01",
+          "natGoodsServicesDescription": "Test paper"
+        },
+        {
+          "natClassNumber": "25B01",
+          "natGoodsServicesDescription": "Mimeograph inks, colors"
+        },
+        {
+          "natClassNumber": "25A01",
+          "natGoodsServicesDescription": "Mothproofing paper"
+        },
+        {
+          "natClassNumber": "25B01",
+          "natGoodsServicesDescription": "Palette knives"
+        },
+        {
+          "natClassNumber": "25B01",
+          "natGoodsServicesDescription": "Calculating scales, slide-rules"
+        },
+        {
+          "natClassNumber": "25A01",
+          "natGoodsServicesDescription": "Papers"
+        },
+        {
+          "natClassNumber": "25B01",
+          "natGoodsServicesDescription": "Stationery"
+        },
+        {
+          "natClassNumber": "25A01",
+          "natGoodsServicesDescription": "Condenser paper, Asbestos paper, Vulcanized fiber"
+        },
+        {
+          "natClassNumber": "25B01",
+          "natGoodsServicesDescription": "Cloth labels"
+        },
+        {
+          "natClassNumber": "25A01",
+          "natGoodsServicesDescription": "Wallpaper"
+        },
+        {
+          "natClassNumber": "25B02",
+          "natGoodsServicesDescription": "Insect Collecting Equipment / Instruments, namely, insect catching net attached with shafts, insect collecting boxes, insect carrying pouches, insecticide pots"
+        },
+        {
+          "natClassNumber": "25A01",
+          "natGoodsServicesDescription": "Cigarette paper"
+        }
+      ]
+    },
+    "id": "11095bef-348f-4cc1-b385-fd2aa9cd873d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19880523"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19880523",
+        "applicationNumber": "S63-057968"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20110430",
+      "lastPublicationDate": "19900725",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19910430",
+        "registrationNumber": "2307890"
+      }
+    },
+    "version": "20230427111008",
+    "wordMarkSpecification": {
+      "markTranslation": "FORI",
+      "markTransliteration": "FOOAI",
+      "markVerbalElementText": "ＦＯＲＩ　フォ－アイ"
+    }
+  },
+  "_uri": "/mark/jp/11095bef-348f-4cc1-b385-fd2aa9cd873d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:53.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

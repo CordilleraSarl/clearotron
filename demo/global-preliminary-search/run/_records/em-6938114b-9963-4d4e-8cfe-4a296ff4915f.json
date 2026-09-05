@@ -1,0 +1,1068 @@
+{
+  "uri": "/mark/em/6938114b-9963-4d4e-8cfe-4a296ff4915f",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "6938114b-9963-4d4e-8cfe-4a296ff4915f",
+  "applicationNumber": "19321949",
+  "registrationNumber": "19321949",
+  "applicationDate": "2026-02-25",
+  "registrationDate": "2026-06-11",
+  "expiryDate": "2036-02-25",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-03-03",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SDO Spec-Driven Organization",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "cs",
+      "description": "Pomoc, poradenské sluzby a konzultace týkající se rízení obchodní cinnosti; Poradenské sluzby a sluzby v oblasti obchodního managementu; Poradenství v oblasti rízení obchodní cinnosti; Obchodní poradenské sluzby v oblasti digitální transformace.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "cs",
+      "description": "Poskytování výuky v oblasti pocítacového programování; Vyucování, vzdelávání; Skolení v rozvoji softwarových systému; Skolení v pocítacovém programování; Skolení v ovládání softwarových systému.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Technologické poradenství; Sluzby v oblasti informacních technologií; Tvorba pocítacového softwaru.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "da",
+      "description": "Bistand, rådgivning og konsulentvirksomhed vedrørende forretningsledelse; Forretningsledelse og -rådgivning; Konsulentbistand vedrørende forretningsledelse; Virksomhedsrådgivning i forbindelse med digital omstilling.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "da",
+      "description": "Uddannelse inden for computersoftware; Oplæring; Undervisning i udvikling af softwaresystemer; Undervisning i computerprogrammering; Undervisning i betjening af softwaresystemer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Teknologirådgivning; IT tjenesteydelser; Design af computerprogrammer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "Assistentie en advisering inzake commercieel management; Commercieel-zakelijke bedrijfsvoering en consultancy; Advisering inzake bedrijfsvoering; Zakelijke advisering met betrekking tot digitale transformatie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Onderwijs met betrekking tot computerprogrammering; Opleiding; Trainingen in de ontwikkeling van softwaresystemen; Trainingen in computerprogrammering; Trainingen voor het uitvoeren van softwaresystemen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Advisering op technologisch gebied; IT-diensten; Software-ontwikkeling.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Assistance, advisory services and consultancy with regard to business management; Business management and consultancy services; Business management consultancy services; Business consultancy services for digital transformation.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Training relating to computer software; Training; Training services relating to computer software; Training in the development of software systems; Training in computer programming; Training in the operation of software systems.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Technological advisory services; Technological consultancy; Information technology services; Design of software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "et",
+      "description": "Abi, nõustamis- ja konsultatsiooniteenused seoses ärihaldusega; Ärijuhtimis- ja -konsultatsiooniteenused; Äritegevuse juhtimise konsultatsioonid; Digiülemineku ärinõustamisteenused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "et",
+      "description": "Väljaõpe arvutiprogrammide alal; Koolitusteenused; Tarkvarasüsteemide arendamise õpetamine; Arvutiprogrammeerimise koolitus; Tarkvarasüsteemide kasutamise koolitus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Tehnoloogilised konsultatsioonid; IT-teenused; Tarkvara projekteerimine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fi",
+      "description": "Liikkeenjohtoon liittyvät avustus-, neuvonta- ja konsultointipalvelut; Liikkeenjohto- ja yrityskonsultointipalvelut; Liikkeenhoidon konsultointi; Yrityskonsultointipalvelut digitalisaation alalla.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fi",
+      "description": "Tietokoneohjelmointiin liittyvän opetuksen tarjoaminen; Koulutuspalvelut; Ohjelmistojärjestelmien kehittämisen koulutus; Tietokoneohjelmoinnin koulutus; Ohjelmistojärjestelmien käytön koulutus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Tekniikkaan liittyvä konsultointi; IT-palvelut; Ohjelmistosuunnittelu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Services d'assistance et de conseil en matière de gestion commerciale; Services de conseillers et gestion d'affaires commerciales; Conseils en gestion d'affaires; Services de conseils commerciaux en transformation numérique.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Services de cours de formation en matière de programmation informatique; Formation; Formation relative au développement de systèmes logiciels; Formation relative à la programmation informatique; Formation à l'exploitation de systèmes de logiciels.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services de conseils technologiques; Services des technologies de l'information; Élaboration [conception] de logiciels.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Hilfe und Beratung bei der Geschäftsführung; Geschäftsführung und Unternehmensberatungsdienste; Beratung in Fragen der Geschäftsführung; Unternehmensberatungsdienstleistungen in Bezug auf den digitalen Wandel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Computersoftware-Ausbildung; Ausbildung; Ausbildung im Bereich der Entwicklung von Softwaresystemen; Ausbildung in Computerprogrammierung; Ausbildung in Bezug auf die Bedienung von Softwaresystemen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Technologieberatung; IT-Dienstleistungen; Design von Computer-Software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hr",
+      "description": "Podrska, konzultacijske usluge i savjetovanje za poslovno upravljanje; Usluge poslovnog upravljanja i konzultacija; Konzultacije u svezi vodenje poslova; Usluge poslovnog savjetovanja za digitalnu transformaciju.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hr",
+      "description": "Osposobljavanje u svezi s racunalnim programima; Pruzanje usluga osposobljavanja; Osposobljavanje za razvoj softverskih programa; Osposobljavanje iz domene racunalnog programiranja; Osposobljavanje za koristenje softverskih programa.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Tehnoloske savjetodavne usluge; Usluge informacijske tehnologije; Izrada [koncipiranje] racunalnih progama.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hu",
+      "description": "Üzleti menedzsmenttel kapcsolatos segítségnyújtás, tanácsadási szolgáltatások és konzultáció; Üzletvezetési és konzultációs szolgáltatások; Üzletvezetési konzultáció; Üzleti konzultációs szolgáltatások digitális transzformációhoz.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hu",
+      "description": "Számítógépes programozással kapcsolatos oktatás; Szakmai képzés, betanítás; Képzés szoftverrendszerek fejlesztése terén; Számítógépes programozás oktatása; Képzés szoftverrendszerek muködtetése terén.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Technológiai szaktanácsadás; Információtechnológiai [IT] szolgáltatások; Szoftvertervezés.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "it",
+      "description": "Servizi di assistenza e consulenza in materia di gestione aziendale; Servizi di gestione aziendale e consulenza; Consulenza per la gestione aziendale; Servizi di consulenza aziendale per la trasformazione digitale.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "Servizi d'istruzione in materia di software; Attività di formazione; Formazione nello sviluppo di sistemi software; Formazione in materia di programmazione di computer; Formazione in gestione di sistemi software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Servizi di consulenza tecnologica; Servizi informatici; Elaborazione [ideazione] di software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lt",
+      "description": "Verslo vadybos pagalba, patarimai ir konsultacijos; Verslo vadybos ir konsultavimo paslaugos; Verslo vadybos konsultacijos; Skaitmenines transformacijos verslo konsultacijos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lt",
+      "description": "Svietimo paslaugos, susijusios su kompiuteriu programavimu; Treniravimas; Mokymas programines irangos sistemu kurimo srityje; Programavimo mokymas; Mokymas naudotis programines irangos sistemomis.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Technologines konsultacijos; Informaciniu technologiju paslaugos; Kompiuteriu programines irangos projektavimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lv",
+      "description": "Atbalsta un konsultaciju sniegsana par uznemejdarbibas vadibu; Uznemejdarbibas parvaldibas un konsultaciju sniegsana; Konsultaciju sniegsana uznemejdarbibas vadiba; Uznemejdarbibas konsultaciju sniegsana digitalai parveidei.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lv",
+      "description": "Apmaciba datorprogrammesana; Macibu pakalpojumi; Apmaciba datorprogrammaturas sistemu izstrade; Datorprogrammesanas apmaciba; Apmaciba par datorprogrammaturas sistemu darbibu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Konsultesana tehnologiju joma; Informacijas programmesanas pakalpojumi; Datorprogrammu projektesana.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "mt",
+      "description": "Ghajnuna, servizzi ta' ghoti ta' pariri u konsulenza fir-rigward tal-gestjoni tan-negozju; Servizzi ta' konsulenza dwar gestjoni ghan-negozji; Konsulenza fil-gestjoni ta' negozju; Servizzi ta' konsulenza dwar in-negozju ghat-trasformazzjoni digitali.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "mt",
+      "description": "Provvista ta' taghlim dwar l-ipprogrammar tal-kompjuter; Tahrig; Tahrig fl-izvilupp ta' sistemi ta' softwer; Tahrig relatat mal-ipprogrammar ta' kompjuters; Tahrig fit-thaddim ta' sistemi ta' softwer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Konsulenza teknologika; Servizzi tal-IT; L-izvilupp ta' softwer tal-kompjuter.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pl",
+      "description": "Pomoc, uslugi doradcze i konsultacyjne w zakresie zarzadzania biznesowego; Uslugi doradcze w zakresie dzialalnosci gospodarczej i uslugi zarzadzania dzialalnoscia gospodarcza; Doradztwo w zakresie zarzadzania biznesem; Doradztwo biznesowe w zakresie transformacji cyfrowej.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pl",
+      "description": "Zapewnianie instruktazu zwiazanego z programowaniem komputerów; Nauczanie; Szkolenia w zakresie opracowywania systemów oprogramowania; Szkolenia w zakresie programowania komputerów; Szkolenia w zakresie obslugi systemów oprogramowania.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Uslugi doradcze w dziedzinie technologii; Uslugi w zakresie technologii informacyjnych; Projektowanie oprogramowania komputerowego.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pt",
+      "description": "Assistência, serviços de assessoria e consultoria em gestão comercial; Serviços de gestão de negócios e de consultadoria; Consultadoria para direção de negócios comerciais; Serviços de consultoria empresarial para a transformação digital.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Fornecimento de instrução relacionada com programação de computadores; Formação; Formação no domínio do desenvolvimento de sistemas de software; Formação em programação de computadores; Formação para utilização de sistemas de software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Consultoria em tecnologia; Serviços de TI (tecnologias de informação); Design de software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ro",
+      "description": "Servicii de asistenta si consultanta în managementul afacerilor; Servicii de consultanta si de management al afacerilor; Consultanta pentru conducerea afacerilor; Servicii de consultanta economica pentru transformare digitala.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ro",
+      "description": "Instruire cu privire la programe de calculator; Instruire; Instruire în domeniul dezvoltarii sistemelor de sotfware; Instruire în domeniul programarii pe calculator; Instruire în operarea sistemelor software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Consultanta tehnologica; Servicii IT; Proiectare de software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sk",
+      "description": "Asistencné, poradenské a konzultacné sluzby týkajúce sa obchodného manazmentu; Poradenské sluzby a sluzby v oblasti podnikatelského manazmentu; Poradenstvo pri riadení podnikov; Obchodné poradenské sluzby v oblasti digitalizácie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sk",
+      "description": "Poskytovanie instruktáze v oblasti pocítacového programovania; Vzdelávanie; Skolenia zamerané na vývoj softvérových systémov; Skolenie v oblasti pocítacového programovania; Skolenia zamerané na prevádzku softvérových systémov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Technologické poradenstvo; Informacné technológie; Tvorba pocítacového softvéru.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sl",
+      "description": "Pomoc, svetovalne storitve in svetovanje v zvezi s poslovnim upravljanjem; Storitve poslovnega vodenja in svetovanja; Poslovodno svetovanje; Poslovne svetovalne storitve za digitalno preobrazbo.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sl",
+      "description": "Nudenje poucevanja v zvezi z racunalniskim programiranjem; Usposabljanje; Usposabljanje na podrocju razvoja sistemov programske opreme; Usposabljanje na podrocju racunalniskega programiranja; Usposabljanje na podrocju delovanja sistemov programske opreme.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Svetovanje glede tehnologije; Storitve informacijske tehnologije; Oblikovanje programske opreme.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Asistencia, servicios de asesoramiento y consultoría de gestión empresarial; Servicios de consultoría de gestión empresarial; Consultoría sobre gestión empresarial; Servicios de consultoría comercial para la transformación digital.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Suministro de instrucción relacionada con la programación informática; Formación; Formación en materia de desarrollo de sistemas de software; Formación en programación de ordenadores; Formación en el manejo de sistemas de software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Consultoría tecnológica; Servicios de tecnologías de la información; Diseño de software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sw",
+      "description": "Assistans, rådgivning och konsultationer avseende företagsledning; Företagsledning och konsultationer därtill; Konsulttjänster avseende management; Företagskonsultationer avseende digital omvandling.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sw",
+      "description": "Tillhandahållande av instruktioner avseende datorprogrammering; Instruktionstjänster; Utbildning i utveckling av programvarusystem; Instruktion i datorprogrammering; Handledning/instruktion i drift av programvarusystem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Teknologiska konsultationer; IT-tjänster; Utformning av programvara.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "DT Design and Architecture Oy",
+  "ownerNative": null,
+  "ownerCountry": "FI",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Mäntypaadentie 3B,Helsinki, 00830",
+        "applicantAddressCountryCode": "FI",
+        "applicantAddressCountryName": "Finland",
+        "applicantName": "DT Design and Architecture Oy"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Pomoc, poradenské sluzby a konzultace týkající se rízení obchodní cinnosti; Poradenské sluzby a sluzby v oblasti obchodního managementu; Poradenství v oblasti rízení obchodní cinnosti; Obchodní poradenské sluzby v oblasti digitální transformace."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Poskytování výuky v oblasti pocítacového programování; Vyucování, vzdelávání; Skolení v rozvoji softwarových systému; Skolení v pocítacovém programování; Skolení v ovládání softwarových systému."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Technologické poradenství; Sluzby v oblasti informacních technologií; Tvorba pocítacového softwaru."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Bistand, rådgivning og konsulentvirksomhed vedrørende forretningsledelse; Forretningsledelse og -rådgivning; Konsulentbistand vedrørende forretningsledelse; Virksomhedsrådgivning i forbindelse med digital omstilling."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Uddannelse inden for computersoftware; Oplæring; Undervisning i udvikling af softwaresystemer; Undervisning i computerprogrammering; Undervisning i betjening af softwaresystemer."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Teknologirådgivning; IT tjenesteydelser; Design af computerprogrammer."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Assistentie en advisering inzake commercieel management; Commercieel-zakelijke bedrijfsvoering en consultancy; Advisering inzake bedrijfsvoering; Zakelijke advisering met betrekking tot digitale transformatie."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Onderwijs met betrekking tot computerprogrammering; Opleiding; Trainingen in de ontwikkeling van softwaresystemen; Trainingen in computerprogrammering; Trainingen voor het uitvoeren van softwaresystemen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Advisering op technologisch gebied; IT-diensten; Software-ontwikkeling."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Assistance, advisory services and consultancy with regard to business management; Business management and consultancy services; Business management consultancy services; Business consultancy services for digital transformation."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Training relating to computer software; Training; Training services relating to computer software; Training in the development of software systems; Training in computer programming; Training in the operation of software systems."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Technological advisory services; Technological consultancy; Information technology services; Design of software."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Abi, nõustamis- ja konsultatsiooniteenused seoses ärihaldusega; Ärijuhtimis- ja -konsultatsiooniteenused; Äritegevuse juhtimise konsultatsioonid; Digiülemineku ärinõustamisteenused."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Väljaõpe arvutiprogrammide alal; Koolitusteenused; Tarkvarasüsteemide arendamise õpetamine; Arvutiprogrammeerimise koolitus; Tarkvarasüsteemide kasutamise koolitus."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Tehnoloogilised konsultatsioonid; IT-teenused; Tarkvara projekteerimine."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Liikkeenjohtoon liittyvät avustus-, neuvonta- ja konsultointipalvelut; Liikkeenjohto- ja yrityskonsultointipalvelut; Liikkeenhoidon konsultointi; Yrityskonsultointipalvelut digitalisaation alalla."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tietokoneohjelmointiin liittyvän opetuksen tarjoaminen; Koulutuspalvelut; Ohjelmistojärjestelmien kehittämisen koulutus; Tietokoneohjelmoinnin koulutus; Ohjelmistojärjestelmien käytön koulutus."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tekniikkaan liittyvä konsultointi; IT-palvelut; Ohjelmistosuunnittelu."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services d'assistance et de conseil en matière de gestion commerciale; Services de conseillers et gestion d'affaires commerciales; Conseils en gestion d'affaires; Services de conseils commerciaux en transformation numérique."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de cours de formation en matière de programmation informatique; Formation; Formation relative au développement de systèmes logiciels; Formation relative à la programmation informatique; Formation à l'exploitation de systèmes de logiciels."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de conseils technologiques; Services des technologies de l'information; Élaboration [conception] de logiciels."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Hilfe und Beratung bei der Geschäftsführung; Geschäftsführung und Unternehmensberatungsdienste; Beratung in Fragen der Geschäftsführung; Unternehmensberatungsdienstleistungen in Bezug auf den digitalen Wandel."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Computersoftware-Ausbildung; Ausbildung; Ausbildung im Bereich der Entwicklung von Softwaresystemen; Ausbildung in Computerprogrammierung; Ausbildung in Bezug auf die Bedienung von Softwaresystemen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Technologieberatung; IT-Dienstleistungen; Design von Computer-Software."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Podrska, konzultacijske usluge i savjetovanje za poslovno upravljanje; Usluge poslovnog upravljanja i konzultacija; Konzultacije u svezi vodenje poslova; Usluge poslovnog savjetovanja za digitalnu transformaciju."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Osposobljavanje u svezi s racunalnim programima; Pruzanje usluga osposobljavanja; Osposobljavanje za razvoj softverskih programa; Osposobljavanje iz domene racunalnog programiranja; Osposobljavanje za koristenje softverskih programa."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Tehnoloske savjetodavne usluge; Usluge informacijske tehnologije; Izrada [koncipiranje] racunalnih progama."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Üzleti menedzsmenttel kapcsolatos segítségnyújtás, tanácsadási szolgáltatások és konzultáció; Üzletvezetési és konzultációs szolgáltatások; Üzletvezetési konzultáció; Üzleti konzultációs szolgáltatások digitális transzformációhoz."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Számítógépes programozással kapcsolatos oktatás; Szakmai képzés, betanítás; Képzés szoftverrendszerek fejlesztése terén; Számítógépes programozás oktatása; Képzés szoftverrendszerek muködtetése terén."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Technológiai szaktanácsadás; Információtechnológiai [IT] szolgáltatások; Szoftvertervezés."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di assistenza e consulenza in materia di gestione aziendale; Servizi di gestione aziendale e consulenza; Consulenza per la gestione aziendale; Servizi di consulenza aziendale per la trasformazione digitale."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi d'istruzione in materia di software; Attività di formazione; Formazione nello sviluppo di sistemi software; Formazione in materia di programmazione di computer; Formazione in gestione di sistemi software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di consulenza tecnologica; Servizi informatici; Elaborazione [ideazione] di software."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Verslo vadybos pagalba, patarimai ir konsultacijos; Verslo vadybos ir konsultavimo paslaugos; Verslo vadybos konsultacijos; Skaitmenines transformacijos verslo konsultacijos."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Svietimo paslaugos, susijusios su kompiuteriu programavimu; Treniravimas; Mokymas programines irangos sistemu kurimo srityje; Programavimo mokymas; Mokymas naudotis programines irangos sistemomis."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Technologines konsultacijos; Informaciniu technologiju paslaugos; Kompiuteriu programines irangos projektavimas."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Atbalsta un konsultaciju sniegsana par uznemejdarbibas vadibu; Uznemejdarbibas parvaldibas un konsultaciju sniegsana; Konsultaciju sniegsana uznemejdarbibas vadiba; Uznemejdarbibas konsultaciju sniegsana digitalai parveidei."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Apmaciba datorprogrammesana; Macibu pakalpojumi; Apmaciba datorprogrammaturas sistemu izstrade; Datorprogrammesanas apmaciba; Apmaciba par datorprogrammaturas sistemu darbibu."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Konsultesana tehnologiju joma; Informacijas programmesanas pakalpojumi; Datorprogrammu projektesana."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Ghajnuna, servizzi ta' ghoti ta' pariri u konsulenza fir-rigward tal-gestjoni tan-negozju; Servizzi ta' konsulenza dwar gestjoni ghan-negozji; Konsulenza fil-gestjoni ta' negozju; Servizzi ta' konsulenza dwar in-negozju ghat-trasformazzjoni digitali."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Provvista ta' taghlim dwar l-ipprogrammar tal-kompjuter; Tahrig; Tahrig fl-izvilupp ta' sistemi ta' softwer; Tahrig relatat mal-ipprogrammar ta' kompjuters; Tahrig fit-thaddim ta' sistemi ta' softwer."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Konsulenza teknologika; Servizzi tal-IT; L-izvilupp ta' softwer tal-kompjuter."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Pomoc, uslugi doradcze i konsultacyjne w zakresie zarzadzania biznesowego; Uslugi doradcze w zakresie dzialalnosci gospodarczej i uslugi zarzadzania dzialalnoscia gospodarcza; Doradztwo w zakresie zarzadzania biznesem; Doradztwo biznesowe w zakresie transformacji cyfrowej."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Zapewnianie instruktazu zwiazanego z programowaniem komputerów; Nauczanie; Szkolenia w zakresie opracowywania systemów oprogramowania; Szkolenia w zakresie programowania komputerów; Szkolenia w zakresie obslugi systemów oprogramowania."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi doradcze w dziedzinie technologii; Uslugi w zakresie technologii informacyjnych; Projektowanie oprogramowania komputerowego."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Assistência, serviços de assessoria e consultoria em gestão comercial; Serviços de gestão de negócios e de consultadoria; Consultadoria para direção de negócios comerciais; Serviços de consultoria empresarial para a transformação digital."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Fornecimento de instrução relacionada com programação de computadores; Formação; Formação no domínio do desenvolvimento de sistemas de software; Formação em programação de computadores; Formação para utilização de sistemas de software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Consultoria em tecnologia; Serviços de TI (tecnologias de informação); Design de software."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de asistenta si consultanta în managementul afacerilor; Servicii de consultanta si de management al afacerilor; Consultanta pentru conducerea afacerilor; Servicii de consultanta economica pentru transformare digitala."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Instruire cu privire la programe de calculator; Instruire; Instruire în domeniul dezvoltarii sistemelor de sotfware; Instruire în domeniul programarii pe calculator; Instruire în operarea sistemelor software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Consultanta tehnologica; Servicii IT; Proiectare de software."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Asistencné, poradenské a konzultacné sluzby týkajúce sa obchodného manazmentu; Poradenské sluzby a sluzby v oblasti podnikatelského manazmentu; Poradenstvo pri riadení podnikov; Obchodné poradenské sluzby v oblasti digitalizácie."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Poskytovanie instruktáze v oblasti pocítacového programovania; Vzdelávanie; Skolenia zamerané na vývoj softvérových systémov; Skolenie v oblasti pocítacového programovania; Skolenia zamerané na prevádzku softvérových systémov."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Technologické poradenstvo; Informacné technológie; Tvorba pocítacového softvéru."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Pomoc, svetovalne storitve in svetovanje v zvezi s poslovnim upravljanjem; Storitve poslovnega vodenja in svetovanja; Poslovodno svetovanje; Poslovne svetovalne storitve za digitalno preobrazbo."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Nudenje poucevanja v zvezi z racunalniskim programiranjem; Usposabljanje; Usposabljanje na podrocju razvoja sistemov programske opreme; Usposabljanje na podrocju racunalniskega programiranja; Usposabljanje na podrocju delovanja sistemov programske opreme."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Svetovanje glede tehnologije; Storitve informacijske tehnologije; Oblikovanje programske opreme."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Asistencia, servicios de asesoramiento y consultoría de gestión empresarial; Servicios de consultoría de gestión empresarial; Consultoría sobre gestión empresarial; Servicios de consultoría comercial para la transformación digital."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Suministro de instrucción relacionada con la programación informática; Formación; Formación en materia de desarrollo de sistemas de software; Formación en programación de ordenadores; Formación en el manejo de sistemas de software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Consultoría tecnológica; Servicios de tecnologías de la información; Diseño de software."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Assistans, rådgivning och konsultationer avseende företagsledning; Företagsledning och konsultationer därtill; Konsulttjänster avseende management; Företagskonsultationer avseende digital omvandling."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Tillhandahållande av instruktioner avseende datorprogrammering; Instruktionstjänster; Utbildning i utveckling av programvarusystem; Instruktion i datorprogrammering; Handledning/instruktion i drift av programvarusystem."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Teknologiska konsultationer; IT-tjänster; Utformning av programvara."
+        }
+      ]
+    },
+    "id": "6938114b-9963-4d4e-8cfe-4a296ff4915f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "41"
+      }
+    ],
+    "recordLastUpdated": "20260623",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "secondLanguageCode": "es",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260225",
+        "applicationNumber": "19321949"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360225",
+      "lastPublicationDate": "20260303",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260611",
+        "registrationNumber": "19321949"
+      }
+    },
+    "version": "20260623020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SDO Spec-Driven Organization"
+    }
+  },
+  "_uri": "/mark/em/6938114b-9963-4d4e-8cfe-4a296ff4915f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.826Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

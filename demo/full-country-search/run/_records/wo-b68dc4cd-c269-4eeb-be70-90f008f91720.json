@@ -1,0 +1,327 @@
+{
+  "uri": "/mark/wo/b68dc4cd-c269-4eeb-be70-90f008f91720",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "b68dc4cd-c269-4eeb-be70-90f008f91720",
+  "applicationNumber": null,
+  "registrationNumber": "1690105",
+  "applicationDate": null,
+  "registrationDate": "2022-05-09",
+  "expiryDate": "2032-05-09",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-10-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORUS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    38,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Administration of membership schemes; business services; business research; preparation of business reports; advertising services; marketing services; business administration; commercial lobbying services; advertising services for promoting the interests of financial institutions; information, consultancy and advisory services relating to the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Financial services; financial affairs; monetary affairs; financial research; preparation of financial reports; information, consultancy and advisory services relating to the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "en",
+      "description": "Telecommunication services; provision of access to online portals; messaging services; information, consultancy and advisory services relating to the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education services; training services; setting of educational standards; arranging and conducting conferences, exhibitions, seminars and events for cultural, educational or entertainment purposes; publishing services; provision of electronic publications; information, consultancy and advisory services relating to the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Administration de programmes d'affiliation; services commerciaux; recherches dans le domaine des affaires; préparation de rapports commerciaux; services de publicité; services de marketing; administration commerciale; services de lobbying commercial; services publicitaires pour la promotion des intérêts d'institutions financières; services d'information, services de conseillers et services de conseil relatifs aux services précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "fr",
+      "description": "Services financiers; affaires financières; affaires monétaires; recherches financières; préparation de rapports financiers; services d'information, services de conseillers et services de conseil relatifs aux services précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "fr",
+      "description": "Services de télécommunication; fourniture d'accès à des portails en ligne; services de messagerie; services d'information, services de conseillers et services de conseil relatifs aux services précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Services d'éducation; services de formation; établissement de normes d'enseignement; organisation et animation de conférences, expositions, séminaires et événements à des fins culturelles, éducatives ou de divertissement; services de publication; fourniture de publications électroniques; services d'information, services de conseillers et services de conseil relatifs aux services précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Administración de programas de afiliación; servicios empresariales; investigación empresarial; elaboración de informes comerciales; servicios de publicidad; servicios de marketing; administración de empresas; servicios de cabildeo comercial; servicios publicitarios para la promoción de intereses de instituciones financieras; información, consultoría y asesoramiento sobre los servicios mencionados.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "es",
+      "description": "Servicios financieros; operaciones financieras; operaciones monetarias; investigación financiera; elaboración de informes financieros; información, consultoría y asesoramiento sobre los servicios mencionados.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "es",
+      "description": "Servicios de telecomunicaciones; servicios de acceso a portales en línea; servicios de mensajería; información, consultoría y asesoramiento sobre los servicios mencionados.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de educación; formación; establecimiento de normas educativas; organización y dirección de conferencias, exposiciones, seminarios y eventos con fines culturales, educativos o recreativos; servicios de publicación; suministro de publicaciones electrónicas; información, consultoría y asesoramiento sobre los servicios mencionados.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "EFMA Société à responsabilité limitée",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "GB",
+      "priorityCountryName": "United Kingdom",
+      "priorityDate": "20211118",
+      "priorityNumber": "3723243"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20220505",
+          "basicApplicationNumber": "018697805"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "EM"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AE",
+      "BR",
+      "CA",
+      "ID",
+      "JP",
+      "KR",
+      "MY",
+      "NO",
+      "TH",
+      "TR",
+      "US"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "198 Avenue de France F-75013 Paris",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "EFMA Société à responsabilité limitée"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20220505",
+            "basicApplicationNumber": "018697805"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "EM"
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AE",
+      "BR",
+      "CA",
+      "ID",
+      "JP",
+      "KR",
+      "MY",
+      "NO",
+      "TH",
+      "TR",
+      "US"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Administration of membership schemes; business services; business research; preparation of business reports; advertising services; marketing services; business administration; commercial lobbying services; advertising services for promoting the interests of financial institutions; information, consultancy and advisory services relating to the aforesaid services."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Financial services; financial affairs; monetary affairs; financial research; preparation of financial reports; information, consultancy and advisory services relating to the aforesaid services."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Telecommunication services; provision of access to online portals; messaging services; information, consultancy and advisory services relating to the aforesaid services."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education services; training services; setting of educational standards; arranging and conducting conferences, exhibitions, seminars and events for cultural, educational or entertainment purposes; publishing services; provision of electronic publications; information, consultancy and advisory services relating to the aforesaid services."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Administration de programmes d'affiliation; services commerciaux; recherches dans le domaine des affaires; préparation de rapports commerciaux; services de publicité; services de marketing; administration commerciale; services de lobbying commercial; services publicitaires pour la promotion des intérêts d'institutions financières; services d'information, services de conseillers et services de conseil relatifs aux services précités."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services financiers; affaires financières; affaires monétaires; recherches financières; préparation de rapports financiers; services d'information, services de conseillers et services de conseil relatifs aux services précités."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de télécommunication; fourniture d'accès à des portails en ligne; services de messagerie; services d'information, services de conseillers et services de conseil relatifs aux services précités."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services d'éducation; services de formation; établissement de normes d'enseignement; organisation et animation de conférences, expositions, séminaires et événements à des fins culturelles, éducatives ou de divertissement; services de publication; fourniture de publications électroniques; services d'information, services de conseillers et services de conseil relatifs aux services précités."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Administración de programas de afiliación; servicios empresariales; investigación empresarial; elaboración de informes comerciales; servicios de publicidad; servicios de marketing; administración de empresas; servicios de cabildeo comercial; servicios publicitarios para la promoción de intereses de instituciones financieras; información, consultoría y asesoramiento sobre los servicios mencionados."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios financieros; operaciones financieras; operaciones monetarias; investigación financiera; elaboración de informes financieros; información, consultoría y asesoramiento sobre los servicios mencionados."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de telecomunicaciones; servicios de acceso a portales en línea; servicios de mensajería; información, consultoría y asesoramiento sobre los servicios mencionados."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de educación; formación; establecimiento de normas educativas; organización y dirección de conferencias, exposiciones, seminarios y eventos con fines culturales, educativos o recreativos; servicios de publicación; suministro de publicaciones electrónicas; información, consultoría y asesoramiento sobre los servicios mencionados."
+        }
+      ]
+    },
+    "id": "b68dc4cd-c269-4eeb-be70-90f008f91720",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "GB",
+        "priorityCountryName": "United Kingdom",
+        "priorityDate": "20211118",
+        "priorityNumber": "3723243"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "40"
+      }
+    ],
+    "recordLastUpdated": "20251128",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320509",
+      "lastPublicationDate": "20221020",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220509",
+        "registrationNumber": "1690105"
+      }
+    },
+    "version": "20251128020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORUS"
+    }
+  },
+  "_uri": "/mark/wo/b68dc4cd-c269-4eeb-be70-90f008f91720",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.707Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

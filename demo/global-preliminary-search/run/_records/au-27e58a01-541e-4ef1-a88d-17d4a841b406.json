@@ -1,0 +1,121 @@
+{
+  "uri": "/mark/au/27e58a01-541e-4ef1-a88d-17d4a841b406",
+  "provider": "clarivate",
+  "office": "au",
+  "guid": "27e58a01-541e-4ef1-a88d-17d4a841b406",
+  "applicationNumber": "1901748",
+  "registrationNumber": "1901748",
+  "applicationDate": "2018-01-22",
+  "registrationDate": "2018-01-22",
+  "expiryDate": "2028-01-22",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-02-01",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "AVENCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Apparatus for joining electric cables; Apparatus for testing optical cables; Booster cables; Cables for electronic transmission; Cables for optical signal transmission; Cables for signal transmission systems; Cables, electric; Cabling networks (installations) incorporating fibre optic cables; Coaxial cables; Communications cables; Computer cables; Couplings for electrical cables; Data transmission cables; Electric adapter cables; Electric cables; Electric extension cables; Electrical cables for connecting computers; Electrical cables for sale on reels; Electrical communications cables; Electrical connecting cables; Electrical connectors for electrical cables; Electrical terminals connected to electrical cables; Electronic cables; Female connectors for electrical cables; Fiber optic cables; Fibre optic cables; Flexible electric cables; Instrumentation cables (electric); Insulated electric cables; Insulated telecommunications cables; Interface cables (electric); Male connectors for electrical cables; Optical cables; Optical fibre cables; Plastic insulated cables (electric) for computers; Plastic insulated cables (electric) for printers; Printer cables; Terminals (connectors) for electric cables; Analogue converters; Analogue to digital audio converters; Analogue to digital converters; Analogue to digital data converters; Converters for analogue signals; Converters for digital signals; Digital to analogue data converters; Battery chargers; Chargers for electric batteries; Electric plug adapters; Signal splitters; Audio switching apparatus; Data switching apparatus; Video switching apparatus; Digital transmission apparatus on copper cable",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Vidorra Pty Ltd",
+  "ownerNative": null,
+  "ownerCountry": "AU",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "4157, QLD",
+        "applicantAddressCountryCode": "AU",
+        "applicantAddressCountryName": "Australia",
+        "applicantName": "Vidorra Pty Ltd"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Apparatus for joining electric cables; Apparatus for testing optical cables; Booster cables; Cables for electronic transmission; Cables for optical signal transmission; Cables for signal transmission systems; Cables, electric; Cabling networks (installations) incorporating fibre optic cables; Coaxial cables; Communications cables; Computer cables; Couplings for electrical cables; Data transmission cables; Electric adapter cables; Electric cables; Electric extension cables; Electrical cables for connecting computers; Electrical cables for sale on reels; Electrical communications cables; Electrical connecting cables; Electrical connectors for electrical cables; Electrical terminals connected to electrical cables; Electronic cables; Female connectors for electrical cables; Fiber optic cables; Fibre optic cables; Flexible electric cables; Instrumentation cables (electric); Insulated electric cables; Insulated telecommunications cables; Interface cables (electric); Male connectors for electrical cables; Optical cables; Optical fibre cables; Plastic insulated cables (electric) for computers; Plastic insulated cables (electric) for printers; Printer cables; Terminals (connectors) for electric cables; Analogue converters; Analogue to digital audio converters; Analogue to digital converters; Analogue to digital data converters; Converters for analogue signals; Converters for digital signals; Digital to analogue data converters; Battery chargers; Chargers for electric batteries; Electric plug adapters; Signal splitters; Audio switching apparatus; Data switching apparatus; Video switching apparatus; Digital transmission apparatus on copper cable"
+        }
+      ]
+    },
+    "id": "27e58a01-541e-4ef1-a88d-17d4a841b406",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2018/32-4"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "AU",
+    "registrationOfficeName": "Australia",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "QLD",
+        "representativeCorrespondentAddressCountryCode": "AU",
+        "representativeCorrespondentAddressCountryName": "Australia",
+        "representativeCorrespondentName": "Vidorra Pty Ltd"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180122",
+        "applicationNumber": "1901748"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280122",
+      "lastPublicationDate": "20180201",
+      "markCurrentStatus": "REGISTERED: REGISTERED/PROTECTED",
+      "registration": {
+        "registrationDate": "20180122",
+        "registrationNumber": "1901748"
+      }
+    },
+    "version": "20250625160543",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENCORE"
+    }
+  },
+  "_uri": "/mark/au/27e58a01-541e-4ef1-a88d-17d4a841b406",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.730Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

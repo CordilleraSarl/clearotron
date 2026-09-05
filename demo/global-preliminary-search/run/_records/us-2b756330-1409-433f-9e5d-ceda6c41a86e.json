@@ -1,0 +1,341 @@
+{
+  "uri": "/mark/us/2b756330-1409-433f-9e5d-ceda6c41a86e",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "2b756330-1409-433f-9e5d-ceda6c41a86e",
+  "applicationNumber": "75477253",
+  "registrationNumber": "2742197",
+  "applicationDate": "1998-04-30",
+  "registrationDate": "2003-07-29",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "1999-11-30"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2010-03-07",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "SEVENORIENTS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Camcorders; cinematographic cameras; blank audio tapes; compact discs players; audio tape players; digital audio players; phonograph record players; photographic cameras; pre-recorded video-discs featuring documentaries fiction films and music for entertainment, education and cultural purposes; pre-recorded video tapes featuring documentaries, fiction films and music for entertainment, education and cultural purposes; pre-recorded compact discs featuring documentaries, fiction films and music for entertainment, education and cultural purposes; pre-recorded computer diskettes featuring documentaries, fiction films and music for entertainment, education and cultural purposes; optical discs, television sets; cinematographic exposed films; film editing and splicing machine; photographic and projection screens; computer software for motion picture editing",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SEVENORIENTS",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "VIRGIL H MARSH",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "58, avenue de Wagram, 75017 PARIS, FRAN",
+        "applicantAddressCity": "75017 PARIS",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantAddressStreet": "58, avenue de Wagram",
+        "applicantJurisdictionOfIncorporation": "FRANCE",
+        "applicantLegalEntity": "LIMITED COMPANY",
+        "applicantName": "SEVENORIENTS"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Camcorders; cinematographic cameras; blank audio tapes; compact discs players; audio tape players; digital audio players; phonograph record players; photographic cameras; pre-recorded video-discs featuring documentaries fiction films and music for entertainment, education and cultural purposes; pre-recorded video tapes featuring documentaries, fiction films and music for entertainment, education and cultural purposes; pre-recorded compact discs featuring documentaries, fiction films and music for entertainment, education and cultural purposes; pre-recorded computer diskettes featuring documentaries, fiction films and music for entertainment, education and cultural purposes; optical discs, television sets; cinematographic exposed films; film editing and splicing machine; photographic and projection screens; computer software for motion picture editing"
+        }
+      ]
+    },
+    "id": "2b756330-1409-433f-9e5d-ceda6c41a86e",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20100307",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20080709",
+        "descriptionText": "CASE FILE IN TICRS"
+      },
+      {
+        "date": "20030729",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20030603",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20030602",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20030425",
+        "descriptionText": "PAPER RECEIVED"
+      },
+      {
+        "date": "20030425",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20021024",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "20020926",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20020923",
+        "descriptionText": "SOU EXTENSION 5 GRANTED"
+      },
+      {
+        "date": "20020923",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20020819",
+        "descriptionText": "PAPER RECEIVED"
+      },
+      {
+        "date": "20020819",
+        "descriptionText": "SOU EXTENSION 5 FILED"
+      },
+      {
+        "date": "20020819",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20020819",
+        "descriptionText": "UNRESPONSIVE/DUPLICATE PAPER RECEIVED"
+      },
+      {
+        "date": "20020214",
+        "descriptionText": "SOU EXTENSION 4 GRANTED"
+      },
+      {
+        "date": "20020128",
+        "descriptionText": "SOU EXTENSION 4 FILED"
+      },
+      {
+        "date": "20010820",
+        "descriptionText": "SOU EXTENSION 3 GRANTED"
+      },
+      {
+        "date": "20010807",
+        "descriptionText": "SOU EXTENSION 3 FILED"
+      },
+      {
+        "date": "20010402",
+        "descriptionText": "SOU EXTENSION 2 GRANTED"
+      },
+      {
+        "date": "20010222",
+        "descriptionText": "SOU EXTENSION 2 FILED"
+      },
+      {
+        "date": "20001013",
+        "descriptionText": "SOU EXTENSION 1 GRANTED"
+      },
+      {
+        "date": "20000811",
+        "descriptionText": "SOU EXTENSION 1 FILED"
+      },
+      {
+        "date": "20000222",
+        "descriptionText": "NOA MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "19991130",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "19991029",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "19990817",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "19990812",
+        "descriptionText": "EXAMINER'S AMENDMENT MAILED"
+      },
+      {
+        "date": "19990621",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "19981221",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "19981215",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "58, avenue de Wagram, 75017 PARIS, FRAN",
+        "city": "75017 PARIS",
+        "countryCode": "FR",
+        "countryName": "France",
+        "jurisdictionOfIncorporation": "FRANCE",
+        "legalEntity": "LIMITED COMPANY",
+        "name": "SEVENORIENTS",
+        "street": "58, avenue de Wagram"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "58, avenue de Wagram, 75017 PARIS, FRAN",
+        "city": "75017 PARIS",
+        "countryCode": "FR",
+        "countryName": "France",
+        "jurisdictionOfIncorporation": "FRANCE",
+        "legalEntity": "LIMITED COMPANY",
+        "name": "SEVENORIENTS",
+        "street": "58, avenue de Wagram"
+      },
+      {
+        "address": "58, avenue de Wagram, 75017 PARIS, FRAN",
+        "city": "75017 PARIS",
+        "countryCode": "FR",
+        "countryName": "France",
+        "jurisdictionOfIncorporation": "FRANCE",
+        "legalEntity": "LIMITED COMPANY",
+        "name": "SEVENORIENTS",
+        "street": "58, avenue de Wagram"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "58, avenue de Wagram, 75017 PARIS, FRAN",
+        "city": "75017 PARIS",
+        "countryCode": "FR",
+        "countryName": "France",
+        "jurisdictionOfIncorporation": "FRANCE",
+        "legalEntity": "LIMITED COMPANY",
+        "name": "SEVENORIENTS",
+        "street": "58, avenue de Wagram"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "WASHINGTON, DC 20006, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "WASHINGTON, DC 20006",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "VIRGIL H MARSH FISHER CHRISTEN & SABOL, 1725 K ST NW STE 1401"
+      }
+    ],
+    "representatives": [
+      {
+        "domesticRepresentativeName": "Barry I. Hollander",
+        "representativeAddress": "WASHINGTON, DC 20006, UNITED STATES",
+        "representativeAddressLines": [
+          "WASHINGTON, DC 20006",
+          "UNITED STATES"
+        ],
+        "representativeName": "VIRGIL H MARSH"
+      }
+    ],
+    "status": {
+      "active": false,
+      "allowanceDate": [
+        "20000222"
+      ],
+      "application": {
+        "applicationDate": "19980430",
+        "applicationNumber": "75477253"
+      },
+      "cancellationDate": "20100307",
+      "cancellationPublicationDate": "20100413",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "extension": {
+        "approvalDate": [
+          "20020214"
+        ]
+      },
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19970606"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20001101"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20100307",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "19991130"
+      ],
+      "registration": {
+        "registrationDate": "20030729",
+        "registrationNumber": "2742197"
+      }
+    },
+    "version": "20260109051241",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "7 ORIENTS",
+      "markVerbalElementText": "SEVENORIENTS"
+    }
+  },
+  "_uri": "/mark/us/2b756330-1409-433f-9e5d-ceda6c41a86e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.831Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

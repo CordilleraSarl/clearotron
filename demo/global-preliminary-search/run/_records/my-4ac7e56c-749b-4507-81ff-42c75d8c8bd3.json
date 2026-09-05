@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/my/4ac7e56c-749b-4507-81ff-42c75d8c8bd3",
+  "provider": "clarivate",
+  "office": "my",
+  "guid": "4ac7e56c-749b-4507-81ff-42c75d8c8bd3",
+  "applicationNumber": "09022672",
+  "registrationNumber": null,
+  "applicationDate": "2009-12-24",
+  "registrationDate": "2009-12-24",
+  "expiryDate": "2029-12-24",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MALAYSIAN BRAND QUALITY . EXCELLENCE . DISTINCTION",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Scientific and technological services and research and design relating thereto; industrial analysis and research services; design and development of computer hardware and software; legal services; all included in Class 42.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SME Corporation Malaysia",
+  "ownerNative": null,
+  "ownerCountry": "MY",
+  "representative": "SME Corporation Malaysia",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Level 6, Block B, Platinum Sentral, Jalan Stesen Sentral 2, Kuala Lumpur Sentral, Wilayah Persekutuan 50470 Kuala Lumpur",
+        "applicantAddressCountryCode": "MY",
+        "applicantAddressCountryName": "Malaysia",
+        "applicantName": "SME Corporation Malaysia"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific and technological services and research and design relating thereto; industrial analysis and research services; design and development of computer hardware and software; legal services; all included in Class 42."
+        }
+      ]
+    },
+    "id": "4ac7e56c-749b-4507-81ff-42c75d8c8bd3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "05.05.19",
+      "05.05.20",
+      "24.03.01",
+      "24.03.14"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260901",
+    "registrationOfficeCode": "MY",
+    "registrationOfficeName": "Malaysia",
+    "representatives": [
+      {
+        "representativeAddress": "Level 6, Block B, Platinum Sentral, Jalan Stesen Sentral 2, Kuala Lumpur Sentral, Wilayah Persekutuan 50470 Kuala Lumpur",
+        "representativeAddressCountryCode": "MY",
+        "representativeAddressCountryName": "Malaysia",
+        "representativeName": "SME Corporation Malaysia"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20091224",
+        "applicationNumber": "09022672"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20291224",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20091224"
+      }
+    },
+    "version": "20260901050117",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MALAYSIAN BRAND QUALITY . EXCELLENCE . DISTINCTION"
+    }
+  },
+  "_uri": "/mark/my/4ac7e56c-749b-4507-81ff-42c75d8c8bd3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

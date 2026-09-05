@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/cn/ad22b891-b1b9-4ded-8a05-34efc503dbf0",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "ad22b891-b1b9-4ded-8a05-34efc503dbf0",
+  "applicationNumber": "58674073",
+  "registrationNumber": "58674073",
+  "applicationDate": "2021-08-23",
+  "registrationDate": "2022-04-28",
+  "expiryDate": "2032-04-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-01-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "OORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "流动图书馆,为艺术家提供模特服务,动物训练",
+      "translation_language": "en",
+      "translation": "mobile library, modeling services for artists, animal training"
+    }
+  ],
+  "owner": "Shenzhen Jump Yaoguangnian Art Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市福田区福田街道福安社区福华一路138号国际商会大厦B栋508-509",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Jump Yaoguangnian Art Technology Co., Ltd.",
+        "applicantNativeName": "深圳跳耀光年艺术科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "mobile library, modeling services for artists, animal training",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "流动图书馆,为艺术家提供模特服务,动物训练"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Library service",
+        "Training of animals",
+        "Other service included in this class"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4103",
+          "subNatGoodsServicesDescription": "Library service"
+        },
+        {
+          "subNatClassNumber": "4106",
+          "subNatGoodsServicesDescription": "Training of animals"
+        },
+        {
+          "subNatClassNumber": "4107",
+          "subNatGoodsServicesDescription": "Other service included in this class"
+        }
+      ]
+    },
+    "id": "ad22b891-b1b9-4ded-8a05-34efc503dbf0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1777"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市恒融知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210823",
+        "applicationNumber": "58674073"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320427",
+      "lastPublicationDate": "20220127",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220428",
+        "registrationNumber": "58674073"
+      }
+    },
+    "version": "20251004153014",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "OORI"
+    }
+  },
+  "_uri": "/mark/cn/ad22b891-b1b9-4ded-8a05-34efc503dbf0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:56.893Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

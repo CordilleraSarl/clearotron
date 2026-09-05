@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/br/ea8b7329-cd55-4754-b69e-fc02d2aadcfe",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "ea8b7329-cd55-4754-b69e-fc02d2aadcfe",
+  "applicationNumber": "829974750",
+  "registrationNumber": "829974750",
+  "applicationDate": "2008-09-19",
+  "registrationDate": "2012-01-31",
+  "expiryDate": "2032-01-31",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIQ",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Semicondutores, circuitos integrados, microprocessadores, microprocessadores feitos sob encomenda, microprocessadores com software de programável, processadores de núcleos múltiplos (multicore), circuitos integrados de aplicação específica (asic).",
+      "translation_language": "en",
+      "translation": "SEMICONDUCTORS, INTEGRATED CIRCUITS, MICROPROCESSORS, CUSTOM MICROPROCESSORS, MICROPROCESSORS WITH PROGRAMMABLE SOFTWARE, MULTIPLE CORE PROCESSORS (MULTICORE), APPLICATION-SPECIFIC INTEGRATED CIRCUITS (ASIC)."
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "ANDREA GAMA POSSINHAS TARDIN",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20080609",
+      "priorityNumber": "77/494217"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC."
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SEMICONDUCTORS, INTEGRATED CIRCUITS, MICROPROCESSORS, CUSTOM MICROPROCESSORS, MICROPROCESSORS WITH PROGRAMMABLE SOFTWARE, MULTIPLE CORE PROCESSORS (MULTICORE), APPLICATION-SPECIFIC INTEGRATED CIRCUITS (ASIC).",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Semicondutores, circuitos integrados, microprocessadores, microprocessadores feitos sob encomenda, microprocessadores com software de programável, processadores de núcleos múltiplos (multicore), circuitos integrados de aplicação específica (asic)."
+        }
+      ]
+    },
+    "id": "ea8b7329-cd55-4754-b69e-fc02d2aadcfe",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20080609",
+        "priorityNumber": "77/494217"
+      }
+    ],
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "ANDREA GAMA POSSINHAS TARDIN"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20080919",
+        "applicationNumber": "829974750"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320131",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20120131",
+        "registrationNumber": "829974750"
+      }
+    },
+    "version": "20250630220218",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIQ"
+    }
+  },
+  "_uri": "/mark/br/ea8b7329-cd55-4754-b69e-fc02d2aadcfe",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.398Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

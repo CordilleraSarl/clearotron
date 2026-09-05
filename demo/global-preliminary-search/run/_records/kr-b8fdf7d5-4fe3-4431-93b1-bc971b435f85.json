@@ -1,0 +1,106 @@
+{
+  "uri": "/mark/kr/b8fdf7d5-4fe3-4431-93b1-bc971b435f85",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "b8fdf7d5-4fe3-4431-93b1-bc971b435f85",
+  "applicationNumber": "71-2004-0000156",
+  "registrationNumber": null,
+  "applicationDate": "2004-10-06",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "NORI",
+  "markTransliteration": "NORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "인터넷을 통한 커뮤니티 서비스 제공업",
+      "translation_language": "en",
+      "translation": "Providing community service through internet"
+    }
+  ],
+  "owner": "ITOXI Corp.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 강남구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "ITOXI Corp.",
+        "applicantNativeName": "주식회사 아이톡시"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Providing community service through internet",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "인터넷을 통한 커뮤니티 서비스 제공업"
+        }
+      ]
+    },
+    "id": "b8fdf7d5-4fe3-4431-93b1-bc971b435f85",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260529",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20041006",
+        "applicationNumber": "71-2004-0000156"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260529021214",
+    "wordMarkSpecification": {
+      "markTransliteration": "NORI",
+      "markVerbalElementText": "NORI"
+    }
+  },
+  "_uri": "/mark/kr/b8fdf7d5-4fe3-4431-93b1-bc971b435f85",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.693Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

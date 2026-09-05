@@ -1,0 +1,103 @@
+{
+  "uri": "/mark/cr/0da84ac9-66b7-432c-84ba-ddbc0a8a6aa3",
+  "provider": "clarivate",
+  "office": "cr",
+  "guid": "0da84ac9-66b7-432c-84ba-ddbc0a8a6aa3",
+  "applicationNumber": "2013-0008688",
+  "registrationNumber": null,
+  "applicationDate": "2013-10-09",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "DORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "educación; formación; servicios de entretenimiento; actividades deportivas y culturales; servicios de entretenimiento en la naturaleza de programación audiovisual y contenidos distribuidos a través de audio y video, a saber, televisión, satélite, redes inalámbricas, fibra óptica, cable, radio y una red informática global; servicios de información sobre lo mencionado prestados a través de una red informática global; servicios de entretenimiento, actuaciones educativas y eventos; servicios de entretenimiento en forma de espectáculos visuales y de audio en vivo y musicales, variedad, noticias y programas de comedia; suministro de información relacionada con el esparcimiento en directo; servicios de producción de esparcimiento en directo; servicios de producción televisiva; Suministro de información sobre esparcimiento a terceros a través de una red informática mundial.",
+      "translation_language": "en",
+      "translation": "education; training; entertainment services; sports and cultural activities; entertainment services in the nature of audiovisual programming and content distributed through audio and video, namely television, satellite, wireless networks, fiber optics, cable, radio and a global computer network; Information services about the aforesaid provided through a global computer network; entertainment services, educational activities and events; entertainment services in the form of visual and live audio and musical shows, variety, news and comedy programs; provision of information related to live entertainment; live entertainment production services; television production services; Provision of information on entertainment to third parties through a global computer network."
+    }
+  ],
+  "owner": "DISCOVERY COMMUNICATIONS LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "ONE DISCOVERY PLACE SILVER SPRING MARYLAND",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "DISCOVERY COMMUNICATIONS LLC"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "education; training; entertainment services; sports and cultural activities; entertainment services in the nature of audiovisual programming and content distributed through audio and video, namely television, satellite, wireless networks, fiber optics, cable, radio and a global computer network; Information services about the aforesaid provided through a global computer network; entertainment services, educational activities and events; entertainment services in the form of visual and live audio and musical shows, variety, news and comedy programs; provision of information related to live entertainment; live entertainment production services; television production services; Provision of information on entertainment to third parties through a global computer network.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "educación; formación; servicios de entretenimiento; actividades deportivas y culturales; servicios de entretenimiento en la naturaleza de programación audiovisual y contenidos distribuidos a través de audio y video, a saber, televisión, satélite, redes inalámbricas, fibra óptica, cable, radio y una red informática global; servicios de información sobre lo mencionado prestados a través de una red informática global; servicios de entretenimiento, actuaciones educativas y eventos; servicios de entretenimiento en forma de espectáculos visuales y de audio en vivo y musicales, variedad, noticias y programas de comedia; suministro de información relacionada con el esparcimiento en directo; servicios de producción de esparcimiento en directo; servicios de producción televisiva; Suministro de información sobre esparcimiento a terceros a través de una red informática mundial."
+        }
+      ]
+    },
+    "id": "0da84ac9-66b7-432c-84ba-ddbc0a8a6aa3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "CR",
+    "registrationOfficeName": "Costa Rica",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20131009",
+        "applicationNumber": "2013-0008688"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20240321102242",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DORI"
+    }
+  },
+  "_uri": "/mark/cr/0da84ac9-66b7-432c-84ba-ddbc0a8a6aa3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.999Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "uri": "/mark/pe/862f65f3-3c1e-4357-91a4-e7d105e30aa4",
+  "provider": "clarivate",
+  "office": "pe",
+  "guid": "862f65f3-3c1e-4357-91a4-e7d105e30aa4",
+  "applicationNumber": "819652-2019",
+  "registrationNumber": null,
+  "applicationDate": "2019-09-30",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "QENQO RESTO - BAR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "servicios de discoteca.",
+      "translation_language": "en",
+      "translation": "disco services."
+    }
+  ],
+  "owner": "PENTA MULTI INVERSIONES S. A. C.",
+  "ownerNative": null,
+  "ownerCountry": "PE",
+  "representative": "CORTES INFANTAS, CARLA ANDREA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "PE",
+        "applicantAddressCountryName": "Peru",
+        "applicantName": "PENTA MULTI INVERSIONES S. A. C."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "disco services.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "servicios de discoteca."
+        }
+      ]
+    },
+    "id": "862f65f3-3c1e-4357-91a4-e7d105e30aa4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.01.05",
+      "26.04.24",
+      "27.05.07",
+      "27.05.17",
+      "27.05.21",
+      "27.05.24"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250709",
+    "registrationOfficeCode": "PE",
+    "registrationOfficeName": "Peru",
+    "representatives": [
+      {
+        "representativeName": "CORTES INFANTAS, CARLA ANDREA"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20190930",
+        "applicationNumber": "819652-2019"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20250709174601",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QENQO RESTO - BAR"
+    }
+  },
+  "_uri": "/mark/pe/862f65f3-3c1e-4357-91a4-e7d105e30aa4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:13.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,275 @@
+{
+  "uri": "/mark/ca/47016dd9-80b6-4d87-b790-d54077e351e8",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "47016dd9-80b6-4d87-b790-d54077e351e8",
+  "applicationNumber": "2200678",
+  "registrationNumber": "TMA1302043",
+  "applicationDate": "2022-05-27",
+  "registrationDate": "2025-03-26",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-01-08"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Wirbel- und Bandscheibenkorrektur nach Schmiedecke",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    16,
+    41,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        16,
+        41,
+        44
+      ],
+      "language": "en",
+      "description": "(1) Printed matter, namely, printed books, printed newsletters, printed articles, printed seminar materials, all in the field of back and intervertebral disc treatment.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16,
+        41,
+        44
+      ],
+      "language": "en",
+      "description": "(1) Coaching in the field of back and intervertebral disc treatment; providing instructions in the field of practical exercises; educational services, namely, classes, seminars, workshops and teaching in the field of back and intervertebral disc treatment; gymnastics classes; publication of texts, other than promotional texts, namely educational texts about intervertebral disc treatment; arranging and conducting of seminars in the field of back and intervertebral disc treatment; arranging and conducting of workshops and training in the field of back and intervertebral disc treatment. \n(2) Medical services namely, physiotherapy; providing health advice; physiotherapeutic treatments, namely back and intervertebral disc treatment; therapeutic and medical care and support, namely back and intervertebral disc treatment.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Werner Schmiedecke",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "RONALD R. TOLEDANO",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Lerchenweg 11, 84048 Mainburg",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantAddressLines": [
+          "Lerchenweg 11",
+          "84048 Mainburg"
+        ],
+        "applicantName": "Werner Schmiedecke"
+      }
+    ],
+    "categorizedTexts": {},
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "16,41,44",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Printed matter, namely, printed books, printed newsletters, printed articles, printed seminar materials, all in the field of back and intervertebral disc treatment."
+        },
+        {
+          "intClassNumber": "16,41,44",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Coaching in the field of back and intervertebral disc treatment; providing instructions in the field of practical exercises; educational services, namely, classes, seminars, workshops and teaching in the field of back and intervertebral disc treatment; gymnastics classes; publication of texts, other than promotional texts, namely educational texts about intervertebral disc treatment; arranging and conducting of seminars in the field of back and intervertebral disc treatment; arranging and conducting of workshops and training in the field of back and intervertebral disc treatment. \n(2) Medical services namely, physiotherapy; providing health advice; physiotherapeutic treatments, namely back and intervertebral disc treatment; therapeutic and medical care and support, namely back and intervertebral disc treatment."
+        }
+      ]
+    },
+    "id": "47016dd9-80b6-4d87-b790-d54077e351e8",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1674418"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20250326",
+        "descriptionText": "Statement of Grant of Protection Sent (following a Provisional Refusal)"
+      },
+      {
+        "date": "20250326",
+        "descriptionText": "Registered"
+      },
+      {
+        "date": "20250326",
+        "descriptionText": "Registration Pending"
+      },
+      {
+        "date": "20250108",
+        "descriptionText": "Opposition Start Date Notice Sent",
+        "information": "Requested on 2025/01/08 00:30:12 in program jr500m1"
+      },
+      {
+        "date": "20250108",
+        "descriptionText": "Advertised",
+        "information": "Vol.72 Issue 3663"
+      },
+      {
+        "date": "20241213",
+        "descriptionText": "Approval Notice Sent",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20241213",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20240328",
+        "descriptionText": "Agent changed",
+        "information": "From/De: 758 To/A: 16172"
+      },
+      {
+        "date": "20231107",
+        "descriptionText": "Total Provisional Refusal Sent",
+        "responseDate": "20240507"
+      },
+      {
+        "date": "20231107",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20240507"
+      },
+      {
+        "date": "20231107",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20230529",
+        "descriptionText": "Notification of Possible Oppositions Sent"
+      },
+      {
+        "date": "20230109",
+        "descriptionText": "Agent changed",
+        "information": "From/De: To/A: 758"
+      },
+      {
+        "date": "20220728",
+        "descriptionText": "Designation Notification - Madrid Protocol",
+        "responseDate": "20240128"
+      },
+      {
+        "date": "20220727",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20220727",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20220527",
+        "descriptionText": "International Registration",
+        "responseDate": "20320527"
+      },
+      {
+        "date": "20220527",
+        "descriptionText": "Filed",
+        "information": "Registration"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Lerchenweg 11, 84048 Mainburg",
+        "addressLines": [
+          "Lerchenweg 11",
+          "84048 Mainburg"
+        ],
+        "countryName": "Germany",
+        "name": "Werner Schmiedecke"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3663",
+        "publicationVolume": "72"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "RONALD R. TOLEDANO",
+          "(SPIEGEL SOHMER INC.)",
+          "1255 Peel Street",
+          "Suite 1000",
+          "Montreal",
+          "QUEBEC H3B2T9"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "RONALD R. TOLEDANO",
+        "representativeReferenceNumber": "140133-32"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220527",
+        "applicationNumber": "2200678"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "formalisationDate": "20220727",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20320527",
+      "publicationDate": [
+        "20250108"
+      ],
+      "registration": {
+        "registrationDate": "20250326",
+        "registrationNumber": "TMA1302043"
+      }
+    },
+    "subjectHeadings": [
+      "WIRBEL- UND BANDSCHEIBENKORREKTUR NACH SCHMIEDECKE",
+      "VERTEBRAE",
+      "AND",
+      "BANDSCHEIBEN KORREKTUR",
+      "INTERVERTEBRAL DISCS",
+      "TREATMENT",
+      "ACCORDING TO"
+    ],
+    "version": "20250625111547",
+    "wordMarkSpecification": {
+      "markTranslationDescription": "The translation provided by the applicant of the words Wirbel- und Bandscheibenkorrektur nach Schmiedecke is vertebrae and intervertebral discs treatment according to Schmiedecke.",
+      "markVerbalElementCrossReferences": "Wirbel und Bandscheibenkorrektur nach Schmiedecke",
+      "markVerbalElementText": "Wirbel- und Bandscheibenkorrektur nach Schmiedecke",
+      "markVerbalElementTextFormal": "Wirbel- und Bandscheibenkorrektur nach Schmiedecke"
+    }
+  },
+  "_uri": "/mark/ca/47016dd9-80b6-4d87-b790-d54077e351e8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:55.071Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

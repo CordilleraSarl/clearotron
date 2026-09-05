@@ -1,0 +1,136 @@
+{
+  "uri": "/mark/cn/96ffca4c-277d-4920-9b31-21f013aed60c",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "96ffca4c-277d-4920-9b31-21f013aed60c",
+  "applicationNumber": "89448424",
+  "registrationNumber": null,
+  "applicationDate": "2025-12-30",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2026-04-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "傲日",
+  "markTransliteration": "AO RI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "翻译;健身俱乐部(健身和体能训练);培训;摄影;体育比赛计时;玩具出租;音乐出版服务;游戏器具出租;幼儿园;组织文化或教育展览",
+      "translation_language": "en",
+      "translation": ". Translation; fitness clubs (fitness and physical training); training; photography; sports timing; toy rental; music publishing services; game equipment rental; kindergartens; organizing cultural or educational exhibitions."
+    }
+  ],
+  "owner": "Shenzhen Aori Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市龙华区龙华街道富康社区油松路106号天汇大厦8层823室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Aori Technology Co., Ltd.",
+        "applicantNativeName": "深圳傲日科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": ". Translation; fitness clubs (fitness and physical training); training; photography; sports timing; toy rental; music publishing services; game equipment rental; kindergartens; organizing cultural or educational exhibitions.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "翻译;健身俱乐部(健身和体能训练);培训;摄影;体育比赛计时;玩具出租;音乐出版服务;游戏器具出租;幼儿园;组织文化或教育展览"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "96ffca4c-277d-4920-9b31-21f013aed60c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1980"
+      }
+    ],
+    "recordLastUpdated": "20260501",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市简单国际知识产权有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251230",
+        "applicationNumber": "89448424"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "lastPublicationDate": "20260420",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260501020329",
+    "wordMarkSpecification": {
+      "markTransliteration": "AO RI",
+      "markVerbalElementText": "傲日"
+    }
+  },
+  "_uri": "/mark/cn/96ffca4c-277d-4920-9b31-21f013aed60c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:50.843Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

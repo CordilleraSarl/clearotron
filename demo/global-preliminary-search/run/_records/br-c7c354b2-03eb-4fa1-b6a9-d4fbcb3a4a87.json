@@ -1,0 +1,136 @@
+{
+  "uri": "/mark/br/c7c354b2-03eb-4fa1-b6a9-d4fbcb3a4a87",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "c7c354b2-03eb-4fa1-b6a9-d4fbcb3a4a87",
+  "applicationNumber": "820197424",
+  "registrationNumber": "820197424",
+  "applicationDate": "1997-09-12",
+  "registrationDate": "2011-11-22",
+  "expiryDate": "2031-11-22",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "DORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    5,
+    29,
+    30,
+    31,
+    32,
+    33,
+    35,
+    36,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        5,
+        29,
+        30,
+        31,
+        32,
+        33,
+        35,
+        36,
+        42
+      ],
+      "language": "pt",
+      "description": "Xaropes, sucos, e bebidas em geral.",
+      "translation_language": "en",
+      "translation": "SYRUPS, JUICES, AND BEVERAGES IN GENERAL."
+    }
+  ],
+  "owner": "DORI ALIMENTOS S. A",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "TINOCO, SOARES & FILHO S/C LTDA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "DORI ALIMENTOS S. A"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SYRUPS, JUICES, AND BEVERAGES IN GENERAL.",
+          "intClassNumber": "05,29,30,31,32,33,35,36,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Xaropes, sucos, e bebidas em geral."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "35.10"
+        }
+      ]
+    },
+    "id": "c7c354b2-03eb-4fa1-b6a9-d4fbcb3a4a87",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.01.01",
+      "27.05.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "TINOCO, SOARES & FILHO S/C LTDA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19970912",
+        "applicationNumber": "820197424"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311122",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20111122",
+        "registrationNumber": "820197424"
+      }
+    },
+    "version": "20250630200523",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DORI"
+    }
+  },
+  "_uri": "/mark/br/c7c354b2-03eb-4fa1-b6a9-d4fbcb3a4a87",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.998Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

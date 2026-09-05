@@ -1,0 +1,126 @@
+{
+  "uri": "/mark/de/2d2d03c2-514a-4671-8afc-40f435f93349",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "2d2d03c2-514a-4671-8afc-40f435f93349",
+  "applicationNumber": "302026110389.4",
+  "registrationNumber": null,
+  "applicationDate": "2026-05-19",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "Qoridian",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Hottes NextGen GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "Greyhills Rechtsanwälte Partnerschaftsgesellschaft mbB Glombitza Luckhaus Steinberg",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "22609 Hamburg",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Hottes NextGen GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09"
+        },
+        {
+          "intClassNumber": "42"
+        }
+      ]
+    },
+    "id": "2d2d03c2-514a-4671-8afc-40f435f93349",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260607",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Greyhills Rechtsanwälte Partnerschaftsgesellschaft mbB Glombitza Luckhaus Steinberg, Severinskloster 5, 50678 Köln"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "50678 Köln",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "Greyhills Rechtsanwälte Partnerschaftsgesellschaft mbB Glombitza Luckhaus Steinberg"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260519",
+        "applicationNumber": "302026110389.4"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20260607020053",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Qoridian"
+    }
+  },
+  "_uri": "/mark/de/2d2d03c2-514a-4671-8afc-40f435f93349",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.399Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

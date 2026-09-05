@@ -1,0 +1,228 @@
+{
+  "uri": "/mark/wo/0926e81f-d7aa-455f-8d19-bd475b7f9fde",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "0926e81f-d7aa-455f-8d19-bd475b7f9fde",
+  "applicationNumber": null,
+  "registrationNumber": "788708",
+  "applicationDate": null,
+  "registrationDate": "2002-09-13",
+  "expiryDate": null,
+  "renewalDate": "2012-09-13",
+  "lastPublicationDate": "2012-11-29",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2023-04-06",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "sevenOrients",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Apparatus for recording, transmitting and reproducing sound or images; magnetic recording media, sound recording disks; video cameras; cameras (cinematographic apparatus); sound recording films; sound recording media; photographic apparatus; video disks; optical disks; television apparatus; videotapes; audio-video compact disks; CD-ROMs; magnetic data media; exposed cinematographic films; apparatus for editing cinematographic film, screens (photography); projection screens, software (recorded programs).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Radio and television entertainment, films and videotape films production; information concerning entertainment, rental of show scenery, rental of cinematographic films, videotape editing, production of radio and television programmes, organisation of exhibitions for cultural or educational purposes, organisation of competitions (education and entertainment); organisation and holding of colloquiums, conferences, congresses, seminars, symposiums; publishing of books.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Appareils pour l'enregistrement, la transmission, la reproduction du son ou des images; supports d'enregistrement magnétiques, disques acoustiques; caméras vidéo; caméras (appareils cinématographiques); films pour l'enregistrement des sons; supports d'enregistrements sonores; appareils photographiques; disques vidéo; disques optiques; appareils de télévision; bandes vidéo; disques compacts (audio, vidéo); cédéroms; supports de données magnétiques; films cinématographiques impressionnés; dispositifs pour le montage des films cinématographiques, écrans (photographie); écrans de projection, logiciels (programmes enregistrés).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Divertissements télévisés et radiophoniques, production de films et production de films sur bandes vidéo; informations en matière de divertissements, location de décors de spectacles, location de films cinématographiques, montage de bandes vidéo, montage de programmes radiophoniques et de télévision, organisation d'expositions à but culturel ou éducatif, organisation de concours (éducation et divertissement); organisation et conduites de colloques, conférences, congrès, séminaires, symposiums; publication de livres.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Aparatos de grabación, transmisión o reproducción de sonido o imágenes; soportes de registro magnéticos, discos acústicos; cámaras de vídeo; cámaras cinematográficas; cintas para grabaciones sonoras; soportes para grabaciones sonoras; cámaras fotográficas; discos de vídeo; discos ópticos; televisores; cintas de vídeo; discos compactos (audio, vídeo); CD-ROM; soportes magnéticos de datos; películas cinematográficas impresionadas; dispositivos de montaje de películas cinematográficas, pantallas (fotografía); pantallas de proyección, software (programas grabados).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Entretenimiento radial y televisivo, producción de películas y producción de películas en cintas de vídeo; información sobre servicios de entretenimiento, alquiler de decorados para espectáculos, alquiler de películas cinematográficas, montaje de cintas de vídeo, montaje de programas de radio y televisión, organización de exposiciones con fines culturales o educativos, organización de concursos (educación y esparcimiento); organización y dirección de coloquios, conferencias, congresos, seminarios y simposios; publicación de libros.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SEVENORIENTS",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "CABINET WAGRET",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicRegistrationApplicationOfficeCode": "FR",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "19970604",
+          "basicRegistrationNumber": "97 680 976"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "CN",
+      "JP",
+      "SG",
+      "VN"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "58, avenue de Wagram F-75017 PARIS",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "SEVENORIENTS"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicRegistrationApplicationOfficeCode": "FR",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "19970604",
+            "basicRegistrationNumber": "97 680 976"
+          }
+        ]
+      }
+    ],
+    "cmMarkImageEUclassification": [
+      "37.01.15"
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "CN",
+      "JP",
+      "SG",
+      "VN"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Apparatus for recording, transmitting and reproducing sound or images; magnetic recording media, sound recording disks; video cameras; cameras (cinematographic apparatus); sound recording films; sound recording media; photographic apparatus; video disks; optical disks; television apparatus; videotapes; audio-video compact disks; CD-ROMs; magnetic data media; exposed cinematographic films; apparatus for editing cinematographic film, screens (photography); projection screens, software (recorded programs)."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Radio and television entertainment, films and videotape films production; information concerning entertainment, rental of show scenery, rental of cinematographic films, videotape editing, production of radio and television programmes, organisation of exhibitions for cultural or educational purposes, organisation of competitions (education and entertainment); organisation and holding of colloquiums, conferences, congresses, seminars, symposiums; publishing of books."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Appareils pour l'enregistrement, la transmission, la reproduction du son ou des images; supports d'enregistrement magnétiques, disques acoustiques; caméras vidéo; caméras (appareils cinématographiques); films pour l'enregistrement des sons; supports d'enregistrements sonores; appareils photographiques; disques vidéo; disques optiques; appareils de télévision; bandes vidéo; disques compacts (audio, vidéo); cédéroms; supports de données magnétiques; films cinématographiques impressionnés; dispositifs pour le montage des films cinématographiques, écrans (photographie); écrans de projection, logiciels (programmes enregistrés)."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Divertissements télévisés et radiophoniques, production de films et production de films sur bandes vidéo; informations en matière de divertissements, location de décors de spectacles, location de films cinématographiques, montage de bandes vidéo, montage de programmes radiophoniques et de télévision, organisation d'expositions à but culturel ou éducatif, organisation de concours (éducation et divertissement); organisation et conduites de colloques, conférences, congrès, séminaires, symposiums; publication de livres."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aparatos de grabación, transmisión o reproducción de sonido o imágenes; soportes de registro magnéticos, discos acústicos; cámaras de vídeo; cámaras cinematográficas; cintas para grabaciones sonoras; soportes para grabaciones sonoras; cámaras fotográficas; discos de vídeo; discos ópticos; televisores; cintas de vídeo; discos compactos (audio, vídeo); CD-ROM; soportes magnéticos de datos; películas cinematográficas impresionadas; dispositivos de montaje de películas cinematográficas, pantallas (fotografía); pantallas de proyección, software (programas grabados)."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Entretenimiento radial y televisivo, producción de películas y producción de películas en cintas de vídeo; información sobre servicios de entretenimiento, alquiler de decorados para espectáculos, alquiler de películas cinematográficas, montaje de cintas de vídeo, montaje de programas de radio y televisión, organización de exposiciones con fines culturales o educativos, organización de concursos (educación y esparcimiento); organización y dirección de coloquios, conferencias, congresos, seminarios y simposios; publicación de libros."
+        }
+      ]
+    },
+    "id": "0926e81f-d7aa-455f-8d19-bd475b7f9fde",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "45"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "19 rue de Milan F-75009 PARIS",
+        "representativeAddressCountryCode": "FR",
+        "representativeAddressCountryName": "France",
+        "representativeName": "CABINET WAGRET"
+      }
+    ],
+    "status": {
+      "active": false,
+      "cancellationDate": "20230406",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20121129",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20020913",
+        "registrationNumber": "788708"
+      },
+      "renewalDate": "20120913",
+      "renewalPublishedDate": "20121129"
+    },
+    "version": "20250620160913",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "sevenOrients"
+    }
+  },
+  "_uri": "/mark/wo/0926e81f-d7aa-455f-8d19-bd475b7f9fde",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.831Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

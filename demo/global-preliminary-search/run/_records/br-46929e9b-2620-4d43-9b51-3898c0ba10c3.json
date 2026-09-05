@@ -1,0 +1,155 @@
+{
+  "uri": "/mark/br/46929e9b-2620-4d43-9b51-3898c0ba10c3",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "46929e9b-2620-4d43-9b51-3898c0ba10c3",
+  "applicationNumber": "816134138",
+  "registrationNumber": null,
+  "applicationDate": "1991-05-24",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    3,
+    5,
+    8,
+    9,
+    10,
+    14,
+    16,
+    18,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    28,
+    34,
+    36,
+    37,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        3,
+        5,
+        8,
+        9,
+        10,
+        14,
+        16,
+        18,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        28,
+        34,
+        36,
+        37,
+        40,
+        42
+      ],
+      "language": "pt",
+      "description": "[CLASS 25. 10]: : Roupas e acessórios do vestuário de uso comum. [CLASS 25. 20]: : Roupas e acessórios do vestuário para prática de esportes. [CLASS 25. 30]: : Roupas e acessórios do vestuário de uso profissional.",
+      "translation_language": "en",
+      "translation": "[CLASS 25. 10]: : General wear clothing and clothing accessories. [CLASS 25. 20]: : Sports clothing and clothing accessories. [CLASS 25. 30]: : Clothing and clothing accessories for professional use."
+    }
+  ],
+  "owner": "PASSAPORT FRANCHISING COMERCIO LTDA ME",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "No agent available",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "PASSAPORT FRANCHISING COMERCIO LTDA ME"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "[CLASS 25. 10]: : General wear clothing and clothing accessories. [CLASS 25. 20]: : Sports clothing and clothing accessories. [CLASS 25. 30]: : Clothing and clothing accessories for professional use.",
+          "intClassNumber": "03,05,08,09,10,14,16,18,21,22,23,24,25,26,28,34,36,37,40,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "[CLASS 25. 10]: : Roupas e acessórios do vestuário de uso comum. [CLASS 25. 20]: : Roupas e acessórios do vestuário para prática de esportes. [CLASS 25. 30]: : Roupas e acessórios do vestuário de uso profissional."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "25.10"
+        },
+        {
+          "natClassNumber": "25.20"
+        },
+        {
+          "natClassNumber": "25.30"
+        }
+      ]
+    },
+    "id": "46929e9b-2620-4d43-9b51-3898c0ba10c3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "No agent available"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19910524",
+        "applicationNumber": "816134138"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20250630194335",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/br/46929e9b-2620-4d43-9b51-3898c0ba10c3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

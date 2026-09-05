@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/cn/439bd996-57d6-468c-9421-6f88723dfd96",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "439bd996-57d6-468c-9421-6f88723dfd96",
+  "applicationNumber": "77126896",
+  "registrationNumber": null,
+  "applicationDate": "2024-03-06",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "七耀娱乐",
+  "markTransliteration": "SEVEN QI YAO YU LE",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "安排和举办娱乐活动;除广告片外的影片制作;电影发行;广播和电视节目制作;培训;无线电文娱节目;演出;娱乐服务;综艺表演;组织表演(演出)",
+      "translation_language": "en",
+      "translation": "Arrange and conduct entertainment activities; film production other than commercials; film distribution; radio and television program production; training; radio entertainment programs; performances; entertainment services; variety shows; organization of performances (performances)"
+    }
+  ],
+  "owner": "Beijing Qiyao Culture Media Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市石景山区香山南路105号院1号楼6层672",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Beijing Qiyao Culture Media Co., Ltd.",
+        "applicantNativeName": "北京七耀文化传媒有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Arrange and conduct entertainment activities; film production other than commercials; film distribution; radio and television program production; training; radio entertainment programs; performances; entertainment services; variety shows; organization of performances (performances)",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "安排和举办娱乐活动;除广告片外的影片制作;电影发行;广播和电视节目制作;培训;无线电文娱节目;演出;娱乐服务;综艺表演;组织表演(演出)"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "439bd996-57d6-468c-9421-6f88723dfd96",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京留白印记企业服务有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240306",
+        "applicationNumber": "77126896"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251005083349",
+    "wordMarkSpecification": {
+      "markTransliteration": "SEVEN QI YAO YU LE",
+      "markVerbalElementText": "七耀娱乐"
+    }
+  },
+  "_uri": "/mark/cn/439bd996-57d6-468c-9421-6f88723dfd96",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.564Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "uri": "/mark/my/bb15f2f9-b4de-4155-ab53-742b8774790d",
+  "provider": "clarivate",
+  "office": "my",
+  "guid": "bb15f2f9-b4de-4155-ab53-742b8774790d",
+  "applicationNumber": "2014051985",
+  "registrationNumber": null,
+  "applicationDate": "2014-02-13",
+  "registrationDate": "2014-02-13",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Apparatus and instruments for the supply, distribution, transformation, accumulation, regulation or control of electric current; apparatus for recording, transmission or reproduction of sound or images; magnetic data carriers, recording discs; software programs; batteries; all included in class 9.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Gildo PALLANCA PASTOR",
+  "ownerNative": null,
+  "ownerCountry": "MC",
+  "representative": "Wong Sai Fong ((Deceased)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "3 avenue Princesse Grace, 98000 98000",
+        "applicantAddressCountryCode": "MC",
+        "applicantAddressCountryName": "Monaco",
+        "applicantName": "Gildo PALLANCA PASTOR"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Apparatus and instruments for the supply, distribution, transformation, accumulation, regulation or control of electric current; apparatus for recording, transmission or reproduction of sound or images; magnetic data carriers, recording discs; software programs; batteries; all included in class 9."
+        }
+      ]
+    },
+    "id": "bb15f2f9-b4de-4155-ab53-742b8774790d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.01",
+      "27.05.30"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260901",
+    "registrationOfficeCode": "MY",
+    "registrationOfficeName": "Malaysia",
+    "representatives": [
+      {
+        "representativeAddress": "Shearn Delamore & Co. 7th Floor, Wisma Hamzah-Kwong Hing No. 1, Leboh Ampang Kuala Lumpur 50100 Kuala Lumpur",
+        "representativeAddressCountryCode": "MY",
+        "representativeAddressCountryName": "Malaysia",
+        "representativeName": "Wong Sai Fong ((Deceased)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20140213",
+        "applicationNumber": "2014051985"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20140213"
+      }
+    },
+    "version": "20260901050117",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/my/bb15f2f9-b4de-4155-ab53-742b8774790d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.180Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

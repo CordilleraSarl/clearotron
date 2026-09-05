@@ -1,0 +1,258 @@
+{
+  "uri": "/mark/fr/43bf78de-6275-4508-a587-a8d1c5d2417e",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "43bf78de-6275-4508-a587-a8d1c5d2417e",
+  "applicationNumber": "13 3979310",
+  "registrationNumber": null,
+  "applicationDate": "2013-02-01",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2013-02-22",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "RORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    3,
+    9,
+    14,
+    18,
+    25,
+    28,
+    35,
+    38,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        3
+      ],
+      "language": "fr",
+      "description": ": Préparations pour blanchir et autres substances pour lessiver ; préparations pour nettoyer, polir, dégraisser et abraser ; savons ; parfums, huiles essentielles, cosmétiques, lotions pour les cheveux ; dentifrices ; dépilatoires ; produits de démaquillage ; rouge à lèvres ; masques de beauté ; produits de rasage ; produits pour la conservation du cuir (cirages) ; crèmes pour le cuir ",
+      "translation_language": "en",
+      "translation": "Bleaching preparations and other substances for laundry use; cleaning, polishing, scouring and abrasive preparations; soaps; perfumes, essential oils, cosmetics, hair lotions; toothpastes; depilatories; make-up removal products; lipstick ; beauty masks; shaving products; products for preserving leather (polishes); leather creams"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": ": Appareils et instruments scientifiques, nautiques, géodésiques, photographiques, cinématographiques, optiques, de pesage, de mesurage, de signalisation, de contrôle (inspection), de secours (sauvetage) et d'enseignement ; appareils et instruments pour la conduite, la distribution, la transformation, l'accumulation, le réglage ou la commande du courant électrique ; appareils pour l'enregistrement, la transmission, la reproduction du son ou des images ; supports d'enregistrement magnétiques, disques acoustiques ou optiques ; disques compacts, DVD et autres supports d'enregistrement numériques ; mécanismes pour appareils à pré-paiement ; caisses enregistreuses ; machines à calculer ; équipement pour le traitement de l'information et les ordinateurs ; extincteurs ; logiciels de jeux ; logiciels (programmes enregistrés) ; périphériques d'ordinateurs ; batteries électriques ; détecteurs ; fils électriques ; relais électriques ; combinaisons, costumes, gants ou masques de plongée ; vêtements de protection contre les accidents, les radiations et le feu ; dispositifs de protection personnelle contre les accidents ; lunettes (optique) ; articles de lunetterie ; étuis à lunettes ; appareils pour le diagnostic non à usage médical ; cartes à mémoire ou à microprocesseur ; bâches de sauvetage ; sacoches conçues pour ordinateurs portables ",
+      "translation_language": "en",
+      "translation": "Scientific, nautical, surveying, photographic, cinematographic, optical, weighing, measuring, signaling, checking (supervision), life-saving and teaching apparatus and instruments; apparatus and instruments for conducting, distributing, transforming, accumulating, regulating or controlling electric current; apparatus for recording, transmission, reproduction of sound or images; magnetic recording media, acoustic or optical discs; compact discs, DVDs and other digital recording media; mechanisms for coin-operated apparatus; cash registers; calculating machines; data processing equipment and computers; fire extinguishers ; game software; computer software (recorded programs); computer peripherals; electric batteries; detectors; Electric wires ; electrical relays; diving suits, suits, gloves or masks; protective clothing against accidents, radiation and fire; personal protection devices against accidents; glasses (optics); eyewear; spectacle cases; diagnostic apparatus not for medical purposes; memory or microprocessor cards; rescue tarps; bags designed for laptops"
+    },
+    {
+      "classes": [
+        14
+      ],
+      "language": "fr",
+      "description": ": Joaillerie ; bijouterie, pierres précieuses ; horlogerie et instruments chronométriques ; métaux précieux et leurs alliages ; objets d'art en métaux précieux ; coffrets à bijoux ; boîtes en métaux précieux ; boîtiers, bracelets, chaînes, ressorts ou verres de montre ; porte-clefs de fantaisie ; statues ou figurines (statuettes) en métaux précieux ; étuis ou écrins pour l'horlogerie ; médailles ",
+      "translation_language": "en",
+      "translation": "Jewelry; jewellery, precious stones; horology and chronometric instruments; precious metals and their alloys; works of art in precious metals; jewelry boxes; precious metal boxes; watch cases, bracelets, chains, springs or glasses; novelty keychains; statues or figurines (statuettes) of precious metals; cases or cases for watches; medals"
+    },
+    {
+      "classes": [
+        18
+      ],
+      "language": "fr",
+      "description": ": Cuir et imitations du cuir ; peaux d'animaux ; malles et valises ; parapluies, parasols et cannes ; fouets et sellerie ; portefeuilles ; porte-monnaie ; sacs ; coffrets destinés à contenir des affaires de toilette ; colliers ou habits pour animaux ; filets à provisions ",
+      "translation_language": "en",
+      "translation": "Leather and imitations of leather; animal skins; trunks and suitcases; umbrellas, parasols and walking sticks; whips and saddlery; wallets; wallet ; bags; boxes intended to contain toiletries; collars or clothing for animals; shopping nets"
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "fr",
+      "description": ": Vêtements, chaussures, chapellerie ; chemises ; vêtements en cuir ou en imitation du cuir ; ceintures (habillement) ; fourrures (vêtements) ; gants (habillement) ; foulards ; cravates ; bonneterie ; chaussettes ; chaussons ; chaussures de plage, de ski ou de sport ; sous-vêtements ",
+      "translation_language": "en",
+      "translation": "Clothing, footwear, headgear; shirts; leather or imitation leather clothing; belts (clothing); furs (clothing); gloves (clothing); scarves; ties; hosiery; socks ; slippers; beach, ski or sports shoes; underwear"
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "fr",
+      "description": ": Jeux, jouets ; commandes pour consoles de jeu ; décorations pour arbres de Noël exceptés les articles d'éclairage et les sucreries ; arbres de Noël en matières synthétiques ; appareils de culture physique ou de gymnastique ; attirail de pêche ; balles ou ballons de jeu ; tables, queues ou billes de billard ; jeux de cartes ou de table ; patins à glace ou à roulettes ; trottinettes ; planches à voile ou pour le surf ; raquettes ; raquettes à neige ; skis ; rembourrages de protection (parties d'habillement de sport) ",
+      "translation_language": "en",
+      "translation": "Games, toys; controls for game consoles; decorations for Christmas trees except lighting articles and sweets; synthetic Christmas trees; apparatus for physical training or gymnastics; fishing tackle; balls or game balls; billiard tables, cues or balls; card or table games; ice or roller skates; scooters; windsurfing boards or for surfing; snowshoes; snowshoes ; skis; protective padding (parts of sportswear)"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": ": Publicité ; gestion des affaires commerciales ; administration commerciale ; travaux de bureau ; diffusion de matériel publicitaire (tracts, prospectus, imprimés, échantillons) ; services d'abonnement à des journaux (pour des tiers) ; services d'abonnement à des services de télécommunication pour les tiers ; présentation de produits sur tout moyen de communication pour la vente au détail ; conseils en organisation et direction des affaires ; comptabilité ; reproduction de documents ; bureaux de placement ; gestion de fichiers informatiques ; organisation d'expositions à buts commerciaux ou de publicité ; publicité en ligne sur un réseau informatique ; location de temps publicitaire sur tout moyen de communication ; publication de textes publicitaires ; locations d'espaces publicitaires ; diffusion d'annonces publicitaires ; relations publiques ; Audits d'entreprises (analyses commerciales) ",
+      "translation_language": "en",
+      "translation": "Advertising; business management; business administration; office work; distribution of advertising material (tracts, prospectuses, printed matter, samples); newspaper subscription services (for others); subscription services to telecommunications services for others; presentation of goods on any means of communication for retail sale; advice on organization and business management; accounting ; reproduction of documents; employment offices; computer file management; organization of exhibitions for commercial or advertising purposes; online advertising on a computer network; rental of advertising time on any means of communication; publication of publicity texts; rental of advertising space; dissemination of advertisements; public relations ; Business audits (business analysis)"
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "fr",
+      "description": ": Télécommunications ; informations en matière de télécommunications ; communications par terminaux d'ordinateurs ou par réseau de fibres optiques ; communications radiophoniques ou téléphoniques ; services de radiotéléphonie mobile ; fourniture d'accès utilisateur à des réseaux informatiques mondiaux ; mise à disposition de forums en ligne ; fourniture d'accès à des bases de données ; services d'affichage électronique (télécommunications) ; raccordement par télécommunications à un réseau informatique mondial ; agences de presse ou d'informations (nouvelles) ; location d'appareils de télécommunication ; émissions radiophoniques ou télévisées ; services de téléconférences ou de visioconférences ; services de messagerie électronique ; location de temps d'accès à des réseaux informatiques mondiaux ",
+      "translation_language": "en",
+      "translation": "Telecommunications; telecommunications information; communications by computer terminals or by fiber optic network; radio or telephone communications; mobile radiotelephone services; providing user access to global computer networks; provision of online forums; provision of access to databases; electronic display services (telecommunications); connection by telecommunications to a global computer network; press or information (news) agencies; rental of telecommunications apparatus; radio or television broadcasts; teleconferencing or videoconferencing services; electronic mail services; rental of access time to global computer networks"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": ": Éducation ; formation ; divertissement ; activités sportives et culturelles ; informations en matière de divertissement ou d'éducation ; recyclage professionnel ; mise à disposition d'installations de loisirs ; publication de livres ; prêts de livres ; production de films sur bandes vidéo ; location de films cinématographiques ; location d'enregistrements sonores ; location de magnétoscopes ou de postes de radio et de télévision ; location de décors de spectacles ; montage de bandes vidéo ; services de photographie ; organisation de concours (éducation ou divertissement) ; organisation et conduite de colloques, conférences ou congrès ; organisation d'expositions à buts culturels ou éducatifs ; réservation de places de spectacles ; services de jeu proposés en ligne à partir d'un réseau informatique ; service de jeux d'argent ; publication électronique de livres et de périodiques en ligne ; micro-édition.",
+      "translation_language": "en",
+      "translation": "Education; training; entertainment ; sports and cultural activities; entertainment or educational information; vocational retraining; provision of leisure facilities; publication of books; book loans; production of films on videotape; rental of cinematographic films; rental of sound recordings; rental of video recorders or radio and television sets; rental of show sets; editing of videotapes; photography services; organization of competitions (education or entertainment); organization and conduct of colloquiums, conferences or congresses; organization of exhibitions for cultural or educational purposes; reservation of tickets for shows; gaming services provided online from a computer network; gambling service; electronic publication of books and periodicals online; micro-publishing."
+    }
+  ],
+  "owner": "SELYBA EDITIONS PRODUCTION, SARL",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "SELYBA EDITIONS PRODUCTION",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "07 rue Notre Dame de Nazareth, 75003 PARIS",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "SELYBA EDITIONS PRODUCTION, SARL"
+      },
+      {
+        "applicantAddress": "75 rue de Turbigo, 75003 PARIS",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "TELESIS, SARL"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Bleaching preparations and other substances for laundry use; cleaning, polishing, scouring and abrasive preparations; soaps; perfumes, essential oils, cosmetics, hair lotions; toothpastes; depilatories; make-up removal products; lipstick ; beauty masks; shaving products; products for preserving leather (polishes); leather creams",
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Préparations pour blanchir et autres substances pour lessiver ; préparations pour nettoyer, polir, dégraisser et abraser ; savons ; parfums, huiles essentielles, cosmétiques, lotions pour les cheveux ; dentifrices ; dépilatoires ; produits de démaquillage ; rouge à lèvres ; masques de beauté ; produits de rasage ; produits pour la conservation du cuir (cirages) ; crèmes pour le cuir "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific, nautical, surveying, photographic, cinematographic, optical, weighing, measuring, signaling, checking (supervision), life-saving and teaching apparatus and instruments; apparatus and instruments for conducting, distributing, transforming, accumulating, regulating or controlling electric current; apparatus for recording, transmission, reproduction of sound or images; magnetic recording media, acoustic or optical discs; compact discs, DVDs and other digital recording media; mechanisms for coin-operated apparatus; cash registers; calculating machines; data processing equipment and computers; fire extinguishers ; game software; computer software (recorded programs); computer peripherals; electric batteries; detectors; Electric wires ; electrical relays; diving suits, suits, gloves or masks; protective clothing against accidents, radiation and fire; personal protection devices against accidents; glasses (optics); eyewear; spectacle cases; diagnostic apparatus not for medical purposes; memory or microprocessor cards; rescue tarps; bags designed for laptops",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Appareils et instruments scientifiques, nautiques, géodésiques, photographiques, cinématographiques, optiques, de pesage, de mesurage, de signalisation, de contrôle (inspection), de secours (sauvetage) et d'enseignement ; appareils et instruments pour la conduite, la distribution, la transformation, l'accumulation, le réglage ou la commande du courant électrique ; appareils pour l'enregistrement, la transmission, la reproduction du son ou des images ; supports d'enregistrement magnétiques, disques acoustiques ou optiques ; disques compacts, DVD et autres supports d'enregistrement numériques ; mécanismes pour appareils à pré-paiement ; caisses enregistreuses ; machines à calculer ; équipement pour le traitement de l'information et les ordinateurs ; extincteurs ; logiciels de jeux ; logiciels (programmes enregistrés) ; périphériques d'ordinateurs ; batteries électriques ; détecteurs ; fils électriques ; relais électriques ; combinaisons, costumes, gants ou masques de plongée ; vêtements de protection contre les accidents, les radiations et le feu ; dispositifs de protection personnelle contre les accidents ; lunettes (optique) ; articles de lunetterie ; étuis à lunettes ; appareils pour le diagnostic non à usage médical ; cartes à mémoire ou à microprocesseur ; bâches de sauvetage ; sacoches conçues pour ordinateurs portables "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Jewelry; jewellery, precious stones; horology and chronometric instruments; precious metals and their alloys; works of art in precious metals; jewelry boxes; precious metal boxes; watch cases, bracelets, chains, springs or glasses; novelty keychains; statues or figurines (statuettes) of precious metals; cases or cases for watches; medals",
+          "intClassNumber": "14",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Joaillerie ; bijouterie, pierres précieuses ; horlogerie et instruments chronométriques ; métaux précieux et leurs alliages ; objets d'art en métaux précieux ; coffrets à bijoux ; boîtes en métaux précieux ; boîtiers, bracelets, chaînes, ressorts ou verres de montre ; porte-clefs de fantaisie ; statues ou figurines (statuettes) en métaux précieux ; étuis ou écrins pour l'horlogerie ; médailles "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Leather and imitations of leather; animal skins; trunks and suitcases; umbrellas, parasols and walking sticks; whips and saddlery; wallets; wallet ; bags; boxes intended to contain toiletries; collars or clothing for animals; shopping nets",
+          "intClassNumber": "18",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Cuir et imitations du cuir ; peaux d'animaux ; malles et valises ; parapluies, parasols et cannes ; fouets et sellerie ; portefeuilles ; porte-monnaie ; sacs ; coffrets destinés à contenir des affaires de toilette ; colliers ou habits pour animaux ; filets à provisions "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Clothing, footwear, headgear; shirts; leather or imitation leather clothing; belts (clothing); furs (clothing); gloves (clothing); scarves; ties; hosiery; socks ; slippers; beach, ski or sports shoes; underwear",
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Vêtements, chaussures, chapellerie ; chemises ; vêtements en cuir ou en imitation du cuir ; ceintures (habillement) ; fourrures (vêtements) ; gants (habillement) ; foulards ; cravates ; bonneterie ; chaussettes ; chaussons ; chaussures de plage, de ski ou de sport ; sous-vêtements "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Games, toys; controls for game consoles; decorations for Christmas trees except lighting articles and sweets; synthetic Christmas trees; apparatus for physical training or gymnastics; fishing tackle; balls or game balls; billiard tables, cues or balls; card or table games; ice or roller skates; scooters; windsurfing boards or for surfing; snowshoes; snowshoes ; skis; protective padding (parts of sportswear)",
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Jeux, jouets ; commandes pour consoles de jeu ; décorations pour arbres de Noël exceptés les articles d'éclairage et les sucreries ; arbres de Noël en matières synthétiques ; appareils de culture physique ou de gymnastique ; attirail de pêche ; balles ou ballons de jeu ; tables, queues ou billes de billard ; jeux de cartes ou de table ; patins à glace ou à roulettes ; trottinettes ; planches à voile ou pour le surf ; raquettes ; raquettes à neige ; skis ; rembourrages de protection (parties d'habillement de sport) "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising; business management; business administration; office work; distribution of advertising material (tracts, prospectuses, printed matter, samples); newspaper subscription services (for others); subscription services to telecommunications services for others; presentation of goods on any means of communication for retail sale; advice on organization and business management; accounting ; reproduction of documents; employment offices; computer file management; organization of exhibitions for commercial or advertising purposes; online advertising on a computer network; rental of advertising time on any means of communication; publication of publicity texts; rental of advertising space; dissemination of advertisements; public relations ; Business audits (business analysis)",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Publicité ; gestion des affaires commerciales ; administration commerciale ; travaux de bureau ; diffusion de matériel publicitaire (tracts, prospectus, imprimés, échantillons) ; services d'abonnement à des journaux (pour des tiers) ; services d'abonnement à des services de télécommunication pour les tiers ; présentation de produits sur tout moyen de communication pour la vente au détail ; conseils en organisation et direction des affaires ; comptabilité ; reproduction de documents ; bureaux de placement ; gestion de fichiers informatiques ; organisation d'expositions à buts commerciaux ou de publicité ; publicité en ligne sur un réseau informatique ; location de temps publicitaire sur tout moyen de communication ; publication de textes publicitaires ; locations d'espaces publicitaires ; diffusion d'annonces publicitaires ; relations publiques ; Audits d'entreprises (analyses commerciales) "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Telecommunications; telecommunications information; communications by computer terminals or by fiber optic network; radio or telephone communications; mobile radiotelephone services; providing user access to global computer networks; provision of online forums; provision of access to databases; electronic display services (telecommunications); connection by telecommunications to a global computer network; press or information (news) agencies; rental of telecommunications apparatus; radio or television broadcasts; teleconferencing or videoconferencing services; electronic mail services; rental of access time to global computer networks",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Télécommunications ; informations en matière de télécommunications ; communications par terminaux d'ordinateurs ou par réseau de fibres optiques ; communications radiophoniques ou téléphoniques ; services de radiotéléphonie mobile ; fourniture d'accès utilisateur à des réseaux informatiques mondiaux ; mise à disposition de forums en ligne ; fourniture d'accès à des bases de données ; services d'affichage électronique (télécommunications) ; raccordement par télécommunications à un réseau informatique mondial ; agences de presse ou d'informations (nouvelles) ; location d'appareils de télécommunication ; émissions radiophoniques ou télévisées ; services de téléconférences ou de visioconférences ; services de messagerie électronique ; location de temps d'accès à des réseaux informatiques mondiaux "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education; training; entertainment ; sports and cultural activities; entertainment or educational information; vocational retraining; provision of leisure facilities; publication of books; book loans; production of films on videotape; rental of cinematographic films; rental of sound recordings; rental of video recorders or radio and television sets; rental of show sets; editing of videotapes; photography services; organization of competitions (education or entertainment); organization and conduct of colloquiums, conferences or congresses; organization of exhibitions for cultural or educational purposes; reservation of tickets for shows; gaming services provided online from a computer network; gambling service; electronic publication of books and periodicals online; micro-publishing.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Éducation ; formation ; divertissement ; activités sportives et culturelles ; informations en matière de divertissement ou d'éducation ; recyclage professionnel ; mise à disposition d'installations de loisirs ; publication de livres ; prêts de livres ; production de films sur bandes vidéo ; location de films cinématographiques ; location d'enregistrements sonores ; location de magnétoscopes ou de postes de radio et de télévision ; location de décors de spectacles ; montage de bandes vidéo ; services de photographie ; organisation de concours (éducation ou divertissement) ; organisation et conduite de colloques, conférences ou congrès ; organisation d'expositions à buts culturels ou éducatifs ; réservation de places de spectacles ; services de jeu proposés en ligne à partir d'un réseau informatique ; service de jeux d'argent ; publication électronique de livres et de périodiques en ligne ; micro-édition."
+        }
+      ]
+    },
+    "id": "43bf78de-6275-4508-a587-a8d1c5d2417e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00544",
+        "publicationVolume": "08"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeName": "SELYBA EDITIONS PRODUCTION"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20130201",
+        "applicationNumber": "13 3979310"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20130222",
+      "markCurrentStatus": "EXPIRED MARK"
+    },
+    "version": "20250426154811",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RORI"
+    }
+  },
+  "_uri": "/mark/fr/43bf78de-6275-4508-a587-a8d1c5d2417e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:43.692Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

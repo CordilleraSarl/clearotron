@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/bx/6669082d-6667-4dda-9b4e-11d2ca4a028b",
+  "provider": "clarivate",
+  "office": "bx",
+  "guid": "6669082d-6667-4dda-9b4e-11d2ca4a028b",
+  "applicationNumber": "1422627",
+  "registrationNumber": "1422627",
+  "applicationDate": "2020-08-07",
+  "registrationDate": "2020-11-17",
+  "expiryDate": "2030-08-07",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-11-17",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Of Seven Origin",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    25,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        25
+      ],
+      "language": "en",
+      "description": "Clothing",
+      "translation_language": "en",
+      "translation": "Clothing"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Musical entertainment",
+      "translation_language": "en",
+      "translation": "Musical entertainment"
+    }
+  ],
+  "owner": "Boma Pepple d.b.a. Of Seven Origin",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Doornenburg 26, 2261 XB Leidschendam",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "Boma Pepple d.b.a. Of Seven Origin"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Clothing",
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Clothing"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Musical entertainment",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Musical entertainment"
+        }
+      ]
+    },
+    "id": "6669082d-6667-4dda-9b4e-11d2ca4a028b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1117"
+      }
+    ],
+    "recordLastUpdated": "20250623",
+    "registrationOfficeCode": "BX",
+    "registrationOfficeName": "Benelux",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200807",
+        "applicationNumber": "1422627"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300807",
+      "lastPublicationDate": "20201117",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20201117",
+        "registrationNumber": "1422627"
+      }
+    },
+    "version": "20250623183302",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Of Seven Origin"
+    }
+  },
+  "_uri": "/mark/bx/6669082d-6667-4dda-9b4e-11d2ca4a028b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.805Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,367 @@
+{
+  "uri": "/mark/us/09acafe3-e925-4f85-a95c-c35d1121ada7",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "09acafe3-e925-4f85-a95c-c35d1121ada7",
+  "applicationNumber": "98220536",
+  "registrationNumber": null,
+  "applicationDate": "2023-10-12",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2024-07-23"
+  ],
+  "abandonmentDate": "2026-02-02",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "EXQORIA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Software authoring; Software design and development; Computer software consultancy; Computer software design; Computer software design for others; Computer software design services; Computer software development; Computer programming and software design; Customizing computer software; Developing computer software; Updating of smartphone software; Writing and updating computer software",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": null,
+      "description": "INT. CL. 45 Granting of software licenses; Licensing of software",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ExQoria Inc.",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "francov@exqor.com, Boston, MA, 02114-2818, USAM",
+        "applicantAddressCity": "Boston",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "02114-2818",
+        "applicantAddressStateName": "MASSACHUSETTS",
+        "applicantAddressStreet": "francov@exqor.com",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "ExQoria Inc."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "26.11.10",
+      "26.11.31",
+      "26.11.37",
+      "29.07.06",
+      "29.07.09",
+      "29.07.11"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Software authoring; Software design and development; Computer software consultancy; Computer software design; Computer software design for others; Computer software design services; Computer software development; Computer programming and software design; Customizing computer software; Developing computer software; Updating of smartphone software; Writing and updating computer software"
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsServicesDescription": "INT. CL. 45 Granting of software licenses; Licensing of software"
+        }
+      ]
+    },
+    "id": "09acafe3-e925-4f85-a95c-c35d1121ada7",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260221",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20260221",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20251031",
+        "descriptionText": "SU - NON-FINAL ACTION - WRITTEN"
+      },
+      {
+        "date": "20251031",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20251031",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20250910",
+        "descriptionText": "NOTICE OF APPROVAL OF EXTENSION REQUEST E-MAILED"
+      },
+      {
+        "date": "20250909",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20250909",
+        "descriptionText": "SOU EXTENSION 1 GRANTED"
+      },
+      {
+        "date": "20250909",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20250421",
+        "descriptionText": "ABANDONMENT - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20250421",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20250421",
+        "descriptionText": "TEAS PETITION TO REVIVE RECEIVED"
+      },
+      {
+        "date": "20250421",
+        "descriptionText": "PETITION TO REVIVE-GRANTED"
+      },
+      {
+        "date": "20250421",
+        "descriptionText": "NOTICE OF REVIVAL - E-MAILED"
+      },
+      {
+        "date": "20250421",
+        "descriptionText": "SOU EXTENSION RECEIVED WITH TEAS PETITION"
+      },
+      {
+        "date": "20250421",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20250421",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20250316",
+        "descriptionText": "SOU EXTENSION 1 FILED"
+      },
+      {
+        "date": "20240917",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20240723",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20240723",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20240703",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20240615",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20240610",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20240610",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20240610",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20240610",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20240530",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20231231",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20231012",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "The color(s) black, white, and green is/are claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of a black background with the capital letter \"E\" and lower case letters \"X\", \"O\", \"R\", \"I\" and \"A\" in white, and the capital letter \"Q\" in green.",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "francov@exqor.com, Boston, MA, 02114-281, USAM",
+        "city": "Boston",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "ExQoria Inc.",
+        "postalCode": "02114-281",
+        "stateName": "MASSACHUSETTS",
+        "street": "francov@exqor.com"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "francov@exqor.com, Boston, MA, 02114-2818, USAM",
+        "city": "Boston",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "ExQoria Inc.",
+        "postalCode": "02114-2818",
+        "stateName": "MASSACHUSETTS",
+        "street": "francov@exqor.com"
+      },
+      {
+        "address": "francov@exqor.com, Boston, MA, 02114-2818, USAM",
+        "city": "Boston",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "ExQoria Inc.",
+        "postalCode": "02114-2818",
+        "stateName": "MASSACHUSETTS",
+        "street": "francov@exqor.com"
+      }
+    ],
+    "recordLastUpdated": "20260224",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Boston, MA 02114-2818, United States",
+        "representativeCorrespondentAddressLines": [
+          "Boston, MA 02114-2818",
+          "United States"
+        ],
+        "representativeCorrespondentName": "ExQoria Inc., francov@exqor.com"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Boston, MA 02114-2818, United States",
+        "representativeAddressLines": [
+          "Boston, MA 02114-2818",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20260202",
+      "active": false,
+      "application": {
+        "applicationDate": "20231012",
+        "applicationNumber": "98220536"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20050530"
+        },
+        {
+          "firstUsedClass": "45",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20050530"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20050530"
+        },
+        {
+          "firstUsedCommerceClass": "45",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20050530"
+        }
+      ],
+      "firstUsedOtherForm": [
+        "The mark was first used anywhere in a different form other than that sought to be registered at least as early as 08/30/2005 The mark was first used in commerce in a different form other than that sought to be registered at least as early as 05/30/2006"
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20260221",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use",
+          "Color Drawing Currently",
+          "3d Drawing Currently"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED",
+      "publicationDate": [
+        "20240723"
+      ],
+      "revivalDate": "20250421"
+    },
+    "version": "20260224123506",
+    "wordMarkSpecification": {
+      "markTranslationDescription": "The wording EXQORIA has no meaning in a foreign language.",
+      "markVerbalElementText": "EXQORIA"
+    }
+  },
+  "_uri": "/mark/us/09acafe3-e925-4f85-a95c-c35d1121ada7",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.393Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

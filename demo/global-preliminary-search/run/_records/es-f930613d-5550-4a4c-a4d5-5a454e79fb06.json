@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/es/f930613d-5550-4a4c-a4d5-5a454e79fb06",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "f930613d-5550-4a4c-a4d5-5a454e79fb06",
+  "applicationNumber": "2751216 M9",
+  "registrationNumber": "2751216 M9",
+  "applicationDate": "2007-01-23",
+  "registrationDate": "2007-07-06",
+  "expiryDate": "2027-01-22",
+  "renewalDate": "2016-10-24",
+  "lastPublicationDate": "2007-03-16",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JOVEN ORQUESTA SINFÓNICA CIUDAD DE REQUENA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de orquesta.",
+      "translation_language": "en",
+      "translation": "ORCHESTRA SERVICES."
+    }
+  ],
+  "owner": "SOCIEDAD MUSICAL SANTA CECILIA DE REQUENA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "PONS ARIÑO, ANGEL",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "SOCIEDAD MUSICAL SANTA CECILIA DE REQUENA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "ORCHESTRA SERVICES.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de orquesta."
+        }
+      ]
+    },
+    "id": "f930613d-5550-4a4c-a4d5-5a454e79fb06",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2879"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "representatives": [
+      {
+        "representativeAddress": "GLORIETA DE RUBEN DARIO,4 - 28010 - MADRID",
+        "representativeName": "PONS ARIÑO, ANGEL"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20070123",
+        "applicationNumber": "2751216 M9"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270122",
+      "lastPublicationDate": "20070316",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20070706",
+        "registrationNumber": "2751216 M9"
+      },
+      "renewalDate": "20161024",
+      "renewalPublishedDate": "20161028"
+    },
+    "version": "20260427155857",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOVEN ORQUESTA SINFÓNICA CIUDAD DE REQUENA"
+    }
+  },
+  "_uri": "/mark/es/f930613d-5550-4a4c-a4d5-5a454e79fb06",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

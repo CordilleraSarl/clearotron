@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/in/834cdff7-8dab-48f3-b027-1684cc52e8fd",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "834cdff7-8dab-48f3-b027-1684cc52e8fd",
+  "applicationNumber": "5542235",
+  "registrationNumber": "3885636",
+  "applicationDate": "2022-07-23",
+  "registrationDate": "2025-07-17",
+  "expiryDate": "2032-07-23",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "AASHIQ ORIGINALS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": [
+    "Subject to condition that the mark shall be used as a whole as represented substantially without any exclusive rights on any single word."
+  ],
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Entertainment Activities And Services, Television Programs, Production Of Films And Live Entertainment Features, Production Of Animated Motion Pictures And Television Features, Services Relating To Channels, Cinema And Television Studios, Services Relating To Motion Picture Entertainment, Media Services, Television Entertainment And To Live Entertainment Performances And Show, Cultural Activities.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "VEER SINGH PROPRIETOR OF AASHIQ ORIGINALS Single Firm",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "LALJI ADVOCATES[11712]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "416, NEW HARGOBIND NAGAR, DHOGRI ROAD, NOORPUR, JALANDHAR, (PUNJAB)",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "VEER SINGH PROPRIETOR OF AASHIQ ORIGINALS Single Firm"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Entertainment Activities And Services, Television Programs, Production Of Films And Live Entertainment Features, Production Of Animated Motion Pictures And Television Features, Services Relating To Channels, Cinema And Television Studios, Services Relating To Motion Picture Entertainment, Media Services, Television Entertainment And To Live Entertainment Performances And Show, Cultural Activities."
+        }
+      ]
+    },
+    "id": "834cdff7-8dab-48f3-b027-1684cc52e8fd",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "Subject to condition that the mark shall be used as a whole as represented substantially without any exclusive rights on any single word."
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2198"
+      }
+    ],
+    "recordLastUpdated": "20251105",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "A-48, Yojna Vihar, Delhi-110092",
+        "representativeName": "LALJI ADVOCATES[11712]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220723",
+        "applicationNumber": "5542235"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320723",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20211126"
+        }
+      ],
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20250717",
+        "registrationNumber": "3885636"
+      }
+    },
+    "version": "20251105020032",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AASHIQ ORIGINALS"
+    }
+  },
+  "_uri": "/mark/in/834cdff7-8dab-48f3-b027-1684cc52e8fd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.394Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

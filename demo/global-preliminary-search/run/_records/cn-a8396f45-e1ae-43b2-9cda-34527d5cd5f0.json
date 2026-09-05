@@ -1,0 +1,149 @@
+{
+  "uri": "/mark/cn/a8396f45-e1ae-43b2-9cda-34527d5cd5f0",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "a8396f45-e1ae-43b2-9cda-34527d5cd5f0",
+  "applicationNumber": "55456800",
+  "registrationNumber": null,
+  "applicationDate": "2021-04-22",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "七号星球",
+  "markTransliteration": "START SEVEN STARTSEVEN QI HAO XING QIU 7",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "提供不可下载的在线电子出版物,商业培训咨询服务,为艺术家提供模特服务,广告、推销、市场营销和商业战略规划的培训课程,出借书籍的图书馆,视频制作,培训,俱乐部服务(娱乐或教育),辅导(培训),安排和组织大会",
+      "translation_language": "en",
+      "translation": "Provide non-downloadable online electronic publications, business training consulting services, model services for artists, training courses for advertising, promotion, marketing and business strategic planning, library for lending books, video production, training, club services (entertainment) Or education), coaching (training), arranging and organizing conferences"
+    }
+  ],
+  "owner": "Yang Jun",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "湖南省永州市祁阳县盘龙东路291号七楼703室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Yang Jun",
+        "applicantNativeName": "杨君"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provide non-downloadable online electronic publications, business training consulting services, model services for artists, training courses for advertising, promotion, marketing and business strategic planning, library for lending books, video production, training, club services (entertainment) Or education), coaching (training), arranging and organizing conferences",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "提供不可下载的在线电子出版物,商业培训咨询服务,为艺术家提供模特服务,广告、推销、市场营销和商业战略规划的培训课程,出借书籍的图书馆,视频制作,培训,俱乐部服务(娱乐或教育),辅导(培训),安排和组织大会"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Library service",
+        "Publishing service",
+        "Amusement and sports service",
+        "Other service included in this class"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4103",
+          "subNatGoodsServicesDescription": "Library service"
+        },
+        {
+          "subNatClassNumber": "4104",
+          "subNatGoodsServicesDescription": "Publishing service"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        },
+        {
+          "subNatClassNumber": "4107",
+          "subNatGoodsServicesDescription": "Other service included in this class"
+        }
+      ]
+    },
+    "id": "a8396f45-e1ae-43b2-9cda-34527d5cd5f0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.01.12",
+      "29.01.13"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "佛山博途知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210422",
+        "applicationNumber": "55456800"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251004123044",
+    "wordMarkSpecification": {
+      "markTransliteration": "START SEVEN STARTSEVEN QI HAO XING QIU 7",
+      "markVerbalElementText": "七号星球"
+    }
+  },
+  "_uri": "/mark/cn/a8396f45-e1ae-43b2-9cda-34527d5cd5f0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.563Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

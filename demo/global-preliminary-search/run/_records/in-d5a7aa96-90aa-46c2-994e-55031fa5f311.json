@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/in/d5a7aa96-90aa-46c2-994e-55031fa5f311",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "d5a7aa96-90aa-46c2-994e-55031fa5f311",
+  "applicationNumber": "5057760",
+  "registrationNumber": "2901874",
+  "applicationDate": "2021-07-24",
+  "registrationDate": null,
+  "expiryDate": "2031-07-24",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ZORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Scientific, nautical, surveying, electric, photographic, cinematographic, optical, weighing, measuring, signalling, checking (supervision), life saving and teaching apparatus and instruments; apparatus for recording,transmission or reproduction of sound or images; magnetic data carriers, recording discs; mechanisms for coin-operated apparatus; cash registers, calculating machines, data processing equipment and computers; fire extinguishing apparatus, mouse pad as included in class 9.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "RAJ RANI KAUSHIK Single Firm",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "PRIYAM GUPTA[27828]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "H.NO 41, PLOT NO 28, RAJENDRA PARK EXTEN. NANGLOI, NILOTHI WEST DELHI, DELHI- 110041",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "RAJ RANI KAUSHIK Single Firm"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific, nautical, surveying, electric, photographic, cinematographic, optical, weighing, measuring, signalling, checking (supervision), life saving and teaching apparatus and instruments; apparatus for recording,transmission or reproduction of sound or images; magnetic data carriers, recording discs; mechanisms for coin-operated apparatus; cash registers, calculating machines, data processing equipment and computers; fire extinguishing apparatus, mouse pad as included in class 9."
+        }
+      ]
+    },
+    "id": "d5a7aa96-90aa-46c2-994e-55031fa5f311",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2013"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "ADV. PRIYAM GUPTA , 2ND FLOOR, SHRI BALAJI PROPERTIES, OPP. METRO PILLAR 768,MIE PART-A, DELHI ROHTAK ROAD,BAHADURGARH,JHAJJAR,HARYANA -124507",
+        "representativeName": "PRIYAM GUPTA[27828]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210724",
+        "applicationNumber": "5057760"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310724",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationNumber": "2901874"
+      }
+    },
+    "version": "20250710154115",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ZORI"
+    }
+  },
+  "_uri": "/mark/in/d5a7aa96-90aa-46c2-994e-55031fa5f311",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:32.138Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

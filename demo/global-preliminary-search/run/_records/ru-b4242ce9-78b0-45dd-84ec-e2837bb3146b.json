@@ -1,0 +1,115 @@
+{
+  "uri": "/mark/ru/b4242ce9-78b0-45dd-84ec-e2837bb3146b",
+  "provider": "clarivate",
+  "office": "ru",
+  "guid": "b4242ce9-78b0-45dd-84ec-e2837bb3146b",
+  "applicationNumber": "2010734958",
+  "registrationNumber": "441841",
+  "applicationDate": "2010-10-29",
+  "registrationDate": "2011-07-28",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2020-10-29",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "QORIVVA",
+  "markTransliteration": "QORIVVA",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ru",
+      "description": "- полупроводники, схемы интегральные, микроконтроллеры, микропроцессоры, многоядерные микроконтроллеры, многоядерные процессоры, цифровые сигнальные процессоры, процессоры для цифровой обработки сигналов, программно-управляемые микроконтроллеры и программно-управляемые микропроцессоры.",
+      "translation_language": "en",
+      "translation": "- semiconductors, integrated circuits, microcontrollers, microprocessors, microcontrollers multicore, multi-core processors, digital signal processor, a digital signal processing, software-controlled by a microcontroller and software-controlled by a microprocessor."
+    }
+  ],
+  "owner": "FRISKEL SEMICONDUCTOR INC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "корпорация штата Делавэр, 6501 Уиллиам Кэннон Драйв Уэст, Остин, штат Техас 78735, Соединенные Штаты Америки",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "FRISKEL SEMICONDUCTOR INC",
+        "applicantNativeName": "Фрискейл Сэмикендактер, Инк."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- semiconductors, integrated circuits, microcontrollers, microprocessors, microcontrollers multicore, multi-core processors, digital signal processor, a digital signal processing, software-controlled by a microcontroller and software-controlled by a microprocessor.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- полупроводники, схемы интегральные, микроконтроллеры, микропроцессоры, многоядерные микроконтроллеры, многоядерные процессоры, цифровые сигнальные процессоры, процессоры для цифровой обработки сигналов, программно-управляемые микроконтроллеры и программно-управляемые микропроцессоры."
+        }
+      ]
+    },
+    "id": "b4242ce9-78b0-45dd-84ec-e2837bb3146b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250705",
+    "registrationOfficeCode": "RU",
+    "registrationOfficeName": "Russian Federation",
+    "representatives": [
+      {
+        "representativeNativeName": "129090, Москва, ул.Б.Спасская, 25, стр.3, ООО \"ЮРИДИЧЕСКАЯ ФИРМА ГОРОДИССКИЙ И ПАРТНЕРЫ\""
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20101029",
+        "applicationNumber": "2010734958"
+      },
+      "cancellationDate": "20201029",
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20110728",
+        "registrationNumber": "441841"
+      }
+    },
+    "version": "20250705074456",
+    "wordMarkSpecification": {
+      "markTransliteration": "QORIVVA",
+      "markVerbalElementText": "QORIVVA"
+    }
+  },
+  "_uri": "/mark/ru/b4242ce9-78b0-45dd-84ec-e2837bb3146b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.393Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

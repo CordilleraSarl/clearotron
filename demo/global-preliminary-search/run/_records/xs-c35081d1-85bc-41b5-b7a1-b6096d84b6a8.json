@@ -1,0 +1,168 @@
+{
+  "uri": "/mark/xs/c35081d1-85bc-41b5-b7a1-b6096d84b6a8",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "c35081d1-85bc-41b5-b7a1-b6096d84b6a8",
+  "applicationNumber": null,
+  "registrationNumber": null,
+  "applicationDate": null,
+  "registrationDate": "2007-09-13",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SVC VEIN CARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Health care including vein care, cosmetic vein sclerotherapy, laser vein removal and laser hair removal",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Health care including vein care, cosmetic vein sclerotherapy, laser vein removal and laser hair removal",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "en",
+      "description": "Health care including vein care, cosmetic vein sclerotherapy, laser vein removal and laser hair removal",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "JANE G. BOTTSFORD",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "385 SERPENTINE DRIVE, SUITE B, SPARTANBURG, SC, 29303",
+        "applicantAddressCity": "SPARTANBURG",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "29303",
+        "applicantAddressStateName": "SOUTH CAROLINA",
+        "applicantAddressStreet": "385 SERPENTINE DRIVE, SUITE B",
+        "applicantLegalEntity": "CITIZEN / INDIVIDUAL",
+        "applicantName": "JANE G. BOTTSFORD"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Health care including vein care, cosmetic vein sclerotherapy, laser vein removal and laser hair removal"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Health care including vein care, cosmetic vein sclerotherapy, laser vein removal and laser hair removal"
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Health care including vein care, cosmetic vein sclerotherapy, laser vein removal and laser hair removal"
+        }
+      ]
+    },
+    "id": "c35081d1-85bc-41b5-b7a1-b6096d84b6a8",
+    "ipRightKind": "tmk",
+    "kindMark": "SERVICE MARK",
+    "mannerOfDisplay": "ADVERTISING, LABELS, BROCHURES, PUBLICITY, LETTERHEAD, BUSINESS CARDS AND SIGNAGE",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "\"SVC\" IN RIBBON SCRIPT WITH A STICK FIGURE IN THE CENTER OF THE \"V\", WITH \"VEIN CARE\" IN DARK BROWN",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "385 SERPENTINE DRIVE, SUITE B, SPARTANBURG, SC, 29303",
+        "city": "SPARTANBURG",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "CITIZEN / INDIVIDUAL",
+        "name": "JANE G. BOTTSFORD",
+        "postalCode": "29303",
+        "stateName": "SOUTH CAROLINA",
+        "street": "385 SERPENTINE DRIVE, SUITE B"
+      }
+    ],
+    "recordLastUpdated": "20240305",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20070627"
+        }
+      ],
+      "firstUsedAnywhereDate": "20070627",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20070913"
+      }
+    },
+    "usStateOfficeCode": "SC",
+    "usStateOfficeName": "SOUTH CAROLINA",
+    "version": "20240305092958",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SVC VEIN CARE"
+    }
+  },
+  "_uri": "/mark/xs/c35081d1-85bc-41b5-b7a1-b6096d84b6a8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.820Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

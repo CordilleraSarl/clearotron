@@ -1,0 +1,126 @@
+{
+  "uri": "/mark/kr/093f1718-0348-4025-928e-64365aae033d",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "093f1718-0348-4025-928e-64365aae033d",
+  "applicationNumber": "40-2021-0234570",
+  "registrationNumber": "4020562860000",
+  "applicationDate": "2021-11-18",
+  "registrationDate": "2023-07-21",
+  "expiryDate": "2033-07-21",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-07-25",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "PORRY 포리",
+  "markTransliteration": "PORRY",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "교육적 목적의 어린이 체험교육정보제공업,대학스포츠대회 및 체육행사 조직 및 진행업,문화적 체험행사의 준비 및 진행업,어린이 교육과 관련된 현장체험 수행을 위한 교육 및 지도업,어린이 체험장 교육제공업,온라인 웹사이트를 통한 체육교육 관련 정보제공업,전통문화 체험지도업,전통문화 체험학습업,체육 교육업,체육행사 조직 및 진행업",
+      "translation_language": "en",
+      "translation": "Children’s experience education information for educational purposes, organization and operation of university sports competitions and physical education events, preparation and operation of cultural experience events, education and guidance for field experiences related to children’s education, education and guidance services for children’s experience centers, online web Information provision business related to physical education through the site, traditional culture experience guidance business, traditional culture experiential learning business, physical education business, and sports event organization and execution business"
+    }
+  ],
+  "owner": "JALKEUM",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "조영찬 (Young Chan Cho)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 강남구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "JALKEUM",
+        "applicantNativeName": "주식회사 잘큼"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Children’s experience education information for educational purposes, organization and operation of university sports competitions and physical education events, preparation and operation of cultural experience events, education and guidance for field experiences related to children’s education, education and guidance services for children’s experience centers, online web Information provision business related to physical education through the site, traditional culture experience guidance business, traditional culture experiential learning business, physical education business, and sports event organization and execution business",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "교육적 목적의 어린이 체험교육정보제공업,대학스포츠대회 및 체육행사 조직 및 진행업,문화적 체험행사의 준비 및 진행업,어린이 교육과 관련된 현장체험 수행을 위한 교육 및 지도업,어린이 체험장 교육제공업,온라인 웹사이트를 통한 체육교육 관련 정보제공업,전통문화 체험지도업,전통문화 체험학습업,체육 교육업,체육행사 조직 및 진행업"
+        }
+      ]
+    },
+    "id": "093f1718-0348-4025-928e-64365aae033d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "02.01.23",
+      "02.01.30",
+      "03.06.25",
+      "26.04.18"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "KB Tower six-floor, Seocho-daero, Seocho-gu, Seoul, Republic of Korea(dongbaeklawfirm)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "조영찬 (Young Chan Cho)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20211118",
+        "applicationNumber": "40-2021-0234570"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330721",
+      "lastPublicationDate": "20230725",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20230721",
+        "registrationNumber": "4020562860000"
+      }
+    },
+    "version": "20250625212210",
+    "wordMarkSpecification": {
+      "markTransliteration": "PORRY",
+      "markVerbalElementText": "PORRY 포리"
+    }
+  },
+  "_uri": "/mark/kr/093f1718-0348-4025-928e-64365aae033d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:33.544Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

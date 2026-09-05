@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/gb/3f9afe28-cf08-4948-a15a-90dc5fa9c45a",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "3f9afe28-cf08-4948-a15a-90dc5fa9c45a",
+  "applicationNumber": "1291436",
+  "registrationNumber": "1291436",
+  "applicationDate": "1986-10-30",
+  "registrationDate": "1989-06-09",
+  "expiryDate": "2027-10-30",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Services for the construction of buildings; civil engineering construction services; all included in Class 37.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Architectural services; architectural consultancy and architectural surveying services; building design, civil engineering design and industrial design services; all included in Class 42.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Forterra Building Products Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Stevens Hewlett & Perkins",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "5 Grange Park Court, Roman Way, Northampton, NN4 5EA",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Forterra Building Products Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Services for the construction of buildings; civil engineering construction services; all included in Class 37."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Architectural services; architectural consultancy and architectural surveying services; building design, civil engineering design and industrial design services; all included in Class 42."
+        }
+      ]
+    },
+    "id": "3f9afe28-cf08-4948-a15a-90dc5fa9c45a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "5763"
+      }
+    ],
+    "recordLastUpdated": "20260531",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "First Floor, St Bartholomew's House, Lewins Mead, Bristol BS1 2NH",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Stevens Hewlett & Perkins"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19861030",
+        "applicationNumber": "1291436"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20271030",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "19890609",
+        "registrationNumber": "1291436"
+      }
+    },
+    "version": "20260531020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NORI"
+    }
+  },
+  "_uri": "/mark/gb/3f9afe28-cf08-4948-a15a-90dc5fa9c45a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.692Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

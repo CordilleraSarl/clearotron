@@ -1,0 +1,141 @@
+{
+  "uri": "/mark/cn/d77d747a-ed8a-4ea7-9634-15e3c641d12a",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "d77d747a-ed8a-4ea7-9634-15e3c641d12a",
+  "applicationNumber": "71589940",
+  "registrationNumber": "71589940",
+  "applicationDate": "2023-05-16",
+  "registrationDate": "2024-03-07",
+  "expiryDate": "2034-03-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-12-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "柒先生",
+  "markTransliteration": "MR.SEVEN QI XIAN SHENG",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "包装设计;服装设计;工业品外观设计;平面美术设计;首饰设计;玩具设计;鞋设计服务;信息技术咨询;艺术品设计;造型(工业品外观设计)",
+      "translation_language": "en",
+      "translation": "Packaging design; clothing design; industrial design; graphic art design; jewelry design; toy design; shoe design services; information technology consulting; artwork design; styling (industrial design)"
+    }
+  ],
+  "owner": "Fujian Qipai Fashion Technology Co., Ltd",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "福建省晋江市英林镇柒牌时尚产业园1号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Fujian Qipai Fashion Technology Co., Ltd",
+        "applicantNativeName": "福建柒牌时装科技股份有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Packaging design; clothing design; industrial design; graphic art design; jewelry design; toy design; shoe design services; information technology consulting; artwork design; styling (industrial design)",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "包装设计;服装设计;工业品外观设计;平面美术设计;首饰设计;玩具设计;鞋设计服务;信息技术咨询;艺术品设计;造型(工业品外观设计)"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Registered design service",
+        "Dress designing service",
+        "Computer programming, and concerned services",
+        "Other services included in this class"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4216",
+          "subNatGoodsServicesDescription": "Registered design service"
+        },
+        {
+          "subNatClassNumber": "4218",
+          "subNatGoodsServicesDescription": "Dress designing service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        },
+        {
+          "subNatClassNumber": "4227",
+          "subNatGoodsServicesDescription": "Other services included in this class"
+        }
+      ]
+    },
+    "id": "d77d747a-ed8a-4ea7-9634-15e3c641d12a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1866"
+      }
+    ],
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230516",
+        "applicationNumber": "71589940"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340306",
+      "lastPublicationDate": "20231206",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20240307",
+        "registrationNumber": "71589940"
+      }
+    },
+    "version": "20251005043226",
+    "wordMarkSpecification": {
+      "markTransliteration": "MR.SEVEN QI XIAN SHENG",
+      "markVerbalElementText": "柒先生"
+    }
+  },
+  "_uri": "/mark/cn/d77d747a-ed8a-4ea7-9634-15e3c641d12a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.564Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

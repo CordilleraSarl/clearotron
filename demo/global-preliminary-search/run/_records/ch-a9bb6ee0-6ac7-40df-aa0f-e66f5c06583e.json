@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/ch/a9bb6ee0-6ac7-40df-aa0f-e66f5c06583e",
+  "provider": "clarivate",
+  "office": "ch",
+  "guid": "a9bb6ee0-6ac7-40df-aa0f-e66f5c06583e",
+  "applicationNumber": "65201/2012",
+  "registrationNumber": "643703",
+  "applicationDate": "2013-04-03",
+  "registrationDate": "2013-05-21",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2013-05-21",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2023-10-26",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "BQ BeethovenQuartett",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "41 Musikdarbietungen.",
+      "translation_language": "en",
+      "translation": "41 musical performances."
+    }
+  ],
+  "owner": "Laurentius Bonitz",
+  "ownerNative": null,
+  "ownerCountry": "CH",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Unterer Batterieweg 163, 4059 Basel",
+        "applicantAddressCountryCode": "CH",
+        "applicantAddressCountryName": "Switzerland",
+        "applicantName": "Laurentius Bonitz"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "cmMarkImageEUclassification": [
+      "37.02.02",
+      "37.02.17",
+      "37.05.19"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "41 musical performances.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "41 Musikdarbietungen."
+        }
+      ]
+    },
+    "id": "a9bb6ee0-6ac7-40df-aa0f-e66f5c06583e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "0521"
+      }
+    ],
+    "recordLastUpdated": "20250624",
+    "registrationOfficeCode": "CH",
+    "registrationOfficeName": "Switzerland",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20130403",
+        "applicationNumber": "65201/2012"
+      },
+      "cancellationDate": "20231026",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20130521",
+      "registration": {
+        "registrationDate": "20130521",
+        "registrationNumber": "643703"
+      }
+    },
+    "version": "20250624174800",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "BQ BeethovenQuartett"
+    }
+  },
+  "_uri": "/mark/ch/a9bb6ee0-6ac7-40df-aa0f-e66f5c06583e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.566Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

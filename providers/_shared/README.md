@@ -46,7 +46,7 @@ which combinations the wired providers use — `countProbe: "none"` is the only 
 beside the header and the table above becomes executable rather than a claim.
 
 corsearch's live pair is pinned against the real core by a golden master in that adapter's own test directory, which
-does not cross into the public repository (`shared/withheld-paths.mjs` carries the entry and the reason: a replay
+does not cross into the public repository (the export's drop list carries the entry and the reason: a replay
 corpus for a subscription-only adapter answers to a credential the reader does not have). The link that used to sit
 here pointed a public reader at a file that is not there.
 

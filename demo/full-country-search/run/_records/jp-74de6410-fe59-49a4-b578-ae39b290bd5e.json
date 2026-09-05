@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/jp/74de6410-fe59-49a4-b578-ae39b290bd5e",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "74de6410-fe59-49a4-b578-ae39b290bd5e",
+  "applicationNumber": "H11-058243",
+  "registrationNumber": "4408032",
+  "applicationDate": "1999-07-01",
+  "registrationDate": "2000-08-11",
+  "expiryDate": "2030-08-11",
+  "renewalDate": null,
+  "lastPublicationDate": "2000-09-12",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＯＲＴＨＯＣＡＤ",
+  "markTransliteration": "OOSOKYADO ORUTOKYADO",
+  "markTranslation": "ORTHOCAD",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Electronic appliances and appliances and parts thereof"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "KOIDE TOSHIMI",
+  "priorities": [
+    {
+      "priorityDate": "19990701"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electronic appliances and appliances and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "電子応用機械器具及びその部品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, instruments and parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        }
+      ]
+    },
+    "id": "74de6410-fe59-49a4-b578-ae39b290bd5e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19990701"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "KOIDE TOSHIMI",
+        "representativeNativeName": "小出　俊實"
+      },
+      {
+        "representativeName": "ISHIKAWA YOSHIO",
+        "representativeNativeName": "石川　義雄"
+      },
+      {
+        "representativeName": "SUZUE TAKEHIKO",
+        "representativeNativeName": "鈴江　武彦"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19990701",
+        "applicationNumber": "H11-058243"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300811",
+      "lastPublicationDate": "20000912",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20000811",
+        "registrationNumber": "4408032"
+      }
+    },
+    "version": "20240320153104",
+    "wordMarkSpecification": {
+      "markTranslation": "ORTHOCAD",
+      "markTransliteration": "OOSOKYADO ORUTOKYADO",
+      "markVerbalElementText": "ＯＲＴＨＯＣＡＤ"
+    }
+  },
+  "_uri": "/mark/jp/74de6410-fe59-49a4-b578-ae39b290bd5e",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.739Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

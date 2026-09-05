@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/cn/4222c38e-1e55-4adf-b222-aec0105b0c42",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "4222c38e-1e55-4adf-b222-aec0105b0c42",
+  "applicationNumber": "88886904",
+  "registrationNumber": null,
+  "applicationDate": "2025-12-01",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2026-04-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "SEQORIGIN",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "安排和组织学术讨论会;家教服务;健身俱乐部(健身和体能训练);健身指导课程;培训;私人健身教练服务;提供体育设施;体育教育;体育野营服务;为训练目的提供体能评估服务",
+      "translation_language": "en",
+      "translation": ". Arranging and organizing academic seminars; tutoring services; fitness clubs (fitness and strength training); fitness instruction courses; training; personal trainer services; providing sports facilities; physical education; sports camping services; providing fitness assessment services for training purposes."
+    }
+  ],
+  "owner": "Sun Jiayi",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "辽宁省盘锦市大洼区大洼街道永和社区东湖新城E区30栋1单元501室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Sun Jiayi",
+        "applicantNativeName": "孙佳谊"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": ". Arranging and organizing academic seminars; tutoring services; fitness clubs (fitness and strength training); fitness instruction courses; training; personal trainer services; providing sports facilities; physical education; sports camping services; providing fitness assessment services for training purposes.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "安排和组织学术讨论会;家教服务;健身俱乐部(健身和体能训练);健身指导课程;培训;私人健身教练服务;提供体育设施;体育教育;体育野营服务;为训练目的提供体能评估服务"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "4222c38e-1e55-4adf-b222-aec0105b0c42",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1980"
+      }
+    ],
+    "recordLastUpdated": "20260501",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "南昌跳达知识产权服务有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251201",
+        "applicationNumber": "88886904"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "lastPublicationDate": "20260420",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260501020328",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEQORIGIN"
+    }
+  },
+  "_uri": "/mark/cn/4222c38e-1e55-4adf-b222-aec0105b0c42",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.398Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

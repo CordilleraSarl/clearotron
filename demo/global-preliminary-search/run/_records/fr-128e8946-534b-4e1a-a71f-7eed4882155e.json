@@ -1,0 +1,176 @@
+{
+  "uri": "/mark/fr/128e8946-534b-4e1a-a71f-7eed4882155e",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "128e8946-534b-4e1a-a71f-7eed4882155e",
+  "applicationNumber": "18 4451765",
+  "registrationNumber": "18 4451765",
+  "applicationDate": "2018-05-07",
+  "registrationDate": null,
+  "expiryDate": "2028-05-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-08-31",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Qv En Quête de Vins",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    33,
+    39,
+    41,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        33
+      ],
+      "language": "fr",
+      "description": ": Boissons alcoolisées (à l'exception des bières) ; vins ; vins d'appellation d'origine protégée ; vins à indication géographique protégée ",
+      "translation_language": "en",
+      "translation": "Alcoholic beverages (except beers); wines; wines with protected designation of origin; wines with protected geographical indication"
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": "fr",
+      "description": ": Transport ; emballage et entreposage de marchandises ; organisation de voyages ; services de logistique en matière de transport ; réservation de places de voyage ",
+      "translation_language": "en",
+      "translation": "Transportation; packaging and storage of goods; organization of trips; transport logistics services; reservation of travel seats"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": ": formation ; divertissement ; informations en matière de divertissement ; organisation et conduite de colloques ; organisation d'expositions à buts culturels ou éducatifs ; services de jeu proposés en ligne à partir d'un réseau informatique ",
+      "translation_language": "en",
+      "translation": "training; entertainment ; entertainment information; organization and conduct of conferences; organization of exhibitions for cultural or educational purposes; gaming services provided online from a computer network"
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "fr",
+      "description": ": services de bars ; services de traiteurs.",
+      "translation_language": "en",
+      "translation": "bar services; catering services."
+    }
+  ],
+  "owner": "Madame EUGENIA DELGADO",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "EN QUÊTE DE VINS, Madame EUGENIA DELGADO",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "10 AVENUE GALILEE, 94100 SAINT MAUR DES FOSSES",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "Madame EUGENIA DELGADO"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "cmMarkImageEUclassification": [
+      "24.01.15",
+      "37.02.22",
+      "37.02.27"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Alcoholic beverages (except beers); wines; wines with protected designation of origin; wines with protected geographical indication",
+          "intClassNumber": "33",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Boissons alcoolisées (à l'exception des bières) ; vins ; vins d'appellation d'origine protégée ; vins à indication géographique protégée "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Transportation; packaging and storage of goods; organization of trips; transport logistics services; reservation of travel seats",
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Transport ; emballage et entreposage de marchandises ; organisation de voyages ; services de logistique en matière de transport ; réservation de places de voyage "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "training; entertainment ; entertainment information; organization and conduct of conferences; organization of exhibitions for cultural or educational purposes; gaming services provided online from a computer network",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": formation ; divertissement ; informations en matière de divertissement ; organisation et conduite de colloques ; organisation d'expositions à buts culturels ou éducatifs ; services de jeu proposés en ligne à partir d'un réseau informatique "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "bar services; catering services.",
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": services de bars ; services de traiteurs."
+        }
+      ]
+    },
+    "id": "128e8946-534b-4e1a-a71f-7eed4882155e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00130",
+        "publicationVolume": "35"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeName": "EN QUÊTE DE VINS, Madame EUGENIA DELGADO"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180507",
+        "applicationNumber": "18 4451765"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280506",
+      "lastPublicationDate": "20180831",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "18 4451765"
+      }
+    },
+    "version": "20250426162822",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Qv En Quête de Vins"
+    }
+  },
+  "_uri": "/mark/fr/128e8946-534b-4e1a-a71f-7eed4882155e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.565Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,179 @@
+{
+  "uri": "/mark/jp/4b1093fd-751e-4010-a45b-d6c40ca16468",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "4b1093fd-751e-4010-a45b-d6c40ca16468",
+  "applicationNumber": "S55-096001",
+  "registrationNumber": "1658230",
+  "applicationDate": "1980-11-26",
+  "registrationDate": "1984-02-23",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "1983-04-30",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＮＯＲＩ",
+  "markTransliteration": "NORI",
+  "markTranslation": "NORI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    3,
+    6,
+    8,
+    9,
+    11,
+    13,
+    14,
+    16,
+    17,
+    18,
+    20,
+    21,
+    24,
+    26
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        3,
+        6,
+        8,
+        9,
+        11,
+        13,
+        14,
+        16,
+        17,
+        18,
+        20,
+        21,
+        24,
+        26
+      ],
+      "language": null,
+      "description": "手動利器、手動工具、金具（他の類に属するものを除く）",
+      "translation_language": "en",
+      "translation": "Manual ruler, manual tool, metal fittings (excluding those belonging to other classes)"
+    }
+  ],
+  "owner": "K.K. NORITAKE CO. LTD.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19801126"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "NAGOYA",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "K.K. NORITAKE CO. LTD.",
+        "applicantNativeAddress": "名古屋市西区則武新町３丁目１番３６号",
+        "applicantNativeName": "株式会社ノリタケカンパニ－リミテド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Manual ruler, manual tool, metal fittings (excluding those belonging to other classes)",
+          "intClassNumber": "03,06,08,09,11,13,14,16,17,18,20,21,24,26",
+          "intGoodsServicesDescription": "手動利器、手動工具、金具（他の類に属するものを除く）"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "13A01"
+        },
+        {
+          "natClassNumber": "13A02"
+        },
+        {
+          "natClassNumber": "13A03"
+        },
+        {
+          "natClassNumber": "13B01"
+        },
+        {
+          "natClassNumber": "13B02"
+        },
+        {
+          "natClassNumber": "13B03"
+        },
+        {
+          "natClassNumber": "13B04"
+        },
+        {
+          "natClassNumber": "13C01"
+        },
+        {
+          "natClassNumber": "13C02"
+        },
+        {
+          "natClassNumber": "19A05"
+        }
+      ]
+    },
+    "id": "4b1093fd-751e-4010-a45b-d6c40ca16468",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19801126"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19801126",
+        "applicationNumber": "S55-096001"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "lastPublicationDate": "19830430",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19840223",
+        "registrationNumber": "1658230"
+      }
+    },
+    "version": "20230427105032",
+    "wordMarkSpecification": {
+      "markTranslation": "NORI",
+      "markTransliteration": "NORI",
+      "markVerbalElementText": "ＮＯＲＩ"
+    }
+  },
+  "_uri": "/mark/jp/4b1093fd-751e-4010-a45b-d6c40ca16468",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.692Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

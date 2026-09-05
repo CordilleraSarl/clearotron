@@ -1,0 +1,160 @@
+{
+  "uri": "/mark/gb/f746e958-66f6-4d4a-ab72-c0a0f2f04756",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "f746e958-66f6-4d4a-ab72-c0a0f2f04756",
+  "applicationNumber": "UK00910532968",
+  "registrationNumber": "UK00910532968",
+  "applicationDate": "2011-12-29",
+  "registrationDate": "2012-06-25",
+  "expiryDate": "2031-12-29",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VANCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    15,
+    35,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        15
+      ],
+      "language": "en",
+      "description": "Musical instruments.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Business management; Business administration; Office functions; Retailing and wholesaling in the field of musical instruments; Import and export of musical instruments; Arranging the purchase and sale of musical instruments; Bringing together, for others, of musical instruments (excluding the transport thereof); Drawing up of statistics; Market canvassing, research and analysis; Opinion polling services; Collecting data in a central file; Data file administration; Organisation of trade fairs and exhibitions for commercial and advertising purposes; Information and consultancy relating to the aforesaid services; All the aforesaid services whethr or not provided via electronic channels, including the Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Building construction, repair, installation services, restoration and tuning of musical instruments; Information and consultancy relating to the aforesaid services; All the aforesaid services whether or not via electronic channels, including the Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Design of musical instruments; Industrial design in relation to musical instruments; Industrial design of musical instruments; Graphic design and graphic art services; Design services for products; Quality control; Design and development of computers and software for the music industry; Information and consultancy relating to the aforesaid services; The aforesaid services also via electronic channels, including the Internet.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Vancore Holding B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "Stevens Hewlett & Perkins",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Tolhuswei 7 A, Joure 8501 ZP",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "Vancore Holding B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Musical instruments."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Business management; Business administration; Office functions; Retailing and wholesaling in the field of musical instruments; Import and export of musical instruments; Arranging the purchase and sale of musical instruments; Bringing together, for others, of musical instruments (excluding the transport thereof); Drawing up of statistics; Market canvassing, research and analysis; Opinion polling services; Collecting data in a central file; Data file administration; Organisation of trade fairs and exhibitions for commercial and advertising purposes; Information and consultancy relating to the aforesaid services; All the aforesaid services whethr or not provided via electronic channels, including the Internet."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Building construction, repair, installation services, restoration and tuning of musical instruments; Information and consultancy relating to the aforesaid services; All the aforesaid services whether or not via electronic channels, including the Internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Design of musical instruments; Industrial design in relation to musical instruments; Industrial design of musical instruments; Graphic design and graphic art services; Design services for products; Quality control; Design and development of computers and software for the music industry; Information and consultancy relating to the aforesaid services; The aforesaid services also via electronic channels, including the Internet."
+        }
+      ]
+    },
+    "id": "f746e958-66f6-4d4a-ab72-c0a0f2f04756",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "1 St Augustine's Place, Bristol BS1 4UD",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Stevens Hewlett & Perkins"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20111229",
+        "applicationNumber": "UK00910532968"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311229",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20120625",
+        "registrationNumber": "UK00910532968"
+      }
+    },
+    "version": "20250627204454",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VANCORE"
+    }
+  },
+  "_uri": "/mark/gb/f746e958-66f6-4d4a-ab72-c0a0f2f04756",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.819Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

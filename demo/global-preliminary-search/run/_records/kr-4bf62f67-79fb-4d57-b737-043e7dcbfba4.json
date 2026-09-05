@@ -1,0 +1,123 @@
+{
+  "uri": "/mark/kr/4bf62f67-79fb-4d57-b737-043e7dcbfba4",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "4bf62f67-79fb-4d57-b737-043e7dcbfba4",
+  "applicationNumber": "41-2012-0018642",
+  "registrationNumber": null,
+  "applicationDate": "2012-06-01",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "보리",
+  "markTransliteration": "BORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "기계디자인업, 문서의 디지털화업(스캔), 자료 및 문서의 디지털처리업, 제품디자인업, 컴퓨터하드웨어디자인업, 항공기설계 및 디자인업",
+      "translation_language": "en",
+      "translation": "Machine design business, document digitization (scanning), data and document digital processing business, product design business, computer hardware design business, aircraft design and design business"
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "ko",
+      "description": "법률상담업, 법률자문업, 법률정보제공업, 변리사업, 산업재산권관리업, 산업재산권보호업, 산업재산권침해관련 자문업, 상표관리업, 소송상담업, 지식재산권 라이선싱업, 지식재산권관련 자문업, 지식재산권관리업, 지식재산권보호업, 지식재산권중개업, 특허관리업, 특허권라이선싱업, 특허권침해관련 자문업, 특허정보제공업",
+      "translation_language": "en",
+      "translation": "Legal consulting business, legal advisory business, legal information provision business, patent attorney business, industrial property rights management business, industrial property rights protection business, industrial property rights infringement consulting business, trademark management business, litigation consulting business, intellectual property rights licensing business, intellectual property rights related consulting business, intellectual property management business, intellectual property protection business, intellectual property brokerage business, patent management business, patent rights licensing business, patent infringement consulting business, patent information provision business."
+    }
+  ],
+  "owner": "SUL, In-bo",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 송파구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "SUL, In-bo",
+        "applicantNativeName": "설인보"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Machine design business, document digitization (scanning), data and document digital processing business, product design business, computer hardware design business, aircraft design and design business",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "기계디자인업, 문서의 디지털화업(스캔), 자료 및 문서의 디지털처리업, 제품디자인업, 컴퓨터하드웨어디자인업, 항공기설계 및 디자인업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Legal consulting business, legal advisory business, legal information provision business, patent attorney business, industrial property rights management business, industrial property rights protection business, industrial property rights infringement consulting business, trademark management business, litigation consulting business, intellectual property rights licensing business, intellectual property rights related consulting business, intellectual property management business, intellectual property protection business, intellectual property brokerage business, patent management business, patent rights licensing business, patent infringement consulting business, patent information provision business.",
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "법률상담업, 법률자문업, 법률정보제공업, 변리사업, 산업재산권관리업, 산업재산권보호업, 산업재산권침해관련 자문업, 상표관리업, 소송상담업, 지식재산권 라이선싱업, 지식재산권관련 자문업, 지식재산권관리업, 지식재산권보호업, 지식재산권중개업, 특허관리업, 특허권라이선싱업, 특허권침해관련 자문업, 특허정보제공업"
+        }
+      ]
+    },
+    "id": "4bf62f67-79fb-4d57-b737-043e7dcbfba4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260624",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120601",
+        "applicationNumber": "41-2012-0018642"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260624020930",
+    "wordMarkSpecification": {
+      "markTransliteration": "BORI",
+      "markVerbalElementText": "보리"
+    }
+  },
+  "_uri": "/mark/kr/4bf62f67-79fb-4d57-b737-043e7dcbfba4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.211Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "uri": "/mark/at/7fddb549-2648-45d2-8280-aac8a9fee587",
+  "provider": "clarivate",
+  "office": "at",
+  "guid": "7fddb549-2648-45d2-8280-aac8a9fee587",
+  "applicationNumber": "21071/2023",
+  "registrationNumber": null,
+  "applicationDate": "2023-07-04",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "VIENNA BEETHOVEN ORCHESTRA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Lehr- und Unterrichtsapparate, Lehr- und Unterrichtsgeräte und -instrumente, Unterrichtsgeräte, Audiovisuelle Unterrichtsgeräte, Unterrichtsapparate und -instrumente, Elektronische Lehr- und Unterrichtsapparate und -instrumente, Apparate für wissenschaftliche Forschung und Labor, Unterrichtsapparate und Simulatoren, Aufgezeichnete oder herunterladbare Datensätze, Bespielte Medien, Aufgezeichnete Dateien, Bespielte CDs, Informationstechnologische, audiovisuelle, multimediale und fotografische Geräte, Audio- und visuelle sowie photographische Geräte, Datenspeichergeräte und -medien, Datenverarbeitungsgeräte und -ausrüstung sowie Zubehör [elektrisch und mechanisch], Multimediageräte und -instrumente.",
+      "translation_language": "en",
+      "translation": "Instructional and teaching apparatus, instructional and teaching apparatus and instruments, teaching apparatus, audiovisual teaching apparatus, teaching apparatus and instruments, electronic instructional and teaching apparatus and instruments, scientific research and laboratory apparatus, teaching apparatus and simulators, recorded or downloadable data sets, pre-recorded media, pre-recorded files, pre-recorded CDs, information technology, audio-visual, multimedia and photographic equipment, audio and visual as well as photographic equipment, data storage apparatus and media, data processing apparatus and equipment and accessories [electrical and mechanical], multimedia apparatus and instruments."
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Bildung, Erziehung, Unterhaltung und sportliche Aktivitäten, Ausbildung und Unterricht, Ausbildung in Schulen, Aus- und Weiterbildung in den Bereichen Musik und Unterhaltung, Aufnehmen von Musik, Aufzeichnen von Musik, Aufzeichnung von Videoaufnahmen, Aufzeichnungen von Lehrvideos, Aufzeichnungen von Schallplattenaufnahmen, Beratung zur Film- und Musikproduktion, Betrieb eines Musikaufnahmestudios, Betrieb eines Ton- und Videoaufnahmestudios, Bild- und Tonaufzeichnungen, Dienstleistungen von Tonstudios, Musikproduktion, Musikproduktionen, Produktion von audiovisuellen Aufzeichnungen, Produktion von Audiounterhaltung, Produktion von Ton- und Musikaufzeichnungen.",
+      "translation_language": "en",
+      "translation": "Education, training, entertainment and sporting activities, providing of training and instruction, providing of training in schools, providing of training and further training in the fields of music and entertainment, music recording, music recording, video recording, instructional video recordings, recordings of Phonographic recording services, film and music production consultancy, music recording studio operation, audio and video recording studio operation, image and sound recording, recording studio services, music production, music production, audio visual recording production, audio entertainment production, sound and music recording production."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Designdienstleistungen, IT-Dienstleistungen, Prüfung, Authentifizierung und Qualitätskontrolle, Wissenschaftliche und technologische Dienstleistungen, Dienstleistungen im Bereich der Informationstechnologie.",
+      "translation_language": "en",
+      "translation": "design services, IT services, testing, authentication and quality control, scientific and technological services, information technology services."
+    }
+  ],
+  "owner": "Beethoven Conservatory of Vienna GmbH",
+  "ownerNative": null,
+  "ownerCountry": "AT",
+  "representative": "Tristan G. Lind",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Mühlgasse 28, 1040 Wien",
+        "applicantAddressCountryCode": "AT",
+        "applicantAddressCountryName": "Austria",
+        "applicantName": "Beethoven Conservatory of Vienna GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Instructional and teaching apparatus, instructional and teaching apparatus and instruments, teaching apparatus, audiovisual teaching apparatus, teaching apparatus and instruments, electronic instructional and teaching apparatus and instruments, scientific research and laboratory apparatus, teaching apparatus and simulators, recorded or downloadable data sets, pre-recorded media, pre-recorded files, pre-recorded CDs, information technology, audio-visual, multimedia and photographic equipment, audio and visual as well as photographic equipment, data storage apparatus and media, data processing apparatus and equipment and accessories [electrical and mechanical], multimedia apparatus and instruments.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Lehr- und Unterrichtsapparate, Lehr- und Unterrichtsgeräte und -instrumente, Unterrichtsgeräte, Audiovisuelle Unterrichtsgeräte, Unterrichtsapparate und -instrumente, Elektronische Lehr- und Unterrichtsapparate und -instrumente, Apparate für wissenschaftliche Forschung und Labor, Unterrichtsapparate und Simulatoren, Aufgezeichnete oder herunterladbare Datensätze, Bespielte Medien, Aufgezeichnete Dateien, Bespielte CDs, Informationstechnologische, audiovisuelle, multimediale und fotografische Geräte, Audio- und visuelle sowie photographische Geräte, Datenspeichergeräte und -medien, Datenverarbeitungsgeräte und -ausrüstung sowie Zubehör [elektrisch und mechanisch], Multimediageräte und -instrumente."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education, training, entertainment and sporting activities, providing of training and instruction, providing of training in schools, providing of training and further training in the fields of music and entertainment, music recording, music recording, video recording, instructional video recordings, recordings of Phonographic recording services, film and music production consultancy, music recording studio operation, audio and video recording studio operation, image and sound recording, recording studio services, music production, music production, audio visual recording production, audio entertainment production, sound and music recording production.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Bildung, Erziehung, Unterhaltung und sportliche Aktivitäten, Ausbildung und Unterricht, Ausbildung in Schulen, Aus- und Weiterbildung in den Bereichen Musik und Unterhaltung, Aufnehmen von Musik, Aufzeichnen von Musik, Aufzeichnung von Videoaufnahmen, Aufzeichnungen von Lehrvideos, Aufzeichnungen von Schallplattenaufnahmen, Beratung zur Film- und Musikproduktion, Betrieb eines Musikaufnahmestudios, Betrieb eines Ton- und Videoaufnahmestudios, Bild- und Tonaufzeichnungen, Dienstleistungen von Tonstudios, Musikproduktion, Musikproduktionen, Produktion von audiovisuellen Aufzeichnungen, Produktion von Audiounterhaltung, Produktion von Ton- und Musikaufzeichnungen."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "design services, IT services, testing, authentication and quality control, scientific and technological services, information technology services.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Designdienstleistungen, IT-Dienstleistungen, Prüfung, Authentifizierung und Qualitätskontrolle, Wissenschaftliche und technologische Dienstleistungen, Dienstleistungen im Bereich der Informationstechnologie."
+        }
+      ]
+    },
+    "id": "7fddb549-2648-45d2-8280-aac8a9fee587",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250619",
+    "registrationOfficeCode": "AT",
+    "registrationOfficeName": "Austria",
+    "representatives": [
+      {
+        "representativeAddress": "Wipplingerstraße 13, 5, 1010 Wien",
+        "representativeName": "Tristan G. Lind"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20230704",
+        "applicationNumber": "21071/2023"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "markCurrentStatus": "NOT PROCEEDING APPLICATION"
+    },
+    "version": "20250619153729",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VIENNA BEETHOVEN ORCHESTRA"
+    }
+  },
+  "_uri": "/mark/at/7fddb549-2648-45d2-8280-aac8a9fee587",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.809Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

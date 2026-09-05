@@ -1,0 +1,214 @@
+{
+  "uri": "/mark/wo/39adb0a2-5031-43f2-8f7d-d75f9f94d73a",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "39adb0a2-5031-43f2-8f7d-d75f9f94d73a",
+  "applicationNumber": null,
+  "registrationNumber": "953587",
+  "applicationDate": null,
+  "registrationDate": "2007-12-10",
+  "expiryDate": "2027-12-10",
+  "renewalDate": "2017-12-10",
+  "lastPublicationDate": "2017-12-28",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SmartMX",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Electronic, electrotechnical and electromagnetic modules, parts and building elements; interfaces; integrated circuits (IC's), chips, semiconductors and smart cards; controllers for smart cards; controllers for RFID chips and tags; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; antennas for scanning, reading and interpreting RFID chips and tags; NFC (near field communication) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for near field communications applications; parts, fittings and accessories for all the aforesaid goods.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Éléments de construction, parties et modules électroniques, électrotechniques et électromagnétiques; interfaces; circuits intégrés, puces, semi-conducteurs et cartes à mémoire; dispositifs de commande pour cartes à mémoire; dispositifs de commande pour étiquettes et puces d'identification par radiofréquence; matériel informatique et logiciels pour créer, programmer, commander, coder, scanner, lire et interpréter des étiquettes et puces d'identification par radiofréquence; antennes pour scanner, lire et interpréter des étiquettes et puces d'identification par radiofréquence; appareils, instruments et équipements de communication par champ proche, y compris éléments de construction, parties et modules électroniques, électrotechniques et électromagnétiques, ainsi que circuits intégrés pour applications de communication en champ proche; parties, garnitures et accessoires pour tous les produits susmentionnés.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Módulos electrónicos, electrotécnicos y electromagnéticos, sus partes y elementos constitutivos; interfaces; circuitos integrados (CI), chips, semiconductores y tarjetas inteligentes; controladores de tarjetas inteligentes; controladores de chips y etiquetas de identificación de radiofrecuencia; hardware y software de creación, programación, control, codificación, escaneado, lectura y decodificación de chips y etiquetas de identificación por radiofrecuencia; antenas para escaneado, lectura y decodificación de chips y etiquetas de identificación por radiofrecuencia; aparatos, instrumentos y equipos para tecnología inalámbrica NFC (comunicaciones en campo cercano), incluidos módulos electrónicos, electrotécnicos y electromagnéticos, sus partes y elementos constitutivos, así como circuitos integrados para aplicaciones destinadas a comunicaciones en campo cercano; partes, guarniciones y accesorios para todos los productos antes mencionados.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20070711",
+      "priorityNumber": "1139146"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20070711",
+          "basicApplicationNumber": "1139146"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "BX",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20071005",
+          "basicRegistrationNumber": "826836"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CH",
+      "JP",
+      "KR",
+      "SG",
+      "TR",
+      "US",
+      "RU"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20070711",
+            "basicApplicationNumber": "1139146"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "BX",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20071005",
+            "basicRegistrationNumber": "826836"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CH",
+      "JP",
+      "KR",
+      "SG",
+      "TR",
+      "US",
+      "RU"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electronic, electrotechnical and electromagnetic modules, parts and building elements; interfaces; integrated circuits (IC's), chips, semiconductors and smart cards; controllers for smart cards; controllers for RFID chips and tags; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; antennas for scanning, reading and interpreting RFID chips and tags; NFC (near field communication) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for near field communications applications; parts, fittings and accessories for all the aforesaid goods."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Éléments de construction, parties et modules électroniques, électrotechniques et électromagnétiques; interfaces; circuits intégrés, puces, semi-conducteurs et cartes à mémoire; dispositifs de commande pour cartes à mémoire; dispositifs de commande pour étiquettes et puces d'identification par radiofréquence; matériel informatique et logiciels pour créer, programmer, commander, coder, scanner, lire et interpréter des étiquettes et puces d'identification par radiofréquence; antennes pour scanner, lire et interpréter des étiquettes et puces d'identification par radiofréquence; appareils, instruments et équipements de communication par champ proche, y compris éléments de construction, parties et modules électroniques, électrotechniques et électromagnétiques, ainsi que circuits intégrés pour applications de communication en champ proche; parties, garnitures et accessoires pour tous les produits susmentionnés."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Módulos electrónicos, electrotécnicos y electromagnéticos, sus partes y elementos constitutivos; interfaces; circuitos integrados (CI), chips, semiconductores y tarjetas inteligentes; controladores de tarjetas inteligentes; controladores de chips y etiquetas de identificación de radiofrecuencia; hardware y software de creación, programación, control, codificación, escaneado, lectura y decodificación de chips y etiquetas de identificación por radiofrecuencia; antenas para escaneado, lectura y decodificación de chips y etiquetas de identificación por radiofrecuencia; aparatos, instrumentos y equipos para tecnología inalámbrica NFC (comunicaciones en campo cercano), incluidos módulos electrónicos, electrotécnicos y electromagnéticos, sus partes y elementos constitutivos, así como circuitos integrados para aplicaciones destinadas a comunicaciones en campo cercano; partes, guarniciones y accesorios para todos los productos antes mencionados."
+        }
+      ]
+    },
+    "id": "39adb0a2-5031-43f2-8f7d-d75f9f94d73a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20070711",
+        "priorityNumber": "1139146"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "50"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices, Anna van Buerenplein 21A NL-2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20271210",
+      "lastPublicationDate": "20171228",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20071210",
+        "registrationNumber": "953587"
+      },
+      "renewalDate": "20171210",
+      "renewalPublishedDate": "20171228"
+    },
+    "version": "20250620164955",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SmartMX"
+    }
+  },
+  "_uri": "/mark/wo/39adb0a2-5031-43f2-8f7d-d75f9f94d73a",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.460Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

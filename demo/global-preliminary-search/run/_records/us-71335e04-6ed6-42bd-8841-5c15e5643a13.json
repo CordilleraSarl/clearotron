@@ -1,0 +1,178 @@
+{
+  "uri": "/mark/us/71335e04-6ed6-42bd-8841-5c15e5643a13",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "71335e04-6ed6-42bd-8841-5c15e5643a13",
+  "applicationNumber": "99927856",
+  "registrationNumber": null,
+  "applicationDate": "2026-07-08",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QORIO",
+  "markTransliteration": null,
+  "markTranslation": "curiosity",
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Computer technology consultancy; Software design and development; Computer software development; Design and development of software; Design and development of computer software",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Daisy Mayorga",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2405 Hilo Ln, Ceres, CA, 95307, USAM",
+        "applicantAddressCity": "Ceres",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "95307",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "2405 Hilo Ln",
+        "applicantAliasName": "Qorio",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Daisy Mayorga"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Computer technology consultancy; Software design and development; Computer software development; Design and development of software; Design and development of computer software"
+        }
+      ]
+    },
+    "id": "71335e04-6ed6-42bd-8841-5c15e5643a13",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260708",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20260708",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "2405 Hilo Ln, Ceres, CA, 95307, USAM",
+        "aliasName": "Qorio",
+        "city": "Ceres",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Daisy Mayorga",
+        "postalCode": "95307",
+        "stateName": "CALIFORNIA",
+        "street": "2405 Hilo Ln"
+      },
+      {
+        "address": "2405 Hilo Ln, Ceres, CA, 95307, USAM",
+        "aliasName": "Qorio",
+        "city": "Ceres",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Daisy Mayorga",
+        "postalCode": "95307",
+        "stateName": "CALIFORNIA",
+        "street": "2405 Hilo Ln"
+      }
+    ],
+    "recordLastUpdated": "20260709",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Ceres, CA 95307, United States",
+        "representativeCorrespondentAddressLines": [
+          "Ceres, CA 95307",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Daisy Mayorga, 2405 Hilo Ln"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Ceres, CA 95307, United States",
+        "representativeAddressLines": [
+          "Ceres, CA 95307",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260708",
+        "applicationNumber": "99927856"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "NEW APPLICATION - RECORD INITIALIZED NOT ASSIGNED TO EXAMINER",
+        "markOfficialStatusCode": "630",
+        "markOfficialStatusDate": "20260708",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260709144021",
+    "wordMarkSpecification": {
+      "markTranslation": "curiosity",
+      "markTranslationDescription": "The English translation of the Spanish wording Qorio in the mark is curiosity.",
+      "markVerbalElementText": "QORIO"
+    }
+  },
+  "_uri": "/mark/us/71335e04-6ed6-42bd-8841-5c15e5643a13",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.393Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

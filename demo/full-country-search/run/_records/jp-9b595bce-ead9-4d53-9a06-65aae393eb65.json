@@ -1,0 +1,258 @@
+{
+  "uri": "/mark/jp/9b595bce-ead9-4d53-9a06-65aae393eb65",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "9b595bce-ead9-4d53-9a06-65aae393eb65",
+  "applicationNumber": "2012-040548",
+  "registrationNumber": "5674321",
+  "applicationDate": "2012-05-22",
+  "registrationDate": "2014-05-30",
+  "expiryDate": "2024-05-30",
+  "renewalDate": null,
+  "lastPublicationDate": "2014-07-01",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＥＳＱＯＲＴ　Ｅｎｅｒｅｓ　Ｓｍａｒｔ　Ｑｕｏｔａ　Ｏｒｇａｎｉｚｅｄｅｄ　ａｎｄ　Ｒｅｃｏｍｍｅｎｄ　Ｔｅｃｈｎｏｌｏｇｙ",
+  "markTransliteration": "ENARISUSUMAATOKUOOTAOOGANAIZUDEDDOANDOREKOMENDOTEKUNOROJII ENERESUSUMAATOKUOOTAOOGANAIZUDEDDOANDOREKOMENDOTEKUNOROJII ESUKOOTO",
+  "markTranslation": "ESQORT ENERES SMART QUOTA ORGANIZEDED AND RECOMMEND TECHNOLOGY",
+  "markFeature": "DESIGN AND COLOR",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "電力遠隔監視装置，電力節電用制御装置，配電用又は制御用の機械器具，回転変流機，調相機，電池，測定機械器具，遠隔監視システム用電気通信機械器具，電気通信機械器具，電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Power remote monitoring device, control device for power saving, mechanical equipment for power distribution or control, rotary current transformer, phase-shifting machine, battery, measuring machine equipment, telecommunications machine equipment for remote monitoring system, telecommunications machine equipment, electronic applications Machine tools and parts thereof"
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": null,
+      "description": "建物内の空調設備・照明設備その他の各種電力設備機器の使用状況の遠隔監視，建物内の空調設備・照明設備その他の各種電力設備機器の使用状況の遠隔監視によるそれらの電力設備機器の使用時の節電に関する指導および助言，建物内の空調設備・照明設備その他の各種電力設備機器の使用状況の遠隔監視によるそれらの電力設備機器の使用時の節電に関する情報の提供，建築設備の運転状況の遠隔監視，建築設備の運転・点検・整備，配電用又は制御用の機械器具の修理又は保守，発電機の修理又は保守，電動機の修理又は保守，暖冷房装置の修理又は保守，民生用電気機械器具の修理又は保守，照明用器具の修理又は保守，電気通信機械器具（電話機械器具・ラジオ受信機及びテレビジョン受信機を除く。）の修理又は保守",
+      "translation_language": "en",
+      "translation": "Remote monitoring of air conditioning equipment, lighting equipment, and other various power equipment in the building, remote monitoring of usage condition of air conditioning equipment, lighting equipment and other various power equipment in buildings When using these power equipment Guidance and advice on energy conservation of air conditioners in the building, information on power saving when using these power equipment equipment by remote monitoring of air conditioning equipment / lighting equipment and other various power equipment equipment usage status, remote control of building equipment operation situation Repair or maintenance of machinery and equipment for monitoring, monitoring and maintenance of construction equipment, repair or maintenance of electrical equipment for distribution or control, repair or maintenance of electric generators, repair or maintenance of electric motors, repair or maintenance of heating and cooling equipment, consumer electrical machinery equipment Repair or maintenance of lighting equipment, repair or maintenance of telecommunications equipment (excluding telephones, mechanical instruments, radio receivers and television receivers)"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "建物内の空調設備・照明設備その他の各種電力設備機器の使用状況の遠隔監視によるそれらの電力設備機器の使用時の節電管理のためのコンピュータシステムの有線又は無線の電気通信・コンピューター通信のネットワークを利用した遠隔監視，電子計算機のプログラムの設計・作成又は保守，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明",
+      "translation_language": "en",
+      "translation": "Computer system wired or wireless telecommunication · computer communication network for power saving management when using these power equipment equipment by remote monitoring of air conditioning equipment / lighting equipment and other various electric equipment in the building In order to perform appropriate operation according to the remote monitoring used, designing, creating or maintaining a program of an electronic computer, electronic computer / automobile or other applications thereof, it is necessary to have a highly specialized knowledge, technology or experience of a machine Introduction and explanation on performance / operation method etc."
+    }
+  ],
+  "owner": "ENERES CO.,LTD.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "HARATA KAN",
+  "priorities": [
+    {
+      "priorityDate": "20120522"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "ADACHI TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "ENERES CO.,LTD.",
+        "applicantNativeAddress": "東京都足立区",
+        "applicantNativeName": "株式会社エナリス"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Power remote monitoring device, control device for power saving, mechanical equipment for power distribution or control, rotary current transformer, phase-shifting machine, battery, measuring machine equipment, telecommunications machine equipment for remote monitoring system, telecommunications machine equipment, electronic applications Machine tools and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "電力遠隔監視装置，電力節電用制御装置，配電用又は制御用の機械器具，回転変流機，調相機，電池，測定機械器具，遠隔監視システム用電気通信機械器具，電気通信機械器具，電子応用機械器具及びその部品"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Remote monitoring of air conditioning equipment, lighting equipment, and other various power equipment in the building, remote monitoring of usage condition of air conditioning equipment, lighting equipment and other various power equipment in buildings When using these power equipment Guidance and advice on energy conservation of air conditioners in the building, information on power saving when using these power equipment equipment by remote monitoring of air conditioning equipment / lighting equipment and other various power equipment equipment usage status, remote control of building equipment operation situation Repair or maintenance of machinery and equipment for monitoring, monitoring and maintenance of construction equipment, repair or maintenance of electrical equipment for distribution or control, repair or maintenance of electric generators, repair or maintenance of electric motors, repair or maintenance of heating and cooling equipment, consumer electrical machinery equipment Repair or maintenance of lighting equipment, repair or maintenance of telecommunications equipment (excluding telephones, mechanical instruments, radio receivers and television receivers)",
+          "intClassNumber": "37",
+          "intGoodsServicesDescription": "建物内の空調設備・照明設備その他の各種電力設備機器の使用状況の遠隔監視，建物内の空調設備・照明設備その他の各種電力設備機器の使用状況の遠隔監視によるそれらの電力設備機器の使用時の節電に関する指導および助言，建物内の空調設備・照明設備その他の各種電力設備機器の使用状況の遠隔監視によるそれらの電力設備機器の使用時の節電に関する情報の提供，建築設備の運転状況の遠隔監視，建築設備の運転・点検・整備，配電用又は制御用の機械器具の修理又は保守，発電機の修理又は保守，電動機の修理又は保守，暖冷房装置の修理又は保守，民生用電気機械器具の修理又は保守，照明用器具の修理又は保守，電気通信機械器具（電話機械器具・ラジオ受信機及びテレビジョン受信機を除く。）の修理又は保守"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer system wired or wireless telecommunication · computer communication network for power saving management when using these power equipment equipment by remote monitoring of air conditioning equipment / lighting equipment and other various electric equipment in the building In order to perform appropriate operation according to the remote monitoring used, designing, creating or maintaining a program of an electronic computer, electronic computer / automobile or other applications thereof, it is necessary to have a highly specialized knowledge, technology or experience of a machine Introduction and explanation on performance / operation method etc.",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "建物内の空調設備・照明設備その他の各種電力設備機器の使用状況の遠隔監視によるそれらの電力設備機器の使用時の節電管理のためのコンピュータシステムの有線又は無線の電気通信・コンピューター通信のネットワークを利用した遠隔監視，電子計算機のプログラムの設計・作成又は保守，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "10C01",
+          "natGoodsServicesDescription": "Measuring or testing machines and instruments"
+        },
+        {
+          "natClassNumber": "11A01",
+          "natGoodsServicesDescription": "Power distribution or control machines and apparatus; Rotary converters; Phase modifiers; Solar batteries"
+        },
+        {
+          "natClassNumber": "11A03",
+          "natGoodsServicesDescription": "Solar batteries; Batteries and cells"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Telecommunication machines and apparatus; Personal digital assistants"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door opening and closing control systems; Electron microscopes"
+        },
+        {
+          "natClassNumber": "37A03",
+          "natGoodsServicesDescription": "Operation and maintenance of utilities in buildings"
+        },
+        {
+          "natClassNumber": "37D05",
+          "natGoodsServicesDescription": "Repair or maintenance of air conditioners for industrial purposes; Repair or maintenance of burners; Repair or maintenance of boilers; Repair or maintenance of pumps; Repair or maintenance of freezing machines and apparatus for industrial purposes"
+        },
+        {
+          "natClassNumber": "37D10",
+          "natGoodsServicesDescription": "Repair or maintenance of telecommunication machines and apparatus [other than telephone apparatus, radio receivers and television receivers]"
+        },
+        {
+          "natClassNumber": "37D11",
+          "natGoodsServicesDescription": "Repair or maintenance of consumer electric appliances"
+        },
+        {
+          "natClassNumber": "37D12",
+          "natGoodsServicesDescription": "Repair or maintenance of electric lighting apparatus"
+        },
+        {
+          "natClassNumber": "37D13",
+          "natGoodsServicesDescription": "Repair or maintenance of electric motors; Repair or maintenance of power distribution or control machines and apparatus; Repair or maintenance of power generators"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42P03",
+          "natGoodsServicesDescription": "Technological advice relating to computers, automobiles and industrial machines"
+        }
+      ]
+    },
+    "id": "9b595bce-ead9-4d53-9a06-65aae393eb65",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN AND COLOR",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "COLOUR CLAIMED"
+      }
+    ],
+    "markImageViennaClassification": [
+      "25.05.02.00",
+      "25.12.25.00",
+      "26.02.05.00",
+      "26.04.02.00",
+      "26.04.05.00",
+      "26.04.18.00",
+      "26.07.11.02",
+      "26.07.25.00",
+      "26.11.01.00",
+      "26.11.06.00",
+      "26.11.08.00",
+      "26.11.10.00",
+      "27.05.01.00",
+      "27.05.01.14",
+      "27.05.21.00",
+      "27.05.23.94",
+      "29.01.02.01",
+      "29.01.02.02",
+      "29.01.04.01",
+      "29.01.04.02",
+      "29.01.11.00",
+      "29.01.12.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20120522"
+      }
+    ],
+    "recordLastUpdated": "20250613",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "HARATA KAN",
+        "representativeNativeName": "原田　寛"
+      },
+      {
+        "representativeName": "NAKAMURA MASAMI",
+        "representativeNativeName": "中村　政美"
+      },
+      {
+        "representativeName": "Ryuka IP Law Firm",
+        "representativeNativeName": "弁理士法人ＲＹＵＫＡ国際特許事務所"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120522",
+        "applicationNumber": "2012-040548"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20240530",
+      "lastPublicationDate": "20140701",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20140530",
+        "registrationNumber": "5674321"
+      }
+    },
+    "version": "20250613083205",
+    "wordMarkSpecification": {
+      "markTranslation": "ESQORT ENERES SMART QUOTA ORGANIZEDED AND RECOMMEND TECHNOLOGY",
+      "markTransliteration": "ENARISUSUMAATOKUOOTAOOGANAIZUDEDDOANDOREKOMENDOTEKUNOROJII ENERESUSUMAATOKUOOTAOOGANAIZUDEDDOANDOREKOMENDOTEKUNOROJII ESUKOOTO",
+      "markVerbalElementText": "ＥＳＱＯＲＴ　Ｅｎｅｒｅｓ　Ｓｍａｒｔ　Ｑｕｏｔａ　Ｏｒｇａｎｉｚｅｄｅｄ　ａｎｄ　Ｒｅｃｏｍｍｅｎｄ　Ｔｅｃｈｎｏｌｏｇｙ"
+    }
+  },
+  "_uri": "/mark/jp/9b595bce-ead9-4d53-9a06-65aae393eb65",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.709Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

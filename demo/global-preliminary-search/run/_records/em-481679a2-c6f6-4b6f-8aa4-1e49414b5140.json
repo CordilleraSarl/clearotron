@@ -1,0 +1,426 @@
+{
+  "uri": "/mark/em/481679a2-c6f6-4b6f-8aa4-1e49414b5140",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "481679a2-c6f6-4b6f-8aa4-1e49414b5140",
+  "applicationNumber": "19368837",
+  "registrationNumber": null,
+  "applicationDate": "2026-05-22",
+  "registrationDate": null,
+  "expiryDate": "2036-05-22",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-06-19",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VENCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Technologické konzultacní sluzby v oboru navrhování a vývoje systému rízení dat a rízení informací v zarízeních pro sportovní a zábavní prostory; Konzultacní sluzby V oboru rízení informací v zarízeních a datových strategií; Integrace pocítacových systému a pocítacových sítí.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Teknisk rådgivning inden for design og udvikling af datastyringssystemer og administration af facilitetsinformation i forbindelse med sports- og underholdningssteder; Konsulentvirksomhed Inden for administration af facilitetsinformation og datastrategi; Integrering af computersystemer og computernetværk.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Technologische advisering op het gebied van ontwerp en ontwikkeling van systemen voor gegevensbeheer en facilitair informatiebeheer ten behoeve van sport- en ontspanningslocaties; Advisering Op het gebied van facilitair informatiebeheer en gegevensstrategie; Integratie van computersystemen en computernetwerken.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Technology consulting services in the field of design and development of data management systems and facility information management for sports and entertainment venues; consulting services in the field of facility information management and data strategy; Integration of computer systems and networks.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Tehnoloogiakonsultatsiooniteenused spordi- ja meelelahutuskohtade andmehaldussüsteemide ja rajatiste teabehalduse projekteerimise ja arendamise valdkonnas; Nõustamisteenused Rajatise teabehalduse ja andmestrateegia valdkonnas; Arvutisüsteemide ja -võrkude integreerimine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Teknologiaan liittyvät konsultointipalvelut tiedonhallintajärjestelmien suunnittelun ja kehittämisen sekä tilatiedonhallinan alalla urheilu- ja ajanvietepaikkoja varten; Konsultointipalvelut Tilatiedonhallinan ja datastrategian alalla; Tietokonejärjestelmien ja tietokoneverkkojen integrointi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services de conseils technologiques dans le domaine de la conception et du développement de systèmes de gestion de données et de gestion de l'information sur les installations pour les sites sportifs et de divertissement; Services d'assistance Dans le domaine de la gestion de l'information sur les installations et de la stratégie de données; Intégration de systèmes et de réseaux informatiques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Technologische Beratung in Bezug auf Entwurf und Entwicklung von Datenmanagementsystemen und das Gebäudeinformationsmanagement für Sport- und Unterhaltungseinrichtungen; Beratung Im Bereich Gebäudeinformationsmanagement und Datenstrategie; Integration von Computersystemen und Computernetzen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Tehnoloske savjetodavne usluge u podrucju projektiranja i razvoja sustava za upravljanje podatcima te upravljanja informacijama o objektima za sportske i zabavne prostore; Usluge savjetovanja U podrucju upravljanja informacijama o objektu i strategije podataka; Integracija racunalnih sustava i mreza.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Technológiai tanácsadási szolgáltatások sport- és szórakoztató helyszínek adatkezelo rendszereinek és létesítményinformáció-kezelésének tervezése és fejlesztése területén; Szaktanácsadási szolgáltatások A létesítményinformáció-menedzsment és az adatstratégia területén; Számítógépes rendszerek és hálózatok integrálása, egyesítése.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Servizi di consulenza tecnologica nel settore della progettazione e dello sviluppo di sistemi di gestione dei dati e di gestione delle informazioni relative alle strutture per locali sportivi e di divertimento; Servizi di consulenza Nel settore della gestione delle informazioni sulle strutture e della strategia dei dati; Integrazione di sistemi informatici e reti informatiche.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Technologiniu konsultaciju paslaugos sporto ir pramogu vietu duomenu valdymo sistemu projektavimo ir tobulinimo bei patalpu informacijos valdymo srityje; Konsultacines paslaugos Objektu informacijos valdymo ir duomenu strategijos srityje; Kompiuteriu sistemu ir tinklu integravimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Tehnologiju konsultaciju pakalpojumi datu parvaldibas sistemu un sporta un izklaides norises vietu informacijas parvaldibas projektesanas un izstrades joma; Konsultacijas Objektu informacijas parvaldibas un datu strategijas joma; Datorsistemu un datortiklu integresana.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' konsulenza dwar it-teknologija fil-qasam tad-disinn u tal-izvilupp ta' sistemi ta' gestjoni tad-data u gestjoni tal-informazzjoni dwar il-facilitajiet ghal postijiet sportivi u ta' divertiment; Servizzi ta' konsulenza Fil-qasam tal-gestjoni tal-informazzjoni dwar il-facilitajiet u l-istrategija tad-data; Integrazzjoni ta' netwerks u ta' sistemi tal-kompjuter.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Uslugi konsultingu technologicznego w zakresie projektowania i rozwoju systemów zarzadzania danymi oraz zarzadzania informacja o obiektach sportowych i rozrywkowych; Uslugi doradcze W dziedzinie zarzadzania informacja o obiektach i strategii danych; Integracja systemów i sieci komputerowych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Serviços de consultadoria tecnológica no domínio da conceção e do desenvolvimento de sistemas de gestão de dados e gestão de informações de instalações para recintos desportivos e de entretenimento; Serviços de consultadoria No domínio da gestão de informações de instalações e da estratégia de dados; Integração de sistemas informáticos e redes informáticas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Servicii de consultanta tehnologica în domeniul proiectarii si dezvoltarii sistemelor de gestionare a datelor si al gestionarii informatiilor despre facilitati pentru locatii sportive si de divertisment; Servicii de consultanta În domeniul managementului informatiilor despre facilitati si al strategiei de date; Integrare de sisteme informatice si retele de calculatoare.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Technologické poradenské sluzby v oblasti návrhu a vývoja systémov na správu údajov a správy informácií o zariadeniach pre miesta konania sportových a zábavných podujatí; Konzultacné sluzby V oblasti správy informácií o zariadeniach a dátovej stratégie; Integrácia pocítacových systémov a pocítacových sietí.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Storitve tehnoloskega svetovanja na podrocju oblikovanja - projektiranja in razvoja sistemov za upravljanje podatkov in upravljanja informacij o objektih za sportnih in razvedrilnih prizoriscih; Svetovalne storitve Na podrocju upravljanja informacij o objektih in podatkovni strategiji; Integracija racunalniskih sistemov in omrezij.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios de consultoría tecnológica en el ámbito del diseño y desarrollo de sistemas de gestión de datos y gestión de información de instalaciones para centros deportivos y de entretenimiento; Servicios de consultas En el ámbito de la gestión de información de instalaciones y la estrategia de datos; Integración de sistemas informáticos y redes informáticas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Teknikkonsulttjänster inom design och utveckling av datahanteringssystem och informationshantering för idrotts- och nöjesanläggningar och arenor; konsulttjänster inom hantering av anläggningsinformation och datastrategi; Integration av datorsystem och nätverk.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "GROTH & CO. KB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Forskargatan 3,Borlänge, 781 70",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "applicationLanguageCode": "sw",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Technologické konzultacní sluzby v oboru navrhování a vývoje systému rízení dat a rízení informací v zarízeních pro sportovní a zábavní prostory; Konzultacní sluzby V oboru rízení informací v zarízeních a datových strategií; Integrace pocítacových systému a pocítacových sítí."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Teknisk rådgivning inden for design og udvikling af datastyringssystemer og administration af facilitetsinformation i forbindelse med sports- og underholdningssteder; Konsulentvirksomhed Inden for administration af facilitetsinformation og datastrategi; Integrering af computersystemer og computernetværk."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Technologische advisering op het gebied van ontwerp en ontwikkeling van systemen voor gegevensbeheer en facilitair informatiebeheer ten behoeve van sport- en ontspanningslocaties; Advisering Op het gebied van facilitair informatiebeheer en gegevensstrategie; Integratie van computersystemen en computernetwerken."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Technology consulting services in the field of design and development of data management systems and facility information management for sports and entertainment venues; consulting services in the field of facility information management and data strategy; Integration of computer systems and networks."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Tehnoloogiakonsultatsiooniteenused spordi- ja meelelahutuskohtade andmehaldussüsteemide ja rajatiste teabehalduse projekteerimise ja arendamise valdkonnas; Nõustamisteenused Rajatise teabehalduse ja andmestrateegia valdkonnas; Arvutisüsteemide ja -võrkude integreerimine."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Teknologiaan liittyvät konsultointipalvelut tiedonhallintajärjestelmien suunnittelun ja kehittämisen sekä tilatiedonhallinan alalla urheilu- ja ajanvietepaikkoja varten; Konsultointipalvelut Tilatiedonhallinan ja datastrategian alalla; Tietokonejärjestelmien ja tietokoneverkkojen integrointi."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de conseils technologiques dans le domaine de la conception et du développement de systèmes de gestion de données et de gestion de l'information sur les installations pour les sites sportifs et de divertissement; Services d'assistance Dans le domaine de la gestion de l'information sur les installations et de la stratégie de données; Intégration de systèmes et de réseaux informatiques."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Technologische Beratung in Bezug auf Entwurf und Entwicklung von Datenmanagementsystemen und das Gebäudeinformationsmanagement für Sport- und Unterhaltungseinrichtungen; Beratung Im Bereich Gebäudeinformationsmanagement und Datenstrategie; Integration von Computersystemen und Computernetzen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Tehnoloske savjetodavne usluge u podrucju projektiranja i razvoja sustava za upravljanje podatcima te upravljanja informacijama o objektima za sportske i zabavne prostore; Usluge savjetovanja U podrucju upravljanja informacijama o objektu i strategije podataka; Integracija racunalnih sustava i mreza."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Technológiai tanácsadási szolgáltatások sport- és szórakoztató helyszínek adatkezelo rendszereinek és létesítményinformáció-kezelésének tervezése és fejlesztése területén; Szaktanácsadási szolgáltatások A létesítményinformáció-menedzsment és az adatstratégia területén; Számítógépes rendszerek és hálózatok integrálása, egyesítése."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di consulenza tecnologica nel settore della progettazione e dello sviluppo di sistemi di gestione dei dati e di gestione delle informazioni relative alle strutture per locali sportivi e di divertimento; Servizi di consulenza Nel settore della gestione delle informazioni sulle strutture e della strategia dei dati; Integrazione di sistemi informatici e reti informatiche."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Technologiniu konsultaciju paslaugos sporto ir pramogu vietu duomenu valdymo sistemu projektavimo ir tobulinimo bei patalpu informacijos valdymo srityje; Konsultacines paslaugos Objektu informacijos valdymo ir duomenu strategijos srityje; Kompiuteriu sistemu ir tinklu integravimas."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Tehnologiju konsultaciju pakalpojumi datu parvaldibas sistemu un sporta un izklaides norises vietu informacijas parvaldibas projektesanas un izstrades joma; Konsultacijas Objektu informacijas parvaldibas un datu strategijas joma; Datorsistemu un datortiklu integresana."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' konsulenza dwar it-teknologija fil-qasam tad-disinn u tal-izvilupp ta' sistemi ta' gestjoni tad-data u gestjoni tal-informazzjoni dwar il-facilitajiet ghal postijiet sportivi u ta' divertiment; Servizzi ta' konsulenza Fil-qasam tal-gestjoni tal-informazzjoni dwar il-facilitajiet u l-istrategija tad-data; Integrazzjoni ta' netwerks u ta' sistemi tal-kompjuter."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi konsultingu technologicznego w zakresie projektowania i rozwoju systemów zarzadzania danymi oraz zarzadzania informacja o obiektach sportowych i rozrywkowych; Uslugi doradcze W dziedzinie zarzadzania informacja o obiektach i strategii danych; Integracja systemów i sieci komputerowych."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de consultadoria tecnológica no domínio da conceção e do desenvolvimento de sistemas de gestão de dados e gestão de informações de instalações para recintos desportivos e de entretenimento; Serviços de consultadoria No domínio da gestão de informações de instalações e da estratégia de dados; Integração de sistemas informáticos e redes informáticas."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de consultanta tehnologica în domeniul proiectarii si dezvoltarii sistemelor de gestionare a datelor si al gestionarii informatiilor despre facilitati pentru locatii sportive si de divertisment; Servicii de consultanta În domeniul managementului informatiilor despre facilitati si al strategiei de date; Integrare de sisteme informatice si retele de calculatoare."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Technologické poradenské sluzby v oblasti návrhu a vývoja systémov na správu údajov a správy informácií o zariadeniach pre miesta konania sportových a zábavných podujatí; Konzultacné sluzby V oblasti správy informácií o zariadeniach a dátovej stratégie; Integrácia pocítacových systémov a pocítacových sietí."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Storitve tehnoloskega svetovanja na podrocju oblikovanja - projektiranja in razvoja sistemov za upravljanje podatkov in upravljanja informacij o objektih za sportnih in razvedrilnih prizoriscih; Svetovalne storitve Na podrocju upravljanja informacij o objektih in podatkovni strategiji; Integracija racunalniskih sistemov in omrezij."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de consultoría tecnológica en el ámbito del diseño y desarrollo de sistemas de gestión de datos y gestión de información de instalaciones para centros deportivos y de entretenimiento; Servicios de consultas En el ámbito de la gestión de información de instalaciones y la estrategia de datos; Integración de sistemas informáticos y redes informáticas."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Teknikkonsulttjänster inom design och utveckling av datahanteringssystem och informationshantering för idrotts- och nöjesanläggningar och arenor; konsulttjänster inom hantering av anläggningsinformation och datastrategi; Integration av datorsystem och nätverk."
+        }
+      ]
+    },
+    "id": "481679a2-c6f6-4b6f-8aa4-1e49414b5140",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "114"
+      }
+    ],
+    "recordLastUpdated": "20260830",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Fleminggatan 20,Stockholm, 112 26",
+        "representativeAddressCountryCode": "SE",
+        "representativeAddressCountryName": "Sweden",
+        "representativeName": "GROTH & CO. KB"
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260522",
+        "applicationNumber": "19368837"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360522",
+      "lastPublicationDate": "20260619",
+      "markCurrentStatus": "APPLICATION PUBLISHED"
+    },
+    "version": "20260830020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENCORE"
+    }
+  },
+  "_uri": "/mark/em/481679a2-c6f6-4b6f-8aa4-1e49414b5140",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.730Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

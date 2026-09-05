@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/es/4bcaa0bc-d034-4710-ad3b-75ea4fef1c39",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "4bcaa0bc-d034-4710-ad3b-75ea4fef1c39",
+  "applicationNumber": "2768781 M3",
+  "registrationNumber": "2768781 M3",
+  "applicationDate": "2007-04-25",
+  "registrationDate": "2007-10-23",
+  "expiryDate": "2027-04-24",
+  "renewalDate": "2017-06-06",
+  "lastPublicationDate": "2007-06-16",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JOSS JOVEN ORQUESTA SINFÓNICA DE SORIA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Educacion, formacion; esparcimiento; actividades culturales.",
+      "translation_language": "en",
+      "translation": "EDUCATION, TRAINING; RECREATION; CULTURAL ACTIVITIES."
+    }
+  ],
+  "owner": "BARRANCO ALVARO ALBERTO",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "BARRANCO ALVARO ALBERTO"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "cmMarkImageEUclassification": [
+      "22.01.05"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "EDUCATION, TRAINING; RECREATION; CULTURAL ACTIVITIES.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Educacion, formacion; esparcimiento; actividades culturales."
+        }
+      ]
+    },
+    "id": "4bcaa0bc-d034-4710-ad3b-75ea4fef1c39",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "NEGRO, ROJO Y GRIS."
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "A LA IZQUIERDA APARECE EL GRAFICO REPRESENTATIVO DE LA ORQUESTA (CUERDAS Y FORMA DE UN VIOLIN) CON EL ACRONIMO JOSS EN GRIS. A LA DERECHA APARECE EL NOMBRE EN NEGRO, JOVEN ORQUESTA SINFONICA DE SORIA, RESALTANDO EN ROJO ESTA VEZ, EL ACRONIMO DE LA MISMA: DEL MISMO ROJO QUE APARECE LA FIGURA DEL VIOLIN."
+      }
+    ],
+    "markImageViennaClassification": [
+      "22.01.08"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2885"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20070425",
+        "applicationNumber": "2768781 M3"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270424",
+      "lastPublicationDate": "20070616",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20071023",
+        "registrationNumber": "2768781 M3"
+      },
+      "renewalDate": "20170606",
+      "renewalPublishedDate": "20170612"
+    },
+    "version": "20260427160624",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOSS JOVEN ORQUESTA SINFÓNICA DE SORIA"
+    }
+  },
+  "_uri": "/mark/es/4bcaa0bc-d034-4710-ad3b-75ea4fef1c39",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

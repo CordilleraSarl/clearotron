@@ -3,7 +3,7 @@
 // run-activity.mjs — a tiny append-only ledger of NON-report runtime activity.
 //
 // NO WRITER, as of 2026-08-04. Its only one was out of repo — the retired quality harness
-// dynamic-imported recordActivity from here — and Clawdi deleted it. The ledger therefore stays empty
+// dynamic-imported recordActivity from here — and a change in that other repo deleted it. The ledger stays empty
 // and statusSnapshot's alive-checks bucket is permanently so; nothing reads a FINISHED row either, since the
 // only page that showed one was the Quality hub retired.
 //

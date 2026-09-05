@@ -1,0 +1,322 @@
+{
+  "uri": "/mark/jp/8a01adb5-756b-49ce-af1c-a95453a2ddac",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "8a01adb5-756b-49ce-af1c-a95453a2ddac",
+  "applicationNumber": "2017-099313",
+  "registrationNumber": "6179303",
+  "applicationDate": "2017-07-26",
+  "registrationDate": "2019-09-13",
+  "expiryDate": "2029-09-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-10-08",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ｉＴｅｒｏエレメント",
+  "markTransliteration": "AITEROEREMENTO",
+  "markTranslation": "ITERO ELEMENT",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    5,
+    9,
+    10,
+    35,
+    40,
+    41,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        5
+      ],
+      "language": null,
+      "description": "歯冠用材料，歯科用ブリッジ材料，歯科用インレー用材料，歯科用アンレー用材料，歯科用材料",
+      "translation_language": "en",
+      "translation": "Dental crown material, dental bridge material, dental inlay material, dental onlay material, dental material"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "コンピュータソフトウェア（歯及び顎の移動及び治療計画案の描写用のデジタル画像ソフトウェア），コンピュータスキャンニングコンピュータソフトウェア，デジタル歯科印象用コンピュータソフトウェア，歯及び顎の３次元デジタルモデルの作成用のコンピュータソフトウェア，持ち運び可能な及び手持ち式電子機器用のコンピュータソフトウェアアプリケーションの提供用のコンピュータソフトウェア（歯科／歯列矯正治療用のコンピュータソフトウェア），個別にカスタマイズされた歯列矯正治療方針の作成用のコンピュータソフトウェア，歯列矯正治療方針案及びそれに関する患者のデータの提供・追跡及び修正用のコンピュータソフトウェア，個々の歯の状態の評価・歯列矯正治療の計画立案・修復歯科・歯冠及びブリッジの作成及び取付・修復歯科治療において使用される歯科専門家向けコンピュータソフトウェア，レーザー光スキャナー・光学式スキャナー・コンピュータスクリーン及びこれらと共に使用するためのコンピュータソフトウェア，コンピュータ，コンピュータソフトウェア，データ処理装置，電子応用機械器具及びその部品，測定機械用器具",
+      "translation_language": "en",
+      "translation": "Computer software (digital image software for depiction of dental and jaw movements and treatment plan drafts), computer scanning computer software, computer software for digital dental impression, computer software for creation of three-dimensional digital models of teeth and jaw, carrying Computer software (computer software for dental / orthodontic treatment) for the provision of computer software applications for possible and hand-held electronic equipment, computer software for creating individually customized orthodontic treatment strategies, dentition Computer software for provision of orthodontic treatment plan and patient data related to it · Computer software for tracking and correction, evaluation of individual tooth condition · Planning and restoration of orthodontic treatment · Restoration of dental crown and bridge Computer software for dental experts used in dental experts used in installation and repair dental treatment, laser light scanner · optical scanner · computer screen and computer software for use with them, computer software, data processing equipment, electronic appliances appliances And parts thereof, instrument for measuring machinery"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": null,
+      "description": "歯科及び歯列矯正の分野において使用される医療用デジタル画像の捕捉・保存・検索及び電気通信媒体を介した送信用のコンピュータソフトウェア・コンピュータハードウェア・コンピュータファームウェア及び口腔内スキャニングカメラからなる医療用機械器具，歯列矯正治療に関する歯科の分野及び修復歯科用の機械器具，歯科用インプラント，歯科用機械器具，歯列矯正器具，歯列矯正器具の保管・洗浄及び搬送用の専用容器，歯科用プライヤー，歯科用ドリル，歯科用ポリッシングホイール，歯科用バー，歯科用の歯のエナメル質の厚み及び寸法測定計器，歯科用材料の分配目的に使用される歯科用機械器具，歯科用バイトトレー，歯科用ピック，歯科用クリップ，歯鏡，歯科用アタッチメント，歯科用リテーナ，人工歯，歯科用補綴器具並びにその部品及び附属品，歯列矯正及び不正咬合の治療用の歯列矯正ワイヤー・ブラケット，その他の歯列矯正及び不正咬合の治療用の歯列矯正器具並びにその部品及び附属品，歯科用の歯列矯正機械器具，レーザー光・光学式スキャナー及びコンピュータスクリーンからなる歯列矯正器具，レーザー光及び光学式スキャニングにより歯及び口腔内の３次元画像を捕捉する医療用撮像カメラ，歯列矯正器具及び歯科用補綴物の設計並びに患者治療の監視を目的とした捕捉した医療用画像の表示用のコンピュータソフトウェア及びコンピュータハードウェアからなる医療用機械器具，歯列矯正の分野において使用される３次元デジタル画像の捕捉用のコンピュータソフトウェア及びコンピュータハードウェアからなる医療用機械器具，医療用機械器具",
+      "translation_language": "en",
+      "translation": "Medical machine comprising computer software, computer hardware, computer firmware and intraoral scanning camera for capturing, storing and retrieving medical digital images used in the field of dentistry and orthodontics and transmission via telecommunications media Appliances, Dental Field for Orthodontic Treatment and Restorative Dental Machinery, Dental Implants, Dental Machinery, Orthodontic Appliances, Dedicated Containers for Storage, Cleaning and Transport of Orthodontic Appliances, Dental Pliers , Dental drills, dental polishing wheels, dental bars, dental tooth enamel thickness and dimension measuring instruments, dental machinery and equipment used for the distribution of dental materials, dental bit trays, dental Picks, dental clips, dental mirrors, dental attachments, dental retainers, artificial teeth, dental supplements Appliances and parts and accessories thereof, orthodontic wires and brackets for orthodontic and malocclusion treatment, other orthodontic appliances and parts and accessories for orthodontic and malocclusion treatment, dental Orthodontic appliances, orthodontic appliances consisting of laser light / optical scanner and computer screen, medical imaging camera for capturing 3D images of teeth and oral cavity by laser light and optical scanning, orthodontic appliances And computer equipment and computer hardware for the display of captured medical images for the design of dental prostheses and monitoring of patient treatment, 3D digital used in the field of orthodontics Medical equipment comprising computer software and computer hardware for image capture, Ryoyo machinery and equipment"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "歯科・歯列矯正用のコンピュータデータベースへの情報構築及び情報編集並びにコンピュータデータベースの検索代行，コンピュータデータベースへの情報編集",
+      "translation_language": "en",
+      "translation": "Information construction and editing on computer database for dental and orthodontic treatment, search for computer database, editing information on computer database"
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": "他人のためのコンピュータハードウェアの製造，個人の歯列矯正治療用の機械器具の製造，他人のための歯列矯正及び不正咬合の治療用の歯列矯正デバイス及びブレースの製作及び加工，修復歯科及び歯列矯正治療用の歯及び組の歯の物理的モデルの製作，歯科の分野・修復歯科・歯冠及びブリッジの製作及び取付・修復歯科治療用のコンピュータを利用した模型の製作，受託による歯列矯正器具及び歯科用補綴物の製造，歯の技工，医療用機械器具の組立・製造又は加工，義肢又は義歯の加工（「医療材料の加工」を含む。），その他の歯科の分野におけるコンピュータを利用した模型の製作",
+      "translation_language": "en",
+      "translation": "Manufacture of computer hardware for others, manufacture of machinery for personal orthodontic treatment, manufacture and processing of orthodontic devices and braces for orthodontic and malocclusion treatment for others, restoration dentistry And physical models of teeth and pairs of teeth for orthodontic treatment, dental field, restorative dentistry, crown and bridge, and mounting / restoration of dental models using computer, commissioned In the manufacture of orthodontic appliances and dental prostheses, dental technicians, assembling, manufacturing or processing of medical equipment, processing of artificial limbs or dentures (including “processing of medical materials”), and other dental fields Making a model using a computer"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "コンピュータハードウェア及びソフトウェアの使用方法の教授に関する助言，歯科及び歯列矯正の分野における訓練，歯列矯正器具の使用に関する訓練，歯列矯正用ソフトウェアの使用に関する訓練，デジタル画像用ソフトウェアの使用における矯正歯科医及び歯科医に対する訓練（教育及び訓練），外科・内科・歯科及び歯列矯正に関する技術・機械・装置及び器具に関するセミナー・会議・教育講座・研修会・講義及びシンポジウムの企画及び運営，技芸・スポーツ又は知識の教授",
+      "translation_language": "en",
+      "translation": "Advice on teaching computer hardware and software usage, training in the field of dentistry and orthodontics, training on the use of orthodontic appliances, training on the use of orthodontic software, correction in the use of digital imaging software Training (education and training) for dentists and dentists, seminars, conferences, educational courses, workshops, lectures and symposiums on techniques, machines, devices and instruments relating to surgery, internal medicine, dentistry and orthodontics・ Professor of sports or knowledge"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "歯列矯正器具の研究及び開発，歯列矯正器具の設計，他人のためのコンピュータハードウェアの設計，コンピュータソフトウェアの設計及び作成，他人のための歯列矯正治療用機械器具の設計，他人のための歯列矯正及び不正咬合の治療用の歯列矯正デバイス及びブレースの設計，他人のためのコンピュータハードウェア及びソフトウェアシステムの選択・実装及び使用に関する助言，他人のための歯及び組の歯の歯列矯正モデルの性質を有する３次元コンピュータ画像のコンピュータを利用した設計，歯及び組の歯の画像及び物理的モデルのコンピュータを利用した設計，アプリケーションサービスプロバイダーによる歯列矯正・歯科治療用コンピュータソフトウェアの提供，オンラインによるダウンロードが不可能な歯列矯正・歯科治療用コンピュータソフトウェアの一時的な使用の提供，電子計算機のプログラムの設計・作成又は保守，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，医薬品・化粧品又は食品の試験・検査又は研究，機械器具に関する試験又は研究，電子計算機の貸与，電子計算機用プログラムの提供",
+      "translation_language": "en",
+      "translation": "Research and development of orthodontic appliances, orthodontic appliance design, computer hardware design for others, computer software design and creation, orthodontic treatment machinery appliance design for others, for others Design of orthodontic devices and braces for the treatment of orthodontics and malocclusions, advice on the selection, implementation and use of computer hardware and software systems for others, teeth for others and sets of teeth Computer-based design of 3D computer images with orthodontic model properties, computer-based design of teeth and sets of tooth images and physical models, orthodontic and dental treatment computer software by application service providers Orthodontic treatment and treatment that cannot be provided or downloaded online Providing temporary use of computer software, design, creation or maintenance of computer programs, high-level specialized knowledge, technology, or experience in order to perform appropriate operations in accordance with electronic computers, automobiles and other applications Introduction and explanation of required machine performance and operation methods, testing / inspection or research of pharmaceuticals / cosmetics / food, testing / research on machinery / equipment, loan of computers, provision of programs for computers"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": null,
+      "description": "矯正歯科医療及び歯科医療に関する情報の提供，歯科医療，矯正歯科医療，歯科医療及び矯正歯科医療に関する助言，歯科・歯列矯正・歯周・歯内及び小児歯科治療，個人の歯列矯正治療用の装置の使用方法についてのガイドラインの作成及びそれに基づく医療情報の提供，歯列矯正・歯内・小児歯科・歯周及び修復歯科治療に関する指導及び助言（インターネット又はエクストラネットを介したオンラインによる当該役務の提供を含む。），医療情報の提供，健康診断",
+      "translation_language": "en",
+      "translation": "Providing information on orthodontic treatment and dental care, dentistry, orthodontic treatment, advice on dental care and orthodontic treatment, dentistry, orthodontic treatment, periodontal treatment, endodontic treatment and pediatric dental treatment, for individual orthodontic treatment Creation of guidelines on how to use the device and provision of medical information based on it, guidance and advice on orthodontics, endodontics, pediatric dentistry, periodontal and restorative dental treatment (the services concerned online via the internet or extranet) Providing medical information), providing medical information,"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YAMAMOTO HIDESAKU",
+  "priorities": [
+    {
+      "priorityDate": "20170726"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dental crown material, dental bridge material, dental inlay material, dental onlay material, dental material",
+          "intClassNumber": "05",
+          "intGoodsServicesDescription": "歯冠用材料，歯科用ブリッジ材料，歯科用インレー用材料，歯科用アンレー用材料，歯科用材料"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software (digital image software for depiction of dental and jaw movements and treatment plan drafts), computer scanning computer software, computer software for digital dental impression, computer software for creation of three-dimensional digital models of teeth and jaw, carrying Computer software (computer software for dental / orthodontic treatment) for the provision of computer software applications for possible and hand-held electronic equipment, computer software for creating individually customized orthodontic treatment strategies, dentition Computer software for provision of orthodontic treatment plan and patient data related to it · Computer software for tracking and correction, evaluation of individual tooth condition · Planning and restoration of orthodontic treatment · Restoration of dental crown and bridge Computer software for dental experts used in dental experts used in installation and repair dental treatment, laser light scanner · optical scanner · computer screen and computer software for use with them, computer software, data processing equipment, electronic appliances appliances And parts thereof, instrument for measuring machinery",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "コンピュータソフトウェア（歯及び顎の移動及び治療計画案の描写用のデジタル画像ソフトウェア），コンピュータスキャンニングコンピュータソフトウェア，デジタル歯科印象用コンピュータソフトウェア，歯及び顎の３次元デジタルモデルの作成用のコンピュータソフトウェア，持ち運び可能な及び手持ち式電子機器用のコンピュータソフトウェアアプリケーションの提供用のコンピュータソフトウェア（歯科／歯列矯正治療用のコンピュータソフトウェア），個別にカスタマイズされた歯列矯正治療方針の作成用のコンピュータソフトウェア，歯列矯正治療方針案及びそれに関する患者のデータの提供・追跡及び修正用のコンピュータソフトウェア，個々の歯の状態の評価・歯列矯正治療の計画立案・修復歯科・歯冠及びブリッジの作成及び取付・修復歯科治療において使用される歯科専門家向けコンピュータソフトウェア，レーザー光スキャナー・光学式スキャナー・コンピュータスクリーン及びこれらと共に使用するためのコンピュータソフトウェア，コンピュータ，コンピュータソフトウェア，データ処理装置，電子応用機械器具及びその部品，測定機械用器具"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Medical machine comprising computer software, computer hardware, computer firmware and intraoral scanning camera for capturing, storing and retrieving medical digital images used in the field of dentistry and orthodontics and transmission via telecommunications media Appliances, Dental Field for Orthodontic Treatment and Restorative Dental Machinery, Dental Implants, Dental Machinery, Orthodontic Appliances, Dedicated Containers for Storage, Cleaning and Transport of Orthodontic Appliances, Dental Pliers , Dental drills, dental polishing wheels, dental bars, dental tooth enamel thickness and dimension measuring instruments, dental machinery and equipment used for the distribution of dental materials, dental bit trays, dental Picks, dental clips, dental mirrors, dental attachments, dental retainers, artificial teeth, dental supplements Appliances and parts and accessories thereof, orthodontic wires and brackets for orthodontic and malocclusion treatment, other orthodontic appliances and parts and accessories for orthodontic and malocclusion treatment, dental Orthodontic appliances, orthodontic appliances consisting of laser light / optical scanner and computer screen, medical imaging camera for capturing 3D images of teeth and oral cavity by laser light and optical scanning, orthodontic appliances And computer equipment and computer hardware for the display of captured medical images for the design of dental prostheses and monitoring of patient treatment, 3D digital used in the field of orthodontics Medical equipment comprising computer software and computer hardware for image capture, Ryoyo machinery and equipment",
+          "intClassNumber": "10",
+          "intGoodsServicesDescription": "歯科及び歯列矯正の分野において使用される医療用デジタル画像の捕捉・保存・検索及び電気通信媒体を介した送信用のコンピュータソフトウェア・コンピュータハードウェア・コンピュータファームウェア及び口腔内スキャニングカメラからなる医療用機械器具，歯列矯正治療に関する歯科の分野及び修復歯科用の機械器具，歯科用インプラント，歯科用機械器具，歯列矯正器具，歯列矯正器具の保管・洗浄及び搬送用の専用容器，歯科用プライヤー，歯科用ドリル，歯科用ポリッシングホイール，歯科用バー，歯科用の歯のエナメル質の厚み及び寸法測定計器，歯科用材料の分配目的に使用される歯科用機械器具，歯科用バイトトレー，歯科用ピック，歯科用クリップ，歯鏡，歯科用アタッチメント，歯科用リテーナ，人工歯，歯科用補綴器具並びにその部品及び附属品，歯列矯正及び不正咬合の治療用の歯列矯正ワイヤー・ブラケット，その他の歯列矯正及び不正咬合の治療用の歯列矯正器具並びにその部品及び附属品，歯科用の歯列矯正機械器具，レーザー光・光学式スキャナー及びコンピュータスクリーンからなる歯列矯正器具，レーザー光及び光学式スキャニングにより歯及び口腔内の３次元画像を捕捉する医療用撮像カメラ，歯列矯正器具及び歯科用補綴物の設計並びに患者治療の監視を目的とした捕捉した医療用画像の表示用のコンピュータソフトウェア及びコンピュータハードウェアからなる医療用機械器具，歯列矯正の分野において使用される３次元デジタル画像の捕捉用のコンピュータソフトウェア及びコンピュータハードウェアからなる医療用機械器具，医療用機械器具"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Information construction and editing on computer database for dental and orthodontic treatment, search for computer database, editing information on computer database",
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "歯科・歯列矯正用のコンピュータデータベースへの情報構築及び情報編集並びにコンピュータデータベースの検索代行，コンピュータデータベースへの情報編集"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Manufacture of computer hardware for others, manufacture of machinery for personal orthodontic treatment, manufacture and processing of orthodontic devices and braces for orthodontic and malocclusion treatment for others, restoration dentistry And physical models of teeth and pairs of teeth for orthodontic treatment, dental field, restorative dentistry, crown and bridge, and mounting / restoration of dental models using computer, commissioned In the manufacture of orthodontic appliances and dental prostheses, dental technicians, assembling, manufacturing or processing of medical equipment, processing of artificial limbs or dentures (including “processing of medical materials”), and other dental fields Making a model using a computer",
+          "intClassNumber": "40",
+          "intGoodsServicesDescription": "他人のためのコンピュータハードウェアの製造，個人の歯列矯正治療用の機械器具の製造，他人のための歯列矯正及び不正咬合の治療用の歯列矯正デバイス及びブレースの製作及び加工，修復歯科及び歯列矯正治療用の歯及び組の歯の物理的モデルの製作，歯科の分野・修復歯科・歯冠及びブリッジの製作及び取付・修復歯科治療用のコンピュータを利用した模型の製作，受託による歯列矯正器具及び歯科用補綴物の製造，歯の技工，医療用機械器具の組立・製造又は加工，義肢又は義歯の加工（「医療材料の加工」を含む。），その他の歯科の分野におけるコンピュータを利用した模型の製作"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advice on teaching computer hardware and software usage, training in the field of dentistry and orthodontics, training on the use of orthodontic appliances, training on the use of orthodontic software, correction in the use of digital imaging software Training (education and training) for dentists and dentists, seminars, conferences, educational courses, workshops, lectures and symposiums on techniques, machines, devices and instruments relating to surgery, internal medicine, dentistry and orthodontics・ Professor of sports or knowledge",
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "コンピュータハードウェア及びソフトウェアの使用方法の教授に関する助言，歯科及び歯列矯正の分野における訓練，歯列矯正器具の使用に関する訓練，歯列矯正用ソフトウェアの使用に関する訓練，デジタル画像用ソフトウェアの使用における矯正歯科医及び歯科医に対する訓練（教育及び訓練），外科・内科・歯科及び歯列矯正に関する技術・機械・装置及び器具に関するセミナー・会議・教育講座・研修会・講義及びシンポジウムの企画及び運営，技芸・スポーツ又は知識の教授"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Research and development of orthodontic appliances, orthodontic appliance design, computer hardware design for others, computer software design and creation, orthodontic treatment machinery appliance design for others, for others Design of orthodontic devices and braces for the treatment of orthodontics and malocclusions, advice on the selection, implementation and use of computer hardware and software systems for others, teeth for others and sets of teeth Computer-based design of 3D computer images with orthodontic model properties, computer-based design of teeth and sets of tooth images and physical models, orthodontic and dental treatment computer software by application service providers Orthodontic treatment and treatment that cannot be provided or downloaded online Providing temporary use of computer software, design, creation or maintenance of computer programs, high-level specialized knowledge, technology, or experience in order to perform appropriate operations in accordance with electronic computers, automobiles and other applications Introduction and explanation of required machine performance and operation methods, testing / inspection or research of pharmaceuticals / cosmetics / food, testing / research on machinery / equipment, loan of computers, provision of programs for computers",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "歯列矯正器具の研究及び開発，歯列矯正器具の設計，他人のためのコンピュータハードウェアの設計，コンピュータソフトウェアの設計及び作成，他人のための歯列矯正治療用機械器具の設計，他人のための歯列矯正及び不正咬合の治療用の歯列矯正デバイス及びブレースの設計，他人のためのコンピュータハードウェア及びソフトウェアシステムの選択・実装及び使用に関する助言，他人のための歯及び組の歯の歯列矯正モデルの性質を有する３次元コンピュータ画像のコンピュータを利用した設計，歯及び組の歯の画像及び物理的モデルのコンピュータを利用した設計，アプリケーションサービスプロバイダーによる歯列矯正・歯科治療用コンピュータソフトウェアの提供，オンラインによるダウンロードが不可能な歯列矯正・歯科治療用コンピュータソフトウェアの一時的な使用の提供，電子計算機のプログラムの設計・作成又は保守，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，医薬品・化粧品又は食品の試験・検査又は研究，機械器具に関する試験又は研究，電子計算機の貸与，電子計算機用プログラムの提供"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Providing information on orthodontic treatment and dental care, dentistry, orthodontic treatment, advice on dental care and orthodontic treatment, dentistry, orthodontic treatment, periodontal treatment, endodontic treatment and pediatric dental treatment, for individual orthodontic treatment Creation of guidelines on how to use the device and provision of medical information based on it, guidance and advice on orthodontics, endodontics, pediatric dentistry, periodontal and restorative dental treatment (the services concerned online via the internet or extranet) Providing medical information), providing medical information,",
+          "intClassNumber": "44",
+          "intGoodsServicesDescription": "矯正歯科医療及び歯科医療に関する情報の提供，歯科医療，矯正歯科医療，歯科医療及び矯正歯科医療に関する助言，歯科・歯列矯正・歯周・歯内及び小児歯科治療，個人の歯列矯正治療用の装置の使用方法についてのガイドラインの作成及びそれに基づく医療情報の提供，歯列矯正・歯内・小児歯科・歯周及び修復歯科治療に関する指導及び助言（インターネット又はエクストラネットを介したオンラインによる当該役務の提供を含む。），医療情報の提供，健康診断"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "01C03",
+          "natGoodsServicesDescription": "Dental materials"
+        },
+        {
+          "natClassNumber": "10C01",
+          "natGoodsServicesDescription": "Measuring or testing machines and instruments"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door closing control systems; Electron microscopes"
+        },
+        {
+          "natClassNumber": "10D01",
+          "natGoodsServicesDescription": "Medical apparatus and instruments, other than walking aids, and crutches"
+        },
+        {
+          "natClassNumber": "10D02",
+          "natGoodsServicesDescription": "Walking aids for medical purposes; Crutches"
+        },
+        {
+          "natClassNumber": "35G03",
+          "natGoodsServicesDescription": "Office functions, namely filing, in particular documents or magnetic tapes; Compilation of information into computer databases"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Compilation of information into computer databases"
+        },
+        {
+          "natClassNumber": "40C10",
+          "natGoodsServicesDescription": "Processing of artificial limbs or artificial teeth, including processing of medical materials"
+        },
+        {
+          "natClassNumber": "40H99",
+          "natGoodsServicesDescription": "Other processing that do not correspond to any of the listed similar group code(s) for the processing"
+        },
+        {
+          "natClassNumber": "41A01",
+          "natGoodsServicesDescription": "Educational and instruction services relating to arts, crafts, sports or general knowledge"
+        },
+        {
+          "natClassNumber": "41A03",
+          "natGoodsServicesDescription": "Arranging, conducting and organization of seminars"
+        },
+        {
+          "natClassNumber": "42N03",
+          "natGoodsServicesDescription": "Designing of machines, apparatus, instruments [including their parts] or systems composed of such machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42P03",
+          "natGoodsServicesDescription": "Technological advice relating to computers, automobiles and industrial machines"
+        },
+        {
+          "natClassNumber": "42Q01",
+          "natGoodsServicesDescription": "Testing, inspection or research of pharmaceuticals, cosmetics or foodstuffs"
+        },
+        {
+          "natClassNumber": "42Q99",
+          "natGoodsServicesDescription": "Testing or research on machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        },
+        {
+          "natClassNumber": "42V02",
+          "natGoodsServicesDescription": "Medical practice; Providing medical information; Physical examination; Dentistry services; Preparation and dispensing of medications"
+        }
+      ]
+    },
+    "id": "8a01adb5-756b-49ce-af1c-a95453a2ddac",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20170726"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170726",
+        "applicationNumber": "2017-099313"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290913",
+      "lastPublicationDate": "20191008",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20190913",
+        "registrationNumber": "6179303"
+      }
+    },
+    "version": "20240320153104",
+    "wordMarkSpecification": {
+      "markTranslation": "ITERO ELEMENT",
+      "markTransliteration": "AITEROEREMENTO",
+      "markVerbalElementText": "ｉＴｅｒｏエレメント"
+    }
+  },
+  "_uri": "/mark/jp/8a01adb5-756b-49ce-af1c-a95453a2ddac",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.741Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

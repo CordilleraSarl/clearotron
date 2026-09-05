@@ -1,0 +1,206 @@
+{
+  "uri": "/mark/jp/09fc1fcf-91b6-4d05-813f-8244677e2819",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "09fc1fcf-91b6-4d05-813f-8244677e2819",
+  "applicationNumber": "2014-076479",
+  "registrationNumber": "5757226",
+  "applicationDate": "2014-09-10",
+  "registrationDate": "2015-04-10",
+  "expiryDate": "2035-04-10",
+  "renewalDate": null,
+  "lastPublicationDate": "2015-05-19",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＳＭＡＲＴＳＴＡＧＥ",
+  "markTransliteration": "SUMAATOSUTEEJI",
+  "markTranslation": "SMARTSTAGE",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    40,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "コンピュータ，コンピュータソフトウェア",
+      "translation_language": "en",
+      "translation": "Computer, computer software"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": null,
+      "description": "歯列矯正器具，外科用・医療用及び歯科用機械器具，医療用機械器具（「歩行補助器・松葉づえ」を除く。）",
+      "translation_language": "en",
+      "translation": "Orthodontic appliances, surgical / medical and dental machinery and equipment, medical equipment (excluding \"walking aid / crutches\")"
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": "歯列矯正器具の顧客の特注による製造，歯の技工",
+      "translation_language": "en",
+      "translation": "Custom made manufacture of orthodontic appliances, dental technician"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": null,
+      "description": "医業，医療情報の提供，歯科医業，矯正歯科医業",
+      "translation_language": "en",
+      "translation": "Medical, provision of medical information, dentistry, orthodontic medical"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YAMAMOTO HIDESAKU",
+  "priorities": [
+    {
+      "priorityDate": "20140612"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer, computer software",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "コンピュータ，コンピュータソフトウェア"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Orthodontic appliances, surgical / medical and dental machinery and equipment, medical equipment (excluding \"walking aid / crutches\")",
+          "intClassNumber": "10",
+          "intGoodsServicesDescription": "歯列矯正器具，外科用・医療用及び歯科用機械器具，医療用機械器具（「歩行補助器・松葉づえ」を除く。）"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Custom made manufacture of orthodontic appliances, dental technician",
+          "intClassNumber": "40",
+          "intGoodsServicesDescription": "歯列矯正器具の顧客の特注による製造，歯の技工"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Medical, provision of medical information, dentistry, orthodontic medical",
+          "intClassNumber": "44",
+          "intGoodsServicesDescription": "医業，医療情報の提供，歯科医業，矯正歯科医業"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "10D01",
+          "natGoodsServicesDescription": "Medical apparatus and instruments, other than walking aids, and crutches"
+        },
+        {
+          "natClassNumber": "10D02",
+          "natGoodsServicesDescription": "Walking aids for medical purposes; Crutches"
+        },
+        {
+          "natClassNumber": "40C10",
+          "natGoodsServicesDescription": "Processing of artificial limbs or artificial teeth, including processing of medical materials"
+        },
+        {
+          "natClassNumber": "40H99",
+          "natGoodsServicesDescription": "Other processing that do not correspond to any of the listed similar group code(s) for the processing"
+        },
+        {
+          "natClassNumber": "42V02",
+          "natGoodsServicesDescription": "Medical practice; Providing medical information; Physical examination; Dental practice; Dispense medicine"
+        }
+      ]
+    },
+    "id": "09fc1fcf-91b6-4d05-813f-8244677e2819",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20140612"
+      }
+    ],
+    "recordLastUpdated": "20250418",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20140910",
+        "applicationNumber": "2014-076479"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350410",
+      "lastPublicationDate": "20150519",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20150410",
+        "registrationNumber": "5757226"
+      }
+    },
+    "version": "20250418084948",
+    "wordMarkSpecification": {
+      "markTranslation": "SMARTSTAGE",
+      "markTransliteration": "SUMAATOSUTEEJI",
+      "markVerbalElementText": "ＳＭＡＲＴＳＴＡＧＥ"
+    }
+  },
+  "_uri": "/mark/jp/09fc1fcf-91b6-4d05-813f-8244677e2819",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.739Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

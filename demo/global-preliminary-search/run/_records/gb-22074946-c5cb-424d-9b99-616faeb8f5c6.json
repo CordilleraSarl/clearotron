@@ -1,0 +1,115 @@
+{
+  "uri": "/mark/gb/22074946-c5cb-424d-9b99-616faeb8f5c6",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "22074946-c5cb-424d-9b99-616faeb8f5c6",
+  "applicationNumber": "UK00900394247",
+  "registrationNumber": "UK00900394247",
+  "applicationDate": "1996-10-03",
+  "registrationDate": "1998-09-28",
+  "expiryDate": "2036-10-03",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Gaming, gambling; casino services; amusements; recreational services; club services; organisation of competitions.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Rank Leisure Holdings Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Potter Clarkson LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "TOR, Saint-Cloud Way, Maidenhead SL6 8BN, Berkshire",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Rank Leisure Holdings Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Gaming, gambling; casino services; amusements; recreational services; club services; organisation of competitions."
+        }
+      ]
+    },
+    "id": "22074946-c5cb-424d-9b99-616faeb8f5c6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260605",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Chapel Quarter, Mount Street, Nottingham NG1 6HQ",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Potter Clarkson LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19961003",
+        "applicationNumber": "UK00900394247"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20361003",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "19980928",
+        "registrationNumber": "UK00900394247"
+      }
+    },
+    "version": "20260605020005",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/gb/22074946-c5cb-424d-9b99-616faeb8f5c6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

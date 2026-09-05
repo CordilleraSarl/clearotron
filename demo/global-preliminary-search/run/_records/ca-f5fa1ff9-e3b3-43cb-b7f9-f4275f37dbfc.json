@@ -1,0 +1,273 @@
+{
+  "uri": "/mark/ca/f5fa1ff9-e3b3-43cb-b7f9-f4275f37dbfc",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "f5fa1ff9-e3b3-43cb-b7f9-f4275f37dbfc",
+  "applicationNumber": "1997013",
+  "registrationNumber": null,
+  "applicationDate": "2019-09-24",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2021-12-14",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "AORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        35,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Audiovisual, optical and teaching apparatus; apparatus and instruments for recording, transmitting, reproducing or processing sound, images or data; recorded and downloadable media, computer software, blank digital or analogue recording and storage media; computers and computer peripheral devices; electronic interactive whiteboards; electronic notice boards; audio interfaces; downloadable emoticons for mobile phones; interfaces for computers; monitors [computer programs]; computer software, recorded; computer software platforms, recorded or downloadable; personal digital assistants [PDAs]; computer software applications, downloadable; computer programs, recorded; computer game software, downloadable; computer game software, recorded; computer programs, downloadable; computer operating programs, recorded; computer screen saver software, recorded or downloadable; record players; processors [central processing units]; electronic publications, downloadable; audiovisual teaching apparatus; integrated circuits; downloadable image files; downloadable music files.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        35,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Advertising; business management; arranging subscriptions to telecommunication services for others; commercial information agency services; advertising agencies; rental of advertising space; computerized file management; opinion polling; market studies; business information; commercial information and advice for consumers in the choice of products and services; business investigations; business research; marketing research; business management and organization consultancy; business organization consultancy; professional business consultancy; consultancy regarding public relations communication strategies; consultancy regarding advertising communication strategies; layout services for advertising purposes; marketing; marketing in the framework of software publishing; targeted marketing; business management of performing artists; scriptwriting for advertising purposes; news clipping services; updating and maintenance of information in registries; updating and maintenance of data in computer databases; updating of advertising material; word processing; organization of exhibitions for commercial or advertising purposes; arranging newspaper subscriptions for others; design of advertising materials; business appraisals; business management assistance; commercial intermediation services; providing business information via a web site; provision of commercial and business contact information; provision of an online marketplace for buyers and sellers of goods and services; web indexing for commercial or advertising purposes; presentation of goods on communication media, for retail purposes; media relations services; economic forecasting; sales promotion for others; production of advertising films; rental of advertising time on communication media; publicity material rental; rental of billboards [advertising boards]; publication of publicity texts; radio advertising; bill-posting; distribution of samples; dissemination of advertising matter; direct mail advertising; registration of written communications and data; writing of publicity texts; online advertising on a computer network; outdoor advertising; advertising by mail order; television advertising; compilation of statistics; compilation of information into computer databases; business inquiries; systemization of information into computer databases; advisory services for business management; corporate communications services; compiling indexes of information for commercial or advertising purposes; telemarketing services; administrative processing of purchase orders; web site traffic optimization; search engine optimization for sales promotion; pay per click advertising. \n(2) Scientific and technological services and research and design relating thereto; design and development of computer hardware and software; computer system analysis; recovery of computer data; business card design; graphic design of promotional materials; interior design; industrial design; graphic arts design; computer virus protection services; installation of computer software; research in the field of telecommunications technology; research and development of new products for others; web site design consultancy; computer security consultancy; information technology [IT] consultancy; consultancy in the design and development of computer hardware; internet security consultancy; computer software consultancy; data security consultancy; technological consultancy; updating of computer software; monitoring of computer systems to detect breakdowns; monitoring of computer systems for detecting unauthorized access or data breach; monitoring of computer systems by remote access; software as a service [SaaS]; maintenance of computer software; providing information on computer technology and programming via a web site; providing search engines for the internet; platform as a service [PaaS]; conversion of computer programs and data, other than physical conversion; conducting technical project studies; computer system design; rental of web servers; computer rental; rental of computer software; hosting computer sites [web sites]; server hosting; development of computer platforms; computer software design; software development in the framework of software publishing; creating and designing website-based indexes of information for others [information technology services]; creating and maintaining web sites for others; computer programming; technical writing; duplication of computer programs; cloud computing; outsource service providers in the field of information technology; off-site data backup; computer technology consultancy; telecommunications technology consultancy; data encryption services; electronic data storage.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Aori Technologies Limited",
+  "ownerNative": null,
+  "ownerCountry": "CY",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "RU",
+      "priorityCountryName": "Russian Federation",
+      "priorityDate": "20190814",
+      "priorityNumber": "2019740134",
+      "priorityText": "Priority Filing Date: August 14, 2019, Country or Office: RUSSIAN FEDERATION, Application No. 2019740134 in association with the same kind of in association with the same kind on wares marked (1) on services (1) (2)"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Ko 11, Anthoupoli, CY-2302 Nicosia",
+        "applicantAddressCountryCode": "CY",
+        "applicantAddressCountryName": "Cyprus",
+        "applicantAddressLines": [
+          "Ko 11, Anthoupoli",
+          "CY-2302 Nicosia"
+        ],
+        "applicantName": "Aori Technologies Limited"
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Priority Filing Date: August 14, 2019, Country or Office: RUSSIAN FEDERATION, Application No. 2019740134 in association with the same kind of in association with the same kind on wares marked (1) on services (1) (2)",
+        "typeDescription": "Priority"
+      }
+    ],
+    "footNotes": [
+      "Change of Ownership of International Registration / Changement de titulaire de l'enregistrement international",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 25 mars/Mar 2020",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 19 fév/Feb 2020",
+      "COMMENTS / COMMENTAIRES: From: \"Aori.Ru\" Joint Stock Company To: Aori Technologies Limited"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09,35,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Audiovisual, optical and teaching apparatus; apparatus and instruments for recording, transmitting, reproducing or processing sound, images or data; recorded and downloadable media, computer software, blank digital or analogue recording and storage media; computers and computer peripheral devices; electronic interactive whiteboards; electronic notice boards; audio interfaces; downloadable emoticons for mobile phones; interfaces for computers; monitors [computer programs]; computer software, recorded; computer software platforms, recorded or downloadable; personal digital assistants [PDAs]; computer software applications, downloadable; computer programs, recorded; computer game software, downloadable; computer game software, recorded; computer programs, downloadable; computer operating programs, recorded; computer screen saver software, recorded or downloadable; record players; processors [central processing units]; electronic publications, downloadable; audiovisual teaching apparatus; integrated circuits; downloadable image files; downloadable music files."
+        },
+        {
+          "intClassNumber": "09,35,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Advertising; business management; arranging subscriptions to telecommunication services for others; commercial information agency services; advertising agencies; rental of advertising space; computerized file management; opinion polling; market studies; business information; commercial information and advice for consumers in the choice of products and services; business investigations; business research; marketing research; business management and organization consultancy; business organization consultancy; professional business consultancy; consultancy regarding public relations communication strategies; consultancy regarding advertising communication strategies; layout services for advertising purposes; marketing; marketing in the framework of software publishing; targeted marketing; business management of performing artists; scriptwriting for advertising purposes; news clipping services; updating and maintenance of information in registries; updating and maintenance of data in computer databases; updating of advertising material; word processing; organization of exhibitions for commercial or advertising purposes; arranging newspaper subscriptions for others; design of advertising materials; business appraisals; business management assistance; commercial intermediation services; providing business information via a web site; provision of commercial and business contact information; provision of an online marketplace for buyers and sellers of goods and services; web indexing for commercial or advertising purposes; presentation of goods on communication media, for retail purposes; media relations services; economic forecasting; sales promotion for others; production of advertising films; rental of advertising time on communication media; publicity material rental; rental of billboards [advertising boards]; publication of publicity texts; radio advertising; bill-posting; distribution of samples; dissemination of advertising matter; direct mail advertising; registration of written communications and data; writing of publicity texts; online advertising on a computer network; outdoor advertising; advertising by mail order; television advertising; compilation of statistics; compilation of information into computer databases; business inquiries; systemization of information into computer databases; advisory services for business management; corporate communications services; compiling indexes of information for commercial or advertising purposes; telemarketing services; administrative processing of purchase orders; web site traffic optimization; search engine optimization for sales promotion; pay per click advertising. \n(2) Scientific and technological services and research and design relating thereto; design and development of computer hardware and software; computer system analysis; recovery of computer data; business card design; graphic design of promotional materials; interior design; industrial design; graphic arts design; computer virus protection services; installation of computer software; research in the field of telecommunications technology; research and development of new products for others; web site design consultancy; computer security consultancy; information technology [IT] consultancy; consultancy in the design and development of computer hardware; internet security consultancy; computer software consultancy; data security consultancy; technological consultancy; updating of computer software; monitoring of computer systems to detect breakdowns; monitoring of computer systems for detecting unauthorized access or data breach; monitoring of computer systems by remote access; software as a service [SaaS]; maintenance of computer software; providing information on computer technology and programming via a web site; providing search engines for the internet; platform as a service [PaaS]; conversion of computer programs and data, other than physical conversion; conducting technical project studies; computer system design; rental of web servers; computer rental; rental of computer software; hosting computer sites [web sites]; server hosting; development of computer platforms; computer software design; software development in the framework of software publishing; creating and designing website-based indexes of information for others [information technology services]; creating and maintaining web sites for others; computer programming; technical writing; duplication of computer programs; cloud computing; outsource service providers in the field of information technology; off-site data backup; computer technology consultancy; telecommunications technology consultancy; data encryption services; electronic data storage."
+        }
+      ]
+    },
+    "id": "f5fa1ff9-e3b3-43cb-b7f9-f4275f37dbfc",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1499008"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20211214",
+        "descriptionText": "Confirmation of Total Provisional Refusal Sent"
+      },
+      {
+        "date": "20211214",
+        "descriptionText": "Abandoned - Section 36"
+      },
+      {
+        "date": "20210921",
+        "descriptionText": "Default Notice Sent",
+        "responseDate": "20211121"
+      },
+      {
+        "date": "20210303",
+        "descriptionText": "Total Provisional Refusal Sent",
+        "responseDate": "20210903"
+      },
+      {
+        "date": "20210303",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20210903"
+      },
+      {
+        "date": "20210303",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20200921",
+        "descriptionText": "Notification of Possible Oppositions Sent"
+      },
+      {
+        "date": "20200325",
+        "descriptionText": "Change in Title Registered",
+        "information": "From: \"Aori.Ru\" Joint Stock Company To: Aori Technologies Limited"
+      },
+      {
+        "date": "20191121",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20191121",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20191121",
+        "descriptionText": "Designation Notification - Madrid Protocol",
+        "responseDate": "20210521"
+      },
+      {
+        "date": "20190924",
+        "descriptionText": "International Registration",
+        "responseDate": "20290924"
+      },
+      {
+        "date": "20190924",
+        "descriptionText": "Filed",
+        "information": "Registration"
+      }
+    ],
+    "markFeature": "DESIGN MARK",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Blue, white.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageViennaClassification": [
+      "24.15.01",
+      "24.15.17",
+      "27.05.01",
+      "27.05.08",
+      "29.01.04",
+      "29.01.06"
+    ],
+    "markImagesAvailable": true,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Verkhnyaya Krasnoselskaya Str., 3, building 2, floor A2, space I, room 19, RU-107140 Moscow",
+        "addressLines": [
+          "Verkhnyaya Krasnoselskaya Str., 3,",
+          "building 2, floor A2, space I, room 19",
+          "RU-107140 Moscow"
+        ],
+        "countryName": "Russian Federation",
+        "name": "\"Aori.Ru\" Joint Stock Company"
+      }
+    ],
+    "previousOwners": [
+      {
+        "addressLines": [
+          "\"Aori.Ru\" Joint Stock Company",
+          "Verkhnyaya Krasnoselskaya Str., 3,",
+          "building 2, floor A2, space I, room 19",
+          "RU-107140 Moscow",
+          "RUSSIAN FEDERATION"
+        ],
+        "name": "\"Aori.Ru\" Joint Stock Company"
+      }
+    ],
+    "priorities": [
+      {
+        "priorityCountryCode": "RU",
+        "priorityCountryName": "Russian Federation",
+        "priorityDate": "20190814",
+        "priorityNumber": "2019740134",
+        "priorityText": "Priority Filing Date: August 14, 2019, Country or Office: RUSSIAN FEDERATION, Application No. 2019740134 in association with the same kind of in association with the same kind on wares marked (1) on services (1) (2)"
+      }
+    ],
+    "priorityDate": "20190814",
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "status": {
+      "abandonmentDate": "20211214",
+      "active": false,
+      "application": {
+        "applicationDate": "20190924",
+        "applicationNumber": "1997013"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "defaultNotice": {
+        "dueDate": "20211121",
+        "sentDate": "20210921"
+      },
+      "formalisationDate": "20191121",
+      "markCurrentStatus": "Abandoned - Section 36",
+      "nextRenewalDate": "20290924"
+    },
+    "subjectHeadings": [
+      "AORI R"
+    ],
+    "version": "20250625110744",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AORI",
+      "markVerbalElementTextFormal": "AORI"
+    }
+  },
+  "_uri": "/mark/ca/f5fa1ff9-e3b3-43cb-b7f9-f4275f37dbfc",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:50.843Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

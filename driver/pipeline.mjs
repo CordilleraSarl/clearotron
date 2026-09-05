@@ -6389,7 +6389,7 @@ const plainDeferralReason = (r) => {
 // ── — A HEADING IS NOT THE PLACE FOR A DIRECTIVE ───────────────────────────────────────────────
 //
 // What shipped: `Follow-up / ${plainDirective(directive).slice(0, 60)}` — a hard character cut with no
-// word boundary and no ellipsis. Two delivered specimens in examples/sample-run:
+// word boundary and no ellipsis. Two delivered specimens in demo:
 //   "Follow-up / consumer and prosumer water testing (pool, spa, aquarium, ho"   (mid-"home")
 //   "Follow-up / agri-tech, irrigation, aquaculture and hydrology monitoring "   (mid-"software", and
 //                                                                                a trailing space)
@@ -7364,7 +7364,7 @@ export function buildAskAnswersSection(askAnswers, intakeAsks) {
   //
   // WHY IT IS NEEDED AT ALL, given the stages.mjs dictation now says "the answer alone": the dictation
   // governs what a MODEL writes on a FUTURE run, and a prompt is not a guarantee. Every archived
-  // findings.json on disk carries the old doubled form permanently — examples/sample-run's does today —
+  // findings.json on disk carries the old doubled form permanently — demo's does today —
   // and assembly re-runs over an archived register on resume and on every re-assembly. The author fix
   // stops the doubling being written; this stops it being printed.
   //

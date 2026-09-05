@@ -1,0 +1,208 @@
+{
+  "uri": "/mark/it/5b914b29-721d-43c1-b7d7-70c686e5b987",
+  "provider": "clarivate",
+  "office": "it",
+  "guid": "5b914b29-721d-43c1-b7d7-70c686e5b987",
+  "applicationNumber": "302016000066077",
+  "registrationNumber": "302016000066077",
+  "applicationDate": "2016-06-27",
+  "registrationDate": "2018-03-01",
+  "expiryDate": "2026-06-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-05-04",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Gori",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    19,
+    20,
+    21,
+    28,
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        19
+      ],
+      "language": "it",
+      "description": "prodotti oggetto di protezione non inclusi nella classificazione nizza-mgs: legno lavorato o semilavorato",
+      "translation_language": "en",
+      "translation": "products subject to protection not included in the nizza-mgs classification: processed or semi-processed wood"
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "it",
+      "description": "prodotti oggetto di protezione non inclusi nella classificazione nizza-mgs: sculture in legno adatte ed utilizzabili da bambini",
+      "translation_language": "en",
+      "translation": "protected products not included in the nizza-mgs classification: wooden sculptures suitable for and usable by children"
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "it",
+      "description": "prodotti oggetto di protezione non inclusi nella classificazione nizza-mgs: utensili per la casa, la cucina e per cucinare compresi posate, mestoli, bicchieri, sottobicchieri, tazze, tazzine, piatti, piattini, sottopiatti, vassoi, taglieri, stampi compresi stampi per il forno, ciotole, cestini, barattoli, contenitori compresi contenitori per il pranzo e la merenda, spazzole e pettini",
+      "translation_language": "en",
+      "translation": "products subject to protection not included in the nizza-mgs classification: household, kitchen and cooking utensils including cutlery, ladles, glasses, coasters, cups, cups, plates, saucers, placemats, trays, cutting boards, molds including molds for the oven, bowls, baskets, jars, containers including lunch and snack containers, brushes and combs"
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "it",
+      "description": "prodotti oggetto di protezione non inclusi nella classificazione nizza-mgs: giochi e giocattoli compresi giochi in scatola",
+      "translation_language": "en",
+      "translation": "products subject to protection not included in the nizza-mgs classification: games and toys including board games"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: servizi di franchising; servizi di vendita per conto terzi all'ingrosso e al dettaglio anche per corrispondenza e attraverso i mezzi di comunicazione anche online in relazione a legno lavorato o semilavorato, sculture in legno adatte ed utilizzabili da bambini, utensili per la casa, la cucina e per cucinare compresi posate, mestoli, bicchieri, sottobicchieri, tazze, tazzine, piatti, piattini, sottopiatti, vassoi, taglieri, stampi compresi stampi per il forno, ciotole, cestini, barattoli, contenitori compresi contenitori per il pranzo e la merenda, spazzole e pettini, giochi e giocattoli compresi giochi in scatola",
+      "translation_language": "en",
+      "translation": "services subject to protection not included in the nizza-mgs classification: franchising services; wholesale and retail sales services for third parties, including by mail order and through the means of communication, including online, in relation to processed or semi-processed wood, wooden sculptures suitable for and usable by children, household, kitchen and cooking utensils including cutlery, ladles, glasses, coasters, cups, cups, plates, saucers, placemats, trays, cutting boards, molds including baking moulds, bowls, baskets, jars, containers including lunch and snack containers, brushes and combs, games and toys including board games"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: attività d'intrattenimento, divertimento e ludiche in ambito infantile; formazione ed istruzione in ambito infantile; organizzazione di eventi in ambito infantile; organizzazione e gestione di laboratori creativi a scopi didattici e di divertimento [workshop] in ambito infantile",
+      "translation_language": "en",
+      "translation": "services subject to protection not included in the nizza-mgs classification: entertainment, amusement and play activities for children; training and education in the children&#39;s field; organization of children&#39;s events; organization and management of creative workshops for educational and entertainment purposes [workshops] in the children&#39;s field"
+    }
+  ],
+  "owner": "GORI S.R.L.S.",
+  "ownerNative": null,
+  "ownerCountry": "IT",
+  "representative": "Racheli S.r.l.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "IT",
+        "applicantAddressCountryName": "Italy",
+        "applicantName": "GORI S.R.L.S."
+      }
+    ],
+    "applicationLanguageCode": "it",
+    "cmMarkImageEUclassification": [
+      "03.01.14"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "products subject to protection not included in the nizza-mgs classification: processed or semi-processed wood",
+          "intClassNumber": "19",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "prodotti oggetto di protezione non inclusi nella classificazione nizza-mgs: legno lavorato o semilavorato"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "protected products not included in the nizza-mgs classification: wooden sculptures suitable for and usable by children",
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "prodotti oggetto di protezione non inclusi nella classificazione nizza-mgs: sculture in legno adatte ed utilizzabili da bambini"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "products subject to protection not included in the nizza-mgs classification: household, kitchen and cooking utensils including cutlery, ladles, glasses, coasters, cups, cups, plates, saucers, placemats, trays, cutting boards, molds including molds for the oven, bowls, baskets, jars, containers including lunch and snack containers, brushes and combs",
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "prodotti oggetto di protezione non inclusi nella classificazione nizza-mgs: utensili per la casa, la cucina e per cucinare compresi posate, mestoli, bicchieri, sottobicchieri, tazze, tazzine, piatti, piattini, sottopiatti, vassoi, taglieri, stampi compresi stampi per il forno, ciotole, cestini, barattoli, contenitori compresi contenitori per il pranzo e la merenda, spazzole e pettini"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "products subject to protection not included in the nizza-mgs classification: games and toys including board games",
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "prodotti oggetto di protezione non inclusi nella classificazione nizza-mgs: giochi e giocattoli compresi giochi in scatola"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "services subject to protection not included in the nizza-mgs classification: franchising services; wholesale and retail sales services for third parties, including by mail order and through the means of communication, including online, in relation to processed or semi-processed wood, wooden sculptures suitable for and usable by children, household, kitchen and cooking utensils including cutlery, ladles, glasses, coasters, cups, cups, plates, saucers, placemats, trays, cutting boards, molds including baking moulds, bowls, baskets, jars, containers including lunch and snack containers, brushes and combs, games and toys including board games",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: servizi di franchising; servizi di vendita per conto terzi all'ingrosso e al dettaglio anche per corrispondenza e attraverso i mezzi di comunicazione anche online in relazione a legno lavorato o semilavorato, sculture in legno adatte ed utilizzabili da bambini, utensili per la casa, la cucina e per cucinare compresi posate, mestoli, bicchieri, sottobicchieri, tazze, tazzine, piatti, piattini, sottopiatti, vassoi, taglieri, stampi compresi stampi per il forno, ciotole, cestini, barattoli, contenitori compresi contenitori per il pranzo e la merenda, spazzole e pettini, giochi e giocattoli compresi giochi in scatola"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "services subject to protection not included in the nizza-mgs classification: entertainment, amusement and play activities for children; training and education in the children&#39;s field; organization of children&#39;s events; organization and management of creative workshops for educational and entertainment purposes [workshops] in the children&#39;s field",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: attività d'intrattenimento, divertimento e ludiche in ambito infantile; formazione ed istruzione in ambito infantile; organizzazione di eventi in ambito infantile; organizzazione e gestione di laboratori creativi a scopi didattici e di divertimento [workshop] in ambito infantile"
+        }
+      ]
+    },
+    "id": "5b914b29-721d-43c1-b7d7-70c686e5b987",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "MARCHIO FIGURATIVO COMPRENDENTE LA DICITURA \"GORI\"."
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250403",
+    "registrationOfficeCode": "IT",
+    "registrationOfficeName": "Italy",
+    "representatives": [
+      {
+        "representativeAddress": "viale S. Michele del Carso 4 20144 Milano (MILANO)",
+        "representativeName": "Racheli S.r.l."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20160627",
+        "applicationNumber": "302016000066077"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20260627",
+      "lastPublicationDate": "20180504",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180301",
+        "registrationNumber": "302016000066077"
+      }
+    },
+    "version": "20250403185937",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Gori"
+    }
+  },
+  "_uri": "/mark/it/5b914b29-721d-43c1-b7d7-70c686e5b987",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.047Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

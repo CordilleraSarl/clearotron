@@ -1,0 +1,315 @@
+{
+  "uri": "/mark/us/39e0d57b-aa02-4f35-9d81-dce41e459a38",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "39e0d57b-aa02-4f35-9d81-dce41e459a38",
+  "applicationNumber": "86523769",
+  "registrationNumber": null,
+  "applicationDate": "2015-02-04",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2015-12-29"
+  ],
+  "abandonmentDate": "2016-09-26",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "TEATRO PARAÍSO",
+  "markTransliteration": null,
+  "markTranslation": "THEATER OF HEAVEN OR PARADISE",
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": [
+    "\"TEATRO\""
+  ],
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Provision of visual and performing arts theater facilities",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SAXONY BEACH LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Eric Stenshoel",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "3201 COLLINS AVENUE, MIAMI BEACH, FL, 33140",
+        "applicantAddressCity": "MIAMI BEACH",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "33140",
+        "applicantAddressStateName": "FLORIDA",
+        "applicantAddressStreet": "3201 COLLINS AVENUE",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "SAXONY BEACH LLC"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "3201 COLLINS AVENUE, MIAMI BEACH, FLORIDA, 33140",
+            "city": "MIAMI BEACH",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "SAXONY BEACH LLC",
+            "postalCode": "33140",
+            "stateName": "FLORIDA",
+            "street": "3201 COLLINS AVENUE"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "ARGENTINA PROPERTIES LLC"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "101 PARK AVENUE, 34TH FLOOR, NEW YORK, NY 10178-0061",
+            "addressLines": [
+              "ERIC STENSHOEL",
+              "101 PARK AVENUE",
+              "34TH FLOOR",
+              "NEW YORK, NY 10178-0061"
+            ],
+            "name": "ERIC STENSHOEL"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20150825",
+        "recordedDate": "20150825",
+        "reelFrameNumber": "5608/0671"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Provision of visual and performing arts theater facilities"
+        }
+      ]
+    },
+    "id": "39e0d57b-aa02-4f35-9d81-dce41e459a38",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "\"TEATRO\""
+    ],
+    "markEvents": [
+      {
+        "date": "20160926",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20160926",
+        "descriptionText": "ABANDONMENT - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20160223",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20151229",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20151229",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20151209",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20151029",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20151020",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20151019",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20151019",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20150902",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20150423",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20150423",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20150423",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20150420",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20150213",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20150207",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "20th Floor, New York, NY, 10019",
+        "city": "New York",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Argentina Properties LLC",
+        "postalCode": "10019",
+        "secondaryAddressUnit": "730 Fifth Avenue",
+        "stateName": "NEW YORK",
+        "street": "20th Floor"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "3201 COLLINS AVENUE, MIAMI BEACH, FL, 33140",
+        "city": "MIAMI BEACH",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "SAXONY BEACH LLC",
+        "postalCode": "33140",
+        "stateName": "FLORIDA",
+        "street": "3201 COLLINS AVENUE"
+      },
+      {
+        "address": "3201 COLLINS AVENUE, MIAMI BEACH, FL, 33140",
+        "city": "MIAMI BEACH",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "SAXONY BEACH LLC",
+        "postalCode": "33140",
+        "stateName": "FLORIDA",
+        "street": "3201 COLLINS AVENUE"
+      }
+    ],
+    "postApplicationOwners": [
+      {
+        "address": "3201 COLLINS AVENUE, MIAMI BEACH, FL, 33140",
+        "city": "MIAMI BEACH",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "SAXONY BEACH LLC",
+        "postalCode": "33140",
+        "stateName": "FLORIDA",
+        "street": "3201 COLLINS AVENUE"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "New York, NY 10178-0061, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "New York, NY 10178-0061",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "ERIC STENSHOEL Curtis Mallet, 101 Park Ave Fl 34"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "New York, NY 10178-0061, UNITED STATES",
+        "representativeAddressLines": [
+          "New York, NY 10178-0061",
+          "UNITED STATES"
+        ],
+        "representativeName": "Eric Stenshoel"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20160926",
+      "active": false,
+      "application": {
+        "applicationDate": "20150204",
+        "applicationNumber": "86523769"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-NO STATEMENT OF USE FILED",
+        "markOfficialStatusCode": "606",
+        "markOfficialStatusDate": "20160926",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED",
+      "publicationDate": [
+        "20151229"
+      ]
+    },
+    "version": "20260110231318",
+    "wordMarkSpecification": {
+      "markTranslation": "THEATER OF HEAVEN OR PARADISE",
+      "markTranslationDescription": "The English translation of \"TEATRO PARAÍSO\" in the mark is \"THEATER OF HEAVEN OR PARADISE\".",
+      "markVerbalElementCrossReferences": "TEATRO PARAISO",
+      "markVerbalElementText": "TEATRO PARAÍSO"
+    }
+  },
+  "_uri": "/mark/us/39e0d57b-aa02-4f35-9d81-dce41e459a38",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

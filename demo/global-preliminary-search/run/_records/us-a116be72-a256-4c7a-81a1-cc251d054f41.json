@@ -1,0 +1,293 @@
+{
+  "uri": "/mark/us/a116be72-a256-4c7a-81a1-cc251d054f41",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "a116be72-a256-4c7a-81a1-cc251d054f41",
+  "applicationNumber": "76043175",
+  "registrationNumber": "2519541",
+  "applicationDate": "2000-05-08",
+  "registrationDate": "2001-12-18",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2001-09-25"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2008-09-19",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "CLAVE NORTENA",
+  "markTransliteration": null,
+  "markTranslation": "KEY WORD",
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Series of pre-recorded phonograph records, audio cassette tapes and compact discs all featuring music",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Entertainment in the nature of live performances by a musical group",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Luna Management LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1200 W. Venice Blvd., Los Angeles, CA, 90006",
+        "applicantAddressCity": "Los Angeles",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "90006",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "1200 W. Venice Blvd.",
+        "applicantJurisdictionOfIncorporation": "CALIFORNIA",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "Luna Management LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "26.05.37",
+      "26.05.51",
+      "26.05.61",
+      "26.11.07",
+      "26.11.33",
+      "26.11.37"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Series of pre-recorded phonograph records, audio cassette tapes and compact discs all featuring music"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Entertainment in the nature of live performances by a musical group"
+        }
+      ]
+    },
+    "id": "a116be72-a256-4c7a-81a1-cc251d054f41",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20080919",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20061229",
+        "descriptionText": "CASE FILE IN TICRS"
+      },
+      {
+        "date": "20011218",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20010925",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20010905",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20010524",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20010523",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20010420",
+        "descriptionText": "EXAMINER'S AMENDMENT MAILED"
+      },
+      {
+        "date": "20010123",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20001124",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "20001103",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "1200 W. Venice Blvd., Los Angeles, CA, 90006",
+        "city": "Los Angeles",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Luna Management LLC",
+        "postalCode": "90006",
+        "stateName": "CALIFORNIA",
+        "street": "1200 W. Venice Blvd."
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "1200 W. Venice Blvd., Los Angeles, CA, 90006",
+        "city": "Los Angeles",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Luna Management LLC",
+        "postalCode": "90006",
+        "stateName": "CALIFORNIA",
+        "street": "1200 W. Venice Blvd."
+      },
+      {
+        "address": "1200 W. Venice Blvd., Los Angeles, CA, 90006",
+        "city": "Los Angeles",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Luna Management LLC",
+        "postalCode": "90006",
+        "stateName": "CALIFORNIA",
+        "street": "1200 W. Venice Blvd."
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "1200 W. Venice Blvd., Los Angeles, CA, 90006",
+        "city": "Los Angeles",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Luna Management LLC",
+        "postalCode": "90006",
+        "stateName": "CALIFORNIA",
+        "street": "1200 W. Venice Blvd."
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "LOS ANGELES, CA 90006-5518, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "LOS ANGELES, CA 90006-5518",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "LUNA MANAGEMENT LLC, 1200 VENICE BLVD"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "LOS ANGELES, CA 90006-5518, UNITED STATES",
+        "representativeAddressLines": [
+          "LOS ANGELES, CA 90006-5518",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20000508",
+        "applicationNumber": "76043175"
+      },
+      "cancellationDate": "20080919",
+      "cancellationPublicationDate": "20081028",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "199501"
+        },
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "199501"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "199501"
+        },
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "199501"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20080919",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20010925"
+      ],
+      "registration": {
+        "registrationDate": "20011218",
+        "registrationNumber": "2519541"
+      }
+    },
+    "version": "20260109052056",
+    "wordMarkSpecification": {
+      "markTranslation": "KEY WORD",
+      "markTranslationDescription": "The English translation of \"CLAVE NORTENA\" is \"northern key\".",
+      "markVerbalElementText": "CLAVE NORTENA"
+    }
+  },
+  "_uri": "/mark/us/a116be72-a256-4c7a-81a1-cc251d054f41",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.831Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,156 @@
+{
+  "uri": "/mark/fr/beb1e306-07d4-497d-b501-01241caab5c1",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "beb1e306-07d4-497d-b501-01241caab5c1",
+  "applicationNumber": "14 4058607",
+  "registrationNumber": "14 4058607",
+  "applicationDate": "2014-01-06",
+  "registrationDate": null,
+  "expiryDate": "2034-01-06",
+  "renewalDate": "2024-01-04",
+  "lastPublicationDate": "2014-01-31",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "D.D.O.G. DATA DRIVEN ORGANIC GROWTH",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": ": Publicité ; gestion des affaires commerciales ; services de compilation de données dans des bases de données informatiques ; analyses de données commerciales ; analyses de données et statistiques, d'études de marché ; audit ; services de saisie, de traitement et d'organisation de données ; administration commerciale ; travaux de bureau ; diffusion de matériel publicitaire (tract, prospectus, imprimés, échantillons) ; services d'abonnement à des journaux (pour des tiers) ; conseils en organisation et direction des affaires ; comptabilité ; reproduction de documents ; bureaux de placement ; gestion de fichiers informatiques ; organisation d'expositions à buts commerciaux ou de publicité ; publicité en ligne sur un réseau informatique ; location de temps publicitaire sur tout moyen de communication ; publications de textes publicitaires ; locations d'espaces publicitaires ; diffusion d'annonces publicitaires ; relations publiques ; conseil en affichage ",
+      "translation_language": "en",
+      "translation": "Advertising; business management; data compilation services in computer databases; business data analytics; data and statistical analysis, market research; auditing; data entry, processing and organization services; business administration; office work; dissemination of advertising material (tracts, prospectuses, printed matter, samples); newspaper subscription services (for others); advice on organization and business management; accounting ; reproduction of documents; employment offices; computer file management; organization of exhibitions for commercial or advertising purposes; online advertising on a computer network; rental of advertising time on any means of communication; publication of publicity texts; rental of advertising space; dissemination of advertisements; public relations ; display consulting"
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "fr",
+      "description": ": Télécommunications ; informations en matière de télécommunications ; communications par terminaux d'ordinateurs ou par réseau de fibres optiques ; communications radiophoniques ou téléphoniques ; services de radiotéléphonie mobile ; fourniture d'accès à un réseau informatique mondial ; services d'affichage électronique (télécommunications) ; raccordement par télécommunications à un réseau informatique mondial ; Agences de presse ou d'informations (nouvelles) ; location d'appareil de télécommunication ; émissions radiophoniques ou télévisées ; services de téléconférences ; services de messagerie électronique ; location de temps d'accès à des réseaux informatiques mondiaux ; services de transmission d'informations contenues dans des mini-serveurs et des micro-serveurs par réseaux locaux ",
+      "translation_language": "en",
+      "translation": "Telecommunications; telecommunications information; communications by computer terminals or by fiber optic network; radio or telephone communications; mobile radiotelephone services; provision of access to a global computer network; electronic display services (telecommunications); connection by telecommunications to a global computer network; Press or information (news) agencies; rental of telecommunications apparatus; radio or television broadcasts; teleconferencing services; electronic mail services; rental of access time to global computer networks; transmission services of information contained in mini-servers and micro-servers via local networks"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": ": Conseil en matière de choix et de mise en oeuvre de logiciels ; conversion de données et de programmes informatiques ; conversion de document d'un support physique vers un support informatique ; élaboration (conception), location et analyse de systèmes informatiques ; étude de projets techniques ; étude, recherche et programmation pour ordinateurs ; élaboration (conception) de logiciels de traitement permettant le calcul de performances de dispositifs d'affichage, exploitation de banques de données, conception et développement d'ordinateurs et de logiciels ; mise à jour de logiciel ; recherche et développement de nouveaux produits pour les tiers ; services d'ingénieurs ; travaux d'ingénieurs ; études de projets techniques sans rapport avec la conduite des affaires, essais de matériaux, consultations professionnelles sans rapport avec la conduite des affaires, services de conseil en matière de choix de matériels informatiques, de bases de données, de logiciels ; location de logiciels, élaboration (conception) de logiciels ; programmation pour ordinateurs, dessins industriels, services de dessinateurs.",
+      "translation_language": "en",
+      "translation": "Advice on the choice and implementation of software; conversion of data and computer programs; document conversion from a physical medium to a computer medium; development (design), rental and analysis of computer systems; study of technical projects; study, research and programming for computers; development (design) of processing software enabling the performance calculation of display devices, operation of databases, design and development of computers and software; software update; research and development of new products for third parties; engineering services; engineering works; technical project studies unrelated to the conduct of business, testing of materials, professional consultancy unrelated to the conduct of business, advisory services relating to the choice of computer hardware, databases, software; software rental, development (design) of software; computer programming, industrial designs, designer services."
+    }
+  ],
+  "owner": "HAVAS Société anonyme",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "REGIMBEAU, Delphine BOY",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "29-30 quai de Dion Bouton, 92800 Puteaux",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "HAVAS Société anonyme"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising; business management; data compilation services in computer databases; business data analytics; data and statistical analysis, market research; auditing; data entry, processing and organization services; business administration; office work; dissemination of advertising material (tracts, prospectuses, printed matter, samples); newspaper subscription services (for others); advice on organization and business management; accounting ; reproduction of documents; employment offices; computer file management; organization of exhibitions for commercial or advertising purposes; online advertising on a computer network; rental of advertising time on any means of communication; publication of publicity texts; rental of advertising space; dissemination of advertisements; public relations ; display consulting",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Publicité ; gestion des affaires commerciales ; services de compilation de données dans des bases de données informatiques ; analyses de données commerciales ; analyses de données et statistiques, d'études de marché ; audit ; services de saisie, de traitement et d'organisation de données ; administration commerciale ; travaux de bureau ; diffusion de matériel publicitaire (tract, prospectus, imprimés, échantillons) ; services d'abonnement à des journaux (pour des tiers) ; conseils en organisation et direction des affaires ; comptabilité ; reproduction de documents ; bureaux de placement ; gestion de fichiers informatiques ; organisation d'expositions à buts commerciaux ou de publicité ; publicité en ligne sur un réseau informatique ; location de temps publicitaire sur tout moyen de communication ; publications de textes publicitaires ; locations d'espaces publicitaires ; diffusion d'annonces publicitaires ; relations publiques ; conseil en affichage "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Telecommunications; telecommunications information; communications by computer terminals or by fiber optic network; radio or telephone communications; mobile radiotelephone services; provision of access to a global computer network; electronic display services (telecommunications); connection by telecommunications to a global computer network; Press or information (news) agencies; rental of telecommunications apparatus; radio or television broadcasts; teleconferencing services; electronic mail services; rental of access time to global computer networks; transmission services of information contained in mini-servers and micro-servers via local networks",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Télécommunications ; informations en matière de télécommunications ; communications par terminaux d'ordinateurs ou par réseau de fibres optiques ; communications radiophoniques ou téléphoniques ; services de radiotéléphonie mobile ; fourniture d'accès à un réseau informatique mondial ; services d'affichage électronique (télécommunications) ; raccordement par télécommunications à un réseau informatique mondial ; Agences de presse ou d'informations (nouvelles) ; location d'appareil de télécommunication ; émissions radiophoniques ou télévisées ; services de téléconférences ; services de messagerie électronique ; location de temps d'accès à des réseaux informatiques mondiaux ; services de transmission d'informations contenues dans des mini-serveurs et des micro-serveurs par réseaux locaux "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advice on the choice and implementation of software; conversion of data and computer programs; document conversion from a physical medium to a computer medium; development (design), rental and analysis of computer systems; study of technical projects; study, research and programming for computers; development (design) of processing software enabling the performance calculation of display devices, operation of databases, design and development of computers and software; software update; research and development of new products for third parties; engineering services; engineering works; technical project studies unrelated to the conduct of business, testing of materials, professional consultancy unrelated to the conduct of business, advisory services relating to the choice of computer hardware, databases, software; software rental, development (design) of software; computer programming, industrial designs, designer services.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Conseil en matière de choix et de mise en oeuvre de logiciels ; conversion de données et de programmes informatiques ; conversion de document d'un support physique vers un support informatique ; élaboration (conception), location et analyse de systèmes informatiques ; étude de projets techniques ; étude, recherche et programmation pour ordinateurs ; élaboration (conception) de logiciels de traitement permettant le calcul de performances de dispositifs d'affichage, exploitation de banques de données, conception et développement d'ordinateurs et de logiciels ; mise à jour de logiciel ; recherche et développement de nouveaux produits pour les tiers ; services d'ingénieurs ; travaux d'ingénieurs ; études de projets techniques sans rapport avec la conduite des affaires, essais de matériaux, consultations professionnelles sans rapport avec la conduite des affaires, services de conseil en matière de choix de matériels informatiques, de bases de données, de logiciels ; location de logiciels, élaboration (conception) de logiciels ; programmation pour ordinateurs, dessins industriels, services de dessinateurs."
+        }
+      ]
+    },
+    "id": "beb1e306-07d4-497d-b501-01241caab5c1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00064",
+        "publicationVolume": "05"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeName": "REGIMBEAU, Delphine BOY"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20140106",
+        "applicationNumber": "14 4058607"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340106",
+      "lastPublicationDate": "20140131",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "14 4058607"
+      },
+      "renewalDate": "20240104",
+      "renewalPublishedDate": "20240223"
+    },
+    "version": "20250426155814",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "D.D.O.G. DATA DRIVEN ORGANIC GROWTH"
+    }
+  },
+  "_uri": "/mark/fr/beb1e306-07d4-497d-b501-01241caab5c1",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.817Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

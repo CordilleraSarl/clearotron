@@ -1,0 +1,317 @@
+{
+  "uri": "/mark/jp/c671f0da-7ff0-4e08-bcf2-00ff36338ec3",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "c671f0da-7ff0-4e08-bcf2-00ff36338ec3",
+  "applicationNumber": "H10-040206",
+  "registrationNumber": "4292776",
+  "applicationDate": "1998-05-14",
+  "registrationDate": "1999-07-09",
+  "expiryDate": "2019-07-09",
+  "renewalDate": null,
+  "lastPublicationDate": "1999-09-02",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＡｌｔｉＶｅｃ",
+  "markTransliteration": "ARUCHIBEKKU ARUTIBEKKU BUIIISHII ORUTIBEKKU",
+  "markTranslation": "ALTIVEC",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "理化学機械器具，測定機械器具，配電用又は制御用の機械器具，電池，電気磁気測定器，電線及びケーブル，写真機械器具，映画機械器具，光学機械器具，眼鏡，加工ガラス（建築用のものを除く。），救命用具，電気通信機械器具，レコード，電子応用機械器具及びその部品，オゾン発生器，電解槽，ロケット，遊園地用機械器具，スロットマシン，運動技能訓練用シミュレーター，乗物運転技能訓練用シミュレーター，回転変流機，調相機，電気アイロン，電気式ヘアカーラー，電気ブザー，鉄道用信号機，乗物の故障の警告用の三角標識，発光式又は機械式の道路標識，火災報知機，ガス漏れ警報器，事故防護用手袋，消火器，消火栓，消火ホース用ノズル，消防車，消防艇，スプリンクラー消火装置，盗難警報器，保安用ヘルメット，防火被服，防じんマスク，防毒マスク，磁心，自動車用シガーライター，抵抗線，電極，溶接マスク，映写フィルム，スライドフィルム，スライドフィルム用マウント，録画済みビデオディスク及びビデオテープ，ガソリンステーション用装置，自動販売機，駐車場用硬貨作動式ゲート，金銭登録機，計算尺，硬貨の計数用又は選別用の機械，作業記録機，写真複写機，手動計算機，製図用又は図案用の機械器具，タイムスタンプ，タイムレコーダー，電気計算機，パンチカードシステム機械，票数計算機，ビリングマシン，郵便切手のはり付けチェック装置，ウエイトベルト，ウエットスーツ，浮袋，エアタンク，水泳用浮き板，潜水用機械器具，レギュレーター，アーク溶接機，家庭用テレビゲームおもちゃ，金属溶断機，検卵器，電気溶接装置，電動式扉自動開閉装置，メトロノーム",
+      "translation_language": "en",
+      "translation": "Physics and chemistry equipment, Measuring machinery equipment, Mechanical equipment for power distribution or control, Batteries, Electromagnetism measuring instruments, Cables and cables, Photographic machinery equipment, Film machinery equipment, Optical machinery equipment, Eyeglasses, Processed glasses (for buildings ), Life-saving utensils, telecommunications equipment, records, electronic appliances and appliances and parts thereof, ozone generators, electrolytic cells, rockets, equipment for amusement parks, slot machines, simulators for motor skills training, vehicle driving skills training A triangle sign for warning of vehicle breakdown, a luminescent or mechanical road sign, a fire alarm, a gas Leakage alarm, accident protection gloves, fire extinguisher, fire hydrant, nozzle for fire hose, fire engine, fire brigade, sprinkler fire extinguisher, burglar alarm, safety helmet Fireproof clothing, dust mask, gas mask, magnetic core, automobile cigar lighter, resistance wire, electrode, welding mask, projection film, slide film, slide film mount, pre-recorded video disk and video tape, equipment for gas station Machines for counting or sorting coins, work recorders, photocopiers, manual calculators, machine tools for drawing or drawing, time stamps, time Recorder, electric calculator, punch card system machine, voting machine, billing machine, postage stamp gluing check device, weight belt, wet suit, air bladder, air tank, swimming float board, diving machine equipment, regulator, arc welding machine, Household video game toys, metal fusing machines, ovens, electric Welding apparatus, electric door automatic opening device, metronome"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "ONUKI SHINSUKE",
+  "priorities": [
+    {
+      "priorityDate": "19980514"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Physics and chemistry equipment, Measuring machinery equipment, Mechanical equipment for power distribution or control, Batteries, Electromagnetism measuring instruments, Cables and cables, Photographic machinery equipment, Film machinery equipment, Optical machinery equipment, Eyeglasses, Processed glasses (for buildings ), Life-saving utensils, telecommunications equipment, records, electronic appliances and appliances and parts thereof, ozone generators, electrolytic cells, rockets, equipment for amusement parks, slot machines, simulators for motor skills training, vehicle driving skills training A triangle sign for warning of vehicle breakdown, a luminescent or mechanical road sign, a fire alarm, a gas Leakage alarm, accident protection gloves, fire extinguisher, fire hydrant, nozzle for fire hose, fire engine, fire brigade, sprinkler fire extinguisher, burglar alarm, safety helmet Fireproof clothing, dust mask, gas mask, magnetic core, automobile cigar lighter, resistance wire, electrode, welding mask, projection film, slide film, slide film mount, pre-recorded video disk and video tape, equipment for gas station Machines for counting or sorting coins, work recorders, photocopiers, manual calculators, machine tools for drawing or drawing, time stamps, time Recorder, electric calculator, punch card system machine, voting machine, billing machine, postage stamp gluing check device, weight belt, wet suit, air bladder, air tank, swimming float board, diving machine equipment, regulator, arc welding machine, Household video game toys, metal fusing machines, ovens, electric Welding apparatus, electric door automatic opening device, metronome",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "理化学機械器具，測定機械器具，配電用又は制御用の機械器具，電池，電気磁気測定器，電線及びケーブル，写真機械器具，映画機械器具，光学機械器具，眼鏡，加工ガラス（建築用のものを除く。），救命用具，電気通信機械器具，レコード，電子応用機械器具及びその部品，オゾン発生器，電解槽，ロケット，遊園地用機械器具，スロットマシン，運動技能訓練用シミュレーター，乗物運転技能訓練用シミュレーター，回転変流機，調相機，電気アイロン，電気式ヘアカーラー，電気ブザー，鉄道用信号機，乗物の故障の警告用の三角標識，発光式又は機械式の道路標識，火災報知機，ガス漏れ警報器，事故防護用手袋，消火器，消火栓，消火ホース用ノズル，消防車，消防艇，スプリンクラー消火装置，盗難警報器，保安用ヘルメット，防火被服，防じんマスク，防毒マスク，磁心，自動車用シガーライター，抵抗線，電極，溶接マスク，映写フィルム，スライドフィルム，スライドフィルム用マウント，録画済みビデオディスク及びビデオテープ，ガソリンステーション用装置，自動販売機，駐車場用硬貨作動式ゲート，金銭登録機，計算尺，硬貨の計数用又は選別用の機械，作業記録機，写真複写機，手動計算機，製図用又は図案用の機械器具，タイムスタンプ，タイムレコーダー，電気計算機，パンチカードシステム機械，票数計算機，ビリングマシン，郵便切手のはり付けチェック装置，ウエイトベルト，ウエットスーツ，浮袋，エアタンク，水泳用浮き板，潜水用機械器具，レギュレーター，アーク溶接機，家庭用テレビゲームおもちゃ，金属溶断機，検卵器，電気溶接装置，電動式扉自動開閉装置，メトロノーム"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "07E01",
+          "natGoodsServicesDescription": "Processed glass not for buildings"
+        },
+        {
+          "natClassNumber": "09A01",
+          "natGoodsServicesDescription": "Electric arc welding machines, Electric welding apparatus"
+        },
+        {
+          "natClassNumber": "09A06",
+          "natGoodsServicesDescription": "Ozonizers, Electrolyzers"
+        },
+        {
+          "natClassNumber": "09A45",
+          "natGoodsServicesDescription": "Egg candlers"
+        },
+        {
+          "natClassNumber": "09D01",
+          "natGoodsServicesDescription": "Cash registers, Coin counting and sorting machines, Operation recording machines, Photocopying machines, Manually operated calculators, Drawing or drafting machines, Time stamping machines, Time recording apparatus, Electric calculators, Punch card machines, Voting machines, Billing machines, Apparatus to check mail stamping"
+        },
+        {
+          "natClassNumber": "09E21",
+          "natGoodsServicesDescription": "Vending machines"
+        },
+        {
+          "natClassNumber": "09E22",
+          "natGoodsServicesDescription": "Gasoline station equipment"
+        },
+        {
+          "natClassNumber": "09E26",
+          "natGoodsServicesDescription": "Coin-operated gates for parking lots"
+        },
+        {
+          "natClassNumber": "09G01",
+          "natGoodsServicesDescription": "Life saving apparatus and equipment"
+        },
+        {
+          "natClassNumber": "09G02",
+          "natGoodsServicesDescription": "Fire extinguishers, Fire hydrants, Fire hose nozzles, Sprinkler systems for fire protection"
+        },
+        {
+          "natClassNumber": "09G04",
+          "natGoodsServicesDescription": "Fire alarms, Gas leakage warning apparatus, Anti-theft warning apparatus"
+        },
+        {
+          "natClassNumber": "09G05",
+          "natGoodsServicesDescription": "Protective helmets"
+        },
+        {
+          "natClassNumber": "09G06",
+          "natGoodsServicesDescription": "Railway signal equipment"
+        },
+        {
+          "natClassNumber": "09G07",
+          "natGoodsServicesDescription": "Vehicle breakdown warning triangles, Luminous or mechanical road signs"
+        },
+        {
+          "natClassNumber": "09G51",
+          "natGoodsServicesDescription": "Diving apparatus"
+        },
+        {
+          "natClassNumber": "09G53",
+          "natGoodsServicesDescription": "Amusement park or play ground apparatus"
+        },
+        {
+          "natClassNumber": "09G55",
+          "natGoodsServicesDescription": "Electric automatic door openers"
+        },
+        {
+          "natClassNumber": "09G64",
+          "natGoodsServicesDescription": "Vehicle driver training simulators"
+        },
+        {
+          "natClassNumber": "09G65",
+          "natGoodsServicesDescription": "Sports training simulators"
+        },
+        {
+          "natClassNumber": "10A01",
+          "natGoodsServicesDescription": "Physical or chemical apparatus and instruments"
+        },
+        {
+          "natClassNumber": "10B01",
+          "natGoodsServicesDescription": "Photographic, cinematographic or optical apparatus"
+        },
+        {
+          "natClassNumber": "10C01",
+          "natGoodsServicesDescription": "Measuring apparatus and instruments"
+        },
+        {
+          "natClassNumber": "11A01",
+          "natGoodsServicesDescription": "Electrical distribution or control machines, Rotary converters, Phase modifiers"
+        },
+        {
+          "natClassNumber": "11A03",
+          "natGoodsServicesDescription": "Batteries"
+        },
+        {
+          "natClassNumber": "11A04",
+          "natGoodsServicesDescription": "Electric or magnetic measuring machines and instruments"
+        },
+        {
+          "natClassNumber": "11A05",
+          "natGoodsServicesDescription": "Electric wires and cables"
+        },
+        {
+          "natClassNumber": "11A06",
+          "natGoodsServicesDescription": "Electric flat irons, Electrically heated hair curlers, Electric buzzers"
+        },
+        {
+          "natClassNumber": "11A07"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Electrical communication apparatus and instruments"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, instruments and parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        },
+        {
+          "natClassNumber": "11D01",
+          "natGoodsServicesDescription": "Magnetic cores, Resistance wires, Electrodes"
+        },
+        {
+          "natClassNumber": "12A01",
+          "natGoodsServicesDescription": "Fire boats"
+        },
+        {
+          "natClassNumber": "12A03",
+          "natGoodsServicesDescription": "Rockets"
+        },
+        {
+          "natClassNumber": "12A05",
+          "natGoodsServicesDescription": "Fire engines, Cigar lighters for automobiles"
+        },
+        {
+          "natClassNumber": "17A05",
+          "natGoodsServicesDescription": "Dust masks, Gas masks, Welding masks"
+        },
+        {
+          "natClassNumber": "17A06",
+          "natGoodsServicesDescription": "Fireproof clothing"
+        },
+        {
+          "natClassNumber": "17A08"
+        },
+        {
+          "natClassNumber": "23B01",
+          "natGoodsServicesDescription": "Eyeglasses"
+        },
+        {
+          "natClassNumber": "24A01",
+          "natGoodsServicesDescription": "Video game apparatus for personal use"
+        },
+        {
+          "natClassNumber": "24B02",
+          "natGoodsServicesDescription": "Slot machines"
+        },
+        {
+          "natClassNumber": "24C01",
+          "natGoodsServicesDescription": "Weight belt, Wetsuits, Inflatable swimming floats, Air tanks, Flutter boards, Regulators"
+        },
+        {
+          "natClassNumber": "24C04"
+        },
+        {
+          "natClassNumber": "24E01",
+          "natGoodsServicesDescription": "Records, metronomes"
+        },
+        {
+          "natClassNumber": "24E02"
+        },
+        {
+          "natClassNumber": "25B01",
+          "natGoodsServicesDescription": "Calculating scales, slide-rules"
+        },
+        {
+          "natClassNumber": "26D01",
+          "natGoodsServicesDescription": "Cinematographic films, Slide films, Transparencies, Prerecorded videodiscs or tapes"
+        }
+      ]
+    },
+    "id": "c671f0da-7ff0-4e08-bcf2-00ff36338ec3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19980514"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "ONUKI SHINSUKE",
+        "representativeNativeName": "大貫　進介"
+      },
+      {
+        "representativeName": "HONJO  YOSHINORI",
+        "representativeNativeName": "本城　雅則"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19980514",
+        "applicationNumber": "H10-040206"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20190709",
+      "lastPublicationDate": "19990902",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19990709",
+        "registrationNumber": "4292776"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "ALTIVEC",
+      "markTransliteration": "ARUCHIBEKKU ARUTIBEKKU BUIIISHII ORUTIBEKKU",
+      "markVerbalElementText": "ＡｌｔｉＶｅｃ"
+    }
+  },
+  "_uri": "/mark/jp/c671f0da-7ff0-4e08-bcf2-00ff36338ec3",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.461Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

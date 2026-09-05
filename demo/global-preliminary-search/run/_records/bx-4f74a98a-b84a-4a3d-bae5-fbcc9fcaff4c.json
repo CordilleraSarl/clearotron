@@ -1,0 +1,156 @@
+{
+  "uri": "/mark/bx/4f74a98a-b84a-4a3d-bae5-fbcc9fcaff4c",
+  "provider": "clarivate",
+  "office": "bx",
+  "guid": "4f74a98a-b84a-4a3d-bae5-fbcc9fcaff4c",
+  "applicationNumber": "1240022",
+  "registrationNumber": "913666",
+  "applicationDate": "2012-01-16",
+  "registrationDate": "2012-04-10",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2012-04-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "Vanderven & Vanderven Oriental Art",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    16,
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        16
+      ],
+      "language": "nl",
+      "description": "Papier, karton en hieruit vervaardigde producten voor zover niet begrepen in andere klassen; drukwerken; foto's; verpakkingsmateriaal van papier, karton of plastic voor zover niet begrepen in andere klassen; materiaal voor kunstenaars.",
+      "translation_language": "en",
+      "translation": "Paper, cardboard and goods made from these materials, not included in other classes; printed matter; photos; packaging material of paper, cardboard or plastic not included in other classes; material for artists."
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "Commercieel beheer van zaken; marketing en reclame ten behoeve van kunst; administratieve diensten; bemiddeling in commerciële zaken bij aan- en verkoop van kunst; organisatie van tentoonstellingen en kunstbeurzen voor commerciële of publicitaire doeleinden; uitgifte van reclameteksten.",
+      "translation_language": "en",
+      "translation": "Commercial business management; marketing and advertising for art; administrative services; mediation in commercial matters relating to the purchase and sale of art; organization of exhibitions and art fairs for commercial or advertising purposes; issuance of advertisements."
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Organisatie van tentoonstellingen en kunstbeurzen voor culturele of educatieve doeleinden; uitgifte van niet-publicitaire teksten in de vorm van brochures en catalogi; organisatie van tentoonstellingen en kunstbeurzen voor culturele of educatieve doeleinden.",
+      "translation_language": "en",
+      "translation": "Organization of exhibitions and art fairs for cultural or educational purposes; issuance of non-publicity texts in the form of brochures and catalogues; organization of exhibitions and art fairs for cultural or educational purposes."
+    }
+  ],
+  "owner": "Floris J. van der Ven",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "Intellectueel Eigendom Advocaten",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Kastanjelaan 9, 5268 CA Helvoirt",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "Floris J. van der Ven"
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Paper, cardboard and goods made from these materials, not included in other classes; printed matter; photos; packaging material of paper, cardboard or plastic not included in other classes; material for artists.",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Papier, karton en hieruit vervaardigde producten voor zover niet begrepen in andere klassen; drukwerken; foto's; verpakkingsmateriaal van papier, karton of plastic voor zover niet begrepen in andere klassen; materiaal voor kunstenaars."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Commercial business management; marketing and advertising for art; administrative services; mediation in commercial matters relating to the purchase and sale of art; organization of exhibitions and art fairs for commercial or advertising purposes; issuance of advertisements.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Commercieel beheer van zaken; marketing en reclame ten behoeve van kunst; administratieve diensten; bemiddeling in commerciële zaken bij aan- en verkoop van kunst; organisatie van tentoonstellingen en kunstbeurzen voor commerciële of publicitaire doeleinden; uitgifte van reclameteksten."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Organization of exhibitions and art fairs for cultural or educational purposes; issuance of non-publicity texts in the form of brochures and catalogues; organization of exhibitions and art fairs for cultural or educational purposes.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Organisatie van tentoonstellingen en kunstbeurzen voor culturele of educatieve doeleinden; uitgifte van niet-publicitaire teksten in de vorm van brochures en catalogi; organisatie van tentoonstellingen en kunstbeurzen voor culturele of educatieve doeleinden."
+        }
+      ]
+    },
+    "id": "4f74a98a-b84a-4a3d-bae5-fbcc9fcaff4c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "0410"
+      }
+    ],
+    "recordLastUpdated": "20250623",
+    "registrationOfficeCode": "BX",
+    "registrationOfficeName": "Benelux",
+    "representatives": [
+      {
+        "representativeAddress": "De Lairessestraat 107, 1071 NX Amsterdam",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "Intellectueel Eigendom Advocaten"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120116",
+        "applicationNumber": "1240022"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20120410",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20120410",
+        "registrationNumber": "913666"
+      }
+    },
+    "version": "20250623181245",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Vanderven & Vanderven Oriental Art"
+    }
+  },
+  "_uri": "/mark/bx/4f74a98a-b84a-4a3d-bae5-fbcc9fcaff4c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.805Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "uri": "/mark/ro/263e543b-2fb1-4925-9ed0-6cef333c5724",
+  "provider": "clarivate",
+  "office": "ro",
+  "guid": "263e543b-2fb1-4925-9ed0-6cef333c5724",
+  "applicationNumber": "M 2013 07666",
+  "registrationNumber": "130055",
+  "applicationDate": "2013-10-28",
+  "registrationDate": "2014-05-12",
+  "expiryDate": "2033-10-28",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "avenor college creatori de viitor",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    35,
+    41,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Aparate şi instrumente ştiinţifice, nautice, geodezice, fotografice, cinematografice, optice, de cântărire, de măsurare, de semnalizare, de control (verificare), de siguranţă (salvare) şi didactice;aparate şi instrumente pentru conducerea, distribuirea, transformarea, acumularea, reglarea sau comanda curentului electric;aparate pentru înregistrarea, transmiterea, reproducerea sunetelor sau imaginilor;suporţi de înregistrare magnetici, discuri acustice;compact discuri, DVD-uri şi alţi suporţi de înregistrare digitală, mecanisme pentru aparate cu preplată;case înregistratoare, maşini de calculat, echipamente pentru tratarea informaţiei şi calculatoare;software pentru calculatoare, extinctoare.",
+      "translation_language": "en",
+      "translation": "Scientific, nautical, geodetic, photographic, cinematographic, optical, weighing, measuring, signaling, checking, safety and teaching apparatus and instruments; apparatus and instruments for conducting, distributing, transforming, adjusting or controlling electric current; apparatus for recording, transmitting, reproducing sound or images; magnetic recording media, acoustic discs; compact discs, DVDs and other digital recording media; pay-as-you-record mechanisms; recorders,, information processing equipment and computers; computer software, fire extinguishers."
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "ro",
+      "description": "Hârtie, carton şi produse din aceste materiale, necuprinse în alte clase;produse de imprimerie;articole pentru legătorie;fotografii;papetărie;adezivi (materiale colante) pentru papetărie sau menaj;materiale pentru artişti;pensule;maşini de scris şi articole de birou (cu excepţia mobilierului);materiale de instruire sau învăţământ (cu excepţia aparatelor);materiale plastice pentru ambalaj (necuprinse în alte clase);caractere tipografice;clişee.",
+      "translation_language": "en",
+      "translation": "Paper, cardboard and goods made from these materials, not included in other classes, printed matter, binding articles, photographs, stationery, adhesives for stationery or household purposes, materials for artists, brushes, writing machines and office requisites except furniture), instructional or teaching material (except apparatus), plastics for packaging (not included in other classes), typographical characters, clichés."
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ro",
+      "description": "Publicitate;gestiunea afacerilor comerciale;administraţie comercială;lucrări de birou.",
+      "translation_language": "en",
+      "translation": "Advertising; business management; business administration; office functions."
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ro",
+      "description": "Educaţie;instruire;divertisment;activităţi sportive şi culturale.",
+      "translation_language": "en",
+      "translation": "Education, training; entertainment; sporting and cultural activities."
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "ro",
+      "description": "Servicii medicale;servicii veterinare;servicii de igienă şi de îngrijire a frumuseţii pentru oameni sau animale;servicii de agricultură, horticultură şi de silvicultură.",
+      "translation_language": "en",
+      "translation": "Medical services; veterinary services; hygienic and beauty care services for people or animals; agricultural, horticultural and forestry services."
+    }
+  ],
+  "owner": "SEGĂRCEANU DIANA-ILEANA",
+  "ownerNative": null,
+  "ownerCountry": "RO",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Str. Mihail Eminescu nr. 94A, Sat Izvorani, Com. Ciolpani, Jud. Ilfov",
+        "applicantAddressCountryCode": "RO",
+        "applicantAddressCountryName": "Romania",
+        "applicantName": "SEGĂRCEANU DIANA-ILEANA"
+      },
+      {
+        "applicantAddress": "Str. Mihail Eminescu nr. 94A, Sat Izvorani, Com. Ciolpani, Jud. Ilfov",
+        "applicantAddressCountryCode": "RO",
+        "applicantAddressCountryName": "Romania",
+        "applicantName": "SEGĂRCEANU FLORIN"
+      }
+    ],
+    "applicationLanguageCode": "ro",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific, nautical, geodetic, photographic, cinematographic, optical, weighing, measuring, signaling, checking, safety and teaching apparatus and instruments; apparatus and instruments for conducting, distributing, transforming, adjusting or controlling electric current; apparatus for recording, transmitting, reproducing sound or images; magnetic recording media, acoustic discs; compact discs, DVDs and other digital recording media; pay-as-you-record mechanisms; recorders,, information processing equipment and computers; computer software, fire extinguishers.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Aparate şi instrumente ştiinţifice, nautice, geodezice, fotografice, cinematografice, optice, de cântărire, de măsurare, de semnalizare, de control (verificare), de siguranţă (salvare) şi didactice;aparate şi instrumente pentru conducerea, distribuirea, transformarea, acumularea, reglarea sau comanda curentului electric;aparate pentru înregistrarea, transmiterea, reproducerea sunetelor sau imaginilor;suporţi de înregistrare magnetici, discuri acustice;compact discuri, DVD-uri şi alţi suporţi de înregistrare digitală, mecanisme pentru aparate cu preplată;case înregistratoare, maşini de calculat, echipamente pentru tratarea informaţiei şi calculatoare;software pentru calculatoare, extinctoare."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Paper, cardboard and goods made from these materials, not included in other classes, printed matter, binding articles, photographs, stationery, adhesives for stationery or household purposes, materials for artists, brushes, writing machines and office requisites except furniture), instructional or teaching material (except apparatus), plastics for packaging (not included in other classes), typographical characters, clichés.",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Hârtie, carton şi produse din aceste materiale, necuprinse în alte clase;produse de imprimerie;articole pentru legătorie;fotografii;papetărie;adezivi (materiale colante) pentru papetărie sau menaj;materiale pentru artişti;pensule;maşini de scris şi articole de birou (cu excepţia mobilierului);materiale de instruire sau învăţământ (cu excepţia aparatelor);materiale plastice pentru ambalaj (necuprinse în alte clase);caractere tipografice;clişee."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising; business management; business administration; office functions.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Publicitate;gestiunea afacerilor comerciale;administraţie comercială;lucrări de birou."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education, training; entertainment; sporting and cultural activities.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Educaţie;instruire;divertisment;activităţi sportive şi culturale."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Medical services; veterinary services; hygienic and beauty care services for people or animals; agricultural, horticultural and forestry services.",
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii medicale;servicii veterinare;servicii de igienă şi de îngrijire a frumuseţii pentru oameni sau animale;servicii de agricultură, horticultură şi de silvicultură."
+        }
+      ]
+    },
+    "id": "263e543b-2fb1-4925-9ed0-6cef333c5724",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "alb, gri, mov, albastru, galben, verde, portocaliu, maro"
+      }
+    ],
+    "markImageViennaClassification": [
+      "05.05.19",
+      "29.01.15"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250626",
+    "registrationOfficeCode": "RO",
+    "registrationOfficeName": "Romania",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20131028",
+        "applicationNumber": "M 2013 07666"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331028",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20140512",
+        "registrationNumber": "130055"
+      }
+    },
+    "version": "20250626161644",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "avenor college creatori de viitor"
+    }
+  },
+  "_uri": "/mark/ro/263e543b-2fb1-4925-9ed0-6cef333c5724",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

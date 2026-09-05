@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/es/4c972e7b-4c52-4945-8da8-edcfd58ae976",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "4c972e7b-4c52-4945-8da8-edcfd58ae976",
+  "applicationNumber": "4182042 M8",
+  "registrationNumber": "4182042 M8",
+  "applicationDate": "2022-08-26",
+  "registrationDate": "2023-03-21",
+  "expiryDate": "2032-08-25",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-09-26",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JOVEN ORQUESTA SINFONICA DE CASTILLA Y LEON JOSCYL",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de orquestas; actuaciones musicales; conciertos de musica; clases de musica; direccion de espectaculos musicales; enseñanza de la apreciacion de la musica; facilitacion de musica digital desde internet; gestion artistica de espectaculos musicales; grupo musical (entretenimiento); instruccion musical; organizacion de concursos de musica; organizacion de entretenimiento musical; organizacion de eventos musicales; servicios de biblioteca musical; publicaciones musicales; servicios de entretenimiento; servicios de edicion de libros de musica; servicios de compositores y autores de musica; suministro de publicaciones electronicas en linea no descargables, en el ambito musical; suministro en linea de musica no descargable; servicios de ocio; servicios de composicion musical; alquiler de cintas de audio con musica grabada; alquiler de instrumentos musicales; preparacion, celebracion y organizacion de conciertos; servicios de reservas para conciertos; edicion o grabacion de sonidos e imagenes; estudios de grabacion; produccion de grabaciones de sonido y musica; servicios de registro de sonido; instruccion en canto; academias [educacion]; programas de entretenimiento por radio; servicios de reserva de entradas para espectaculos",
+      "translation_language": "en",
+      "translation": "ORCHESTRA SERVICES; MUSICAL PERFORMANCES; MUSIC CONCERTS; MUSIC CLASSES; DIRECTION OF MUSICAL SHOWS; TEACHING THE APPRECIATION OF MUSIC; PROVIDING DIGITAL MUSIC FROM THE INTERNET; ARTISTIC MANAGEMENT OF MUSICAL SHOWS; MUSIC GROUP (ENTERTAINMENT); MUSIC INSTRUCTION; ORGANIZATION OF MUSIC COMPETITIONS; MUSIC ENTERTAINMENT ORGANIZATION; ORGANIZATION OF MUSICAL EVENTS; MUSIC LIBRARY SERVICES; MUSICAL PUBLICATIONS; ENTERTAINMENT SERVICES; MUSIC BOOK PUBLISHING SERVICES; SERVICES OF COMPOSERS AND MUSIC AUTHORS; SUPPLY OF ONLINE NON-DOWNLOADABLE ELECTRONIC PUBLICATIONS IN THE MUSICAL FIELD; ONLINE SUPPLY OF NON-DOWNLOADABLE MUSIC; LEISURE SERVICES; MUSICAL COMPOSITION SERVICES; RENTAL OF AUDIO TAPES WITH RECORDED MUSIC; RENT OF MUSICAL INSTRUMENTS; PREPARATION, CELEBRATION AND ORGANIZATION OF CONCERTS; RESERVATION SERVICES FOR CONCERTS; EDITING OR RECORDING OF SOUNDS AND IMAGES; RECORDING STUDIOS; PRODUCTION OF SOUND AND MUSIC RECORDINGS; SOUND RECORDING SERVICES; SINGING INSTRUCTION; ACADEMIES [EDUCATION]; RADIO ENTERTAINMENT PROGRAMS; TICKET BOOKING SERVICES FOR SHOWS"
+    }
+  ],
+  "owner": "FUNDACION UNIVERSIDADES Y ENSEÑANZAS SUPERIORES DE CASTILLA Y LEON",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Javier Ungría López",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "FUNDACION UNIVERSIDADES Y ENSEÑANZAS SUPERIORES DE CASTILLA Y LEON"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "ORCHESTRA SERVICES; MUSICAL PERFORMANCES; MUSIC CONCERTS; MUSIC CLASSES; DIRECTION OF MUSICAL SHOWS; TEACHING THE APPRECIATION OF MUSIC; PROVIDING DIGITAL MUSIC FROM THE INTERNET; ARTISTIC MANAGEMENT OF MUSICAL SHOWS; MUSIC GROUP (ENTERTAINMENT); MUSIC INSTRUCTION; ORGANIZATION OF MUSIC COMPETITIONS; MUSIC ENTERTAINMENT ORGANIZATION; ORGANIZATION OF MUSICAL EVENTS; MUSIC LIBRARY SERVICES; MUSICAL PUBLICATIONS; ENTERTAINMENT SERVICES; MUSIC BOOK PUBLISHING SERVICES; SERVICES OF COMPOSERS AND MUSIC AUTHORS; SUPPLY OF ONLINE NON-DOWNLOADABLE ELECTRONIC PUBLICATIONS IN THE MUSICAL FIELD; ONLINE SUPPLY OF NON-DOWNLOADABLE MUSIC; LEISURE SERVICES; MUSICAL COMPOSITION SERVICES; RENTAL OF AUDIO TAPES WITH RECORDED MUSIC; RENT OF MUSICAL INSTRUMENTS; PREPARATION, CELEBRATION AND ORGANIZATION OF CONCERTS; RESERVATION SERVICES FOR CONCERTS; EDITING OR RECORDING OF SOUNDS AND IMAGES; RECORDING STUDIOS; PRODUCTION OF SOUND AND MUSIC RECORDINGS; SOUND RECORDING SERVICES; SINGING INSTRUCTION; ACADEMIES [EDUCATION]; RADIO ENTERTAINMENT PROGRAMS; TICKET BOOKING SERVICES FOR SHOWS",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de orquestas; actuaciones musicales; conciertos de musica; clases de musica; direccion de espectaculos musicales; enseñanza de la apreciacion de la musica; facilitacion de musica digital desde internet; gestion artistica de espectaculos musicales; grupo musical (entretenimiento); instruccion musical; organizacion de concursos de musica; organizacion de entretenimiento musical; organizacion de eventos musicales; servicios de biblioteca musical; publicaciones musicales; servicios de entretenimiento; servicios de edicion de libros de musica; servicios de compositores y autores de musica; suministro de publicaciones electronicas en linea no descargables, en el ambito musical; suministro en linea de musica no descargable; servicios de ocio; servicios de composicion musical; alquiler de cintas de audio con musica grabada; alquiler de instrumentos musicales; preparacion, celebracion y organizacion de conciertos; servicios de reservas para conciertos; edicion o grabacion de sonidos e imagenes; estudios de grabacion; produccion de grabaciones de sonido y musica; servicios de registro de sonido; instruccion en canto; academias [educacion]; programas de entretenimiento por radio; servicios de reserva de entradas para espectaculos"
+        }
+      ]
+    },
+    "id": "4c972e7b-4c52-4945-8da8-edcfd58ae976",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "6255"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "representatives": [
+      {
+        "representativeAddress": "Av. Ramon y Cajal, 78 28043 Madrid MADRID",
+        "representativeName": "Javier Ungría López"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220826",
+        "applicationNumber": "4182042 M8"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320825",
+      "lastPublicationDate": "20220926",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20230321",
+        "registrationNumber": "4182042 M8"
+      }
+    },
+    "version": "20260427170613",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOVEN ORQUESTA SINFONICA DE CASTILLA Y LEON JOSCYL"
+    }
+  },
+  "_uri": "/mark/es/4c972e7b-4c52-4945-8da8-edcfd58ae976",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

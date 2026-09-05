@@ -1,0 +1,354 @@
+{
+  "uri": "/mark/us/fb1c6ae6-a676-4278-a5c1-d80204af0f62",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "fb1c6ae6-a676-4278-a5c1-d80204af0f62",
+  "applicationNumber": "98015160",
+  "registrationNumber": "7458824",
+  "applicationDate": "2023-05-26",
+  "registrationDate": "2024-07-23",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Distributorship services in the field of pipes, valves, fittings and industrial supplies; On-line retail store services featuring pipes, valves, fittings and industrial supplies; Value-added reseller services, namely, distributorship services featuring pipes, valves, fittings and industrial supplies",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": "INT. CL. 40 Custom fabrication of pipes, valves, fittings and industrial supplies",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Product design and development in the field of sprinkler systems and other pipe systems",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "VENTURI SUPPLY LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Elizabeth M. Fox",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2021 MCKINNEY AVENUE, DALLAS, TX, 75201",
+        "applicantAddressCity": "DALLAS",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "75201",
+        "applicantAddressStateName": "TEXAS",
+        "applicantAddressStreet": "2021 MCKINNEY AVENUE",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "VENTURI SUPPLY LLC",
+        "applicantSecondaryAddressUnit": "SUITE 1200"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "2021 MCKINNEY AVENUE, DALLAS, TEXAS, 75201",
+            "city": "DALLAS",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "VENTURI SUPPLY LLC",
+            "postalCode": "75201",
+            "secondaryAddressUnit": "SUITE 1200",
+            "stateName": "TEXAS",
+            "street": "2021 MCKINNEY AVENUE"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "TCFIV BPS INTERMEDIATE HOLDCO LLC"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "1180 PEACHTREE STREET, MARK RUSSELL, ATLANTA, GA 30309",
+            "addressLines": [
+              "KING & SPALDING",
+              "1180 PEACHTREE STREET",
+              "MARK RUSSELL",
+              "ATLANTA, GA 30309"
+            ],
+            "name": "KING & SPALDING"
+          }
+        ],
+        "descriptionText": "CHANGE OF NAME",
+        "executedDate": "20230713",
+        "recordedDate": "20230912",
+        "reelFrameNumber": "8194/0795"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Distributorship services in the field of pipes, valves, fittings and industrial supplies; On-line retail store services featuring pipes, valves, fittings and industrial supplies; Value-added reseller services, namely, distributorship services featuring pipes, valves, fittings and industrial supplies"
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsServicesDescription": "INT. CL. 40 Custom fabrication of pipes, valves, fittings and industrial supplies"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Product design and development in the field of sprinkler systems and other pipe systems"
+        }
+      ]
+    },
+    "id": "fb1c6ae6-a676-4278-a5c1-d80204af0f62",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20240723",
+        "descriptionText": "REGISTERED-SUPPLEMENTAL REGISTER"
+      },
+      {
+        "date": "20240723",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20240614",
+        "descriptionText": "APPROVED FOR REGISTRATION SUPPLEMENTAL REGISTER"
+      },
+      {
+        "date": "20240614",
+        "descriptionText": "USE AMENDMENT ACCEPTED"
+      },
+      {
+        "date": "20240522",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20240522",
+        "descriptionText": "TEAS AMENDMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20240522",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20240522",
+        "descriptionText": "AMENDMENT TO USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20240222",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20240222",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20240222",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20240220",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20230920",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20230627",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20230530",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "2021 McKinney Avenue, Suite 1200, Dallas, TX, 75201",
+        "city": "Dallas",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "TCFIV BPS Intermediate Holdco LLC",
+        "postalCode": "75201",
+        "stateName": "TEXAS",
+        "street": "2021 McKinney Avenue, Suite 1200"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "2021 MCKINNEY AVENUE, DALLAS, TX, 75201",
+        "city": "DALLAS",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "VENTURI SUPPLY LLC",
+        "postalCode": "75201",
+        "secondaryAddressUnit": "SUITE 1200",
+        "stateName": "TEXAS",
+        "street": "2021 MCKINNEY AVENUE"
+      },
+      {
+        "address": "2021 MCKINNEY AVENUE, DALLAS, TX, 75201",
+        "city": "DALLAS",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "VENTURI SUPPLY LLC",
+        "postalCode": "75201",
+        "secondaryAddressUnit": "SUITE 1200",
+        "stateName": "TEXAS",
+        "street": "2021 MCKINNEY AVENUE"
+      }
+    ],
+    "postApplicationOwners": [
+      {
+        "address": "2021 MCKINNEY AVENUE, DALLAS, TX, 75201",
+        "city": "DALLAS",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "VENTURI SUPPLY LLC",
+        "postalCode": "75201",
+        "secondaryAddressUnit": "SUITE 1200",
+        "stateName": "TEXAS",
+        "street": "2021 MCKINNEY AVENUE"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "registrationRecords": [
+      {
+        "effectiveDate": "20240723",
+        "recordInterestedOfficeCode": "US",
+        "registrationRecordType": "registration - US Supplemental"
+      }
+    ],
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "ATLANTA, GA 30309, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "ATLANTA, GA 30309",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Elizabeth M. Fox KING & SPALDING LLP, 1180 PEACHTREE STREET, NE"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "ATLANTA, GA 30309, UNITED STATES",
+        "representativeAddressLines": [
+          "ATLANTA, GA 30309",
+          "UNITED STATES"
+        ],
+        "representativeName": "Elizabeth M. Fox"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230526",
+        "applicationNumber": "98015160"
+      },
+      "applicationAmendmentDate": [
+        "20240614"
+      ],
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "40",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20230524"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "40",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20230710"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20240723",
+        "markOfficialStatusEvents": [
+          "Supplemental Register",
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20240723",
+        "registrationNumber": "7458824"
+      }
+    },
+    "version": "20260113194059",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/us/fb1c6ae6-a676-4278-a5c1-d80204af0f62",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.179Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

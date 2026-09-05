@@ -1,0 +1,271 @@
+{
+  "uri": "/mark/jp/44675146-09e8-42f9-a181-c2340ae18c64",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "44675146-09e8-42f9-a181-c2340ae18c64",
+  "applicationNumber": "2010-005002",
+  "registrationNumber": "5348642",
+  "applicationDate": "2010-01-26",
+  "registrationDate": "2010-08-27",
+  "expiryDate": "2030-08-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2010-09-28",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ｉｎｖｉｓａｌｉｇｎ",
+  "markTransliteration": "INBISUARAIN INBIZARAIN",
+  "markTranslation": "INVISALIGN",
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    40,
+    41,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "コンピュータソフトウェア，歯の移動及び治療計画案を描写するために使用されるデジタル画像用ソフトウェア，個人的にカスタマイズされた歯列矯正処置コースの作成のために使用されるコンピュータソフトウェア，歯列矯正処置コース案及びそれに関する患者のデータを提供・追跡記録及び修正するために使用されるコンピュータソフトウェア",
+      "translation_language": "en",
+      "translation": "Computer software, software for digital imaging used to deliver dental movement and treatment plan drafts, computer software used for the creation of personally customized orthodontic treatment courses, orthodontic treatment courses Provide patient data related to the idea and its related computer software used for tracking and correcting"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": null,
+      "description": "歯列矯正機械器具，その他の歯科用機械器具，その他の医療用機械器具",
+      "translation_language": "en",
+      "translation": "Orthodontic appliances, other dental machinery and equipment, other medical machinery tools"
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": "歯列矯正機械器具の特別注文による製造，医療用機械器具の組み立て・製造・加工",
+      "translation_language": "en",
+      "translation": "Special order manufacturing of orthodontic appliances, assembly / manufacture / processing of medical equipment for medical use"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "歯科及び歯列矯正の分野における訓練，技芸・スポーツ又は知識の教授",
+      "translation_language": "en",
+      "translation": "Training in the field of dentistry and orthodontics, professor of arts and sports or knowledge"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "他人のためのコンピュータハードウェア及びソフトウェアシステムの選択・実施及び使用の分野における助言，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，歯科用の矯正器具の研究開発",
+      "translation_language": "en",
+      "translation": "Advice in the field of selection, implementation and use of computer hardware and software systems for others, advice in the field of electronic computer / automobile and other applications thereof requires highly specialized knowledge / skills or experience Introduction and explanation of necessary machine performance and operation method, research and development of orthodontic orthodontic appliances"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": null,
+      "description": "歯科医業，歯列矯正治療，歯科及び歯列矯正に関する助言，医療情報の提供",
+      "translation_language": "en",
+      "translation": "Advice on dentistry, orthodontic treatment, dentistry and orthodontics, providing medical information"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YASUMURA TAKAAKI",
+  "priorities": [
+    {
+      "priorityDate": "20090921"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software, software for digital imaging used to deliver dental movement and treatment plan drafts, computer software used for the creation of personally customized orthodontic treatment courses, orthodontic treatment courses Provide patient data related to the idea and its related computer software used for tracking and correcting",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "コンピュータソフトウェア，歯の移動及び治療計画案を描写するために使用されるデジタル画像用ソフトウェア，個人的にカスタマイズされた歯列矯正処置コースの作成のために使用されるコンピュータソフトウェア，歯列矯正処置コース案及びそれに関する患者のデータを提供・追跡記録及び修正するために使用されるコンピュータソフトウェア"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Orthodontic appliances, other dental machinery and equipment, other medical machinery tools",
+          "intClassNumber": "10",
+          "intGoodsServicesDescription": "歯列矯正機械器具，その他の歯科用機械器具，その他の医療用機械器具"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Special order manufacturing of orthodontic appliances, assembly / manufacture / processing of medical equipment for medical use",
+          "intClassNumber": "40",
+          "intGoodsServicesDescription": "歯列矯正機械器具の特別注文による製造，医療用機械器具の組み立て・製造・加工"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Training in the field of dentistry and orthodontics, professor of arts and sports or knowledge",
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "歯科及び歯列矯正の分野における訓練，技芸・スポーツ又は知識の教授"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advice in the field of selection, implementation and use of computer hardware and software systems for others, advice in the field of electronic computer / automobile and other applications thereof requires highly specialized knowledge / skills or experience Introduction and explanation of necessary machine performance and operation method, research and development of orthodontic orthodontic appliances",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "他人のためのコンピュータハードウェア及びソフトウェアシステムの選択・実施及び使用の分野における助言，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，歯科用の矯正器具の研究開発"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advice on dentistry, orthodontic treatment, dentistry and orthodontics, providing medical information",
+          "intClassNumber": "44",
+          "intGoodsServicesDescription": "歯科医業，歯列矯正治療，歯科及び歯列矯正に関する助言，医療情報の提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        },
+        {
+          "natClassNumber": "10D01",
+          "natGoodsServicesDescription": "Medical machines and apparatus"
+        },
+        {
+          "natClassNumber": "10D02"
+        },
+        {
+          "natClassNumber": "40C10",
+          "natGoodsServicesDescription": "Processing of artificial limbs or artificial teeth (including processing of medical materials)"
+        },
+        {
+          "natClassNumber": "40H99"
+        },
+        {
+          "natClassNumber": "41A01",
+          "natGoodsServicesDescription": "Educational and instruction services relating to arts, crafts, sports or general knowledge"
+        },
+        {
+          "natClassNumber": "42N03",
+          "natGoodsServicesDescription": "Designing of machines, apparatus, instruments [including their parts] or systems composed of such machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42P03",
+          "natGoodsServicesDescription": "Technical advice relating to performance, operation, etc. of computers, automobiles and other machines that require high levels of personal knowledge, skill or experience of the operators to meet the required accuracy in operating them"
+        },
+        {
+          "natClassNumber": "42Q99",
+          "natGoodsServicesDescription": "Testing or research on machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42V02",
+          "natGoodsServicesDescription": "Medical services, Providing medical information, Physical examination, Dentistry, Preparation and dispensing of medications"
+        }
+      ]
+    },
+    "id": "44675146-09e8-42f9-a181-c2340ae18c64",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "05.05.19.00",
+      "05.05.20.00",
+      "05.05.21.00",
+      "26.01.01.00",
+      "26.01.04.00",
+      "26.01.15.00",
+      "26.02.05.00",
+      "26.07.01.00",
+      "26.13.25.05"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20090921"
+      }
+    ],
+    "recordLastUpdated": "20250711",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YASUMURA TAKAAKI",
+        "representativeNativeName": "安村　高明"
+      },
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20100126",
+        "applicationNumber": "2010-005002"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300827",
+      "lastPublicationDate": "20100928",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20100827",
+        "registrationNumber": "5348642"
+      }
+    },
+    "version": "20250711084322",
+    "wordMarkSpecification": {
+      "markTranslation": "INVISALIGN",
+      "markTransliteration": "INBISUARAIN INBIZARAIN",
+      "markVerbalElementText": "ｉｎｖｉｓａｌｉｇｎ"
+    }
+  },
+  "_uri": "/mark/jp/44675146-09e8-42f9-a181-c2340ae18c64",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.739Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

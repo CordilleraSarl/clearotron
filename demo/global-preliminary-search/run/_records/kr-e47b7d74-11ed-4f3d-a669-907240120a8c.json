@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/kr/e47b7d74-11ed-4f3d-a669-907240120a8c",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "e47b7d74-11ed-4f3d-a669-907240120a8c",
+  "applicationNumber": "40-2021-0229054",
+  "registrationNumber": null,
+  "applicationDate": "2021-11-11",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "K-VANKorea PASSENGER TRANSPORTATION EXPERT",
+  "markTransliteration": "K-VANKorea PASSENGER TRANSPORTATION EXPERT",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "내비게이션 소프트웨어, 데이터 검색이 가능한 컴퓨터 소프트웨어, 데이터 자동저장용 컴퓨터 소프트웨어, 데이터 처리용 소프트웨어, 사물 인터넷 구현에 사용되는 컴퓨터 응용 소프트웨어, 애플리케이션 및 데이터베이스 통합용 컴퓨터 소프트웨어, 이동전화기용 컴퓨터 응용소프트웨어, 인스턴트 메시징 소프트웨어, 차량 안전운전을 위한 기록된 컴퓨터 소프트웨어, 컴퓨터 전자 상거래 소프트웨어, 컴퓨터네트워크를 통한 정보 검색/송신용 소프트웨어",
+      "translation_language": "en",
+      "translation": "Navigation software, computer software capable of data retrieval, computer software for automatic data storage, software for data processing, computer application software used to implement the Internet of Things, computer software for application and database integration, computer application software for mobile phones, instant messaging software, recorded computer software for safe driving of vehicles, computer e-commerce software, software for information retrieval/transmission through computer networks."
+    }
+  ],
+  "owner": "K-Van Korea Inc.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "카이특허법인(유한) (KAI International IP Law Firm)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 서초구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "K-Van Korea Inc.",
+        "applicantNativeName": "주식회사 케이밴코리아"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Navigation software, computer software capable of data retrieval, computer software for automatic data storage, software for data processing, computer application software used to implement the Internet of Things, computer software for application and database integration, computer application software for mobile phones, instant messaging software, recorded computer software for safe driving of vehicles, computer e-commerce software, software for information retrieval/transmission through computer networks.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "내비게이션 소프트웨어, 데이터 검색이 가능한 컴퓨터 소프트웨어, 데이터 자동저장용 컴퓨터 소프트웨어, 데이터 처리용 소프트웨어, 사물 인터넷 구현에 사용되는 컴퓨터 응용 소프트웨어, 애플리케이션 및 데이터베이스 통합용 컴퓨터 소프트웨어, 이동전화기용 컴퓨터 응용소프트웨어, 인스턴트 메시징 소프트웨어, 차량 안전운전을 위한 기록된 컴퓨터 소프트웨어, 컴퓨터 전자 상거래 소프트웨어, 컴퓨터네트워크를 통한 정보 검색/송신용 소프트웨어"
+        }
+      ]
+    },
+    "id": "e47b7d74-11ed-4f3d-a669-907240120a8c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.11.08",
+      "26.11.21",
+      "27.05.08",
+      "27.09.11"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260605",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 강남구 논현로**길 ** ,*층, *층 (역삼동)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "카이특허법인(유한) (KAI International IP Law Firm)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20211111",
+        "applicationNumber": "40-2021-0229054"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260605021111",
+    "wordMarkSpecification": {
+      "markTransliteration": "K-VANKorea PASSENGER TRANSPORTATION EXPERT",
+      "markVerbalElementText": "K-VANKorea PASSENGER TRANSPORTATION EXPERT"
+    }
+  },
+  "_uri": "/mark/kr/e47b7d74-11ed-4f3d-a669-907240120a8c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.822Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "uri": "/mark/gb/3a712b77-2be3-4a8c-8ad7-5d7247eeae02",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "3a712b77-2be3-4a8c-8ad7-5d7247eeae02",
+  "applicationNumber": "3734017",
+  "registrationNumber": "3734017",
+  "applicationDate": "2021-12-16",
+  "registrationDate": "2022-03-25",
+  "expiryDate": "2031-12-16",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "PRIVACY DRIVEN ORGANISATION",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Business management consulting;Consultancy relating to business management;Business management;Business information;Marketing;Promotional marketing;Consumer research.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Testing, analysis and evaluation of the goods and services of others for the purpose of certification;Certification [quality control];Professional consultancy relating to technology.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "en",
+      "description": "Legal consultancy services;Legal advocacy services;Legal support services;Advisory services relating to the preparation of standards;Reviewing standards and practices to assure compliance with laws and regulations;Regulatory compliance auditing;Advisory services relating to the law;Consultation in relation to data protection compliance.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Vivology Ltd",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "60 Quarrendon Street, LONDON sw6 3su",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Vivology Ltd"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "25.07.20",
+      "26.02.01"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Business management consulting;Consultancy relating to business management;Business management;Business information;Marketing;Promotional marketing;Consumer research."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Testing, analysis and evaluation of the goods and services of others for the purpose of certification;Certification [quality control];Professional consultancy relating to technology."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Legal consultancy services;Legal advocacy services;Legal support services;Advisory services relating to the preparation of standards;Reviewing standards and practices to assure compliance with laws and regulations;Regulatory compliance auditing;Advisory services relating to the law;Consultation in relation to data protection compliance."
+        }
+      ]
+    },
+    "id": "3a712b77-2be3-4a8c-8ad7-5d7247eeae02",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.11.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2022/002"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20211216",
+        "applicationNumber": "3734017"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311216",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20220325",
+        "registrationNumber": "3734017"
+      }
+    },
+    "version": "20250627221649",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "PRIVACY DRIVEN ORGANISATION"
+    }
+  },
+  "_uri": "/mark/gb/3a712b77-2be3-4a8c-8ad7-5d7247eeae02",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.815Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

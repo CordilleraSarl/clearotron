@@ -1,0 +1,241 @@
+{
+  "uri": "/mark/ca/da2c0a72-b685-4785-a21b-99046c659690",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "da2c0a72-b685-4785-a21b-99046c659690",
+  "applicationNumber": "2218608",
+  "registrationNumber": "TMA1395133",
+  "applicationDate": "2022-10-27",
+  "registrationDate": "2026-03-18",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-12-31"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "(1) Software as a service (SAAS) featuring computer software for facilitating trading of securities, namely, trade execution, collateral management, lending, borrowing, analytics, and intelligence functions related to securities trading; Software as a service (SAAS) featuring computer software platforms in the nature of a peer-to-peer platform to facilitate bilateral trading of securities; Software as a service (SAAS) featuring computer software platforms in the nature of a peer-to-peer platform to facilitate bilateral trading of repurchase agreement securities",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "State Street Bank and Trust Company",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "MACRAE & CO.",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States",
+      "priorityDate": "20221025",
+      "priorityNumber": "97646208"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "One Lincoln Street, Boston, Massachusetts 02111",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressLines": [
+          "One Lincoln Street",
+          "Boston, Massachusetts 02111"
+        ],
+        "applicantName": "State Street Bank and Trust Company"
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Priority Filing Date: October 25, 2022, Country or Office: UNITED STATES OF AMERICA, Application No. 97646208 in association with the same kind on services (1)",
+        "typeDescription": "Priority"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Software as a service (SAAS) featuring computer software for facilitating trading of securities, namely, trade execution, collateral management, lending, borrowing, analytics, and intelligence functions related to securities trading; Software as a service (SAAS) featuring computer software platforms in the nature of a peer-to-peer platform to facilitate bilateral trading of securities; Software as a service (SAAS) featuring computer software platforms in the nature of a peer-to-peer platform to facilitate bilateral trading of repurchase agreement securities"
+        }
+      ]
+    },
+    "id": "da2c0a72-b685-4785-a21b-99046c659690",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20260318",
+        "descriptionText": "Registered",
+        "responseDate": "20360318"
+      },
+      {
+        "date": "20260318",
+        "descriptionText": "Registration Pending"
+      },
+      {
+        "date": "20251231",
+        "descriptionText": "Advertised",
+        "information": "Vol.72 Issue 3714"
+      },
+      {
+        "date": "20251021",
+        "descriptionText": "Approval Notice Sent",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20251021",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20250211",
+        "descriptionText": "Extension of Time",
+        "information": "Request Letter Date: 2025/01/31",
+        "responseDate": "20250802"
+      },
+      {
+        "date": "20240802",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20250202"
+      },
+      {
+        "date": "20240802",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20221103",
+        "descriptionText": "287",
+        "information": "Goods or Services Not Acceptable"
+      },
+      {
+        "date": "20221027",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20221027",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20221027",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "One Lincoln Street, Boston, Massachusetts 02111",
+        "addressLines": [
+          "One Lincoln Street",
+          "Boston, Massachusetts 02111"
+        ],
+        "countryName": "United States",
+        "name": "State Street Bank and Trust Company"
+      }
+    ],
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States",
+        "priorityDate": "20221025",
+        "priorityNumber": "97646208"
+      }
+    ],
+    "priorityDate": "20221025",
+    "publications": [
+      {
+        "publicationIssue": "3714",
+        "publicationVolume": "72"
+      }
+    ],
+    "recordLastUpdated": "20260325",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "MACRAE & CO.",
+          "326 Somerset Street West",
+          "Ottawa",
+          "ONTARIO K2P0J9"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "MACRAE & CO.",
+        "representativeReferenceNumber": "TM 36991"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20221027",
+        "applicationNumber": "2218608"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "extension": {
+        "approvalDate": [
+          "20250211"
+        ],
+        "dueDate": "20250802"
+      },
+      "formalisationDate": "20221027",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20360318",
+      "publicationDate": [
+        "20251231"
+      ],
+      "registration": {
+        "registrationDate": "20260318",
+        "registrationNumber": "TMA1395133"
+      }
+    },
+    "subjectHeadings": [
+      "VENTURI"
+    ],
+    "version": "20260325090035",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI",
+      "markVerbalElementTextFormal": "VENTURI"
+    }
+  },
+  "_uri": "/mark/ca/da2c0a72-b685-4785-a21b-99046c659690",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.177Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

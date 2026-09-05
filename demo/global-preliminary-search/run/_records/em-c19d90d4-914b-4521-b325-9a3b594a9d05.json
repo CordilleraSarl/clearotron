@@ -1,0 +1,1076 @@
+{
+  "uri": "/mark/em/c19d90d4-914b-4521-b325-9a3b594a9d05",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "c19d90d4-914b-4521-b325-9a3b594a9d05",
+  "applicationNumber": "12878864",
+  "registrationNumber": "12878864",
+  "applicationDate": "2014-05-15",
+  "registrationDate": "2014-10-02",
+  "expiryDate": "2034-05-15",
+  "renewalDate": null,
+  "lastPublicationDate": "2014-06-25",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR CASINOS PRESENTS GOLIATH",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    28,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Hry ke stazení a Pokerové hry ke stazení; Pocítacový software a software ke stazení, vcetne softwaru ke stazení ve forme mobilní aplikace, vsechno pro pouzití v pokeru, hrách, sázkových hrách, hazardních hrách, loteriích a soutezích; Pocítacové a video herní kazety, Kartuse, Disky a programy, Vcetne interaktivních programu; Cásti a vybavení výse uvedeného zbozí; Prírucní elektronické zábavní prístroje pro poskytování prístupu k internetu na vybrané webové stránky.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "cs",
+      "description": "Hrací a zábavní automaty na peníze; Hrací potreby a Prístroj pro elektronické hry a Elektronické pokerové hry; Vybavení na hraní pokeru, vcetne hracích karet, Zetony na poker, Potahy na hrací stoly, Stroje na míchání hracích karet, Zetony pro sázky na slepo a zetony pro rozdávajícího; Karetní markery a knihy s pravidly prodávané jako sada; Elektronické prístroje na hraní pokeru, her, sázkových her a hazardních her; Prírucní elektronické prístroje na hraní pokeru, her, sázkových her a hazardních her; Interaktivní elektronické prístroje pro pouzití pri pokeru, hrách, sázkových hrách, hazardních hrách, loteriích a soutezích; Sítové elektronické terminály pro herní úcely.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "cs",
+      "description": "Zábavní sluzby; Sluzby sázkových her, hazardních her, sázení, kasinových her a karetních her; Organizování, produkce a uvádení pokerových turnaju, soutezí, her a akcí; Vcetne poskytování vsech výse uvedených sluzeb poskytovaných zive nebo prostrednictvím televize nebo poskytovaných on-line z pocítacové databáze nebo prostrednictvím internetu; Hosting a porádání slavnostních udílení cen a vecírku.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Spil til fjernindlæsning og Pokerspil, der kan downloades; Computersoftware og software, der kan downloades, inklusive software, der kan downloades, i form af en mobil applikation, alt sammen til brug i forbindelse med poker, spil, arrangering af spil, spillevirksomhed herunder pengespil, lotterier og konkurrencer; Computere og kassetter med videospil, Patroner, Diske og programmer, Inklusive interaktive programmer; Dele og tilbehør til ovennævnte varer; Håndholdte elektroniske underholdningsapparater til tilvejebringelse af internetadgang til udvalgte websites.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "da",
+      "description": "Møntbetjente spille- og underholdningsautomater; Spilleudstyr og Apparater til elektroniske spil og Elektroniske pokerspil; Udstyr til pokerspil, inklusive spillekort, Pokerjetons, Bordfilt, Blandemaskiner til spillekort, Værdijetoner og dealerjetoner; Kortmarkeringer og bøger med regler, alt solgt som en enhed; Elektronisk poker, spil, spillehaller og apparater til lotterier; Håndholdte elektroniske apparater til poker, spil, arrangering af spil og hasardspil; Interaktive elektroniske apparater til anvendelse i forbindelse med poker, spil, arrangering af spil, hasardspil, lotterier og konkurrencer; Netværksbaserede elektroniske terminaler til spilleformål.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "da",
+      "description": "Forlystelsesvirksomhed; Spil, hasardspil, væddemål, kasinospil og kortspil; Organisering, produktion og præsentation af pokerturneringer, -konkurrencer, -spil og -begivenheder; Inklusive formidling af alle de førnævnte tjenesteydelser leveret live eller via fjernsynsmedier eller formidlet online fra en computerdatabase eller via internettet; Vært for og arrangering af prisuddelingsceremonier og parties.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Te downloaden spellen en Downloadbare pokerspellen; Computersoftware en downloadbare software, waaronder downloadbare software in de vorm van een mobiele applicatie, alle te gebruiken voor poker, spellen, kansspelen, gokspelen, loterijen en wedstrijden; Computers en videospelcassettes, Patronen, Schijven en programma's, Waaronder interactieve programma's; Delen, onderdelen en toebehoren van alle voorgenoemde waren; Elektronische amusementsapparaten op handformaat voor toegang via internet tot geselecteerde websites.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "nl",
+      "description": "Speelautomaten en amusementsautomaten met muntinworp; Speluitrusting en Apparatuur voor elektronische spellen en Elektronische pokerspellen; Pokerspeluitrusting, waaronder speelkaarten, Pokerfiches, Tafelvilt, Machines voor het schudden van speelkaarten, Blinde fiches en fiches voor gevers; Kaartenmarkeerders en spelregelboekjes, alle als een set verkocht; Elektronische poker-, spel-, kansspel- en gokspelapparaten; Elektronische poker-, spel-, kansspel- en gokspelapparaten op handformaat; Interactieve elektronische apparaten te gebruiken voor poker, spellen, kansspelen, gokspelen, loterijen en wedstrijden; Via een netwerk verbonden elektronische terminals voor speldoeleinden.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Amusement; Diensten met betrekking tot kansspelen, gokspelen, weddenschappen, casinospellen en kaartspellen; Organisatie, productie en presentatie van pokertoernooien, -wedstrijden, -spellen en -evenementen; Waaronder verlening van alle voornoemde diensten live of door middel van televisie of online vanuit een computerdatabase of via internet; Presentatie en organisatie van prijsuitreikingen en feesten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Downloadable games and downloadable poker games; computer software and downloadable software including downloadable software in the nature of a mobile application, all for use in poker, games, gaming, gambling, lotteries and competitions; computer and video game cassettes, cartridges, discs and programs, including interactive programs; parts and fittings for the aforesaid; handheld electronic amusement apparatus for providing Internet access to selected websites.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "en",
+      "description": "Amusement games and machines (automatic and coin operated); gaming equipment and apparatus including electronic games and electronic poker games; poker playing equipment including playing cards, poker chips, table felt, playing card shuffling machines, blind and dealer buttons; card markers and rule books all sold as a unit; electronic poker, games, gaming and gambling apparatus; handheld electronic poker, games, gaming and gambling apparatus; interactive electronic apparatus for use in poker, games, gaming, gambling, lotteries and competitions; networked electronic terminals for gaming purposes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Entertainment services; gaming, gambling, betting, casino game and card game services; organisation, production and presentation of poker tournaments, competitions, games and events; including the provision of all the aforesaid services rendered live or through the medium of television or provided online from a computer database or via the Internet; hosting and arranging of award ceremonies and parties.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Allalaaditavad mängud ja Allalaaditavad pokkerimängud; Arvutitarkvara ja allalaaditav tarkvara, sh allallaaditav tarkvara mobiilirakendustena, kõik kasutuseks pokkeris, mängudes, kasiinomängudes, hasartmängudes, loteriides ja võistlustel; Arvuti- ja videomängude kassetid, Kassetid, Kettad ja programmid, Sh interaktiivsed programmid; Osad ja lisaseadmed eelpoolmainitud toodetele; Valitud veebisaitidele Internetijuurdepääsu pakkumise funktsiooniga käeshoitavad elektroonilised meelelahutusseadmed.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "et",
+      "description": "Raha abil käivitatavad mängu- ja meelelahutusautomaadid; Mänguvarustus ja Elektronmänguseadmed ja Elektroonilised pokkerimängud; Pokkerimänguvahendid, sh mängukaardid, Pokkerizetoonid, Mängualus, Mängukaartide segamismasinad, Pimepanused ja diilerinupud; Kaardimarkerid ja reegliraamatud, kõik müüdavad komplektina; Elektroonilised pokkeri-, mängu-, kasiinomängu- ja hasartmänguseadmed; Käeshoitavad elektroonilised pokkeri-, mängu-, kasiinomängu- ja hasartmänguseadmed; Pokkeris, mängudes, kasiinomängudes, hasartmängudes, loteriides ja võistlustel kasutatavad interaktiivsed elektronseadmed; Võrguühendusega elektroonilised mängimisterminalid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "et",
+      "description": "Meelelahutusteenused; Mängimis-, hasartmängu-, kihlveo-, kasiino- ja kaardimänguteenused; Pokkeriturniiride, -võistluste, -mängude ja -ürituste korraldamine, tootmine ja esitamine; Sh kõik eespool nimetatud teenused pakutuna elavettekandes või televisiooni vahendusel või sidusalt arvutiandmebaasist või Interneti kaudu; Autasustamistseremooniate ja vastuvõttude majutamine ja korraldamine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Etäladattavat pelit ja Ladattavat pokeripelit; Tietokoneohjelmistot ja ladattavat ohjelmistot, mukaan lukien ladattavat ohjelmistot matkaviestintäsovellusten muodossa, kaikki käytettäväksi pokerin, pelien, rahapelien, uhkapelien, arpajaisten ja kilpailujen alalla; Tietokone- ja videopelikasetit, Kasetit, Levyt ja ohjelmat, Mukaan lukien vuorovaikutteiset ohjelmat; Edellä mainittujen osat ja tarvikkeet; Kädessä pidettävät elektroniset ajanvietelaitteet valittujen Internetin WWW-sivustojen käyttömahdollisuuden tarjoamiseen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "fi",
+      "description": "Kolikkokäyttöiset peli- ja ajanvieteautomaatit; Pelitarvikkeet ja Laitteet elektroniikkapelejä varten ja Elektroniset pokeripelit; Pokerin pelaamiseen tarkoitetut välineet, mukaan lukien pelikortit, Pokerimerkit (pelimerkit), Pöytäverka, Pelikorttien sekoituskoneet, Sokkopanokset ja jakajan pelimerkit; Korttimerkit ja sääntökirjat, kaikki myydään yksikkönä; Elektroniset pokeri-, peli-, rahapeli- ja uhkapelilaitteet; Kädessä pidettävät elektroniset pokeri-, peli-, rahapeli- ja uhkapelilaitteet; Vuorovaikutteiset elektroniset laitteet käytettäväksi pokerissa, peleissä, rahapeleissä, uhkapeleissä, arpajaisissa ja kilpailuissa; Verkotetut elektroniset terminaalit peleihin liittyviin tarkoituksiin.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fi",
+      "description": "Huvipalvelut; Rahapeli-, uhkapeli-, vedonlyönti-, kasinopeli- ja korttipelipalvelut; Pokeriturnausten, -kilpailujen, -pelien ja -tapahtumien järjestäminen, tuottaminen ja esittäminen; Mukaan lukien kaikkien edellä mainittujen palvelujen tarjoaminen suorana tai television kautta tai online-periaatteella tietokoneen tietokannasta tai Internetin välityksellä; Palkintoseremonioiden ja juhlien järjestäminen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Jeux téléchargeables et Jeux de poker téléchargeables; Logiciels et logiciels téléchargeables y compris logiciels téléchargeables sous la forme d'une application mobile, tous destinés au poker, aux jeux, aux jeux d'argent, aux loteries et aux compétitions; Cassettes informatiques et de jeux vidéo, Cartouches, Disques et programmes, Y compris programmes interactifs; Pièces et parties constitutives des produits précités; Appareils de divertissement électroniques portables pour la fourniture d'un accès à des sites en ligne sélectionnés par le biais de l'internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "fr",
+      "description": "Machines automatiques à sous pour jeux et divertissement; Équipements de jeu et Appareils de jeux électroniques et Jeux de poker électroniques; Équipements pour jouer au poker y compris cartes à jouer, Jetons de poker, Feutre de table, Machines à battre les cartes à jouer, Boutons de blind et de croupier; Marqueurs de cartes et règlements de jeu, tous vendus sous forme d'ensemble; Appareils électroniques de poker, jeux et jeux d'argent; Appareils électroniques portables de poker, jeux et jeux d'argent; Appareils électroniques interactifs destinés au poker, aux jeux, aux jeux d'argent, aux loteries et aux compétitions; Terminaux électroniques en réseau à des fins de jeux.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Services de divertissement; Services de jeux, jeux d'argent, paris, jeux de casino et jeux de cartes; Organisation, production et présentation de tournois, compétitions, jeux et manifestations de poker; Y compris fourniture de tous les services précités en direct ou par le biais de la télévision ou en ligne à partir d'une base de données informatique ou sur l'internet; Hébergement et organisation de cérémonies de remise de prix et de fêtes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Herunterladbare Spiele und Herunterladbare Pokerspiele; Computersoftware und herunterladbare Software, einschließlich herunterladbare Software in Form einer mobilen Applikation, alle zur Verwendung in Bezug auf Poker, Spiele, Spielen, Glücksspiele, Lotterien und Wettbewerbe; Computer- und Videospielkassetten, Kartuschen, -platten und -programme, Einschließlich interaktive Programme; Teile und Zubehör für die obengenannten Waren; Elektronische Handspielgeräte zur Bereitstellung des Internetzugangs zu ausgewählten Websites.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "de",
+      "description": "Geldbetätigte Spiel- und Unterhaltungsautomaten; Ausstattungen für Glücksspiele und Apparate für elektronische Spiele und Elektronische Pokerspiele; Pokerspielausrüstung, einschließlich Spielkarten, Spielmarken zum Pokern, Tischbespannung, Spielkartenmischmaschinen, Blind- und Dealerbuttons; Kartenmarkierer und Regelbücher, alles als Einheit verkauft; Elektronische Poker-, Spiel- und Glücksspielgeräte; Elektronische Poker-, Spiel- und Glücksspieltaschengeräte; Interaktive elektronische Apparate zur Verwendung zur Verwendung in Bezug auf Poker, Spiele, Spielen, Glücksspiele, Lotterien und Wettbewerbe; Vernetzte elektronische Terminals für Spielzwecke.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Unterhaltungsdienste; Dienstleistungen in Bezug auf Spiele, Glücksspiele, Wetten, Kasinospiele und Kartenspiele; Organisation, Produktion und Präsentation von Pokerturnieren, -wettbewerben, -spielen und -veranstaltungen; Einschließlich Live-Darbietung oder Bereitstellung aller vorstehend genannten Dienstleistungen über das Fernsehen oder online über eine Computerdatenbank oder das Internet; Veranstaltung und Organisation von Preisverleihungszeremonien und -festen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Igre koje se mogu preuzimati i Poker igre koje se mogu preuzimati; Racunalni softver i softver koji se moze preuzimati, ukljucujuci softver koji se moze preuzimati u obliku aplikacija za mobitele, sve za koristenje u pokeru, igrama, kockanju, kladenju, lutrijama i natjecanjima; Kasete racunalnih i videoigara, Ulosci za pisace, Diskovi i programi, Ukljucujuci interaktivne programe; Dijelovi i oprema za navedeno; Rucni elektronicki zabavni aparati za pruzanje internetskog pristupa odabranim web stranicama.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "hr",
+      "description": "Automatski uredaji za igranje i zabavu koji se pokrecu na kovanice; Aparati za kockanje i Aparati s elektronickim igrama i Elektronicke pokerske igrice; Oprema za igranje pokera, ukljucujuci karte, Zetoni za poker, Filc za stolove, Uredaj za mijesanje igracih karata, Oznake uloga i djelitelja; Markeri za karte i knjizice s pravilima koje se prodaju u kompletu; Elektronicki poker, igre, uredaji za igranje i kockanje; Rucni elektronicki poker, igre, uredaji za igranje i kockanje; Interaktivni elektronicki aparati za poker, igre, kockarske igre, igre za novac, lutrije i natjecanja; Umrezeni elektronicki terminali za igranje.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hr",
+      "description": "Zabavne usluge; Kockarske igre, igre za novac, kladenje, kasino igre i igrace karte; Organizacija, produkcija i prezentacija turnira, poker natjecanja, igara i dogadanja; Ukljucujuci pruzanje svih navedenih usluga koje se pruzaju uzivo ili putem medija televizije ili na mrezi putem racunalne baze podataka ili putem interneta; Ugoscivanje i organiziranje svecanosti dodjele nagrada i zabave.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Letöletheto játékok és Letöltheto pókerjátékok; Számítógépes szoftverek és letöltheto szoftverek, többek között letöltheto szoftverek pókerhez, játékokhoz, sportfogadáshoz, szerencsejátékhoz, sorsjátékokhoz és versenyekhez használt mobilalkalmazás formájában; Számítógépes és videojátékokhoz való kazetták, Tubusok, Lemezek és programok, Többek között interaktív programok; A fent említett áruk alkatrészei és szerelvényei; Kézi elektronikus szórakoztató berendezések, amelyek internet-hozzáférést biztosítanak a kiválasztott weboldalakhoz.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "hu",
+      "description": "Érmebedobással muködo játék- és szórakoztató automaták; Játékfelszerelés és Elektronikus játékok szerkezetei és Elektronikus pókerjátékok; Felszerelések pókerjátékhoz, többek között játékkártyák, Póker zsetonok, Asztalt borító posztó, Játékkártya-kevero gépek, A vakot és az osztót jelölo zsetonok; Kártyajelölok és szabálygyujtemények egy csomagban árusítva; Elektronikus berendezések pókerhez, játékokhoz, sportfogadáshoz és szerencsejátékhoz; Kézi pókerhez, játékokhoz, sportfogadáshoz és szerencsejátékhoz; Interaktív elektronikus berendezések pókerhez, játékokhoz, sportfogadáshoz, szerencsejátékhoz, sorsjátékokhoz és versenyekhez; Hálózatba kapcsolt elektronikus terminálok sportfogadási célokra.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hu",
+      "description": "Szórakoztatási szolgáltatások; Sportfogadási, szerencsejáték-, fogadási, kaszinójáték- és kártyajáték-szolgáltatások; Póker-bajnokságok, -versenyek, -játékok és -rendezvények szervezése, létrehozása és bemutatása; Beleértve az összes fent említett szolgáltatás éloben vagy televízión keresztüli biztosítását vagy számítógépes adatbázisból vagy az internetrol online módon történo biztosítását; Díjátadó ünnepségek és partik megtartása és szervezése.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Giochi scaricabili e Giochi di poker scaricabili; Software e software scaricabili, compresi software scaricabili in forma di un'applicazione cellulare, tutti per uso in poker, giochi, giochi d'azzardo, giochi di denaro, lotterie e concorsi; Computer e cassette per videogiochi, Cartucce, Dischi e programmi, Compresi programmi interattivi; Parti ed accessori per tutti i suddetti articoli; Apparecchi elettronici tascabili per il divertimento per la fornitura di accesso Internet a siti web selezionati.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "it",
+      "description": "Apparecchi da gioco e e macchine per intrattenimento di tipo automatico a moneta o a gettone; Attrezzatura per giochi e Apparecchi per giochi elettronici e Giochi elettronici di poker; Attrezzatura per il gioco del poker, comprese carte da gioco, Fiche per poker, Feltro per tavoli, Macchine per mescolare carte da gioco, Tendine e pulsanti del banco; Segnacarte e libri di regole, tutti venduti come unico articolo; Apparecchi elettronici per poker, giochi, giochi di denaro e giochi d'azzardo; Apparecchi tascabili elettronici per poker, giochi, giochi di denaro e giochi d'azzardo; Apparecchi elettronici interattivi per poker, giochi, giochi di denaro, giochi d'azzardo, lotterie e concorsi; Terminali elettronici in rete per giochi di denaro.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "Servizi di intrattenimento; Giochi di denaro, giochi d'azzardo, scommesse, giochi da casinò e giochi di carte; Organizzazione, produzione e presentazione di tornei, competizioni, giochi e manifestazioni di poker; Tutti i suddetti servizi resi anche dal vivo o tramite il mezzo televisivo o disponibili on-line da una banca dati o via Internet; Allestimento e organizzazione di cerimonie di premiazione e feste.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Parsisiunciami zaidimai ir Atsisiunciamieji pokerio zaidimai; Kompiuteriu programine iranga ir atsisiunciamoji programine iranga, iskaitant atsisiunciamaja programine iranga kaip mobiliojo rysio taikomaja programa, viskas skirta naudoti pokerio, zaidimu, azartiniu zaidimu, losimu, loteriju ir varzybu reikmems; Kompiuteriniu ir vaizdo zaidimu kasetes, Kasetes, Diskai ir programos, Iskaitant saveikiasias programas; Auksciau nurodytu prekiu dalys ir reikmenys; Delniniai elektroniniai pramoginiai aparatai, skirti interneto prieigai prie pasirinktu svetainiu teikti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "lt",
+      "description": "Monetomis valdomi zaidimu ir pramoginiai aparatai; Zaidimu iranga ir Aparatai, skirti elektroniniams zaidimams ir Elektroniniai pokerio zaidimai; Pokerio zaidimo iranga, iskaitant losimo kortas, Pokerio zetonai, Stalo veltinis, Losimo kortu maisymo masinos, Zaliuzes ir kortu dalytojo mygtukai; Kortu zymekliai ir taisykliu knygos, viskas parduodama bendrai; Elektroniniai pokerio, zaidimu, azartiniu zaidimu ir losimu aparatai; Delniniai elektroniniai pokerio, zaidimu, azartiniu zaidimu ir losimu aparatai; Saveikieji elektroniniai aparatai, skirti naudoti pokerio, zaidimu, azartiniu zaidimu, losimu, loteriju ir varzybu reikmems; I tinkla sujungti elektroniniai terminalai, skirti azartiniu zaidimu reikmems.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lt",
+      "description": "Pramogines paslaugos; Azartiniu zaidimu, losimu, lazybu, kazino zaidimu ir kortu zaidimu paslaugos; Pokerio turnyru, varzybu, zaidimu ir renginiu organizavimas, kurimas ir pristatymas; Iskaitant visu minetu paslaugu, teikiamu tiesiogiai arba per televizijos terpe, arba teikiamu tiesiogiai tinklu is kompiuteriu duomenu bazes ar internetu, teikima; Apdovanojimu teikimo iskilmiu ir vakareliu priemimas ir rengimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Lejupieladejamas speles un Lejupladejamas pokera speles; Datoru programmaturas un lejupieladejamas programmaturas, tostarp lejupieladejamas programmaturas mobilo lietotnu veida, viss izmantosanai pokera, speles, speles uz naudu, azartspeles, loterijas un sacensibas; Datorspelu un videospelu kasetes, Kartridzi, Diski un programmas, Tostarp interaktivas programmas; Ieprieks mineto precu dalas un armatura; Rokas elektroniskas izklaides iekartas interneta piekluves nodrosinasanai izveletam timekla vietnem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "lv",
+      "description": "Ar naudu darbinami spelu un izklaides automati; Spelu piederumi un Elektronisko spelu aparatura un Elektroniskas pokera speles; Pokera spelesanas aprikojums, tostarp spelu kartis, Pokera zetoni, Galda filcs, Spelu karsu dalisanas iekartas, Sleptie zetoni un dalitaju zetoni; Karsu markieri un noteikumu gramatas pardosana komplekta; Elektronisko pokera spelu, spelu, spelu uz naudu un azartspelu aparati; Rokas elektroniskie pokera, spelu, spelu uz naudu un azartspelu aparati; Interaktivas elektroniskas ierices lietosanai saistiba ar pokeri, spelem, spelem uz naudu, azartspelem, loterijam un sacensibam; Tikla balstiti elektroniskie terminali spelesanas nolukos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lv",
+      "description": "Izklaides pakalpojumi; Spelu, azartspelu, deribu, kazino spelu un karsu spelu pakalpojumi; Pokera turniru, sacensibu, spelu un pasakumu organizesana, izveide un prezentesana; Tostarp visu ieprieks mineto pakalpojumu nodrosinasana, kas tiek sniegti tiesraide vai televizija, vai tiek nodrosinati tiessaiste no datora datubazes vai interneta; Apbalvosanas ceremoniju un ballisu organizesana un rikosana.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Loghob li jistghu jitnizzlu mill-Internet u Loghob tal-powker li jista' jitnizzel; Softwer tal-kompjuter u softwer li jista' jitnizzel inkluz softwer li jista' jitnizzel fl-ghamla ta' applikazzjoni mobbli, kollha ghal uzu fil-powker, loghob, loghob tal-azzard, lotteriji u kompetizzjonijiet; Kompjuter u kasetts tal-vidjowgejm, Cartridges, Diski u programmi, Inkluzi programmi interattivi; Partijiet u fittings ghall-oggetti msemmija qabel; Apparat elettroniku ta' divertiment li jinzamm fl-idejn ghall-provvista ta' access ghall-Internet ghal websajts maghzula.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "mt",
+      "description": "Apparat tal-loghob u tad-divertiment li jithaddmu bil-flus; Taghmir tal-loghob u Apparat ghal-loghob elettroniku u Loghob tal-powker elettroniku; Taghmir biex jintlaghab il-powker inkluzi karti tal-loghob, Cipep tal-powker, Feltru tal-imwejjed, Magni li jhawdu l-karti tal-loghob, Blind buttons u cipep ta' min iqassam; Markaturi tal-karti u kotba bir-regoli kollha mibjugha bhala unità; Apparat elettroniku tal-powker, loghob u loghob tal-azzard; Apparat elettroniku li jinzamm fl-idejn tal-powker, loghob u loghob tal-azzard; Apparat elettroniku interattiv ghal uzu fil-powker, loghob, loghob tal-azzard, lotteriji u kompetizzjonijiet; Terminali elettronici f'netwerk ghal skopijiet ta' loghob.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' divertiment; Servizzi ta' loghob, loghob ta' l-azzard, imhatri, loghob tal-kazinò u loghob tal-karti; Organizzazzjoni, produzzjoni u prezentazzjoni ta' turnewijiet, kompetizzjonijiet, loghob u avvenimenti tal-powker; Inkluz il-provvista tas-servizzi kollha msemmija qabel moghtija lajv jew permezz tat-televizjoni jew ipprovduti onlajn minn dejtabejz informatika jew permezz tal-Internet; Il-hosting u l-arrangament ta' cerimonji ta' ghoti tal-premjijiet u festini.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Gry do pobrania i Gry z rodziny pokera do pobrania; Oprogramowanie komputerowe i oprogramowanie do pobrania, w tym oprogramowanie do pobrania w formie aplikacji mobilnej, wszystko do uzytku w zakresie pokera, gier, hazardu, hazardu, loterii i konkursów; Kasety z grami komputerowymi i wideo, Kartusze, Dyski i programy, W tym programy interaktywne; Czesci i osprzet do uprzednio wymienionych towarów; Podreczne elektroniczne urzadzenia rozrywkowe do zapewniania dostepu do wybranych stron internetowych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "pl",
+      "description": "Automaty do gier i rozrywek uruchamiane przy pomocy pieniedzy; Sprzet do gier i Urzadzenia do gier elektronicznych i Elektroniczne gry z rodziny pokera; Sprzet do gry w pokera, w tym karty do gry, Zetony do pokera, Filc na stoly, Maszyny do tasowania kart do gry, Przymusowe zaklady i zetony rozdajacych; Markery do kart i instrukcje sprzedawane w zestawie; Elektroniczne urzadzenia do pokera, gier, hazardu i hazardu; Podreczne elektroniczne urzadzenia do pokera, gier, hazardu i hazardu; Interaktywne urzadzenia elektroniczne do uzytku w zakresie pokera, gier, hazardu, hazardu, loterii i konkursów; Podlaczone do sieci terminale elektroniczne do uzytku w hazardzie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pl",
+      "description": "Uslugi rozrywkowe; Uslugi w zakresie hazardu, hazardu, zakladów, gier kasynowych i gier karcianych; Organizowanie, produkcja i prezentacja turniejów, zawodów, gier i imprez w dziedzinie pokera; W tym swiadczenie wszystkich uprzednio wymienionych uslug na zywo lub za posrednictwem telewizji lub online z komputerowej bazy danych lub za posrednictwem internetu; Organizowanie i urzadzanie ceremonii przyznania nagród i przyjec.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Jogos transferíveis e Jogos de póquer descarregáveis; Programas de computador e programas de computador descarregáveis, incluindo programas de computador descarregáveis sob a forma de uma aplicação móvel, tudo para uso em póquer, jogos, jogos a dinheiro, jogos de azar, lotarias e concursos; Informática e cassetes de jogos de vídeo, Cartuchos, Discos e programas, Incluindo programas interativos; Peças e acessórios para os artigos atrás referidos; Aparelhos de diversão eletrónicos manuais para fornecimento de acesso a sítios Web selecionados na Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "pt",
+      "description": "Máquinas de jogos e de diversão, accionadas por moedas; Equipamento para jogos de azar e Aparelhos para jogos electrónicos e Jogos de póquer eletrónicos; Equipamentos para jogar póquer, incluindo cartas de jogar, Fichas de póquer, Feltro para mesas, Máquinas para baralhar cartas, Fichas de \"dealer\" (banca) e para apostas obrigatórias; Marcadores de cartas e livros de regras, vendidos em conjunto; Aparelhos eletrónicos de póquer, jogos, jogos a dinheiro e jogos de azar; Aparelhos eletrónicos manuais de póquer, jogos, jogos a dinheiro e jogos de azar; Aparelhos eletrónicos interativos para uso em póquer, jogos, jogos a dinheiro, jogos de azar, lotarias e concursos; Terminais eletrónicos ligados em rede para fins de jogos a dinheiro.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Serviços recreativos; Serviços de jogos a dinheiro, jogo de azar, apostas, jogos de casino e jogos de cartas; Organização, produção e apresentação de torneios, competições, jogos e eventos de póquer; Incluindo o fornecimento de todos os serviços atrás referidos ao vivo ou através de televisão, ou em linha a partir de uma base de dados ou através da Internet; Acolhimento e organização de cerimónias de atribuição de prémios e festas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Jocuri descarcabile si Jocuri de poker descarcabile; Software si software descarcabil inclusiv software descarcabil sub forma unei aplicatii mobile, toate destinate utilizarii la pocker, jocuri, jocuri, jocuri de noroc, loterii si concursuri; Casete cu jocuri de calculator si video, Cartuse, Discuri si programe, Inclusiv programe interactive; Parti si accesorii pentru articolele mentionate mai sus; Aparate de divertisment electronice de buzunar pentru furnizarea accesului pe internet la site-uri web selectate.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "ro",
+      "description": "Aparate pentru jocuri si divertisment; Echipament de jocuri de noroc si Aparate pentru jocuri electronice si Jocuri de poker electronice; Echipament pentru jocul de poker, inclusiv carti de joc, Jetoane de poker, Fetru pentru mese, Aparate pentru amestecarea cartilor de joc, Butoane pentru jaluzele si dealer; Marcatoare pentru carti si manuale cu reguli toate comercializate unitar; Aparate electronice pentru poker, jocuri, jocuri si jocuri de noroc; Aparate electronice de buzunar pentru poker, jocuri, jocuri si jocuri de noroc; Aparate electronice interactive pentru poker, jocuri, jocuri, jocuri de noroc, loterii si concursuri; Terminale electronice în retea pentru jocuri.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ro",
+      "description": "Servicii de divertisment; Servicii de jocuri, jocuri de noroc, pariuri, jocuri de cazino si jocuri de carti; Organizare, productie si prezentare de turnee, competitii, jocuri si evenimente de poker; Inclusiv furnizarea tuturor serviciilor mentionate anterior în direct sau la televizor sau on-line dintr-o baza de date de calculator sau pe internet; Gazduirea si organizarea ceremoniilor si petrecerilor.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Stiahnutelné hry a Pokerové hry s moznostou prevzatia; Pocítacový softvér a softvér s moznostou prevzatia vrátane softvéru s moznostou prevzatia v podobe mobilnej aplikácie, vsetky súvisia s pokerom, hrami, hraním, hazardnými hrami, lotériami a sútazami; Pocítacové herné a vidoeherné kazety, Náboje, Disky a programy, Vrátane interaktívnych programov; Casti a súcasti pre uvedené tovary; Vreckové elektronické zábavné prístroje na poskytovanie internetového prístupu k vybraným webovým stránkam.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "sk",
+      "description": "Hracie a zábavné automaty fungujúce po vhodení penazí; Hracie zariadenie a Zariadenia pre elektronické hry a Elektronické pokerové hry; Pokerové herné zariadenia vrátane hracích kariet, Zetóny na poker, Plst pre stoly, Stroje na miesanie hracích kariet, Zetóny pre krupiérov; Kartové markéry a pravidlá predávané v celku; Elektronické pokerové, herné a hazardné herné zariadenia; Vreckové elektronické pokerové, herné a hazardné herné zariadenia; Interaktívne elektronické zariadenia pre poker, hry, hranie, hazardné hry, lotérie a sútaze; Sietové elektronické terminály na herné úcely.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sk",
+      "description": "Sluzby v oblasti zábavy; Sluzby v oblasti hrania, hazardných hier, stávkovania, kasínových hier a kartových hier; Organizovanie, výroba a prezentácia pokerových turnajov, sútazí, hier a podujatí; Vrátane poskytovania akákolvek vyssie uvedených sluzieb, ci uz nazivo alebo prostredníctvom televízie alebo prostredníctvom on-line pocítacovej databázy alebo internetu; Prevádzkovanie a organizovanie osláv spojených s udelovaním ocenení.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Nalozljive igre in Prenosljive poker igre; Racunalniska programska oprema in prenosljiva programska oprema, vkljucno s prenosljivo programsko opremo v obliki mobilne aplikacije, vse za uporabo pri pokru, igrah, igranju, igrah na sreco, loteriji in tekmovanjih; Kasete z racunalniskimi in video igrami, Kartuse, Diski in programi, Vkljucno z interaktivnimi programi; Deli in montazna oprema za omenjeno blago; Rocni elektronski zabavni aparati za nudenje internetnega dostopa do izbranih spletnih mest.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "sl",
+      "description": "Igralni in zabavni avtomati na kovance; Igralna oprema in Sistem elektronskih igric in Elektronske poker igre; Oprema za igranje pokra, vkljucno z igralnimi kartami, Zetoni za poker, Filc za mize, Aparati za mesanje igralnih kart, Gumbi za igralca, ki mora vplacati prisilno stavo, in krupjeja; Karticni oznacevalniki in knjige pravil, v prodaji v kompletu; Elektronski aparati za poker, igre, igranje in igre na sreco; Rocni elektronski aparati za poker, igre, igranje in igre na sreco; Interaktivni elektronski aparati za uporabo pri pokru, igrah, igranju, igrah na sreco, loterijah in tekmovanjih; Mrezni elektronski terminali za igralne namene.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sl",
+      "description": "Razvedrilne storitve; Storitve igranja, iger na sreco, stav, igralniskih iger in iger s kartami; Organizacija, produkcija in predstavitev poker turnirjev, tekmovanj, iger in prireditev; Vkljucno z nudenjem vseh navedenih storitev, nudenih v zivo ali preko televizije ali s povezavo iz racunalniske podatkovne baze ali preko interneta; Gostovanje in prirejanje podelitev priznanj in zabav.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Juegos telecargables y Juegos de póquer descargables; Software y software descargable incluyendo software descargable del tipo de una aplicación de móvil, todos para su uso en póquer, juegos, juegos de azar, juegos de apuestas, loterías y competiciones; Informática y casetes de videojuegos, Cartuchos, Discos y programas, Incluyendo programas interactivos; Parts and fittings for the aforesaid goods; Aparatos recreativos electrónicos de mano para facilitar el acceso de Internet a sitios web seleccionados.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "es",
+      "description": "Máquinas automáticas de juego y esparcimiento accionadas con monedas; Equipo de juego y Aparatos para juegos electrónicos y Juegos electrónicos de póquer; Equipos de juegos de póquer incluyendo naipes, Fichas de póquer, Fieltro de mesa, Barajadoras de naipes, Fichas de apuestas ciegas y de repartidor; Marcadores de cartas y libros de reglas de juego, todos vendidos como una unidad; Aparatos electrónicos de póquer, juegos, juegos de azar y juegos de apuestas; Aparatos electrónicos de mano de póquer, juegos, juegos de azar y juegos de apuestas; Aparatos electrónicos interactivos para su uso en póquer, juegos, juegos de azar, juegos de apuestas, loterías y competiciones; Terminales electrónicos conectados en red para juegos de azar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Prestación de servicios de entretenimiento; Servicios de juegos de azar, juegos de apuestas, apuestas, juegos de casino y juegos de cartas; Organización, producción y presentación de torneos, bingo, competiciones, juegos y eventos de póquer; Incluyendo la prestación de todos los servicios mencionados en directo o a través de la televisión o en línea desde una base de datos informática o a través de Internet; Alojamiento y organización de ceremonias de entrega de premios y fiestas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Fjärrnedladdningsbara spel och Nedladdningsbara pokerspel; Datorprogram och nedladdningsbar programvara, inklusive nedladdningsbar programvara i form av en mobil applikation, allt för användning i poker, spel, speltjänster, hasardspel, lotterier och tävlingar; Dator- och videospelkassetter, Patroner, Skivor och program, Inklusive interaktiva program; Delar och tillbehör till ovan nämnda varor; Handhållna nöjesapparater för tillhandahållande av internet åtkomst till utvalda webbplatser.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "sw",
+      "description": "Myntstyrda spel- och underhållningsautomater; Spelutrustning och Apparater för elektroniska spel och Elektroniska pokerspel; Utrustning för pokerspel inklusive spelkort, Pokermarker, Bordsfilt, Blandningsmaskiner för spelkort, Blind- och dealerknappar; Kortmarker och regelböcker, alla sålda som en enhet; Elektronisk poker, spel, hasardspelstjänster och turspelanordningar; Handburna elektroniska apparater för poker, spel, hasardspel och turspel; Interaktiva elektroniska apparater för användning vid pokerspel, spel, hasardspel, lotterier och tävlingar; Nätverksbaserade elektroniska terminaler för spel ändamål.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sw",
+      "description": "Underhållningstjänster; Tjänster avseende spel, hasardspel, vadslagning, kasinospel och kortspel; Organisering, produktion och presentation av pokerturneringar, -tävlingar, -spel och -evenemang; Inklusive tillhandahållande av alla nämnda tjänster i levande form eller via tv eller via direktanslutning från en databas eller via Internet; Värdskap och anordnande av prisutdelningsceremonier och fester.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Rank Leisure Holdings Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Potter Clarkson KB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "TOR, Saint-Cloud Way,Maidenhead, Berkshire,Berkshire, SL6 8BN",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Rank Leisure Holdings Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Hry ke stazení a Pokerové hry ke stazení; Pocítacový software a software ke stazení, vcetne softwaru ke stazení ve forme mobilní aplikace, vsechno pro pouzití v pokeru, hrách, sázkových hrách, hazardních hrách, loteriích a soutezích; Pocítacové a video herní kazety, Kartuse, Disky a programy, Vcetne interaktivních programu; Cásti a vybavení výse uvedeného zbozí; Prírucní elektronické zábavní prístroje pro poskytování prístupu k internetu na vybrané webové stránky."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Hrací a zábavní automaty na peníze; Hrací potreby a Prístroj pro elektronické hry a Elektronické pokerové hry; Vybavení na hraní pokeru, vcetne hracích karet, Zetony na poker, Potahy na hrací stoly, Stroje na míchání hracích karet, Zetony pro sázky na slepo a zetony pro rozdávajícího; Karetní markery a knihy s pravidly prodávané jako sada; Elektronické prístroje na hraní pokeru, her, sázkových her a hazardních her; Prírucní elektronické prístroje na hraní pokeru, her, sázkových her a hazardních her; Interaktivní elektronické prístroje pro pouzití pri pokeru, hrách, sázkových hrách, hazardních hrách, loteriích a soutezích; Sítové elektronické terminály pro herní úcely."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Zábavní sluzby; Sluzby sázkových her, hazardních her, sázení, kasinových her a karetních her; Organizování, produkce a uvádení pokerových turnaju, soutezí, her a akcí; Vcetne poskytování vsech výse uvedených sluzeb poskytovaných zive nebo prostrednictvím televize nebo poskytovaných on-line z pocítacové databáze nebo prostrednictvím internetu; Hosting a porádání slavnostních udílení cen a vecírku."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Spil til fjernindlæsning og Pokerspil, der kan downloades; Computersoftware og software, der kan downloades, inklusive software, der kan downloades, i form af en mobil applikation, alt sammen til brug i forbindelse med poker, spil, arrangering af spil, spillevirksomhed herunder pengespil, lotterier og konkurrencer; Computere og kassetter med videospil, Patroner, Diske og programmer, Inklusive interaktive programmer; Dele og tilbehør til ovennævnte varer; Håndholdte elektroniske underholdningsapparater til tilvejebringelse af internetadgang til udvalgte websites."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Møntbetjente spille- og underholdningsautomater; Spilleudstyr og Apparater til elektroniske spil og Elektroniske pokerspil; Udstyr til pokerspil, inklusive spillekort, Pokerjetons, Bordfilt, Blandemaskiner til spillekort, Værdijetoner og dealerjetoner; Kortmarkeringer og bøger med regler, alt solgt som en enhed; Elektronisk poker, spil, spillehaller og apparater til lotterier; Håndholdte elektroniske apparater til poker, spil, arrangering af spil og hasardspil; Interaktive elektroniske apparater til anvendelse i forbindelse med poker, spil, arrangering af spil, hasardspil, lotterier og konkurrencer; Netværksbaserede elektroniske terminaler til spilleformål."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Forlystelsesvirksomhed; Spil, hasardspil, væddemål, kasinospil og kortspil; Organisering, produktion og præsentation af pokerturneringer, -konkurrencer, -spil og -begivenheder; Inklusive formidling af alle de førnævnte tjenesteydelser leveret live eller via fjernsynsmedier eller formidlet online fra en computerdatabase eller via internettet; Vært for og arrangering af prisuddelingsceremonier og parties."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Te downloaden spellen en Downloadbare pokerspellen; Computersoftware en downloadbare software, waaronder downloadbare software in de vorm van een mobiele applicatie, alle te gebruiken voor poker, spellen, kansspelen, gokspelen, loterijen en wedstrijden; Computers en videospelcassettes, Patronen, Schijven en programma's, Waaronder interactieve programma's; Delen, onderdelen en toebehoren van alle voorgenoemde waren; Elektronische amusementsapparaten op handformaat voor toegang via internet tot geselecteerde websites."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Speelautomaten en amusementsautomaten met muntinworp; Speluitrusting en Apparatuur voor elektronische spellen en Elektronische pokerspellen; Pokerspeluitrusting, waaronder speelkaarten, Pokerfiches, Tafelvilt, Machines voor het schudden van speelkaarten, Blinde fiches en fiches voor gevers; Kaartenmarkeerders en spelregelboekjes, alle als een set verkocht; Elektronische poker-, spel-, kansspel- en gokspelapparaten; Elektronische poker-, spel-, kansspel- en gokspelapparaten op handformaat; Interactieve elektronische apparaten te gebruiken voor poker, spellen, kansspelen, gokspelen, loterijen en wedstrijden; Via een netwerk verbonden elektronische terminals voor speldoeleinden."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Amusement; Diensten met betrekking tot kansspelen, gokspelen, weddenschappen, casinospellen en kaartspellen; Organisatie, productie en presentatie van pokertoernooien, -wedstrijden, -spellen en -evenementen; Waaronder verlening van alle voornoemde diensten live of door middel van televisie of online vanuit een computerdatabase of via internet; Presentatie en organisatie van prijsuitreikingen en feesten."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Downloadable games and downloadable poker games; computer software and downloadable software including downloadable software in the nature of a mobile application, all for use in poker, games, gaming, gambling, lotteries and competitions; computer and video game cassettes, cartridges, discs and programs, including interactive programs; parts and fittings for the aforesaid; handheld electronic amusement apparatus for providing Internet access to selected websites."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Amusement games and machines (automatic and coin operated); gaming equipment and apparatus including electronic games and electronic poker games; poker playing equipment including playing cards, poker chips, table felt, playing card shuffling machines, blind and dealer buttons; card markers and rule books all sold as a unit; electronic poker, games, gaming and gambling apparatus; handheld electronic poker, games, gaming and gambling apparatus; interactive electronic apparatus for use in poker, games, gaming, gambling, lotteries and competitions; networked electronic terminals for gaming purposes."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Entertainment services; gaming, gambling, betting, casino game and card game services; organisation, production and presentation of poker tournaments, competitions, games and events; including the provision of all the aforesaid services rendered live or through the medium of television or provided online from a computer database or via the Internet; hosting and arranging of award ceremonies and parties."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Allalaaditavad mängud ja Allalaaditavad pokkerimängud; Arvutitarkvara ja allalaaditav tarkvara, sh allallaaditav tarkvara mobiilirakendustena, kõik kasutuseks pokkeris, mängudes, kasiinomängudes, hasartmängudes, loteriides ja võistlustel; Arvuti- ja videomängude kassetid, Kassetid, Kettad ja programmid, Sh interaktiivsed programmid; Osad ja lisaseadmed eelpoolmainitud toodetele; Valitud veebisaitidele Internetijuurdepääsu pakkumise funktsiooniga käeshoitavad elektroonilised meelelahutusseadmed."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Raha abil käivitatavad mängu- ja meelelahutusautomaadid; Mänguvarustus ja Elektronmänguseadmed ja Elektroonilised pokkerimängud; Pokkerimänguvahendid, sh mängukaardid, Pokkerizetoonid, Mängualus, Mängukaartide segamismasinad, Pimepanused ja diilerinupud; Kaardimarkerid ja reegliraamatud, kõik müüdavad komplektina; Elektroonilised pokkeri-, mängu-, kasiinomängu- ja hasartmänguseadmed; Käeshoitavad elektroonilised pokkeri-, mängu-, kasiinomängu- ja hasartmänguseadmed; Pokkeris, mängudes, kasiinomängudes, hasartmängudes, loteriides ja võistlustel kasutatavad interaktiivsed elektronseadmed; Võrguühendusega elektroonilised mängimisterminalid."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Meelelahutusteenused; Mängimis-, hasartmängu-, kihlveo-, kasiino- ja kaardimänguteenused; Pokkeriturniiride, -võistluste, -mängude ja -ürituste korraldamine, tootmine ja esitamine; Sh kõik eespool nimetatud teenused pakutuna elavettekandes või televisiooni vahendusel või sidusalt arvutiandmebaasist või Interneti kaudu; Autasustamistseremooniate ja vastuvõttude majutamine ja korraldamine."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Etäladattavat pelit ja Ladattavat pokeripelit; Tietokoneohjelmistot ja ladattavat ohjelmistot, mukaan lukien ladattavat ohjelmistot matkaviestintäsovellusten muodossa, kaikki käytettäväksi pokerin, pelien, rahapelien, uhkapelien, arpajaisten ja kilpailujen alalla; Tietokone- ja videopelikasetit, Kasetit, Levyt ja ohjelmat, Mukaan lukien vuorovaikutteiset ohjelmat; Edellä mainittujen osat ja tarvikkeet; Kädessä pidettävät elektroniset ajanvietelaitteet valittujen Internetin WWW-sivustojen käyttömahdollisuuden tarjoamiseen."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Kolikkokäyttöiset peli- ja ajanvieteautomaatit; Pelitarvikkeet ja Laitteet elektroniikkapelejä varten ja Elektroniset pokeripelit; Pokerin pelaamiseen tarkoitetut välineet, mukaan lukien pelikortit, Pokerimerkit (pelimerkit), Pöytäverka, Pelikorttien sekoituskoneet, Sokkopanokset ja jakajan pelimerkit; Korttimerkit ja sääntökirjat, kaikki myydään yksikkönä; Elektroniset pokeri-, peli-, rahapeli- ja uhkapelilaitteet; Kädessä pidettävät elektroniset pokeri-, peli-, rahapeli- ja uhkapelilaitteet; Vuorovaikutteiset elektroniset laitteet käytettäväksi pokerissa, peleissä, rahapeleissä, uhkapeleissä, arpajaisissa ja kilpailuissa; Verkotetut elektroniset terminaalit peleihin liittyviin tarkoituksiin."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Huvipalvelut; Rahapeli-, uhkapeli-, vedonlyönti-, kasinopeli- ja korttipelipalvelut; Pokeriturnausten, -kilpailujen, -pelien ja -tapahtumien järjestäminen, tuottaminen ja esittäminen; Mukaan lukien kaikkien edellä mainittujen palvelujen tarjoaminen suorana tai television kautta tai online-periaatteella tietokoneen tietokannasta tai Internetin välityksellä; Palkintoseremonioiden ja juhlien järjestäminen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Jeux téléchargeables et Jeux de poker téléchargeables; Logiciels et logiciels téléchargeables y compris logiciels téléchargeables sous la forme d'une application mobile, tous destinés au poker, aux jeux, aux jeux d'argent, aux loteries et aux compétitions; Cassettes informatiques et de jeux vidéo, Cartouches, Disques et programmes, Y compris programmes interactifs; Pièces et parties constitutives des produits précités; Appareils de divertissement électroniques portables pour la fourniture d'un accès à des sites en ligne sélectionnés par le biais de l'internet."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Machines automatiques à sous pour jeux et divertissement; Équipements de jeu et Appareils de jeux électroniques et Jeux de poker électroniques; Équipements pour jouer au poker y compris cartes à jouer, Jetons de poker, Feutre de table, Machines à battre les cartes à jouer, Boutons de blind et de croupier; Marqueurs de cartes et règlements de jeu, tous vendus sous forme d'ensemble; Appareils électroniques de poker, jeux et jeux d'argent; Appareils électroniques portables de poker, jeux et jeux d'argent; Appareils électroniques interactifs destinés au poker, aux jeux, aux jeux d'argent, aux loteries et aux compétitions; Terminaux électroniques en réseau à des fins de jeux."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de divertissement; Services de jeux, jeux d'argent, paris, jeux de casino et jeux de cartes; Organisation, production et présentation de tournois, compétitions, jeux et manifestations de poker; Y compris fourniture de tous les services précités en direct ou par le biais de la télévision ou en ligne à partir d'une base de données informatique ou sur l'internet; Hébergement et organisation de cérémonies de remise de prix et de fêtes."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Herunterladbare Spiele und Herunterladbare Pokerspiele; Computersoftware und herunterladbare Software, einschließlich herunterladbare Software in Form einer mobilen Applikation, alle zur Verwendung in Bezug auf Poker, Spiele, Spielen, Glücksspiele, Lotterien und Wettbewerbe; Computer- und Videospielkassetten, Kartuschen, -platten und -programme, Einschließlich interaktive Programme; Teile und Zubehör für die obengenannten Waren; Elektronische Handspielgeräte zur Bereitstellung des Internetzugangs zu ausgewählten Websites."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Geldbetätigte Spiel- und Unterhaltungsautomaten; Ausstattungen für Glücksspiele und Apparate für elektronische Spiele und Elektronische Pokerspiele; Pokerspielausrüstung, einschließlich Spielkarten, Spielmarken zum Pokern, Tischbespannung, Spielkartenmischmaschinen, Blind- und Dealerbuttons; Kartenmarkierer und Regelbücher, alles als Einheit verkauft; Elektronische Poker-, Spiel- und Glücksspielgeräte; Elektronische Poker-, Spiel- und Glücksspieltaschengeräte; Interaktive elektronische Apparate zur Verwendung zur Verwendung in Bezug auf Poker, Spiele, Spielen, Glücksspiele, Lotterien und Wettbewerbe; Vernetzte elektronische Terminals für Spielzwecke."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Unterhaltungsdienste; Dienstleistungen in Bezug auf Spiele, Glücksspiele, Wetten, Kasinospiele und Kartenspiele; Organisation, Produktion und Präsentation von Pokerturnieren, -wettbewerben, -spielen und -veranstaltungen; Einschließlich Live-Darbietung oder Bereitstellung aller vorstehend genannten Dienstleistungen über das Fernsehen oder online über eine Computerdatenbank oder das Internet; Veranstaltung und Organisation von Preisverleihungszeremonien und -festen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Igre koje se mogu preuzimati i Poker igre koje se mogu preuzimati; Racunalni softver i softver koji se moze preuzimati, ukljucujuci softver koji se moze preuzimati u obliku aplikacija za mobitele, sve za koristenje u pokeru, igrama, kockanju, kladenju, lutrijama i natjecanjima; Kasete racunalnih i videoigara, Ulosci za pisace, Diskovi i programi, Ukljucujuci interaktivne programe; Dijelovi i oprema za navedeno; Rucni elektronicki zabavni aparati za pruzanje internetskog pristupa odabranim web stranicama."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Automatski uredaji za igranje i zabavu koji se pokrecu na kovanice; Aparati za kockanje i Aparati s elektronickim igrama i Elektronicke pokerske igrice; Oprema za igranje pokera, ukljucujuci karte, Zetoni za poker, Filc za stolove, Uredaj za mijesanje igracih karata, Oznake uloga i djelitelja; Markeri za karte i knjizice s pravilima koje se prodaju u kompletu; Elektronicki poker, igre, uredaji za igranje i kockanje; Rucni elektronicki poker, igre, uredaji za igranje i kockanje; Interaktivni elektronicki aparati za poker, igre, kockarske igre, igre za novac, lutrije i natjecanja; Umrezeni elektronicki terminali za igranje."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Zabavne usluge; Kockarske igre, igre za novac, kladenje, kasino igre i igrace karte; Organizacija, produkcija i prezentacija turnira, poker natjecanja, igara i dogadanja; Ukljucujuci pruzanje svih navedenih usluga koje se pruzaju uzivo ili putem medija televizije ili na mrezi putem racunalne baze podataka ili putem interneta; Ugoscivanje i organiziranje svecanosti dodjele nagrada i zabave."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Letöletheto játékok és Letöltheto pókerjátékok; Számítógépes szoftverek és letöltheto szoftverek, többek között letöltheto szoftverek pókerhez, játékokhoz, sportfogadáshoz, szerencsejátékhoz, sorsjátékokhoz és versenyekhez használt mobilalkalmazás formájában; Számítógépes és videojátékokhoz való kazetták, Tubusok, Lemezek és programok, Többek között interaktív programok; A fent említett áruk alkatrészei és szerelvényei; Kézi elektronikus szórakoztató berendezések, amelyek internet-hozzáférést biztosítanak a kiválasztott weboldalakhoz."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Érmebedobással muködo játék- és szórakoztató automaták; Játékfelszerelés és Elektronikus játékok szerkezetei és Elektronikus pókerjátékok; Felszerelések pókerjátékhoz, többek között játékkártyák, Póker zsetonok, Asztalt borító posztó, Játékkártya-kevero gépek, A vakot és az osztót jelölo zsetonok; Kártyajelölok és szabálygyujtemények egy csomagban árusítva; Elektronikus berendezések pókerhez, játékokhoz, sportfogadáshoz és szerencsejátékhoz; Kézi pókerhez, játékokhoz, sportfogadáshoz és szerencsejátékhoz; Interaktív elektronikus berendezések pókerhez, játékokhoz, sportfogadáshoz, szerencsejátékhoz, sorsjátékokhoz és versenyekhez; Hálózatba kapcsolt elektronikus terminálok sportfogadási célokra."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Szórakoztatási szolgáltatások; Sportfogadási, szerencsejáték-, fogadási, kaszinójáték- és kártyajáték-szolgáltatások; Póker-bajnokságok, -versenyek, -játékok és -rendezvények szervezése, létrehozása és bemutatása; Beleértve az összes fent említett szolgáltatás éloben vagy televízión keresztüli biztosítását vagy számítógépes adatbázisból vagy az internetrol online módon történo biztosítását; Díjátadó ünnepségek és partik megtartása és szervezése."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Giochi scaricabili e Giochi di poker scaricabili; Software e software scaricabili, compresi software scaricabili in forma di un'applicazione cellulare, tutti per uso in poker, giochi, giochi d'azzardo, giochi di denaro, lotterie e concorsi; Computer e cassette per videogiochi, Cartucce, Dischi e programmi, Compresi programmi interattivi; Parti ed accessori per tutti i suddetti articoli; Apparecchi elettronici tascabili per il divertimento per la fornitura di accesso Internet a siti web selezionati."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Apparecchi da gioco e e macchine per intrattenimento di tipo automatico a moneta o a gettone; Attrezzatura per giochi e Apparecchi per giochi elettronici e Giochi elettronici di poker; Attrezzatura per il gioco del poker, comprese carte da gioco, Fiche per poker, Feltro per tavoli, Macchine per mescolare carte da gioco, Tendine e pulsanti del banco; Segnacarte e libri di regole, tutti venduti come unico articolo; Apparecchi elettronici per poker, giochi, giochi di denaro e giochi d'azzardo; Apparecchi tascabili elettronici per poker, giochi, giochi di denaro e giochi d'azzardo; Apparecchi elettronici interattivi per poker, giochi, giochi di denaro, giochi d'azzardo, lotterie e concorsi; Terminali elettronici in rete per giochi di denaro."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di intrattenimento; Giochi di denaro, giochi d'azzardo, scommesse, giochi da casinò e giochi di carte; Organizzazione, produzione e presentazione di tornei, competizioni, giochi e manifestazioni di poker; Tutti i suddetti servizi resi anche dal vivo o tramite il mezzo televisivo o disponibili on-line da una banca dati o via Internet; Allestimento e organizzazione di cerimonie di premiazione e feste."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Parsisiunciami zaidimai ir Atsisiunciamieji pokerio zaidimai; Kompiuteriu programine iranga ir atsisiunciamoji programine iranga, iskaitant atsisiunciamaja programine iranga kaip mobiliojo rysio taikomaja programa, viskas skirta naudoti pokerio, zaidimu, azartiniu zaidimu, losimu, loteriju ir varzybu reikmems; Kompiuteriniu ir vaizdo zaidimu kasetes, Kasetes, Diskai ir programos, Iskaitant saveikiasias programas; Auksciau nurodytu prekiu dalys ir reikmenys; Delniniai elektroniniai pramoginiai aparatai, skirti interneto prieigai prie pasirinktu svetainiu teikti."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Monetomis valdomi zaidimu ir pramoginiai aparatai; Zaidimu iranga ir Aparatai, skirti elektroniniams zaidimams ir Elektroniniai pokerio zaidimai; Pokerio zaidimo iranga, iskaitant losimo kortas, Pokerio zetonai, Stalo veltinis, Losimo kortu maisymo masinos, Zaliuzes ir kortu dalytojo mygtukai; Kortu zymekliai ir taisykliu knygos, viskas parduodama bendrai; Elektroniniai pokerio, zaidimu, azartiniu zaidimu ir losimu aparatai; Delniniai elektroniniai pokerio, zaidimu, azartiniu zaidimu ir losimu aparatai; Saveikieji elektroniniai aparatai, skirti naudoti pokerio, zaidimu, azartiniu zaidimu, losimu, loteriju ir varzybu reikmems; I tinkla sujungti elektroniniai terminalai, skirti azartiniu zaidimu reikmems."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Pramogines paslaugos; Azartiniu zaidimu, losimu, lazybu, kazino zaidimu ir kortu zaidimu paslaugos; Pokerio turnyru, varzybu, zaidimu ir renginiu organizavimas, kurimas ir pristatymas; Iskaitant visu minetu paslaugu, teikiamu tiesiogiai arba per televizijos terpe, arba teikiamu tiesiogiai tinklu is kompiuteriu duomenu bazes ar internetu, teikima; Apdovanojimu teikimo iskilmiu ir vakareliu priemimas ir rengimas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Lejupieladejamas speles un Lejupladejamas pokera speles; Datoru programmaturas un lejupieladejamas programmaturas, tostarp lejupieladejamas programmaturas mobilo lietotnu veida, viss izmantosanai pokera, speles, speles uz naudu, azartspeles, loterijas un sacensibas; Datorspelu un videospelu kasetes, Kartridzi, Diski un programmas, Tostarp interaktivas programmas; Ieprieks mineto precu dalas un armatura; Rokas elektroniskas izklaides iekartas interneta piekluves nodrosinasanai izveletam timekla vietnem."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Ar naudu darbinami spelu un izklaides automati; Spelu piederumi un Elektronisko spelu aparatura un Elektroniskas pokera speles; Pokera spelesanas aprikojums, tostarp spelu kartis, Pokera zetoni, Galda filcs, Spelu karsu dalisanas iekartas, Sleptie zetoni un dalitaju zetoni; Karsu markieri un noteikumu gramatas pardosana komplekta; Elektronisko pokera spelu, spelu, spelu uz naudu un azartspelu aparati; Rokas elektroniskie pokera, spelu, spelu uz naudu un azartspelu aparati; Interaktivas elektroniskas ierices lietosanai saistiba ar pokeri, spelem, spelem uz naudu, azartspelem, loterijam un sacensibam; Tikla balstiti elektroniskie terminali spelesanas nolukos."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Izklaides pakalpojumi; Spelu, azartspelu, deribu, kazino spelu un karsu spelu pakalpojumi; Pokera turniru, sacensibu, spelu un pasakumu organizesana, izveide un prezentesana; Tostarp visu ieprieks mineto pakalpojumu nodrosinasana, kas tiek sniegti tiesraide vai televizija, vai tiek nodrosinati tiessaiste no datora datubazes vai interneta; Apbalvosanas ceremoniju un ballisu organizesana un rikosana."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Loghob li jistghu jitnizzlu mill-Internet u Loghob tal-powker li jista' jitnizzel; Softwer tal-kompjuter u softwer li jista' jitnizzel inkluz softwer li jista' jitnizzel fl-ghamla ta' applikazzjoni mobbli, kollha ghal uzu fil-powker, loghob, loghob tal-azzard, lotteriji u kompetizzjonijiet; Kompjuter u kasetts tal-vidjowgejm, Cartridges, Diski u programmi, Inkluzi programmi interattivi; Partijiet u fittings ghall-oggetti msemmija qabel; Apparat elettroniku ta' divertiment li jinzamm fl-idejn ghall-provvista ta' access ghall-Internet ghal websajts maghzula."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Apparat tal-loghob u tad-divertiment li jithaddmu bil-flus; Taghmir tal-loghob u Apparat ghal-loghob elettroniku u Loghob tal-powker elettroniku; Taghmir biex jintlaghab il-powker inkluzi karti tal-loghob, Cipep tal-powker, Feltru tal-imwejjed, Magni li jhawdu l-karti tal-loghob, Blind buttons u cipep ta' min iqassam; Markaturi tal-karti u kotba bir-regoli kollha mibjugha bhala unità; Apparat elettroniku tal-powker, loghob u loghob tal-azzard; Apparat elettroniku li jinzamm fl-idejn tal-powker, loghob u loghob tal-azzard; Apparat elettroniku interattiv ghal uzu fil-powker, loghob, loghob tal-azzard, lotteriji u kompetizzjonijiet; Terminali elettronici f'netwerk ghal skopijiet ta' loghob."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' divertiment; Servizzi ta' loghob, loghob ta' l-azzard, imhatri, loghob tal-kazinò u loghob tal-karti; Organizzazzjoni, produzzjoni u prezentazzjoni ta' turnewijiet, kompetizzjonijiet, loghob u avvenimenti tal-powker; Inkluz il-provvista tas-servizzi kollha msemmija qabel moghtija lajv jew permezz tat-televizjoni jew ipprovduti onlajn minn dejtabejz informatika jew permezz tal-Internet; Il-hosting u l-arrangament ta' cerimonji ta' ghoti tal-premjijiet u festini."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Gry do pobrania i Gry z rodziny pokera do pobrania; Oprogramowanie komputerowe i oprogramowanie do pobrania, w tym oprogramowanie do pobrania w formie aplikacji mobilnej, wszystko do uzytku w zakresie pokera, gier, hazardu, hazardu, loterii i konkursów; Kasety z grami komputerowymi i wideo, Kartusze, Dyski i programy, W tym programy interaktywne; Czesci i osprzet do uprzednio wymienionych towarów; Podreczne elektroniczne urzadzenia rozrywkowe do zapewniania dostepu do wybranych stron internetowych."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Automaty do gier i rozrywek uruchamiane przy pomocy pieniedzy; Sprzet do gier i Urzadzenia do gier elektronicznych i Elektroniczne gry z rodziny pokera; Sprzet do gry w pokera, w tym karty do gry, Zetony do pokera, Filc na stoly, Maszyny do tasowania kart do gry, Przymusowe zaklady i zetony rozdajacych; Markery do kart i instrukcje sprzedawane w zestawie; Elektroniczne urzadzenia do pokera, gier, hazardu i hazardu; Podreczne elektroniczne urzadzenia do pokera, gier, hazardu i hazardu; Interaktywne urzadzenia elektroniczne do uzytku w zakresie pokera, gier, hazardu, hazardu, loterii i konkursów; Podlaczone do sieci terminale elektroniczne do uzytku w hazardzie."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi rozrywkowe; Uslugi w zakresie hazardu, hazardu, zakladów, gier kasynowych i gier karcianych; Organizowanie, produkcja i prezentacja turniejów, zawodów, gier i imprez w dziedzinie pokera; W tym swiadczenie wszystkich uprzednio wymienionych uslug na zywo lub za posrednictwem telewizji lub online z komputerowej bazy danych lub za posrednictwem internetu; Organizowanie i urzadzanie ceremonii przyznania nagród i przyjec."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Jogos transferíveis e Jogos de póquer descarregáveis; Programas de computador e programas de computador descarregáveis, incluindo programas de computador descarregáveis sob a forma de uma aplicação móvel, tudo para uso em póquer, jogos, jogos a dinheiro, jogos de azar, lotarias e concursos; Informática e cassetes de jogos de vídeo, Cartuchos, Discos e programas, Incluindo programas interativos; Peças e acessórios para os artigos atrás referidos; Aparelhos de diversão eletrónicos manuais para fornecimento de acesso a sítios Web selecionados na Internet."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Máquinas de jogos e de diversão, accionadas por moedas; Equipamento para jogos de azar e Aparelhos para jogos electrónicos e Jogos de póquer eletrónicos; Equipamentos para jogar póquer, incluindo cartas de jogar, Fichas de póquer, Feltro para mesas, Máquinas para baralhar cartas, Fichas de \"dealer\" (banca) e para apostas obrigatórias; Marcadores de cartas e livros de regras, vendidos em conjunto; Aparelhos eletrónicos de póquer, jogos, jogos a dinheiro e jogos de azar; Aparelhos eletrónicos manuais de póquer, jogos, jogos a dinheiro e jogos de azar; Aparelhos eletrónicos interativos para uso em póquer, jogos, jogos a dinheiro, jogos de azar, lotarias e concursos; Terminais eletrónicos ligados em rede para fins de jogos a dinheiro."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços recreativos; Serviços de jogos a dinheiro, jogo de azar, apostas, jogos de casino e jogos de cartas; Organização, produção e apresentação de torneios, competições, jogos e eventos de póquer; Incluindo o fornecimento de todos os serviços atrás referidos ao vivo ou através de televisão, ou em linha a partir de uma base de dados ou através da Internet; Acolhimento e organização de cerimónias de atribuição de prémios e festas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Jocuri descarcabile si Jocuri de poker descarcabile; Software si software descarcabil inclusiv software descarcabil sub forma unei aplicatii mobile, toate destinate utilizarii la pocker, jocuri, jocuri, jocuri de noroc, loterii si concursuri; Casete cu jocuri de calculator si video, Cartuse, Discuri si programe, Inclusiv programe interactive; Parti si accesorii pentru articolele mentionate mai sus; Aparate de divertisment electronice de buzunar pentru furnizarea accesului pe internet la site-uri web selectate."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Aparate pentru jocuri si divertisment; Echipament de jocuri de noroc si Aparate pentru jocuri electronice si Jocuri de poker electronice; Echipament pentru jocul de poker, inclusiv carti de joc, Jetoane de poker, Fetru pentru mese, Aparate pentru amestecarea cartilor de joc, Butoane pentru jaluzele si dealer; Marcatoare pentru carti si manuale cu reguli toate comercializate unitar; Aparate electronice pentru poker, jocuri, jocuri si jocuri de noroc; Aparate electronice de buzunar pentru poker, jocuri, jocuri si jocuri de noroc; Aparate electronice interactive pentru poker, jocuri, jocuri, jocuri de noroc, loterii si concursuri; Terminale electronice în retea pentru jocuri."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de divertisment; Servicii de jocuri, jocuri de noroc, pariuri, jocuri de cazino si jocuri de carti; Organizare, productie si prezentare de turnee, competitii, jocuri si evenimente de poker; Inclusiv furnizarea tuturor serviciilor mentionate anterior în direct sau la televizor sau on-line dintr-o baza de date de calculator sau pe internet; Gazduirea si organizarea ceremoniilor si petrecerilor."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Stiahnutelné hry a Pokerové hry s moznostou prevzatia; Pocítacový softvér a softvér s moznostou prevzatia vrátane softvéru s moznostou prevzatia v podobe mobilnej aplikácie, vsetky súvisia s pokerom, hrami, hraním, hazardnými hrami, lotériami a sútazami; Pocítacové herné a vidoeherné kazety, Náboje, Disky a programy, Vrátane interaktívnych programov; Casti a súcasti pre uvedené tovary; Vreckové elektronické zábavné prístroje na poskytovanie internetového prístupu k vybraným webovým stránkam."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Hracie a zábavné automaty fungujúce po vhodení penazí; Hracie zariadenie a Zariadenia pre elektronické hry a Elektronické pokerové hry; Pokerové herné zariadenia vrátane hracích kariet, Zetóny na poker, Plst pre stoly, Stroje na miesanie hracích kariet, Zetóny pre krupiérov; Kartové markéry a pravidlá predávané v celku; Elektronické pokerové, herné a hazardné herné zariadenia; Vreckové elektronické pokerové, herné a hazardné herné zariadenia; Interaktívne elektronické zariadenia pre poker, hry, hranie, hazardné hry, lotérie a sútaze; Sietové elektronické terminály na herné úcely."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Sluzby v oblasti zábavy; Sluzby v oblasti hrania, hazardných hier, stávkovania, kasínových hier a kartových hier; Organizovanie, výroba a prezentácia pokerových turnajov, sútazí, hier a podujatí; Vrátane poskytovania akákolvek vyssie uvedených sluzieb, ci uz nazivo alebo prostredníctvom televízie alebo prostredníctvom on-line pocítacovej databázy alebo internetu; Prevádzkovanie a organizovanie osláv spojených s udelovaním ocenení."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Nalozljive igre in Prenosljive poker igre; Racunalniska programska oprema in prenosljiva programska oprema, vkljucno s prenosljivo programsko opremo v obliki mobilne aplikacije, vse za uporabo pri pokru, igrah, igranju, igrah na sreco, loteriji in tekmovanjih; Kasete z racunalniskimi in video igrami, Kartuse, Diski in programi, Vkljucno z interaktivnimi programi; Deli in montazna oprema za omenjeno blago; Rocni elektronski zabavni aparati za nudenje internetnega dostopa do izbranih spletnih mest."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Igralni in zabavni avtomati na kovance; Igralna oprema in Sistem elektronskih igric in Elektronske poker igre; Oprema za igranje pokra, vkljucno z igralnimi kartami, Zetoni za poker, Filc za mize, Aparati za mesanje igralnih kart, Gumbi za igralca, ki mora vplacati prisilno stavo, in krupjeja; Karticni oznacevalniki in knjige pravil, v prodaji v kompletu; Elektronski aparati za poker, igre, igranje in igre na sreco; Rocni elektronski aparati za poker, igre, igranje in igre na sreco; Interaktivni elektronski aparati za uporabo pri pokru, igrah, igranju, igrah na sreco, loterijah in tekmovanjih; Mrezni elektronski terminali za igralne namene."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Razvedrilne storitve; Storitve igranja, iger na sreco, stav, igralniskih iger in iger s kartami; Organizacija, produkcija in predstavitev poker turnirjev, tekmovanj, iger in prireditev; Vkljucno z nudenjem vseh navedenih storitev, nudenih v zivo ali preko televizije ali s povezavo iz racunalniske podatkovne baze ali preko interneta; Gostovanje in prirejanje podelitev priznanj in zabav."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Juegos telecargables y Juegos de póquer descargables; Software y software descargable incluyendo software descargable del tipo de una aplicación de móvil, todos para su uso en póquer, juegos, juegos de azar, juegos de apuestas, loterías y competiciones; Informática y casetes de videojuegos, Cartuchos, Discos y programas, Incluyendo programas interactivos; Parts and fittings for the aforesaid goods; Aparatos recreativos electrónicos de mano para facilitar el acceso de Internet a sitios web seleccionados."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Máquinas automáticas de juego y esparcimiento accionadas con monedas; Equipo de juego y Aparatos para juegos electrónicos y Juegos electrónicos de póquer; Equipos de juegos de póquer incluyendo naipes, Fichas de póquer, Fieltro de mesa, Barajadoras de naipes, Fichas de apuestas ciegas y de repartidor; Marcadores de cartas y libros de reglas de juego, todos vendidos como una unidad; Aparatos electrónicos de póquer, juegos, juegos de azar y juegos de apuestas; Aparatos electrónicos de mano de póquer, juegos, juegos de azar y juegos de apuestas; Aparatos electrónicos interactivos para su uso en póquer, juegos, juegos de azar, juegos de apuestas, loterías y competiciones; Terminales electrónicos conectados en red para juegos de azar."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Prestación de servicios de entretenimiento; Servicios de juegos de azar, juegos de apuestas, apuestas, juegos de casino y juegos de cartas; Organización, producción y presentación de torneos, bingo, competiciones, juegos y eventos de póquer; Incluyendo la prestación de todos los servicios mencionados en directo o a través de la televisión o en línea desde una base de datos informática o a través de Internet; Alojamiento y organización de ceremonias de entrega de premios y fiestas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Fjärrnedladdningsbara spel och Nedladdningsbara pokerspel; Datorprogram och nedladdningsbar programvara, inklusive nedladdningsbar programvara i form av en mobil applikation, allt för användning i poker, spel, speltjänster, hasardspel, lotterier och tävlingar; Dator- och videospelkassetter, Patroner, Skivor och program, Inklusive interaktiva program; Delar och tillbehör till ovan nämnda varor; Handhållna nöjesapparater för tillhandahållande av internet åtkomst till utvalda webbplatser."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Myntstyrda spel- och underhållningsautomater; Spelutrustning och Apparater för elektroniska spel och Elektroniska pokerspel; Utrustning för pokerspel inklusive spelkort, Pokermarker, Bordsfilt, Blandningsmaskiner för spelkort, Blind- och dealerknappar; Kortmarker och regelböcker, alla sålda som en enhet; Elektronisk poker, spel, hasardspelstjänster och turspelanordningar; Handburna elektroniska apparater för poker, spel, hasardspel och turspel; Interaktiva elektroniska apparater för användning vid pokerspel, spel, hasardspel, lotterier och tävlingar; Nätverksbaserade elektroniska terminaler för spel ändamål."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Underhållningstjänster; Tjänster avseende spel, hasardspel, vadslagning, kasinospel och kortspel; Organisering, produktion och presentation av pokerturneringar, -tävlingar, -spel och -evenemang; Inklusive tillhandahållande av alla nämnda tjänster i levande form eller via tv eller via direktanslutning från en databas eller via Internet; Värdskap och anordnande av prisutdelningsceremonier och fester."
+        }
+      ]
+    },
+    "id": "c19d90d4-914b-4521-b325-9a3b594a9d05",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "115"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Riddargatan 10,Stockholm, 114 35",
+        "representativeAddressCountryCode": "SE",
+        "representativeAddressCountryName": "Sweden",
+        "representativeName": "Potter Clarkson KB"
+      }
+    ],
+    "secondLanguageCode": "fr",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20140515",
+        "applicationNumber": "12878864"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340515",
+      "lastPublicationDate": "20140625",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20141002",
+        "registrationNumber": "12878864"
+      }
+    },
+    "version": "20260511171939",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR CASINOS PRESENTS GOLIATH"
+    }
+  },
+  "_uri": "/mark/em/c19d90d4-914b-4521-b325-9a3b594a9d05",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.823Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

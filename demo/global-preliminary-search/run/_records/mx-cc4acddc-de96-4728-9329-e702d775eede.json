@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/mx/cc4acddc-de96-4728-9329-e702d775eede",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "cc4acddc-de96-4728-9329-e702d775eede",
+  "applicationNumber": "3346119",
+  "registrationNumber": "2904182",
+  "applicationDate": "2025-03-31",
+  "registrationDate": "2025-08-08",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VIVE NORTEÑO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Organizacion de bailes; organizacion y direccion de conciertos; organizacion de espectaculos [servicios de empresarios]; organizacion de fiestas y recepciones; produccion de espectaculos; representacion de espectaculos de variedades; representacion de espectaculos en vivo",
+      "translation_language": "en",
+      "translation": "Dance Organization; Concert Organization and Management; Entertainment Organization [Business Services]; Party and Reception Organization; Show Production; Variety Show Performance; Live Performance"
+    }
+  ],
+  "owner": "JOSE RAMIRO VIDAL CANTU",
+  "ownerNative": null,
+  "ownerCountry": "MX",
+  "representative": "JOSE RAMIRO VIDAL CANTU",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "METALÚRGICA NUM. EXT. 107 NUM. INT. A, PARQUE INDUSTRIAL ESCOBEDO, GENERAL ESCOBEDO, NUEVO LEON 66062",
+        "applicantAddressCountryCode": "MX",
+        "applicantAddressCountryName": "Mexico",
+        "applicantName": "JOSE RAMIRO VIDAL CANTU"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dance Organization; Concert Organization and Management; Entertainment Organization [Business Services]; Party and Reception Organization; Show Production; Variety Show Performance; Live Performance",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Organizacion de bailes; organizacion y direccion de conciertos; organizacion de espectaculos [servicios de empresarios]; organizacion de fiestas y recepciones; produccion de espectaculos; representacion de espectaculos de variedades; representacion de espectaculos en vivo"
+        }
+      ]
+    },
+    "id": "cc4acddc-de96-4728-9329-e702d775eede",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "55.00.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "0815R1",
+        "publicationYear": "2025"
+      }
+    ],
+    "recordLastUpdated": "20250824",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "METALÚRGICA NUM. EXT. 107 NUM. INT. A, PARQUE INDUSTRIAL ESCOBEDO, GENERAL ESCOBEDO, NUEVO LEON 66062, MEXICO"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "METALÚRGICA NUM. EXT. 107 NUM. INT. A, PARQUE INDUSTRIAL ESCOBEDO, GENERAL ESCOBEDO, NUEVO LEON 66062, MEXICO",
+        "representativeName": "JOSE RAMIRO VIDAL CANTU"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250331",
+        "applicationNumber": "3346119"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20250808",
+        "registrationNumber": "2904182"
+      }
+    },
+    "version": "20250824020134",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VIVE NORTEÑO"
+    }
+  },
+  "_uri": "/mark/mx/cc4acddc-de96-4728-9329-e702d775eede",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

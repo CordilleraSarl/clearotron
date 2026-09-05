@@ -1,0 +1,106 @@
+{
+  "uri": "/mark/kr/b07c8f38-6968-4fb3-85ec-1db726d5d40c",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "b07c8f38-6968-4fb3-85ec-1db726d5d40c",
+  "applicationNumber": "40-2000-0048432",
+  "registrationNumber": null,
+  "applicationDate": "2000-10-16",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "주식회사 고리 (KORI)",
+  "markTransliteration": "KORI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "아답터, 자막기, 전선용커넥터, 충전기, 휴대용 가요반주기",
+      "translation_language": "en",
+      "translation": "Adapter, subtitler, cable connector, charger, portable music accompaniment player"
+    }
+  ],
+  "owner": "KORI TECH CO., LTD.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 금천구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "KORI TECH CO., LTD.",
+        "applicantNativeName": "고리텍 주식회사"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Adapter, subtitler, cable connector, charger, portable music accompaniment player",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "아답터, 자막기, 전선용커넥터, 충전기, 휴대용 가요반주기"
+        }
+      ]
+    },
+    "id": "b07c8f38-6968-4fb3-85ec-1db726d5d40c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260609",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20001016",
+        "applicationNumber": "40-2000-0048432"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260609020319",
+    "wordMarkSpecification": {
+      "markTransliteration": "KORI",
+      "markVerbalElementText": "주식회사 고리 (KORI)"
+    }
+  },
+  "_uri": "/mark/kr/b07c8f38-6968-4fb3-85ec-1db726d5d40c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.792Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

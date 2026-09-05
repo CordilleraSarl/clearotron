@@ -1,0 +1,115 @@
+{
+  "uri": "/mark/es/b56a8aad-a75c-40d2-be52-4884881851a7",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "b56a8aad-a75c-40d2-be52-4884881851a7",
+  "applicationNumber": "2016906 MX",
+  "registrationNumber": "2016906 MX",
+  "applicationDate": "1996-03-07",
+  "registrationDate": "1997-01-20",
+  "expiryDate": "2036-03-06",
+  "renewalDate": "2026-04-30",
+  "lastPublicationDate": "1996-05-01",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JOVEN ORQUESTA DE ANDALUCIA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Educación; formación; esparcimiento; organización de actividades deportivas y culturales; organización de exposiciones con fines culturales o educativos; producción de grabaciones audiovisuales; edición y publicación de libros y textos; organización y dirección de concursos, coloquios, conferencias y congresos; servicios de museos (presentaciones, exposiciones); servicios de producción y representaciones de espectáculos; servicios de una orquesta.",
+      "translation_language": "en",
+      "translation": "Education; training; entertainment; organizing sporting and cultural activities; organization of exhibitions for cultural or educational purposes; production of audiovisual recordings; editing and publishing of books and texts; organization and conducting of competitions, colloquiums, conferences and congresses; museum services (presentations, exhibitions); production services and performances of shows; services of an orchestra."
+    }
+  ],
+  "owner": "CONSEJERIA DE CULTURA JUNTA DE ANDALUCIA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "CONSEJERIA DE CULTURA JUNTA DE ANDALUCIA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education; training; entertainment; organizing sporting and cultural activities; organization of exhibitions for cultural or educational purposes; production of audiovisual recordings; editing and publishing of books and texts; organization and conducting of competitions, colloquiums, conferences and congresses; museum services (presentations, exhibitions); production services and performances of shows; services of an orchestra.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Educación; formación; esparcimiento; organización de actividades deportivas y culturales; organización de exposiciones con fines culturales o educativos; producción de grabaciones audiovisuales; edición y publicación de libros y textos; organización y dirección de concursos, coloquios, conferencias y congresos; servicios de museos (presentaciones, exposiciones); servicios de producción y representaciones de espectáculos; servicios de una orquesta."
+        }
+      ]
+    },
+    "id": "b56a8aad-a75c-40d2-be52-4884881851a7",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "11072",
+        "publicationVolume": "2618"
+      }
+    ],
+    "recordLastUpdated": "20260512",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19960307",
+        "applicationNumber": "2016906 MX"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360306",
+      "lastPublicationDate": "19960501",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19970120",
+        "registrationNumber": "2016906 MX"
+      },
+      "renewalDate": "20260430",
+      "renewalPublishedDate": "20260508"
+    },
+    "version": "20260512020038",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOVEN ORQUESTA DE ANDALUCIA"
+    }
+  },
+  "_uri": "/mark/es/b56a8aad-a75c-40d2-be52-4884881851a7",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

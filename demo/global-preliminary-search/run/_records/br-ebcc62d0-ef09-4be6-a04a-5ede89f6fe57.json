@@ -1,0 +1,107 @@
+{
+  "uri": "/mark/br/ebcc62d0-ef09-4be6-a04a-5ede89f6fe57",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "ebcc62d0-ef09-4be6-a04a-5ede89f6fe57",
+  "applicationNumber": "930840194",
+  "registrationNumber": null,
+  "applicationDate": "2023-06-20",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "Grupo Seven Corp",
+  "markTransliteration": null,
+  "markTranslation": "GRUPO SETE CORPORAÇÃO",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Cd - rom [drive];Computadores;Computadores thin client;Computadores vestíveis;Conectores de fios [eletricidade];Conjuntos de dados, gravados ou baixáveis;Discos compactos [cd] [áudio e vídeo];Discos compactos de memória somente de leitura [cd - rom];Discos flexíveis [disquetes];Discos ópticos;Fios elétricos;Fones de ouvido;Hardware de computador;Headsets;Headsets de realidade virtual;Headsets para jogar videogames;Impressoras de bilhetes;Impressoras para uso com computadores ' ;Impressoras portáteis sem fio para uso com laptops e dispositivos móveis;Interfaces para computadores;Interruptor para computador, de força;Interruptor para computador, de velocidade;Laptops;Leitores [equipamentos de processamentos de dados];Leitores de código de barras;Máquina de registrar;Máquina para imprimir e emitir bilhete;Máquinas de calcular;Máquinas para faturamento;Microfones;Microfones de alto - falante sem fio;Microprocessadores;Monitores de vídeo;Monitores de vídeo vestíveis;Monitores vestíveis de atividade física;Programas de computador baixáveis;Programas de computador, gravados;Programas de jogos de computador, gravados;Scanners [equipamento de processamento de dados];Sistema computadorizado [hardware e software] de monitoramento e detecção de objetos em espaço terrestre, por meio de micro - ondas;Sistema computadorizado [hardware e software] de monitoramento e detecção de objetos em espaço terrestre, por meio de ondas de rádio;Sistema computadorizado [hardware e software] de monitoramento e detecção de objetos em espaço terrestre, por meio de ondas sonoras;Sistema computadorizado [hardware e software] de monitoramento e detecção de objetos em espaço terrestre, por meio de radiação infravermelha;Sistema computadorizado [hardware e software] de monitoramento e detecção de objetos, por meio de radiação visível;Smartphones;Software de computador baixável para gestão de operações de criptoativos utilizando tecnologia blockchain;Softwares de computador, gravados;Softwares protetores de tela para computadores, gravados ou baixáveis;Suportes adaptados para laptops;Tablets;Teclados de computador;Telas [fotografia];Telas de projeção;Telas fluorescentes;Tele - impressoras [telex];Toca - discos;Tocadores de dvd;Videofones.",
+      "translation_language": "en",
+      "translation": "Cd - rom [drive];Computers;Thin client computers;Wearable computers;Wire connectors [electricity];Data sets, recorded or downloadable;Compact discs [cd] [audio and video];Read-only memory compact discs [cd - rom];Floppy disks [floppy disks];Optical disks;Electrical wires;Headphones;Computer hardware;Headsets;Virtual reality headsets;Headsets for playing video games;Ticket printers;Printers for use with computers&#39; ;Printers wireless handhelds for use with laptops and mobile devices; computer interfaces; computer power switch; computer speed switch; laptops; readers [data processing equipment]; barcode scanners; Ticket printing and issuing machines;Calculating machines;Billing machines;Microphones;Wireless speaker microphones;Microprocessors;Video monitors;Wearable video monitors;Wearable physical activity monitors;Downloadable computer programs;Computer programs , recorded; Recorded computer game programs; Scanners [data processing equipment]; Computerized system [hardware and software] for monitoring and detection of objects in terrestrial space, by means of microwaves; Computerized system [hardware and software ] for monitoring and detecting objects in terrestrial space, by means of radio waves;Computerized system [hardware and software] for monitoring and detection of objects in terrestrial space, by means of sound waves;Computerized system [hardware and software] for monitoring and detection of objects in terrestrial space, by means of infrared radiation;Computerized system [hardware and software] for monitoring and detection of objects, by means of visible radiation;Smartphones;Downloadable computer software for managing crypto asset operations using blockchain technology; Computer software, recorded; Screen saver software for computers, recorded or downloadable; Adapted stands for laptops; Tablets; Computer keyboards; Screens [photography]; Projection screens; Fluorescent screens; Tele - printers [telex]; Turntables ;DVD players;Videophones."
+    }
+  ],
+  "owner": "SEVEN CORP COMERCIO E SERVICOS LTDA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "No agent available",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "SEVEN CORP COMERCIO E SERVICOS LTDA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Cd - rom [drive];Computers;Thin client computers;Wearable computers;Wire connectors [electricity];Data sets, recorded or downloadable;Compact discs [cd] [audio and video];Read-only memory compact discs [cd - rom];Floppy disks [floppy disks];Optical disks;Electrical wires;Headphones;Computer hardware;Headsets;Virtual reality headsets;Headsets for playing video games;Ticket printers;Printers for use with computers&#39; ;Printers wireless handhelds for use with laptops and mobile devices; computer interfaces; computer power switch; computer speed switch; laptops; readers [data processing equipment]; barcode scanners; Ticket printing and issuing machines;Calculating machines;Billing machines;Microphones;Wireless speaker microphones;Microprocessors;Video monitors;Wearable video monitors;Wearable physical activity monitors;Downloadable computer programs;Computer programs , recorded; Recorded computer game programs; Scanners [data processing equipment]; Computerized system [hardware and software] for monitoring and detection of objects in terrestrial space, by means of microwaves; Computerized system [hardware and software ] for monitoring and detecting objects in terrestrial space, by means of radio waves;Computerized system [hardware and software] for monitoring and detection of objects in terrestrial space, by means of sound waves;Computerized system [hardware and software] for monitoring and detection of objects in terrestrial space, by means of infrared radiation;Computerized system [hardware and software] for monitoring and detection of objects, by means of visible radiation;Smartphones;Downloadable computer software for managing crypto asset operations using blockchain technology; Computer software, recorded; Screen saver software for computers, recorded or downloadable; Adapted stands for laptops; Tablets; Computer keyboards; Screens [photography]; Projection screens; Fluorescent screens; Tele - printers [telex]; Turntables ;DVD players;Videophones.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Cd - rom [drive];Computadores;Computadores thin client;Computadores vestíveis;Conectores de fios [eletricidade];Conjuntos de dados, gravados ou baixáveis;Discos compactos [cd] [áudio e vídeo];Discos compactos de memória somente de leitura [cd - rom];Discos flexíveis [disquetes];Discos ópticos;Fios elétricos;Fones de ouvido;Hardware de computador;Headsets;Headsets de realidade virtual;Headsets para jogar videogames;Impressoras de bilhetes;Impressoras para uso com computadores ' ;Impressoras portáteis sem fio para uso com laptops e dispositivos móveis;Interfaces para computadores;Interruptor para computador, de força;Interruptor para computador, de velocidade;Laptops;Leitores [equipamentos de processamentos de dados];Leitores de código de barras;Máquina de registrar;Máquina para imprimir e emitir bilhete;Máquinas de calcular;Máquinas para faturamento;Microfones;Microfones de alto - falante sem fio;Microprocessadores;Monitores de vídeo;Monitores de vídeo vestíveis;Monitores vestíveis de atividade física;Programas de computador baixáveis;Programas de computador, gravados;Programas de jogos de computador, gravados;Scanners [equipamento de processamento de dados];Sistema computadorizado [hardware e software] de monitoramento e detecção de objetos em espaço terrestre, por meio de micro - ondas;Sistema computadorizado [hardware e software] de monitoramento e detecção de objetos em espaço terrestre, por meio de ondas de rádio;Sistema computadorizado [hardware e software] de monitoramento e detecção de objetos em espaço terrestre, por meio de ondas sonoras;Sistema computadorizado [hardware e software] de monitoramento e detecção de objetos em espaço terrestre, por meio de radiação infravermelha;Sistema computadorizado [hardware e software] de monitoramento e detecção de objetos, por meio de radiação visível;Smartphones;Software de computador baixável para gestão de operações de criptoativos utilizando tecnologia blockchain;Softwares de computador, gravados;Softwares protetores de tela para computadores, gravados ou baixáveis;Suportes adaptados para laptops;Tablets;Teclados de computador;Telas [fotografia];Telas de projeção;Telas fluorescentes;Tele - impressoras [telex];Toca - discos;Tocadores de dvd;Videofones."
+        }
+      ]
+    },
+    "id": "ebcc62d0-ef09-4be6-a04a-5ede89f6fe57",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260519",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "No agent available"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230620",
+        "applicationNumber": "930840194"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260519020114",
+    "wordMarkSpecification": {
+      "markTranslation": "GRUPO SETE CORPORAÇÃO",
+      "markVerbalElementText": "Grupo Seven Corp"
+    }
+  },
+  "_uri": "/mark/br/ebcc62d0-ef09-4be6-a04a-5ede89f6fe57",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.743Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

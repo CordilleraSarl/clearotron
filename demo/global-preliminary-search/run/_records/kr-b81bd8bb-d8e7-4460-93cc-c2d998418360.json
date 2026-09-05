@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/kr/b81bd8bb-d8e7-4460-93cc-c2d998418360",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "b81bd8bb-d8e7-4460-93cc-c2d998418360",
+  "applicationNumber": "40-2014-0031374",
+  "registrationNumber": null,
+  "applicationDate": "2014-05-09",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "코리",
+  "markTransliteration": "KORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "내려받기 가능한 이미지파일, 노광(露光)된 영화필름, 녹화된 테이프{음악이 아닌 것}, 만화영화, 음악이 아닌 것이 수록된 전자매체{컴퓨터 소프트웨어는 제외}",
+      "translation_language": "en",
+      "translation": "Downloadable image files, exposed motion picture film, recorded tapes (non-music), animated films, and electronic media containing non-music material (excluding computer software)"
+    }
+  ],
+  "owner": "LEE, ISSAC",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "특허법인태백 (TaeBaek Intellectual Property Law Firm)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "인천광역시 서구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "LEE, ISSAC",
+        "applicantNativeName": "이이삭"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Downloadable image files, exposed motion picture film, recorded tapes (non-music), animated films, and electronic media containing non-music material (excluding computer software)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "내려받기 가능한 이미지파일, 노광(露光)된 영화필름, 녹화된 테이프{음악이 아닌 것}, 만화영화, 음악이 아닌 것이 수록된 전자매체{컴퓨터 소프트웨어는 제외}"
+        }
+      ]
+    },
+    "id": "b81bd8bb-d8e7-4460-93cc-c2d998418360",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260513",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 금천구 가산디지털*로 비동*호(가산동,한라원앤원타워)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "특허법인태백 (TaeBaek Intellectual Property Law Firm)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20140509",
+        "applicationNumber": "40-2014-0031374"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260513020742",
+    "wordMarkSpecification": {
+      "markTransliteration": "KORI",
+      "markVerbalElementText": "코리"
+    }
+  },
+  "_uri": "/mark/kr/b81bd8bb-d8e7-4460-93cc-c2d998418360",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.793Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,348 @@
+{
+  "uri": "/mark/us/dd589b4b-681d-4f2f-a65d-1eb5b45cf4b5",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "dd589b4b-681d-4f2f-a65d-1eb5b45cf4b5",
+  "applicationNumber": "98569702",
+  "registrationNumber": "7855095",
+  "applicationDate": "2024-05-26",
+  "registrationDate": "2025-07-08",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-05-20"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "STYLIZED LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Photography",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Ericson, Michael Joseph Richard",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "4516 S 295th Pl, Auburn, WA, 98001",
+        "applicantAddressCity": "Auburn",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "98001",
+        "applicantAddressStateName": "WASHINGTON",
+        "applicantAddressStreet": "4516 S 295th Pl",
+        "applicantAliasName": "DBA JORI",
+        "applicantJurisdictionOfIncorporation": "WASHINGTON",
+        "applicantLegalEntity": "SOLE PROPRIETORSHIP",
+        "applicantName": "Ericson, Michael Joseph Richard",
+        "entities": [
+          {
+            "name": "Michael Joseph Richard Ericson, a citizen of United States"
+          }
+        ]
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "30.01.09",
+      "30.01.10",
+      "30.01.18",
+      "30.05.03",
+      "30.05.04"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Photography"
+        }
+      ]
+    },
+    "id": "dd589b4b-681d-4f2f-a65d-1eb5b45cf4b5",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20250708",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20250708",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20250520",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20250520",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20250514",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20250422",
+        "descriptionText": "WITHDRAWN FROM PUB - OG REVIEW QUERY"
+      },
+      {
+        "date": "20250401",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20250331",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20250331",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20250331",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20250331",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20250226",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20250226",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20250226",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20241216",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20241216",
+        "descriptionText": "REMOVED FROM TEAS PLUS"
+      },
+      {
+        "date": "20241216",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20241216",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20241210",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20241205",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20240527",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "STYLIZED LETTERS",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Color is not claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of the word \"JORI\" in stylized lettering.",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "4516 S 295th Pl, Auburn, WA, 98001",
+        "aliasName": "DBA JORI",
+        "city": "Auburn",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "entities": [
+          {
+            "name": "Michael Joseph Richard Ericson, a citizen of United States"
+          }
+        ],
+        "jurisdictionOfIncorporation": "WASHINGTON",
+        "legalEntity": "SOLE PROPRIETORSHIP",
+        "name": "Ericson, Michael Joseph Richard",
+        "postalCode": "98001",
+        "stateName": "WASHINGTON",
+        "street": "4516 S 295th Pl"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "4516 S 295th Pl, Auburn, WA, 98001",
+        "aliasName": "DBA JORI",
+        "city": "Auburn",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "entities": [
+          {
+            "name": "Michael Joseph Richard Ericson, a citizen of United States"
+          }
+        ],
+        "jurisdictionOfIncorporation": "WASHINGTON",
+        "legalEntity": "SOLE PROPRIETORSHIP",
+        "name": "Ericson, Michael Joseph Richard",
+        "postalCode": "98001",
+        "stateName": "WASHINGTON",
+        "street": "4516 S 295th Pl"
+      },
+      {
+        "address": "4516 S 295th Pl, Auburn, WA, 98001",
+        "aliasName": "DBA JORI",
+        "city": "Auburn",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "entities": [
+          {
+            "name": "Michael Joseph Richard Ericson, a citizen of United States"
+          }
+        ],
+        "jurisdictionOfIncorporation": "WASHINGTON",
+        "legalEntity": "SOLE PROPRIETORSHIP",
+        "name": "Ericson, Michael Joseph Richard",
+        "postalCode": "98001",
+        "stateName": "WASHINGTON",
+        "street": "4516 S 295th Pl"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "4516 S 295th Pl, Auburn, WA, 98001",
+        "aliasName": "DBA JORI",
+        "city": "Auburn",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "entities": [
+          {
+            "name": "Michael Joseph Richard Ericson, a citizen of United States"
+          }
+        ],
+        "jurisdictionOfIncorporation": "WASHINGTON",
+        "legalEntity": "SOLE PROPRIETORSHIP",
+        "name": "Ericson, Michael Joseph Richard",
+        "postalCode": "98001",
+        "stateName": "WASHINGTON",
+        "street": "4516 S 295th Pl"
+      }
+    ],
+    "recordLastUpdated": "20260129",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Auburn, WA 98001, United States",
+        "representativeCorrespondentAddressLines": [
+          "Auburn, WA 98001",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Ericson, Michael Joseph Richard, 4516 S 295th Pl"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Auburn, WA 98001, United States",
+        "representativeAddressLines": [
+          "Auburn, WA 98001",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240526",
+        "applicationNumber": "98569702"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20240515"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20240516"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20250708",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20250520"
+      ],
+      "registration": {
+        "registrationDate": "20250708",
+        "registrationNumber": "7855095"
+      },
+      "withdrawalDate": [
+        "20250422"
+      ]
+    },
+    "version": "20260129063302",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JORI"
+    }
+  },
+  "_uri": "/mark/us/dd589b4b-681d-4f2f-a65d-1eb5b45cf4b5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:22.073Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

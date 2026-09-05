@@ -1,0 +1,177 @@
+{
+  "uri": "/mark/wo/50b99314-3610-4e36-a324-90b612258346",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "50b99314-3610-4e36-a324-90b612258346",
+  "applicationNumber": null,
+  "registrationNumber": "1488677",
+  "applicationDate": null,
+  "registrationDate": "2019-08-02",
+  "expiryDate": "2029-08-02",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-09-26",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "PhySic",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Semiconductors; semiconductor processors; semiconductor processor chips; integrated circuits; integrated circuit chips; transceivers; controller area network (CAN) transceivers; controller area network (CAN) transceivers for use in vehicles; circuit boards; microcomputers; microcontrollers; microprocessors; applications processors; programmable microprocessors; multicore processors; application-specific integrated circuits (ASICs); integrated circuits embedded with software; software; software systems; network processors used in network equipment; smart cards; smart card integrated circuits; RFID chips and tags; architecture comprised of hardware and software for facilitating network processing applications; device security systems; security software; semi-conductor devices.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Semi-conducteurs; processeurs à semi-conducteurs; puces de processeurs à semi-conducteurs; circuits intégrés; puces à circuits intégrés; émetteurs-récepteurs; émetteurs-récepteurs CAN; émetteurs-récepteurs CAN à utiliser dans des véhicules; cartes de circuits imprimés; micro-ordinateurs; microcontrôleurs; microprocesseurs; processeurs d'applications; microprocesseurs programmables; processeurs multicoeurs; circuits intégrés à application spécifique (ASIC); circuits intégrés incorporés dans des logiciels; logiciels; software Systems; processeurs de réseau utilisés dans des équipements de réseau; cartes à puce; circuits intégrés de cartes à puce; puces et étiquette RFID; architecture comprenant du matériel informatique et des logiciels pour la facilitation d'applications de traitement de réseaux; systèmes de sécurité pour dispositifs; logiciels de sécurité; dispositifs à semiconducteurs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Semiconductores; procesadores de semiconductores; chips de procesadores de semiconductores; circuitos integrados; chips de circuitos integrados; transceptores; transceptores de red de área del controlador (CAN); transceptores de red de área de controladores (CAN) para uso en vehículos; placas de circuitos impresos; microordenadores; microcontroladores; microprocesadores; procesadores de aplicaciones; microprocesadores programables; procesadores de varios núcleos; circuitos integrados específicos de aplicaciones (ASIC); circuitos integrados con software; software; sistemas de software; procesadores de red para equipos de red; tarjetas inteligentes; circuitos integrados de tarjetas inteligentes; chips y etiquetas de identificación por radiofrecuencia; arquitectura compuesta de hardware y software para facilitar aplicaciones de procesamiento de red; sistemas de seguridad de dispositivos; software de seguridad; dispositivos semiconductores.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO SHIELDMARK B.V.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20190802",
+          "basicApplicationNumber": "018102875"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "EM"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "GB",
+      "IN",
+      "JP",
+      "KR"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20190802",
+            "basicApplicationNumber": "018102875"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "EM"
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "GB",
+      "IN",
+      "JP",
+      "KR"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Semiconductors; semiconductor processors; semiconductor processor chips; integrated circuits; integrated circuit chips; transceivers; controller area network (CAN) transceivers; controller area network (CAN) transceivers for use in vehicles; circuit boards; microcomputers; microcontrollers; microprocessors; applications processors; programmable microprocessors; multicore processors; application-specific integrated circuits (ASICs); integrated circuits embedded with software; software; software systems; network processors used in network equipment; smart cards; smart card integrated circuits; RFID chips and tags; architecture comprised of hardware and software for facilitating network processing applications; device security systems; security software; semi-conductor devices."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Semi-conducteurs; processeurs à semi-conducteurs; puces de processeurs à semi-conducteurs; circuits intégrés; puces à circuits intégrés; émetteurs-récepteurs; émetteurs-récepteurs CAN; émetteurs-récepteurs CAN à utiliser dans des véhicules; cartes de circuits imprimés; micro-ordinateurs; microcontrôleurs; microprocesseurs; processeurs d'applications; microprocesseurs programmables; processeurs multicoeurs; circuits intégrés à application spécifique (ASIC); circuits intégrés incorporés dans des logiciels; logiciels; software Systems; processeurs de réseau utilisés dans des équipements de réseau; cartes à puce; circuits intégrés de cartes à puce; puces et étiquette RFID; architecture comprenant du matériel informatique et des logiciels pour la facilitation d'applications de traitement de réseaux; systèmes de sécurité pour dispositifs; logiciels de sécurité; dispositifs à semiconducteurs."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Semiconductores; procesadores de semiconductores; chips de procesadores de semiconductores; circuitos integrados; chips de circuitos integrados; transceptores; transceptores de red de área del controlador (CAN); transceptores de red de área de controladores (CAN) para uso en vehículos; placas de circuitos impresos; microordenadores; microcontroladores; microprocesadores; procesadores de aplicaciones; microprocesadores programables; procesadores de varios núcleos; circuitos integrados específicos de aplicaciones (ASIC); circuitos integrados con software; software; sistemas de software; procesadores de red para equipos de red; tarjetas inteligentes; circuitos integrados de tarjetas inteligentes; chips y etiquetas de identificación por radiofrecuencia; arquitectura compuesta de hardware y software para facilitar aplicaciones de procesamiento de red; sistemas de seguridad de dispositivos; software de seguridad; dispositivos semiconductores."
+        }
+      ]
+    },
+    "id": "50b99314-3610-4e36-a324-90b612258346",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "37"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices 2e étage, Anna van Buerenplein 21A NL-2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO SHIELDMARK B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290802",
+      "lastPublicationDate": "20190926",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20190802",
+        "registrationNumber": "1488677"
+      }
+    },
+    "version": "20250620190227",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "PhySic"
+    }
+  },
+  "_uri": "/mark/wo/50b99314-3610-4e36-a324-90b612258346",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.460Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

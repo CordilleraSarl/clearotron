@@ -1,0 +1,112 @@
+{
+  "uri": "/mark/es/5a316253-196d-4d6a-9505-bb1fe0d953e4",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "5a316253-196d-4d6a-9505-bb1fe0d953e4",
+  "applicationNumber": "4177034 MX",
+  "registrationNumber": "4177034 MX",
+  "applicationDate": "2022-07-06",
+  "registrationDate": "2023-04-14",
+  "expiryDate": "2032-07-05",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-08-03",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JOMAD JOVEN ORQUESTA DE MADRID",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Educacion; formacion; servicios de entretenimiento; actividades deportivas y culturales; formacion musical; talleres musicales; cursos formativos; eventos musicales",
+      "translation_language": "en",
+      "translation": "EDUCATION; TRAINING; ENTERTAINMENT SERVICES; SPORTS AND CULTURAL ACTIVITIES; MUSICAL FORMATION; MUSIC WORKSHOPS; FORMATIVE COURSES; MUSICAL EVENTS"
+    }
+  ],
+  "owner": "ALBÚJAR GONZÁLEZ JOSÉ MARÍA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "ALBÚJAR GONZÁLEZ JOSÉ MARÍA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "EDUCATION; TRAINING; ENTERTAINMENT SERVICES; SPORTS AND CULTURAL ACTIVITIES; MUSICAL FORMATION; MUSIC WORKSHOPS; FORMATIVE COURSES; MUSICAL EVENTS",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Educacion; formacion; servicios de entretenimiento; actividades deportivas y culturales; formacion musical; talleres musicales; cursos formativos; eventos musicales"
+        }
+      ]
+    },
+    "id": "5a316253-196d-4d6a-9505-bb1fe0d953e4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "6218"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220706",
+        "applicationNumber": "4177034 MX"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320705",
+      "lastPublicationDate": "20220803",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20230414",
+        "registrationNumber": "4177034 MX"
+      }
+    },
+    "version": "20260427170613",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOMAD JOVEN ORQUESTA DE MADRID"
+    }
+  },
+  "_uri": "/mark/es/5a316253-196d-4d6a-9505-bb1fe0d953e4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

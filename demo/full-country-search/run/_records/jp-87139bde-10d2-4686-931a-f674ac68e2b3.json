@@ -1,0 +1,158 @@
+{
+  "uri": "/mark/jp/87139bde-10d2-4686-931a-f674ac68e2b3",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "87139bde-10d2-4686-931a-f674ac68e2b3",
+  "applicationNumber": "2012-048893",
+  "registrationNumber": "5577869",
+  "applicationDate": "2012-06-18",
+  "registrationDate": "2013-04-26",
+  "expiryDate": "2033-04-26",
+  "renewalDate": null,
+  "lastPublicationDate": "2013-06-04",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＬＡＹＥＲＳＣＡＰＥ",
+  "markTransliteration": "REEYAASUKEEPU REIYAASUKEEPU",
+  "markTranslation": "LAYERSCAPE",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "半導体，集積回路，アクセラレータ，中央処理装置（演算装置），デジタルシグナルプロセッサ・中央処理装置・アクセラレーターのうち２以上を組み合わせたものを一つの半導体チップに実装してなる集積回路，コンピュータハードウェア及びコンピュータソフトウェアからなるデータ処理の加速化に用いる電子応用機械器具，マイクロプロセッサ・特定用途向け集積回路に用いる演算処理装置・アクセラレータを組み合わせたものを一つの半導体チップに実装した集積回路，コンピュータネットワーク処理用のコンピュータハードウェア・コンピュータソフトウェア，電子応用機械器具の分野におけるダウンロード可能なマニュアル・ユーザーガイド・商品仕様書その他の電子出版物，電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "An integrated circuit in which a combination of two or more of a semiconductor, an integrated circuit, an accelerator, a central processing unit (arithmetic unit), a digital signal processor, a central processing unit, and an accelerator is mounted on one semiconductor chip, Electronic appliances and appliances used for accelerating data processing consisting of computer software, integrated circuits which combine arithmetic processing units / accelerators used for microprocessors and application specific integrated circuits on one semiconductor chip, for computer network processing Computer hardware · Computer software, Downloadable manual / user guide · Product specifications in the field of electronic appliances and appliances Other electronic publications, electronic appliances and appliances and parts thereof"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "NAGAOKA AI",
+  "priorities": [
+    {
+      "priorityDate": "20120618"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "An integrated circuit in which a combination of two or more of a semiconductor, an integrated circuit, an accelerator, a central processing unit (arithmetic unit), a digital signal processor, a central processing unit, and an accelerator is mounted on one semiconductor chip, Electronic appliances and appliances used for accelerating data processing consisting of computer software, integrated circuits which combine arithmetic processing units / accelerators used for microprocessors and application specific integrated circuits on one semiconductor chip, for computer network processing Computer hardware · Computer software, Downloadable manual / user guide · Product specifications in the field of electronic appliances and appliances Other electronic publications, electronic appliances and appliances and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "半導体，集積回路，アクセラレータ，中央処理装置（演算装置），デジタルシグナルプロセッサ・中央処理装置・アクセラレーターのうち２以上を組み合わせたものを一つの半導体チップに実装してなる集積回路，コンピュータハードウェア及びコンピュータソフトウェアからなるデータ処理の加速化に用いる電子応用機械器具，マイクロプロセッサ・特定用途向け集積回路に用いる演算処理装置・アクセラレータを組み合わせたものを一つの半導体チップに実装した集積回路，コンピュータネットワーク処理用のコンピュータハードウェア・コンピュータソフトウェア，電子応用機械器具の分野におけるダウンロード可能なマニュアル・ユーザーガイド・商品仕様書その他の電子出版物，電子応用機械器具及びその部品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door closing control systems; Electron microscopes"
+        },
+        {
+          "natClassNumber": "26A01",
+          "natGoodsServicesDescription": "Electronic publications"
+        },
+        {
+          "natClassNumber": "26D01",
+          "natGoodsServicesDescription": "Downloadable image files; Recorded video discs and video tapes; Electronic publications; Exposed cinematographic films; Exposed slide films; Slide film mounts"
+        }
+      ]
+    },
+    "id": "87139bde-10d2-4686-931a-f674ac68e2b3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20120618"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "NAGAOKA AI",
+        "representativeNativeName": "永岡　愛"
+      },
+      {
+        "representativeName": "IWASE YOSHIKAZU",
+        "representativeNativeName": "岩瀬　吉和"
+      },
+      {
+        "representativeName": "SHIROYAMA YASUFUMI",
+        "representativeNativeName": "城山　康文"
+      },
+      {
+        "representativeName": "KITAGUCHI TAKAHIRO",
+        "representativeNativeName": "北口　貴大"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20120618",
+        "applicationNumber": "2012-048893"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330426",
+      "lastPublicationDate": "20130604",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20130426",
+        "registrationNumber": "5577869"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "LAYERSCAPE",
+      "markTransliteration": "REEYAASUKEEPU REIYAASUKEEPU",
+      "markVerbalElementText": "ＬＡＹＥＲＳＣＡＰＥ"
+    }
+  },
+  "_uri": "/mark/jp/87139bde-10d2-4686-931a-f674ac68e2b3",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.462Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

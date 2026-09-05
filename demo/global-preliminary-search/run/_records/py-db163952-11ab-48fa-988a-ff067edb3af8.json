@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/py/db163952-11ab-48fa-988a-ff067edb3af8",
+  "provider": "clarivate",
+  "office": "py",
+  "guid": "db163952-11ab-48fa-988a-ff067edb3af8",
+  "applicationNumber": "2122087",
+  "registrationNumber": "534509",
+  "applicationDate": "2021-03-16",
+  "registrationDate": "2021-12-01",
+  "expiryDate": "2031-12-01",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios comprendidos en la clase internacional 42 (cuarenta y dos) específicamente actualización de software; almacenamiento electrónico de datos; desarrollo de plataformas informáticas; desarrollo de software en el marco de la edición de software.",
+      "translation_language": "en",
+      "translation": "Services included in international class 42 (forty-two) specifically software update; electronic data storage; development of computer platforms; software development within the framework of software publishing."
+    }
+  ],
+  "owner": "Quanto S. a.",
+  "ownerNative": null,
+  "ownerCountry": "PY",
+  "representative": "CILIA ROMERO",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Aviadores Del Chaco N°2050uncionraguayificio World Trade Centerrre 3 Piso 15",
+        "applicantAddressCountryCode": "PY",
+        "applicantAddressCountryName": "Paraguay",
+        "applicantName": "Quanto S. a."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Services included in international class 42 (forty-two) specifically software update; electronic data storage; development of computer platforms; software development within the framework of software publishing.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios comprendidos en la clase internacional 42 (cuarenta y dos) específicamente actualización de software; almacenamiento electrónico de datos; desarrollo de plataformas informáticas; desarrollo de software en el marco de la edición de software."
+        }
+      ]
+    },
+    "id": "db163952-11ab-48fa-988a-ff067edb3af8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "21.01.16",
+      "26.11.12"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260220",
+    "registrationOfficeCode": "PY",
+    "registrationOfficeName": "Paraguay",
+    "representatives": [
+      {
+        "representativeAddress": "MC ARTHUR 1669 E/INDIA JULIANA",
+        "representativeAddressCountryCode": "PY",
+        "representativeAddressCountryName": "Paraguay",
+        "representativeName": "CILIA ROMERO"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210316",
+        "applicationNumber": "2122087"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311201",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20211201",
+        "registrationNumber": "534509"
+      }
+    },
+    "version": "20260220171903",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORA"
+    }
+  },
+  "_uri": "/mark/py/db163952-11ab-48fa-988a-ff067edb3af8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:27.683Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

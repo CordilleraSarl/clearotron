@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/cn/43bb33fb-91d9-4ee5-9bb6-aa3398220291",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "43bb33fb-91d9-4ee5-9bb6-aa3398220291",
+  "applicationNumber": "61503221",
+  "registrationNumber": "61503221",
+  "applicationDate": "2021-12-17",
+  "registrationDate": "2022-06-14",
+  "expiryDate": "2032-06-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-03-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QOMI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "计算机外围设备,电子笔(视觉演示装置),监视器(计算机硬件),笔记本电脑,便携式计算机,穿戴式计算机,平板电脑,电子交互式白板,精简型客户端计算机,交互式触屏终端",
+      "translation_language": "en",
+      "translation": "Computer peripherals, electronic pens (visual presentation devices), monitors (computer hardware), notebook computers, portable computers, wearable computers, tablet computers, electronic interactive whiteboards, thin client computers, interactive touch screen terminals"
+    }
+  ],
+  "owner": "Huachuangxing Intelligent Technology (Shenzhen) Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市宝安区石岩街道塘头社区塘头1号路领亚工业园综合楼三层西侧",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Huachuangxing Intelligent Technology (Shenzhen) Co., Ltd.",
+        "applicantNativeName": "华创星智能科技(深圳)有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer peripherals, electronic pens (visual presentation devices), monitors (computer hardware), notebook computers, portable computers, wearable computers, tablet computers, electronic interactive whiteboards, thin client computers, interactive touch screen terminals",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计算机外围设备,电子笔(视觉演示装置),监视器(计算机硬件),笔记本电脑,便携式计算机,穿戴式计算机,平板电脑,电子交互式白板,精简型客户端计算机,交互式触屏终端"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        }
+      ]
+    },
+    "id": "43bb33fb-91d9-4ee5-9bb6-aa3398220291",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "A261112",
+      "26.11.02",
+      "26.02.05"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1783"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳思玛特企业管理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20211217",
+        "applicationNumber": "61503221"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320613",
+      "lastPublicationDate": "20220313",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220614",
+        "registrationNumber": "61503221"
+      }
+    },
+    "version": "20251004180202",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOMI"
+    }
+  },
+  "_uri": "/mark/cn/43bb33fb-91d9-4ee5-9bb6-aa3398220291",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:47.873Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

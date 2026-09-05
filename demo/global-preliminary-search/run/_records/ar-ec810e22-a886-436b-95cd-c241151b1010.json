@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/ar/ec810e22-a886-436b-95cd-c241151b1010",
+  "provider": "clarivate",
+  "office": "ar",
+  "guid": "ec810e22-a886-436b-95cd-c241151b1010",
+  "applicationNumber": "4388629",
+  "registrationNumber": "3658555",
+  "applicationDate": "2024-07-30",
+  "registrationDate": "2025-03-10",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2024-08-07",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "PREVENQUIL",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Clase 41 : Internacional Limitada SOLAMENTE EDUCACION EN SALUD Y SEGURIDAD EN EL TRABAJO ;EDUCACION PROFESIONAL RELACIONADA CON LA SEGURIDAD DOMESTICA ;EDUCACION PROFESIONAL RELACIONADA CON PRIMEROS AUXILIOS ;EDUCACION RELACIONADA CON LA SALUD ;",
+      "translation_language": "en",
+      "translation": "Class 41: International Limited ONLY OCCUPATIONAL HEALTH AND SAFETY EDUCATION; PROFESSIONAL EDUCATION RELATED TO HOME SAFETY; PROFESSIONAL EDUCATION RELATED TO FIRST AID; EDUCATION RELATED TO HEALTH;"
+    }
+  ],
+  "owner": "ZAMPA SILVIO",
+  "ownerNative": null,
+  "ownerCountry": "AR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "AR",
+        "applicantAddressCountryName": "Argentina",
+        "applicantName": "ZAMPA SILVIO"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 41: International Limited ONLY OCCUPATIONAL HEALTH AND SAFETY EDUCATION; PROFESSIONAL EDUCATION RELATED TO HOME SAFETY; PROFESSIONAL EDUCATION RELATED TO FIRST AID; EDUCATION RELATED TO HEALTH;",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Clase 41 : Internacional Limitada SOLAMENTE EDUCACION EN SALUD Y SEGURIDAD EN EL TRABAJO ;EDUCACION PROFESIONAL RELACIONADA CON LA SEGURIDAD DOMESTICA ;EDUCACION PROFESIONAL RELACIONADA CON PRIMEROS AUXILIOS ;EDUCACION RELACIONADA CON LA SALUD ;"
+        }
+      ]
+    },
+    "id": "ec810e22-a886-436b-95cd-c241151b1010",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.14",
+      "26.04.24",
+      "26.04.22",
+      "26.04.16",
+      "24.17.05",
+      "24.15.07",
+      "20.05.07",
+      "02.09.01",
+      "27.05.24"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250711",
+    "registrationOfficeCode": "AR",
+    "registrationOfficeName": "Argentina",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240730",
+        "applicationNumber": "4388629"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "lastPublicationDate": "20240807",
+      "markCurrentStatus": "REGISTERED TRADEMARK",
+      "registration": {
+        "registrationDate": "20250310",
+        "registrationNumber": "3658555"
+      }
+    },
+    "version": "20250711201554",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "PREVENQUIL"
+    }
+  },
+  "_uri": "/mark/ar/ec810e22-a886-436b-95cd-c241151b1010",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.563Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

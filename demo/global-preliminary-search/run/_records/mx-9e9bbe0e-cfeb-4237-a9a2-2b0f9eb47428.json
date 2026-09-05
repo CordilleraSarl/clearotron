@@ -1,0 +1,113 @@
+{
+  "uri": "/mark/mx/9e9bbe0e-cfeb-4237-a9a2-2b0f9eb47428",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "9e9bbe0e-cfeb-4237-a9a2-2b0f9eb47428",
+  "applicationNumber": "2531293",
+  "registrationNumber": null,
+  "applicationDate": "2021-04-14",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Configuracion de software",
+      "translation_language": "en",
+      "translation": "SOFTWARE CONFIGURATION"
+    }
+  ],
+  "owner": "AUTOMOTIK S.A. DE C.V.",
+  "ownerNative": null,
+  "ownerCountry": "MX",
+  "representative": "LILIANA BORAN GARCIA FIGUEROA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CALLE: PASEO DE LOS LAURELES NUM. EXT. 22, COLONIA: BOSQUES DE SANTA FE, CUAJIMALPA DE MORELOS, CIUDAD DE MEXICO 05110",
+        "applicantAddressCountryCode": "MX",
+        "applicantAddressCountryName": "Mexico",
+        "applicantName": "AUTOMOTIK S.A. DE C.V."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SOFTWARE CONFIGURATION",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Configuracion de software"
+        }
+      ]
+    },
+    "id": "9e9bbe0e-cfeb-4237-a9a2-2b0f9eb47428",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "55.00.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "representatives": [
+      {
+        "representativeAddress": "PASEO DE LOS LAURELES NUM. EXT. 22, BOSQUES DE LAS LOMAS, CUAJIMALPA DE MORELOS, CIUDAD DE MEXICO 05110, MEXICO",
+        "representativeName": "LILIANA BORAN GARCIA FIGUEROA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210414",
+        "applicationNumber": "2531293"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20250704185942",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORE"
+    }
+  },
+  "_uri": "/mark/mx/9e9bbe0e-cfeb-4237-a9a2-2b0f9eb47428",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:55.424Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

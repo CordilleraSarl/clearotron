@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/jp/6e22f6c9-843b-4305-8ed0-c1438ac223df",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "6e22f6c9-843b-4305-8ed0-c1438ac223df",
+  "applicationNumber": "2012-097618",
+  "registrationNumber": "5605517",
+  "applicationDate": "2012-12-03",
+  "registrationDate": "2013-08-09",
+  "expiryDate": "2023-08-09",
+  "renewalDate": null,
+  "lastPublicationDate": "2013-09-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＦＲＥＥＳＣＡＬＥ　ＴＯＷＥＲ　ＳＹＳＴＥＭ",
+  "markTransliteration": "FURIISUKEERUTAWAASHISUTEMU",
+  "markTranslation": "FREESCALE TOWER SYSTEM",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "アプリケーション開発又は半導体・集積回路・マイクロプロセッサ・マイクロコントローラの診断に用いるモジュール式のコンピュータハードウェア及びコンピュータソフトウェア，半導体・集積回路・マイクロプロセッサ・マイクロコントローラの開発及び検査用の電子回路基盤，その他の電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Modular computer hardware and computer software used for application development or semiconductor / integrated circuit / microprocessor / microcontroller diagnosis, electronic circuit board for development and inspection of semiconductors · integrated circuits · microprocessors · microcontrollers, other electronic Applied machine tools and parts thereof"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "NAGAOKA AI",
+  "priorities": [
+    {
+      "priorityDate": "20121203"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Modular computer hardware and computer software used for application development or semiconductor / integrated circuit / microprocessor / microcontroller diagnosis, electronic circuit board for development and inspection of semiconductors · integrated circuits · microprocessors · microcontrollers, other electronic Applied machine tools and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "アプリケーション開発又は半導体・集積回路・マイクロプロセッサ・マイクロコントローラの診断に用いるモジュール式のコンピュータハードウェア及びコンピュータソフトウェア，半導体・集積回路・マイクロプロセッサ・マイクロコントローラの開発及び検査用の電子回路基盤，その他の電子応用機械器具及びその部品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door closing control systems; Electron microscopes"
+        }
+      ]
+    },
+    "id": "6e22f6c9-843b-4305-8ed0-c1438ac223df",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20121203"
+      }
+    ],
+    "recordLastUpdated": "20240823",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "NAGAOKA AI",
+        "representativeNativeName": "永岡　愛"
+      },
+      {
+        "representativeName": "IWASE YOSHIKAZU",
+        "representativeNativeName": "岩瀬　吉和"
+      },
+      {
+        "representativeName": "SHIROYAMA YASUFUMI",
+        "representativeNativeName": "城山　康文"
+      },
+      {
+        "representativeName": "KITAGUCHI TAKAHIRO",
+        "representativeNativeName": "北口　貴大"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20121203",
+        "applicationNumber": "2012-097618"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20230809",
+      "lastPublicationDate": "20130910",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20130809",
+        "registrationNumber": "5605517"
+      }
+    },
+    "version": "20240823081241",
+    "wordMarkSpecification": {
+      "markTranslation": "FREESCALE TOWER SYSTEM",
+      "markTransliteration": "FURIISUKEERUTAWAASHISUTEMU",
+      "markVerbalElementText": "ＦＲＥＥＳＣＡＬＥ　ＴＯＷＥＲ　ＳＹＳＴＥＭ"
+    }
+  },
+  "_uri": "/mark/jp/6e22f6c9-843b-4305-8ed0-c1438ac223df",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.462Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

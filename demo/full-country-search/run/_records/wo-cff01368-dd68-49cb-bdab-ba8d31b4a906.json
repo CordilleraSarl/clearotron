@@ -1,0 +1,234 @@
+{
+  "uri": "/mark/wo/cff01368-dd68-49cb-bdab-ba8d31b4a906",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "cff01368-dd68-49cb-bdab-ba8d31b4a906",
+  "applicationNumber": null,
+  "registrationNumber": "1245382",
+  "applicationDate": null,
+  "registrationDate": "2015-03-09",
+  "expiryDate": "2035-03-09",
+  "renewalDate": "2025-03-09",
+  "lastPublicationDate": "2025-05-08",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "UCODE DNA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "RFID tags; integrated circuits used in RFID tags; software for RFID tags.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Étiquettes RFID; circuits intégrés pour étiquettes RFID; logiciels pour étiquettes RFID.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Etiquetas RFID (etiquetas de identificación por radiofrecuencia); circuitos integrados utilizados en etiquetas RFID (etiquetas de identificación por radiofrecuencia); software para etiquetas RFID (etiquetas de identificación por radiofrecuencia).",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO SHIELDMARK B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "EM",
+      "priorityCountryName": "EU trade marks",
+      "priorityDate": "20140918",
+      "priorityNumber": "013272687"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20140918",
+          "basicApplicationNumber": "013272687"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "EM",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20150204",
+          "basicRegistrationNumber": "013272687"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CH",
+      "JP",
+      "SG"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20140918",
+            "basicApplicationNumber": "013272687"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "EM",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20150204",
+            "basicRegistrationNumber": "013272687"
+          }
+        ]
+      }
+    ],
+    "cmMarkImageEUclassification": [
+      "01.13.15",
+      "26.11.22",
+      "29.02.00"
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CH",
+      "JP",
+      "SG"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "RFID tags; integrated circuits used in RFID tags; software for RFID tags."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Étiquettes RFID; circuits intégrés pour étiquettes RFID; logiciels pour étiquettes RFID."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Etiquetas RFID (etiquetas de identificación por radiofrecuencia); circuitos integrados utilizados en etiquetas RFID (etiquetas de identificación por radiofrecuencia); software para etiquetas RFID (etiquetas de identificación por radiofrecuencia)."
+        }
+      ]
+    },
+    "id": "cff01368-dd68-49cb-bdab-ba8d31b4a906",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "Orange, black, grey, light blue and light green.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      },
+      {
+        "markImageColourClaimedText": "Orange, noir, gris, bleu clair et vert clair.",
+        "markImageColourClaimedTextLanguageCode": "fr"
+      },
+      {
+        "markImageColourClaimedText": "Naranja, negro, gris, azul claro y verde claro.",
+        "markImageColourClaimedTextLanguageCode": "es"
+      }
+    ],
+    "markImageViennaClassification": [
+      "02.09",
+      "26.11",
+      "27.05",
+      "29.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "EM",
+        "priorityCountryName": "EU trade marks",
+        "priorityDate": "20140918",
+        "priorityNumber": "013272687"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "17"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "J. W. Frisolaan 13 NL-2517 JS The Hague",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO SHIELDMARK B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350309",
+      "lastPublicationDate": "20250508",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20150309",
+        "registrationNumber": "1245382"
+      },
+      "renewalDate": "20250309",
+      "renewalPublishedDate": "20250508"
+    },
+    "version": "20250620175932",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "UCODE DNA"
+    }
+  },
+  "_uri": "/mark/wo/cff01368-dd68-49cb-bdab-ba8d31b4a906",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.461Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

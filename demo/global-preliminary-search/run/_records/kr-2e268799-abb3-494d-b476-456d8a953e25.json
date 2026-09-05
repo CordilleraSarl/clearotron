@@ -1,0 +1,106 @@
+{
+  "uri": "/mark/kr/2e268799-abb3-494d-b476-456d8a953e25",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "2e268799-abb3-494d-b476-456d8a953e25",
+  "applicationNumber": "40-1999-0032532",
+  "registrationNumber": null,
+  "applicationDate": "1999-09-02",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "소리",
+  "markTransliteration": "sound",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "음성전자메일서버, 정보처리장치및컴퓨터, 컴퓨터메일서버및전화통합장치",
+      "translation_language": "en",
+      "translation": "Voice e-mail servers, information processing devices and computers, computer mail servers and telephone integration devices"
+    }
+  ],
+  "owner": "FUTURE INTERNET CO.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 서초구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "FUTURE INTERNET CO.",
+        "applicantNativeName": "휴쳐인터넷주식회사"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Voice e-mail servers, information processing devices and computers, computer mail servers and telephone integration devices",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "음성전자메일서버, 정보처리장치및컴퓨터, 컴퓨터메일서버및전화통합장치"
+        }
+      ]
+    },
+    "id": "2e268799-abb3-494d-b476-456d8a953e25",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260417",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19990902",
+        "applicationNumber": "40-1999-0032532"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260417020552",
+    "wordMarkSpecification": {
+      "markTransliteration": "sound",
+      "markVerbalElementText": "소리"
+    }
+  },
+  "_uri": "/mark/kr/2e268799-abb3-494d-b476-456d8a953e25",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:58.878Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

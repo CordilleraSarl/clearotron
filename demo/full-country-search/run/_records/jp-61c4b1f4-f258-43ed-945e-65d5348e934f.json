@@ -1,0 +1,138 @@
+{
+  "uri": "/mark/jp/61c4b1f4-f258-43ed-945e-65d5348e934f",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "61c4b1f4-f258-43ed-945e-65d5348e934f",
+  "applicationNumber": "2000-140202",
+  "registrationNumber": "4614087",
+  "applicationDate": "2000-12-27",
+  "registrationDate": "2002-10-18",
+  "expiryDate": "2012-10-18",
+  "renewalDate": null,
+  "lastPublicationDate": "2002-11-19",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＰＩＱＯＲ",
+  "markTransliteration": "PIKOORU PIKUOORU PIKUORU",
+  "markTranslation": "PIQOR",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "治療・診断の分野における試験・検査・調査・研究及びこれらに関する助言，食品分析，環境分析",
+      "translation_language": "en",
+      "translation": "Examinations / inspections / surveys / research in the field of treatment / diagnosis, advice on them, food analysis, environmental analysis"
+    }
+  ],
+  "owner": "MEMOREC STOFFEL GMBH - MEDIZINISCH-MOLEKULARE ENTWICKLUNG",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "YANAKAWA YASUO",
+  "priorities": [
+    {
+      "priorityDate": "20001227"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "COLOGNE",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "MEMOREC STOFFEL GMBH - MEDIZINISCH-MOLEKULARE ENTWICKLUNG",
+        "applicantNativeAddress": "ドイツ連邦共和国、ケルン、Ｄ－５０８２９、シュトックハイメル　ヴェグ　１",
+        "applicantNativeName": "メモレック　シュトッフェル　ゲゼルシャフト　ミット　ベシュレンクテル　ハフツング　メディツィニッシューモレクラー　エントヴィクルンク，ケルン"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Examinations / inspections / surveys / research in the field of treatment / diagnosis, advice on them, food analysis, environmental analysis",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "治療・診断の分野における試験・検査・調査・研究及びこれらに関する助言，食品分析，環境分析"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "42Q01",
+          "natGoodsServicesDescription": "Testing or research of pharmaceuticals, cosmetics, food"
+        },
+        {
+          "natClassNumber": "42Q02",
+          "natGoodsServicesDescription": "Construction, city planning, pollution, electrical, civil engineering research and testing"
+        }
+      ]
+    },
+    "id": "61c4b1f4-f258-43ed-945e-65d5348e934f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20001227"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YANAKAWA YASUO",
+        "representativeNativeName": "柳川　泰男"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20001227",
+        "applicationNumber": "2000-140202"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20121018",
+      "lastPublicationDate": "20021119",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20021018",
+        "registrationNumber": "4614087"
+      }
+    },
+    "version": "20240320144623",
+    "wordMarkSpecification": {
+      "markTranslation": "PIQOR",
+      "markTransliteration": "PIKOORU PIKUOORU PIKUORU",
+      "markVerbalElementText": "ＰＩＱＯＲ"
+    }
+  },
+  "_uri": "/mark/jp/61c4b1f4-f258-43ed-945e-65d5348e934f",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.708Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

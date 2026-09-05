@@ -11,7 +11,11 @@ import {
   clientDoorState, clientDoorPort, clientDoorAddress, describeDoorState,
   enablePlan, applyEnablePlan, describeChange, setEnvValue, CLIENT_DOOR_UNIT,
 } from "../../shared/client-door.mjs";
-import { spawnSync } from "node:child_process";
+import { spawnSync, execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+import { ensureDenylistFile } from "../../shared/client-door.mjs";
+import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
+const NO_CORPUS = skipReason("2191-F14 denylist path has one owner");
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -517,6 +521,155 @@ test("2145 DOCTOR ACTUALLY CALLS IT — the arms above pass just as well on a fu
   assert.doesNotMatch(out, /its unit is installed by .*connect.* only, never at install/,
     "doctor still prints the pre-2148 sentence, which is false of every install now");
   // And it prints one of the four this function produces.
-  assert.match(out, /the client door is (on and running|not set up here|HALF configured)|whether it is RUNNING was not checked|is NOT RUNNING/,
+  // FIVE SENTENCES NOW, not four: 2191-F11 added the listening one, because unit-file presence could
+  // not see a foreground door. Added here rather than loosened — the point of this arm is that the line
+  // came from describeDoorState, so the set it may print has to be enumerated.
+  assert.match(out, /the client door is (on and running|not set up here|HALF configured)|whether it is RUNNING was not checked|is NOT RUNNING|something is listening on the client door's address/,
     "doctor's door line came from neither the old code nor describeDoorState");
+});
+
+// ── 2191 F14 · A REVOKED KEY THAT STILL WORKED ──────────────────────────────────────────────────────
+//
+// On a default `clearotron start` install, revoking a client key did nothing. The door was started with
+// TRADEMARK_MCP_TOKEN_DENYLIST pointing at ~/.config/clearotron/token-denylist; nothing created it; and
+// `isRevoked` returns false on an unreadable file by its own stated contract. So `disconnect` wrote a
+// jti into a file no verifier could read, every check looked done, and the revoked key completed a full
+// handshake with nothing logged.
+//
+// `connect` had armed AND created the file since 2082, with a comment naming this exact landmine. One of
+// the two doors stood outside a guard the other one had — which is why the arm below is about the PATH
+// having one owner, not about either door remembering.
+
+test("2191-F14 the denylist path has exactly one owner in the tree", (ctx) => {
+  const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+  // THE SHARED HELPER, not a git call of my own. `no test enumerates the tracked corpus behind the
+  // helper's back` exists so every corpus guard announces itself and SKIPS LOUDLY where there is no
+  // checkout — a raw `git ls-files` returns nothing there and reads as a clean sweep over an empty
+  // population. The first version of this arm did exactly that and CI caught it.
+  const all = trackedFiles("denylist path has one owner", { root: REPO_ROOT, pathspec: ["bin", "shared", "mcp-server", "driver"] });
+  // DECLARED, not a bare return. exists because an arm that bails on an unmeetable precondition
+  // without saying so reports as a pass over a population it never had — which is the same vacuous green
+  // this arm was written to prevent, one level up.
+  if (!all) return ctx.skip(NO_CORPUS);
+  const files = all.filter((f) => f.endsWith(".mjs"));
+  assert.ok(files.length > 20, `only ${files.length} files scanned — this sweep would be free`);
+  const owners = files.filter((f) => {
+    if (f === "shared/client-door.mjs") return false;                    // the owner itself
+    if (/(^|\/)test\//.test(f) || f.endsWith(".test.mjs")) return false;   // arms may name a path deliberately
+    // THE WORKING TREE, not HEAD. An earlier draft read `git show HEAD:<f>` and so judged the last
+    // commit rather than the change under review — green on a tree that reintroduces the copies, red on
+    // one that removes them, until the commit lands. `git ls-files` still supplies the population, so
+    // an untracked scratch file cannot fail this.
+    return /"token-denylist"/.test(readFileSync(join(REPO_ROOT, f), "utf8"));
+  });
+  assert.deepEqual(owners, [],
+    `these compose the denylist path themselves instead of importing defaultDenylistPath: ${owners.join(", ")}. `
+    + "Four copies is how one door created the file and the other only named it");
+});
+
+test("2191-F14 ensureDenylistFile creates an absent list and never touches an existing one", () => {
+  const seen = { mkdir: null, wrote: null };
+  const io = { exists: () => false, dirname: (p) => p.replace(/\/[^/]+$/, ""),
+    mkdir: (d) => { seen.mkdir = d; }, write: (f, t) => { seen.wrote = { f, t }; } };
+  const made = ensureDenylistFile("/srv/x/token-denylist", io);
+  assert.equal(made.created, true);
+  assert.equal(seen.mkdir, "/srv/x", "the parent is created too — a missing directory is the same landmine");
+  assert.match(seen.wrote.t, /one jti per line/, "and the header says who writes it");
+
+  // AN EXISTING LIST IS LEFT ALONE. Recreating it would erase every revocation on the box, which is the
+  // opposite failure and a worse one.
+  let wrote = false;
+  const kept = ensureDenylistFile("/srv/x/token-denylist",
+    { exists: () => true, dirname: () => "/srv/x", mkdir: () => {}, write: () => { wrote = true; }, read: () => "" });
+  assert.equal(kept.created, false);
+  assert.equal(wrote, false, "an existing denylist must never be rewritten");
+});
+
+test("2191-F14 present-but-unreadable is NOT accepted — that is the state that fails open", () => {
+  assert.throws(() => ensureDenylistFile("/srv/x/token-denylist", {
+    exists: () => true, dirname: () => "/srv/x", mkdir: () => {}, write: () => {},
+    read: () => { throw Object.assign(new Error("EACCES"), { code: "EACCES" }); },
+  }), /EACCES/,
+  "a list the door cannot open is exactly what isRevoked turns into \"not revoked\" — it has to stop the "
+  + "start, not pass an existence check");
+});
+
+// ── 2191 F11 · A DOOR THAT ANSWERS IS SET UP, WHATEVER THE UNITS SAY ────────────────────────────────
+//
+// `standing` is unit-file + fence, and a FOREGROUND `clearotron start` has neither — it runs the door as
+// its own child. Measured on this branch before the fix: the door listening on its port while doctor
+// said "the client door is not set up here" and pointed the reader at the command they had just run.
+
+test("2191-F11 a listening door is reported as answering, not as absent", () => {
+  const door = clientDoorState({
+    env: {}, unitDir: "/nowhere", exists: () => false, active: null, listening: true,
+  });
+  assert.equal(door.standing, false, "no unit and no fence — `standing` is unchanged and still means configured");
+  const said = describeDoorState(door);
+  assert.equal(said.level, "info", "something answering is not a fault, and not proof the door is ours");
+  assert.match(said.text, /something is listening on the client door's address/, said.text);
+  assert.match(said.text, /--background/, "and it must say what would make it outlive the terminal");
+});
+
+test("2191-F11 not listening still reads as not set up, and an UNKNOWN probe changes nothing", () => {
+  const base = { env: {}, unitDir: "/nowhere", exists: () => false, active: null };
+  // FALSE is a real answer: nothing is there.
+  const off = describeDoorState(clientDoorState({ ...base, listening: false }));
+  assert.match(off.text, /not set up here/, off.text);
+  // NULL is a could-not-look, and it must not be read as either — the sentence is the one from before
+  // this signal existed, which is the honest thing to say when nobody asked.
+  const unknown = describeDoorState(clientDoorState({ ...base, listening: null }));
+  assert.match(unknown.text, /not set up here/, unknown.text);
+  assert.doesNotMatch(unknown.text, /something is listening/,
+    "a probe that could not be made must never be reported as a door that answered");
+});
+
+// ── 2191 · DOCTOR NAMES THE STATE, AND READS THE PROBE ON EVERY BRANCH ──────────────────────────────
+//
+// `door.listening` was computed, passed in, and read ONLY inside `if (!door.standing)`. So on a STANDING
+// door the probe was ignored and doctor asserted "nothing is listening on the client door" — measured
+// false with a decoy holding the port. A computed input consulted on one branch is a dead input, and it
+// reads as thoroughness.
+//
+// The same branch collapsed ActiveState and SubState into a boolean, so a crash loop and a connect that
+// stopped half-way printed one sentence and had different next steps.
+
+const standing = (o) => clientDoorState({
+  env: { CLIENT_MCP_ACCOUNT_ACCESS: "1" }, unitDir: "/u", exists: () => true, ...o,
+});
+
+test("2191 a standing door that is down, with the port HELD, says what holds it", () => {
+  const said = describeDoorState(standing({ active: false, listening: true, activeState: "inactive", subState: "dead" }));
+  assert.equal(said.level, "problem");
+  assert.match(said.text, /something IS listening/,
+    "the probe was already taken and passed in; asserting an empty port without reading it is the defect");
+  assert.match(said.text, /ss -ltnp/, "and the reader needs the way to find the holder, not just the fact");
+  assert.doesNotMatch(said.text, /re-applies it cleanly/,
+    "re-placing the unit onto a port something else holds is not the remedy for this state");
+});
+
+test("2191 a crash loop and a half-finished connect are different sentences", () => {
+  const loop = describeDoorState(standing({ active: false, listening: false, activeState: "activating", subState: "auto-restart" }));
+  const half = describeDoorState(standing({ active: false, listening: false, activeState: "inactive", subState: "dead" }));
+  assert.match(loop.text, /CRASH-LOOPING/, loop.text);
+  assert.match(loop.text, /journalctl/, "a looping unit's own words are the fastest route");
+  assert.match(half.text, /connect` that failed part-way/, half.text);
+  assert.notEqual(loop.text, half.text,
+    "collapsed to a boolean these were one sentence, and they have different next steps");
+  // THE PAIR IS PRINTED, so a reader can check it themselves rather than trusting the label.
+  assert.match(loop.text, /activating\/auto-restart/, loop.text);
+});
+
+test("2191 an unasked systemd plus an answering port is still an answer", () => {
+  const said = describeDoorState(standing({ active: null, listening: true }));
+  assert.equal(said.level, "ok",
+    "not asking systemd is not knowing nothing — if the port answers, the door is serving");
+  assert.match(said.text, /the port's word rather than the unit's/, "and it must say which evidence it has");
+});
+
+test("2191 a running door is unchanged, and none of this fires on it", () => {
+  const said = describeDoorState(standing({ active: true, listening: true, activeState: "active", subState: "running" }));
+  assert.equal(said.level, "ok");
+  assert.match(said.text, /on and running/, said.text);
+  assert.doesNotMatch(said.text, /CRASH-LOOPING|something IS listening/, "the ordinary case stays the ordinary sentence");
 });

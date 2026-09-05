@@ -1,0 +1,126 @@
+{
+  "uri": "/mark/br/0188f578-cda9-4f53-a03a-cb298ee14bbf",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "0188f578-cda9-4f53-a03a-cb298ee14bbf",
+  "applicationNumber": "820352691",
+  "registrationNumber": null,
+  "applicationDate": "1997-11-14",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "BORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    5,
+    29,
+    30,
+    31,
+    32,
+    33,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        5,
+        29,
+        30,
+        31,
+        32,
+        33,
+        42
+      ],
+      "language": "pt",
+      "description": "Laticinios em geral.",
+      "translation_language": "en",
+      "translation": "DAIRY IN GENERAL."
+    }
+  ],
+  "owner": "DORI ALIMENTOS LTDA.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "BEERRE ASSESSORIA EMPRESARIAL S/C LTDA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "DORI ALIMENTOS LTDA."
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "DAIRY IN GENERAL.",
+          "intClassNumber": "05,29,30,31,32,33,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Laticinios em geral."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "31.10"
+        },
+        {
+          "natClassNumber": "31.20"
+        }
+      ]
+    },
+    "id": "0188f578-cda9-4f53-a03a-cb298ee14bbf",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "BEERRE ASSESSORIA EMPRESARIAL S/C LTDA"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19971114",
+        "applicationNumber": "820352691"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20250630202038",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "BORI"
+    }
+  },
+  "_uri": "/mark/br/0188f578-cda9-4f53-a03a-cb298ee14bbf",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.211Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

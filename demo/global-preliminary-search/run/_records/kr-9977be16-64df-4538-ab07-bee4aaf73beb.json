@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/kr/9977be16-64df-4538-ab07-bee4aaf73beb",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "9977be16-64df-4538-ab07-bee4aaf73beb",
+  "applicationNumber": "50-2008-0002710",
+  "registrationNumber": "4003918060000",
+  "applicationDate": "2008-01-18",
+  "registrationDate": "2008-04-14",
+  "expiryDate": "2028-01-20",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "KORI",
+  "markTransliteration": "KORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "전기변압기,전화기,축전지,텔레비전수신기,통신케이블,팩시밀리,플러그,휴대용 전자계산기,휴대용 통신기계기구",
+      "translation_language": "en",
+      "translation": "Electric transformer, telephone, accumulator, television receiver, communication cable, facsimile, plug, portable electronic calculator, portable communication machine instrument"
+    }
+  ],
+  "owner": "KT Corporation",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "박영순 (PARK, Young Sun)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기도 성남시 분당구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "KT Corporation",
+        "applicantNativeName": "주식회사 케이티"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electric transformer, telephone, accumulator, television receiver, communication cable, facsimile, plug, portable electronic calculator, portable communication machine instrument",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "전기변압기,전화기,축전지,텔레비전수신기,통신케이블,팩시밀리,플러그,휴대용 전자계산기,휴대용 통신기계기구"
+        }
+      ]
+    },
+    "id": "9977be16-64df-4538-ab07-bee4aaf73beb",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "# Seongji Heights Cha Bldg., Yeoksam -dong, Gangnam-gu, Seoul, Korea(PARK&PARTNERS)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "박영순 (PARK, Young Sun)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20080118",
+        "applicationNumber": "50-2008-0002710"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280120",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20080414",
+        "registrationNumber": "4003918060000"
+      }
+    },
+    "version": "20250625200542",
+    "wordMarkSpecification": {
+      "markTransliteration": "KORI",
+      "markVerbalElementText": "KORI"
+    }
+  },
+  "_uri": "/mark/kr/9977be16-64df-4538-ab07-bee4aaf73beb",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.793Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

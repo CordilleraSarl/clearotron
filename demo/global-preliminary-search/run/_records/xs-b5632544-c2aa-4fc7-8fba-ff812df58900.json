@@ -1,0 +1,134 @@
+{
+  "uri": "/mark/xs/b5632544-c2aa-4fc7-8fba-ff812df58900",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "b5632544-c2aa-4fc7-8fba-ff812df58900",
+  "applicationNumber": null,
+  "registrationNumber": "101808",
+  "applicationDate": null,
+  "registrationDate": "1996-10-18",
+  "expiryDate": "2006-10-18",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "CLAVE NORTENA",
+  "markTransliteration": null,
+  "markTranslation": "KEY NORTH",
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ABEL DE LUNA",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1200 W. VENICE BLVD., LOS ANGELES, CA, 90006",
+        "applicantAddressCity": "LOS ANGELES",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "90006",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "1200 W. VENICE BLVD.",
+        "applicantLegalEntity": "SOLE PROPRIETOR",
+        "applicantName": "ABEL DE LUNA"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09"
+        }
+      ]
+    },
+    "id": "b5632544-c2aa-4fc7-8fba-ff812df58900",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADEMARK",
+    "mannerOfDisplay": "BY PRINTING IT DIRECTLY ONTO THE GOODS.",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "1200 W. VENICE BLVD., LOS ANGELES, CA, 90006",
+        "city": "LOS ANGELES",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "SOLE PROPRIETOR",
+        "name": "ABEL DE LUNA",
+        "postalCode": "90006",
+        "stateName": "CALIFORNIA",
+        "street": "1200 W. VENICE BLVD."
+      }
+    ],
+    "recordLastUpdated": "20251202",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": false,
+      "cmNormalisedStatus": "EXPIRED",
+      "expiryDate": "20061018",
+      "firstUsed": [
+        {
+          "firstUsedDate": "199501"
+        }
+      ],
+      "firstUsedAnywhereDate": "199501",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "EXPIRED"
+        ]
+      },
+      "markCurrentStatus": "EXPIRED",
+      "registration": {
+        "registrationDate": "19961018",
+        "registrationNumber": "101808"
+      }
+    },
+    "usStateOfficeCode": "CA",
+    "usStateOfficeName": "CALIFORNIA",
+    "version": "20251202120039",
+    "wordMarkSpecification": {
+      "markTranslation": "KEY NORTH",
+      "markTranslationDescription": "KEY NORTH",
+      "markVerbalElementText": "CLAVE NORTENA"
+    }
+  },
+  "_uri": "/mark/xs/b5632544-c2aa-4fc7-8fba-ff812df58900",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.833Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

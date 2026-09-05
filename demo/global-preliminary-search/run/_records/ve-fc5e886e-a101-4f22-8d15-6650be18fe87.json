@@ -1,0 +1,209 @@
+{
+  "uri": "/mark/ve/fc5e886e-a101-4f22-8d15-6650be18fe87",
+  "provider": "clarivate",
+  "office": "ve",
+  "guid": "fc5e886e-a101-4f22-8d15-6650be18fe87",
+  "applicationNumber": "1995-000900",
+  "registrationNumber": "N035161",
+  "applicationDate": "1995-01-30",
+  "registrationDate": "1996-04-26",
+  "expiryDate": "2006-04-26",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "KORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "es",
+      "description": "un establecimiento dedicado a la compra, venta, importacion, exportacion de ropa fina para caballeros, damas y niños, bisuteria, carteras, calzados, cosmeticos, lenceria, electrodomesticos, bicicleta, linea blanca.",
+      "translation_language": "en",
+      "translation": "an establishment dedicated to the purchase, sale, import, export of fine clothes for men, women and children, jewelry, wallets, shoes, cosmetics, lingerie, appliances, bicycle, appliances."
+    }
+  ],
+  "owner": "SAUL MIGUEL BERRIOS GARCIA",
+  "ownerNative": null,
+  "ownerCountry": "VE",
+  "representative": "JOSE RAFAEL VIVAS",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CARACAS",
+        "applicantAddressCountryCode": "VE",
+        "applicantAddressCountryName": "Venezuela",
+        "applicantName": "SAUL MIGUEL BERRIOS GARCIA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "an establishment dedicated to the purchase, sale, import, export of fine clothes for men, women and children, jewelry, wallets, shoes, cosmetics, lingerie, appliances, bicycle, appliances.",
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "un establecimiento dedicado a la compra, venta, importacion, exportacion de ropa fina para caballeros, damas y niños, bisuteria, carteras, calzados, cosmeticos, lenceria, electrodomesticos, bicicleta, linea blanca."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "46"
+        }
+      ]
+    },
+    "id": "fc5e886e-a101-4f22-8d15-6650be18fe87",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "VE",
+    "registrationOfficeName": "Venezuela",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "VE",
+        "representativeAddressCountryName": "Venezuela",
+        "representativeName": "JOSE RAFAEL VIVAS"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19950130",
+        "applicationNumber": "1995-000900"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20060426",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19960426",
+        "registrationNumber": "N035161"
+      }
+    },
+    "version": "20250630160416",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "KORI"
+    }
+  },
+  "_uri": "/mark/ve/fc5e886e-a101-4f22-8d15-6650be18fe87",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.792Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

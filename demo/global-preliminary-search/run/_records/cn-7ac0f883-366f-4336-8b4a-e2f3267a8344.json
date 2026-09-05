@@ -1,0 +1,165 @@
+{
+  "uri": "/mark/cn/7ac0f883-366f-4336-8b4a-e2f3267a8344",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "7ac0f883-366f-4336-8b4a-e2f3267a8344",
+  "applicationNumber": "11044956",
+  "registrationNumber": "11044956",
+  "applicationDate": "2012-06-08",
+  "registrationDate": "2013-10-21",
+  "expiryDate": "2033-10-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2013-07-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "龙魇之心",
+  "markTransliteration": "DRAGON CORE ELEVEN CORP OF KINGDOM long yan zhi xin",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "磁性身份识别卡;条形码读出器;电子出版物(可下载);计算机游戏软件;网络通讯设备;光盘(音像);电影摄影机;测量器械和仪器;眼镜;动画片",
+      "translation_language": "en",
+      "translation": "Magnetic identification cards; bar code readers; electronic publications (downloadable); computer game software; network communication equipment;"
+    }
+  ],
+  "owner": "Beijing Bangshi Culture Media Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市海淀区安宁庄路26号楼4层402",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Beijing Bangshi Culture Media Co., Ltd.",
+        "applicantNativeName": "北京邦视文化传媒有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Magnetic identification cards; bar code readers; electronic publications (downloadable); computer game software; network communication equipment;",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "磁性身份识别卡;条形码读出器;电子出版物(可下载);计算机游戏软件;网络通讯设备;光盘(音像);电影摄影机;测量器械和仪器;眼镜;动画片"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Apparatus and instruments for photographic and cinematographic",
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories",
+        "Glasses and those accessories",
+        "Films, exposed materials"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        },
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        },
+        {
+          "subNatClassNumber": "0923",
+          "subNatGoodsServicesDescription": "Films, exposed materials"
+        }
+      ]
+    },
+    "id": "7ac0f883-366f-4336-8b4a-e2f3267a8344",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1368"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京胡杨国际知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20120608",
+        "applicationNumber": "11044956"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331020",
+      "lastPublicationDate": "20130720",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20131021",
+        "registrationNumber": "11044956"
+      },
+      "renewalPublishedDate": "20230227"
+    },
+    "version": "20251002035514",
+    "wordMarkSpecification": {
+      "markTransliteration": "DRAGON CORE ELEVEN CORP OF KINGDOM long yan zhi xin",
+      "markVerbalElementText": "龙魇之心"
+    }
+  },
+  "_uri": "/mark/cn/7ac0f883-366f-4336-8b4a-e2f3267a8344",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.743Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

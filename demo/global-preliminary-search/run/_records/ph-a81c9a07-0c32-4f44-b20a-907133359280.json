@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/ph/a81c9a07-0c32-4f44-b20a-907133359280",
+  "provider": "clarivate",
+  "office": "ph",
+  "guid": "a81c9a07-0c32-4f44-b20a-907133359280",
+  "applicationNumber": "4202500500231",
+  "registrationNumber": "PH/4/2025/00500231",
+  "applicationDate": "2025-01-06",
+  "registrationDate": "2025-03-02",
+  "expiryDate": "2035-03-02",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "CERTIFIED MISSION DRIVEN QUEENPRENEUR, QUEEN BEYOND BEAUTY 2025",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Educational services, namely, providing training, workshops, seminars, and certification programs in the field of empowerment and professional development; providing certification programs, educational courses, and training workshops in the fields of entrepreneurship, leadership, and personal development.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Tejano, Nephritiri",
+  "ownerNative": null,
+  "ownerCountry": "UNKN",
+  "representative": "Valerio, Niel",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "UNKN",
+        "applicantAddressCountryName": "Unknown Applicant Country/Region",
+        "applicantName": "Tejano, Nephritiri"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Educational services, namely, providing training, workshops, seminars, and certification programs in the field of empowerment and professional development; providing certification programs, educational courses, and training workshops in the fields of entrepreneurship, leadership, and personal development."
+        }
+      ]
+    },
+    "id": "a81c9a07-0c32-4f44-b20a-907133359280",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "01.05.01",
+      "05.03.16",
+      "24.09.24",
+      "25.01.06",
+      "29.01.12"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251112",
+    "registrationOfficeCode": "PH",
+    "registrationOfficeName": "Philippines",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "PH",
+        "representativeAddressCountryName": "Philippines",
+        "representativeName": "Valerio, Niel"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250106",
+        "applicationNumber": "4202500500231"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350302",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20250302",
+        "registrationNumber": "PH/4/2025/00500231"
+      }
+    },
+    "version": "20251112154230",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "CERTIFIED MISSION DRIVEN QUEENPRENEUR, QUEEN BEYOND BEAUTY 2025"
+    }
+  },
+  "_uri": "/mark/ph/a81c9a07-0c32-4f44-b20a-907133359280",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.567Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "uri": "/mark/br/4794043e-742b-4e2a-a289-ff2a4a6493a5",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "4794043e-742b-4e2a-a289-ff2a4a6493a5",
+  "applicationNumber": "819214230",
+  "registrationNumber": "819214230",
+  "applicationDate": "1996-04-29",
+  "registrationDate": "2000-08-08",
+  "expiryDate": "2030-08-08",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "PREVENCOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Teste ergométrico; eletrocardiograma; holter dinâmico de eletrocardiograma; mapa (monitorização ambulatorial da pressão); cintilografia; ecocardiograma com doppler; ecocardiograma com doppler color; ecocardiograma com stress; ecocardiograma transesofágico; ecocardiograma fetal color.",
+      "translation_language": "en",
+      "translation": "ERGOMETRIC TEST; ELECTROCARDIOGRAM; DYNAMIC ELECTROCARDIOGRAM HOLTER; MAP (AMBULATORY PRESSURE MONITORING); SCINTIGRAPHY; DOPPLER ECHOCARDIOGRAM; DOPPLER COLOR ECHOCARDIOGRAM; STRESS ECHOCARDIOGRAM; TRANSESOPHAGEAL ECHOCARDIOGRAM; FETAL COLOR ECHOCARDIOGRAM."
+    }
+  ],
+  "owner": "PREVENCOR - CENTRO PREV. REC. DOEN. CARDIOVASCULARES LTDA",
+  "ownerNative": null,
+  "ownerCountry": "BR",
+  "representative": "GUERRA ADV. ASSOCIADOS",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "BR",
+        "applicantAddressCountryName": "Brazil",
+        "applicantName": "PREVENCOR - CENTRO PREV. REC. DOEN. CARDIOVASCULARES LTDA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "ERGOMETRIC TEST; ELECTROCARDIOGRAM; DYNAMIC ELECTROCARDIOGRAM HOLTER; MAP (AMBULATORY PRESSURE MONITORING); SCINTIGRAPHY; DOPPLER ECHOCARDIOGRAM; DOPPLER COLOR ECHOCARDIOGRAM; STRESS ECHOCARDIOGRAM; TRANSESOPHAGEAL ECHOCARDIOGRAM; FETAL COLOR ECHOCARDIOGRAM.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Teste ergométrico; eletrocardiograma; holter dinâmico de eletrocardiograma; mapa (monitorização ambulatorial da pressão); cintilografia; ecocardiograma com doppler; ecocardiograma com doppler color; ecocardiograma com stress; ecocardiograma transesofágico; ecocardiograma fetal color."
+        }
+      ]
+    },
+    "id": "4794043e-742b-4e2a-a289-ff2a4a6493a5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "GUERRA ADV. ASSOCIADOS"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19960429",
+        "applicationNumber": "819214230"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300808",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20000808",
+        "registrationNumber": "819214230"
+      }
+    },
+    "version": "20250630201227",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "PREVENCOR"
+    }
+  },
+  "_uri": "/mark/br/4794043e-742b-4e2a-a289-ff2a4a6493a5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.743Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,1395 @@
+{
+  "uri": "/mark/em/dc47debd-f2b2-44d5-aa83-50743a2cc274",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "dc47debd-f2b2-44d5-aa83-50743a2cc274",
+  "applicationNumber": "19321316",
+  "registrationNumber": null,
+  "applicationDate": "2026-02-24",
+  "registrationDate": null,
+  "expiryDate": "2036-02-24",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-04-28",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VENCORA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "cs",
+      "description": "Obchodní konzultacní sluzby; Podpora podnikání; Sluzby v oblasti obchodního managementu; Organizace podnikání; Sluzby obchodního strategického rízení; Obchodní konzultacní a poradenské sluzby, Komercní sluzby nálezité péce, Obchodní konzultacní sluzby a Kontrola o revize úctu v podnikání V oboru akvizice technologických spolecností zamerených na financní sluzby; Obchodní sluzby vztahující se k firemní expanzi; Vývoj a implementace plánu firemní expanze; Konzultace v oblasti obchodních fúzí a Obchodní akvizice; Pomoc pri rízení obchodní cinnosti, obchodní administrativa a obchodní konzultacní sluzby pro technologické spolecnosti zamerené na financní sluzby; Sluzby v podobe vytvárení obchodních sítí v odvetví financních technologií; Sluzby obchodního rozvoje v odvetví technologií financních sluzeb; Obchodní konzultace a poradenství vztahující se k výse uvedenému v odvetví technologií financních sluzeb; Poskytování sluzeb obchodní podpory, jmenovite Obchodní konzultacní sluzby a Pomoc pri rízení obchodní cinnosti, Vcetne tech v následujících oblastech: Prístup k prodejním sítím, rust výrobku a poskytování odborné obchodní podpory; Rozvoj sítí, jmenovite Sluzby v oblasti obchodních sítí; Rozvoj prodejních sítí, jmenovite sluzby v oblasti rízení obchodní cinnosti vztahující se k rozvoji podniku prostrednictvím rozsirování jejich prodejních sítí; Informacní, konzultacní a poradenské sluzby vztahující se ke vsemu výse uvedenému.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "cs",
+      "description": "Sluzby financní; Financní poradenství v oblasti fúzí a akvizic; Financování akvizic; Financní rízení podniku; Poskytování kapitálu; Poskytování rizikového kapitálu; Poskytování rustového kapitálu; Financní rízení podniku, Investicní management; Financní investice a financování obchodního rustu; Kapitálové investice; Pojistovací sluzby; Informacní, konzultacní a poradenské sluzby týkající se výse uvedeného.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "cs",
+      "description": "Skolení; Obchodní vzdelávání; Vyucování, vzdelávání; Obchodní vzdelávání; Koucování, Workshopy, Semináre; Porádání konferencí; Realizace pracovních setkání, semináru a skolení; Organizování a porádání akcí, jmenovite Organizování a vedení konferencí a summitu pro vzdelávací, skolicí a zábavní úcely; Organizování a vedení obchodních konferencí a Porádání a vedení obchodních summitu; Informacní, poradenské a konzultacní sluzby týkající se vsech výse uvedených sluzeb.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Softwarové inzenýrství; Tvorba pocítacového softwaru; Vývoj softwaru; Vývoj a aktualizace softwaru; výzkum a vývoj software; Tvorba programového vybavení, Testování a údrzba softwaru; Software jako sluzba [SaaS] pro odvetví financních sluzeb a odvetví technologií financních sluzeb; Sluzby v oblasti podpory pocítacového softwaru; Ukládání elektronických dat; Poskytování softwaru bez moznosti stazení; Poradenství v oblasti sifrování dat; Poradenství v oblasti zabezpecení pocítacu; Získávání dat (Data mining); Informacní, konzultacní a poradenské sluzby vztahující se k výse uvedenému.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "da",
+      "description": "Forretningsmæssig rådgivningsvirksomhed; Bistand ved forretningsvirksomhed; Forretningsledelse; Forretningsorganisation; Strategisk forretningsledelse; Virksomhedsrådgivning og -konsultation, Kommerciel due diligence, Forretningsmæssig rådgivningsvirksomhed og Revision af forretningsvirksomhed Inden for erhvervelse af teknologivirksomheder inden for finansiel virksomhed; Forretningsvirksomhed i forbindelse med virksomhedsekspansion; Udvikling og implementering af planer for ekspansion af virksomheder; Forretningsmæssig rådgivning i forbindelse med virksomhedsfusioner og Forretningsmæssig bistand ved erhvervelse af virksomheder; Forretningsledelse, forretningsadministration og forretningsrådgivning møntet på teknologiske virksomheder inden for finansiel virksomhed; Forretningsnetværksvirksomhed inden for den finansielle teknologiindustri; Forretningsudvikling inden for den teknologiske industri for finansiel virksomhed; Forretningsrådgivning og -bistand i forbindelse med førnævnte inden for den teknologiske industri for finansiel virksomhed; Ydelse af bistand ved forretningsvirksomhed, Nemlig Forretningsmæssig rådgivningsvirksomhed og Bistand ved forretningsledelse, Inklusive på følgende områder: Adgang til salgsnetværk, produktvækst og udbydelse af professionel forretningssupport; Udvikling af netværk, Nemlig Forretningsmæssige netværkstjenester; Udvikling af salgsnetværk, nemlig bistand ved forretningsledelse i forbindelse med udvikling af virksomheder gennem udvidelse af deres salgsnetværk; Information, rådgivning og bistand vedrørende alle ovennævnte tjenesteydelser.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "da",
+      "description": "Finansiel virksomhed; Finansiel rådgivning vedrørende fusioner og erhvervelser; Finansiering af overtagelser; Finansiel administration af virksomheder; Tilvejebringelse af kapital; Tilvejebringelse af risikovilling kapital; Formidling af vækstkapital; Finansiel styring af risikovillig kapital, Forvaltning af investeringer; Finansiering af finansielle investeringer og virksomhedsvækst; Investering af kapital; Forsikringstjenesteydelser; Information-, konsulent- og rådgivningsvirksomhed i forbindelse med alle førnævnte tjenesteydelser.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "da",
+      "description": "Undervisning; Forretningsuddannelse; Oplæring; Uddannelsesvirksomhed vedrørende handel; Coaching, Workshopper, Seminarer; Arrangering af konferencer; Ledelse af workshopper, seminarer og kurser; Organisering og afholdelse af events, nemlig Organisering og ledelse af konferencer og topmøder med uddannelses-, undervisnings- og underholdningsmæssige formål; Organisering og afholdelse af forretningskonferencer og Arrangering og ledelse af forretningsmæssige topmøder; Information, rådgivning og bistand vedrørende alle ovennævnte tjenesteydelser.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Design af software; Design af computerprogrammer; Softwareudvikling; Udvikling og opdatering af software; Forskning og udvikling af software; Udarbejdelse af software, Afprøvning og vedligeholdelse af software; Software as a Service [SaaS] til den finansielle sektor og den finansielle serviceteknologiindustri; Support vedrørende computersoftware; Elektronisk datalagring; Formidling af software, der ikke kan downloades; Datakrypteringsvirksomhed; Rådgivning vedrørende computersikkerhed; Vidensafdækning (datamining); Information, rådgivning og bistand vedrørende alle ovennævnte tjenesteydelser.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "Zakelijke consultancy; Bedrijfsondersteuning; Diensten op het gebied van bedrijfsvoering; Diensten op het gebied van bedrijfsorganisatie; Diensten verband houdend met het beheer van zakelijke strategieën; Commercieel-zakelijke informatie en advisering, Commercieel boekenonderzoek, Zakelijke consultancy en Zakelijke auditdiensten Op het gebied van de acquisitie van technologiebedrijven op het gebied van financiële diensten; Zakelijke diensten met betrekking tot bedrijfsuitbreiding; Ontwikkeling en implementatie van plannen voor bedrijfsuitbreiding; Commerciële advisering op het gebied van fusie en Commerciële acquisitie; Bedrijfsvoering, zakelijke administratie en zakelijke advisering voor technologiebedrijven op het gebied van financiële diensten; Zakelijke netwerkdiensten in de financiële technologiesector; Bedrijfsontwikkeling op het gebied van de technologiesector voor financiële dienstverlening; Zakelijke raadgeving en advisering met betrekking tot het voornoemde in de technologiesector voor financiële dienstverlening; Het verlenen van bedrijfsondersteunende diensten, namelijk Zakelijke consultancy en Ondersteuning inzake bedrijfsleiding, Waaronder op de volgende gebieden: Toegang tot verkoopnetwerken, productgroei en het bieden van professionele bedrijfsondersteuning; Ontwikkeling van netwerken, namelijk Commerciële netwerkdiensten; Ontwikkeling van verkoopnetwerken, namelijk bedrijfsvoering met betrekking tot de ontwikkeling van bedrijven door het uitbreiden van hun verkoopnetwerken; Informatie, raadgeving en advisering met betrekking tot al het voornoemde.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "nl",
+      "description": "Financiële diensten; financiële advisering op het gebied van fusies en overnames; Financiering van acquisities; Financieel beheer van bedrijven; Verschaffing van kapitaal; Verstrekking van risicokapitaal; Het aanbieden van groeikapitaal; Financieel beheer van ventures, Beheer van investeringen; Financiering van financiële beleggingen en bedrijfsgroei; Kapitaalbelegging; Verzekeringsdiensten; Informatie, raadgeving en advisering met betrekking tot al het voornoemde.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Educatieve diensten; Zakelijke opvoeding; Opleiding; Bedrijfsopleiding; Coaching (training), Workshops, Seminars; Organisatie van conferenties; Houden van workshops, seminars en scholingen; Het organiseren en houden van evenementen, namelijk Het organiseren en houden van conferenties en topbijeenkomsten voor educatieve, opleidings- en amusementsdoeleinden; Organiseren en houden van zakelijke conferenties en Het beleggen en houden van zakelijke topbijeenkomsten; Informatie, consultancy en advisering met betrekking tot alle voornoemde diensten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Software engineering; Software-ontwikkeling; Ontwikkeling van software; Ontwerpen en creëren van websites; Onderzoek naar en ontwikkeling van software; Het creëren van software, Het testen en onderhouden van software; Software-als-een-dienst [SaaS] voor de financiële dienstensector en de technologiesector voor financiële dienstverlening; Ondersteuning op het gebied van software; Elektronische data-opslag; Verschaffing van niet-downloadbare software; Data coderingsdiensten; Advisering inzake computerbeveiliging; Datamining; Informatie, raadgeving en advisering met betrekking tot al het voornoemde.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Business consultancy; Business Support; Business management; Business Organisation; Business strategic management services; provision of business advice, commercial due diligence services, business consulting services and business auditing services relating to the acquisition of financial services technology companies; Business services related to Corporate expansion; development and implementation of corporate expansion plans; business mergers consultations and business acquisitions; business management, business administration and business consultancy services for financial services technology companies; Business networking services in the financial technology industry; Business development services in the financial services technology industry; Business consultancy and advice relating to the foregoing in the financial services technology industry; providing business support services namely, business consultation and business management support, also in the areas of access to sales networks, product growth and providing professional business support; development of networks, namely business networking services; development of sales networks, namely business management services relating to the development of businesses through the expansion of their sales networks; information, consultancy and advisory services relating to all of the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Financial services; Financial consultancy in the field of mergers and acquisitions; Financing of acquisitions; Financial management of businesses; Provision of capital; provision of venture capital; provision of growth capital; Financial management of venture, investment management; financial investment and business growth funding services; Capital investment; Insurance services; information, consultancy and advisory services relating to all of the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education; Business Education; Training; Business training; Coaching, Workshops, Seminars; Arranging conferences; conducting seminars, workshops and courses; organization and conducting of events, namely conferences and summits with educational, training and entertainment purposes; arranging and conducting of business conferences and summits; information, consultancy and advisory services relating to all of the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Software engineering; Design of software; Development of software; Developing and updating of software; Research and development of software; Creating, testing and maintaining software; Software as a service [SaaS] for the financial services sector and financial services technology industry; Software support services; electronic data storage; provision of non downloadable software; Data encryption services; Computer security consultancy; data mining; information, consultancy and advisory services relating to all of the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "et",
+      "description": "Ärialane nõustamine; Teenused äri toetamiseks; Ärijuhtimine; Ärikorraldus; Äristrateegia juhtimise teenused; Ärikonsultatsioonid, Kaubanduslikud hoolsuskohustusteenused, Ärialane nõustamine ja Äriauditeerimisteenused Finantsteenuste tehnoloogiaettevõtete omandamise valdkonnas; Ettevõtte laienemisega seotud äriteenused; Ettevõtte laienemiskavade arendamine ja rakendamine; Ettevõtete ühinemise konsultatsioonid ja Ettevõtete omandamine; Ärijuhtimis-, ärihaldus- ja ärikonsultatsiooniteenused finantsteenuste tehnoloogiaettevõtetele; Ärivõrgustusteenused finantstehnoloogia valdkonnas; Äriarendusteenused finantsteenuste tehnoloogia valdkonnas; Ärikonsultatsioon ja -nõustamine seoses eelnimetatuga finantsteenuste tehnoloogia valdkonnas; Äritugiteenuste pakkumine, nimelt Ärialane nõustamine ja Äritegevuse juhtimisabi, Sh järgmistes valdkondades: Juurdepääs müügivõrgustikele, tootearendus ja professionaalse äritoe pakkumine; Võrkude arendamine, nimelt Ärikontaktide võrgustiku loomise teenused; Müügivõrgustike arendamise teenused, nimelt ettevõtete arendamisega seotud ärijuhtimisteenused nende müügivõrgustike laiendamise kaudu; Teabe-, konsultatsiooni- ja nõustamisteenused seoses kõige eelmainituga.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "et",
+      "description": "Finantsteenused; Finantsnõustamine ühinemiste ja ülevõtmiste valdkonnas; Vara omandamise finantseerimine; Ettevõtete finantsjuhtimine; Kapitalireserv; Riskikapitali pakkumine; Kasvukapitali pakkumine; Riskikapitali finantsjuhtimine, Investeeringute haldamine; Finantsinvesteeringute ja ettevõtte kasvu rahastamise teenused; Kapitalimahutus; Kindlustusteenused; Teabe-, konsultatsiooni- ja nõustamisteenused seoses kõige eelmainituga.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "et",
+      "description": "Õpetamine; Ärikoolitus; Koolitusteenused; Ärikoolitusteenused; Juhendamine, treenimine, Töötoad, Seminarid; Konverentside korraldamine; Õpikojad, seminarid ja koolitused; Ürituste organiseerimine ja läbiviimine, nimelt Haridus-, koolitus- ja meelelahutuskonverentside ja -kohtumiste korraldamine ja läbiviimine; Ärikonverentside korraldamine ja juhtimine ja Ärikohtumiste korraldamine ja läbiviimine; Info- ja nõustamisteenused ning konsultatsioonid eelmainitud teenuste kohta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Tarkvara kavandamine, projekteerimine; Tarkvara projekteerimine; Tarkvara arendamine; Tarkvara arendamine ja uuendamine; Tarkvara uurimine ja arendamine; Tarkvaraloome, Tarkvara katsetamine ja hooldamine; Teenustarkvara [SaaS] finantsteenuste sektorile ja finantsteenuste tehnoloogia sektorile; Arvutitarkvara tugiteenused; Elektrooniline andmesalvestus; Allalaadimatu tarkvara pakkumine; Andmete krüpteerimine; Arvutiturbekonsultatsioonid; Andmekaeve; Info- ja nõustamisteenused ning konsultatsioonid eelmainitute kohta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fi",
+      "description": "Yrityskonsultointipalvelut; Liiketoimintaan liittyvät tukipalvelut; Liikkeenjohto; Liiketoiminnan organisointi; Liiketoiminnan strategiset hallintapalvelut; Liiketoiminnan konsultointi- ja neuvontapalvelut, Kaupalliset tarkastuspalvelut (due diligence), Yrityskonsultointipalvelut ja Yritysten tilintarkastuspalvelut Rahoituspalveluja tarjoavien teknologiayritysten hankinnan alalla; Yrityspalvelut, jotka liittyvät yritysten laajentamiseen; Yritysten laajennussuunnitelmien kehittäminen ja toteuttaminen; Yritysfuusioihin liittyvä neuvonta ja Yrityskaupat; Liikkeenjohto-, yrityshallinto- ja yrityskonsultointipalvelut rahoituspalveluteknologiayrityksille; Yritysverkostointipalvelut rahoitusteknologia-alalla; Liiketoiminnan kehittämispalvelut rahoituspalveluteknologian alalla; Edellä mainittuun liittyvä yrityskonsultointi ja -neuvonta rahoituspalveluteknologian alalla; Yritystukipalvelujen tarjoaminen, nimittäin Yrityskonsultointipalvelut ja Tuki yrityksen johtamisessa, Mukaan lukien seuraavilla aloilla: Myyntiverkostojen käyttömahdollisuus, tuotekasvu ja ammattimaisen yritystuen tarjoaminen; Verkostojen kehittäminen, nimittäin Liiketoimintaan liittyvät verkostoitumispalvelut; Myyyntiverkoston kehittäminen, nimittäin, liikkeenjohtopalvelut, jotka liittyvät yritysten kehittämiseen niiden myyntiverkoston laajentamisen avulla; Kaikkiin edellä mainittuihin liittyvät tiedotus-, konsultointi- ja neuvontapalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "fi",
+      "description": "Rahoituspalvelut; Taloudellinen neuvonta fuusioiden ja yritysostojen alalla; Yritysostojen rahoitus; Yritysten taloushallinto; Pääoman tarjoaminen; Riskipääoman tarjoaminen; Kasvupääoman tarjoaminen; Riskipääoman varainhoito, Sijoitusten hallinta; Rahataloudellisiin sijoituksiin ja liiketoiminnan kasvuun liittyvät rahoituspalvelut; Rahastosijoituspalvelut; Vakuutuspalvelut; Kaikkiin edellä mainittuihin liittyvät tiedotus-, konsultointi- ja neuvontapalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fi",
+      "description": "Opetuksen tarjoaminen; Yrityskoulutus; Koulutuspalvelut; Liiketoimintaan liittyvä koulutus; Valmennuspalvelut, Työpajat, Seminaarit; Konferenssien järjestäminen ja johtaminen; Työpajojen, seminaarien ja koulutustilaisuuksien toteuttaminen; Tapahtumien organisointi ja pitäminen, nimittäin Konferenssien ja huippukokousten järjestäminen ja ohjaaminen koulutus-, valmennus- ja ajanvietetarkoituksiin; Liiketaloudellisten konferenssien järjestäminen ja pitäminen ja Yrityshuippukokousten järjestäminen ja ohjaaminen; Kaikkiin edellä mainittuihin palveluihin liittyvät tiedotus-, konsultointi- ja neuvontapalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Ohjelmistoihin liittyvä tekninen suunnittelu; Ohjelmistosuunnittelu; Ohjelmistokehitys; Ohjelmistojen kehittäminen ja päivitys; Ohjelmistojen tutkimus ja kehittäminen; Ohjelmistojen luominen, Ohjelmistojen testaus ja ylläpito; Sovellusvuokrauspalvelut [SaaS] rahoituspalvelualaa ja rahoituspalveluteknologia-alaa varten; Tietokoneohjelmistoihin liittyvät tukipalvelut; Elektroninen tietojen säilytys; Muiden kuin ladattavien ohjelmiston tarjoaminen; Tiedonsalauspalvelut; Konsultointi tietokoneturvallisuuden alalla; Tiedonlouhinta; Kaikkiin edellä mainittuihin liittyvät tiedotus-, konsultointi- ja neuvontapalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Services de conseillers d'affaires; Soutien commercial; Services de gestion commerciale; Organisation commerciale; Services de gestion stratégique commerciale; Services de consultation et de conseil relatifs aux affaires, Services commerciaux de diligence raisonnable, Services de conseillers d'affaires et Services d'audits d'entreprises (analyses commerciales) Dans le domaine de l'acquisition de sociétés technologiques de services financiers; Services commerciaux liés à l'expansion d'entreprises; Développement et mise en oeuvre de plans d'expansion d'entreprises; Services de conseils commerciaux en matière de fusionnement et Services d'acquisition commerciale; Services de gestion commerciale, d'administration commerciale et d'assistance commerciale pour entreprises technologiques de services financiers; Services de réseautage commercial dans le secteur des technologies financières; Services de développement commercial dans le secteur technologique des services financiers; Assistance et conseils commerciaux liés aux domaines précités dans le secteur technologique des services financiers; Fourniture de services d'assistance commerciale, À savoir Services de conseillers d'affaires et Aide à la direction d'entreprises, Y compris dans les domaines suivants: Accès à des réseaux de vente, croissance de produits et fourniture d'assistance commerciale professionnelle; Développement de réseaux, À savoir Services de réseautage d'affaires; Développement de réseaux de vente, à savoir services de gestion commerciale liés au développement d'entreprises via l'expansion de leurs réseaux de vente; Services d'informations, d'assistance et de conseils liés à tous les domaines précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "fr",
+      "description": "Services financiers; Consultation en matière financière dans le domaine des fusions et des reprises; Financement d'acquisitions; Gestion financière de sociétés; Mise à disposition de capitaux; Fourniture de capital-risque; Fourniture de capital de croissance; Gestion financière d'entreprises, Gestion d'investissements; Services de financement d'investissements financiers et de croissance commerciale; Investissement de capitaux; Services d'assurances; Services d'informations, d'assistance et de conseils liés à tous les domaines précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Enseignement; Éducation commerciale; Formation; Services de formation commerciale; Formation, Ateliers, Séminaires; Organisation de conférences; Organisation d'ateliers, de séminaires et de formations; Organisation et tenue d'événements, à savoir Organisation et conduite de séminaires et conférences à des fins éducatives, pédagogiques et récréatives; Mise en place et animation de conférences d'affaires et Organisation et conduite de sommets d'affaires; Services de conseils, d'assistance et d'informations relatifs à tous les services précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services de génie logiciel; Élaboration [conception] de logiciels; Développement de logiciels; Développement et mise à jour de logiciels; Recherche et développement de logiciels; Création de logiciels, Test et maintenance de logiciels; Logiciels en tant que service [SaaS] pour le secteur des services financiers et le secteur technologique des services financiers; Services d'assistance logicielle; Stockage électronique de données; Fourniture de logiciels non téléchargeables; Services de chiffrement de données; Consultation en matière de sécurité informatique; Exploration de données; Services d'information, de conseil et d'assistance relatifs à tous les services précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Unternehmensberatungsdienste; Unternehmensbetreuung; Geschäftsführung; Geschäftsleitung [für Dritte]; Dienstleistungen in Bezug auf unternehmensstrategisches Management; Unternehmensberatung, Prüfung geschäftlicher Sorgfalt, Unternehmensberatungsdienste und Wirtschaftsprüfungsleistungen Im Bereich Erwerb von Technologieunternehmen für Finanzdienstleistungen; Geschäftsdienstleistungen in Bezug auf die Expansion von Unternehmen; Entwicklung und Umsetzung von Plänen für die Expansion von Unternehmen; Unternehmensberatung in Bezug auf Fusionen und Akquisition in Geschäftsangelegenheiten; Geschäftsführung, Unternehmensverwaltung und Unternehmensberatung für Expansion von Unternehmen; Vernetzung von Unternehmen in der Finanztechnologiebranche; Unternehmensentwicklung in der Finanzdienstleistungstechnologiebranche; Unternehmensberatung in Bezug auf das Vorgenannte in der Finanzdienstleistungstechnologiebranche; Bereitstellung von Unterstützungsdienstleistungen für Unternehmen, Nämlich Unternehmensberatungsdienste und Unternehmensführungsunterstützung, Einschließlich in den folgenden Bereichen: Zugang zu Verkaufsnetzwerken, Wachstum von Produkten und Bereitstellung von gewerblicher Unterstützung für Unternehmen; Entwicklung von Netzwerken, Nämlich Dienstleistungen in Bezug auf Unternehmens-Networking; Entwicklung von Verkaufsnetzwerken, nämlich Unternehmensleitung in Bezug auf die Entwicklung von Unternehmen durch Ausweitung ihrer Verkaufsnetzwerke; Information und Beratung in Bezug auf alles vorstehend Genannte.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "de",
+      "description": "Finanzdienstleistungen; Finanzberatung im Bereich von Fusionen und Übernahmen; Finanzierung von Unternehmensübernahmen; Finanzmanagement von Unternehmen; Kapitalvermittlung; Bereitstellung von Risikokapital; Bereitstellung von Wachstumskapital; Finanzmanagement von Risikoanlagen, Kapitalanlagenmanagement; Dienstleistungen von Finanzanlagen und Finanzierung von Unternehmenswachstum; Kapitalanlagedienste; Versicherungsdienstleistungen; Information und Beratung in Bezug auf alles vorstehend Genannte.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Erziehung und Unterricht; Geschäftliche Bildung; Ausbildung; Betriebliche Ausbildung; Coaching, Workshops, Veranstaltung von Seminaren; Organisation von Konferenzen; Durchführung von Workshops, Seminaren und Schulungen; Organisation und Durchführung von Veranstaltungen, nämlich Organisation und Durchführung von Konferenzen und hochrangigen Begegnungen für Bildungs-, Ausbildungs- und Unterhaltungszwecke; Organisation und Durchführung von geschäftlichen Konferenzen und Organisation und Durchführung von hochrangigen geschäftlichen Begegnungen; Information und Beratung in Bezug auf alle vorstehend genannten Leistungen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Softwareengineering; Design von Computer-Software; Softwareentwicklung; Entwicklung und Aktualisierung von Software; Forschung und Entwicklung auf dem Gebiet Software; Softwareerstellung, Softwareprüfung und -pflege; Software as a Service [SaaS] für den Finanzdienstleistungssektor und die Finanzdienstleistungsbranche; Support für Computersoftware; Elektronische Datenspeicherung; Bereitstellung von nicht herunterladbarer Software; Dienstleistungen auf dem Gebiet der Datenverschlüsselung; Beratung auf dem Gebiet der Computersicherheit; Data-Mining; Information und Beratung in Bezug auf alles vorstehend Genannte.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hr",
+      "description": "Poslovno savjetovanje; Poslovna podrska; Poslovno upravljanje; Poslovna organizacija; Usluge poslovnog strateskog upravljanja; Usluge poslovnog savjetovanja i savjetodavne poslovne usluge, Usluge dubinske analize poslovanja, Poslovno savjetovanje i Usluge revizije poslovanja U podrucju akvizicije tehnoloskih tvrtki za financijske usluge; Poslovne usluge u vezi s korporativnim prosirenjem; Razvoj i implementacija planova korporativnog sirenja; Savjetovanje u svezi spajanja poduzeca i Poslovne akvizicije; Usluge poslovnog upravljanja, poslovne administracije i poslovnog savjetovanja za tehnoloska poduzeca za financijske usluge; Usluge poslovnog umrezavanja u industriji financijske tehnologije; Usluge poslovnog razvoja u tehnoloskoj industriji financijskih usluga; Poslovne konzultacije i savjeti u vezi s navedenim u tehnoloskoj industriji financijskih usluga; Pruzanje usluga poslovne podrske, i to Poslovno savjetovanje i Pomoc u vodenju poslova, Ukljucujuci u sljedecim podrucjima: Pristup prodajnim mrezama, rast proizvoda i pruzanje profesionalne poslovne podrske; Razvoj mreza, i to Usluge poslovnog umrezavanja; Razvoj prodajnih mreza, i to usluge poslovnog upravljanja u vezi s razvojem poduzeca putem sirenja njihovih prodajnih mreza; Usluge informiranja, savjetovanja te konzultantske usluge u vezi s navedenim.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "hr",
+      "description": "Financijske usluge; Financijsko savjetovanje u podrucju spajanja i akvizicija; Financiranje akvizicija; Financijsko upravljanje tvrtkama; Pruzanje kapitala; Ponuda poduzetnickog kapitala; Pruzanje kapitala za rast; Financijsko upravljanje rizicnim kapitalom, Upravljanje ulaganjem; Usluge financiranja financijskih ulaganja i poslovnog rasta; Ulaganja sredstava; Osiguravateljske usluge; Usluge informiranja, savjetovanja te konzultantske usluge u vezi s navedenim.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hr",
+      "description": "Pruzanje poduke; Poslovno obrazovanje; Pruzanje usluga osposobljavanja; Poslovno usavrsavanje; Treniranje, Radionice, Seminari; Organiziranje konferencija; Vodenje radionica, seminara i tecajeva; Organiziranje i ugoscavanje dogadanja, i to Organizacija i provodenje konferencija i sastanaka na vrhu za potrebe obrazovanja, obuke i zabave; Organizacija i provodenje poslovnih konferencija i Dogovaranje i provodenje poslovnih sastanaka na vrhu; Usluge informiranja, konzultiranja i savjetovanja, u vezi sa svim navedenim uslugama.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Programsko inzenjerstvo; Izrada [koncipiranje] racunalnih progama; Razvoj softvera; Koncepcija i izrada mreznih stranica; Istrazivanje i razvoj softvera; Izrada softvera, Testiranje i odrzavanje softvera; Softver kao usluga [SaaS] za sektor financijskih usluga i tehnolosku industriju financijskih usluga; Usluge podrske za racunalni softver; Pohrana elektronickih podataka; Ponuda softvera koji se ne moze preuzeti; Usluge enkripcije podataka; Savjetovanje u svezi s racunalnom sigurnosti; Rudarenje podataka; Usluge informiranja, savjetovanja te konzultantske usluge u vezi s navedenim.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hu",
+      "description": "Üzleti konzultációs szolgáltatások; Üzleti támogató szolgáltatások; Üzleti menedzsment; Üzletszervezés; Üzleti stratégiai menedzsment-szolgáltatások; Üzleti konzultációs és tanácsadási szolgáltatások, Kereskedelmi átvilágítási szolgáltatások, Üzleti konzultációs szolgáltatások és Üzleti auditálási szolgáltatások A pénzügyi szolgáltatási technológiai vállalatok felvásárlása területén; Vállalati bovítéssel kapcsolatos üzleti szolgáltatások; Vállalati bovítési tervek kidolgozása és végrehajtása; Vállalati fúziókkal kapcsolatos szaktanácsadás és Üzletszerzés; Üzleti menedzsment, üzleti adminisztráció és üzleti tanácsadási szolgáltatások pénzügyi szolgáltatási technológiai vállalatok számára; Üzleti hálózatépítési szolgáltatások a pénzügyi technológiai iparban; Üzleti fejlesztési szolgáltatások a pénzügyi szolgáltatások technológiai iparában; Üzleti szaktanácsadás és tanácsadás a fentiekkel kapcsolatban a pénzügyi szolgáltatási technológiai iparágban; Üzleti támogató szolgáltatások nyújtása, nevezetesen Üzleti konzultációs szolgáltatások és Segítségnyújtás üzletvezetéshez, Azon belül a következo területeken: Hozzáférés értékesítési hálózatokhoz, terméknövekedés és szakmai üzleti támogatás nyújtása; Hálózatok fejlesztése, nevezetesen Üzleti hálózati szolgáltatások; Értékesítési hálózatok fejlesztése, nevezetesen üzletviteli szolgáltatások vállalkozások fejlesztésével kapcsolatban értékesítési hálózataik bovítése révén; Az összes fent említettel kapcsolatos tájékoztatás, konzultáció és tanácsadás.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "hu",
+      "description": "Pénzügyi szolgáltatások; Pénzügyi tanácsadás egyesülések és felvásárlások területén; Beszerzések, akvizíciók finanszírozása; Vállalatok pénzügyi irányítása; Toke szolgáltatása; Kockázati toke biztosítása; Növekedési toke biztosítása; Kockázatvállalás pénzügyi irányítása, Befektetés menedzsment; Pénzügyi befektetési és üzleti növekedési finanszírozási szolgáltatások; Tokebefektetés, tokeberuházás; Biztosítási szolgáltatások; Fentiekkel kapcsolatos tájékoztató és tanácsadó szolgáltatás.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hu",
+      "description": "Oktatás biztosítása; Üzleti oktatás; Szakmai képzés, betanítás; Üzleti képzés; Coaching, Alkotómuhelyek, Szemináriumok; Konferenciaszervezés; Workshopok, szemináriumok és oktatások tartása; Rendezvények szervezése és megtartása, nevezetesen Oktatási, képzési és szórakoztatási célú konferenciák és csúcstalálkozók szervezése és lebonyolítása; Üzleti konferenciák szervezése és lebonyolítása és Üzleti csúcstalálkozók szervezése és lebonyolítása; Összes fent említett szolgáltatással kapcsolatos tájékoztató és tanácsadó szolgálat.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Szoftver mérnökség; Szoftvertervezés; Számítógépes szoftver fejlesztése; Szoftverek fejlesztése és frissítése; Szoftverek kutatása és fejlesztése; Szoftverek létrehozása, Szoftverek tesztelése és karbantartása; Szoftver mint szolgáltatás [SaaS] a pénzügyi szolgáltatási ágazat és a pénzügyi szolgáltatási technológiai ipar számára; Támogató szolgáltatások számítógépes szoftverekhez; Elektronikus adattárolás; Nem letöltheto szoftverek szolgáltatása; Adatkódolási szolgáltatások; Számítógépes biztonsággal kapcsolatos tanácsadás; Adatbányászat; Az összes fent említettekkel kapcsolatos tájékoztató, tanácsadó és konzultációs szolgáltatások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "it",
+      "description": "Servizi di consulenza aziendale; Assistenza commerciale; Gestione aziendale; Organizzazione aziendale; Servizi di gestione strategica aziendale; Servizi di consulenza e di assistenza aziendale, Servizi di due diligence commerciale, Servizi di consulenza aziendale e Revisione dei conti Nel campo dell'acquisizione di società tecnologiche di servizi finanziari; Servizi aziendali in materia di espansione aziendale; Sviluppo ed esecuzione di piani di espansione aziendale; Consulenza in materia di fusioni aziendali e Acquisizioni aziendali; Servizi di gestione aziendale, amministrazione aziendale e consulenza aziendale per società tecnologiche di servizi finanziari; Servizi di collegamento in reti aziendali nel settore della tecnologia finanziaria; Servizi di sviluppo aziendale nel settore della tecnologia dei servizi finanziari; Consulenza aziendale relativa ai suddetti servizi nel settore della tecnologia dei servizi finanziari; Fornitura di servizi d'assistenza aziendale, Ovvero Servizi di consulenza aziendale e Assistenza per la direzione aziendale, Anche nei seguenti ambiti: Accesso a reti di vendita, crescita di prodotti e fornitura di supporto professionale alle imprese; Sviluppo di reti, Ovvero Servizi di networking aziendale; Sviluppo di reti di vendita, ovvero servizi di gestione aziendale in materia di sviluppo di imprese mediante l'espansione delle loro reti di vendita; Servizi d'informazione e consulenza relativi ai suddetti servizi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "it",
+      "description": "Affari finanziari; Consulenza in materia di fusioni e d'acquisizioni,; Finanziamento di acquisizioni; Gestione finanziaria di aziende; Stanziamento di capitale; Fornitura di capitali di rischio; Fornitura di capitale di crescita; Gestione finanziaria di imprese, Gestione di investimenti; Servizi di investimento finanziario e di finanziamento della crescita aziendale; Investimento di capitali; Servizi di assicurazioni; Informazioni e consulenza riguardanti tutti i suddetti servizi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "Educazione; Istruzione commerciale; Attività di formazione; Formazione aziendale; Assistenza professionale (coaching), Seminari di lavoro (workshop), Seminari; Organizzazione di congressi; Realizzazione di workshop, seminari e corsi di formazione; Organizzazione e conduzione di eventi, ovvero Organizzazione e conduzione di conferenze e summit per scopi d'istruzione, formazione e divertimento; Organizzazione e conduzione di conferenze aziendali e Organizzazione e conduzione di summit aziendali; Servizi di informazioni e consulenza relative a tutti i suddetti servizi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Ingegneria informatica; Elaborazione [ideazione] di software; Sviluppo di software; Sviluppo e aggiornamento di software; Ricerca e sviluppo di software; Ideazione di software, Collaudo e manutenzione di software; Software come servizio [SaaS] per il settore dei servizi finanziari e il settore della tecnologia dei servizi finanziari; Servizi di supporto per software; Archivio elettronico di dati; Fornitura di software non scaricabili; Servizi di crittografia dei dati; Consulenza in materia di sicurezza informatica; Estrazione di dati; Informazioni e consulenza riguardanti tutti i suddetti servizi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lt",
+      "description": "Verslo konsultacijos; Verslo pagalba; Verslo vadyba; Verslo organizavimas; Verslo strateginio valdymo paslaugos; Verslo konsultacijos ir patarimai, Komercines atitikimo reikalavimams paslaugos, Verslo konsultacijos ir Verslo audito paslaugos Finansiniu paslaugu technologiju imoniu isigijimo srityje; Verslo paslaugos, susijusios su imoniu pletra; Imoniu pletros planu kurimas ir igyvendinimas; Verslo susiliejimo konsultacijos ir Verslo isigijimas; Verslo vadybos, verslo administravimo ir verslo konsultavimo paslaugos finansiniu paslaugu technologiju imonems; Verslo tinklaveikos paslaugos finansiniu technologiju pramones srityje; Verslo pletros paslaugos finansiniu paslaugu technologiju pramones srityje; Verslo konsultacijos ir patarimai, susije su minetomis paslaugomis finansiniu paslaugu technologiju pramones srityje; Verslo pagalbos paslaugu teikimas, Butent Verslo konsultacijos ir Verslo vadybos pagalba, Iskaitant sias sritis: Prieiga prie pardavimo tinklu, produktu augimas ir profesionalios verslo pagalbos teikimas; Tinklu pletra, Butent Verslo tinklu paslaugos; Pardavimo tinklu kurimas, butent verslo valdymo paslaugos, susijusios su verslo pletra pletojant ju pardavimo tinklus; Su visomis minetomis paslaugomis susijusios informacines, konsultacines ir patariamosios paslaugos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "lt",
+      "description": "Finansines paslaugos; Finansines konsultacijos imoniu susijungimu ir isigijimu srityje; Isigijimu finansavimas; Imoniu finansu valdymas; Teikimas kapitalo; Rizikos kapitalo teikimas; Augimo kapitalo teikimas; Imoniu finansinis valdymas, Investiciju valdymas; Finansiniu investiciju ir verslo augimo finansavimo paslaugos; Kapitalo investavimas; Draudimo paslaugos; Informacines, konsultacines ir patariamosios paslaugos, susijusios su auksciau nurodytosiomis paslaugomis.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lt",
+      "description": "Mokymas; Komercinis svietimas; Treniravimas; Verslo mokymo paslaugos; Asmeninis treniravimas, Praktiniai seminarai, Seminaru organizavimas; Konferenciju organizavimas; Praktiniu seminaru, seminaru ir mokymu rengimas; Renginiu organizavimas, butent Konferenciju ir auksciausiojo lygio susitikimu organizavimas ir vedimas svietimo, mokymo ir pramogu tikslais; Verslo konferenciju rengimas ir vedimas ir Verslo auksciausiojo lygio susitikimu organizavimas ir vedimas; Informacines, patariamosios ir konsultacines paslaugos, susijusios su auksciau nurodytomis paslaugomis.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Programu inzinerija; Kompiuteriu programines irangos projektavimas; Programines irangos tobulinimas; Kompiuteriu programines irangos projektavimas ir atnaujinimas; Programines irangos moksliniu tyrimu paslaugos ir technologiju pletra; Programines irangos kurimas, Programines irangos tikrinimas ir prieziura; Programine iranga kaip paslauga [SaaS] finansiniu paslaugu sektoriui ir finansiniu paslaugu technologiju pramonei; Kompiuteriu programines irangos palaikymo paslaugos; Elektroniniu duomenu saugojimas; Neparsisiunciamosios programines irangos teikimas; Duomenu uzsifravimo paslaugos; Kompiuteriu apsaugos konsultacijos; Duomenu gavyba; Informacines, konsultacines ir patariamosios paslaugos, susijusios su visomis anksciau minetomis paslaugomis.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lv",
+      "description": "Konsultaciju sniegsana darijumu joma; Uznemejdarbibas palidzibas nodrosinasana; Uznemejdarbibas vadibas pakalpojumi; Uznemejdarbibas organizesana; Uznemejdarbibas strategiskas vadibas pakalpojumi; Konsultaciju un padomu sniegsana darijumu joma, Komercialie uzticamibas parbaudes pakalpojumi, Konsultaciju sniegsana darijumu joma un Uznemejdarbibas audita pakalpojumi Finansu pakalpojumu tehnologiju uznemumu iegades joma; Uznemejdarbibas pakalpojumi saistiba ar korporativo paplasinasanu; Korporativas paplasinasanas planu izstrade un ieviesana; Konsultaciju sniegsana par uznemumu apvienosanos un Uznemumu iegade; Uznemejdarbibas vadibas, uznemejdarbibas administresanas un uznemejdarbibas konsultaciju pakalpojumi finansu pakalpojumu tehnologiju uznemumiem; Uznemejdarbibas tiklosanas pakalpojumi finansu tehnologiju nozare; Uznemejdarbibas attistibas pakalpojumi finansu pakalpojumu tehnologiju nozare; Uznemejdarbibas konsultacijas un ieteikumi saistiba ar ieprieks mineto finansu pakalpojumu tehnologijas nozare; Uznemejdarbibas atbalsta pakalpojumu nodrosinasana, Proti Konsultaciju sniegsana darijumu joma un Uznemejdarbibas vadibas asistesana, Tostarp sadas jomas: Piekluve pardosanas tikliem, produktu izaugsme un profesionala uznemejdarbibas atbalsta nodrosinasana; Tiklu attistiba, Proti Uznemumu sakaru veidosana; Pardosanas tiklu izstrade, proti, uznemejdarbibas vadibas pakalpojumi saistiba ar uznemumu attistibu, paplasinajot to pardosanas tiklus; Informacijas, konsultaciju un ieteikumu pakalpojumi saistiba ar visu ieprieks mineto.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "lv",
+      "description": "Finansu pakalpojumi; Finansu konsultacijas saistiba ar apvienosanos un parnemsanu; Akviziciju finansesana; Uznemejdarbibas finansu vadiba; Kapitala nodrosinasana; Riska kapitala nodrosinasana; Izaugsmes kapitala nodrosinasana; Riska kapitala finansu parvaldiba, Ieguldijumu parvaldiba; Finansu investiciju un uznemejdarbibas izaugsmes finansesanas pakalpojumi; Kapitalieguldijumu pakalpojumi; Apdrosinasana; Informacijas, konsultaciju un ieteikumu pakalpojumi saistiba ar visu ieprieks mineto.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lv",
+      "description": "Apmaciba; Uznemejdarbibas izglitiba; Macibu pakalpojumi; Apmaciba uznemejdarbibas joma; Personiskas izaugsmes apmaciba, Laboratorijas, Seminaru nodrosinasanas pakalpojumi; Konferencu rikosana; Darbseminaru, seminaru un apmacibu rikosana; Pasakumu organizesana un vadiba, proti Konferencu un samitu organizesana un vadisana izglitibas, apmacibas un izklaides nolukos; Uznemejdarbibas konferencu organizesana un vadisana un Uznemejdarbibas augstaka limena sanaksmju organizesana un vadisana; Informacijas, padomdeveju un konsultaciju pakalpojumi, kas saistiti ar visiem ieprieksminetajiem pakalpojumiem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Programminzenierija; Datorprogrammu projektesana; Programmaturas izstrade; Programmaturas izveide un atjauninasana; Datorprogrammaturas izpete un izstrade; Datoru programmaturas projektesana, Programmaturas testesana un uzraudzisana; Programmatura ka pakalpojums [SaaS] finansu pakalpojumu nozarei un finansu pakalpojumu tehnologiju nozarei; Palidzibas sniegsana datoru programmaturas joma; Elektroniska datu uzglabasana; Nelejupieladejamas programmaturas nodrosinasana; Datu sifresana; Konsultesana datordrosibas joma; Datu iegusana; Informacijas, konsultaciju un padomdeveju pakalpojumi, kas saistiti ar ieprieksmineto.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "mt",
+      "description": "Konsulenza dwar negozju; Servizzi ta' appogg ghan-negozju; Il-gestjoni ta' negozju; Organizzazzjoni tan-negozju; Servizzi ta' gestjoni strategika tan-negozju; Servizzi ta' konsulenza u pariri dwar in-negozju, Servizzi ta' diligenza dovuta kummercjali, Konsulenza dwar negozju u Servizzi ta' verifika tan-negozju Fil-qasam tal-akkwist ta' kumpaniji tat-teknologija tas-servizzi finanzjarji; Servizzi ta' negozju relatati mal-espansjoni korporattiva; L-izvilupp u l-implimentazzjoni ta' pjanijiet ta' espansjoni korporattiva; Konsultazzjoni dwar l-amalgamazzjoni tan-negozju u L-akkwisti ta' negozji; Servizzi ta' gestjoni tan-negozju, amministrazzjoni tan-negozju u konsulenza dwar in-negozju ghal kumpaniji tat-teknologija tas-servizzi finanzjarji; Servizzi ta' networking tan-negozju fl-industrija tat-teknologija finanzjarja; Servizzi ta' zvilupp tan-negozju fl-industrija tat-teknologija tas-servizzi finanzjarji; Konsulenza u pariri dwar in-negozju relatati ma' dak imsemmi qabel fl-industrija tat-teknologija tas-servizzi finanzjarji; Il-provvista ta' servizzi ta' appogg ghan-negozju, Jigifieri Konsulenza dwar negozju u L-assistenza fil-gestjoni ta' negozju, Inkluz fl-oqsma li gejjin: L-access ghal networks tal-bejgh, it-tkabbir tal-prodott u l-provvista ta' appogg professjonali ghan-negozju; L-izvilupp ta' networks, Jigifieri Servizzi ta' netwerking ta' negozji; Zvilupp ta' networks tal-bejgh, jigifieri servizzi ta' gestjoni tan-negozju relatati mal-izvilupp ta' negozji permezz tal-espansjoni tan-networks tal-bejgh taghhom; Servizzi ta' informazzjoni, konsulenza u ghoti ta' pariri relatati ma' dawk kollha msemmija hawn qabel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "mt",
+      "description": "Servizzi f'finanzi; Konsulenza finanzjarja fil-qasam tal-fuzjonijiet u akkwisti; Finanzjament ta' akkwisti; Gestjoni finanzjarja ta' negozji; Forniment ta' kapital; Provvista ta' kapital ta' riskju; Il-provvista ta' kapital ghat-tkabbir; Gestjoni finanzjarja ta' impriza, Il-gestjoni ta' investimenti; Servizzi ta' investiment finanzjarju u ta' finanzjament ghat-tkabbir tan-negozju; Investimenti kapitali; Servizzi ta' assigurazzjoni; Information, consultancy and advisory services relating to all of the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "mt",
+      "description": "Provvista ta' taghlim; Edukazzjoni dwar in-negozju; Tahrig; Servizzi ta' tahrig relatati man-negozju; Tahrig/ikkowcjar, Workshops, Seminars; Arrangament ta' konferenzi; Tmexxija ta' werkxops, seminars u tahrig; Organizzazzjoni u twettiq ta' avvenimenti, jigifieri L-organizzazzjoni u t-tmexxija ta' konferenzi u ta' summits ghal skopijiet edukattivi, ta' tahrig u ta' divertiment; L-organizzazzjoni u t-tmexxija ta' konferenzi tan-negozju u L-arrangament u t-tmexxija ta' summits tan-negozju; Servizzi ta' informazzjoni, pariri u konsulenza dwar is-servizzi kollha hawn fuq imsemmija.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Inginerija tas-softwer; L-izvilupp ta' softwer tal-kompjuter; Zvilupp ta' softwer; L-izvilupp u l-aggornament ta' softwer; Servizzi ta' ricerka u zvilupp ta' softwer; Il-holqien ta' software, L-ittestjar u manutenzjoni ta' softwer; Software bhala servizz [SaaS] ghas-settur tas-servizzi finanzjarji u ghall-industrija tat-teknologija tas-servizzi finanzjarji; Servizzi ta' appogg ghal softwer tal-kompjuter; Hzin ta' data elettroniku; Provvista ta' softwer li ma jistax jitnizzel; Servizzi ta' ccifrar ta' data; Konsulenza dwar is-sigurtà tal-kompjuter; Tiftix ta' data; Servizzi ta' informazzjoni, pariri u konsulenza dwar l-hawn fuq imsemmi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pl",
+      "description": "Doradztwo biznesowe; Wsparcie biznesowe; Zarzadzanie dzialalnoscia gospodarcza; Organizacja dzialalnosci gospodarczej; Uslugi w zakresie zarzadzania strategicznego dzialalnoscia gospodarcza; Doradztwo i konsultacje w zakresie dzialalnosci gospodarczej, Uslugi nalezytej starannosci handlowej, Doradztwo biznesowe i Uslugi w zakresie audytu dzialalnosci gospodarczej W zakresie nabywania przedsiebiorstw z branzy technologii uslug finansowych; Uslugi biznesowe zwiazane z rozwojem przedsiebiorstwa; Opracowywanie i wdrazanie planów rozwoju przedsiebiorstwa; Doradztwo w zakresie fuzji przedsiebiorstw i Nabywanie przedsiebiorstw; Zarzadzanie przedsiebiorstwem, administracja biznesowa i doradztwo biznesowe dla firm z branzy technologii uslug finansowych; Uslugi w zakresie nawiazywania kontaktów biznesowych w branzy technologii finansowych; Uslugi w zakresie rozwoju dzialalnosci w branzy technologii uslug finansowych; Doradztwo i konsultacje biznesowe zwiazane z wyzej wymienionymi kwestiami w branzy technologii uslug finansowych; Swiadczenie uslug wsparcia biznesowego, Mianowicie Doradztwo biznesowe i Pomoc w zakresie zarzadzania, W tym w zakresie nastepujacych dziedzin: Dostep do sieci sprzedazy, rozwój oferty produktowej i zapewnienie profesjonalnego wsparcia biznesowego; Rozwój sieci, Mianowicie Uslugi w zakresie nawiazywania kontaktów miedzy przedsiebiorstwami gospodarczymi; Rozwój sieci sprzedazy, mianowicie uslugi zarzadzania biznesowego dotyczace rozwoju dzialalnosci poprzez rozszerzanie sieci sprzedazy; Uslugi informacyjne, konsultacyjne i doradcze dotyczace wszystkich wyzej wymienionych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "pl",
+      "description": "Uslugi finansowe; Doradztwo finansowe w zakresie fuzji i przejec; Finansowanie nabycia; Zarzadzanie finansowe na rzecz dzialalnosci gospodarczych; Zapewnianie kapitalu; Zapewnianie kapitalu inwestycyjnego; Zapewnienie kapitalu na rozwój; Zarzadzanie finansami przedsiewziecia, Zarzadzanie inwestycjami; Uslugi w zakresie inwestycji finansowych i finansowania rozwoju dzialalnosci gospodarczej; Inwestycje kapitalowe; Uslugi ubezpieczeniowe; Uslugi informacyjne, konsultacyjne i doradcze dotyczace wszystkich wyzej wymienionych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pl",
+      "description": "Uslugi w zakresie oswiaty [nauczanie]; Szkolenia biznesowe; Nauczanie; Szkolenia biznesowe; Trenowanie, Warsztaty, Seminaria; Organizowanie konferencji; Prowadzenie warsztatów, seminariów i szkolen; Organizacja i przeprowadzanie imprez, mianowicie Organizacja i prowadzenie konferencji i szczytów w celach edukacyjnych, szkoleniowych i rozrywkowych; Organizacja i prowadzenie konferencji biznesowych i Organizacja i prowadzenie szczytów biznesowych; Uslugi informacyjne, doradcze i konsultacyjne w zakresie wszystkich, uprzednio wymienionych uslug.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Inzynieria oprogramowania; Projektowanie oprogramowania komputerowego; Opracowywanie oprogramowania komputerowego; Rozwój i aktualizacja oprogramowania; Badania i rozwój oprogramowania; Opracowywanie oprogramowania komputerowego, Testowanie i utrzymanie oprogramowania komputerowego; Oprogramowanie jako usluga [SaaS] dla sektora uslug finansowych i branzy technologii uslug finansowych; Uslugi pomocy technicznej w zakresie oprogramowania komputerowego; Przechowywanie danych elektronicznych; Udostepnianie oprogramowania nie do pobrania; Uslugi szyfrowania danych; Doradztwo dotyczace bezpieczenstwa komputerowego; Eksploracja danych; Uslugi informacyjne, konsultacyjne i doradcze, dotyczace uprzednio wymienionych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pt",
+      "description": "Consultoria empresarial; Assistência na área dos negócios comerciais; Gestão de empresas; Organização de negócios; Serviços de gestão de estratégia empresarial; Serviços de consultadoria e assessoria empresarial, Serviços de verificação prévia comercial, Consultoria empresarial e Serviços de auditoria comercial No domínio da aquisição de empresas tecnológicas de serviços financeiros; Serviços empresariais relacionados com expansão empresarial; Desenvolvimento e implementação de planos de expansão empresarial; Consultadoria relacionada com a fusão de empresas e Aquisição de empresas; Serviços de gestão de negócios, administração de negócios e consultadoria de negócios para empresas tecnológicas de serviços financeiros; Serviços de redes profissionais no setor das tecnologias financeiras; Serviços de desenvolvimento empresarial no setor da tecnologia de serviços financeiros; Consultadoria e assessoria empresariais relacionadas com os serviços atrás referidos no setor da tecnologia de serviços financeiros; Prestação de serviços de apoio a empresas, nomeadamente Consultoria empresarial e Apoios a nível da gestão de empresas, Incluindo nos seguintes domínios: Acesso a redes de vendas, crescimento de produtos e fornecimento de apoio profissional a negócios; Desenvolvimento de redes, nomeadamente Serviços de redes empresariais; Desenvolvimento de redes de vendas, especificamente serviços de gestão de negócios relacionados com o desenvolvimento de empresas através da expansão das suas redes de vendas; Serviços de informações, de consultadoria e de assessoria relacionados com todos os serviços atrás referidos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "pt",
+      "description": "Serviços financeiros; Consultadoria financeira em matéria de fusões e aquisições; Financiamento de aquisições; Gestão financeira de empresas; Concessão de capital; Fornecimento de capital de risco; Fornecimento de capital de crescimento; Gestão financeira de empreendimentos, Gestão de investimentos; Serviços de investimento financeiro e de financiamento do crescimento empresarial; Investimento de capitais; Serviços de seguros; Serviços de informação, consultadoria e assessoria relacionados com todos os serviços atrás referidos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Educação; Educação em negócios; Formação; Serviços de formação em negócios; Acompanhamento técnico, Sessões de trabalho (workshops), Seminários; Organização de conferências; Realização de workshops, seminários e cursos de formação; Organização e realização de eventos, nomeadamente Organização e realização de conferências e cimeiras para fins de educação, formação e entretenimento; Organização e realização de conferências empresariais e Organização e realização de cimeiras empresariais; Serviços de informações, consultadoria e assessoria relacionados com todos os serviços atrás referidos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Engenharia de software; Design de software; Desenvolvimento de software; Elaboração (concepção) e actualização de software; Investigação e concepção de software; Criação de software, Teste e manutenção de software; Software como serviço [SaaS] para o setor dos serviços financeiros e o setor da tecnologia de serviços financeiros; Serviços de assistência de software informático; Armazenamento eletrónico de dados; Fornecimento de software não descarregável; Serviços de encriptação de dados; Consultoria em matéria de segurança informática; Mineração de dados; Serviços de informações, de consultadoria e de assessoria relacionados com todos os serviços atrás referidos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ro",
+      "description": "Consultanta în afaceri; Suport pentru afaceri; Administrare de afaceri; Organizarea afacerilor; Servicii de administrare si strategie pentru afaceri; Servicii de consultanta în afaceri, Servicii comerciale de verificare prealabila, Consultanta în afaceri si Servicii de audit în afaceri În domeniul achizitiei de firme de tehnologie pentru servicii financiare; Servicii comerciale referitoare la extinderea corporativa; Dezvoltare si implementare de planuri de extindere corporativa; Consultanta privind fuziunile de firme si Achizitii de întreprinderi; Servicii de management al afacerilor, de administrare a afacerilor si de consultanta în afaceri pentru firmele de tehnologie pentru servicii financiare; Servicii de retele de afaceri în industria tehnologiei financiare; Servicii de dezvoltare a afacerilor în industria tehnologiei pentru servicii financiare; Consultanta si asistenta pentru firme cu privire la cele mentionate în industria tehnologiei pentru servicii financiare; Prestare de servicii de suport pentru firme, Si anume Consultanta în afaceri si Gestiunea afacerilor comerciale, Inclusiv în urmatoarele domenii: Acces la retele de vânzari, cresterea produselor si oferirea de suport profesional pentru afaceri; Dezvoltare de retele, Si anume Servicii de colaborari de afaceri în retea; Dezvoltare de retele de vânzari, si anume servicii de administrare comerciala referitoare la dezvoltarea firmelor prin extinderea retelelor lor de vânzari; Servicii de informare, consiliere si consultanta cu privire la toate cele mentionate mai sus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "ro",
+      "description": "Servicii financiare; Consultanta financiara în domeniul fuziunilor si preluarilor; Finantarea de achizitii; Administrarea financiara a firmelor; Furnizarea de capital; Furnizare de capital de risc; Furnizare de capital de crestere; Administrare financiara a capitalului de risc, Gestiunea investitiilor; Servicii de investitii financiare si de finantare pentru cresterea afacerilor; Investitii de capital; Servicii de asigurare; Servicii de informatii, consultanta si consiliere in domeniul tuturor celor mentionate anterior.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ro",
+      "description": "Educatie; Educatie comerciala; Instruire; Servicii de instruire în domeniul afacerilor; Asistenta profesionala individualizata [coaching], Ateliere, Seminare; Organizare de conferinte; Realizare de ateliere, seminarii si instructaje; Organizare si coordonare de actiuni, si anume Organizare si coordonare de conferinte si summit-uri în scopuri de educatie, instruire si divertisment; Organizarea si sustinerea conferintelor de afaceri si Organizare si coordonare de summit-uri de afaceri; Servicii de informare, consultanta si consiliere cu privire la toate serviciile mentionate anterior.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Inginerie de software informatic; Proiectare de software; Dezvoltare de software; Editarea si actualizarea programelor informatice; Cercetare si dezvoltare de software; Creare de software, Testare si întretinere de software; Software ca serviciu [SaaS] pentru sectorul serviciilor financiare si industria tehnologiei pentru servicii financiare; Servicii de asistenta pentru software de calculator; Stocarea electronica a datelor; Furnizare de software nedescarcabil; Servicii de criptare de date; Consultanta în materie de securitate informatica; Exploatare de date; Servicii de consiliere, consultanta si informatii referitoare la cele mai susmentionate.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sk",
+      "description": "Obchodné poradenstvo; Obchodná podpora; Obchodný manazment; Organizovanie obchodnej cinnosti alebo podnikania; Sluzby obchodného strategického riadenia; Podnikatelské konzultacné a poradenské sluzby, Sluzby komercnej nálezitej starostlivosti, Obchodné poradenstvo a Obchodné audity V oblasti akvizície technologických firiem v oblasti financných sluzieb; Obchodné sluzby v oblasti podnikovej expanzie; Vývoj a implementácia plánov podnikovej expanzie; Poradenské sluzby pri zlucovaní podnikov a Obchodné akvizície; Obchodný manazment, obchodná administratíva a obchodné konzultacné sluzby pre technologické spolocnosti poskytujúce financné sluzby; Sluzby nadväzovania obchodných vztahov v odvetví financných technológií; Sluzby obchodného rozvoja v technologickom odvetví financných sluzieb; Obchodné konzultácie a poradenstvo v oblasti uvedených sluzieb v technologickom odvetví financných sluzieb; Poskytovanie sluzieb obchodnej podpory, menovite Obchodné poradenstvo a Pomoc pri riadení obchodnej cinnosti, Vrátane v nasledujúcich oblastiach: Prístup k predajným sietam, rast produktov a poskytovanie profesionálnej obchodnej podpory; Vývoj sietí, menovite Sluzby v oblasti obchodných sietí; Rozvoj sietí v oblasti predaja, menovite v oblasti obchodného manazmentu v súvislosti s rozvojom podnikov prostredníctvom rozsirovania ich sietí v oblasti predaja; Informacné, konzultacné a poradenské sluzby v oblasti vsetkých vyssie uvedených sluzieb.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "sk",
+      "description": "Sluzby v oblasti financníctva; Financné poradenstvo v oblasti fúzií a akvizícií; Financovanie akvizícií; Financný manazment pre podniky; Zabezpecenie kapitálu; Poskytovanie rizikového kapitálu; Poskytovanie rastového kapitálu; Financný manazment rizikového kapitálu, Investicný manazment; Financné investicné sluzby a sluzby financovania obchodného rastu; Kapitálové investície; Poistovníctvo; Informacné, konzultacné a poradenské sluzby v oblasti vsetkých vyssie uvedených sluzieb.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sk",
+      "description": "Vyucovanie; Business education; Vzdelávanie; Skoliace sluzby v oblasti podnikania a obchodu; Trénovanie, Workshopy, Semináre; Organizovanie konferencií; Realizácia pracovných dielní (workshop), seminárov a skolení; Organizácia a konanie udalostí, menovite Organizovanie a vedenie konferencií a samitov na vzdelávacie, výcvikové a zábavné úcely; Organizovanie a vedenie obchodných konferencií a Organizovanie a vedenie obchodných samitov; Informacné, poradenské a konzultacné sluzby týkajúce sa vsetkých vyssie uvedených sluzieb.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Softvérové inzinierstvo; Tvorba pocítacového softvéru; Vývoj pocítacového softvéru; Vývoj a aktualizovanie softvéru; Výskum a vývoj softvéru; Tvorba softvéru, Testovanie a údrzba softvéru; Softvér ako sluzba [SaaS] pre odvetvie financných sluzieb a odvetvie technológií v oblasti financných sluzieb; Podporné sluzby pre pocítacový softvér; Uchovávanie elektronických údajov; Poskytovanie softvéru bez moznosti prevzatia; Kódovanie údajov; Poradenstvo v oblasti pocítacovej bezpecnosti; Hlbková analýza dát [data mining]; Informacné, konzultacné a poradenské sluzby týkajúce sa vyssie uvedeného.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sl",
+      "description": "Storitve poslovnega svetovanja; Poslovno podporne storitve; Poslovno upravljanje; Poslovna organizacija; Storitve poslovnega strateskega upravljanja; Poslovno svetovalne storitve, Storitve skrbnega pregleda poslovanja, Storitve poslovnega svetovanja in Storitve revizije poslovanja Na podrocju prevzema tehnoloskih podjetij za financne storitve; Poslovne storitve v zvezi s siritvijo podjetij; Razvoj in izvajanje nacrtov za siritev podjetja; Poslovno svetovanje v zvezi z zdruzevanjem podjetij in Poslovne nabave; Storitve vodenja komercialnih poslov, poslovne administracije in poslovnega svetovanja za tehnoloska podjetja za financne storitve; Storitve poslovnega mrezenja v industriji financne tehnologije; Storitve poslovnega razvoja v tehnoloski industriji financnih storitev; Poslovno posvetovanje in svetovanje v zvezi z navedenim v tehnoloski industriji financnih storitev; Nudenje storitev poslovne podpore, In sicer Storitve poslovnega svetovanja in Pomoc pri poslovnem vodenju, Vkljucno na naslednjih podrocjih: Dostop do prodajnih omrezij, rast izdelkov in nudenje strokovne poslovne podpore; Razvoj omrezij, In sicer Storitve poslovnega mrezenja; Razvoj prodajnih omrezij, in sicer storitve vodenja komercialnih poslov v zvezi z razvojem podjetij s siritvijo njihovih prodajnih omrezij; Informacijske, posvetovalne in svetovalne storitve v zvezi z vsem nastetim.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "sl",
+      "description": "Financne storitve; Financno svetovanje na podrocju zdruzitev in prevzemov; Financiranje prevzemov; Financno upravljanje podjetij; Zagotavljanje kapitala; Nudenje tveganega kapitala; Nudenje kapitala za rast; Financno upravljanje tveganega kapitala, Upravljanje investicij; Storitve financiranja financnih nalozb in poslovne rasti; Financne nalozbe; Zavarovalniske storitve; Informacijske, posvetovalne in svetovalne storitve v zvezi z vsem nastetim.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sl",
+      "description": "Poucevanje; Poslovno izobrazevanje; Usposabljanje; Poslovno usposabljanje; Trenerstvo, Delavnice, Seminarji; Prirejanje konferenc; Izvajanje delavnic, seminarjev in solanj; Organiziranje in izvedba dogodkov, in sicer Organiziranje in izvajanje konferenc in srecanj na vrhu za namene izobrazevanja, usposabljanja in razvedrila; Prirejanje in izvajanje poslovnih konferenc in Prirejanje in izvajanje poslovnih srecanj na vrhu; Informacijske in svetovalne storitve v zvezi z omenjenimi storitvami.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Inzenirske storitve v zvezi z racunalnisko programsko opremo; Oblikovanje programske opreme; Razvoj programske opreme; Razvoj in posodobitev racunalniske programske opreme; Raziskave in razvoj na podrocju programske opreme; Storitve pisanja programske opreme, Testiranje in vzdrzevanje racunalniske programske opreme; Programska oprema kot storitev [SaaS] za sektor financnih storitev in tehnolosko industrijo financnih storitev; Podporne storitve za racunalnisko programsko opremo; Elektronsko shranjevanje podatkov; Nudenje nenalozljive programske opreme; Storitve kodiranja podatkov; Storitve svetovanja s podrocja racunalniske varnosti; Podatkovno rudarjenje; Informacijske, posvetovalne in svetovalne storitve v zvezi z omenjenim.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Consultoría comercial; Apoyo comercial; Gestión de empresas; Organización de negocios comerciales; Servicios de gestión estratégica de negocios; Servicios de asesoramiento y consultoría de empresas, Servicios de diligencia debida en el ámbito del comercio, Consultoría comercial y Y servicios de auditoría de negocios En el ámbito de la adquisición de empresas de tecnología de servicios financiero; Servicios de negocios relacionados con la expansión corporativa; Desarrollo e implementación de planes de expansión corporativa; Asesoramiento en materia de fusión de empresas y Adquisición de negocios; Servicios de gestión de empresas, administración de empresas y consultoría de empresas para empresas de tecnología de servicios financieros; Servicios de conexión en redes de negocios en la industria de tecnología financiera; Servicios de desarrollo de negocios en el sector de la tecnología de servicios financieros; Consultoría y asesoramiento comerciales relacionados con los mencionados en el sector de la tecnología de servicios financieros; Prestación de servicios de ayuda a empresas, en concreto Consultoría comercial y Asistencia en la dirección de empresas, Incluyendo en los siguientes ámbitos: Acceso a redes de ventas, expansión de productos y prestación de ayuda profesional a empresas; Desarrollo de redes, en concreto Servicios de negocios en red; Desarrollo de redes de ventas, en concreto servicios de gestión de empresas en relación con el desarrollo de empresas a través de la expansión de sus redes de ventas; Servicios de información, consultas y asesoramiento relacionados con todo lo mencionado.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "es",
+      "description": "Servicios financieros; Asesoramiento financiero en el ámbito de fusiones y adquisiciones; Financiación de adquisiciones; Gestión financiera de empresas; Suministro de capital; Facilitación de capital riesgo; Suministro de capital de expansión; Gestión financiera de empresas, Gestión de inversiones; Servicios de inversión financiera y de financiación de la expansión de empresas; Inversión de capital; Servicios de seguros; Servicios de información, consultoría y asesoramiento en relación con todo lo mencionado.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Educación; Educación en negocios; Formación; Servicios de formación empresarial; Servicios de entrenamiento, Talleres, Seminarios; Organización de conferencias; Realización de talleres, seminarios y cursillos; Organización y celebración de actividades, en concreto Organización y celebración de conferencias y cumbres con fines educativos, formativos y para el entretenimiento; Organización y dirección de conferencias empresariales y Organización y celebración de cumbres empresariales; Servicios de información, asesoría y consultoría en relación con todos los servicios mencionados.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Ingeniería de programas informáticos; Diseño de software; Desarrollo de software; Elaboración y actualización de software; Servicios de investigación y desarrollo de software; Creación de software, Comprobación y mantenimiento de software; Software como servicio [SaaS] para el sector de los servicios financieros y el sector de la tecnología de servicios financieros; Servicios de soporte para software informático; Almacenamiento electrónico de datos; Suministro de software no descargable; Servicios de cifrado de datos; Consultoría sobre seguridad informática; Minería de datos (depuración de datos); Servicios de información, consultoría y asesoramiento en relación con todo lo mencionado.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sw",
+      "description": "Företagskonsultation; Företagsstöd; Företagsledning; Företagsorganisation; Strategiska företagsledningstjänster; Företagskonsultation och -rådgivning, Kommersiella tjänster avseende innestående arbetsinsatser, Företagskonsultation och Affärsrevisionstjänster Inom området förvärv av teknikföretag för finansiella tjänster; Företagstjänster avseende företagsexpansion; Utveckling och genomförande av företagsexpansionsplaner; Konsulttjänster avseende företagsfusioner och Företagsförvärvning; Företagsledning, företagsadministration och företagskonsultation för teknikföretag för finansiella tjänster; Företagsnätverkstjänster inom finansteknikindustrin; Affärsutvecklingstjänster inom den tekniska industrin för finansiella tjänster; Företagskonsultation och -rådgivning avseende det föregående inom den teknologiska industrin för finansiella tjänster; Tillhandahållande av företagsstödtjänster, Nämligen Företagskonsultation och Assistans vid företagsledning, Inklusive inom följande områden: Åtkomst till försäljningsnätverk, produkttillväxt och tillhandahållande av professionellt företagsstöd; Utveckling av nätverk, Nämligen Skapande av affärskontakter; Utveckling av försäljningsnätverk, nämligen företagsledning i samband med utveckling av företag genom utvidgningen av deras försäljningsnätverk; Rådgivning, konsulttjänster och information avseende alla nämnda tjänster.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "sw",
+      "description": "Finansiella tjänster; Finansiell rådgivning inom området fusioner och övertaganden; Finansiering av förvärv; Finansiell förvaltning för företag; Tillhandahållande av kapital; Tillhandahållande av riskkapital; Tillhandahållande av tillväxtkapital; Finansiell förvaltning av riskkapital, Förvaltning av investeringar; Finansiella investerings- och företagstillväxtfinansieringstjänster; Investering av kapital; Försäkringsverksamhet; Rådgivning, konsultation och information avseende samtliga nämnda tjänster.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sw",
+      "description": "Anordnande av undervisning; Företagsutbildning; Instruktionstjänster; Affärsutbildning; Handledning och instruktion, nämligen idrottscoaching, Workshops, Seminarier; Anordnande av konferenser; Hållande av seminarier, studiecirklar och utbildningar; Anordnande och hållande av evenemang, nämligen Anordnande och hållande av konferenser och toppmöten för utbildnings-, instruktions- och underhållningsändamål; Anordnande och genomförande av affärskonferenser och Anordnande och ledning av företagstoppmöten; Information, konsultation och rådgivning avseende samtliga nämnda tjänster.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Programvaruutveckling; Utformning av programvara; Utveckling av mjukvara; Utformning och uppdatering av programvara; Forskning och utveckling av programvara; Skapande av programvara, Provning och underhåll av programvara; Programvara som en tjänst [SaaS] för den finansiella tjänstesektorn och den finansiella tjänstetekniska industrin; Supporttjänster för programvara; Elektronisk datalagring; Tillhandahållande av icke nedladdningsbar programvara; Datakrypteringstjänster; Konsultation avseende datorsäkerhet; Datautvinning; Rådgivning, konsultation och information avseende samtliga nämnda tjänster.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "VENCORA UK LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "A.P.I. CONSEIL",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "3rd Floor, West Bowling Mill, Dean Clough Mills,Halifax, HX3 5AX",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "VENCORA UK LIMITED"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Obchodní konzultacní sluzby; Podpora podnikání; Sluzby v oblasti obchodního managementu; Organizace podnikání; Sluzby obchodního strategického rízení; Obchodní konzultacní a poradenské sluzby, Komercní sluzby nálezité péce, Obchodní konzultacní sluzby a Kontrola o revize úctu v podnikání V oboru akvizice technologických spolecností zamerených na financní sluzby; Obchodní sluzby vztahující se k firemní expanzi; Vývoj a implementace plánu firemní expanze; Konzultace v oblasti obchodních fúzí a Obchodní akvizice; Pomoc pri rízení obchodní cinnosti, obchodní administrativa a obchodní konzultacní sluzby pro technologické spolecnosti zamerené na financní sluzby; Sluzby v podobe vytvárení obchodních sítí v odvetví financních technologií; Sluzby obchodního rozvoje v odvetví technologií financních sluzeb; Obchodní konzultace a poradenství vztahující se k výse uvedenému v odvetví technologií financních sluzeb; Poskytování sluzeb obchodní podpory, jmenovite Obchodní konzultacní sluzby a Pomoc pri rízení obchodní cinnosti, Vcetne tech v následujících oblastech: Prístup k prodejním sítím, rust výrobku a poskytování odborné obchodní podpory; Rozvoj sítí, jmenovite Sluzby v oblasti obchodních sítí; Rozvoj prodejních sítí, jmenovite sluzby v oblasti rízení obchodní cinnosti vztahující se k rozvoji podniku prostrednictvím rozsirování jejich prodejních sítí; Informacní, konzultacní a poradenské sluzby vztahující se ke vsemu výse uvedenému."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Sluzby financní; Financní poradenství v oblasti fúzí a akvizic; Financování akvizic; Financní rízení podniku; Poskytování kapitálu; Poskytování rizikového kapitálu; Poskytování rustového kapitálu; Financní rízení podniku, Investicní management; Financní investice a financování obchodního rustu; Kapitálové investice; Pojistovací sluzby; Informacní, konzultacní a poradenské sluzby týkající se výse uvedeného."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Skolení; Obchodní vzdelávání; Vyucování, vzdelávání; Obchodní vzdelávání; Koucování, Workshopy, Semináre; Porádání konferencí; Realizace pracovních setkání, semináru a skolení; Organizování a porádání akcí, jmenovite Organizování a vedení konferencí a summitu pro vzdelávací, skolicí a zábavní úcely; Organizování a vedení obchodních konferencí a Porádání a vedení obchodních summitu; Informacní, poradenské a konzultacní sluzby týkající se vsech výse uvedených sluzeb."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Softwarové inzenýrství; Tvorba pocítacového softwaru; Vývoj softwaru; Vývoj a aktualizace softwaru; výzkum a vývoj software; Tvorba programového vybavení, Testování a údrzba softwaru; Software jako sluzba [SaaS] pro odvetví financních sluzeb a odvetví technologií financních sluzeb; Sluzby v oblasti podpory pocítacového softwaru; Ukládání elektronických dat; Poskytování softwaru bez moznosti stazení; Poradenství v oblasti sifrování dat; Poradenství v oblasti zabezpecení pocítacu; Získávání dat (Data mining); Informacní, konzultacní a poradenské sluzby vztahující se k výse uvedenému."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Forretningsmæssig rådgivningsvirksomhed; Bistand ved forretningsvirksomhed; Forretningsledelse; Forretningsorganisation; Strategisk forretningsledelse; Virksomhedsrådgivning og -konsultation, Kommerciel due diligence, Forretningsmæssig rådgivningsvirksomhed og Revision af forretningsvirksomhed Inden for erhvervelse af teknologivirksomheder inden for finansiel virksomhed; Forretningsvirksomhed i forbindelse med virksomhedsekspansion; Udvikling og implementering af planer for ekspansion af virksomheder; Forretningsmæssig rådgivning i forbindelse med virksomhedsfusioner og Forretningsmæssig bistand ved erhvervelse af virksomheder; Forretningsledelse, forretningsadministration og forretningsrådgivning møntet på teknologiske virksomheder inden for finansiel virksomhed; Forretningsnetværksvirksomhed inden for den finansielle teknologiindustri; Forretningsudvikling inden for den teknologiske industri for finansiel virksomhed; Forretningsrådgivning og -bistand i forbindelse med førnævnte inden for den teknologiske industri for finansiel virksomhed; Ydelse af bistand ved forretningsvirksomhed, Nemlig Forretningsmæssig rådgivningsvirksomhed og Bistand ved forretningsledelse, Inklusive på følgende områder: Adgang til salgsnetværk, produktvækst og udbydelse af professionel forretningssupport; Udvikling af netværk, Nemlig Forretningsmæssige netværkstjenester; Udvikling af salgsnetværk, nemlig bistand ved forretningsledelse i forbindelse med udvikling af virksomheder gennem udvidelse af deres salgsnetværk; Information, rådgivning og bistand vedrørende alle ovennævnte tjenesteydelser."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Finansiel virksomhed; Finansiel rådgivning vedrørende fusioner og erhvervelser; Finansiering af overtagelser; Finansiel administration af virksomheder; Tilvejebringelse af kapital; Tilvejebringelse af risikovilling kapital; Formidling af vækstkapital; Finansiel styring af risikovillig kapital, Forvaltning af investeringer; Finansiering af finansielle investeringer og virksomhedsvækst; Investering af kapital; Forsikringstjenesteydelser; Information-, konsulent- og rådgivningsvirksomhed i forbindelse med alle førnævnte tjenesteydelser."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Undervisning; Forretningsuddannelse; Oplæring; Uddannelsesvirksomhed vedrørende handel; Coaching, Workshopper, Seminarer; Arrangering af konferencer; Ledelse af workshopper, seminarer og kurser; Organisering og afholdelse af events, nemlig Organisering og ledelse af konferencer og topmøder med uddannelses-, undervisnings- og underholdningsmæssige formål; Organisering og afholdelse af forretningskonferencer og Arrangering og ledelse af forretningsmæssige topmøder; Information, rådgivning og bistand vedrørende alle ovennævnte tjenesteydelser."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Design af software; Design af computerprogrammer; Softwareudvikling; Udvikling og opdatering af software; Forskning og udvikling af software; Udarbejdelse af software, Afprøvning og vedligeholdelse af software; Software as a Service [SaaS] til den finansielle sektor og den finansielle serviceteknologiindustri; Support vedrørende computersoftware; Elektronisk datalagring; Formidling af software, der ikke kan downloades; Datakrypteringsvirksomhed; Rådgivning vedrørende computersikkerhed; Vidensafdækning (datamining); Information, rådgivning og bistand vedrørende alle ovennævnte tjenesteydelser."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Zakelijke consultancy; Bedrijfsondersteuning; Diensten op het gebied van bedrijfsvoering; Diensten op het gebied van bedrijfsorganisatie; Diensten verband houdend met het beheer van zakelijke strategieën; Commercieel-zakelijke informatie en advisering, Commercieel boekenonderzoek, Zakelijke consultancy en Zakelijke auditdiensten Op het gebied van de acquisitie van technologiebedrijven op het gebied van financiële diensten; Zakelijke diensten met betrekking tot bedrijfsuitbreiding; Ontwikkeling en implementatie van plannen voor bedrijfsuitbreiding; Commerciële advisering op het gebied van fusie en Commerciële acquisitie; Bedrijfsvoering, zakelijke administratie en zakelijke advisering voor technologiebedrijven op het gebied van financiële diensten; Zakelijke netwerkdiensten in de financiële technologiesector; Bedrijfsontwikkeling op het gebied van de technologiesector voor financiële dienstverlening; Zakelijke raadgeving en advisering met betrekking tot het voornoemde in de technologiesector voor financiële dienstverlening; Het verlenen van bedrijfsondersteunende diensten, namelijk Zakelijke consultancy en Ondersteuning inzake bedrijfsleiding, Waaronder op de volgende gebieden: Toegang tot verkoopnetwerken, productgroei en het bieden van professionele bedrijfsondersteuning; Ontwikkeling van netwerken, namelijk Commerciële netwerkdiensten; Ontwikkeling van verkoopnetwerken, namelijk bedrijfsvoering met betrekking tot de ontwikkeling van bedrijven door het uitbreiden van hun verkoopnetwerken; Informatie, raadgeving en advisering met betrekking tot al het voornoemde."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Financiële diensten; financiële advisering op het gebied van fusies en overnames; Financiering van acquisities; Financieel beheer van bedrijven; Verschaffing van kapitaal; Verstrekking van risicokapitaal; Het aanbieden van groeikapitaal; Financieel beheer van ventures, Beheer van investeringen; Financiering van financiële beleggingen en bedrijfsgroei; Kapitaalbelegging; Verzekeringsdiensten; Informatie, raadgeving en advisering met betrekking tot al het voornoemde."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Educatieve diensten; Zakelijke opvoeding; Opleiding; Bedrijfsopleiding; Coaching (training), Workshops, Seminars; Organisatie van conferenties; Houden van workshops, seminars en scholingen; Het organiseren en houden van evenementen, namelijk Het organiseren en houden van conferenties en topbijeenkomsten voor educatieve, opleidings- en amusementsdoeleinden; Organiseren en houden van zakelijke conferenties en Het beleggen en houden van zakelijke topbijeenkomsten; Informatie, consultancy en advisering met betrekking tot alle voornoemde diensten."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Software engineering; Software-ontwikkeling; Ontwikkeling van software; Ontwerpen en creëren van websites; Onderzoek naar en ontwikkeling van software; Het creëren van software, Het testen en onderhouden van software; Software-als-een-dienst [SaaS] voor de financiële dienstensector en de technologiesector voor financiële dienstverlening; Ondersteuning op het gebied van software; Elektronische data-opslag; Verschaffing van niet-downloadbare software; Data coderingsdiensten; Advisering inzake computerbeveiliging; Datamining; Informatie, raadgeving en advisering met betrekking tot al het voornoemde."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Business consultancy; Business Support; Business management; Business Organisation; Business strategic management services; provision of business advice, commercial due diligence services, business consulting services and business auditing services relating to the acquisition of financial services technology companies; Business services related to Corporate expansion; development and implementation of corporate expansion plans; business mergers consultations and business acquisitions; business management, business administration and business consultancy services for financial services technology companies; Business networking services in the financial technology industry; Business development services in the financial services technology industry; Business consultancy and advice relating to the foregoing in the financial services technology industry; providing business support services namely, business consultation and business management support, also in the areas of access to sales networks, product growth and providing professional business support; development of networks, namely business networking services; development of sales networks, namely business management services relating to the development of businesses through the expansion of their sales networks; information, consultancy and advisory services relating to all of the aforesaid."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Financial services; Financial consultancy in the field of mergers and acquisitions; Financing of acquisitions; Financial management of businesses; Provision of capital; provision of venture capital; provision of growth capital; Financial management of venture, investment management; financial investment and business growth funding services; Capital investment; Insurance services; information, consultancy and advisory services relating to all of the aforesaid."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education; Business Education; Training; Business training; Coaching, Workshops, Seminars; Arranging conferences; conducting seminars, workshops and courses; organization and conducting of events, namely conferences and summits with educational, training and entertainment purposes; arranging and conducting of business conferences and summits; information, consultancy and advisory services relating to all of the aforesaid."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software engineering; Design of software; Development of software; Developing and updating of software; Research and development of software; Creating, testing and maintaining software; Software as a service [SaaS] for the financial services sector and financial services technology industry; Software support services; electronic data storage; provision of non downloadable software; Data encryption services; Computer security consultancy; data mining; information, consultancy and advisory services relating to all of the aforesaid."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Ärialane nõustamine; Teenused äri toetamiseks; Ärijuhtimine; Ärikorraldus; Äristrateegia juhtimise teenused; Ärikonsultatsioonid, Kaubanduslikud hoolsuskohustusteenused, Ärialane nõustamine ja Äriauditeerimisteenused Finantsteenuste tehnoloogiaettevõtete omandamise valdkonnas; Ettevõtte laienemisega seotud äriteenused; Ettevõtte laienemiskavade arendamine ja rakendamine; Ettevõtete ühinemise konsultatsioonid ja Ettevõtete omandamine; Ärijuhtimis-, ärihaldus- ja ärikonsultatsiooniteenused finantsteenuste tehnoloogiaettevõtetele; Ärivõrgustusteenused finantstehnoloogia valdkonnas; Äriarendusteenused finantsteenuste tehnoloogia valdkonnas; Ärikonsultatsioon ja -nõustamine seoses eelnimetatuga finantsteenuste tehnoloogia valdkonnas; Äritugiteenuste pakkumine, nimelt Ärialane nõustamine ja Äritegevuse juhtimisabi, Sh järgmistes valdkondades: Juurdepääs müügivõrgustikele, tootearendus ja professionaalse äritoe pakkumine; Võrkude arendamine, nimelt Ärikontaktide võrgustiku loomise teenused; Müügivõrgustike arendamise teenused, nimelt ettevõtete arendamisega seotud ärijuhtimisteenused nende müügivõrgustike laiendamise kaudu; Teabe-, konsultatsiooni- ja nõustamisteenused seoses kõige eelmainituga."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Finantsteenused; Finantsnõustamine ühinemiste ja ülevõtmiste valdkonnas; Vara omandamise finantseerimine; Ettevõtete finantsjuhtimine; Kapitalireserv; Riskikapitali pakkumine; Kasvukapitali pakkumine; Riskikapitali finantsjuhtimine, Investeeringute haldamine; Finantsinvesteeringute ja ettevõtte kasvu rahastamise teenused; Kapitalimahutus; Kindlustusteenused; Teabe-, konsultatsiooni- ja nõustamisteenused seoses kõige eelmainituga."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Õpetamine; Ärikoolitus; Koolitusteenused; Ärikoolitusteenused; Juhendamine, treenimine, Töötoad, Seminarid; Konverentside korraldamine; Õpikojad, seminarid ja koolitused; Ürituste organiseerimine ja läbiviimine, nimelt Haridus-, koolitus- ja meelelahutuskonverentside ja -kohtumiste korraldamine ja läbiviimine; Ärikonverentside korraldamine ja juhtimine ja Ärikohtumiste korraldamine ja läbiviimine; Info- ja nõustamisteenused ning konsultatsioonid eelmainitud teenuste kohta."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Tarkvara kavandamine, projekteerimine; Tarkvara projekteerimine; Tarkvara arendamine; Tarkvara arendamine ja uuendamine; Tarkvara uurimine ja arendamine; Tarkvaraloome, Tarkvara katsetamine ja hooldamine; Teenustarkvara [SaaS] finantsteenuste sektorile ja finantsteenuste tehnoloogia sektorile; Arvutitarkvara tugiteenused; Elektrooniline andmesalvestus; Allalaadimatu tarkvara pakkumine; Andmete krüpteerimine; Arvutiturbekonsultatsioonid; Andmekaeve; Info- ja nõustamisteenused ning konsultatsioonid eelmainitute kohta."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Yrityskonsultointipalvelut; Liiketoimintaan liittyvät tukipalvelut; Liikkeenjohto; Liiketoiminnan organisointi; Liiketoiminnan strategiset hallintapalvelut; Liiketoiminnan konsultointi- ja neuvontapalvelut, Kaupalliset tarkastuspalvelut (due diligence), Yrityskonsultointipalvelut ja Yritysten tilintarkastuspalvelut Rahoituspalveluja tarjoavien teknologiayritysten hankinnan alalla; Yrityspalvelut, jotka liittyvät yritysten laajentamiseen; Yritysten laajennussuunnitelmien kehittäminen ja toteuttaminen; Yritysfuusioihin liittyvä neuvonta ja Yrityskaupat; Liikkeenjohto-, yrityshallinto- ja yrityskonsultointipalvelut rahoituspalveluteknologiayrityksille; Yritysverkostointipalvelut rahoitusteknologia-alalla; Liiketoiminnan kehittämispalvelut rahoituspalveluteknologian alalla; Edellä mainittuun liittyvä yrityskonsultointi ja -neuvonta rahoituspalveluteknologian alalla; Yritystukipalvelujen tarjoaminen, nimittäin Yrityskonsultointipalvelut ja Tuki yrityksen johtamisessa, Mukaan lukien seuraavilla aloilla: Myyntiverkostojen käyttömahdollisuus, tuotekasvu ja ammattimaisen yritystuen tarjoaminen; Verkostojen kehittäminen, nimittäin Liiketoimintaan liittyvät verkostoitumispalvelut; Myyyntiverkoston kehittäminen, nimittäin, liikkeenjohtopalvelut, jotka liittyvät yritysten kehittämiseen niiden myyntiverkoston laajentamisen avulla; Kaikkiin edellä mainittuihin liittyvät tiedotus-, konsultointi- ja neuvontapalvelut."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Rahoituspalvelut; Taloudellinen neuvonta fuusioiden ja yritysostojen alalla; Yritysostojen rahoitus; Yritysten taloushallinto; Pääoman tarjoaminen; Riskipääoman tarjoaminen; Kasvupääoman tarjoaminen; Riskipääoman varainhoito, Sijoitusten hallinta; Rahataloudellisiin sijoituksiin ja liiketoiminnan kasvuun liittyvät rahoituspalvelut; Rahastosijoituspalvelut; Vakuutuspalvelut; Kaikkiin edellä mainittuihin liittyvät tiedotus-, konsultointi- ja neuvontapalvelut."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Opetuksen tarjoaminen; Yrityskoulutus; Koulutuspalvelut; Liiketoimintaan liittyvä koulutus; Valmennuspalvelut, Työpajat, Seminaarit; Konferenssien järjestäminen ja johtaminen; Työpajojen, seminaarien ja koulutustilaisuuksien toteuttaminen; Tapahtumien organisointi ja pitäminen, nimittäin Konferenssien ja huippukokousten järjestäminen ja ohjaaminen koulutus-, valmennus- ja ajanvietetarkoituksiin; Liiketaloudellisten konferenssien järjestäminen ja pitäminen ja Yrityshuippukokousten järjestäminen ja ohjaaminen; Kaikkiin edellä mainittuihin palveluihin liittyvät tiedotus-, konsultointi- ja neuvontapalvelut."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Ohjelmistoihin liittyvä tekninen suunnittelu; Ohjelmistosuunnittelu; Ohjelmistokehitys; Ohjelmistojen kehittäminen ja päivitys; Ohjelmistojen tutkimus ja kehittäminen; Ohjelmistojen luominen, Ohjelmistojen testaus ja ylläpito; Sovellusvuokrauspalvelut [SaaS] rahoituspalvelualaa ja rahoituspalveluteknologia-alaa varten; Tietokoneohjelmistoihin liittyvät tukipalvelut; Elektroninen tietojen säilytys; Muiden kuin ladattavien ohjelmiston tarjoaminen; Tiedonsalauspalvelut; Konsultointi tietokoneturvallisuuden alalla; Tiedonlouhinta; Kaikkiin edellä mainittuihin liittyvät tiedotus-, konsultointi- ja neuvontapalvelut."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de conseillers d'affaires; Soutien commercial; Services de gestion commerciale; Organisation commerciale; Services de gestion stratégique commerciale; Services de consultation et de conseil relatifs aux affaires, Services commerciaux de diligence raisonnable, Services de conseillers d'affaires et Services d'audits d'entreprises (analyses commerciales) Dans le domaine de l'acquisition de sociétés technologiques de services financiers; Services commerciaux liés à l'expansion d'entreprises; Développement et mise en oeuvre de plans d'expansion d'entreprises; Services de conseils commerciaux en matière de fusionnement et Services d'acquisition commerciale; Services de gestion commerciale, d'administration commerciale et d'assistance commerciale pour entreprises technologiques de services financiers; Services de réseautage commercial dans le secteur des technologies financières; Services de développement commercial dans le secteur technologique des services financiers; Assistance et conseils commerciaux liés aux domaines précités dans le secteur technologique des services financiers; Fourniture de services d'assistance commerciale, À savoir Services de conseillers d'affaires et Aide à la direction d'entreprises, Y compris dans les domaines suivants: Accès à des réseaux de vente, croissance de produits et fourniture d'assistance commerciale professionnelle; Développement de réseaux, À savoir Services de réseautage d'affaires; Développement de réseaux de vente, à savoir services de gestion commerciale liés au développement d'entreprises via l'expansion de leurs réseaux de vente; Services d'informations, d'assistance et de conseils liés à tous les domaines précités."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services financiers; Consultation en matière financière dans le domaine des fusions et des reprises; Financement d'acquisitions; Gestion financière de sociétés; Mise à disposition de capitaux; Fourniture de capital-risque; Fourniture de capital de croissance; Gestion financière d'entreprises, Gestion d'investissements; Services de financement d'investissements financiers et de croissance commerciale; Investissement de capitaux; Services d'assurances; Services d'informations, d'assistance et de conseils liés à tous les domaines précités."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Enseignement; Éducation commerciale; Formation; Services de formation commerciale; Formation, Ateliers, Séminaires; Organisation de conférences; Organisation d'ateliers, de séminaires et de formations; Organisation et tenue d'événements, à savoir Organisation et conduite de séminaires et conférences à des fins éducatives, pédagogiques et récréatives; Mise en place et animation de conférences d'affaires et Organisation et conduite de sommets d'affaires; Services de conseils, d'assistance et d'informations relatifs à tous les services précités."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de génie logiciel; Élaboration [conception] de logiciels; Développement de logiciels; Développement et mise à jour de logiciels; Recherche et développement de logiciels; Création de logiciels, Test et maintenance de logiciels; Logiciels en tant que service [SaaS] pour le secteur des services financiers et le secteur technologique des services financiers; Services d'assistance logicielle; Stockage électronique de données; Fourniture de logiciels non téléchargeables; Services de chiffrement de données; Consultation en matière de sécurité informatique; Exploration de données; Services d'information, de conseil et d'assistance relatifs à tous les services précités."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Unternehmensberatungsdienste; Unternehmensbetreuung; Geschäftsführung; Geschäftsleitung [für Dritte]; Dienstleistungen in Bezug auf unternehmensstrategisches Management; Unternehmensberatung, Prüfung geschäftlicher Sorgfalt, Unternehmensberatungsdienste und Wirtschaftsprüfungsleistungen Im Bereich Erwerb von Technologieunternehmen für Finanzdienstleistungen; Geschäftsdienstleistungen in Bezug auf die Expansion von Unternehmen; Entwicklung und Umsetzung von Plänen für die Expansion von Unternehmen; Unternehmensberatung in Bezug auf Fusionen und Akquisition in Geschäftsangelegenheiten; Geschäftsführung, Unternehmensverwaltung und Unternehmensberatung für Expansion von Unternehmen; Vernetzung von Unternehmen in der Finanztechnologiebranche; Unternehmensentwicklung in der Finanzdienstleistungstechnologiebranche; Unternehmensberatung in Bezug auf das Vorgenannte in der Finanzdienstleistungstechnologiebranche; Bereitstellung von Unterstützungsdienstleistungen für Unternehmen, Nämlich Unternehmensberatungsdienste und Unternehmensführungsunterstützung, Einschließlich in den folgenden Bereichen: Zugang zu Verkaufsnetzwerken, Wachstum von Produkten und Bereitstellung von gewerblicher Unterstützung für Unternehmen; Entwicklung von Netzwerken, Nämlich Dienstleistungen in Bezug auf Unternehmens-Networking; Entwicklung von Verkaufsnetzwerken, nämlich Unternehmensleitung in Bezug auf die Entwicklung von Unternehmen durch Ausweitung ihrer Verkaufsnetzwerke; Information und Beratung in Bezug auf alles vorstehend Genannte."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Finanzdienstleistungen; Finanzberatung im Bereich von Fusionen und Übernahmen; Finanzierung von Unternehmensübernahmen; Finanzmanagement von Unternehmen; Kapitalvermittlung; Bereitstellung von Risikokapital; Bereitstellung von Wachstumskapital; Finanzmanagement von Risikoanlagen, Kapitalanlagenmanagement; Dienstleistungen von Finanzanlagen und Finanzierung von Unternehmenswachstum; Kapitalanlagedienste; Versicherungsdienstleistungen; Information und Beratung in Bezug auf alles vorstehend Genannte."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Erziehung und Unterricht; Geschäftliche Bildung; Ausbildung; Betriebliche Ausbildung; Coaching, Workshops, Veranstaltung von Seminaren; Organisation von Konferenzen; Durchführung von Workshops, Seminaren und Schulungen; Organisation und Durchführung von Veranstaltungen, nämlich Organisation und Durchführung von Konferenzen und hochrangigen Begegnungen für Bildungs-, Ausbildungs- und Unterhaltungszwecke; Organisation und Durchführung von geschäftlichen Konferenzen und Organisation und Durchführung von hochrangigen geschäftlichen Begegnungen; Information und Beratung in Bezug auf alle vorstehend genannten Leistungen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Softwareengineering; Design von Computer-Software; Softwareentwicklung; Entwicklung und Aktualisierung von Software; Forschung und Entwicklung auf dem Gebiet Software; Softwareerstellung, Softwareprüfung und -pflege; Software as a Service [SaaS] für den Finanzdienstleistungssektor und die Finanzdienstleistungsbranche; Support für Computersoftware; Elektronische Datenspeicherung; Bereitstellung von nicht herunterladbarer Software; Dienstleistungen auf dem Gebiet der Datenverschlüsselung; Beratung auf dem Gebiet der Computersicherheit; Data-Mining; Information und Beratung in Bezug auf alles vorstehend Genannte."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Poslovno savjetovanje; Poslovna podrska; Poslovno upravljanje; Poslovna organizacija; Usluge poslovnog strateskog upravljanja; Usluge poslovnog savjetovanja i savjetodavne poslovne usluge, Usluge dubinske analize poslovanja, Poslovno savjetovanje i Usluge revizije poslovanja U podrucju akvizicije tehnoloskih tvrtki za financijske usluge; Poslovne usluge u vezi s korporativnim prosirenjem; Razvoj i implementacija planova korporativnog sirenja; Savjetovanje u svezi spajanja poduzeca i Poslovne akvizicije; Usluge poslovnog upravljanja, poslovne administracije i poslovnog savjetovanja za tehnoloska poduzeca za financijske usluge; Usluge poslovnog umrezavanja u industriji financijske tehnologije; Usluge poslovnog razvoja u tehnoloskoj industriji financijskih usluga; Poslovne konzultacije i savjeti u vezi s navedenim u tehnoloskoj industriji financijskih usluga; Pruzanje usluga poslovne podrske, i to Poslovno savjetovanje i Pomoc u vodenju poslova, Ukljucujuci u sljedecim podrucjima: Pristup prodajnim mrezama, rast proizvoda i pruzanje profesionalne poslovne podrske; Razvoj mreza, i to Usluge poslovnog umrezavanja; Razvoj prodajnih mreza, i to usluge poslovnog upravljanja u vezi s razvojem poduzeca putem sirenja njihovih prodajnih mreza; Usluge informiranja, savjetovanja te konzultantske usluge u vezi s navedenim."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Financijske usluge; Financijsko savjetovanje u podrucju spajanja i akvizicija; Financiranje akvizicija; Financijsko upravljanje tvrtkama; Pruzanje kapitala; Ponuda poduzetnickog kapitala; Pruzanje kapitala za rast; Financijsko upravljanje rizicnim kapitalom, Upravljanje ulaganjem; Usluge financiranja financijskih ulaganja i poslovnog rasta; Ulaganja sredstava; Osiguravateljske usluge; Usluge informiranja, savjetovanja te konzultantske usluge u vezi s navedenim."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Pruzanje poduke; Poslovno obrazovanje; Pruzanje usluga osposobljavanja; Poslovno usavrsavanje; Treniranje, Radionice, Seminari; Organiziranje konferencija; Vodenje radionica, seminara i tecajeva; Organiziranje i ugoscavanje dogadanja, i to Organizacija i provodenje konferencija i sastanaka na vrhu za potrebe obrazovanja, obuke i zabave; Organizacija i provodenje poslovnih konferencija i Dogovaranje i provodenje poslovnih sastanaka na vrhu; Usluge informiranja, konzultiranja i savjetovanja, u vezi sa svim navedenim uslugama."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Programsko inzenjerstvo; Izrada [koncipiranje] racunalnih progama; Razvoj softvera; Koncepcija i izrada mreznih stranica; Istrazivanje i razvoj softvera; Izrada softvera, Testiranje i odrzavanje softvera; Softver kao usluga [SaaS] za sektor financijskih usluga i tehnolosku industriju financijskih usluga; Usluge podrske za racunalni softver; Pohrana elektronickih podataka; Ponuda softvera koji se ne moze preuzeti; Usluge enkripcije podataka; Savjetovanje u svezi s racunalnom sigurnosti; Rudarenje podataka; Usluge informiranja, savjetovanja te konzultantske usluge u vezi s navedenim."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Üzleti konzultációs szolgáltatások; Üzleti támogató szolgáltatások; Üzleti menedzsment; Üzletszervezés; Üzleti stratégiai menedzsment-szolgáltatások; Üzleti konzultációs és tanácsadási szolgáltatások, Kereskedelmi átvilágítási szolgáltatások, Üzleti konzultációs szolgáltatások és Üzleti auditálási szolgáltatások A pénzügyi szolgáltatási technológiai vállalatok felvásárlása területén; Vállalati bovítéssel kapcsolatos üzleti szolgáltatások; Vállalati bovítési tervek kidolgozása és végrehajtása; Vállalati fúziókkal kapcsolatos szaktanácsadás és Üzletszerzés; Üzleti menedzsment, üzleti adminisztráció és üzleti tanácsadási szolgáltatások pénzügyi szolgáltatási technológiai vállalatok számára; Üzleti hálózatépítési szolgáltatások a pénzügyi technológiai iparban; Üzleti fejlesztési szolgáltatások a pénzügyi szolgáltatások technológiai iparában; Üzleti szaktanácsadás és tanácsadás a fentiekkel kapcsolatban a pénzügyi szolgáltatási technológiai iparágban; Üzleti támogató szolgáltatások nyújtása, nevezetesen Üzleti konzultációs szolgáltatások és Segítségnyújtás üzletvezetéshez, Azon belül a következo területeken: Hozzáférés értékesítési hálózatokhoz, terméknövekedés és szakmai üzleti támogatás nyújtása; Hálózatok fejlesztése, nevezetesen Üzleti hálózati szolgáltatások; Értékesítési hálózatok fejlesztése, nevezetesen üzletviteli szolgáltatások vállalkozások fejlesztésével kapcsolatban értékesítési hálózataik bovítése révén; Az összes fent említettel kapcsolatos tájékoztatás, konzultáció és tanácsadás."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Pénzügyi szolgáltatások; Pénzügyi tanácsadás egyesülések és felvásárlások területén; Beszerzések, akvizíciók finanszírozása; Vállalatok pénzügyi irányítása; Toke szolgáltatása; Kockázati toke biztosítása; Növekedési toke biztosítása; Kockázatvállalás pénzügyi irányítása, Befektetés menedzsment; Pénzügyi befektetési és üzleti növekedési finanszírozási szolgáltatások; Tokebefektetés, tokeberuházás; Biztosítási szolgáltatások; Fentiekkel kapcsolatos tájékoztató és tanácsadó szolgáltatás."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Oktatás biztosítása; Üzleti oktatás; Szakmai képzés, betanítás; Üzleti képzés; Coaching, Alkotómuhelyek, Szemináriumok; Konferenciaszervezés; Workshopok, szemináriumok és oktatások tartása; Rendezvények szervezése és megtartása, nevezetesen Oktatási, képzési és szórakoztatási célú konferenciák és csúcstalálkozók szervezése és lebonyolítása; Üzleti konferenciák szervezése és lebonyolítása és Üzleti csúcstalálkozók szervezése és lebonyolítása; Összes fent említett szolgáltatással kapcsolatos tájékoztató és tanácsadó szolgálat."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Szoftver mérnökség; Szoftvertervezés; Számítógépes szoftver fejlesztése; Szoftverek fejlesztése és frissítése; Szoftverek kutatása és fejlesztése; Szoftverek létrehozása, Szoftverek tesztelése és karbantartása; Szoftver mint szolgáltatás [SaaS] a pénzügyi szolgáltatási ágazat és a pénzügyi szolgáltatási technológiai ipar számára; Támogató szolgáltatások számítógépes szoftverekhez; Elektronikus adattárolás; Nem letöltheto szoftverek szolgáltatása; Adatkódolási szolgáltatások; Számítógépes biztonsággal kapcsolatos tanácsadás; Adatbányászat; Az összes fent említettekkel kapcsolatos tájékoztató, tanácsadó és konzultációs szolgáltatások."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di consulenza aziendale; Assistenza commerciale; Gestione aziendale; Organizzazione aziendale; Servizi di gestione strategica aziendale; Servizi di consulenza e di assistenza aziendale, Servizi di due diligence commerciale, Servizi di consulenza aziendale e Revisione dei conti Nel campo dell'acquisizione di società tecnologiche di servizi finanziari; Servizi aziendali in materia di espansione aziendale; Sviluppo ed esecuzione di piani di espansione aziendale; Consulenza in materia di fusioni aziendali e Acquisizioni aziendali; Servizi di gestione aziendale, amministrazione aziendale e consulenza aziendale per società tecnologiche di servizi finanziari; Servizi di collegamento in reti aziendali nel settore della tecnologia finanziaria; Servizi di sviluppo aziendale nel settore della tecnologia dei servizi finanziari; Consulenza aziendale relativa ai suddetti servizi nel settore della tecnologia dei servizi finanziari; Fornitura di servizi d'assistenza aziendale, Ovvero Servizi di consulenza aziendale e Assistenza per la direzione aziendale, Anche nei seguenti ambiti: Accesso a reti di vendita, crescita di prodotti e fornitura di supporto professionale alle imprese; Sviluppo di reti, Ovvero Servizi di networking aziendale; Sviluppo di reti di vendita, ovvero servizi di gestione aziendale in materia di sviluppo di imprese mediante l'espansione delle loro reti di vendita; Servizi d'informazione e consulenza relativi ai suddetti servizi."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Affari finanziari; Consulenza in materia di fusioni e d'acquisizioni,; Finanziamento di acquisizioni; Gestione finanziaria di aziende; Stanziamento di capitale; Fornitura di capitali di rischio; Fornitura di capitale di crescita; Gestione finanziaria di imprese, Gestione di investimenti; Servizi di investimento finanziario e di finanziamento della crescita aziendale; Investimento di capitali; Servizi di assicurazioni; Informazioni e consulenza riguardanti tutti i suddetti servizi."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Educazione; Istruzione commerciale; Attività di formazione; Formazione aziendale; Assistenza professionale (coaching), Seminari di lavoro (workshop), Seminari; Organizzazione di congressi; Realizzazione di workshop, seminari e corsi di formazione; Organizzazione e conduzione di eventi, ovvero Organizzazione e conduzione di conferenze e summit per scopi d'istruzione, formazione e divertimento; Organizzazione e conduzione di conferenze aziendali e Organizzazione e conduzione di summit aziendali; Servizi di informazioni e consulenza relative a tutti i suddetti servizi."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Ingegneria informatica; Elaborazione [ideazione] di software; Sviluppo di software; Sviluppo e aggiornamento di software; Ricerca e sviluppo di software; Ideazione di software, Collaudo e manutenzione di software; Software come servizio [SaaS] per il settore dei servizi finanziari e il settore della tecnologia dei servizi finanziari; Servizi di supporto per software; Archivio elettronico di dati; Fornitura di software non scaricabili; Servizi di crittografia dei dati; Consulenza in materia di sicurezza informatica; Estrazione di dati; Informazioni e consulenza riguardanti tutti i suddetti servizi."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Verslo konsultacijos; Verslo pagalba; Verslo vadyba; Verslo organizavimas; Verslo strateginio valdymo paslaugos; Verslo konsultacijos ir patarimai, Komercines atitikimo reikalavimams paslaugos, Verslo konsultacijos ir Verslo audito paslaugos Finansiniu paslaugu technologiju imoniu isigijimo srityje; Verslo paslaugos, susijusios su imoniu pletra; Imoniu pletros planu kurimas ir igyvendinimas; Verslo susiliejimo konsultacijos ir Verslo isigijimas; Verslo vadybos, verslo administravimo ir verslo konsultavimo paslaugos finansiniu paslaugu technologiju imonems; Verslo tinklaveikos paslaugos finansiniu technologiju pramones srityje; Verslo pletros paslaugos finansiniu paslaugu technologiju pramones srityje; Verslo konsultacijos ir patarimai, susije su minetomis paslaugomis finansiniu paslaugu technologiju pramones srityje; Verslo pagalbos paslaugu teikimas, Butent Verslo konsultacijos ir Verslo vadybos pagalba, Iskaitant sias sritis: Prieiga prie pardavimo tinklu, produktu augimas ir profesionalios verslo pagalbos teikimas; Tinklu pletra, Butent Verslo tinklu paslaugos; Pardavimo tinklu kurimas, butent verslo valdymo paslaugos, susijusios su verslo pletra pletojant ju pardavimo tinklus; Su visomis minetomis paslaugomis susijusios informacines, konsultacines ir patariamosios paslaugos."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Finansines paslaugos; Finansines konsultacijos imoniu susijungimu ir isigijimu srityje; Isigijimu finansavimas; Imoniu finansu valdymas; Teikimas kapitalo; Rizikos kapitalo teikimas; Augimo kapitalo teikimas; Imoniu finansinis valdymas, Investiciju valdymas; Finansiniu investiciju ir verslo augimo finansavimo paslaugos; Kapitalo investavimas; Draudimo paslaugos; Informacines, konsultacines ir patariamosios paslaugos, susijusios su auksciau nurodytosiomis paslaugomis."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Mokymas; Komercinis svietimas; Treniravimas; Verslo mokymo paslaugos; Asmeninis treniravimas, Praktiniai seminarai, Seminaru organizavimas; Konferenciju organizavimas; Praktiniu seminaru, seminaru ir mokymu rengimas; Renginiu organizavimas, butent Konferenciju ir auksciausiojo lygio susitikimu organizavimas ir vedimas svietimo, mokymo ir pramogu tikslais; Verslo konferenciju rengimas ir vedimas ir Verslo auksciausiojo lygio susitikimu organizavimas ir vedimas; Informacines, patariamosios ir konsultacines paslaugos, susijusios su auksciau nurodytomis paslaugomis."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Programu inzinerija; Kompiuteriu programines irangos projektavimas; Programines irangos tobulinimas; Kompiuteriu programines irangos projektavimas ir atnaujinimas; Programines irangos moksliniu tyrimu paslaugos ir technologiju pletra; Programines irangos kurimas, Programines irangos tikrinimas ir prieziura; Programine iranga kaip paslauga [SaaS] finansiniu paslaugu sektoriui ir finansiniu paslaugu technologiju pramonei; Kompiuteriu programines irangos palaikymo paslaugos; Elektroniniu duomenu saugojimas; Neparsisiunciamosios programines irangos teikimas; Duomenu uzsifravimo paslaugos; Kompiuteriu apsaugos konsultacijos; Duomenu gavyba; Informacines, konsultacines ir patariamosios paslaugos, susijusios su visomis anksciau minetomis paslaugomis."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Konsultaciju sniegsana darijumu joma; Uznemejdarbibas palidzibas nodrosinasana; Uznemejdarbibas vadibas pakalpojumi; Uznemejdarbibas organizesana; Uznemejdarbibas strategiskas vadibas pakalpojumi; Konsultaciju un padomu sniegsana darijumu joma, Komercialie uzticamibas parbaudes pakalpojumi, Konsultaciju sniegsana darijumu joma un Uznemejdarbibas audita pakalpojumi Finansu pakalpojumu tehnologiju uznemumu iegades joma; Uznemejdarbibas pakalpojumi saistiba ar korporativo paplasinasanu; Korporativas paplasinasanas planu izstrade un ieviesana; Konsultaciju sniegsana par uznemumu apvienosanos un Uznemumu iegade; Uznemejdarbibas vadibas, uznemejdarbibas administresanas un uznemejdarbibas konsultaciju pakalpojumi finansu pakalpojumu tehnologiju uznemumiem; Uznemejdarbibas tiklosanas pakalpojumi finansu tehnologiju nozare; Uznemejdarbibas attistibas pakalpojumi finansu pakalpojumu tehnologiju nozare; Uznemejdarbibas konsultacijas un ieteikumi saistiba ar ieprieks mineto finansu pakalpojumu tehnologijas nozare; Uznemejdarbibas atbalsta pakalpojumu nodrosinasana, Proti Konsultaciju sniegsana darijumu joma un Uznemejdarbibas vadibas asistesana, Tostarp sadas jomas: Piekluve pardosanas tikliem, produktu izaugsme un profesionala uznemejdarbibas atbalsta nodrosinasana; Tiklu attistiba, Proti Uznemumu sakaru veidosana; Pardosanas tiklu izstrade, proti, uznemejdarbibas vadibas pakalpojumi saistiba ar uznemumu attistibu, paplasinajot to pardosanas tiklus; Informacijas, konsultaciju un ieteikumu pakalpojumi saistiba ar visu ieprieks mineto."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Finansu pakalpojumi; Finansu konsultacijas saistiba ar apvienosanos un parnemsanu; Akviziciju finansesana; Uznemejdarbibas finansu vadiba; Kapitala nodrosinasana; Riska kapitala nodrosinasana; Izaugsmes kapitala nodrosinasana; Riska kapitala finansu parvaldiba, Ieguldijumu parvaldiba; Finansu investiciju un uznemejdarbibas izaugsmes finansesanas pakalpojumi; Kapitalieguldijumu pakalpojumi; Apdrosinasana; Informacijas, konsultaciju un ieteikumu pakalpojumi saistiba ar visu ieprieks mineto."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Apmaciba; Uznemejdarbibas izglitiba; Macibu pakalpojumi; Apmaciba uznemejdarbibas joma; Personiskas izaugsmes apmaciba, Laboratorijas, Seminaru nodrosinasanas pakalpojumi; Konferencu rikosana; Darbseminaru, seminaru un apmacibu rikosana; Pasakumu organizesana un vadiba, proti Konferencu un samitu organizesana un vadisana izglitibas, apmacibas un izklaides nolukos; Uznemejdarbibas konferencu organizesana un vadisana un Uznemejdarbibas augstaka limena sanaksmju organizesana un vadisana; Informacijas, padomdeveju un konsultaciju pakalpojumi, kas saistiti ar visiem ieprieksminetajiem pakalpojumiem."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Programminzenierija; Datorprogrammu projektesana; Programmaturas izstrade; Programmaturas izveide un atjauninasana; Datorprogrammaturas izpete un izstrade; Datoru programmaturas projektesana, Programmaturas testesana un uzraudzisana; Programmatura ka pakalpojums [SaaS] finansu pakalpojumu nozarei un finansu pakalpojumu tehnologiju nozarei; Palidzibas sniegsana datoru programmaturas joma; Elektroniska datu uzglabasana; Nelejupieladejamas programmaturas nodrosinasana; Datu sifresana; Konsultesana datordrosibas joma; Datu iegusana; Informacijas, konsultaciju un padomdeveju pakalpojumi, kas saistiti ar ieprieksmineto."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Konsulenza dwar negozju; Servizzi ta' appogg ghan-negozju; Il-gestjoni ta' negozju; Organizzazzjoni tan-negozju; Servizzi ta' gestjoni strategika tan-negozju; Servizzi ta' konsulenza u pariri dwar in-negozju, Servizzi ta' diligenza dovuta kummercjali, Konsulenza dwar negozju u Servizzi ta' verifika tan-negozju Fil-qasam tal-akkwist ta' kumpaniji tat-teknologija tas-servizzi finanzjarji; Servizzi ta' negozju relatati mal-espansjoni korporattiva; L-izvilupp u l-implimentazzjoni ta' pjanijiet ta' espansjoni korporattiva; Konsultazzjoni dwar l-amalgamazzjoni tan-negozju u L-akkwisti ta' negozji; Servizzi ta' gestjoni tan-negozju, amministrazzjoni tan-negozju u konsulenza dwar in-negozju ghal kumpaniji tat-teknologija tas-servizzi finanzjarji; Servizzi ta' networking tan-negozju fl-industrija tat-teknologija finanzjarja; Servizzi ta' zvilupp tan-negozju fl-industrija tat-teknologija tas-servizzi finanzjarji; Konsulenza u pariri dwar in-negozju relatati ma' dak imsemmi qabel fl-industrija tat-teknologija tas-servizzi finanzjarji; Il-provvista ta' servizzi ta' appogg ghan-negozju, Jigifieri Konsulenza dwar negozju u L-assistenza fil-gestjoni ta' negozju, Inkluz fl-oqsma li gejjin: L-access ghal networks tal-bejgh, it-tkabbir tal-prodott u l-provvista ta' appogg professjonali ghan-negozju; L-izvilupp ta' networks, Jigifieri Servizzi ta' netwerking ta' negozji; Zvilupp ta' networks tal-bejgh, jigifieri servizzi ta' gestjoni tan-negozju relatati mal-izvilupp ta' negozji permezz tal-espansjoni tan-networks tal-bejgh taghhom; Servizzi ta' informazzjoni, konsulenza u ghoti ta' pariri relatati ma' dawk kollha msemmija hawn qabel."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi f'finanzi; Konsulenza finanzjarja fil-qasam tal-fuzjonijiet u akkwisti; Finanzjament ta' akkwisti; Gestjoni finanzjarja ta' negozji; Forniment ta' kapital; Provvista ta' kapital ta' riskju; Il-provvista ta' kapital ghat-tkabbir; Gestjoni finanzjarja ta' impriza, Il-gestjoni ta' investimenti; Servizzi ta' investiment finanzjarju u ta' finanzjament ghat-tkabbir tan-negozju; Investimenti kapitali; Servizzi ta' assigurazzjoni; Information, consultancy and advisory services relating to all of the aforesaid."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Provvista ta' taghlim; Edukazzjoni dwar in-negozju; Tahrig; Servizzi ta' tahrig relatati man-negozju; Tahrig/ikkowcjar, Workshops, Seminars; Arrangament ta' konferenzi; Tmexxija ta' werkxops, seminars u tahrig; Organizzazzjoni u twettiq ta' avvenimenti, jigifieri L-organizzazzjoni u t-tmexxija ta' konferenzi u ta' summits ghal skopijiet edukattivi, ta' tahrig u ta' divertiment; L-organizzazzjoni u t-tmexxija ta' konferenzi tan-negozju u L-arrangament u t-tmexxija ta' summits tan-negozju; Servizzi ta' informazzjoni, pariri u konsulenza dwar is-servizzi kollha hawn fuq imsemmija."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Inginerija tas-softwer; L-izvilupp ta' softwer tal-kompjuter; Zvilupp ta' softwer; L-izvilupp u l-aggornament ta' softwer; Servizzi ta' ricerka u zvilupp ta' softwer; Il-holqien ta' software, L-ittestjar u manutenzjoni ta' softwer; Software bhala servizz [SaaS] ghas-settur tas-servizzi finanzjarji u ghall-industrija tat-teknologija tas-servizzi finanzjarji; Servizzi ta' appogg ghal softwer tal-kompjuter; Hzin ta' data elettroniku; Provvista ta' softwer li ma jistax jitnizzel; Servizzi ta' ccifrar ta' data; Konsulenza dwar is-sigurtà tal-kompjuter; Tiftix ta' data; Servizzi ta' informazzjoni, pariri u konsulenza dwar l-hawn fuq imsemmi."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Doradztwo biznesowe; Wsparcie biznesowe; Zarzadzanie dzialalnoscia gospodarcza; Organizacja dzialalnosci gospodarczej; Uslugi w zakresie zarzadzania strategicznego dzialalnoscia gospodarcza; Doradztwo i konsultacje w zakresie dzialalnosci gospodarczej, Uslugi nalezytej starannosci handlowej, Doradztwo biznesowe i Uslugi w zakresie audytu dzialalnosci gospodarczej W zakresie nabywania przedsiebiorstw z branzy technologii uslug finansowych; Uslugi biznesowe zwiazane z rozwojem przedsiebiorstwa; Opracowywanie i wdrazanie planów rozwoju przedsiebiorstwa; Doradztwo w zakresie fuzji przedsiebiorstw i Nabywanie przedsiebiorstw; Zarzadzanie przedsiebiorstwem, administracja biznesowa i doradztwo biznesowe dla firm z branzy technologii uslug finansowych; Uslugi w zakresie nawiazywania kontaktów biznesowych w branzy technologii finansowych; Uslugi w zakresie rozwoju dzialalnosci w branzy technologii uslug finansowych; Doradztwo i konsultacje biznesowe zwiazane z wyzej wymienionymi kwestiami w branzy technologii uslug finansowych; Swiadczenie uslug wsparcia biznesowego, Mianowicie Doradztwo biznesowe i Pomoc w zakresie zarzadzania, W tym w zakresie nastepujacych dziedzin: Dostep do sieci sprzedazy, rozwój oferty produktowej i zapewnienie profesjonalnego wsparcia biznesowego; Rozwój sieci, Mianowicie Uslugi w zakresie nawiazywania kontaktów miedzy przedsiebiorstwami gospodarczymi; Rozwój sieci sprzedazy, mianowicie uslugi zarzadzania biznesowego dotyczace rozwoju dzialalnosci poprzez rozszerzanie sieci sprzedazy; Uslugi informacyjne, konsultacyjne i doradcze dotyczace wszystkich wyzej wymienionych."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi finansowe; Doradztwo finansowe w zakresie fuzji i przejec; Finansowanie nabycia; Zarzadzanie finansowe na rzecz dzialalnosci gospodarczych; Zapewnianie kapitalu; Zapewnianie kapitalu inwestycyjnego; Zapewnienie kapitalu na rozwój; Zarzadzanie finansami przedsiewziecia, Zarzadzanie inwestycjami; Uslugi w zakresie inwestycji finansowych i finansowania rozwoju dzialalnosci gospodarczej; Inwestycje kapitalowe; Uslugi ubezpieczeniowe; Uslugi informacyjne, konsultacyjne i doradcze dotyczace wszystkich wyzej wymienionych."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi w zakresie oswiaty [nauczanie]; Szkolenia biznesowe; Nauczanie; Szkolenia biznesowe; Trenowanie, Warsztaty, Seminaria; Organizowanie konferencji; Prowadzenie warsztatów, seminariów i szkolen; Organizacja i przeprowadzanie imprez, mianowicie Organizacja i prowadzenie konferencji i szczytów w celach edukacyjnych, szkoleniowych i rozrywkowych; Organizacja i prowadzenie konferencji biznesowych i Organizacja i prowadzenie szczytów biznesowych; Uslugi informacyjne, doradcze i konsultacyjne w zakresie wszystkich, uprzednio wymienionych uslug."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Inzynieria oprogramowania; Projektowanie oprogramowania komputerowego; Opracowywanie oprogramowania komputerowego; Rozwój i aktualizacja oprogramowania; Badania i rozwój oprogramowania; Opracowywanie oprogramowania komputerowego, Testowanie i utrzymanie oprogramowania komputerowego; Oprogramowanie jako usluga [SaaS] dla sektora uslug finansowych i branzy technologii uslug finansowych; Uslugi pomocy technicznej w zakresie oprogramowania komputerowego; Przechowywanie danych elektronicznych; Udostepnianie oprogramowania nie do pobrania; Uslugi szyfrowania danych; Doradztwo dotyczace bezpieczenstwa komputerowego; Eksploracja danych; Uslugi informacyjne, konsultacyjne i doradcze, dotyczace uprzednio wymienionych."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Consultoria empresarial; Assistência na área dos negócios comerciais; Gestão de empresas; Organização de negócios; Serviços de gestão de estratégia empresarial; Serviços de consultadoria e assessoria empresarial, Serviços de verificação prévia comercial, Consultoria empresarial e Serviços de auditoria comercial No domínio da aquisição de empresas tecnológicas de serviços financeiros; Serviços empresariais relacionados com expansão empresarial; Desenvolvimento e implementação de planos de expansão empresarial; Consultadoria relacionada com a fusão de empresas e Aquisição de empresas; Serviços de gestão de negócios, administração de negócios e consultadoria de negócios para empresas tecnológicas de serviços financeiros; Serviços de redes profissionais no setor das tecnologias financeiras; Serviços de desenvolvimento empresarial no setor da tecnologia de serviços financeiros; Consultadoria e assessoria empresariais relacionadas com os serviços atrás referidos no setor da tecnologia de serviços financeiros; Prestação de serviços de apoio a empresas, nomeadamente Consultoria empresarial e Apoios a nível da gestão de empresas, Incluindo nos seguintes domínios: Acesso a redes de vendas, crescimento de produtos e fornecimento de apoio profissional a negócios; Desenvolvimento de redes, nomeadamente Serviços de redes empresariais; Desenvolvimento de redes de vendas, especificamente serviços de gestão de negócios relacionados com o desenvolvimento de empresas através da expansão das suas redes de vendas; Serviços de informações, de consultadoria e de assessoria relacionados com todos os serviços atrás referidos."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços financeiros; Consultadoria financeira em matéria de fusões e aquisições; Financiamento de aquisições; Gestão financeira de empresas; Concessão de capital; Fornecimento de capital de risco; Fornecimento de capital de crescimento; Gestão financeira de empreendimentos, Gestão de investimentos; Serviços de investimento financeiro e de financiamento do crescimento empresarial; Investimento de capitais; Serviços de seguros; Serviços de informação, consultadoria e assessoria relacionados com todos os serviços atrás referidos."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Educação; Educação em negócios; Formação; Serviços de formação em negócios; Acompanhamento técnico, Sessões de trabalho (workshops), Seminários; Organização de conferências; Realização de workshops, seminários e cursos de formação; Organização e realização de eventos, nomeadamente Organização e realização de conferências e cimeiras para fins de educação, formação e entretenimento; Organização e realização de conferências empresariais e Organização e realização de cimeiras empresariais; Serviços de informações, consultadoria e assessoria relacionados com todos os serviços atrás referidos."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Engenharia de software; Design de software; Desenvolvimento de software; Elaboração (concepção) e actualização de software; Investigação e concepção de software; Criação de software, Teste e manutenção de software; Software como serviço [SaaS] para o setor dos serviços financeiros e o setor da tecnologia de serviços financeiros; Serviços de assistência de software informático; Armazenamento eletrónico de dados; Fornecimento de software não descarregável; Serviços de encriptação de dados; Consultoria em matéria de segurança informática; Mineração de dados; Serviços de informações, de consultadoria e de assessoria relacionados com todos os serviços atrás referidos."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Consultanta în afaceri; Suport pentru afaceri; Administrare de afaceri; Organizarea afacerilor; Servicii de administrare si strategie pentru afaceri; Servicii de consultanta în afaceri, Servicii comerciale de verificare prealabila, Consultanta în afaceri si Servicii de audit în afaceri În domeniul achizitiei de firme de tehnologie pentru servicii financiare; Servicii comerciale referitoare la extinderea corporativa; Dezvoltare si implementare de planuri de extindere corporativa; Consultanta privind fuziunile de firme si Achizitii de întreprinderi; Servicii de management al afacerilor, de administrare a afacerilor si de consultanta în afaceri pentru firmele de tehnologie pentru servicii financiare; Servicii de retele de afaceri în industria tehnologiei financiare; Servicii de dezvoltare a afacerilor în industria tehnologiei pentru servicii financiare; Consultanta si asistenta pentru firme cu privire la cele mentionate în industria tehnologiei pentru servicii financiare; Prestare de servicii de suport pentru firme, Si anume Consultanta în afaceri si Gestiunea afacerilor comerciale, Inclusiv în urmatoarele domenii: Acces la retele de vânzari, cresterea produselor si oferirea de suport profesional pentru afaceri; Dezvoltare de retele, Si anume Servicii de colaborari de afaceri în retea; Dezvoltare de retele de vânzari, si anume servicii de administrare comerciala referitoare la dezvoltarea firmelor prin extinderea retelelor lor de vânzari; Servicii de informare, consiliere si consultanta cu privire la toate cele mentionate mai sus."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii financiare; Consultanta financiara în domeniul fuziunilor si preluarilor; Finantarea de achizitii; Administrarea financiara a firmelor; Furnizarea de capital; Furnizare de capital de risc; Furnizare de capital de crestere; Administrare financiara a capitalului de risc, Gestiunea investitiilor; Servicii de investitii financiare si de finantare pentru cresterea afacerilor; Investitii de capital; Servicii de asigurare; Servicii de informatii, consultanta si consiliere in domeniul tuturor celor mentionate anterior."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Educatie; Educatie comerciala; Instruire; Servicii de instruire în domeniul afacerilor; Asistenta profesionala individualizata [coaching], Ateliere, Seminare; Organizare de conferinte; Realizare de ateliere, seminarii si instructaje; Organizare si coordonare de actiuni, si anume Organizare si coordonare de conferinte si summit-uri în scopuri de educatie, instruire si divertisment; Organizarea si sustinerea conferintelor de afaceri si Organizare si coordonare de summit-uri de afaceri; Servicii de informare, consultanta si consiliere cu privire la toate serviciile mentionate anterior."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Inginerie de software informatic; Proiectare de software; Dezvoltare de software; Editarea si actualizarea programelor informatice; Cercetare si dezvoltare de software; Creare de software, Testare si întretinere de software; Software ca serviciu [SaaS] pentru sectorul serviciilor financiare si industria tehnologiei pentru servicii financiare; Servicii de asistenta pentru software de calculator; Stocarea electronica a datelor; Furnizare de software nedescarcabil; Servicii de criptare de date; Consultanta în materie de securitate informatica; Exploatare de date; Servicii de consiliere, consultanta si informatii referitoare la cele mai susmentionate."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Obchodné poradenstvo; Obchodná podpora; Obchodný manazment; Organizovanie obchodnej cinnosti alebo podnikania; Sluzby obchodného strategického riadenia; Podnikatelské konzultacné a poradenské sluzby, Sluzby komercnej nálezitej starostlivosti, Obchodné poradenstvo a Obchodné audity V oblasti akvizície technologických firiem v oblasti financných sluzieb; Obchodné sluzby v oblasti podnikovej expanzie; Vývoj a implementácia plánov podnikovej expanzie; Poradenské sluzby pri zlucovaní podnikov a Obchodné akvizície; Obchodný manazment, obchodná administratíva a obchodné konzultacné sluzby pre technologické spolocnosti poskytujúce financné sluzby; Sluzby nadväzovania obchodných vztahov v odvetví financných technológií; Sluzby obchodného rozvoja v technologickom odvetví financných sluzieb; Obchodné konzultácie a poradenstvo v oblasti uvedených sluzieb v technologickom odvetví financných sluzieb; Poskytovanie sluzieb obchodnej podpory, menovite Obchodné poradenstvo a Pomoc pri riadení obchodnej cinnosti, Vrátane v nasledujúcich oblastiach: Prístup k predajným sietam, rast produktov a poskytovanie profesionálnej obchodnej podpory; Vývoj sietí, menovite Sluzby v oblasti obchodných sietí; Rozvoj sietí v oblasti predaja, menovite v oblasti obchodného manazmentu v súvislosti s rozvojom podnikov prostredníctvom rozsirovania ich sietí v oblasti predaja; Informacné, konzultacné a poradenské sluzby v oblasti vsetkých vyssie uvedených sluzieb."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Sluzby v oblasti financníctva; Financné poradenstvo v oblasti fúzií a akvizícií; Financovanie akvizícií; Financný manazment pre podniky; Zabezpecenie kapitálu; Poskytovanie rizikového kapitálu; Poskytovanie rastového kapitálu; Financný manazment rizikového kapitálu, Investicný manazment; Financné investicné sluzby a sluzby financovania obchodného rastu; Kapitálové investície; Poistovníctvo; Informacné, konzultacné a poradenské sluzby v oblasti vsetkých vyssie uvedených sluzieb."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Vyucovanie; Business education; Vzdelávanie; Skoliace sluzby v oblasti podnikania a obchodu; Trénovanie, Workshopy, Semináre; Organizovanie konferencií; Realizácia pracovných dielní (workshop), seminárov a skolení; Organizácia a konanie udalostí, menovite Organizovanie a vedenie konferencií a samitov na vzdelávacie, výcvikové a zábavné úcely; Organizovanie a vedenie obchodných konferencií a Organizovanie a vedenie obchodných samitov; Informacné, poradenské a konzultacné sluzby týkajúce sa vsetkých vyssie uvedených sluzieb."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Softvérové inzinierstvo; Tvorba pocítacového softvéru; Vývoj pocítacového softvéru; Vývoj a aktualizovanie softvéru; Výskum a vývoj softvéru; Tvorba softvéru, Testovanie a údrzba softvéru; Softvér ako sluzba [SaaS] pre odvetvie financných sluzieb a odvetvie technológií v oblasti financných sluzieb; Podporné sluzby pre pocítacový softvér; Uchovávanie elektronických údajov; Poskytovanie softvéru bez moznosti prevzatia; Kódovanie údajov; Poradenstvo v oblasti pocítacovej bezpecnosti; Hlbková analýza dát [data mining]; Informacné, konzultacné a poradenské sluzby týkajúce sa vyssie uvedeného."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Storitve poslovnega svetovanja; Poslovno podporne storitve; Poslovno upravljanje; Poslovna organizacija; Storitve poslovnega strateskega upravljanja; Poslovno svetovalne storitve, Storitve skrbnega pregleda poslovanja, Storitve poslovnega svetovanja in Storitve revizije poslovanja Na podrocju prevzema tehnoloskih podjetij za financne storitve; Poslovne storitve v zvezi s siritvijo podjetij; Razvoj in izvajanje nacrtov za siritev podjetja; Poslovno svetovanje v zvezi z zdruzevanjem podjetij in Poslovne nabave; Storitve vodenja komercialnih poslov, poslovne administracije in poslovnega svetovanja za tehnoloska podjetja za financne storitve; Storitve poslovnega mrezenja v industriji financne tehnologije; Storitve poslovnega razvoja v tehnoloski industriji financnih storitev; Poslovno posvetovanje in svetovanje v zvezi z navedenim v tehnoloski industriji financnih storitev; Nudenje storitev poslovne podpore, In sicer Storitve poslovnega svetovanja in Pomoc pri poslovnem vodenju, Vkljucno na naslednjih podrocjih: Dostop do prodajnih omrezij, rast izdelkov in nudenje strokovne poslovne podpore; Razvoj omrezij, In sicer Storitve poslovnega mrezenja; Razvoj prodajnih omrezij, in sicer storitve vodenja komercialnih poslov v zvezi z razvojem podjetij s siritvijo njihovih prodajnih omrezij; Informacijske, posvetovalne in svetovalne storitve v zvezi z vsem nastetim."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Financne storitve; Financno svetovanje na podrocju zdruzitev in prevzemov; Financiranje prevzemov; Financno upravljanje podjetij; Zagotavljanje kapitala; Nudenje tveganega kapitala; Nudenje kapitala za rast; Financno upravljanje tveganega kapitala, Upravljanje investicij; Storitve financiranja financnih nalozb in poslovne rasti; Financne nalozbe; Zavarovalniske storitve; Informacijske, posvetovalne in svetovalne storitve v zvezi z vsem nastetim."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Poucevanje; Poslovno izobrazevanje; Usposabljanje; Poslovno usposabljanje; Trenerstvo, Delavnice, Seminarji; Prirejanje konferenc; Izvajanje delavnic, seminarjev in solanj; Organiziranje in izvedba dogodkov, in sicer Organiziranje in izvajanje konferenc in srecanj na vrhu za namene izobrazevanja, usposabljanja in razvedrila; Prirejanje in izvajanje poslovnih konferenc in Prirejanje in izvajanje poslovnih srecanj na vrhu; Informacijske in svetovalne storitve v zvezi z omenjenimi storitvami."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Inzenirske storitve v zvezi z racunalnisko programsko opremo; Oblikovanje programske opreme; Razvoj programske opreme; Razvoj in posodobitev racunalniske programske opreme; Raziskave in razvoj na podrocju programske opreme; Storitve pisanja programske opreme, Testiranje in vzdrzevanje racunalniske programske opreme; Programska oprema kot storitev [SaaS] za sektor financnih storitev in tehnolosko industrijo financnih storitev; Podporne storitve za racunalnisko programsko opremo; Elektronsko shranjevanje podatkov; Nudenje nenalozljive programske opreme; Storitve kodiranja podatkov; Storitve svetovanja s podrocja racunalniske varnosti; Podatkovno rudarjenje; Informacijske, posvetovalne in svetovalne storitve v zvezi z omenjenim."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Consultoría comercial; Apoyo comercial; Gestión de empresas; Organización de negocios comerciales; Servicios de gestión estratégica de negocios; Servicios de asesoramiento y consultoría de empresas, Servicios de diligencia debida en el ámbito del comercio, Consultoría comercial y Y servicios de auditoría de negocios En el ámbito de la adquisición de empresas de tecnología de servicios financiero; Servicios de negocios relacionados con la expansión corporativa; Desarrollo e implementación de planes de expansión corporativa; Asesoramiento en materia de fusión de empresas y Adquisición de negocios; Servicios de gestión de empresas, administración de empresas y consultoría de empresas para empresas de tecnología de servicios financieros; Servicios de conexión en redes de negocios en la industria de tecnología financiera; Servicios de desarrollo de negocios en el sector de la tecnología de servicios financieros; Consultoría y asesoramiento comerciales relacionados con los mencionados en el sector de la tecnología de servicios financieros; Prestación de servicios de ayuda a empresas, en concreto Consultoría comercial y Asistencia en la dirección de empresas, Incluyendo en los siguientes ámbitos: Acceso a redes de ventas, expansión de productos y prestación de ayuda profesional a empresas; Desarrollo de redes, en concreto Servicios de negocios en red; Desarrollo de redes de ventas, en concreto servicios de gestión de empresas en relación con el desarrollo de empresas a través de la expansión de sus redes de ventas; Servicios de información, consultas y asesoramiento relacionados con todo lo mencionado."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios financieros; Asesoramiento financiero en el ámbito de fusiones y adquisiciones; Financiación de adquisiciones; Gestión financiera de empresas; Suministro de capital; Facilitación de capital riesgo; Suministro de capital de expansión; Gestión financiera de empresas, Gestión de inversiones; Servicios de inversión financiera y de financiación de la expansión de empresas; Inversión de capital; Servicios de seguros; Servicios de información, consultoría y asesoramiento en relación con todo lo mencionado."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Educación; Educación en negocios; Formación; Servicios de formación empresarial; Servicios de entrenamiento, Talleres, Seminarios; Organización de conferencias; Realización de talleres, seminarios y cursillos; Organización y celebración de actividades, en concreto Organización y celebración de conferencias y cumbres con fines educativos, formativos y para el entretenimiento; Organización y dirección de conferencias empresariales y Organización y celebración de cumbres empresariales; Servicios de información, asesoría y consultoría en relación con todos los servicios mencionados."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Ingeniería de programas informáticos; Diseño de software; Desarrollo de software; Elaboración y actualización de software; Servicios de investigación y desarrollo de software; Creación de software, Comprobación y mantenimiento de software; Software como servicio [SaaS] para el sector de los servicios financieros y el sector de la tecnología de servicios financieros; Servicios de soporte para software informático; Almacenamiento electrónico de datos; Suministro de software no descargable; Servicios de cifrado de datos; Consultoría sobre seguridad informática; Minería de datos (depuración de datos); Servicios de información, consultoría y asesoramiento en relación con todo lo mencionado."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Företagskonsultation; Företagsstöd; Företagsledning; Företagsorganisation; Strategiska företagsledningstjänster; Företagskonsultation och -rådgivning, Kommersiella tjänster avseende innestående arbetsinsatser, Företagskonsultation och Affärsrevisionstjänster Inom området förvärv av teknikföretag för finansiella tjänster; Företagstjänster avseende företagsexpansion; Utveckling och genomförande av företagsexpansionsplaner; Konsulttjänster avseende företagsfusioner och Företagsförvärvning; Företagsledning, företagsadministration och företagskonsultation för teknikföretag för finansiella tjänster; Företagsnätverkstjänster inom finansteknikindustrin; Affärsutvecklingstjänster inom den tekniska industrin för finansiella tjänster; Företagskonsultation och -rådgivning avseende det föregående inom den teknologiska industrin för finansiella tjänster; Tillhandahållande av företagsstödtjänster, Nämligen Företagskonsultation och Assistans vid företagsledning, Inklusive inom följande områden: Åtkomst till försäljningsnätverk, produkttillväxt och tillhandahållande av professionellt företagsstöd; Utveckling av nätverk, Nämligen Skapande av affärskontakter; Utveckling av försäljningsnätverk, nämligen företagsledning i samband med utveckling av företag genom utvidgningen av deras försäljningsnätverk; Rådgivning, konsulttjänster och information avseende alla nämnda tjänster."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Finansiella tjänster; Finansiell rådgivning inom området fusioner och övertaganden; Finansiering av förvärv; Finansiell förvaltning för företag; Tillhandahållande av kapital; Tillhandahållande av riskkapital; Tillhandahållande av tillväxtkapital; Finansiell förvaltning av riskkapital, Förvaltning av investeringar; Finansiella investerings- och företagstillväxtfinansieringstjänster; Investering av kapital; Försäkringsverksamhet; Rådgivning, konsultation och information avseende samtliga nämnda tjänster."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Anordnande av undervisning; Företagsutbildning; Instruktionstjänster; Affärsutbildning; Handledning och instruktion, nämligen idrottscoaching, Workshops, Seminarier; Anordnande av konferenser; Hållande av seminarier, studiecirklar och utbildningar; Anordnande och hållande av evenemang, nämligen Anordnande och hållande av konferenser och toppmöten för utbildnings-, instruktions- och underhållningsändamål; Anordnande och genomförande av affärskonferenser och Anordnande och ledning av företagstoppmöten; Information, konsultation och rådgivning avseende samtliga nämnda tjänster."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Programvaruutveckling; Utformning av programvara; Utveckling av mjukvara; Utformning och uppdatering av programvara; Forskning och utveckling av programvara; Skapande av programvara, Provning och underhåll av programvara; Programvara som en tjänst [SaaS] för den finansiella tjänstesektorn och den finansiella tjänstetekniska industrin; Supporttjänster för programvara; Elektronisk datalagring; Tillhandahållande av icke nedladdningsbar programvara; Datakrypteringstjänster; Konsultation avseende datorsäkerhet; Datautvinning; Rådgivning, konsultation och information avseende samtliga nämnda tjänster."
+        }
+      ]
+    },
+    "id": "dc47debd-f2b2-44d5-aa83-50743a2cc274",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "78"
+      }
+    ],
+    "recordLastUpdated": "20260730",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Technopole Hélioparc 4 rue Jules Ferry,Pau, 64000",
+        "representativeAddressCountryCode": "FR",
+        "representativeAddressCountryName": "France",
+        "representativeName": "A.P.I. CONSEIL"
+      }
+    ],
+    "secondLanguageCode": "fr",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260224",
+        "applicationNumber": "19321316"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360224",
+      "lastPublicationDate": "20260428",
+      "markCurrentStatus": "APPLICATION OPPOSED"
+    },
+    "version": "20260730020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENCORA"
+    }
+  },
+  "_uri": "/mark/em/dc47debd-f2b2-44d5-aa83-50743a2cc274",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.813Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

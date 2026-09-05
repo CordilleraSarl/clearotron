@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/kr/c0cecb35-dcae-4c4c-bb1b-dea0e518d0e2",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "c0cecb35-dcae-4c4c-bb1b-dea0e518d0e2",
+  "applicationNumber": "40-1984-0009796",
+  "registrationNumber": null,
+  "applicationDate": "1984-06-28",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "보리 (BORI)",
+  "markTransliteration": "BORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    11,
+    14,
+    16,
+    18,
+    19,
+    20,
+    21,
+    24,
+    26,
+    27,
+    28
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        14,
+        16,
+        18,
+        19,
+        20,
+        21,
+        24,
+        26,
+        27,
+        28
+      ],
+      "language": "ko",
+      "description": "수세미",
+      "translation_language": "en",
+      "translation": "Scrubbers"
+    }
+  ],
+  "owner": "KIM, Su Byung",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기도 고양시 일산서구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "KIM, Su Byung",
+        "applicantNativeName": "김수병"
+      },
+      {
+        "applicantAddress": "서울특별시 은평구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "KIM, Jong Kab",
+        "applicantNativeName": "김종갑"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scrubbers",
+          "intClassNumber": "01,05,06,07,08,09,11,14,16,18,19,20,21,24,26,27,28",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "수세미"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "018"
+        }
+      ]
+    },
+    "id": "c0cecb35-dcae-4c4c-bb1b-dea0e518d0e2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260819",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19840628",
+        "applicationNumber": "40-1984-0009796"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260819020004",
+    "wordMarkSpecification": {
+      "markTransliteration": "BORI",
+      "markVerbalElementText": "보리 (BORI)"
+    }
+  },
+  "_uri": "/mark/kr/c0cecb35-dcae-4c4c-bb1b-dea0e518d0e2",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.211Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

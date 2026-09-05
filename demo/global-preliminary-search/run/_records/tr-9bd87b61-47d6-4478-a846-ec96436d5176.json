@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/tr/9bd87b61-47d6-4478-a846-ec96436d5176",
+  "provider": "clarivate",
+  "office": "tr",
+  "guid": "9bd87b61-47d6-4478-a846-ec96436d5176",
+  "applicationNumber": "2023/016924",
+  "registrationNumber": "2023 016924",
+  "applicationDate": "2023-02-06",
+  "registrationDate": null,
+  "expiryDate": "2033-02-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-09-29",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "şehit yüzbaşı ibrahim barış yurtseven ortaokulu antalya 2014",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "tr",
+      "description": "Eğitim ve öğretim hizmetleri. Sempozyum, konferans, kongre ve seminer düzenleme, idare hizmetleri. Spor, kültür ve eğlence hizmetleri (sinema, spor karşılaşmaları, tiyatro, müze, konser gibi kültür ve eğlence etkinlikleri için bilet sağlama hizmetleri dahil). Dergi, kitap, gazete v.b.gibi yayınların basıma hazır hale getirilmesi, okuyucuya ulaştırılmasına ilişkin hizmetler (global iletişim ağları vasıtasıyla anılan hizmetlerin sağlanması da dahil). Film, televizyon ve radyo programları yapım hizmetleri. Haber muhabirliği hizmetleri, foto-muhabirliği hizmetleri. Fotoğrafçılık hizmetleri. Tercüme hizmetleri.",
+      "translation_language": "en",
+      "translation": "Education and training services. Symposium, conference, congress and seminar organization, administration services. Sports, cultural and entertainment services (including ticketing services for cultural and entertainment events such as cinema, sports events, theatre, museums, concerts). Services related to the preparation of publications such as magazines, books, newspapers, etc., and their delivery to the reader (including the provision of the aforementioned services through global communication networks). Film, television and radio program production services. News reporting services, photojournalism services. Photography services. Translation services."
+    }
+  ],
+  "owner": "ANTALYA KEPEZ ORTAOKUL ŞEHİT YÜZBAŞI İBRAHİM BARIŞ YURTSEVEN",
+  "ownerNative": null,
+  "ownerCountry": "TR",
+  "representative": "HAKAN KORKMAZ",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "ÇANKAYA MAH. 6379 SK. ŞEHİT İBRAHİM BARIŞ YURTSEVEN ORTAOKULU 4 A Kepez Antalya",
+        "applicantAddressCountryCode": "TR",
+        "applicantAddressCountryName": "Turkey",
+        "applicantName": "ANTALYA KEPEZ ORTAOKUL ŞEHİT YÜZBAŞI İBRAHİM BARIŞ YURTSEVEN"
+      }
+    ],
+    "applicationLanguageCode": "tr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education and training services. Symposium, conference, congress and seminar organization, administration services. Sports, cultural and entertainment services (including ticketing services for cultural and entertainment events such as cinema, sports events, theatre, museums, concerts). Services related to the preparation of publications such as magazines, books, newspapers, etc., and their delivery to the reader (including the provision of the aforementioned services through global communication networks). Film, television and radio program production services. News reporting services, photojournalism services. Photography services. Translation services.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Eğitim ve öğretim hizmetleri. Sempozyum, konferans, kongre ve seminer düzenleme, idare hizmetleri. Spor, kültür ve eğlence hizmetleri (sinema, spor karşılaşmaları, tiyatro, müze, konser gibi kültür ve eğlence etkinlikleri için bilet sağlama hizmetleri dahil). Dergi, kitap, gazete v.b.gibi yayınların basıma hazır hale getirilmesi, okuyucuya ulaştırılmasına ilişkin hizmetler (global iletişim ağları vasıtasıyla anılan hizmetlerin sağlanması da dahil). Film, televizyon ve radyo programları yapım hizmetleri. Haber muhabirliği hizmetleri, foto-muhabirliği hizmetleri. Fotoğrafçılık hizmetleri. Tercüme hizmetleri."
+        }
+      ]
+    },
+    "id": "9bd87b61-47d6-4478-a846-ec96436d5176",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "20.01.03",
+      "01.15.15",
+      "27.05.24",
+      "02.01.16",
+      "02.01.23",
+      "02.01.24",
+      "26.01.04",
+      "26.01.21",
+      "26.01.14",
+      "26.01.16"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "485"
+      }
+    ],
+    "recordLastUpdated": "20250708",
+    "registrationOfficeCode": "TR",
+    "registrationOfficeName": "Turkey",
+    "representatives": [
+      {
+        "representativeAddress": "İDEALTEPE MAH. DİK SOK KARAR PLAZA NO:1/4 - MALTEPEİSTANBUL",
+        "representativeName": "HAKAN KORKMAZ"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230206",
+        "applicationNumber": "2023/016924"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330206",
+      "lastPublicationDate": "20230929",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "2023 016924"
+      }
+    },
+    "version": "20250708190540",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "şehit yüzbaşı ibrahim barış yurtseven ortaokulu antalya 2014"
+    }
+  },
+  "_uri": "/mark/tr/9bd87b61-47d6-4478-a846-ec96436d5176",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.829Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

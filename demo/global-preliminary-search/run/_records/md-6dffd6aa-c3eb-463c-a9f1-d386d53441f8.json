@@ -1,0 +1,430 @@
+{
+  "uri": "/mark/md/6dffd6aa-c3eb-463c-a9f1-d386d53441f8",
+  "provider": "clarivate",
+  "office": "md",
+  "guid": "6dffd6aa-c3eb-463c-a9f1-d386d53441f8",
+  "applicationNumber": "011967",
+  "registrationNumber": "11195",
+  "applicationDate": "2002-10-07",
+  "registrationDate": "2004-09-09",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "NORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    2,
+    3,
+    9,
+    16,
+    20,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        2
+      ],
+      "language": "ro",
+      "description": "vopsele, firnisuri, lacuri; substanţe de protecţie contra ruginii şi contra deteriorării lemnului; materiale colorante; mordanţi; răşini naturale în stare brută; metale sub formă de foiţe şi sub formă de pudră pentru pictori, decoratori, tipografi şi artişti;",
+      "translation_language": "en",
+      "translation": "paints, varnishes, lacquers; Preservatives against rust and against deterioration of wood; dyestuffs; mordants; raw natural resins; metals in foil and powder form for painters, decorators, printers and artists;"
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "ro",
+      "description": "preparate pentru albit şi alte substanţe pentru spălat; preparate pentru curăţare, lustruire, degresare şi şlefuire; săpunuri; parfumerie, uleiuri esenţiale, cosmetice, loţiuni pentru păr; produse pentru îngrijirea dinţilor;",
+      "translation_language": "en",
+      "translation": "bleaching preparations and other substances for laundry use; cleaning polishing, scouring and abrasive preparations; soaps; perfumery, essential oils, cosmetics, hair lotions; dentifrices;"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "aparate şi instrumente ştiinţifice, nautice, geodezice, fotografice, cinematografice, optice, de cântărit, de măsurat, de semnalizare, de control (verificare), de siguranţă (salvare) şi didactice; aparate şi instrumente pentru conducerea, comutarea, transformarea, acumularea, reglarea sau verificarea curentului electric; aparate pentru înregistrarea, transmiterea şi reproducerea sunetelor sau imaginilor; suporturi magnetice de înregistrare, discuri acustice; distribuitoare automate şi mecanisme pentru aparatele cu preplată; case înregistratoare, maşini de calculat, echipament pentru prelucrarea informaţiei şi calculatoare, extinctoare;",
+      "translation_language": "en",
+      "translation": "apparatus and scientific apparatus, nautical, geodetic, photographic, cinematographic, optical, weighing, measuring, signalling, control (control), security (delivery) and teaching; apparatus and instruments for conducting, switching, transformation, accumulating, regulating or verification current electric; apparatus for recording, transmission and reproduction of sound or images;; magnetic recording media, recording discs; automatic distribution machines and mechanisms for coin-operated apparatus; cash registers, calculating machines, data-processing equipment and computing apparatus, fire extinguishers;"
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "ro",
+      "description": "hârtie, carton şi produse din aceste materiale neincluse în alte clase; produse de imprimerie; articole de legătorie; fotografii; papetărie; adezivi (materiale de lipit) pentru papetărie sau menaj; material pentru artişti; pensule; maşini de scris şi articole de birou (cu excepţia mobilierului); material de instruire sau învăţământ (cu excepţia aparatelor); materiale plastice pentru ambalare (neincluse în alte clase); caractere tipografice; clişee;",
+      "translation_language": "en",
+      "translation": "paper, cardboard and products of these materials not included in other classes;; printed matter; bookbinding material; photographs; stationery; Adhesives [glues] for stationery or household purposes; artists materials; paint brushes; typewriters and office requisites (except furniture); training materials or education (with the exception of apparatus); materials plastic for packaging (not included to other classes); printers' type; printing blocks;"
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "ro",
+      "description": "mobile, oglinzi, rame; produse (neincluse în alte clase) din lemn, plută, trestie, stuf, răchită, corn, os, fildeş, fanoane de balenă, solzi, ambră, sidef, spumă de mare şi înlocuitori ai tuturor acestor materiale sau din materiale plastice;",
+      "translation_language": "en",
+      "translation": "furniture, mirrors, picture frames; products (not included to other classes) of wood, cork, reed, cane, wicker, horn, bone, ivory, whalebone, scales, ambra, mother-of-pearl, meerschaum and substitutes for all these materials or of plastic materials;"
+    },
+    {
+      "classes": [
+        29
+      ],
+      "language": "ro",
+      "description": "carne, peşte, păsări şi vânat; extracte din carne; fructe şi legume conservate, uscate şi fierte; jeleuri, dulceţuri, compoturi; ouă, lapte şi produse lactate; uleiuri şi grăsimi comestibile;",
+      "translation_language": "en",
+      "translation": "meat, fish, poultry and game; meat extracts; preserved, frozen, dried and cooked fruits and vegetables; jellies, jams, compotes; eggs, milk and milk products; edible oils and fats;"
+    },
+    {
+      "classes": [
+        30
+      ],
+      "language": "ro",
+      "description": "cafea, ceai, cacao, zahăr, orez, tapiocă, sago, înlocuitori de cafea; făină şi preparate făcute din cereale, pâine, produse de patiserie şi cofetărie, îngheţată; miere, sirop de melasă; drojdie, praf de copt; sare, muştar; oţet, sosuri (condimente); mirodenii; gheaţă de răcit;",
+      "translation_language": "en",
+      "translation": "coffee, tea, cocoa, sugar, rice, tapioca, sago, artificial coffee; flour and preparations made from cereals, bread, pastry and confectionery, ices; honey, treacle; yeast, baking-powder; salt, mustard; vinegar, sauces (condiments); spices; ice for refreshment;"
+    },
+    {
+      "classes": [
+        31
+      ],
+      "language": "ro",
+      "description": "produse agricole, horticole, forestiere şi cereale neincluse în alte clase; animale vii; fructe şi legume proaspete; seminţe, plante şi flori naturale; hrană pentru animale, malţ;",
+      "translation_language": "en",
+      "translation": "agricultural products, horticultural, forestry and grains, not included in other classes; live animals; fresh fruits and fresh vegetables; seeds, natural plants and flowers; foodstuffs for animals, malt;."
+    },
+    {
+      "classes": [
+        32
+      ],
+      "language": "ro",
+      "description": "bere; ape minerale şi gazoase şi alte băuturi nealcoolice; băuturi şi sucuri din fructe, siropuri şi alte preparate pentru fabricarea băuturilor;",
+      "translation_language": "en",
+      "translation": "beers; mineral and aerated waters, non-alcoholic drinks; beverages and fruit juices, syrups and other preparations for making beverages."
+    },
+    {
+      "classes": [
+        33
+      ],
+      "language": "ro",
+      "description": "băuturi alcoolice (cu excepţia berii);",
+      "translation_language": "en",
+      "translation": "alcoholic beverages (except beers)"
+    },
+    {
+      "classes": [
+        34
+      ],
+      "language": "ro",
+      "description": "tutun; articole pentru fumători, chibrituri;",
+      "translation_language": "en",
+      "translation": "tobacco, smokers' articles, matches"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ro",
+      "description": "publicitate; gestionarea afacerilor comerciale; administrare comercială; lucrări de birou, comercializarea produselor;",
+      "translation_language": "en",
+      "translation": "advertising; business management; business administration; office work; product marketing."
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "ro",
+      "description": "telecomunicaţii;",
+      "translation_language": "en",
+      "translation": "telecommunications;"
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": "ro",
+      "description": "transport; ambalare şi depozitare de mărfuri; organizare de călătorii;",
+      "translation_language": "en",
+      "translation": "transport; packaging and storage of goods; tour operating and organising;"
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "ro",
+      "description": "tratament de materiale;",
+      "translation_language": "en",
+      "translation": "treatment of materials"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ro",
+      "description": "educaţie; instruire; divertisment; activităţi sportive şi culturale;",
+      "translation_language": "en",
+      "translation": "education; providing of training; entertainment; sports and cultural activities."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "servicii ştiinţifice şi tehnologice, cercetări şi proiectări corespunzătoare; analiză industrială şi servicii de cercetare; design-ul şi elaborarea hardware şi software de calculatoare; servicii juridice;",
+      "translation_language": "en",
+      "translation": "scientific services and technological, analysis and projections appropriate; Industrial analysis and research services; design and hardware development and computer software; legal services."
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "ro",
+      "description": "servicii de alimentaţie publică; cazare temporară;",
+      "translation_language": "en",
+      "translation": "services for providing food and drink, temporary accommodation"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "ro",
+      "description": "servicii medicale; servicii veterinare; îngrijiri igienice şi de frumuseţe pentru oameni sau animale; servicii agricole, horticole şi forestiere;",
+      "translation_language": "en",
+      "translation": "medical services; veterinary services; care sanitary and beauty for men or animals; agricultural services, horticultural and forestry;"
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "ro",
+      "description": "servicii personale şi sociale pentru satisfacerea necesităţilor persoanelor fizice, executate de către terţi; servicii de securitate pentru protecţia proprietăţii şi persoanelor.",
+      "translation_language": "en",
+      "translation": "personal services and social for ~satisfacerea~ call people physical, executed for for others; services by security for protection property and individuals."
+    }
+  ],
+  "owner": "NORI S.A.",
+  "ownerNative": null,
+  "ownerCountry": "MD",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Str. Munceşti nr. 173, MD-2002, Chişinău, Republica Moldova",
+        "applicantAddressCountryCode": "MD",
+        "applicantAddressCountryName": "Moldova",
+        "applicantName": "NORI S.A."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "paints, varnishes, lacquers; Preservatives against rust and against deterioration of wood; dyestuffs; mordants; raw natural resins; metals in foil and powder form for painters, decorators, printers and artists;",
+          "intClassNumber": "02",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "vopsele, firnisuri, lacuri; substanţe de protecţie contra ruginii şi contra deteriorării lemnului; materiale colorante; mordanţi; răşini naturale în stare brută; metale sub formă de foiţe şi sub formă de pudră pentru pictori, decoratori, tipografi şi artişti;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "bleaching preparations and other substances for laundry use; cleaning polishing, scouring and abrasive preparations; soaps; perfumery, essential oils, cosmetics, hair lotions; dentifrices;",
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "preparate pentru albit şi alte substanţe pentru spălat; preparate pentru curăţare, lustruire, degresare şi şlefuire; săpunuri; parfumerie, uleiuri esenţiale, cosmetice, loţiuni pentru păr; produse pentru îngrijirea dinţilor;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "apparatus and scientific apparatus, nautical, geodetic, photographic, cinematographic, optical, weighing, measuring, signalling, control (control), security (delivery) and teaching; apparatus and instruments for conducting, switching, transformation, accumulating, regulating or verification current electric; apparatus for recording, transmission and reproduction of sound or images;; magnetic recording media, recording discs; automatic distribution machines and mechanisms for coin-operated apparatus; cash registers, calculating machines, data-processing equipment and computing apparatus, fire extinguishers;",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "aparate şi instrumente ştiinţifice, nautice, geodezice, fotografice, cinematografice, optice, de cântărit, de măsurat, de semnalizare, de control (verificare), de siguranţă (salvare) şi didactice; aparate şi instrumente pentru conducerea, comutarea, transformarea, acumularea, reglarea sau verificarea curentului electric; aparate pentru înregistrarea, transmiterea şi reproducerea sunetelor sau imaginilor; suporturi magnetice de înregistrare, discuri acustice; distribuitoare automate şi mecanisme pentru aparatele cu preplată; case înregistratoare, maşini de calculat, echipament pentru prelucrarea informaţiei şi calculatoare, extinctoare;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "paper, cardboard and products of these materials not included in other classes;; printed matter; bookbinding material; photographs; stationery; Adhesives [glues] for stationery or household purposes; artists materials; paint brushes; typewriters and office requisites (except furniture); training materials or education (with the exception of apparatus); materials plastic for packaging (not included to other classes); printers' type; printing blocks;",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "hârtie, carton şi produse din aceste materiale neincluse în alte clase; produse de imprimerie; articole de legătorie; fotografii; papetărie; adezivi (materiale de lipit) pentru papetărie sau menaj; material pentru artişti; pensule; maşini de scris şi articole de birou (cu excepţia mobilierului); material de instruire sau învăţământ (cu excepţia aparatelor); materiale plastice pentru ambalare (neincluse în alte clase); caractere tipografice; clişee;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "furniture, mirrors, picture frames; products (not included to other classes) of wood, cork, reed, cane, wicker, horn, bone, ivory, whalebone, scales, ambra, mother-of-pearl, meerschaum and substitutes for all these materials or of plastic materials;",
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "mobile, oglinzi, rame; produse (neincluse în alte clase) din lemn, plută, trestie, stuf, răchită, corn, os, fildeş, fanoane de balenă, solzi, ambră, sidef, spumă de mare şi înlocuitori ai tuturor acestor materiale sau din materiale plastice;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "meat, fish, poultry and game; meat extracts; preserved, frozen, dried and cooked fruits and vegetables; jellies, jams, compotes; eggs, milk and milk products; edible oils and fats;",
+          "intClassNumber": "29",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "carne, peşte, păsări şi vânat; extracte din carne; fructe şi legume conservate, uscate şi fierte; jeleuri, dulceţuri, compoturi; ouă, lapte şi produse lactate; uleiuri şi grăsimi comestibile;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "coffee, tea, cocoa, sugar, rice, tapioca, sago, artificial coffee; flour and preparations made from cereals, bread, pastry and confectionery, ices; honey, treacle; yeast, baking-powder; salt, mustard; vinegar, sauces (condiments); spices; ice for refreshment;",
+          "intClassNumber": "30",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "cafea, ceai, cacao, zahăr, orez, tapiocă, sago, înlocuitori de cafea; făină şi preparate făcute din cereale, pâine, produse de patiserie şi cofetărie, îngheţată; miere, sirop de melasă; drojdie, praf de copt; sare, muştar; oţet, sosuri (condimente); mirodenii; gheaţă de răcit;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "agricultural products, horticultural, forestry and grains, not included in other classes; live animals; fresh fruits and fresh vegetables; seeds, natural plants and flowers; foodstuffs for animals, malt;.",
+          "intClassNumber": "31",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "produse agricole, horticole, forestiere şi cereale neincluse în alte clase; animale vii; fructe şi legume proaspete; seminţe, plante şi flori naturale; hrană pentru animale, malţ;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "beers; mineral and aerated waters, non-alcoholic drinks; beverages and fruit juices, syrups and other preparations for making beverages.",
+          "intClassNumber": "32",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "bere; ape minerale şi gazoase şi alte băuturi nealcoolice; băuturi şi sucuri din fructe, siropuri şi alte preparate pentru fabricarea băuturilor;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "alcoholic beverages (except beers)",
+          "intClassNumber": "33",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "băuturi alcoolice (cu excepţia berii);"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "tobacco, smokers' articles, matches",
+          "intClassNumber": "34",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "tutun; articole pentru fumători, chibrituri;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "advertising; business management; business administration; office work; product marketing.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "publicitate; gestionarea afacerilor comerciale; administrare comercială; lucrări de birou, comercializarea produselor;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "telecommunications;",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "telecomunicaţii;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "transport; packaging and storage of goods; tour operating and organising;",
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "transport; ambalare şi depozitare de mărfuri; organizare de călătorii;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "treatment of materials",
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "tratament de materiale;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "education; providing of training; entertainment; sports and cultural activities.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "educaţie; instruire; divertisment; activităţi sportive şi culturale;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "scientific services and technological, analysis and projections appropriate; Industrial analysis and research services; design and hardware development and computer software; legal services.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "servicii ştiinţifice şi tehnologice, cercetări şi proiectări corespunzătoare; analiză industrială şi servicii de cercetare; design-ul şi elaborarea hardware şi software de calculatoare; servicii juridice;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "services for providing food and drink, temporary accommodation",
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "servicii de alimentaţie publică; cazare temporară;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "medical services; veterinary services; care sanitary and beauty for men or animals; agricultural services, horticultural and forestry;",
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "servicii medicale; servicii veterinare; îngrijiri igienice şi de frumuseţe pentru oameni sau animale; servicii agricole, horticole şi forestiere;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "personal services and social for ~satisfacerea~ call people physical, executed for for others; services by security for protection property and individuals.",
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "servicii personale şi sociale pentru satisfacerea necesităţilor persoanelor fizice, executate de către terţi; servicii de securitate pentru protecţia proprietăţii şi persoanelor."
+        }
+      ]
+    },
+    "id": "6dffd6aa-c3eb-463c-a9f1-d386d53441f8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "MD",
+    "registrationOfficeName": "Moldova",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20021007",
+        "applicationNumber": "011967"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20040909",
+        "registrationNumber": "11195"
+      }
+    },
+    "version": "20230427120454",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NORI"
+    }
+  },
+  "_uri": "/mark/md/6dffd6aa-c3eb-463c-a9f1-d386d53441f8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.693Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

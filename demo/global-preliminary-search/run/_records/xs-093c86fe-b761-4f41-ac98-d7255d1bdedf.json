@@ -1,0 +1,147 @@
+{
+  "uri": "/mark/xs/093c86fe-b761-4f41-ac98-d7255d1bdedf",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "093c86fe-b761-4f41-ac98-d7255d1bdedf",
+  "applicationNumber": null,
+  "registrationNumber": "T1311384",
+  "applicationDate": null,
+  "registrationDate": "2022-09-20",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Miss Native North America",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": [
+    "not-found"
+  ],
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Native american beauty pageant",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Montana Native American Center Inc",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "BIGWIND WINDYBOY PO BOX 51198, BILLINGS, MT, 59105, USAM",
+        "applicantAddressCity": "BILLINGS",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "59105",
+        "applicantAddressStateName": "MONTANA",
+        "applicantAddressStreet": "BIGWIND WINDYBOY PO BOX 51198",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Montana Native American Center Inc",
+        "applicantPhoneNumber": "(406) 259-0138"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Native american beauty pageant"
+        }
+      ]
+    },
+    "id": "093c86fe-b761-4f41-ac98-d7255d1bdedf",
+    "ipRightKind": "tmk",
+    "kindMark": "SERVICE MARK",
+    "mannerOfDisplay": "Native American beauty pageant promoted by Montana Native American Center, INC to happen with their Pow Wow event.",
+    "markDisclaimers": [
+      "not-found"
+    ],
+    "markFeature": "WORD ONLY",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "not-found",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "BIGWIND WINDYBOY PO BOX 51198, BILLINGS, MT, 59105, USAM",
+        "city": "BILLINGS",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "CORPORATION",
+        "name": "Montana Native American Center Inc",
+        "phoneNumber": "(406) 259-0138",
+        "postalCode": "59105",
+        "stateName": "MONTANA",
+        "street": "BIGWIND WINDYBOY PO BOX 51198"
+      }
+    ],
+    "recordLastUpdated": "20260731",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20220916"
+        }
+      ],
+      "firstUsedAnywhereDate": "20220916",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20220920",
+        "registrationNumber": "T1311384"
+      }
+    },
+    "usStateOfficeCode": "MT",
+    "usStateOfficeName": "MONTANA",
+    "version": "20260731160010",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Miss Native North America"
+    }
+  },
+  "_uri": "/mark/xs/093c86fe-b761-4f41-ac98-d7255d1bdedf",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.833Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

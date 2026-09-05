@@ -1,0 +1,161 @@
+{
+  "uri": "/mark/it/d640c250-d419-49ca-975a-9bb03709f3a0",
+  "provider": "clarivate",
+  "office": "it",
+  "guid": "d640c250-d419-49ca-975a-9bb03709f3a0",
+  "applicationNumber": "302013902176875 (TO/2013/002255)",
+  "registrationNumber": "1585708",
+  "applicationDate": "2013-07-19",
+  "registrationDate": "2014-03-17",
+  "expiryDate": "2023-07-19",
+  "renewalDate": null,
+  "lastPublicationDate": "2014-04-24",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VC TEAM VEIN CARE TEAM",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: educazione, formazione, seminari, convegni, corsi, attivita' culturali",
+      "translation_language": "en",
+      "translation": "services subject to protection not included in the nizza-mgs classification: education, training, seminars, conferences, courses, cultural activities"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: servizi scientifici e tecnologici e servizi di ricerca e progettazione ad essi relativi; servizi di analisi e di ricerche; progettazione e sviluppo di hardware e software.",
+      "translation_language": "en",
+      "translation": "services subject to protection not included in the nizza-mgs classification: scientific and technological services and related research and planning services; analysis and research services; design and development of hardware and software."
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: servizi medici, cure d'igiene e di bellezza per l'uomo",
+      "translation_language": "en",
+      "translation": "services subject to protection not included in the nizza-mgs classification: medical services, hygiene and beauty care for men"
+    }
+  ],
+  "owner": "MEDITEAM S.R.L.",
+  "ownerNative": null,
+  "ownerCountry": "IT",
+  "representative": "BOGGIO FRANCESCA CAROLINA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Torino, Torino",
+        "applicantAddressCountryCode": "IT",
+        "applicantAddressCountryName": "Italy",
+        "applicantName": "MEDITEAM S.R.L."
+      }
+    ],
+    "applicationLanguageCode": "it",
+    "cmMarkImageEUclassification": [
+      "26.04.01",
+      "26.04.22",
+      "37.02.03",
+      "37.02.22",
+      "37.05.19"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "services subject to protection not included in the nizza-mgs classification: education, training, seminars, conferences, courses, cultural activities",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: educazione, formazione, seminari, convegni, corsi, attivita' culturali"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "services subject to protection not included in the nizza-mgs classification: scientific and technological services and related research and planning services; analysis and research services; design and development of hardware and software.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: servizi scientifici e tecnologici e servizi di ricerca e progettazione ad essi relativi; servizi di analisi e di ricerche; progettazione e sviluppo di hardware e software."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "services subject to protection not included in the nizza-mgs classification: medical services, hygiene and beauty care for men",
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: servizi medici, cure d'igiene e di bellezza per l'uomo"
+        }
+      ]
+    },
+    "id": "d640c250-d419-49ca-975a-9bb03709f3a0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "IL MARCHIO E' COSTITUITO DALL'ESPRESSIONE \"VC TEAM VEIN CARE TEAM\", ABBINATA ALL'ELEMENTO FIGURATIVO, COSI' COME RAPPRESENTATO IN ALLEGATO (FIGURATIVO)"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250403",
+    "registrationOfficeCode": "IT",
+    "registrationOfficeName": "Italy",
+    "representatives": [
+      {
+        "representativeName": "BOGGIO FRANCESCA CAROLINA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20130719",
+        "applicationNumber": "302013902176875 (TO/2013/002255)"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20230719",
+      "lastPublicationDate": "20140424",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20140317",
+        "registrationNumber": "1585708"
+      }
+    },
+    "version": "20250403184033",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VC TEAM VEIN CARE TEAM"
+    }
+  },
+  "_uri": "/mark/it/d640c250-d419-49ca-975a-9bb03709f3a0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.819Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

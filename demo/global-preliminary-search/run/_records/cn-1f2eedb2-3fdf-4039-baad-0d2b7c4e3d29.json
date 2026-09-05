@@ -1,0 +1,143 @@
+{
+  "uri": "/mark/cn/1f2eedb2-3fdf-4039-baad-0d2b7c4e3d29",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "1f2eedb2-3fdf-4039-baad-0d2b7c4e3d29",
+  "applicationNumber": "11363515",
+  "registrationNumber": "11363515",
+  "applicationDate": "2012-08-17",
+  "registrationDate": "2014-04-07",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2014-01-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2025-05-20",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "EORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "计算机程序(可下载软件);计算机游戏软件;手机用计算机软件(已录制);磁性数据介质;光学数据介质;光盘;计算机软件(已录制);电子出版物(可下载);录像带;动画片",
+      "translation_language": "en",
+      "translation": "Computer programs (downloadable software); computer game software; computer software for mobile phones (recorded); magnetic data media; optical data media; compact disks; computer software (recorded); electronic publications (downloadable); videotapes; cartoons"
+    }
+  ],
+  "owner": "NHC MEDIA CO.,LTD",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "韩国首尔市衿川区加山洞法眼路685号数字帝国大厦310室DIGITAL EMPIRE 310HO,685,BEOMAN-RO,GASAN-DONG,GEUMCHEON-GU,SEOUL,REPUBLIC OF KOREA",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "NHC MEDIA CO.,LTD",
+        "applicantNativeName": "NHC传媒有限公司NHC;NHC MEDIA CO.,LTD"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer programs (downloadable software); computer game software; computer software for mobile phones (recorded); magnetic data media; optical data media; compact disks; computer software (recorded); electronic publications (downloadable); videotapes; cartoons",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计算机程序(可下载软件);计算机游戏软件;手机用计算机软件(已录制);磁性数据介质;光学数据介质;光盘;计算机软件(已录制);电子出版物(可下载);录像带;动画片"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Apparatus for sound and images",
+        "Films, exposed materials"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0923",
+          "subNatGoodsServicesDescription": "Films, exposed materials"
+        }
+      ]
+    },
+    "id": "1f2eedb2-3fdf-4039-baad-0d2b7c4e3d29",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1390"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京三幸商标专利事务所(普通合伙)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120817",
+        "applicationNumber": "11363515"
+      },
+      "cancellationDate": "20250520",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20140106",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20140407",
+        "registrationNumber": "11363515"
+      }
+    },
+    "version": "20251002041242",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "EORI"
+    }
+  },
+  "_uri": "/mark/cn/1f2eedb2-3fdf-4039-baad-0d2b7c4e3d29",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:13.068Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

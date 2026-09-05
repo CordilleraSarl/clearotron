@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/es/458a89d5-2c9f-4b1a-9e7c-b124cfbec4dd",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "458a89d5-2c9f-4b1a-9e7c-b124cfbec4dd",
+  "applicationNumber": "3063704 MX",
+  "registrationNumber": "3063704 MX",
+  "applicationDate": "2013-02-15",
+  "registrationDate": "2013-05-27",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2013-02-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2025-10-15",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "JONDE JOVEN ORQUESTA NACIONAL DE ESPAÑA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de educacion, recreo y esparcimiento; edicion y produccion de obras audiovisuales; y en especial servicios relativos a espectaculos musicales y teatrales.",
+      "translation_language": "en",
+      "translation": "SERVICES EDUCATION, RECREATION AND RECREATION; Editing and production of audiovisual works; AND SPECIAL SERVICES RELATING TO SHOWS THEATRICAL MUSICAL."
+    }
+  ],
+  "owner": "INSTITUTO NACIONAL DE LAS ARTES ESCENICAS Y DE LA MUSICA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Manuel Arpe Fernández",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "INSTITUTO NACIONAL DE LAS ARTES ESCENICAS Y DE LA MUSICA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "cmMarkImageEUclassification": [
+      "25.07.02",
+      "26.11.03",
+      "26.11.12"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SERVICES EDUCATION, RECREATION AND RECREATION; Editing and production of audiovisual works; AND SPECIAL SERVICES RELATING TO SHOWS THEATRICAL MUSICAL.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de educacion, recreo y esparcimiento; edicion y produccion de obras audiovisuales; y en especial servicios relativos a espectaculos musicales y teatrales."
+        }
+      ]
+    },
+    "id": "458a89d5-2c9f-4b1a-9e7c-b124cfbec4dd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.01.01",
+      "26.02.07",
+      "27.05.04"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "3877"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "representatives": [
+      {
+        "representativeAddress": "C/ Guzman el Bueno, 133 28003 Madrid MADRID",
+        "representativeName": "Manuel Arpe Fernández"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20130215",
+        "applicationNumber": "3063704 MX"
+      },
+      "cancellationDate": "20251015",
+      "cmNormalisedStatus": "CANCELLED",
+      "lastPublicationDate": "20130227",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20130527",
+        "registrationNumber": "3063704 MX"
+      }
+    },
+    "version": "20260427162509",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JONDE JOVEN ORQUESTA NACIONAL DE ESPAÑA"
+    }
+  },
+  "_uri": "/mark/es/458a89d5-2c9f-4b1a-9e7c-b124cfbec4dd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,281 @@
+{
+  "uri": "/mark/us/2eb277bb-8e15-487d-b978-730b56511a5b",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "2eb277bb-8e15-487d-b978-730b56511a5b",
+  "applicationNumber": "87363404",
+  "registrationNumber": null,
+  "applicationDate": "2017-03-08",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2018-05-16",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "KAPTIVO NORTEÑO",
+  "markTransliteration": null,
+  "markTranslation": "CPTIVE NORTHERNER",
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Entertainment services in the nature of live visual and audio performances, namely, musical band, rock group, gymnastic, dance, and ballet performances",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "GUERRA RODOLFO JR",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "815 FALCON AVE., ZAPATA, TX, 78076",
+        "applicantAddressCity": "ZAPATA",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "78076",
+        "applicantAddressStateName": "TEXAS",
+        "applicantAddressStreet": "815 FALCON AVE.",
+        "applicantAliasName": "DBA KAPTIVO NORTEÑO",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "GUERRA RODOLFO JR"
+      },
+      {
+        "applicantAddress": "711 VILLA AVE/ P.O. BOX 692, ZAPATA, TX, 78076",
+        "applicantAddressCity": "ZAPATA",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "78076",
+        "applicantAddressStateName": "TEXAS",
+        "applicantAddressStreet": "711 VILLA AVE/ P.O. BOX 692",
+        "applicantAliasName": "DBA KAPTIVO NORTEÑO",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "GARCIA RENE JR"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "24.19.14",
+      "30.01.14",
+      "30.05.04"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Entertainment services in the nature of live visual and audio performances, namely, musical band, rock group, gymnastic, dance, and ballet performances"
+        }
+      ]
+    },
+    "id": "2eb277bb-8e15-487d-b978-730b56511a5b",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20180613",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20180613",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20171115",
+        "descriptionText": "FINAL REFUSAL  WRITTEN"
+      },
+      {
+        "date": "20171115",
+        "descriptionText": "FINAL REFUSAL E-MAILED"
+      },
+      {
+        "date": "20171115",
+        "descriptionText": "NOTIFICATION OF FINAL REFUSAL EMAILED"
+      },
+      {
+        "date": "20171030",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20171028",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20171028",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20170602",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20170602",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20170602",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20170601",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20170313",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20170311",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "815 FALCON AVE., ZAPATA, TX, 78076",
+        "aliasName": "DBA KAPTIVO NORTEÑO",
+        "city": "ZAPATA",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "GUERRA RODOLFO JR",
+        "postalCode": "78076",
+        "stateName": "TEXAS",
+        "street": "815 FALCON AVE."
+      },
+      {
+        "address": "711 VILLA AVE/ P.O. BOX 692, ZAPATA, TX, 78076",
+        "aliasName": "DBA KAPTIVO NORTEÑO",
+        "city": "ZAPATA",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "GARCIA RENE JR",
+        "postalCode": "78076",
+        "stateName": "TEXAS",
+        "street": "711 VILLA AVE/ P.O. BOX 692"
+      },
+      {
+        "address": "815 FALCON AVE., ZAPATA, TX, 78076",
+        "aliasName": "DBA KAPTIVO NORTEÑO",
+        "city": "ZAPATA",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "GUERRA RODOLFO JR",
+        "postalCode": "78076",
+        "stateName": "TEXAS",
+        "street": "815 FALCON AVE."
+      },
+      {
+        "address": "711 VILLA AVE/ P.O. BOX 692, ZAPATA, TX, 78076",
+        "aliasName": "DBA KAPTIVO NORTEÑO",
+        "city": "ZAPATA",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "GARCIA RENE JR",
+        "postalCode": "78076",
+        "stateName": "TEXAS",
+        "street": "711 VILLA AVE/ P.O. BOX 692"
+      }
+    ],
+    "recordLastUpdated": "20260111",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "ZAPATA, TX 78076, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "ZAPATA, TX 78076",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "GARCIA RENE JR, 711 VILLA AVE/ P.O. BOX 692"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "ZAPATA, TX 78076, UNITED STATES",
+        "representativeAddressLines": [
+          "ZAPATA, TX 78076",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20180516",
+      "active": false,
+      "application": {
+        "applicationDate": "20170308",
+        "applicationNumber": "87363404"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20140101"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20140101"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20180613",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260111081100",
+    "wordMarkSpecification": {
+      "markTranslation": "CPTIVE NORTHERNER",
+      "markTranslationDescription": "The English Translation of \"KAPTIVO NORTEÑO\" in the mark is \"CAPTIVE NORTHERNER\"",
+      "markVerbalElementCrossReferences": "CAPITVO NORTENO",
+      "markVerbalElementText": "KAPTIVO NORTEÑO"
+    }
+  },
+  "_uri": "/mark/us/2eb277bb-8e15-487d-b978-730b56511a5b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

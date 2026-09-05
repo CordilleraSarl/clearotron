@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/gb/a3989dcb-1d07-4a2c-937c-cc6f1cffbf32",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "a3989dcb-1d07-4a2c-937c-cc6f1cffbf32",
+  "applicationNumber": "4299930",
+  "registrationNumber": "4299930",
+  "applicationDate": "2025-11-24",
+  "registrationDate": "2026-05-22",
+  "expiryDate": "2035-11-24",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    12,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Scientific, research, navigational, geodesic, audiovisual, weighing, signalling, detection, testing, inspection, rescue and teaching apparatus and instruments, not including flow measuring and control devices; equipment and instruments for conducting, distributing, transforming, storing, regulating or controlling the distribution or consumption of electricity; equipment and instruments for the recording, transmission, reproduction or processing of sound, images or data; diving suits; divers' masks; ear plugs for divers; nose clips for divers and swimmers; gloves for divers; breathing apparatus for underwater swimming; fire extinguishers; smart rings; directional compasses; head protection; covers for smartphones; smartphones in the shape of a watch; personal digital assistants in the shape of a watch; timekeeping instruments, time instruments, and chronometric instruments; wearable communications devices in the form of wristwatches; compact discs, DVDs and other digital recording media; software; computers; portable computers; palmtop computers; mobile computers; personal computers; wearable computers; computer peripheral devices; smartwatches; connected bracelets [measuring instruments]; MP3 players; telephone apparatus; mobile telephones; smartphones; telecommunication and communication equipment; apparatus for recording, transmission or reproduction of sound or images; batteries; solar batteries; rechargeable cells; batteries, electric; fuel cells; downloadable digital image files authenticated by non-fungible tokens [NFTs].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "en",
+      "description": "Vehicles and conveyances; land, air, space and sea locomotion devices; parts and components for nautical, land, air and space vehicles, not including parts and components for flow measuring and control devices; space vehicles; water vehicles; aircraft; aeronautical apparatus, machines and appliances; drones; camera drones; military and civilian drones; remote controlled flying objects; remote control vehicles, other than toys; autonomous vehicles; pilotless surveying vehicles; launch vehicles for satellites; underwater vehicles; unmanned vehicles; all-terrain vehicles; alarms and anti-theft devices for vehicles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Scientific technological services; design services; industrial analysis, industrial research and industrial design services; quality control and authentication services; styling [industrial design]; research and development services; online data storage; research, design and product development; technical drawing; preparation of engineering drawings; computer graphics design services; mapping services; engineering services; hosting and electronic data storage; technological consultancy; provision of information relating to technological research; providing scientific information in the fields of climate change and global warming; design of interior decor; architectural and urban planning services; costume and set design for shows.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Gildo-Pierre Pallanca Pastor",
+  "ownerNative": null,
+  "ownerCountry": "MC",
+  "representative": "Forresters IP LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "7 rue du Gabian, Monaco 98000",
+        "applicantAddressCountryCode": "MC",
+        "applicantAddressCountryName": "Monaco",
+        "applicantName": "Gildo-Pierre Pallanca Pastor"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific, research, navigational, geodesic, audiovisual, weighing, signalling, detection, testing, inspection, rescue and teaching apparatus and instruments, not including flow measuring and control devices; equipment and instruments for conducting, distributing, transforming, storing, regulating or controlling the distribution or consumption of electricity; equipment and instruments for the recording, transmission, reproduction or processing of sound, images or data; diving suits; divers' masks; ear plugs for divers; nose clips for divers and swimmers; gloves for divers; breathing apparatus for underwater swimming; fire extinguishers; smart rings; directional compasses; head protection; covers for smartphones; smartphones in the shape of a watch; personal digital assistants in the shape of a watch; timekeeping instruments, time instruments, and chronometric instruments; wearable communications devices in the form of wristwatches; compact discs, DVDs and other digital recording media; software; computers; portable computers; palmtop computers; mobile computers; personal computers; wearable computers; computer peripheral devices; smartwatches; connected bracelets [measuring instruments]; MP3 players; telephone apparatus; mobile telephones; smartphones; telecommunication and communication equipment; apparatus for recording, transmission or reproduction of sound or images; batteries; solar batteries; rechargeable cells; batteries, electric; fuel cells; downloadable digital image files authenticated by non-fungible tokens [NFTs]."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Vehicles and conveyances; land, air, space and sea locomotion devices; parts and components for nautical, land, air and space vehicles, not including parts and components for flow measuring and control devices; space vehicles; water vehicles; aircraft; aeronautical apparatus, machines and appliances; drones; camera drones; military and civilian drones; remote controlled flying objects; remote control vehicles, other than toys; autonomous vehicles; pilotless surveying vehicles; launch vehicles for satellites; underwater vehicles; unmanned vehicles; all-terrain vehicles; alarms and anti-theft devices for vehicles."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific technological services; design services; industrial analysis, industrial research and industrial design services; quality control and authentication services; styling [industrial design]; research and development services; online data storage; research, design and product development; technical drawing; preparation of engineering drawings; computer graphics design services; mapping services; engineering services; hosting and electronic data storage; technological consultancy; provision of information relating to technological research; providing scientific information in the fields of climate change and global warming; design of interior decor; architectural and urban planning services; costume and set design for shows."
+        }
+      ]
+    },
+    "id": "a3989dcb-1d07-4a2c-937c-cc6f1cffbf32",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2026/011"
+      }
+    ],
+    "recordLastUpdated": "20260531",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "45 Church Street, Birmingham B3 2RT",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Forresters IP LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251124",
+        "applicationNumber": "4299930"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20351124",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260522",
+        "registrationNumber": "4299930"
+      }
+    },
+    "version": "20260531020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/gb/a3989dcb-1d07-4a2c-937c-cc6f1cffbf32",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.180Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

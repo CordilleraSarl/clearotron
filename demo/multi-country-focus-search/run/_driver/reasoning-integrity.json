@@ -1,0 +1,220 @@
+{
+  "ts": "2026-08-11T09:04:25.211Z",
+  "inputs": {
+    "narrative": true,
+    "report": true,
+    "review": true,
+    "registerFindings": true,
+    "commonLaw": true,
+    "matterContext": true,
+    "placement": true,
+    "findings": true
+  },
+  "engagement": {
+    "total": 10,
+    "blandCount": 0,
+    "bland": [],
+    "receipts": [
+      {
+        "finding": "Finding 1 — qori — Firepay Merchant Services",
+        "composite": null,
+        "citesOwnAnchor": true,
+        "anchorsHit": [
+          "qori",
+          "firepay",
+          "merchant",
+          "services",
+          "venqori",
+          "single",
+          "line",
+          "with",
+          "water",
+          "compliance",
+          "software",
+          "service",
+          "confirmed",
+          "class-mention"
+        ]
+      },
+      {
+        "finding": "Finding 2 — VENTURI — Ridgemount Technologies Limited",
+        "composite": null,
+        "citesOwnAnchor": true,
+        "anchorsHit": [
+          "ridgemount",
+          "technologies",
+          "limited",
+          "venqori",
+          "with",
+          "confirmed",
+          "class-mention"
+        ]
+      },
+      {
+        "finding": "Finding 3 — VENTURI — Jörg Wollesen",
+        "composite": null,
+        "citesOwnAnchor": true,
+        "anchorsHit": [
+          "wollesen",
+          "services",
+          "training",
+          "water",
+          "compliance",
+          "class-mention"
+        ]
+      },
+      {
+        "finding": "Finding 4 — VENTURI — Gildo-Pierre Pallanca-Pastor",
+        "composite": null,
+        "citesOwnAnchor": true,
+        "anchorsHit": [
+          "gildo",
+          "pierre",
+          "pallanca",
+          "pastor",
+          "confirmed",
+          "class-mention"
+        ]
+      },
+      {
+        "finding": "Finding 5 — QORIA — Qoria Holdings Pty Ltd",
+        "composite": null,
+        "citesOwnAnchor": true,
+        "anchorsHit": [
+          "qoria",
+          "holdings",
+          "qori",
+          "operating",
+          "group",
+          "online",
+          "software",
+          "with",
+          "venqori",
+          "confirmed",
+          "class-mention"
+        ]
+      },
+      {
+        "finding": "Finding 6 — QUORI — Quori Pte. Ltd",
+        "composite": null,
+        "citesOwnAnchor": true,
+        "anchorsHit": [
+          "quori",
+          "qori",
+          "software",
+          "venqori",
+          "training",
+          "line",
+          "analytics",
+          "water",
+          "quality",
+          "confirmed",
+          "class-mention"
+        ]
+      },
+      {
+        "finding": "Finding 7 — VENARI — Asociación Interprofesional de la Carne de Caza (ASICCAZA)",
+        "composite": null,
+        "citesOwnAnchor": true,
+        "anchorsHit": [
+          "asociaci",
+          "interprofesional",
+          "carne",
+          "caza",
+          "asiccaza",
+          "services",
+          "online",
+          "training",
+          "with",
+          "water",
+          "confirmed",
+          "class-mention"
+        ]
+      },
+      {
+        "finding": "Finding 8 — VENTORIX — Shenzhen Dongfang Qingsen Technology Co.",
+        "composite": null,
+        "citesOwnAnchor": true,
+        "anchorsHit": [
+          "shenzhen",
+          "dongfang",
+          "qingsen",
+          "technology",
+          "with",
+          "monitoring",
+          "software",
+          "line",
+          "water",
+          "confirmed",
+          "class-mention"
+        ]
+      },
+      {
+        "finding": "Finding 9 — EVENTORI — WIREMIND SAS",
+        "composite": null,
+        "citesOwnAnchor": true,
+        "anchorsHit": [
+          "wiremind",
+          "venqori",
+          "analytics",
+          "water",
+          "compliance",
+          "confirmed",
+          "class-mention"
+        ]
+      },
+      {
+        "finding": "Finding 10 — VENTURI (venturi.io) — unregistered, common law",
+        "composite": null,
+        "citesOwnAnchor": true,
+        "anchorsHit": [
+          "services",
+          "monitoring",
+          "water",
+          "quality",
+          "environmental",
+          "compliance",
+          "operating",
+          "entity",
+          "confirmed"
+        ]
+      }
+    ]
+  },
+  "ruleShape": [],
+  "reviewerCoherence": [],
+  "tripwires": {
+    "recallFloor": [],
+    "reviewFreshness": {
+      "pass": false,
+      "detail": "the review brought in no input the run had not already produced — re-reading the same files can only show they agree with themselves; it cannot surface what the run missed (no fresh probe / no new record cited)"
+    },
+    "seedNeutrality": [],
+    "probativeGrading": [],
+    "matrixCeiling": [],
+    "statusHonesty": {
+      "pass": true,
+      "detail": ""
+    },
+    "deadlineUrgency": [],
+    "unresolvedDisagreements": [],
+    "orphanFindings": [],
+    "crosscheckMissing": [],
+    "recallRegression": [],
+    "deadlineCarry": [],
+    "documentGrowth": [
+      {
+        "stage": "common-law-half:a",
+        "trigger": "frame-reopen",
+        "before": 18654,
+        "after": 26152,
+        "growthBytes": 7498,
+        "growthPct": 40
+      }
+    ]
+  },
+  "tripFlags": [
+    "document-growth: common-law-half:a grew 40% (18654 → 26152 bytes) under trigger \"frame-reopen\" — a repair defends or corrects, it does not add; review what the pass appended"
+  ],
+  "registryCorrections": []
+}

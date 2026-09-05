@@ -1,0 +1,113 @@
+{
+  "uri": "/mark/pe/1581bb56-b68f-4f32-a9b2-fd7f58c4125c",
+  "provider": "clarivate",
+  "office": "pe",
+  "guid": "1581bb56-b68f-4f32-a9b2-fd7f58c4125c",
+  "applicationNumber": "66635-2025",
+  "registrationNumber": null,
+  "applicationDate": "2025-12-16",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "FUNDO QORIANK'A",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "educación; formación; servicios de entretenimiento; actividades deportivas y culturales.",
+      "translation_language": "en",
+      "translation": "education; training; entertainment services; sports and cultural activities."
+    }
+  ],
+  "owner": "MEZA SALCEDO ROBERTO",
+  "ownerNative": null,
+  "ownerCountry": "CO",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "AYACUCHO - HUANCA SANCOS - SANCOS",
+        "applicantAddressCountryCode": "CO",
+        "applicantAddressCountryName": "Colombia",
+        "applicantName": "MEZA SALCEDO ROBERTO"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "education; training; entertainment services; sports and cultural activities.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "educación; formación; servicios de entretenimiento; actividades deportivas y culturales."
+        }
+      ]
+    },
+    "id": "1581bb56-b68f-4f32-a9b2-fd7f58c4125c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "02.01.20",
+      "25.01.15",
+      "27.05.15",
+      "27.05.17",
+      "03.03.01",
+      "03.03.15",
+      "05.07.10"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260206",
+    "registrationOfficeCode": "PE",
+    "registrationOfficeName": "Peru",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251216",
+        "applicationNumber": "66635-2025"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260206020152",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FUNDO QORIANK'A"
+    }
+  },
+  "_uri": "/mark/pe/1581bb56-b68f-4f32-a9b2-fd7f58c4125c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.399Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

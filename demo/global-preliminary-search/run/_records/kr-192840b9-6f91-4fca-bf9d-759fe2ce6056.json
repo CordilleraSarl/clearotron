@@ -1,0 +1,110 @@
+{
+  "uri": "/mark/kr/192840b9-6f91-4fca-bf9d-759fe2ce6056",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "192840b9-6f91-4fca-bf9d-759fe2ce6056",
+  "applicationNumber": "51-2009-0002640",
+  "registrationNumber": "4100582390000",
+  "applicationDate": "2009-09-16",
+  "registrationDate": "2010-03-12",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "도리",
+  "markTransliteration": "duty",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "건강관리업,병원업,실내장식디자인업,약제연구업,요양소업,의료업,컴퓨터소프트웨어유지관리업,한의원업,호스피스업",
+      "translation_language": "en",
+      "translation": "Health care business, hospital business, interior design business, pharmaceutical research business, nursing home business, medical business, computer software maintenance business, oriental medicine business, hospice business"
+    }
+  ],
+  "owner": "SON Yeon Ju",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 강남구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "SON Yeon Ju",
+        "applicantNativeName": "손영주"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Health care business, hospital business, interior design business, pharmaceutical research business, nursing home business, medical business, computer software maintenance business, oriental medicine business, hospice business",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "건강관리업,병원업,실내장식디자인업,약제연구업,요양소업,의료업,컴퓨터소프트웨어유지관리업,한의원업,호스피스업"
+        }
+      ]
+    },
+    "id": "192840b9-6f91-4fca-bf9d-759fe2ce6056",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20090916",
+        "applicationNumber": "51-2009-0002640"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20100312",
+        "registrationNumber": "4100582390000"
+      }
+    },
+    "version": "20250625203520",
+    "wordMarkSpecification": {
+      "markTransliteration": "duty",
+      "markVerbalElementText": "도리"
+    }
+  },
+  "_uri": "/mark/kr/192840b9-6f91-4fca-bf9d-759fe2ce6056",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.999Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

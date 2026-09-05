@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/in/626a73f9-8f30-4d3b-83bf-c135ea8ad414",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "626a73f9-8f30-4d3b-83bf-c135ea8ad414",
+  "applicationNumber": "5160227",
+  "registrationNumber": "3697925",
+  "applicationDate": "2021-10-05",
+  "registrationDate": "2024-07-26",
+  "expiryDate": "2031-10-05",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "qord",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Mobile software; Downloadable software applications [apps]; Application software; Mobile application software; Downloadable mobile applications; Application software for smart phone; Application software for cell phones; Application software for cloud computing; Computer application programmes for smartphones; Application software for mobile phones; Software and applications for mobile telephones; Software applications for use with mobile devices;",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "QUENFI LABS PRIVATE LIMITED Body Incorporate",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "NEWTON REGINALD[25853]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "FLAT NO 8, SAI SANKET CHS LTD, PLOT NO 420, GANESHWADI THANE THANE MH 400601",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "QUENFI LABS PRIVATE LIMITED Body Incorporate"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Mobile software; Downloadable software applications [apps]; Application software; Mobile application software; Downloadable mobile applications; Application software for smart phone; Application software for cell phones; Application software for cloud computing; Computer application programmes for smartphones; Application software for mobile phones; Software and applications for mobile telephones; Software applications for use with mobile devices;"
+        }
+      ]
+    },
+    "id": "626a73f9-8f30-4d3b-83bf-c135ea8ad414",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2147"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "No 6, Dhanammal Street Spurtank Road Chetpet Chennai - 600031",
+        "representativeName": "NEWTON REGINALD[25853]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20211005",
+        "applicationNumber": "5160227"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311005",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20240726",
+        "registrationNumber": "3697925"
+      }
+    },
+    "version": "20250710155052",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "qord"
+    }
+  },
+  "_uri": "/mark/in/626a73f9-8f30-4d3b-83bf-c135ea8ad414",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:20.367Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

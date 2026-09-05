@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/xs/c7cb19b6-47ff-4b6c-aca1-36592c61c9f0",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "c7cb19b6-47ff-4b6c-aca1-36592c61c9f0",
+  "applicationNumber": null,
+  "registrationNumber": "TK12031901",
+  "applicationDate": null,
+  "registrationDate": "2012-03-19",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENCOR ENGINEERING",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Professional civil engineering services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "HECTOR R. VASQUEZ, P.E.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1401 S. DON ROSER DRIVE, SUITE A2, LAS CRUCES, NM, 88011",
+        "applicantAddressCity": "LAS CRUCES",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "88011",
+        "applicantAddressStateName": "NEW MEXICO",
+        "applicantAddressStreet": "1401 S. DON ROSER DRIVE, SUITE A2",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "HECTOR R. VASQUEZ, P.E."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Professional civil engineering services"
+        }
+      ]
+    },
+    "id": "c7cb19b6-47ff-4b6c-aca1-36592c61c9f0",
+    "ipRightKind": "tmk",
+    "kindMark": "SERVICE MARK",
+    "mannerOfDisplay": "SIGNS, BUSINESS CARDS, LETTERHEAD, CORRESPONDENCE, ADVERTISEMENTS, ANY DOCUMENT SHOWING COMPANY NAME",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "STYLIZED BLACK \"V\" INSIDE AN INCOMPLETE BLACK CIRCLE",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "1401 S. DON ROSER DRIVE, SUITE A2, LAS CRUCES, NM, 88011",
+        "city": "LAS CRUCES",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "INDIVIDUAL",
+        "name": "HECTOR R. VASQUEZ, P.E.",
+        "postalCode": "88011",
+        "stateName": "NEW MEXICO",
+        "street": "1401 S. DON ROSER DRIVE, SUITE A2"
+      }
+    ],
+    "recordLastUpdated": "20240305",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20061023"
+        }
+      ],
+      "firstUsedAnywhereDate": "19950222",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20120319",
+        "registrationNumber": "TK12031901"
+      }
+    },
+    "usStateOfficeCode": "NM",
+    "usStateOfficeName": "NEW MEXICO",
+    "version": "20240305092958",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENCOR ENGINEERING"
+    }
+  },
+  "_uri": "/mark/xs/c7cb19b6-47ff-4b6c-aca1-36592c61c9f0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.731Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

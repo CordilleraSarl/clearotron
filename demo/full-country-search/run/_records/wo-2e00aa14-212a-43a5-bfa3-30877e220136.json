@@ -1,0 +1,216 @@
+{
+  "uri": "/mark/wo/2e00aa14-212a-43a5-bfa3-30877e220136",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "2e00aa14-212a-43a5-bfa3-30877e220136",
+  "applicationNumber": null,
+  "registrationNumber": "1000966",
+  "applicationDate": null,
+  "registrationDate": "2009-02-26",
+  "expiryDate": "2029-02-26",
+  "renewalDate": "2019-02-26",
+  "lastPublicationDate": "2019-03-14",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "COOLFLUX",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Apparatus and instruments for recording, transmission and reproduction of sound, images and data; electronic, electrotechnical, electromechanical and electromagnetic modules, parts and components therefor; integrated circuits (ICs), chips, transistors, semiconductors and semiconductor elements; microprocessors; digital signal processors and digital signal processor cores; software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Appareils et instruments pour enregistrer, transmettre et reproduire des sons, images et données; modules électroniques, électrotechniques, électromécaniques et électromagnétiques, leurs parties et composants; circuits intégrés, puces, transistors, semi-conducteurs et éléments à semi-conducteurs; microprocesseurs; processeurs de signaux numériques et coeurs de processeur de signaux numériques; logiciels.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Aparatos e instrumentos de grabación, transmisión y reproducción de sonidos, imágenes y datos; módulos electrónicos, electrotécnicos, electromecánicos y electromagnéticos, así como sus partes y componentes; circuitos integrados, chips, transistores, semiconductores y elementos semiconductores; microprocesadores; procesadores de señales digitales y núcleos de procesadores de señales digitales; software.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20080827",
+      "priorityNumber": "1165705"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20080827",
+          "basicApplicationNumber": "1165705"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "BX",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20081110",
+          "basicRegistrationNumber": "850394"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CH",
+      "CN",
+      "JP",
+      "KR",
+      "NO",
+      "SG",
+      "US",
+      "RU"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20080827",
+            "basicApplicationNumber": "1165705"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "BX",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20081110",
+            "basicRegistrationNumber": "850394"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CH",
+      "CN",
+      "JP",
+      "KR",
+      "NO",
+      "SG",
+      "US",
+      "RU"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Apparatus and instruments for recording, transmission and reproduction of sound, images and data; electronic, electrotechnical, electromechanical and electromagnetic modules, parts and components therefor; integrated circuits (ICs), chips, transistors, semiconductors and semiconductor elements; microprocessors; digital signal processors and digital signal processor cores; software."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Appareils et instruments pour enregistrer, transmettre et reproduire des sons, images et données; modules électroniques, électrotechniques, électromécaniques et électromagnétiques, leurs parties et composants; circuits intégrés, puces, transistors, semi-conducteurs et éléments à semi-conducteurs; microprocesseurs; processeurs de signaux numériques et coeurs de processeur de signaux numériques; logiciels."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aparatos e instrumentos de grabación, transmisión y reproducción de sonidos, imágenes y datos; módulos electrónicos, electrotécnicos, electromecánicos y electromagnéticos, así como sus partes y componentes; circuitos integrados, chips, transistores, semiconductores y elementos semiconductores; microprocesadores; procesadores de señales digitales y núcleos de procesadores de señales digitales; software."
+        }
+      ]
+    },
+    "id": "2e00aa14-212a-43a5-bfa3-30877e220136",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20080827",
+        "priorityNumber": "1165705"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "09"
+      }
+    ],
+    "recordLastUpdated": "20250928",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices, Anna van Buerenplein 21A NL-2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290226",
+      "lastPublicationDate": "20190314",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20090226",
+        "registrationNumber": "1000966"
+      },
+      "renewalDate": "20190226",
+      "renewalPublishedDate": "20190314"
+    },
+    "version": "20250928020015",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "COOLFLUX"
+    }
+  },
+  "_uri": "/mark/wo/2e00aa14-212a-43a5-bfa3-30877e220136",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.461Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

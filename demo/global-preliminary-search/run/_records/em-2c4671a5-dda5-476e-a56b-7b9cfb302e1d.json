@@ -1,0 +1,1406 @@
+{
+  "uri": "/mark/em/2c4671a5-dda5-476e-a56b-7b9cfb302e1d",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "2c4671a5-dda5-476e-a56b-7b9cfb302e1d",
+  "applicationNumber": "19193407",
+  "registrationNumber": "19193407",
+  "applicationDate": "2025-05-26",
+  "registrationDate": "2025-09-14",
+  "expiryDate": "2035-05-26",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-06-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "KORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Software jako zdravotnický prostredek, ke stazení; Aplikacní software; Pocítacový software; Pocítacový software vztahující se k lékarství; Pocítacový software k pouzití v systémech pro podporu lékarského rozhodování; Cidla pro mericí nástroje; Pohybová cidla; Mericí senzory; Senzory motoru; Biosenzory; Alhidády; Úhlomery; Brýle pro virtuální realitu; 3D brýle; Diagnostické prístroje, ne lékarské; Optické mericí prístroje; Mobilní aplikace; Stahovatelné pocítacové aplikace; Elektronická mericí cidla; Sítnicové kamery (k jinému nez lékarskému pouzití); Software pro mobilní telefony; Software pro bioinformatiku; Senzorický software; Software na úpravu videí; Pocítacové programy na zpracování dat; Reportingový software; Software pro integraci umelé inteligence a strojového ucení v oblasti dat velkého objemu; Software ke sledování zdravotního stavu; Software pro správu velkoobjemových dat; Software pro virtuální realitu; Pocítacový software pro autorizaci prístupu do databází; Pocítacový software k vytvárení vyhledatelných databází informací a dat; Software umelé inteligence; Software umelé inteligence pro oblast zdravotní péce; Prístroje pro presná merení; Merící nástroje a zarízení; Prístroje na merení úhlu; Pocítacový software pro správu databází; Mericí prístroje a zarízení; Optická frekvencní metrologická zarízení; Softwarové aplikace ke stazení.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "cs",
+      "description": "Oftalmometry; Diagnostické nástroje k pouzití v oftalmologii; Oftalmologické kamery pro lékarské úcely; Pupilometry na merení vzdálenosti mezi zornicemi (PD); Pupilometry pro merení schopnosti zornic reagovat na podnety; Mericí prístroje k lékarskému pouzití; Presná cidla pro lékarské úcely; Optometrické nástroje; Nástroje pro optická lékarská vysetrení; Oftalmoskopy; Prístroje na testování zraku; Prístroje pro testování ocí; Telemetrická zarízení pro lékarské pouzití.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Vedecké a technologické sluzby; Sluzby v oblasti informacních technologií; Vývoj softwaru; Lékarský výzkum; Navrhování a vývoj pocítacového softwaru pro pouzití s lékarskými technologiemi; Laboratorní sluzby v oblasti výzkumu zamereného na optiku; Vedecké technologické sluzby; Vedecký výzkum a vývoj; Navrhování a vývoj lékarských technologií.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "cs",
+      "description": "Oftalmologické sluzby; Lécba ocních chorob a ocních poruch; Sluzby zdravotní péce; Lékarská vysetrení; Lékarské sluzby; Vystavování lékarských zpráv; Lékarský telereporting [lékarské sluzby]; Konzultace v oboru optometrie; Sluzby v oblasti optometrie; Sluzby v oblasti optometrie poskytované v domácím prostredí; Merení zraku (optika); Screening zraku; Lékarské zobrazovací sluzby; Telemedicína.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Software as a medical device [SaMD], downloadable; Applikationssoftware; Software; Computersoftware til det medicinske område; Computersoftware til brug i hjælpesystemer til medicinsk beslutningstagning; Sensorer til måleinstrumenter; Bevægelsesfølere; Målesensorer; Sensorer til motorer; Biosensorer; Alhidader; Linealer til måling af vinkler; Virtual reality-briller; 3D briller; Diagnoseapparater, ikke til medicinske formål; Optiske måleapparater; Mobilapplikationer; Softwareapplikationer til computere, downloadable; Elektroniske målesensorer; Nethindekameraer [andre end til medicinske formål]; Mobil software; Software til bioinformatik; Sensorisk software; Software til videoredigering; Computerprogrammer til databehandling; Software til mobiltelefoner; Software til rapportering; Software til integrering af kunstig intelligens og maskinlæring inden for big data; Software til sundhedsovervågning; Software til styring af big data; Virtual reality-software; Computersoftware til godkendelse af adgang til databaser; Computersoftware til oprettelse af søgbare databaser med information og data; Software til kunstig intelligens; Software til kunstig intelligens til sundhedspleje; Præcisionsmåleapparater; Måleapparater; Instrumenter til måling af vinkler; Computersoftwareprogrammer til databasestyring; Måleinstrumenter og -apparatur; Metrologienheder med optisk frekvens; Downloadable applikationssoftware.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "da",
+      "description": "Oftalmometre; Diagnosticeringsinstrumenter til oftalmologi; Oftalmologiske kameraer til medicinsk brug; Pupillometre til måling af pupilafstand (afstand mellem pupiller); Pupillometre til måling af pupilstørrelse (pupillers reaktionsevne ved stimulus); Måleapparater til medicinske formål; Præcisionssensorer til medicinske formål; Optometriske instrumenter; Optometriske instrumenter til undersøgelsesformål; Oftalmoskoper; Apparater til udførelse af synstests; Apparater til øjenundersøgelse; Telemetrianordninger til medicinsk brug.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Videnskabelige og teknologiske tjenesteydelser; IT tjenesteydelser; Softwareudvikling; Medicinsk forskning; Design og udvikling af computersoftware til anvendelse inden for medicinsk teknologi; Laboratorietjenester inden for optisk forskning; Videnskabelige teknologiske tjenesteydelser; Videnskabelig forskning og udvikling; Design og udvikling af medicinsk teknologi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "da",
+      "description": "Oftalmologisk virksomhed; Behandling af øjensygdomme og -lidelser; Sundhedspleje af mennesker; Medicinsk screening; Lægehjælp; Udstedelse af medicinske rapporter; Medicinsk fjernrapportering [medicinske ydelser]; Optometrisk rådgivningsvirksomhed; Optometriske tjenesteydelser; Optometriske tjenesteydelser i hjemmet; Synsprøver [optikervirksomhed]; Synsscreeningsydelser; Medicinsk afbildning; Telemedicinske ydelser.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Software als medisch hulpmiddel [SaMD], downloadbaar; Softwaretoepassingen; Software; Computersoftware op het gebied van de medische sector; Software voor medische beslissingsondersteunende systemen; Sensoren voor meetinstrumenten; Bewegingssensoren; Meetsensoren; Sensoren voor motoren; Biosensoren; Linialen met vizier; Hoekmeetlatten; Virtual-realitybrillen; 3D-brillen; Diagnostische apparaten, niet voor medisch gebruik; Meetapparaten (Optische -); Mobiele applicaties; Downloadbare computersoftware-applicaties; Meetsensoren (Elektronische -); Netvliescamera's [anders dan voor medisch gebruik]; Mobiele software; Bio-informatica software; Sensorische software; Videobewerkingssoftware; Computerprogramma's voor de gegevensverwerking; Software voor mobiele telefoons; Rapportagesoftware; Software voor de integratie van kunstmatige intelligentie en machinaal leren op het gebied van Big Data; Gezondheidsmonitoringsoftware; Big data beheersoftware; Software voor virtual reality; Software voor het autoriseren van toegang tot databases; Software voor het creëren van doorzoekbare databases met informatie en gegevens; Kunstmatige intelligentie software; Kunstmatige intelligentie software voor de gezondheidszorg; Precisiemeetapparaten; Meetapparaten; Hoekmeetapparatuur; Computer software voor databasebeheer; Meetapparatuur en -instrumenten; Metrologie-instrumenten met optische frequentie; Downloadbare softwareapplicaties.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "nl",
+      "description": "Oftalmometers; Oogheelkundig diagnostische instrumenten; Oogheelkundige camera's voor medische doeleinden; Pupillometers voor het meten van de pupilafstand; Pupillometrietoestellen voor het meten van de reactiviteit van de pupillen op stimuli; Meetapparaten voor medisch gebruik; Precisiesensoren voor medisch gebruik; Optometrische instrumenten; Optisch-medische onderzoeksinstrumenten; Oftalmoscopen; Apparatuur voor het onderzoeken van het zicht; Oogtestapparatuur; Telemetrieapparatuur voor medische toepassingen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Wetenschappelijke en technologische diensten; IT-diensten; Ontwikkeling van software; Wetenschappelijk onderzoek op medisch gebied; Ontwerpen en ontwikkelen van software voor gebruik met medische technologie; Diensten van optische onderzoekslaboratoria; Wetenschappelijk-technologische diensten; Wetenschappelijk onderzoek en ontwikkeling; Ontwerp en ontwikkeling van medische technologieën.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "nl",
+      "description": "Oogheelkundige diensten; Behandeling van oogziekten en -aandoeningen; Gezondheidszorg voor mensen; Medisch testen; Geneeskundige assistentie; Medische rapporten (Afgeven van -); Medische telerapportering [medische diensten]; Optometrische consultatie; Optometrische diensten; Optometrische diensten aan huis; Testen van het zicht [diensten van opticiens]; Screening van het gezichtsvermogen; Medische beeldvorming; Doktersdiensten [op afstand verleend].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Software as a medical device [SaMD], downloadable; Application software; Software; Computer software relating to the medical field; Computer software for use in medical decision support systems; Sensors for measuring instruments; Motion sensors; Measuring sensors; Sensors for engines; Bio-sensors; Alidades; Joint angle measuring rulers; Virtual reality glasses; 3D spectacles; Diagnostic apparatus, not for medical purposes; Optical measurement apparatus; Mobile apps; Computer software applications, downloadable; Electronic measurement sensors; Retinal cameras [other than for medical use]; Mobile software; Bioinformatics software; Sensory software; Video editing software; Computer programmes for data processing; Software for mobile phones; Reporting software; Software for the integration of artificial intelligence and machine learning in the field of Big Data; Health monitoring software; Big data management software; Virtual reality software; Computer software for authorising access to databases; Computer software for creating searchable databases of information and data; Artificial intelligence software; Artificial intelligence software for healthcare; Precision measuring apparatus; Measuring apparatus; Instruments for measuring angles; Computer software for database management; Measuring apparatus and instruments; Optical frequency metrology devices; Downloadable software applications.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "en",
+      "description": "Keratometers; Diagnostic instruments for ophthalmology; Ophthalmic cameras for medical purposes; Pupillometers for measuring pupillary distance (PD); Pupillometers for measuring pupillary reactivity to stimulus; Measuring devices for medical use; Precision sensors for medical use; Optometric instruments; Optomedical examination instruments; Ophthalmoscopes; Vision testing apparatus; Eye testing apparatus; Telemetry devices for medical applications.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Science and technology services; IT services; Software development; Medical research; Design and development of computer software for use with medical technology; Optical research laboratory services; Scientific technological services; Scientific research and development; Design and development of medical technology.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "en",
+      "description": "Ophthalmological services; Treatment of eye diseases and conditions; Human healthcare services; Medical screening; Medical assistance; Issuing of medical reports; Medical tele-reporting [medical services]; Optometry consultation; Optometry services; Home-visit optometry services; Sight-testing [opticians'] services; Vision screening services; Medical imaging services; Telemedicine services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Allalaaditav tarkvara meditsiiniseadmena [SaMD]; Rakenduslik tarkvara; Arvutitarkvara; Meditsiinialane arvutitarkvara; Arvutitarkvara meditsiiniliste otsustuste ja diagnooside tugisüsteemide jaoks; Mõõtevahendite andurid; Liikumisandurid; Mõõteandurid; Biosensorid; Alidaadid [nurgamõõteriistade osad]; Liitenurga mõõtejoonlauad; Virtuaalreaalsuse prillid; 3D-prillid; Diagnostikaaparaadid, v.a meditsiinilised; Optilised mõõteseadmed; Mobiilirakendused; Allalaaditavad arvutitarkvararakendused; Elektroonilised mõõteandurid; Reetinakaamerad [v.a meditsiiniliseks kasutamiseks]; Mobiiltelefonide tarkvara; Bioinformaatika tarkvara; Sensoorne tarkvara; Videotoimetustarkvara; Arvutiprogrammid andmetöötluseks; Tarkvara mobiiltelefonidele; Aruandlustarkvara; Tehisintellekti ja masinõppe lõimimise tarkvara suurandmete valdkonnas; Terviseseire tarkvara; Suurandmete haldamise tarkvara; Virtuaalreaalsuse tarkvara; Arvutitarkvara andmebaasidele juurdepääsu lubamiseks; Arvutitarkvara otsimisfunktsiooniga andme- ja infobaaside loomiseks; Tehisintellektitarkvara; Tervishoiu tehisintellektitarkvara; Täppismõõteriistad, täppismõõdikud; Mõõteaparaadid, mõõteseadmed; Nurgamõõtevahendid; Arvutitarkvaraprogrammid andmebaasi haldamiseks; Mõõtevahendid ja -seadmed; Metroloogiaseadmed opliliste signaalide sageduste mõõtmiseks; Allalaaditavad tarkvararakendused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "et",
+      "description": "Oftalmomeetrid; Oftalmoloogilised diagnostikaseadmed; Oftalmilised kaamerad meditsiiniliseks kasutuseks; Pupillide vahekauguse (PD) mõõtmise pupillomeetrid; Pupillide stiimulile reageerivuse mõõtmise pupillomeetrid; Meditsiinilised mõõteseadmed; Täppisandurid meditsiiniliseks kasutuseks; Optomeetriaseadmed; Optomeditsiinilised läbivaatusseadmed; Oftalmoskoobid, silmapeeglid; Nägemiskontrolli aparatuur; Silmaanalüsaatorid; Meditsiinirakenduste telemeetriaseadmed.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Teadus- ja tehnoloogiateenused; IT-teenused; Tarkvara arendamine; Meditsiinilised uurimistööd; Meditsiinitehnika arvutitarkvara uurimis-arendustegevus; Optikauuringute laboriteenused; Teadustehnoloogilised teenused; Teaduslik uurimis- ja arendustegevus; Meditsiinitehnika projekteerimine ja arendamine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "et",
+      "description": "Oftalmoloogilised teenused; Silmahaiguste ja seisundite ravi; Inimeste tervishoiuteenused; Meditsiinilised sõeluuringud; Arstiabi; Meditsiiniliste aruannete väljastamine; Meditsiiniline kaugaruandlus [meditsiiniteenused]; Optomeetriakonsultatsioon; Optomeetriateenused; Optometristi koduvisiidi teenused; Nägemiskontrolliteenused [optikuteenused]; Nägemise sõeluuringuteenused; Meditsiiniülesvõttetehnika teenused; Telemeditsiiniteenused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Ohjelmistot lääketieteellisenä laitteena (SaMD), ladattavat; Sovellusohjelmistot; Ohjelmistot; Lääketieteen alaan liittyvät tietokoneohjelmistot; Tietokoneohjelmistot käytettäväksi lääketieteellisiin päätöksiin liittyvissä tukijärjestelmissä; Mittausvälineiden anturit; Liikkeentunnistusanturit; Mittausanturit; Ilmaisimet moottoreille; Bioanturit; Alhidadet; Nivelkulman mittaviivaimet; Virtuaalitodellisuuslasit; 3D-silmälasit; Diagnoosilaitteet, ei-lääketieteellisiin tarkoituksiin; Optiset mittauslaitteet; Mobiilisovellukset; Ladattavat tietokoneohjelmistosovellukset; Elektroniset mittausanturit; Verkkokalvokamerat [muuhun kuin lääketieteelliseen käyttöön]; Matkapuhelinlaitteiden ohjelmistot; Bioinformatiikkaohjelmistot; Aistinvaraiset ohjelmistot; Tietokoneohjelmat videoiden editointiin; Tietojenkäsittelyohjelmistot; Ohjelmistot matkapuhelimia varten; Raportointiohjelmistot; Ohjelmistot tekoälyn ja koneoppimisen integrointiin massadatan alalla; Terveydenseurantaohjelmistot; Suuren tietomäärän hallintaohjelmistot; Virtuaalitodellisuusohjelmistot; Tietokoneohjelmistot tietokantojen käytön autorisointia varten; Tietokoneohjelmistot tietoja ja dataa sisältävien hakutietokantojen luomiseen; Tekoälyohjelmistot; Tekoälyohjelmistot terveydenhoitoon; Täsmämittauslaitteet; Mittalaitteet; Kulmien mittausvälineet; Tietokoneohjelmat tietokantojen hallintaa varten; Mittauslaitteet ja välineet; Optiset taajuusmetrologialaitteet; Ladattavat ohjelmistosovellukset.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "fi",
+      "description": "Oftalmometrit; Diagnostiset välineet oftalmologiaan; Silmälääketieteelliset kamerat lääkinnällisiin tarkoituksiin; Silmäterävälin mittaukseen tarkoitetut mittausvälineet; Pupillometrit pupillien ärsykkeisiin reagoinnin mittaamiseen; Mittauslaitteet lääketieteellisiin tarkoituksiin; Tarkkuusanturit lääketieteelliseen käyttöön; Optometriset kojeet; Opto-lääketieteelliset tutkimusvälineet; Oftalmoskoopit; Näöntarkastuslaitteet; Silmien analysointilaitteet; Telemetrialaitteet lääketieteellisiin sovelluksiin.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Tieteelliset ja teknologiset palvelut; IT-palvelut; Ohjelmistokehitys; Lääketieteen tutkimuspalvelut; Lääketieteellisessä tekniikassa käytettävien tietokoneohjelmistojen suunnittelu ja kehittäminen; Optiseen tutkimukseen liittyvät laboratoriopalvelut; Tieteelliset teknologiapalvelut; Tieteellinen tutkimus ja kehittely; Lääketieteen teknologian suunnittelu ja kehittäminen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "fi",
+      "description": "Silmälääketieteelliset palvelut; Silmäsairauksien ja -vaivojen hoito; Terveydenhoitopalvelut ihmisille; Lääketieteellinen seulonta; Lääkinnällinen apu; Lääketieteellisten raporttien jakelu; Lääketieteellinen etäraportointi [lääketieteelliset palvelut]; Optometriaan liittyvä konsultointi; Näönhuoltopalvelut; Optometriaan liittyvät kotikäyntipalvelut; Näöntestauspalvelut (optikon palvelut); Näöntarkastuspalvelut; Lääketieteelliset kuvantamispalvelut; Etähoitopalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciels en tant que dispositifs médicaux [SaMD] téléchargeables; Logiciels d'applications; Logiciel; Logiciels dans le domaine médical; Logiciels destinés aux systèmes d'assistance en décisions médicales; Capteurs pour instruments de mesurage; Détecteurs de mouvements; Capteurs de mesure; Capteurs pour moteurs; Biosenseurs; Alidades à lunettes; Règles articulées de mesure d'angle; Lunettes de réalité virtuelle; Lunettes 3D; Appareils pour le diagnostic non à usage médical; Appareils optiques de mesure; Applications logicielles pour téléphones mobiles; Applications logicielles informatiques téléchargeables; Capteurs de mesure électroniques; Rétinographes autres qu'à usage médical; Logiciels pour téléphones mobiles; Logiciels de bio-informatique; Logiciel sensoriel; Logiciels pour éditer des vidéos; Programmes informatiques de traitement de données; Logiciels d'établissement de rapports; Logiciels pour l'intégration de l'intelligence artificielle et l'apprentissage machine dans le domaine des mégadonnées; Logiciels pour la surveillance de la santé; Logiciel de gestion de mégadonnées; Logiciels de réalité virtuelle; Logiciels d'autorisation d'accès aux bases de données; Logiciels informatiques de création de bases de données de recherche d'informations et de données; Logiciels d'intelligence artificielle; Logiciels d'intelligence artificielle pour les soins de santé; Appareils de mesure de précision; Mesureurs; Instruments de mesure d'angles; Logiciels de gestion de bases de données; Instruments et appareils de mesure; Dispositifs de métrologie des fréquences optiques; Applications logicielles téléchargeables.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "fr",
+      "description": "Kératomètres; Instruments de diagnostic en ophtalmologie; Caméras ophtalmiques à usage médical; Pupillomètres servant à mesurer l'écartement des pupilles; Pupillomètres pour mesurer la réactivité des pupilles à une stimulation; Dispositifs de mesure à usage médical; Capteurs de précision à usage médical; Instruments d'optométrie; Instruments d'examens optomédicaux; Ophtalmoscopes; Appareils pour examens de la vue; Appareils pour tests ophtalmologiques; Dispositifs de télémétrie pour applications médicales.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services scientifiques et technologiques; Services des technologies de l'information; Développement de logiciels; Recherche médicale; Conception et développement de logiciels destinés à être utilisés dans le cadre de technologies médicales; Services de laboratoires de recherche dans le domaine de l'optique; Services scientifico-technologiques; Recherche et développement scientifique; Conception et développement de technologies médicales.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "fr",
+      "description": "Services ophtalmologiques; Traitement des maladies et affections oculaires; Services de soins de santé pour êtres humains; Dépistage médical; Assistance médicale; Établissement de rapports médicaux; Télésignalement [services médicaux]; Consultation optométrique; Services d'optométrie; Services d'optométrie à domicile; Services d'opticiens pour examens de la vue; Services de contrôle des capacités visuelles; Services d'imagerie médicale; Services de télémédecine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Herunterladbare Software as a Medical Device [SaMD]; Anwendungssoftware; Software; Computersoftware für den medizinischen Bereich; Computersoftware zur Verwendung für Systeme zur Unterstützung von medizinischen Entscheidungen; Sensoren für Messinstrumente; Bewegungsmelder; Messsensoren; Sensoren für Motoren; Biosensoren; Diopterlineale; Gelenk-Winkelmesslineale; Virtual-Reality-Brillen; 3D-Brillen; Diagnoseapparate, nicht für medizinische Zwecke; Optische Messgeräte; Mobile Apps; Herunterladbare Software-Anwendungen für Computer; Elektronische Messfühler; Retinalkameras [ausgenommen für medizinische Zwecke]; Software für Mobilgeräte; Bioinformatik-Software; Sensorik-Software; Videobearbeitungssoftware; Datenverarbeitungssoftware; Software für Mobiltelefone; Berichtssoftware; Software zur Einbindung von künstlicher Intelligenz und maschinellem Lernen im Bereich von Big Data; Software zur Überwachung der Gesundheit; Big Data-Managementsoftware; Virtual-Reality-Software; Computersoftware zur Genehmigung des Zugriffs auf Datenbanken; Computersoftware zur Erstellung von durchsuchbaren Datenbanken mit Informationen und Daten; Künstliche Intelligenz-Software; Künstliche Intelligenz-Software für das Gesundheitswesen; Präzisionsmessgeräte; Messgeräte; Instrumente zum Messen von Winkeln; Computersoftware für Datenbankverwaltung; Messapparate und -instrumente; Optische Frequenzmessgeräte; Herunterladbare Software-Anwendungen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "de",
+      "description": "Ophthalmometer; Diagnoseinstrumente für die Ophthalmologie; Oph­thal­mische Kameras für medizinische Zwecke; Pupillometer zur Messung der Pupillendistanz [PD]; Pupillometer zur Messung der Pupillenreaktivität gegenüber Reizen; Messgeräte für medizinische Zwecke; Präzisionssensoren für medizinische Zwecke; Optometrische Instrumente; Optomedizinische Untersuchungsinstrumente; Ophthalmoskope; Geräte zur Feststellung der Sehstärke; Sehtestgeräte; Telemetriegeräte für medizinische Anwendungen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Wissenschaftliche und technologische Dienstleistungen; IT-Dienstleistungen; Softwareentwicklung; Medizinische Forschung; Entwurf und Entwicklung von Computersoftware für die Medizintechnik; Dienstleistungen eines Forschungslabors im Bereich Optik; Wissenschaftlich-technologische Dienstleistungen; Wissenschaftliche Forschung und Entwicklung; Entwurf und Entwicklung von Medizintechnik.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "de",
+      "description": "Ophthalmologische Dienste; Behandlung von Augenkrankheiten und -beschwerden; Gesundheitspflege für den Menschen; Medizinisches Screening; Dienstleistungen eines Arztes; Erstellen von ärztlichen Berichten; Ärztliches Tele-Reporting [medizinische Dienstleistung]; Beratung auf dem Gebiet der Optometrie; Optometrische Dienste; Im Rahmen von Hausbesuchen erbrachte optometrische Dienste; Durchführung von Sehtests [Dienstleistungen von Optikern]; Vorsorgeuntersuchungen bezüglich des Sehvermögens; Medizinische Bildgebungsdienste; Telemedizin-Dienste.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Softver kao medicinski uredaj [SaMD], koji se moze preuzeti; Aplikacijski softver; Softver; Racunalni softver u vezi s podrucjem medicine; Racunalni programi za uporabu u medicini kao pomoc pri donosenju odluka; Senzori za mjerne instrumente; Senzori pokreta; Senzori za mjerenje; Senzori za motore; Biosenzori; Alhidade; Ravnala za mjerenje kuta zgloba; Naocale za generiranje virtualne stvarnosti; 3D naocale; Aparati za dijagnosticiranje [nisu za medicinske potrebe]; Opticki uredaji za mjerenje; Mobilne aplikacije; Aplikacije za racunalne programe koje se mogu preuzeti s Interneta; Elektronicki mjerni sensori; Kamere za mreznice [osim za medicinsku uporabu]; Softver za mobilne uredaje; Bioinformaticki softver; Senzorni softver; Softver za uredivanje videozapisa; Softver za obradu podataka; Softver za mobilne telefone; Softver za izvjescivanje; Softver za integriranje umjetne inteligencije i strojnog ucenja u podrucju velikih podataka; Softver za pracenje zdravlja; Softver za upravljanje velikom kolicinom podataka; Racunalni program za virtualnu stvarnost; Racunalni program za autorizaciju pristupa bazama podataka; Racunalni programi za kreiranje pretrazivih baza podataka i informacija; Softver za umjetnu inteligenciju; Softver za umjetnu inteligenciju namijenjen za zdravstvenu skrb; Aparati za precizno mjerenje; Mjerni instrumenti; Instrumenti za mjerenje kutova; Racunalni softver za upravljanje bazama podataka; Mjerni aparati i instrumenti; Mjerni uredaj na opticke frekvencije; Softverske aplikacije koje se mogu preuzeti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "hr",
+      "description": "Oftalmometri; Dijagnosticki instrumenti za oftalmologiju; Oftalmoloske kamere za medicinske potrebe; Pupilometri za mjerenje razmaka izmedu zjenica; Pupilometri, naprave za merjenje zjenicne reakcije na podrazaje; Mjerne naprave za medicinske primjene; Senzori preciznosti za medicinsku uporabu; Optometrijski instrumenti; Instrumenti za opticki medicinski pregled; Oftalmoskopi; Uredaji za ispitivanje vida; Telemetrijski uredaji za medicinske primjene.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Usluge znanosti i tehnologije; Usluge informacijske tehnologije; Razvoj softvera; Medicinska istrazivanja; Dizajn i razvoj racunalnih programa za uporabu s medicinskom tehnologijom; Usluge laboratorija za opticka istrazivanja; Znanstvene tehnoloske usluge; Znanstveno istrazivanje i razvoj; Dizajn i razvoj medicinske tehnologije.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "hr",
+      "description": "Oftalmoloske usluge; Lijecenje ocnih bolesti i stanja; Zdravstvene usluge za ljude; Lijecnicki skrining; Medicinska pomoc; Izdavanje medicinskih izvjestaja; Prenosenje informacija uporabom informacijsko-komunikacijskih tehnologija [medicinske usluge]; Optometrijske konzultacije; Optometrijske usluge; Optometrijske usluge u kuci; Usluge testiranja vida [opticarske]; Usluge provjere vida; Usluge medicinskog snimanja; Usluge telemedicine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Letöltheto szoftverek mint orvosi eszközök [SaMD]; Applikációs szoftver; Szoftverek; Számítógépes szoftverek gyógyászati területhez kapcsolódóan; Számítógépes szoftverek orvosi döntéshozatal segítéséhez; Érzékelok méromuszerekhez; Mozgásérzékelok; Méroszenzorok; Érzékelok motorokhoz; Bioszenzorok; Alhidádék; Csatlakozási szögméro vonalzók; Virtuális valóság szemüvegek; Háromdimenziós szemüvegek; Diagnosztikai berendezések, nem gyógyászati célokra; Optikai méroberendezések; Mobil alkalmazások; Számítógépes szoftveralkalmazások, letöltheto; Elektronikus méroérzékelok; Retinakamerák [nem orvosi használatra]; Mobil szoftverek; Bioinformatikai szoftverek; Érzékelo szoftverek; Videoszerkeszto szoftverek; Adatfeldolgozó szoftverek; Mobiltelefon-szoftverek; Jelentéskészíto szoftverek; Szoftverek a mesterséges intelligencia és a gépi tanulás integrálásához a big data terén; Egészségmonitorozó szoftverek; Nagy adathalmazokat kezelo szoftverek; Virtuális valóság szoftverek; Számítógépes szoftverek adatbázisokhoz való hozzáférés engedélyezéséhez; Számítógépes szoftver információk és adatok keresheto adatbázisának létrehozására; Mesterségesintelligencia-szoftverek; Mesterségesintelligencia-szoftverek egészségügyi ellátáshoz; Precíziós méromuszerek; Méromuszerek; Szögméro muszerek; Számítógépes szoftver programok adatbáziskezeléshez; Méroeszközök- és berendezések; Optikai frekvenciametrológiai eszközök; Letöltheto szoftveralkalmazások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "hu",
+      "description": "Oftalmométerek; Szemészeti diagnosztikai berendezések; Szemészeti kamerák gyógyászati célokra; Pupillométerek a pupillatávolság (PD) mérésére; Pupillométerek a pupilla ingerekre való reakciójának mérésére; Orvosi méroeszközök; Precíziós érzékelok orvosi használatra; Optometriai eszközök, muszerek; Orvosi optikai vizsgálóeszközök, muszerek; Oftalmoszkópok; Látásvizsgáló berendezések; Szemvizsgáló készülékek; Telemetriás eszközök orvosi alkalmazásokhoz.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Tudományos és technológiai szolgáltatások; Információtechnológiai [IT] szolgáltatások; Számítógépes szoftver fejlesztése; Orvosi kutatás; Orvosi technológiákkal használatos számítógépes szoftverek tervezése és fejlesztése; Optikai laboratóriumi kutatási szolgáltatások; Tudományos technológiai szolgáltatások; Tudományos kutatás és fejlesztés; Orvosi technológiák tervezése és fejlesztése.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "hu",
+      "description": "Szemészeti szolgáltatások; Szembetegségek és állapotok kezelése; Emberi egészségügyi szolgáltatások; Orvosi szurovizsgálatok; Orvosi ellátás; Orvosi jelentések kibocsátása; Gyógyászati távjelentések [gyógyászati szolgáltatások]; Konzultáció az optometria terén; Optometriai szolgáltatások; Otthon végzett optometriai szolgáltatások; Látásvizsgálati [optikusi] szolgáltatások; Szemészeti szurési szolgáltatások; Orvosi képalkotó szolgáltatások; Távgyógyászati szolgáltatások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Software come dispositivo medico [SaMD] scaricabile; Software specializzati; Software; Software relativi al settore medico; Software per sistemi di supporto per decisioni mediche; Sensori per strumenti di misura; Sensori di movimento; Sensori di misura; Rivelatori di movimento; Biosensori; Alidade a cannocchiale; Righelli articolati per la misurazione deli angoli; Occhiali per la realtà virtuale; Occhiali per 3D; Apparecchi per la diagnosi non per uso medico; Apparecchi per la misurazione ottica; Applicazioni per cellulari; Software applicativo per computer, scaricabile; Sensori di misurazione elettronici; Telecamere retiniche [non per uso medico]; Software per cellulari; Software bioinformatico; Software sensoriale; Programmi per computer per il montaggio video; Programmi per computer per l'elaborazione di dati; Software per telefoni cellulari; Software di rendicontazione; Software per l'integrazione dell'intelligenza artificiale e dell'apprendimento automatico nel campo dei megadati; Software per monitoraggio sanitario; Software per la gestione di big data; Software per realtà virtuale; Software per autorizzare l'accesso a banche dati; Software per creazione di banche dati di informazioni e dati in cui fare ricerca; Software di intelligenza artificiale; Software di intelligenza artificiale per servizi medici; Apparecchi di misura di precisione; Misuratori; Strumenti per misurare gli angoli; Programmi software per la gestione di banche dati; Apparecchi e strumenti di misura; Dispositivi a frequenza ottica per metrologia; Applicazioni software scaricabili.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "it",
+      "description": "Oftalmometri; Apparecchiature diagnostiche oftalmologiche; Apparecchi fotografici oftalmologici per uso medico; Pupillometri per misurare la distanza pupillare (PD); Pupillometri per misurare la reattività pupillare agli stimoli; Dispositivi di misurazione per uso medico; Sensori di precisione per uso medico; Strumenti optometrici; Strumenti di esame ottico-medici; Oftalmoscopi; Apparecchiature per l'esame della vista; Apparecchi per l'analisi degli occhi; Dispositivi di telemetria per applicazioni mediche.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Servizi di scienza e tecnologia; Servizi informatici; Sviluppo di software; Ricerca medica; Progettazione e sviluppo di software per tecnologie mediche; Servizi di laboratori di ricerca in ottica; Ricerca e sviluppo scientifici; Progettazione e sviluppo di tecnologie mediche.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "it",
+      "description": "Servizi oftalmologici; Trattamento di malattie e disturbi degli occhi; Servizi di assistenza sanitaria alle persone; Analisi mediche; Servizi medici; Pubblicazione di relazioni mediche; Telerefertazione [servizi medici]; Consultazione in materia di optometria; Servizi di optometria; Servizi di optometria a domicilio; Servizi di esami della vista [servizi oculistici]; Servizi di screening della vista; Servizi di tomografia medica; Servizi di telemedicina.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Parsisiunciamoji programine iranga kaip medicinine priemone [SaMD]; Taikomoji programine iranga; Programine iranga; Medicinos srities kompiuteriu programine iranga; Kompiuteriu programine iranga, naudojama medicininiu sprendimu paramos sistemose; Matavimo prietaisu jutikliai; Judesio jutikliai; Matavimo jutikliai; Varikliu jutikliai; Biologiniai jutikliai; Alidades; Sarnyrines liniuotes; Virtualiosios realybes akiniai; 3D akiniai; Diagnostikos aparatai (ne medicinos reikmems); Optiniai matavimo aparatai; Mobiliuju irenginiu taikomoji programine iranga; Parsisiunciamoji kompiuteriu programine iranga; Elektroniniai matavimo jutikliai; Tinklaines kameros [ne medicinos reikmems]; Mobilioji programine iranga; Bioinformatikos programine iranga; Jutikline programine iranga; Vaizdo irasu redagavimo programine iranga; Kompiuteriu duomenu dorojimo programos; Mobiliuju telefonu programine iranga; Ataskaitu rengimo programine iranga; Programine iranga dirbtiniam intelektui ir masinu mokymuisi diegti didziuju duomenu srityje; Sveikatos stebejimo programine iranga; Dideles apimties duomenu valdymo programine iranga; Virtualiosios realybes programine iranga; Kompiuteriu programine iranga prieigai prie duomenu baziu autorizuoti; Kompiuterine programine iranga, skirta paieskomosioms duomenu ir informacinems duomenu bazems kurti; Dirbtinio intelekto programine iranga; Dirbtinio intelekto programine iranga sveikatos prieziuros reikmems; Tikslieji matavimo prietaisai; Matavimo aparatai; Kampu matavimo prietaisai; Kompiuteriu programine iranga programos duomenu bazems tvarkyti; Matavimo aparatai ir instrumentai; Optiniai daznio matavimo prietaisai; Parsisiunciamoji taikomoji programine iranga.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "lt",
+      "description": "Oftalmometrai; Oftalmologiniai diagnostikos instrumentai; Oftalmologijos kameros medicinos reikmems; Pupilometrai atstumui tarp vyzdziu matuoti; Prietaisai vyzdziu reakcijai i dirgiklius matuoti; Matavimo prietaisai medicinos reikmems; Preciziniai jutikliai medicinos reikmems; Optometriniai prietaisai; Optines medicinines apziuros instrumentai; Oftalmoskopai; Regejimo tikrinimo aparatai; Akiu testavimo aparatai; Telemetrijos prietaisai medicinos reikmems.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Mokslo ir technologiju paslaugos; Informaciniu technologiju paslaugos; Programines irangos tobulinimas; Medicininiai tyrimai; Su medicinos technologijomis skirtos naudoti kompiuteriu programines irangos projektavimas ir tobulinimas; Optikos tyrimu laboratoriju paslaugos; Mokslo technologiju paslaugos; Moksliniai tyrimai ir pletra; Medicinos technologijos kurimas ir tobulinimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "lt",
+      "description": "Oftalmologu paslaugos; Akiu ligu ir bukliu gydymas; Zmoniu sveikatos prieziuros paslaugos; Sveikatos tikrinimas; Medicinos pagalba; Medicininiu ataskaitu isdavimas; Medicininiu ataskaitu teikimas nuotoliniu budu [medicinos paslaugos]; Optometrijos konsultacijos; Optometrijos paslaugos; Optometrijos paslaugos atvykstant i namus; Regejimo patikrinimas [optiku paslaugos]; Regejimo patikros paslaugos; Medicininio organu atvaizdavimo paslaugos; Telemedicinos paslaugos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Lejupieladejama programmatura ka mediciniska ierice (SaMD); Lietojumprogrammatura; Programmatura; Datoru programmatura saistiba ar medicinas jomu; Datoru programmatura mediciniska rakstura lemumu pienemsanas atbalstsistemam; Sensori merinstrumentiem; Kustibu sensori; Merisanas sensori; Dzineju sensori; Biologiskie sensori; Alidades; Sarnirveida transportiera lineali; Brilles virtualai realitatei; Brilles attelu uztverei 3D formata; Diagnostikas aparati, ne mediciniskiem nolukiem; Optiskas merisanas ierices; Mobilas lietotnes; Lejupieladejamas lietojumprogrammas; Elektroniski merisanas sensori; Kameras tiklenes attelu uznemsanai [ne mediciniskiem nolukiem]; Parvietojama programmatura; Bioinformatikas programmatura; Sensoru programmatura; Videoredigesanas programmatura; Datorprogrammas datu apstradei; Mobilo talrunu programmatura; Programmatura zinojumu sagatavosanai; Programmatura maksliga intelekta un masinmacisanas integresanai lielo datu joma; Veselibas uzraudzibas programmatura; Programmatura lielo datu parvaldibai; Virtualas realitates programmatura; Datoru programmatura, kas atlauj pieklut datubazem; Informacijas un datu meklesanas datubazu veidosanas programmatura; Maksliga intelekta programmatura; Maksliga intelekta programmatura veselibas aprupei; Augstas precizitates meraparati; Meraparatura; Lenku merinstrumenti; Datoru programmatura datubazu parvaldibai; Merisanas ierices un instrumenti; Optiskas frekvences merisanas ierices; Lejupieladejamas programmaturas lietotnes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "lv",
+      "description": "Oftalmometri; Diagnostikas instrumenti oftalmologijai; Oftalmologiskas kameras mediciniskiem nolukiem; Pupilometri attaluma merisanai starp zilitem; Pupilometri zilites reagetspejas merisanai uz kairinajumu; Merierices mediciniskam nolukam; Precizitates sensori mediciniskiem nolukiem; Optometriskie instrumenti; Optiskie instrumenti, kas paredzeti mediciniskam parbaudem; Oftalmoskopi; Redzes parbaudes aparati; Acu parbaudes iekartas; Telemetrijas ierices mediciniskai lietosanai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Zinatniskie un tehnologiskie pakalpojumi; Informacijas programmesanas pakalpojumi; Programmaturas izstrade; Mediciniska izpete; Datoru programmaturas projektesana un izstrade izmantosanai ar medicinas tehnologiju; Optiskas petniecibas laboratorijas pakalpojumi; Zinatniski tehnologiskie pakalpojumi; Zinatniska petnieciba un izstrade; Medicinas tehnologijas projektesana un izstrade.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "lv",
+      "description": "Oftalmologiskie pakalpojumi; Acu slimibu un traucejumu arstesana; Veselibas aprupe cilvekam; Mediciniskais skrinings; Arstnieciska aprupe; Medicinisko izzinu izsniegsana; Mediciniskas informacijas telereportesana (medicinas pakalpojumi); Optometrijas konsultaciju sniegsana; Optometrijas pakalpojumi; Optometrijas pakalpojumi majas; Redzes parbaudes [optiku] pakalpojumi; Redzes skrininga pakalpojumi; Mediciniskie attelveidosanas pakalpojumi; Telemedicinas pakalpojumi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Softwer bhala taghmir mediku [SaMD], li jista' jitnizzel; Softwer ghal applikazzjonijiet; Softwer; Softwer tal-kompjuter relatat mal-qasam mediku; Softwer tal-kompjuter ghall-uzu f'sistemi ta' ghajnuna fit-tehid ta' decizjonijiet medici; Sensers ghall-istrumenti tal-kejl; Sensuri tac-caqliq; Strumenti li jhossu u jkejlu; Ditekters tac-caqliq; Bijo-sensuri; Strumenti ghad-determinazzjoni tad-direzzjoni jew ghall-kejl ta' angoli; Rigi tal-kejl ghall-gonot tal-irkejjen; Nuccalijiet ghar-realtà virtwali; Nuccalijiet 3D; Apparat dijanjostiku, mhux ghal skopijiet medici; Apparat ottiku ghall-kejl; Applikazzjoni tat-taghmir cellulari; Applikazzjonijiet ta' softwer tal-kompjuter, li jitnizzlu; Sensuri elettronici ghall-kejl; Kameras tar-retina (minbarra ghall-uzu mediku); Softwer tal-mowbajl; Softwer tal-bijoinformatika; Softwer sensorjali; Programmi tal-kompjuter ghall-editjar tal-vidjows; Programmi tal-kompjuter ghall-ipprocessar ta' data; Softwer ghat-telefoni cellulari; Softwer ta' rapportagg; Softwer ghall-integrazzjoni tal-intelligenza artificjali u taghlim bil-magni fil-qasam ta' data kbira; Softwer ghall-monitoragg tas-sahha; Softwer ghal gestjoni ta' data kbira; Softwer tar-realtà virtwali; Softwer tal-kompjuter ghall-awtorizzazzjoni ta' access ghal sistemi tal-hazna tad-data; Softwer tal-kompjuter ghall-holqien ta' sistemi ghall-hazna ta' data accessibbli ghat-tiftix ta' informazzjoni u data; Softwer ta' intelligenza artificjali; Softwer tal-intelligenza artificjali ghall-kura tas-sahha; Apparat ghall-kejl bi precizjoni; Strumenti tal-kejl; Strumenti ghall-kejl ta' angoli; Softwer tal-kompjuter ghall-gestjoni tad-database; Apparat u strumenti ta' kejl; Strumenti tal-metrologija tal-frekwenza ottika; Applikazzjonijiet ta' softwer li jista' jitnizzel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "mt",
+      "description": "Oftalmometri; Strumenti dijanjostici ghall-oftalmologija; Kameras oftalmici ghal skopijiet medici; Puppillometri ghall-kejl tad-distanza pupillari (PD); Pupillometri ghall-kejl tar-reattività pupillari ghall-istimolu; Mezzi tal-kejl ghal uzu mediku; Strumenti sensuri ta' precizjoni ghall-uzu mediku; Strumenti ottometrici; Strumenti tal-ezaminazzjoni ottomedika; Oftalmoskopji; Apparat ghall-ittestjar tal-vista; Apparat ghall-ittestjar tal-ghajnejn; Strumenti tat-telemetrija ghal applikazzjonijiet medici.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Servizzi xjentifici u teknologici; Servizzi tal-IT; Zvilupp ta' softwer; Ricerka medika; Disinn u zvilupp ta' softwer tal-kompjuter ghall-uzu ma' teknologija medika; Servizzi ta' ricerka ottika fil-laboratorju; Servizzi teknologici xjentifici; Ricerka u zvilupp xjentifiku; Disinn u zvilupp ta' teknologija medika.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "mt",
+      "description": "Servizzi oftalmologici; Trattament ta' mard u kundizzjonijiet tal-ghajnejn; Servizzi ghal-kura tas-sahha tal-bniedem; Iskrinjar mediku; Assistenza medika; Hrug ta' rapporti medici; Telerappurtar mediku [servizzi medici]; Konsultazzjoni tal-ottometrija; Servizzi ottometrici; Servizzi ottometrici ta' zjarat fid-dar; Servizzi ta' testijiet tal-vista [servizzi tal-ottiku]; Servizzi ghall-iskrinjar tal-vizta; Servizzi ta' immagni medici; Servizzi ta' telemedicina.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Oprogramowanie jako urzadzenie medyczne [SaMD], do pobrania; Oprogramowanie uzytkowe; Oprogramowanie; Oprogramowanie komputerowe zwiazane z dziedzina medyczna; Oprogramowanie komputerowe do wykorzystania w systemach wspomagajacych podejmowanie decyzji medycznych; Czujniki do przyrzadów pomiarowych; Czujniki ruchu; Czujniki pomiarowe; Czujniki do silników; Czujniki biologiczne; Alidady [czesci skladowe przyrzadów optycznych]; Linijki pomiarowe do katów zlacza; Okulary do rzeczywistosci wirtualnej; Okulary 3D; Urzadzenia diagnostyczne nie do celów medycznych; Optyczne urzadzenia pomiarowe; Mobilne aplikacje; Aplikacje komputerowe do pobrania; Elektroniczne czujniki pomiarowe; Aparaty do zdjec siatkówki oka [inne niz do celów medycznych]; Oprogramowanie do telefonów komórkowych; Oprogramowanie bioinformatyczne; Oprogramowanie sensoryczne; Oprogramowanie do edycji wideo; Programy komputerowe do przetwarzania danych; Oprogramowanie do raportowania; Oprogramowanie do integracji sztucznej inteligencji i uczenia maszynowego w dziedzinie duzych zbiorów danych; Oprogramowanie do monitorowania zdrowia; Oprogramowanie do zarzadzania duzymi zbiorami danych; Oprogramowanie rzeczywistosci wirtualnej; Oprogramowanie komputerowe do autoryzacji dostepu do baz danych; Oprogramowanie komputerowe do tworzenia baz do wyszukiwania informacji i danych; Oprogramowanie typu sztuczna inteligencja; Oprogramowanie do sztucznej inteligencji do opieki zdrowotnej; Urzadzenia do pomiarów precyzyjnych; Przyrzady pomiarowe; Przyrzady do mierzenia katów; Oprogramowanie komputerowe [programy] do zarzadzania bazami danych; Urzadzenia i instrumenty pomiarowe; Przyrzady metrologiczne o czestotliwosci optycznej; Aplikacje do pobrania.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "pl",
+      "description": "Oftalmometry; Okulistyczne przyrzady diagnostyczne; Kamery oftalmologiczne do celów medycznych; Pupilometry do pomiaru odleglosci miedzy zrenicami (PD); Pupilometry do pomiaru reakcji zrenic na na bodziec; Urzadzenia do pomiarów do celów medycznych; Czujniki precyzyjne do uzytku medycznego; Instrumenty optometryczne; Przyrzady do badania wzroku; Oftalmoskopy; Urzadzenia do badania wzroku; Urzadzenia do badania oczu; Przyrzady telemetryczne do zastosowan medycznych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Uslugi naukowe i technologiczne; Uslugi w zakresie technologii informacyjnych; Opracowywanie oprogramowania komputerowego; Medyczne badania naukowe; Projektowanie i opracowywanie oprogramowania komputerowego do uzytku z technologia medyczna; Uslugi laboratoryjne w zakresie badan optycznych; Uslugi naukowo-technologiczne; Badania i rozwój w zakresie nauki; Projektowanie i opracowywanie technologii medycznej.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "pl",
+      "description": "Uslugi okulistyczne; Leczenie chorób i schorzen oczu; Uslugi w zakresie opieki zdrowotnej dla ludzi; Badania przesiewowe; Pomoc medyczna; Wydawanie raportów medycznych; Uslugi medyczne w zakresie wydawania orzeczen lekarskich na odleglosc [tele-reporting]; Konsultacja optometryczna; Uslugi optometryczne; Uslugi optometryczne z wizyta domowa; Uslugi badania wzroku [zaklady optyczne]; Uslugi przesiewowych badan wzroku; Uslugi obrazowania medycznego; Uslugi telemedyczne.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Software como um dispositivo médico [SaMD], para download; Software de aplicação; Software; Software informático relacionado com o domínio médico; Software para utilização em sistemas de apoio à tomada de decisões médicas; Sensores para instrumentos de medição; Sensores de movimento; Sensores de medida; Detetores de movimento; Biossensores; Alidades; Réguas articuladas para medição de ângulos; Óculos de realidade virtual; Óculos 3D; Aparelhos de diagnóstico, não sendo para uso médico; Equipamento de medição ótica; Aplicações móveis; Aplicações de software informático descarregáveis; Sensores de medição eletrónicos; Retinógrafos [sem ser para uso médico]; Software móvel; Software bioinformático; Software sensorial; Programas de computador para edição de vídeo; Programas de computador para processamento de dados; Software para telemóveis; Software de elaboração de relatórios; Software para a integração de inteligência artificial e aprendizagem automática no domínio dos megadados; Software para monitorização da saúde; Software para a gestão de grandes volumes de dados; Software de realidade virtual; Software para autorização de acesso a bases de dados; Software para criação de bases de dados pesquisáveis de informações e dados; Software de inteligência artificial; Software de inteligência artificial para cuidados de saúde; Aparelhos de medição de precisão; Aparelhos de medição; Instrumentos para medir ângulos; Software para gestão de bases de dados; Instrumentos e aparelhos de medição; Dispositivos de metrologia de frequência ótica; Software aplicacional descarregável.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "pt",
+      "description": "Oftalmómetros; Equipamentos de diagnóstico oftalmológico; Câmaras oftlalmológicas para uso médico; Pupilómetros para medição da distância pupilar; Pupilómetros para medição da reação da pupila a estímulos; Aparelhos de medida para uso médico; Sensores de precisão para uso médico; Instrumentos optométricos; Instrumentos para examinação optomédica; Oftalmoscópios; Aparelhos para teste de visão; Aparelhos para a análise dos olhos; Dispositivos de telemetria para aplicações médicas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Serviços de ciência e tecnologia; Serviços de TI (tecnologias de informação); Desenvolvimento de software; Investigação médica; Conceção e desenvolvimento de software para utilizar em aplicações de tecnologia médica; Serviços de laboratórios de pesquisas óticas; Serviços científicos e tecnológicos; Investigação e desenvolvimento científicos; Conceção e desenvolvimento de tecnologia médica.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "pt",
+      "description": "Serviços de oftalmologia; Tratamento de doenças e alterações oftalmológicas; Serviços de cuidados de saúde para pessoas; Análises médicas; Assistência médica; Emissão de relatórios médicos; Elaboração de relatórios médicos à distância [serviços médicos]; Consulta de optometria; Serviços de optometria; Serviços de optometria ao domicílio; Serviços de teste de visão [oftalmologista]; Serviços de rastreio da visão; Serviços de imagiologia médica; Serviços de telemedicina.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Software sub forma de dispozitiv medical [SaMD] descarcabil; Aplicatii software; Software; Software de calculator în legatura cu domeniul medical; Software de calculator folosit la sistemele de asistenta pentru luarea de decizii medicale; Senzori pentru instrumente de masura; Senzori de miscare; Senzori de masurare; Biosenzori; Alidade; Goniometre; Ochelari de realitate virtuala; Ochelari 3D; Aparate pentru diagnosticare, altele decât cele de uz medical; Instrumente optice de masurare; Aplicatii mobile; Aplicatii software de calculator, descarcabile; Senzori electronici de masurare; Retinograf [nu de uz medical]; Software mobil; Software de bioinformatica; Software senzitiv; Programe de calculator pentru editare video; Software de prelucrare a datelor; Software pentru telefoane mobile; Software pentru reportare; Software pentru integrarea inteligentei artificiale si învatarii automate în tehnologia de lucru cu volume mari de date; Software pentru monitorizarea sanatatii; Software pentru gestionarea macrodatelor; Software de realitate virtuala; Software de calculator pentru autorizarea accesului la baze de date; Software de calculator pentru crearea de baze de date consultabile care cuprind informatii si date; Software de inteligenta artificiala; Software de inteligenta artificiala pentru domeniul sanatatii; Aparate de masura de precizie; Instrumente de masurare; Aparate de masurare unghiuri; Programe informatice pentru administrarea bazelor de date; Instrumente si aparate de masurat; Dispozitive metrologice optice pentru frecventa; Aplicatii software descarcabile.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "ro",
+      "description": "Oftalmometre; Echipamente de diagnosticare de uz oftalmologic; Camere oftalmologice de uz medical; Pupilometre pentru masurarea distantei pupilare (DP); Pupilometre pentru masurarea reactiilor pupilei la stimuli; Dispozitive de masurare de uz medical; Senzori de precizie, de uz medical; Instrumente pentru optometrie; Instrumente pentru examinare folosite în optica medicala; Oftalmoscoape; Aparate de testare a vederii; Aparate pentru analize oftalmologice; Dispozitive de telemetrie pentru aplicatii medicale.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Servicii în domeniul stiintei si tehnologiei; Servicii IT; Dezvoltare de software; Cercetare medicala; Proiectare si dezvoltare de software de calculator destinat utilizarii cu tehnologia medicala; Servicii de laborator pentru cercetari în domeniul opticii; Servicii tehnologice stiintifice; Cercetare si dezvoltare stiintifica; Proiectare si dezvoltare de tehnologie medicala.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "ro",
+      "description": "Servicii de oftalmologie; Tratamentul bolilor si afectiunilor ochilor; Servicii de asistenta medicala pentru oameni; Depistare medicala [screening]; Medicala (Asistenta -); Emiterea de rapoarte medicale; Servicii medicale furnizate prin telefon [servicii medicale]; Consultatie optometrica; Servicii de optometrie; Servicii de optometrie la domiciliu; Servicii de testare a vederii [opticieni]; Servicii de control al vederii; Servicii de imagistica medicala; Servicii de telemedicina.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Stahovatelný softvér, ktorý je zdravotníckym zariadením (SaMD); Aplikacný softvér; Softvér; Pocítacový softvér týkajúci sa lekárskej oblasti; Pocítacový software pre pouzitie v systémoch napomáhajúcich pri lekárskych rozhodnutiach; Senzory pre meracie prístroje; Detektory pohybu; Meracie senzory; Motorové senzory; Biologické snímace; Alidády; Klbové uhlomery; Okuliare na virtuálnu realitu; 3D okuliare; Diagnostické prístroje (nie na lekárske pouzitie); Optické meracie prístroje; Mobilné aplikácie; Pocítacové softvérové aplikácie (stahovatelné); Elektronické meracie senzory; Sietnicové fotoaparáty s výnimkou fotoaparátov na lekárske úcely; Softvér pre mobilné telefóny; Bioinformatický softvér; Senzorický softvér; Softvér na úpravu videa; Pocítacové programy na spracovanie údajov; Vykazovací softvér; Softvér pre integráciu umelej inteligencie a strojového ucenia v oblasti velkých dát; Softvér na monitorovanie zdravotného stavu; Softvér na správu velkých dát; Softvér pre virtuálnu realitu; Pocítacový softvér na schvalovanie prístupu k databázam; Pocítacový softvér na vytváranie vyhladávatelných databáz informácií a dát; Softvér umelej inteligencie; Softvér umelej inteligencie pre oblast zdravotnej starostlivosti; Presné meracie prístroje; Meracie prístroje; Nástroje na meranie uhlov; Pocítacový sofvér na manazment databáz; Zariadenia a nástroje na meranie; Optické metrologické frekvencné zariadenia; Stiahnutelné softvérové aplikácie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "sk",
+      "description": "Keratometre; Oftalmologické diagnostické nástroje; Oftalmické kamery na lekárske úcely; Pupilometre na meranie vzdialenosti zreníc; Pupilometre na meranie reaktivity zreníc; Meracie prístroje na lekárske úcely; Presné senzory na lekárske úcely; Optometrické nástroje; Optometrické vysetrovacie nástroje; Oftalmoskopy; Zariadenia na testovanie zraku; Prístroje na ocné vysetrenia; Telemetrické zariadenia na lekárske úcely.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Vedecké a technologické sluzby; Informacné technológie; Vývoj pocítacového softvéru; Lekársky výskum; Navrhovanie a vývoj pocítacového softvéru na pouzitie s lekárskymi technológiami; Sluzby optických výskumných laboratórií; Vedecké technologické sluzby; Vedecký výskum a vývoj; Navrhovanie a vývoj lekárskych technológií.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "sk",
+      "description": "Oftalmologické sluzby; Liecenie ocných ochorení a chorobných stavov ocí; Sluzby zdravotníckej starostlivosti o ludí; Lekárske vysetrenia; Lekárska pomoc; Vystavovanie lekárskych správ; Lekársky telereporting [lekárske sluzby]; Optometrické poradenstvo; Optometrické sluzby; Optometrické sluzby poskytované v domácom prostredí; Sluzby v oblasti vysetrenia zraku [optického]; Skríning týkajúci sa zraku; Lekárske zobrazovacie sluzby; Telemedicínske sluzby.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Programska oprema kot medicinski pripomocek [SaMD], nalozljiva; Aplikacijska programska oprema; Programska oprema; Racunalniska programska oprema za medicinsko podrocje; Racunalniska programska oprema, ki se uporablja v medicinski stroki kot pomoc pri odlocanju; Senzorji za merilne instrumente; Senzorji gibanja; Merilni senzorji; Senzorji za motorje; Bio senzorji; Alhidade; Ravnila za merjenje kotov zglobov; Ocala za navidezno resnicnost; 3D ocala; Diagnosticni aparati, ne za medicinske namene; Opticni merilni aparati; Mobilna aplikacija; Racunalniska programska oprema, nalozljiva preko racunalniske mreze; Elektronski merilni senzorji; Kamere za mreznico [razen za medicinsko uporabo]; Mobilna programska oprema; Programska oprema za bioinformatiko; Senzoricna programska oprema; Programska oprema za urejanje video posnetkov; Racunalniski programi za obdelavo podatkov; Programska oprema za mobilne telefone; Programska oprema za porocanje; Programska oprema za integracijo umetne inteligence in strojnega ucenja na podrocju masovnih podatkov; Programska oprema za spremljanje zdravja; Programska oprema za upravljanje masovnih podatkov; Programska oprema za navidezno resnicnost; Racunalniska programska oprema za avtorizacijo dostopa do podatkovnih baz; Racunalniska programska oprema za ustvarjanje iskalnih baz podatkov z informacijami in podatki; Programska oprema za umetno inteligenco; Programska oprema za umetno inteligenco za zdravstveno varstvo; Aparati za natancno merjenje; Merilni instrumenti; Instrumenti za merjenje kotov; Racunalniska programska oprema za upravljanje baz podatkov; Merilni aparati in instrumenti; Metroloske naprave na opticnih frekvencah; Nalozljive aplikacije programske opreme.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "sl",
+      "description": "Oftalmometri; Diagnosticni instrumenti za oftalmologijo; Oftalmoloske kamere za medicinske namene; Pupilometri, naprave za merjenje razdalje med zenicama; Pupilometri, naprave za merjenje odzivnosti zenice na drazljaje; Merilne naprave za medicinske namene; Natancni senzorji za medicinsko uporabo; Optometricni instrumenti; Optomedicinski instrumenti za pregledovanje; Oftalmoskopi; Aparati za testiranje vida; Aparati za testiranje oci; Telemetricne naprave za medicinske aplikacije.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Znanstvene in tehnoloske storitve; Storitve informacijske tehnologije; Razvoj programske opreme; Medicinske raziskave; Oblikovanje in razvoj racunalniske programske opreme za uporabo z medicinsko tehnologijo; Laboratorijske storitve za opticne raziskave; Znanstveno-tehnoloske storitve; Znanstvene raziskave in razvoj; Oblikovanje in razvoj medicinske tehnologije.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "sl",
+      "description": "Oftalmoloske storitve; Zdravljenje ocesnih bolezni in stanj; Zdravstvene storitve za ljudi; Medicinski skrining; Zdravniska pomoc; Izdajanje zdravniskih porocil; Porocanje o zdravstvenem stanju na daljavo [medicinske storitve]; Svetovanje na podrocju optometrije; Storitve optometrije; Storitve optometrije na domu; Storitve optikov za testiranje vida; Storitve preverjanja vida; Storitve medicinskega slikanja; Telemedicinske storitve.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software en cuanto dispositivo médico [SaMD], descargable; Programas de aplicación; Software; Programas informáticos relativos al ámbito médico; Software para su uso en sistemas de apoyo en la toma de decisiones médicas; Sensores para instrumentos de medición; Detectores de movimiento; Detectores de medición; Sensores para motores; Biosensores; Alidadas; Reglas graduadas de juntas de ángulo; Gafas de realidad virtual; Gafas 3D; Aparatos de diagnóstico que no sean para uso médico; Aparatos de medida ópticos; Aplicaciones de móviles; Aplicaciones informáticas descargables; Sensores de medida electrónicos; Cámaras retinales [que no sean para uso médico]; Software móvil; Software bioinformático; Software sensorial; Programas informáticos para la edición de vídeos; Software de ordenador para el tratamiento de la información; Software para teléfonos móviles; Software de elaboración de informes; Software para la integración de la inteligencia artificial y el aprendizaje automático en el ámbito de los macrodatos; Software para supervisar la salud; Software de gestión de macrodatos; Software de realidad virtual; Software para la autorización de acceso a bases de datos; Software para crear bases de datos consultables de información y datos; Software de inteligencia artificial; Software de inteligencia artificial para asistencia sanitaria; Aparatos para mediciones de precisión; Aparatos de medición; Instrumentos para medir ángulos; Software de gestión de bases de datos; Instrumentos y aparatos de medición; Dispositivos ópticos de metrología de frecuencia; Aplicaciones de software descargables.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "es",
+      "description": "Oftalmómetros; Instrumentos diagnósticos para oftalmología; Cámaras oftálmicas para uso médico; Pupilómetros para medir la distancia pupilar (DP); Pupilómetros para medir la reacción pupilar ante los estímulos; Dispositivos de medida para uso médico; Sensores de precisión de uso médico; Instrumentos optométricos; Instrumentos de examen optomédico; Oftalmoscopios; Aparatos para exámenes de la vista; Aparatos para analizar los ojos; Dispositivos de telemetría para aplicaciones médicas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios científicos y tecnológicos; Servicios de tecnologías de la información; Desarrollo de software; Investigación médica; Diseño y desarrollo de software para su uso con tecnología médica; Servicios de investigación óptica de laboratorio; Servicios tecnológicos científicos; Investigación y desarrollo científico; Diseño y desarrollo de tecnología médica.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "es",
+      "description": "Servicios oftalmológicos; Tratamiento de enfermedades y afecciones oculares; Servicios de salud para personas; Screening (cribado) médico; Asistencia médica; Emisión de informes médicos; Elaboración de informes médicos a distancia [servicios médicos]; Consulta sobre optometría; Servicios de optometría; Servicios de optometría a domicilio; Servicios de pruebas de la vista [ópticos]; Servicios de examen de la vista; Servicios de imagenología médica; Servicios de telemedicina.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Programvara som medicinsk utrustning [SaMD], nedladdningsbar; Applikationsprogramvaror (appar); Mjukvaror; Programvara inom det medicinska området; Datorprogramvara för användning i stödsystem för medicinska beslut; Sensorer för mätinstrument; Rörelsesensorer; Sensorer för mätning; Sensorer för motorer; Biosensorer; Dioptrar; Vinkelmätningslinjaler; Virtual reality glasögon; 3D-glasögon; Diagnostiska apparater, inte för medicinska ändamål; Optiska mätinstrument; Mobilappar; Softwareapplikationer för datorer, nedladdningsbara; Elektroniska mätsensorer; Näthinnekameror [inte för medicinska ändamål]; Mobil programvara; Bioinformatikprogramvara; Sensoriska programvaror; Programvara för videoredigering; Datorprogramvara för databehandling; Software för mobiltelefoner; Rapporteringsprogramvara; Programvaror för integration av artificiell intelligens och maskininlärning på området stordata; Programvara för hälsoövervakning; Programvara för stordatahantering; Virtual reality-programvara; Datorprogramvara för godkännande av åtkomst till databaser; Programvara för skapande av sökbara databaser med information och data; Programvara för artificiell intelligens; Programvara för artificiell intelligens för hälsovård; Precisionsmätapparater; Mätapparater; Instrument för mätning av vinklar; Datorprogram för hantering av databaser; Mätapparater och instrument; Anordningar för optiska frekvensmätning; Nedladdningsbara programvaruapplikationer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "sw",
+      "description": "Oftalmometrar; Diagnostiska instrument för oftalmologi; Oftalmiska kameror för medicinska ändamål; Pupillometrar för att mäta avståndet mellan pupillerna; Pupillometrar för att mäta pupillens reaktion på stimulering; Mätanordningar för medicinsk användning; Precisionssensorer för medicinsk användning; Optometriska instrument; Optomedicinska undersökningsinstrument; Oftalmoskop; Apparater för testning av synen; Apparater för syntest; Avståndsmätare för medicinska tillämpningar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Vetenskapliga och tekniska tjänster; IT-tjänster; Utveckling av mjukvara; Medicinsk forskning; Design och utveckling av programvara för användning med medicinsk teknologi; Laboratorietjänster för optisk forskning; Vetenskapliga teknologiska tjänster; Vetenskaplig forskning och utveckling; Design och utveckling av medicinsk teknologi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "sw",
+      "description": "Ofthalmologiska tjänster; Behandlingar av ögonsjukdomar och ögonåkommor; Hälsovårdstjänster för människor; Medicinsk screening; Medicinsk assistans; Utfärdande av medicinska rapporter; Utlåtanden per telefon [medicinska tjänster]; Optometrikonsultation; Optometriska tjänster; Optometritjänster i hemmet; Syntesttjänster [optiker]; Synscreeningtjänster; Medicinska bildbaserade undersökningar; Medicinska tjänster via telefon.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "KORI EYES TECH SINGLE MEMBER P.C.",
+  "ownerNative": null,
+  "ownerCountry": "GR",
+  "representative": "Maria Mpoulieri",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Xenokratous 69,Peristeri, 121 37",
+        "applicantAddressCountryCode": "GR",
+        "applicantAddressCountryName": "Greece",
+        "applicantName": "KORI EYES TECH SINGLE MEMBER P.C."
+      }
+    ],
+    "applicationLanguageCode": "el",
+    "cmMarkImageEUclassification": [
+      "21.03.21"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Software jako zdravotnický prostredek, ke stazení; Aplikacní software; Pocítacový software; Pocítacový software vztahující se k lékarství; Pocítacový software k pouzití v systémech pro podporu lékarského rozhodování; Cidla pro mericí nástroje; Pohybová cidla; Mericí senzory; Senzory motoru; Biosenzory; Alhidády; Úhlomery; Brýle pro virtuální realitu; 3D brýle; Diagnostické prístroje, ne lékarské; Optické mericí prístroje; Mobilní aplikace; Stahovatelné pocítacové aplikace; Elektronická mericí cidla; Sítnicové kamery (k jinému nez lékarskému pouzití); Software pro mobilní telefony; Software pro bioinformatiku; Senzorický software; Software na úpravu videí; Pocítacové programy na zpracování dat; Reportingový software; Software pro integraci umelé inteligence a strojového ucení v oblasti dat velkého objemu; Software ke sledování zdravotního stavu; Software pro správu velkoobjemových dat; Software pro virtuální realitu; Pocítacový software pro autorizaci prístupu do databází; Pocítacový software k vytvárení vyhledatelných databází informací a dat; Software umelé inteligence; Software umelé inteligence pro oblast zdravotní péce; Prístroje pro presná merení; Merící nástroje a zarízení; Prístroje na merení úhlu; Pocítacový software pro správu databází; Mericí prístroje a zarízení; Optická frekvencní metrologická zarízení; Softwarové aplikace ke stazení."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Oftalmometry; Diagnostické nástroje k pouzití v oftalmologii; Oftalmologické kamery pro lékarské úcely; Pupilometry na merení vzdálenosti mezi zornicemi (PD); Pupilometry pro merení schopnosti zornic reagovat na podnety; Mericí prístroje k lékarskému pouzití; Presná cidla pro lékarské úcely; Optometrické nástroje; Nástroje pro optická lékarská vysetrení; Oftalmoskopy; Prístroje na testování zraku; Prístroje pro testování ocí; Telemetrická zarízení pro lékarské pouzití."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Vedecké a technologické sluzby; Sluzby v oblasti informacních technologií; Vývoj softwaru; Lékarský výzkum; Navrhování a vývoj pocítacového softwaru pro pouzití s lékarskými technologiemi; Laboratorní sluzby v oblasti výzkumu zamereného na optiku; Vedecké technologické sluzby; Vedecký výzkum a vývoj; Navrhování a vývoj lékarských technologií."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Oftalmologické sluzby; Lécba ocních chorob a ocních poruch; Sluzby zdravotní péce; Lékarská vysetrení; Lékarské sluzby; Vystavování lékarských zpráv; Lékarský telereporting [lékarské sluzby]; Konzultace v oboru optometrie; Sluzby v oblasti optometrie; Sluzby v oblasti optometrie poskytované v domácím prostredí; Merení zraku (optika); Screening zraku; Lékarské zobrazovací sluzby; Telemedicína."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Software as a medical device [SaMD], downloadable; Applikationssoftware; Software; Computersoftware til det medicinske område; Computersoftware til brug i hjælpesystemer til medicinsk beslutningstagning; Sensorer til måleinstrumenter; Bevægelsesfølere; Målesensorer; Sensorer til motorer; Biosensorer; Alhidader; Linealer til måling af vinkler; Virtual reality-briller; 3D briller; Diagnoseapparater, ikke til medicinske formål; Optiske måleapparater; Mobilapplikationer; Softwareapplikationer til computere, downloadable; Elektroniske målesensorer; Nethindekameraer [andre end til medicinske formål]; Mobil software; Software til bioinformatik; Sensorisk software; Software til videoredigering; Computerprogrammer til databehandling; Software til mobiltelefoner; Software til rapportering; Software til integrering af kunstig intelligens og maskinlæring inden for big data; Software til sundhedsovervågning; Software til styring af big data; Virtual reality-software; Computersoftware til godkendelse af adgang til databaser; Computersoftware til oprettelse af søgbare databaser med information og data; Software til kunstig intelligens; Software til kunstig intelligens til sundhedspleje; Præcisionsmåleapparater; Måleapparater; Instrumenter til måling af vinkler; Computersoftwareprogrammer til databasestyring; Måleinstrumenter og -apparatur; Metrologienheder med optisk frekvens; Downloadable applikationssoftware."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Oftalmometre; Diagnosticeringsinstrumenter til oftalmologi; Oftalmologiske kameraer til medicinsk brug; Pupillometre til måling af pupilafstand (afstand mellem pupiller); Pupillometre til måling af pupilstørrelse (pupillers reaktionsevne ved stimulus); Måleapparater til medicinske formål; Præcisionssensorer til medicinske formål; Optometriske instrumenter; Optometriske instrumenter til undersøgelsesformål; Oftalmoskoper; Apparater til udførelse af synstests; Apparater til øjenundersøgelse; Telemetrianordninger til medicinsk brug."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Videnskabelige og teknologiske tjenesteydelser; IT tjenesteydelser; Softwareudvikling; Medicinsk forskning; Design og udvikling af computersoftware til anvendelse inden for medicinsk teknologi; Laboratorietjenester inden for optisk forskning; Videnskabelige teknologiske tjenesteydelser; Videnskabelig forskning og udvikling; Design og udvikling af medicinsk teknologi."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Oftalmologisk virksomhed; Behandling af øjensygdomme og -lidelser; Sundhedspleje af mennesker; Medicinsk screening; Lægehjælp; Udstedelse af medicinske rapporter; Medicinsk fjernrapportering [medicinske ydelser]; Optometrisk rådgivningsvirksomhed; Optometriske tjenesteydelser; Optometriske tjenesteydelser i hjemmet; Synsprøver [optikervirksomhed]; Synsscreeningsydelser; Medicinsk afbildning; Telemedicinske ydelser."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Software als medisch hulpmiddel [SaMD], downloadbaar; Softwaretoepassingen; Software; Computersoftware op het gebied van de medische sector; Software voor medische beslissingsondersteunende systemen; Sensoren voor meetinstrumenten; Bewegingssensoren; Meetsensoren; Sensoren voor motoren; Biosensoren; Linialen met vizier; Hoekmeetlatten; Virtual-realitybrillen; 3D-brillen; Diagnostische apparaten, niet voor medisch gebruik; Meetapparaten (Optische -); Mobiele applicaties; Downloadbare computersoftware-applicaties; Meetsensoren (Elektronische -); Netvliescamera's [anders dan voor medisch gebruik]; Mobiele software; Bio-informatica software; Sensorische software; Videobewerkingssoftware; Computerprogramma's voor de gegevensverwerking; Software voor mobiele telefoons; Rapportagesoftware; Software voor de integratie van kunstmatige intelligentie en machinaal leren op het gebied van Big Data; Gezondheidsmonitoringsoftware; Big data beheersoftware; Software voor virtual reality; Software voor het autoriseren van toegang tot databases; Software voor het creëren van doorzoekbare databases met informatie en gegevens; Kunstmatige intelligentie software; Kunstmatige intelligentie software voor de gezondheidszorg; Precisiemeetapparaten; Meetapparaten; Hoekmeetapparatuur; Computer software voor databasebeheer; Meetapparatuur en -instrumenten; Metrologie-instrumenten met optische frequentie; Downloadbare softwareapplicaties."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Oftalmometers; Oogheelkundig diagnostische instrumenten; Oogheelkundige camera's voor medische doeleinden; Pupillometers voor het meten van de pupilafstand; Pupillometrietoestellen voor het meten van de reactiviteit van de pupillen op stimuli; Meetapparaten voor medisch gebruik; Precisiesensoren voor medisch gebruik; Optometrische instrumenten; Optisch-medische onderzoeksinstrumenten; Oftalmoscopen; Apparatuur voor het onderzoeken van het zicht; Oogtestapparatuur; Telemetrieapparatuur voor medische toepassingen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Wetenschappelijke en technologische diensten; IT-diensten; Ontwikkeling van software; Wetenschappelijk onderzoek op medisch gebied; Ontwerpen en ontwikkelen van software voor gebruik met medische technologie; Diensten van optische onderzoekslaboratoria; Wetenschappelijk-technologische diensten; Wetenschappelijk onderzoek en ontwikkeling; Ontwerp en ontwikkeling van medische technologieën."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Oogheelkundige diensten; Behandeling van oogziekten en -aandoeningen; Gezondheidszorg voor mensen; Medisch testen; Geneeskundige assistentie; Medische rapporten (Afgeven van -); Medische telerapportering [medische diensten]; Optometrische consultatie; Optometrische diensten; Optometrische diensten aan huis; Testen van het zicht [diensten van opticiens]; Screening van het gezichtsvermogen; Medische beeldvorming; Doktersdiensten [op afstand verleend]."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software as a medical device [SaMD], downloadable; Application software; Software; Computer software relating to the medical field; Computer software for use in medical decision support systems; Sensors for measuring instruments; Motion sensors; Measuring sensors; Sensors for engines; Bio-sensors; Alidades; Joint angle measuring rulers; Virtual reality glasses; 3D spectacles; Diagnostic apparatus, not for medical purposes; Optical measurement apparatus; Mobile apps; Computer software applications, downloadable; Electronic measurement sensors; Retinal cameras [other than for medical use]; Mobile software; Bioinformatics software; Sensory software; Video editing software; Computer programmes for data processing; Software for mobile phones; Reporting software; Software for the integration of artificial intelligence and machine learning in the field of Big Data; Health monitoring software; Big data management software; Virtual reality software; Computer software for authorising access to databases; Computer software for creating searchable databases of information and data; Artificial intelligence software; Artificial intelligence software for healthcare; Precision measuring apparatus; Measuring apparatus; Instruments for measuring angles; Computer software for database management; Measuring apparatus and instruments; Optical frequency metrology devices; Downloadable software applications."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Keratometers; Diagnostic instruments for ophthalmology; Ophthalmic cameras for medical purposes; Pupillometers for measuring pupillary distance (PD); Pupillometers for measuring pupillary reactivity to stimulus; Measuring devices for medical use; Precision sensors for medical use; Optometric instruments; Optomedical examination instruments; Ophthalmoscopes; Vision testing apparatus; Eye testing apparatus; Telemetry devices for medical applications."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Science and technology services; IT services; Software development; Medical research; Design and development of computer software for use with medical technology; Optical research laboratory services; Scientific technological services; Scientific research and development; Design and development of medical technology."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Ophthalmological services; Treatment of eye diseases and conditions; Human healthcare services; Medical screening; Medical assistance; Issuing of medical reports; Medical tele-reporting [medical services]; Optometry consultation; Optometry services; Home-visit optometry services; Sight-testing [opticians'] services; Vision screening services; Medical imaging services; Telemedicine services."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Allalaaditav tarkvara meditsiiniseadmena [SaMD]; Rakenduslik tarkvara; Arvutitarkvara; Meditsiinialane arvutitarkvara; Arvutitarkvara meditsiiniliste otsustuste ja diagnooside tugisüsteemide jaoks; Mõõtevahendite andurid; Liikumisandurid; Mõõteandurid; Biosensorid; Alidaadid [nurgamõõteriistade osad]; Liitenurga mõõtejoonlauad; Virtuaalreaalsuse prillid; 3D-prillid; Diagnostikaaparaadid, v.a meditsiinilised; Optilised mõõteseadmed; Mobiilirakendused; Allalaaditavad arvutitarkvararakendused; Elektroonilised mõõteandurid; Reetinakaamerad [v.a meditsiiniliseks kasutamiseks]; Mobiiltelefonide tarkvara; Bioinformaatika tarkvara; Sensoorne tarkvara; Videotoimetustarkvara; Arvutiprogrammid andmetöötluseks; Tarkvara mobiiltelefonidele; Aruandlustarkvara; Tehisintellekti ja masinõppe lõimimise tarkvara suurandmete valdkonnas; Terviseseire tarkvara; Suurandmete haldamise tarkvara; Virtuaalreaalsuse tarkvara; Arvutitarkvara andmebaasidele juurdepääsu lubamiseks; Arvutitarkvara otsimisfunktsiooniga andme- ja infobaaside loomiseks; Tehisintellektitarkvara; Tervishoiu tehisintellektitarkvara; Täppismõõteriistad, täppismõõdikud; Mõõteaparaadid, mõõteseadmed; Nurgamõõtevahendid; Arvutitarkvaraprogrammid andmebaasi haldamiseks; Mõõtevahendid ja -seadmed; Metroloogiaseadmed opliliste signaalide sageduste mõõtmiseks; Allalaaditavad tarkvararakendused."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Oftalmomeetrid; Oftalmoloogilised diagnostikaseadmed; Oftalmilised kaamerad meditsiiniliseks kasutuseks; Pupillide vahekauguse (PD) mõõtmise pupillomeetrid; Pupillide stiimulile reageerivuse mõõtmise pupillomeetrid; Meditsiinilised mõõteseadmed; Täppisandurid meditsiiniliseks kasutuseks; Optomeetriaseadmed; Optomeditsiinilised läbivaatusseadmed; Oftalmoskoobid, silmapeeglid; Nägemiskontrolli aparatuur; Silmaanalüsaatorid; Meditsiinirakenduste telemeetriaseadmed."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Teadus- ja tehnoloogiateenused; IT-teenused; Tarkvara arendamine; Meditsiinilised uurimistööd; Meditsiinitehnika arvutitarkvara uurimis-arendustegevus; Optikauuringute laboriteenused; Teadustehnoloogilised teenused; Teaduslik uurimis- ja arendustegevus; Meditsiinitehnika projekteerimine ja arendamine."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Oftalmoloogilised teenused; Silmahaiguste ja seisundite ravi; Inimeste tervishoiuteenused; Meditsiinilised sõeluuringud; Arstiabi; Meditsiiniliste aruannete väljastamine; Meditsiiniline kaugaruandlus [meditsiiniteenused]; Optomeetriakonsultatsioon; Optomeetriateenused; Optometristi koduvisiidi teenused; Nägemiskontrolliteenused [optikuteenused]; Nägemise sõeluuringuteenused; Meditsiiniülesvõttetehnika teenused; Telemeditsiiniteenused."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Ohjelmistot lääketieteellisenä laitteena (SaMD), ladattavat; Sovellusohjelmistot; Ohjelmistot; Lääketieteen alaan liittyvät tietokoneohjelmistot; Tietokoneohjelmistot käytettäväksi lääketieteellisiin päätöksiin liittyvissä tukijärjestelmissä; Mittausvälineiden anturit; Liikkeentunnistusanturit; Mittausanturit; Ilmaisimet moottoreille; Bioanturit; Alhidadet; Nivelkulman mittaviivaimet; Virtuaalitodellisuuslasit; 3D-silmälasit; Diagnoosilaitteet, ei-lääketieteellisiin tarkoituksiin; Optiset mittauslaitteet; Mobiilisovellukset; Ladattavat tietokoneohjelmistosovellukset; Elektroniset mittausanturit; Verkkokalvokamerat [muuhun kuin lääketieteelliseen käyttöön]; Matkapuhelinlaitteiden ohjelmistot; Bioinformatiikkaohjelmistot; Aistinvaraiset ohjelmistot; Tietokoneohjelmat videoiden editointiin; Tietojenkäsittelyohjelmistot; Ohjelmistot matkapuhelimia varten; Raportointiohjelmistot; Ohjelmistot tekoälyn ja koneoppimisen integrointiin massadatan alalla; Terveydenseurantaohjelmistot; Suuren tietomäärän hallintaohjelmistot; Virtuaalitodellisuusohjelmistot; Tietokoneohjelmistot tietokantojen käytön autorisointia varten; Tietokoneohjelmistot tietoja ja dataa sisältävien hakutietokantojen luomiseen; Tekoälyohjelmistot; Tekoälyohjelmistot terveydenhoitoon; Täsmämittauslaitteet; Mittalaitteet; Kulmien mittausvälineet; Tietokoneohjelmat tietokantojen hallintaa varten; Mittauslaitteet ja välineet; Optiset taajuusmetrologialaitteet; Ladattavat ohjelmistosovellukset."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Oftalmometrit; Diagnostiset välineet oftalmologiaan; Silmälääketieteelliset kamerat lääkinnällisiin tarkoituksiin; Silmäterävälin mittaukseen tarkoitetut mittausvälineet; Pupillometrit pupillien ärsykkeisiin reagoinnin mittaamiseen; Mittauslaitteet lääketieteellisiin tarkoituksiin; Tarkkuusanturit lääketieteelliseen käyttöön; Optometriset kojeet; Opto-lääketieteelliset tutkimusvälineet; Oftalmoskoopit; Näöntarkastuslaitteet; Silmien analysointilaitteet; Telemetrialaitteet lääketieteellisiin sovelluksiin."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tieteelliset ja teknologiset palvelut; IT-palvelut; Ohjelmistokehitys; Lääketieteen tutkimuspalvelut; Lääketieteellisessä tekniikassa käytettävien tietokoneohjelmistojen suunnittelu ja kehittäminen; Optiseen tutkimukseen liittyvät laboratoriopalvelut; Tieteelliset teknologiapalvelut; Tieteellinen tutkimus ja kehittely; Lääketieteen teknologian suunnittelu ja kehittäminen."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Silmälääketieteelliset palvelut; Silmäsairauksien ja -vaivojen hoito; Terveydenhoitopalvelut ihmisille; Lääketieteellinen seulonta; Lääkinnällinen apu; Lääketieteellisten raporttien jakelu; Lääketieteellinen etäraportointi [lääketieteelliset palvelut]; Optometriaan liittyvä konsultointi; Näönhuoltopalvelut; Optometriaan liittyvät kotikäyntipalvelut; Näöntestauspalvelut (optikon palvelut); Näöntarkastuspalvelut; Lääketieteelliset kuvantamispalvelut; Etähoitopalvelut."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciels en tant que dispositifs médicaux [SaMD] téléchargeables; Logiciels d'applications; Logiciel; Logiciels dans le domaine médical; Logiciels destinés aux systèmes d'assistance en décisions médicales; Capteurs pour instruments de mesurage; Détecteurs de mouvements; Capteurs de mesure; Capteurs pour moteurs; Biosenseurs; Alidades à lunettes; Règles articulées de mesure d'angle; Lunettes de réalité virtuelle; Lunettes 3D; Appareils pour le diagnostic non à usage médical; Appareils optiques de mesure; Applications logicielles pour téléphones mobiles; Applications logicielles informatiques téléchargeables; Capteurs de mesure électroniques; Rétinographes autres qu'à usage médical; Logiciels pour téléphones mobiles; Logiciels de bio-informatique; Logiciel sensoriel; Logiciels pour éditer des vidéos; Programmes informatiques de traitement de données; Logiciels d'établissement de rapports; Logiciels pour l'intégration de l'intelligence artificielle et l'apprentissage machine dans le domaine des mégadonnées; Logiciels pour la surveillance de la santé; Logiciel de gestion de mégadonnées; Logiciels de réalité virtuelle; Logiciels d'autorisation d'accès aux bases de données; Logiciels informatiques de création de bases de données de recherche d'informations et de données; Logiciels d'intelligence artificielle; Logiciels d'intelligence artificielle pour les soins de santé; Appareils de mesure de précision; Mesureurs; Instruments de mesure d'angles; Logiciels de gestion de bases de données; Instruments et appareils de mesure; Dispositifs de métrologie des fréquences optiques; Applications logicielles téléchargeables."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Kératomètres; Instruments de diagnostic en ophtalmologie; Caméras ophtalmiques à usage médical; Pupillomètres servant à mesurer l'écartement des pupilles; Pupillomètres pour mesurer la réactivité des pupilles à une stimulation; Dispositifs de mesure à usage médical; Capteurs de précision à usage médical; Instruments d'optométrie; Instruments d'examens optomédicaux; Ophtalmoscopes; Appareils pour examens de la vue; Appareils pour tests ophtalmologiques; Dispositifs de télémétrie pour applications médicales."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services scientifiques et technologiques; Services des technologies de l'information; Développement de logiciels; Recherche médicale; Conception et développement de logiciels destinés à être utilisés dans le cadre de technologies médicales; Services de laboratoires de recherche dans le domaine de l'optique; Services scientifico-technologiques; Recherche et développement scientifique; Conception et développement de technologies médicales."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services ophtalmologiques; Traitement des maladies et affections oculaires; Services de soins de santé pour êtres humains; Dépistage médical; Assistance médicale; Établissement de rapports médicaux; Télésignalement [services médicaux]; Consultation optométrique; Services d'optométrie; Services d'optométrie à domicile; Services d'opticiens pour examens de la vue; Services de contrôle des capacités visuelles; Services d'imagerie médicale; Services de télémédecine."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Herunterladbare Software as a Medical Device [SaMD]; Anwendungssoftware; Software; Computersoftware für den medizinischen Bereich; Computersoftware zur Verwendung für Systeme zur Unterstützung von medizinischen Entscheidungen; Sensoren für Messinstrumente; Bewegungsmelder; Messsensoren; Sensoren für Motoren; Biosensoren; Diopterlineale; Gelenk-Winkelmesslineale; Virtual-Reality-Brillen; 3D-Brillen; Diagnoseapparate, nicht für medizinische Zwecke; Optische Messgeräte; Mobile Apps; Herunterladbare Software-Anwendungen für Computer; Elektronische Messfühler; Retinalkameras [ausgenommen für medizinische Zwecke]; Software für Mobilgeräte; Bioinformatik-Software; Sensorik-Software; Videobearbeitungssoftware; Datenverarbeitungssoftware; Software für Mobiltelefone; Berichtssoftware; Software zur Einbindung von künstlicher Intelligenz und maschinellem Lernen im Bereich von Big Data; Software zur Überwachung der Gesundheit; Big Data-Managementsoftware; Virtual-Reality-Software; Computersoftware zur Genehmigung des Zugriffs auf Datenbanken; Computersoftware zur Erstellung von durchsuchbaren Datenbanken mit Informationen und Daten; Künstliche Intelligenz-Software; Künstliche Intelligenz-Software für das Gesundheitswesen; Präzisionsmessgeräte; Messgeräte; Instrumente zum Messen von Winkeln; Computersoftware für Datenbankverwaltung; Messapparate und -instrumente; Optische Frequenzmessgeräte; Herunterladbare Software-Anwendungen."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Ophthalmometer; Diagnoseinstrumente für die Ophthalmologie; Oph­thal­mische Kameras für medizinische Zwecke; Pupillometer zur Messung der Pupillendistanz [PD]; Pupillometer zur Messung der Pupillenreaktivität gegenüber Reizen; Messgeräte für medizinische Zwecke; Präzisionssensoren für medizinische Zwecke; Optometrische Instrumente; Optomedizinische Untersuchungsinstrumente; Ophthalmoskope; Geräte zur Feststellung der Sehstärke; Sehtestgeräte; Telemetriegeräte für medizinische Anwendungen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Wissenschaftliche und technologische Dienstleistungen; IT-Dienstleistungen; Softwareentwicklung; Medizinische Forschung; Entwurf und Entwicklung von Computersoftware für die Medizintechnik; Dienstleistungen eines Forschungslabors im Bereich Optik; Wissenschaftlich-technologische Dienstleistungen; Wissenschaftliche Forschung und Entwicklung; Entwurf und Entwicklung von Medizintechnik."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Ophthalmologische Dienste; Behandlung von Augenkrankheiten und -beschwerden; Gesundheitspflege für den Menschen; Medizinisches Screening; Dienstleistungen eines Arztes; Erstellen von ärztlichen Berichten; Ärztliches Tele-Reporting [medizinische Dienstleistung]; Beratung auf dem Gebiet der Optometrie; Optometrische Dienste; Im Rahmen von Hausbesuchen erbrachte optometrische Dienste; Durchführung von Sehtests [Dienstleistungen von Optikern]; Vorsorgeuntersuchungen bezüglich des Sehvermögens; Medizinische Bildgebungsdienste; Telemedizin-Dienste."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Softver kao medicinski uredaj [SaMD], koji se moze preuzeti; Aplikacijski softver; Softver; Racunalni softver u vezi s podrucjem medicine; Racunalni programi za uporabu u medicini kao pomoc pri donosenju odluka; Senzori za mjerne instrumente; Senzori pokreta; Senzori za mjerenje; Senzori za motore; Biosenzori; Alhidade; Ravnala za mjerenje kuta zgloba; Naocale za generiranje virtualne stvarnosti; 3D naocale; Aparati za dijagnosticiranje [nisu za medicinske potrebe]; Opticki uredaji za mjerenje; Mobilne aplikacije; Aplikacije za racunalne programe koje se mogu preuzeti s Interneta; Elektronicki mjerni sensori; Kamere za mreznice [osim za medicinsku uporabu]; Softver za mobilne uredaje; Bioinformaticki softver; Senzorni softver; Softver za uredivanje videozapisa; Softver za obradu podataka; Softver za mobilne telefone; Softver za izvjescivanje; Softver za integriranje umjetne inteligencije i strojnog ucenja u podrucju velikih podataka; Softver za pracenje zdravlja; Softver za upravljanje velikom kolicinom podataka; Racunalni program za virtualnu stvarnost; Racunalni program za autorizaciju pristupa bazama podataka; Racunalni programi za kreiranje pretrazivih baza podataka i informacija; Softver za umjetnu inteligenciju; Softver za umjetnu inteligenciju namijenjen za zdravstvenu skrb; Aparati za precizno mjerenje; Mjerni instrumenti; Instrumenti za mjerenje kutova; Racunalni softver za upravljanje bazama podataka; Mjerni aparati i instrumenti; Mjerni uredaj na opticke frekvencije; Softverske aplikacije koje se mogu preuzeti."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Oftalmometri; Dijagnosticki instrumenti za oftalmologiju; Oftalmoloske kamere za medicinske potrebe; Pupilometri za mjerenje razmaka izmedu zjenica; Pupilometri, naprave za merjenje zjenicne reakcije na podrazaje; Mjerne naprave za medicinske primjene; Senzori preciznosti za medicinsku uporabu; Optometrijski instrumenti; Instrumenti za opticki medicinski pregled; Oftalmoskopi; Uredaji za ispitivanje vida; Telemetrijski uredaji za medicinske primjene."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Usluge znanosti i tehnologije; Usluge informacijske tehnologije; Razvoj softvera; Medicinska istrazivanja; Dizajn i razvoj racunalnih programa za uporabu s medicinskom tehnologijom; Usluge laboratorija za opticka istrazivanja; Znanstvene tehnoloske usluge; Znanstveno istrazivanje i razvoj; Dizajn i razvoj medicinske tehnologije."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Oftalmoloske usluge; Lijecenje ocnih bolesti i stanja; Zdravstvene usluge za ljude; Lijecnicki skrining; Medicinska pomoc; Izdavanje medicinskih izvjestaja; Prenosenje informacija uporabom informacijsko-komunikacijskih tehnologija [medicinske usluge]; Optometrijske konzultacije; Optometrijske usluge; Optometrijske usluge u kuci; Usluge testiranja vida [opticarske]; Usluge provjere vida; Usluge medicinskog snimanja; Usluge telemedicine."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Letöltheto szoftverek mint orvosi eszközök [SaMD]; Applikációs szoftver; Szoftverek; Számítógépes szoftverek gyógyászati területhez kapcsolódóan; Számítógépes szoftverek orvosi döntéshozatal segítéséhez; Érzékelok méromuszerekhez; Mozgásérzékelok; Méroszenzorok; Érzékelok motorokhoz; Bioszenzorok; Alhidádék; Csatlakozási szögméro vonalzók; Virtuális valóság szemüvegek; Háromdimenziós szemüvegek; Diagnosztikai berendezések, nem gyógyászati célokra; Optikai méroberendezések; Mobil alkalmazások; Számítógépes szoftveralkalmazások, letöltheto; Elektronikus méroérzékelok; Retinakamerák [nem orvosi használatra]; Mobil szoftverek; Bioinformatikai szoftverek; Érzékelo szoftverek; Videoszerkeszto szoftverek; Adatfeldolgozó szoftverek; Mobiltelefon-szoftverek; Jelentéskészíto szoftverek; Szoftverek a mesterséges intelligencia és a gépi tanulás integrálásához a big data terén; Egészségmonitorozó szoftverek; Nagy adathalmazokat kezelo szoftverek; Virtuális valóság szoftverek; Számítógépes szoftverek adatbázisokhoz való hozzáférés engedélyezéséhez; Számítógépes szoftver információk és adatok keresheto adatbázisának létrehozására; Mesterségesintelligencia-szoftverek; Mesterségesintelligencia-szoftverek egészségügyi ellátáshoz; Precíziós méromuszerek; Méromuszerek; Szögméro muszerek; Számítógépes szoftver programok adatbáziskezeléshez; Méroeszközök- és berendezések; Optikai frekvenciametrológiai eszközök; Letöltheto szoftveralkalmazások."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Oftalmométerek; Szemészeti diagnosztikai berendezések; Szemészeti kamerák gyógyászati célokra; Pupillométerek a pupillatávolság (PD) mérésére; Pupillométerek a pupilla ingerekre való reakciójának mérésére; Orvosi méroeszközök; Precíziós érzékelok orvosi használatra; Optometriai eszközök, muszerek; Orvosi optikai vizsgálóeszközök, muszerek; Oftalmoszkópok; Látásvizsgáló berendezések; Szemvizsgáló készülékek; Telemetriás eszközök orvosi alkalmazásokhoz."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Tudományos és technológiai szolgáltatások; Információtechnológiai [IT] szolgáltatások; Számítógépes szoftver fejlesztése; Orvosi kutatás; Orvosi technológiákkal használatos számítógépes szoftverek tervezése és fejlesztése; Optikai laboratóriumi kutatási szolgáltatások; Tudományos technológiai szolgáltatások; Tudományos kutatás és fejlesztés; Orvosi technológiák tervezése és fejlesztése."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Szemészeti szolgáltatások; Szembetegségek és állapotok kezelése; Emberi egészségügyi szolgáltatások; Orvosi szurovizsgálatok; Orvosi ellátás; Orvosi jelentések kibocsátása; Gyógyászati távjelentések [gyógyászati szolgáltatások]; Konzultáció az optometria terén; Optometriai szolgáltatások; Otthon végzett optometriai szolgáltatások; Látásvizsgálati [optikusi] szolgáltatások; Szemészeti szurési szolgáltatások; Orvosi képalkotó szolgáltatások; Távgyógyászati szolgáltatások."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Software come dispositivo medico [SaMD] scaricabile; Software specializzati; Software; Software relativi al settore medico; Software per sistemi di supporto per decisioni mediche; Sensori per strumenti di misura; Sensori di movimento; Sensori di misura; Rivelatori di movimento; Biosensori; Alidade a cannocchiale; Righelli articolati per la misurazione deli angoli; Occhiali per la realtà virtuale; Occhiali per 3D; Apparecchi per la diagnosi non per uso medico; Apparecchi per la misurazione ottica; Applicazioni per cellulari; Software applicativo per computer, scaricabile; Sensori di misurazione elettronici; Telecamere retiniche [non per uso medico]; Software per cellulari; Software bioinformatico; Software sensoriale; Programmi per computer per il montaggio video; Programmi per computer per l'elaborazione di dati; Software per telefoni cellulari; Software di rendicontazione; Software per l'integrazione dell'intelligenza artificiale e dell'apprendimento automatico nel campo dei megadati; Software per monitoraggio sanitario; Software per la gestione di big data; Software per realtà virtuale; Software per autorizzare l'accesso a banche dati; Software per creazione di banche dati di informazioni e dati in cui fare ricerca; Software di intelligenza artificiale; Software di intelligenza artificiale per servizi medici; Apparecchi di misura di precisione; Misuratori; Strumenti per misurare gli angoli; Programmi software per la gestione di banche dati; Apparecchi e strumenti di misura; Dispositivi a frequenza ottica per metrologia; Applicazioni software scaricabili."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Oftalmometri; Apparecchiature diagnostiche oftalmologiche; Apparecchi fotografici oftalmologici per uso medico; Pupillometri per misurare la distanza pupillare (PD); Pupillometri per misurare la reattività pupillare agli stimoli; Dispositivi di misurazione per uso medico; Sensori di precisione per uso medico; Strumenti optometrici; Strumenti di esame ottico-medici; Oftalmoscopi; Apparecchiature per l'esame della vista; Apparecchi per l'analisi degli occhi; Dispositivi di telemetria per applicazioni mediche."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di scienza e tecnologia; Servizi informatici; Sviluppo di software; Ricerca medica; Progettazione e sviluppo di software per tecnologie mediche; Servizi di laboratori di ricerca in ottica; Ricerca e sviluppo scientifici; Progettazione e sviluppo di tecnologie mediche."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi oftalmologici; Trattamento di malattie e disturbi degli occhi; Servizi di assistenza sanitaria alle persone; Analisi mediche; Servizi medici; Pubblicazione di relazioni mediche; Telerefertazione [servizi medici]; Consultazione in materia di optometria; Servizi di optometria; Servizi di optometria a domicilio; Servizi di esami della vista [servizi oculistici]; Servizi di screening della vista; Servizi di tomografia medica; Servizi di telemedicina."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Parsisiunciamoji programine iranga kaip medicinine priemone [SaMD]; Taikomoji programine iranga; Programine iranga; Medicinos srities kompiuteriu programine iranga; Kompiuteriu programine iranga, naudojama medicininiu sprendimu paramos sistemose; Matavimo prietaisu jutikliai; Judesio jutikliai; Matavimo jutikliai; Varikliu jutikliai; Biologiniai jutikliai; Alidades; Sarnyrines liniuotes; Virtualiosios realybes akiniai; 3D akiniai; Diagnostikos aparatai (ne medicinos reikmems); Optiniai matavimo aparatai; Mobiliuju irenginiu taikomoji programine iranga; Parsisiunciamoji kompiuteriu programine iranga; Elektroniniai matavimo jutikliai; Tinklaines kameros [ne medicinos reikmems]; Mobilioji programine iranga; Bioinformatikos programine iranga; Jutikline programine iranga; Vaizdo irasu redagavimo programine iranga; Kompiuteriu duomenu dorojimo programos; Mobiliuju telefonu programine iranga; Ataskaitu rengimo programine iranga; Programine iranga dirbtiniam intelektui ir masinu mokymuisi diegti didziuju duomenu srityje; Sveikatos stebejimo programine iranga; Dideles apimties duomenu valdymo programine iranga; Virtualiosios realybes programine iranga; Kompiuteriu programine iranga prieigai prie duomenu baziu autorizuoti; Kompiuterine programine iranga, skirta paieskomosioms duomenu ir informacinems duomenu bazems kurti; Dirbtinio intelekto programine iranga; Dirbtinio intelekto programine iranga sveikatos prieziuros reikmems; Tikslieji matavimo prietaisai; Matavimo aparatai; Kampu matavimo prietaisai; Kompiuteriu programine iranga programos duomenu bazems tvarkyti; Matavimo aparatai ir instrumentai; Optiniai daznio matavimo prietaisai; Parsisiunciamoji taikomoji programine iranga."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Oftalmometrai; Oftalmologiniai diagnostikos instrumentai; Oftalmologijos kameros medicinos reikmems; Pupilometrai atstumui tarp vyzdziu matuoti; Prietaisai vyzdziu reakcijai i dirgiklius matuoti; Matavimo prietaisai medicinos reikmems; Preciziniai jutikliai medicinos reikmems; Optometriniai prietaisai; Optines medicinines apziuros instrumentai; Oftalmoskopai; Regejimo tikrinimo aparatai; Akiu testavimo aparatai; Telemetrijos prietaisai medicinos reikmems."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Mokslo ir technologiju paslaugos; Informaciniu technologiju paslaugos; Programines irangos tobulinimas; Medicininiai tyrimai; Su medicinos technologijomis skirtos naudoti kompiuteriu programines irangos projektavimas ir tobulinimas; Optikos tyrimu laboratoriju paslaugos; Mokslo technologiju paslaugos; Moksliniai tyrimai ir pletra; Medicinos technologijos kurimas ir tobulinimas."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Oftalmologu paslaugos; Akiu ligu ir bukliu gydymas; Zmoniu sveikatos prieziuros paslaugos; Sveikatos tikrinimas; Medicinos pagalba; Medicininiu ataskaitu isdavimas; Medicininiu ataskaitu teikimas nuotoliniu budu [medicinos paslaugos]; Optometrijos konsultacijos; Optometrijos paslaugos; Optometrijos paslaugos atvykstant i namus; Regejimo patikrinimas [optiku paslaugos]; Regejimo patikros paslaugos; Medicininio organu atvaizdavimo paslaugos; Telemedicinos paslaugos."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Lejupieladejama programmatura ka mediciniska ierice (SaMD); Lietojumprogrammatura; Programmatura; Datoru programmatura saistiba ar medicinas jomu; Datoru programmatura mediciniska rakstura lemumu pienemsanas atbalstsistemam; Sensori merinstrumentiem; Kustibu sensori; Merisanas sensori; Dzineju sensori; Biologiskie sensori; Alidades; Sarnirveida transportiera lineali; Brilles virtualai realitatei; Brilles attelu uztverei 3D formata; Diagnostikas aparati, ne mediciniskiem nolukiem; Optiskas merisanas ierices; Mobilas lietotnes; Lejupieladejamas lietojumprogrammas; Elektroniski merisanas sensori; Kameras tiklenes attelu uznemsanai [ne mediciniskiem nolukiem]; Parvietojama programmatura; Bioinformatikas programmatura; Sensoru programmatura; Videoredigesanas programmatura; Datorprogrammas datu apstradei; Mobilo talrunu programmatura; Programmatura zinojumu sagatavosanai; Programmatura maksliga intelekta un masinmacisanas integresanai lielo datu joma; Veselibas uzraudzibas programmatura; Programmatura lielo datu parvaldibai; Virtualas realitates programmatura; Datoru programmatura, kas atlauj pieklut datubazem; Informacijas un datu meklesanas datubazu veidosanas programmatura; Maksliga intelekta programmatura; Maksliga intelekta programmatura veselibas aprupei; Augstas precizitates meraparati; Meraparatura; Lenku merinstrumenti; Datoru programmatura datubazu parvaldibai; Merisanas ierices un instrumenti; Optiskas frekvences merisanas ierices; Lejupieladejamas programmaturas lietotnes."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Oftalmometri; Diagnostikas instrumenti oftalmologijai; Oftalmologiskas kameras mediciniskiem nolukiem; Pupilometri attaluma merisanai starp zilitem; Pupilometri zilites reagetspejas merisanai uz kairinajumu; Merierices mediciniskam nolukam; Precizitates sensori mediciniskiem nolukiem; Optometriskie instrumenti; Optiskie instrumenti, kas paredzeti mediciniskam parbaudem; Oftalmoskopi; Redzes parbaudes aparati; Acu parbaudes iekartas; Telemetrijas ierices mediciniskai lietosanai."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Zinatniskie un tehnologiskie pakalpojumi; Informacijas programmesanas pakalpojumi; Programmaturas izstrade; Mediciniska izpete; Datoru programmaturas projektesana un izstrade izmantosanai ar medicinas tehnologiju; Optiskas petniecibas laboratorijas pakalpojumi; Zinatniski tehnologiskie pakalpojumi; Zinatniska petnieciba un izstrade; Medicinas tehnologijas projektesana un izstrade."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Oftalmologiskie pakalpojumi; Acu slimibu un traucejumu arstesana; Veselibas aprupe cilvekam; Mediciniskais skrinings; Arstnieciska aprupe; Medicinisko izzinu izsniegsana; Mediciniskas informacijas telereportesana (medicinas pakalpojumi); Optometrijas konsultaciju sniegsana; Optometrijas pakalpojumi; Optometrijas pakalpojumi majas; Redzes parbaudes [optiku] pakalpojumi; Redzes skrininga pakalpojumi; Mediciniskie attelveidosanas pakalpojumi; Telemedicinas pakalpojumi."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Softwer bhala taghmir mediku [SaMD], li jista' jitnizzel; Softwer ghal applikazzjonijiet; Softwer; Softwer tal-kompjuter relatat mal-qasam mediku; Softwer tal-kompjuter ghall-uzu f'sistemi ta' ghajnuna fit-tehid ta' decizjonijiet medici; Sensers ghall-istrumenti tal-kejl; Sensuri tac-caqliq; Strumenti li jhossu u jkejlu; Ditekters tac-caqliq; Bijo-sensuri; Strumenti ghad-determinazzjoni tad-direzzjoni jew ghall-kejl ta' angoli; Rigi tal-kejl ghall-gonot tal-irkejjen; Nuccalijiet ghar-realtà virtwali; Nuccalijiet 3D; Apparat dijanjostiku, mhux ghal skopijiet medici; Apparat ottiku ghall-kejl; Applikazzjoni tat-taghmir cellulari; Applikazzjonijiet ta' softwer tal-kompjuter, li jitnizzlu; Sensuri elettronici ghall-kejl; Kameras tar-retina (minbarra ghall-uzu mediku); Softwer tal-mowbajl; Softwer tal-bijoinformatika; Softwer sensorjali; Programmi tal-kompjuter ghall-editjar tal-vidjows; Programmi tal-kompjuter ghall-ipprocessar ta' data; Softwer ghat-telefoni cellulari; Softwer ta' rapportagg; Softwer ghall-integrazzjoni tal-intelligenza artificjali u taghlim bil-magni fil-qasam ta' data kbira; Softwer ghall-monitoragg tas-sahha; Softwer ghal gestjoni ta' data kbira; Softwer tar-realtà virtwali; Softwer tal-kompjuter ghall-awtorizzazzjoni ta' access ghal sistemi tal-hazna tad-data; Softwer tal-kompjuter ghall-holqien ta' sistemi ghall-hazna ta' data accessibbli ghat-tiftix ta' informazzjoni u data; Softwer ta' intelligenza artificjali; Softwer tal-intelligenza artificjali ghall-kura tas-sahha; Apparat ghall-kejl bi precizjoni; Strumenti tal-kejl; Strumenti ghall-kejl ta' angoli; Softwer tal-kompjuter ghall-gestjoni tad-database; Apparat u strumenti ta' kejl; Strumenti tal-metrologija tal-frekwenza ottika; Applikazzjonijiet ta' softwer li jista' jitnizzel."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Oftalmometri; Strumenti dijanjostici ghall-oftalmologija; Kameras oftalmici ghal skopijiet medici; Puppillometri ghall-kejl tad-distanza pupillari (PD); Pupillometri ghall-kejl tar-reattività pupillari ghall-istimolu; Mezzi tal-kejl ghal uzu mediku; Strumenti sensuri ta' precizjoni ghall-uzu mediku; Strumenti ottometrici; Strumenti tal-ezaminazzjoni ottomedika; Oftalmoskopji; Apparat ghall-ittestjar tal-vista; Apparat ghall-ittestjar tal-ghajnejn; Strumenti tat-telemetrija ghal applikazzjonijiet medici."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi xjentifici u teknologici; Servizzi tal-IT; Zvilupp ta' softwer; Ricerka medika; Disinn u zvilupp ta' softwer tal-kompjuter ghall-uzu ma' teknologija medika; Servizzi ta' ricerka ottika fil-laboratorju; Servizzi teknologici xjentifici; Ricerka u zvilupp xjentifiku; Disinn u zvilupp ta' teknologija medika."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi oftalmologici; Trattament ta' mard u kundizzjonijiet tal-ghajnejn; Servizzi ghal-kura tas-sahha tal-bniedem; Iskrinjar mediku; Assistenza medika; Hrug ta' rapporti medici; Telerappurtar mediku [servizzi medici]; Konsultazzjoni tal-ottometrija; Servizzi ottometrici; Servizzi ottometrici ta' zjarat fid-dar; Servizzi ta' testijiet tal-vista [servizzi tal-ottiku]; Servizzi ghall-iskrinjar tal-vizta; Servizzi ta' immagni medici; Servizzi ta' telemedicina."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Oprogramowanie jako urzadzenie medyczne [SaMD], do pobrania; Oprogramowanie uzytkowe; Oprogramowanie; Oprogramowanie komputerowe zwiazane z dziedzina medyczna; Oprogramowanie komputerowe do wykorzystania w systemach wspomagajacych podejmowanie decyzji medycznych; Czujniki do przyrzadów pomiarowych; Czujniki ruchu; Czujniki pomiarowe; Czujniki do silników; Czujniki biologiczne; Alidady [czesci skladowe przyrzadów optycznych]; Linijki pomiarowe do katów zlacza; Okulary do rzeczywistosci wirtualnej; Okulary 3D; Urzadzenia diagnostyczne nie do celów medycznych; Optyczne urzadzenia pomiarowe; Mobilne aplikacje; Aplikacje komputerowe do pobrania; Elektroniczne czujniki pomiarowe; Aparaty do zdjec siatkówki oka [inne niz do celów medycznych]; Oprogramowanie do telefonów komórkowych; Oprogramowanie bioinformatyczne; Oprogramowanie sensoryczne; Oprogramowanie do edycji wideo; Programy komputerowe do przetwarzania danych; Oprogramowanie do raportowania; Oprogramowanie do integracji sztucznej inteligencji i uczenia maszynowego w dziedzinie duzych zbiorów danych; Oprogramowanie do monitorowania zdrowia; Oprogramowanie do zarzadzania duzymi zbiorami danych; Oprogramowanie rzeczywistosci wirtualnej; Oprogramowanie komputerowe do autoryzacji dostepu do baz danych; Oprogramowanie komputerowe do tworzenia baz do wyszukiwania informacji i danych; Oprogramowanie typu sztuczna inteligencja; Oprogramowanie do sztucznej inteligencji do opieki zdrowotnej; Urzadzenia do pomiarów precyzyjnych; Przyrzady pomiarowe; Przyrzady do mierzenia katów; Oprogramowanie komputerowe [programy] do zarzadzania bazami danych; Urzadzenia i instrumenty pomiarowe; Przyrzady metrologiczne o czestotliwosci optycznej; Aplikacje do pobrania."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Oftalmometry; Okulistyczne przyrzady diagnostyczne; Kamery oftalmologiczne do celów medycznych; Pupilometry do pomiaru odleglosci miedzy zrenicami (PD); Pupilometry do pomiaru reakcji zrenic na na bodziec; Urzadzenia do pomiarów do celów medycznych; Czujniki precyzyjne do uzytku medycznego; Instrumenty optometryczne; Przyrzady do badania wzroku; Oftalmoskopy; Urzadzenia do badania wzroku; Urzadzenia do badania oczu; Przyrzady telemetryczne do zastosowan medycznych."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi naukowe i technologiczne; Uslugi w zakresie technologii informacyjnych; Opracowywanie oprogramowania komputerowego; Medyczne badania naukowe; Projektowanie i opracowywanie oprogramowania komputerowego do uzytku z technologia medyczna; Uslugi laboratoryjne w zakresie badan optycznych; Uslugi naukowo-technologiczne; Badania i rozwój w zakresie nauki; Projektowanie i opracowywanie technologii medycznej."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi okulistyczne; Leczenie chorób i schorzen oczu; Uslugi w zakresie opieki zdrowotnej dla ludzi; Badania przesiewowe; Pomoc medyczna; Wydawanie raportów medycznych; Uslugi medyczne w zakresie wydawania orzeczen lekarskich na odleglosc [tele-reporting]; Konsultacja optometryczna; Uslugi optometryczne; Uslugi optometryczne z wizyta domowa; Uslugi badania wzroku [zaklady optyczne]; Uslugi przesiewowych badan wzroku; Uslugi obrazowania medycznego; Uslugi telemedyczne."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Software como um dispositivo médico [SaMD], para download; Software de aplicação; Software; Software informático relacionado com o domínio médico; Software para utilização em sistemas de apoio à tomada de decisões médicas; Sensores para instrumentos de medição; Sensores de movimento; Sensores de medida; Detetores de movimento; Biossensores; Alidades; Réguas articuladas para medição de ângulos; Óculos de realidade virtual; Óculos 3D; Aparelhos de diagnóstico, não sendo para uso médico; Equipamento de medição ótica; Aplicações móveis; Aplicações de software informático descarregáveis; Sensores de medição eletrónicos; Retinógrafos [sem ser para uso médico]; Software móvel; Software bioinformático; Software sensorial; Programas de computador para edição de vídeo; Programas de computador para processamento de dados; Software para telemóveis; Software de elaboração de relatórios; Software para a integração de inteligência artificial e aprendizagem automática no domínio dos megadados; Software para monitorização da saúde; Software para a gestão de grandes volumes de dados; Software de realidade virtual; Software para autorização de acesso a bases de dados; Software para criação de bases de dados pesquisáveis de informações e dados; Software de inteligência artificial; Software de inteligência artificial para cuidados de saúde; Aparelhos de medição de precisão; Aparelhos de medição; Instrumentos para medir ângulos; Software para gestão de bases de dados; Instrumentos e aparelhos de medição; Dispositivos de metrologia de frequência ótica; Software aplicacional descarregável."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Oftalmómetros; Equipamentos de diagnóstico oftalmológico; Câmaras oftlalmológicas para uso médico; Pupilómetros para medição da distância pupilar; Pupilómetros para medição da reação da pupila a estímulos; Aparelhos de medida para uso médico; Sensores de precisão para uso médico; Instrumentos optométricos; Instrumentos para examinação optomédica; Oftalmoscópios; Aparelhos para teste de visão; Aparelhos para a análise dos olhos; Dispositivos de telemetria para aplicações médicas."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de ciência e tecnologia; Serviços de TI (tecnologias de informação); Desenvolvimento de software; Investigação médica; Conceção e desenvolvimento de software para utilizar em aplicações de tecnologia médica; Serviços de laboratórios de pesquisas óticas; Serviços científicos e tecnológicos; Investigação e desenvolvimento científicos; Conceção e desenvolvimento de tecnologia médica."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de oftalmologia; Tratamento de doenças e alterações oftalmológicas; Serviços de cuidados de saúde para pessoas; Análises médicas; Assistência médica; Emissão de relatórios médicos; Elaboração de relatórios médicos à distância [serviços médicos]; Consulta de optometria; Serviços de optometria; Serviços de optometria ao domicílio; Serviços de teste de visão [oftalmologista]; Serviços de rastreio da visão; Serviços de imagiologia médica; Serviços de telemedicina."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Software sub forma de dispozitiv medical [SaMD] descarcabil; Aplicatii software; Software; Software de calculator în legatura cu domeniul medical; Software de calculator folosit la sistemele de asistenta pentru luarea de decizii medicale; Senzori pentru instrumente de masura; Senzori de miscare; Senzori de masurare; Biosenzori; Alidade; Goniometre; Ochelari de realitate virtuala; Ochelari 3D; Aparate pentru diagnosticare, altele decât cele de uz medical; Instrumente optice de masurare; Aplicatii mobile; Aplicatii software de calculator, descarcabile; Senzori electronici de masurare; Retinograf [nu de uz medical]; Software mobil; Software de bioinformatica; Software senzitiv; Programe de calculator pentru editare video; Software de prelucrare a datelor; Software pentru telefoane mobile; Software pentru reportare; Software pentru integrarea inteligentei artificiale si învatarii automate în tehnologia de lucru cu volume mari de date; Software pentru monitorizarea sanatatii; Software pentru gestionarea macrodatelor; Software de realitate virtuala; Software de calculator pentru autorizarea accesului la baze de date; Software de calculator pentru crearea de baze de date consultabile care cuprind informatii si date; Software de inteligenta artificiala; Software de inteligenta artificiala pentru domeniul sanatatii; Aparate de masura de precizie; Instrumente de masurare; Aparate de masurare unghiuri; Programe informatice pentru administrarea bazelor de date; Instrumente si aparate de masurat; Dispozitive metrologice optice pentru frecventa; Aplicatii software descarcabile."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Oftalmometre; Echipamente de diagnosticare de uz oftalmologic; Camere oftalmologice de uz medical; Pupilometre pentru masurarea distantei pupilare (DP); Pupilometre pentru masurarea reactiilor pupilei la stimuli; Dispozitive de masurare de uz medical; Senzori de precizie, de uz medical; Instrumente pentru optometrie; Instrumente pentru examinare folosite în optica medicala; Oftalmoscoape; Aparate de testare a vederii; Aparate pentru analize oftalmologice; Dispozitive de telemetrie pentru aplicatii medicale."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii în domeniul stiintei si tehnologiei; Servicii IT; Dezvoltare de software; Cercetare medicala; Proiectare si dezvoltare de software de calculator destinat utilizarii cu tehnologia medicala; Servicii de laborator pentru cercetari în domeniul opticii; Servicii tehnologice stiintifice; Cercetare si dezvoltare stiintifica; Proiectare si dezvoltare de tehnologie medicala."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de oftalmologie; Tratamentul bolilor si afectiunilor ochilor; Servicii de asistenta medicala pentru oameni; Depistare medicala [screening]; Medicala (Asistenta -); Emiterea de rapoarte medicale; Servicii medicale furnizate prin telefon [servicii medicale]; Consultatie optometrica; Servicii de optometrie; Servicii de optometrie la domiciliu; Servicii de testare a vederii [opticieni]; Servicii de control al vederii; Servicii de imagistica medicala; Servicii de telemedicina."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Stahovatelný softvér, ktorý je zdravotníckym zariadením (SaMD); Aplikacný softvér; Softvér; Pocítacový softvér týkajúci sa lekárskej oblasti; Pocítacový software pre pouzitie v systémoch napomáhajúcich pri lekárskych rozhodnutiach; Senzory pre meracie prístroje; Detektory pohybu; Meracie senzory; Motorové senzory; Biologické snímace; Alidády; Klbové uhlomery; Okuliare na virtuálnu realitu; 3D okuliare; Diagnostické prístroje (nie na lekárske pouzitie); Optické meracie prístroje; Mobilné aplikácie; Pocítacové softvérové aplikácie (stahovatelné); Elektronické meracie senzory; Sietnicové fotoaparáty s výnimkou fotoaparátov na lekárske úcely; Softvér pre mobilné telefóny; Bioinformatický softvér; Senzorický softvér; Softvér na úpravu videa; Pocítacové programy na spracovanie údajov; Vykazovací softvér; Softvér pre integráciu umelej inteligencie a strojového ucenia v oblasti velkých dát; Softvér na monitorovanie zdravotného stavu; Softvér na správu velkých dát; Softvér pre virtuálnu realitu; Pocítacový softvér na schvalovanie prístupu k databázam; Pocítacový softvér na vytváranie vyhladávatelných databáz informácií a dát; Softvér umelej inteligencie; Softvér umelej inteligencie pre oblast zdravotnej starostlivosti; Presné meracie prístroje; Meracie prístroje; Nástroje na meranie uhlov; Pocítacový sofvér na manazment databáz; Zariadenia a nástroje na meranie; Optické metrologické frekvencné zariadenia; Stiahnutelné softvérové aplikácie."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Keratometre; Oftalmologické diagnostické nástroje; Oftalmické kamery na lekárske úcely; Pupilometre na meranie vzdialenosti zreníc; Pupilometre na meranie reaktivity zreníc; Meracie prístroje na lekárske úcely; Presné senzory na lekárske úcely; Optometrické nástroje; Optometrické vysetrovacie nástroje; Oftalmoskopy; Zariadenia na testovanie zraku; Prístroje na ocné vysetrenia; Telemetrické zariadenia na lekárske úcely."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Vedecké a technologické sluzby; Informacné technológie; Vývoj pocítacového softvéru; Lekársky výskum; Navrhovanie a vývoj pocítacového softvéru na pouzitie s lekárskymi technológiami; Sluzby optických výskumných laboratórií; Vedecké technologické sluzby; Vedecký výskum a vývoj; Navrhovanie a vývoj lekárskych technológií."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Oftalmologické sluzby; Liecenie ocných ochorení a chorobných stavov ocí; Sluzby zdravotníckej starostlivosti o ludí; Lekárske vysetrenia; Lekárska pomoc; Vystavovanie lekárskych správ; Lekársky telereporting [lekárske sluzby]; Optometrické poradenstvo; Optometrické sluzby; Optometrické sluzby poskytované v domácom prostredí; Sluzby v oblasti vysetrenia zraku [optického]; Skríning týkajúci sa zraku; Lekárske zobrazovacie sluzby; Telemedicínske sluzby."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Programska oprema kot medicinski pripomocek [SaMD], nalozljiva; Aplikacijska programska oprema; Programska oprema; Racunalniska programska oprema za medicinsko podrocje; Racunalniska programska oprema, ki se uporablja v medicinski stroki kot pomoc pri odlocanju; Senzorji za merilne instrumente; Senzorji gibanja; Merilni senzorji; Senzorji za motorje; Bio senzorji; Alhidade; Ravnila za merjenje kotov zglobov; Ocala za navidezno resnicnost; 3D ocala; Diagnosticni aparati, ne za medicinske namene; Opticni merilni aparati; Mobilna aplikacija; Racunalniska programska oprema, nalozljiva preko racunalniske mreze; Elektronski merilni senzorji; Kamere za mreznico [razen za medicinsko uporabo]; Mobilna programska oprema; Programska oprema za bioinformatiko; Senzoricna programska oprema; Programska oprema za urejanje video posnetkov; Racunalniski programi za obdelavo podatkov; Programska oprema za mobilne telefone; Programska oprema za porocanje; Programska oprema za integracijo umetne inteligence in strojnega ucenja na podrocju masovnih podatkov; Programska oprema za spremljanje zdravja; Programska oprema za upravljanje masovnih podatkov; Programska oprema za navidezno resnicnost; Racunalniska programska oprema za avtorizacijo dostopa do podatkovnih baz; Racunalniska programska oprema za ustvarjanje iskalnih baz podatkov z informacijami in podatki; Programska oprema za umetno inteligenco; Programska oprema za umetno inteligenco za zdravstveno varstvo; Aparati za natancno merjenje; Merilni instrumenti; Instrumenti za merjenje kotov; Racunalniska programska oprema za upravljanje baz podatkov; Merilni aparati in instrumenti; Metroloske naprave na opticnih frekvencah; Nalozljive aplikacije programske opreme."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Oftalmometri; Diagnosticni instrumenti za oftalmologijo; Oftalmoloske kamere za medicinske namene; Pupilometri, naprave za merjenje razdalje med zenicama; Pupilometri, naprave za merjenje odzivnosti zenice na drazljaje; Merilne naprave za medicinske namene; Natancni senzorji za medicinsko uporabo; Optometricni instrumenti; Optomedicinski instrumenti za pregledovanje; Oftalmoskopi; Aparati za testiranje vida; Aparati za testiranje oci; Telemetricne naprave za medicinske aplikacije."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Znanstvene in tehnoloske storitve; Storitve informacijske tehnologije; Razvoj programske opreme; Medicinske raziskave; Oblikovanje in razvoj racunalniske programske opreme za uporabo z medicinsko tehnologijo; Laboratorijske storitve za opticne raziskave; Znanstveno-tehnoloske storitve; Znanstvene raziskave in razvoj; Oblikovanje in razvoj medicinske tehnologije."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Oftalmoloske storitve; Zdravljenje ocesnih bolezni in stanj; Zdravstvene storitve za ljudi; Medicinski skrining; Zdravniska pomoc; Izdajanje zdravniskih porocil; Porocanje o zdravstvenem stanju na daljavo [medicinske storitve]; Svetovanje na podrocju optometrije; Storitve optometrije; Storitve optometrije na domu; Storitve optikov za testiranje vida; Storitve preverjanja vida; Storitve medicinskega slikanja; Telemedicinske storitve."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software en cuanto dispositivo médico [SaMD], descargable; Programas de aplicación; Software; Programas informáticos relativos al ámbito médico; Software para su uso en sistemas de apoyo en la toma de decisiones médicas; Sensores para instrumentos de medición; Detectores de movimiento; Detectores de medición; Sensores para motores; Biosensores; Alidadas; Reglas graduadas de juntas de ángulo; Gafas de realidad virtual; Gafas 3D; Aparatos de diagnóstico que no sean para uso médico; Aparatos de medida ópticos; Aplicaciones de móviles; Aplicaciones informáticas descargables; Sensores de medida electrónicos; Cámaras retinales [que no sean para uso médico]; Software móvil; Software bioinformático; Software sensorial; Programas informáticos para la edición de vídeos; Software de ordenador para el tratamiento de la información; Software para teléfonos móviles; Software de elaboración de informes; Software para la integración de la inteligencia artificial y el aprendizaje automático en el ámbito de los macrodatos; Software para supervisar la salud; Software de gestión de macrodatos; Software de realidad virtual; Software para la autorización de acceso a bases de datos; Software para crear bases de datos consultables de información y datos; Software de inteligencia artificial; Software de inteligencia artificial para asistencia sanitaria; Aparatos para mediciones de precisión; Aparatos de medición; Instrumentos para medir ángulos; Software de gestión de bases de datos; Instrumentos y aparatos de medición; Dispositivos ópticos de metrología de frecuencia; Aplicaciones de software descargables."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Oftalmómetros; Instrumentos diagnósticos para oftalmología; Cámaras oftálmicas para uso médico; Pupilómetros para medir la distancia pupilar (DP); Pupilómetros para medir la reacción pupilar ante los estímulos; Dispositivos de medida para uso médico; Sensores de precisión de uso médico; Instrumentos optométricos; Instrumentos de examen optomédico; Oftalmoscopios; Aparatos para exámenes de la vista; Aparatos para analizar los ojos; Dispositivos de telemetría para aplicaciones médicas."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios científicos y tecnológicos; Servicios de tecnologías de la información; Desarrollo de software; Investigación médica; Diseño y desarrollo de software para su uso con tecnología médica; Servicios de investigación óptica de laboratorio; Servicios tecnológicos científicos; Investigación y desarrollo científico; Diseño y desarrollo de tecnología médica."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios oftalmológicos; Tratamiento de enfermedades y afecciones oculares; Servicios de salud para personas; Screening (cribado) médico; Asistencia médica; Emisión de informes médicos; Elaboración de informes médicos a distancia [servicios médicos]; Consulta sobre optometría; Servicios de optometría; Servicios de optometría a domicilio; Servicios de pruebas de la vista [ópticos]; Servicios de examen de la vista; Servicios de imagenología médica; Servicios de telemedicina."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Programvara som medicinsk utrustning [SaMD], nedladdningsbar; Applikationsprogramvaror (appar); Mjukvaror; Programvara inom det medicinska området; Datorprogramvara för användning i stödsystem för medicinska beslut; Sensorer för mätinstrument; Rörelsesensorer; Sensorer för mätning; Sensorer för motorer; Biosensorer; Dioptrar; Vinkelmätningslinjaler; Virtual reality glasögon; 3D-glasögon; Diagnostiska apparater, inte för medicinska ändamål; Optiska mätinstrument; Mobilappar; Softwareapplikationer för datorer, nedladdningsbara; Elektroniska mätsensorer; Näthinnekameror [inte för medicinska ändamål]; Mobil programvara; Bioinformatikprogramvara; Sensoriska programvaror; Programvara för videoredigering; Datorprogramvara för databehandling; Software för mobiltelefoner; Rapporteringsprogramvara; Programvaror för integration av artificiell intelligens och maskininlärning på området stordata; Programvara för hälsoövervakning; Programvara för stordatahantering; Virtual reality-programvara; Datorprogramvara för godkännande av åtkomst till databaser; Programvara för skapande av sökbara databaser med information och data; Programvara för artificiell intelligens; Programvara för artificiell intelligens för hälsovård; Precisionsmätapparater; Mätapparater; Instrument för mätning av vinklar; Datorprogram för hantering av databaser; Mätapparater och instrument; Anordningar för optiska frekvensmätning; Nedladdningsbara programvaruapplikationer."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Oftalmometrar; Diagnostiska instrument för oftalmologi; Oftalmiska kameror för medicinska ändamål; Pupillometrar för att mäta avståndet mellan pupillerna; Pupillometrar för att mäta pupillens reaktion på stimulering; Mätanordningar för medicinsk användning; Precisionssensorer för medicinsk användning; Optometriska instrument; Optomedicinska undersökningsinstrument; Oftalmoskop; Apparater för testning av synen; Apparater för syntest; Avståndsmätare för medicinska tillämpningar."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Vetenskapliga och tekniska tjänster; IT-tjänster; Utveckling av mjukvara; Medicinsk forskning; Design och utveckling av programvara för användning med medicinsk teknologi; Laboratorietjänster för optisk forskning; Vetenskapliga teknologiska tjänster; Vetenskaplig forskning och utveckling; Design och utveckling av medicinsk teknologi."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Ofthalmologiska tjänster; Behandlingar av ögonsjukdomar och ögonåkommor; Hälsovårdstjänster för människor; Medicinsk screening; Medicinsk assistans; Utfärdande av medicinska rapporter; Utlåtanden per telefon [medicinska tjänster]; Optometrikonsultation; Optometriska tjänster; Optometritjänster i hemmet; Syntesttjänster [optiker]; Synscreeningtjänster; Medicinska bildbaserade undersökningar; Medicinska tjänster via telefon."
+        }
+      ]
+    },
+    "id": "2c4671a5-dda5-476e-a56b-7b9cfb302e1d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "21.03.21",
+      "27.03.15"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "104"
+      }
+    ],
+    "recordLastUpdated": "20260512",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Khiou 93,Glyfada, 16561",
+        "representativeAddressCountryCode": "GR",
+        "representativeAddressCountryName": "Greece",
+        "representativeName": "Maria Mpoulieri"
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250526",
+        "applicationNumber": "19193407"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350526",
+      "lastPublicationDate": "20250606",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20250914",
+        "registrationNumber": "19193407"
+      }
+    },
+    "version": "20260512020340",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "KORI"
+    }
+  },
+  "_uri": "/mark/em/2c4671a5-dda5-476e-a56b-7b9cfb302e1d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.791Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

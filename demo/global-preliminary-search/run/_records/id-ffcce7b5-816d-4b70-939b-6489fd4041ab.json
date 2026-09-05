@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/id/ffcce7b5-816d-4b70-939b-6489fd4041ab",
+  "provider": "clarivate",
+  "office": "id",
+  "guid": "ffcce7b5-816d-4b70-939b-6489fd4041ab",
+  "applicationNumber": "D002011046120",
+  "registrationNumber": null,
+  "applicationDate": "2012-07-19",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "IORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    8,
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        8
+      ],
+      "language": "id",
+      "description": "Dvd player, tv, aktive speaker;.",
+      "translation_language": "en",
+      "translation": "DVD player, TV, active speaker;"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "id",
+      "description": "Setrlka.",
+      "translation_language": "en",
+      "translation": "Setrlka."
+    }
+  ],
+  "owner": "ISTANA ARGO KENCANA",
+  "ownerNative": null,
+  "ownerCountry": "ID",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "JL. PLUIT RAYA BLOK C 12/19 RT. 007/007 KEL. PENJARINGAN KEC. PENJARINGAN, JAKARTA UTARA; ID",
+        "applicantAddressCountryCode": "ID",
+        "applicantAddressCountryName": "Indonesia",
+        "applicantName": "ISTANA ARGO KENCANA"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "DVD player, TV, active speaker;",
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "id",
+          "intGoodsServicesDescription": "Dvd player, tv, aktive speaker;."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Setrlka.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "id",
+          "intGoodsServicesDescription": "Setrlka."
+        }
+      ]
+    },
+    "id": "ffcce7b5-816d-4b70-939b-6489fd4041ab",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250105",
+    "registrationOfficeCode": "ID",
+    "registrationOfficeName": "Indonesia",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120719",
+        "applicationNumber": "D002011046120"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REFUSED MARK"
+    },
+    "version": "20250105101952",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "IORI"
+    }
+  },
+  "_uri": "/mark/id/ffcce7b5-816d-4b70-939b-6489fd4041ab",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:47.225Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/pe/90ecd7c5-cc9b-4551-8d85-9ebbc9c61e13",
+  "provider": "clarivate",
+  "office": "pe",
+  "guid": "90ecd7c5-cc9b-4551-8d85-9ebbc9c61e13",
+  "applicationNumber": "11066-2024",
+  "registrationNumber": "S00157055",
+  "applicationDate": "2024-03-08",
+  "registrationDate": "2024-07-02",
+  "expiryDate": "2034-07-02",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIWAYRA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "servicios de artistas del espectáculo, organización de eventos que no sean con fines promocionales ni comerciales, organización y dirección de conciertos, servicios de educación.",
+      "translation_language": "en",
+      "translation": "entertainment artist services, organization of events that are not for promotional or commercial purposes, organization and direction of concerts, educational services."
+    }
+  ],
+  "owner": "CAMPANA ORE MARIA UBALDINA",
+  "ownerNative": null,
+  "ownerCountry": "PE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "LIMA - LIMA - SANTIAGO DE SURCO",
+        "applicantAddressCountryCode": "PE",
+        "applicantAddressCountryName": "Peru",
+        "applicantName": "CAMPANA ORE MARIA UBALDINA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "entertainment artist services, organization of events that are not for promotional or commercial purposes, organization and direction of concerts, educational services.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "servicios de artistas del espectáculo, organización de eventos que no sean con fines promocionales ni comerciales, organización y dirección de conciertos, servicios de educación."
+        }
+      ]
+    },
+    "id": "90ecd7c5-cc9b-4551-8d85-9ebbc9c61e13",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "24.13.14",
+      "24.13.22",
+      "24.13.25",
+      "25.01.05",
+      "27.05.11",
+      "27.05.13"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250709",
+    "registrationOfficeCode": "PE",
+    "registrationOfficeName": "Peru",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240308",
+        "applicationNumber": "11066-2024"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340702",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20240702",
+        "registrationNumber": "S00157055"
+      }
+    },
+    "version": "20250709180543",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIWAYRA"
+    }
+  },
+  "_uri": "/mark/pe/90ecd7c5-cc9b-4551-8d85-9ebbc9c61e13",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.399Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

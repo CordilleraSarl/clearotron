@@ -1,0 +1,1068 @@
+{
+  "uri": "/mark/em/64cff351-991d-4374-b92f-671d3c249a7b",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "64cff351-991d-4374-b92f-671d3c249a7b",
+  "applicationNumber": "19356087",
+  "registrationNumber": "19356087",
+  "applicationDate": "2026-04-29",
+  "registrationDate": "2026-08-15",
+  "expiryDate": "2036-04-29",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-05-07",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Valqoris",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "cs",
+      "description": "Poradenské sluzby týkající se analýzy hospodárské cinnosti; Sluzby obchodní analýzy; Pomoc, poradenské sluzby a konzultace týkající se analýz obchodní cinnosti; Sluzby v oblasti analýzy cen; Analýzy nákladu a prínosu; Poradenství v otázkách obchodní taktiky; Poradenství v oblasti organizace a obchodního rízení; Konzultace v oblasti obchodní organizace a provozu; Poradenské sluzby pro obchodní vedení; Poradenství v oblasti efektivity podnikání; Poradenství v oblasti rízení obchodní cinnosti a podnikové organizace; Poskytování online sluzeb týkajících se porovnávání cen; Poradenství v oblasti obchodního managementu prostrednictvím internetu; Srovnávání cen; Poskytování sluzeb financního srovnávání on-line.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "cs",
+      "description": "Financní analýza; Sluzby v oblasti financní analýzy a pruzkumu; Financní analýzy a poradenství; Sluzby správy financních informací a analýz; Financní ocenování a analýzy; Financní informace; Financní poradenství a informacní sluzby; Financní poradenství zamerené na pujcky.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Platformy pro umelou inteligenci ve forme softwaru jako sluzby [SaaS]; Software jako sluzba [SaaS]; Sluzby softwaru jako sluzby [SaaS] zamerené na software pro strojové ucení, hluboké ucení a hluboké neuronové síte; Software jako sluzba [SaaS] zamerený na software pro strojové ucení; Software jako sluzba [SaaS] zamerený na software pro hluboké ucení; Umelá inteligence jako sluzba [AIaaS]; Konzultacní sluzby v oboru software jako sluzba (SAAS); Tvorba a údrzba softwaru pro blogy.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "da",
+      "description": "Rådgivningstjenester vedrørende erhvervsanalyse; Ydelser i form af forretningsanalyse [virksomhedsanalyse]; Bistand, rådgivning og konsulentvirksomhed vedrørende virksomhedsanalyse; Prisanalyser; Cost-benefit-analyser; Rådgivning vedrørende forretningsstrategier; Rådgivning i forbindelse med forretningsorganisation og -ledelse; Rådgivning vedrørende forretningsorganisation og forretningsdrift; Rådgivning vedrørende forretningsledelse; Rådgivning i forbindelse med virksomhedseffektivitet; Rådgivning vedrørende forretningsledelse og -organisation; Tilvejebringelse af en onlineprissammenligningstjeneste; Konsulentbistand vedrørende forretningsledelse udbudt via internettet; Sammenligning af priser; Sammenligninger af finansiel virksomhed udbudt online.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "da",
+      "description": "Finansielle analyser; Tjenesteydelser inden for finansiel analyse og undersøgelser; Finansiel analyse og konsulentbistand; Forvaltning og analyse af finansiel information; Finansiel vurdering og analyse; Finansiel information; Finansiel konsulentbistand og informationsvirksomhed; Finansiel konsulentbistand i forbindelse med lån.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Platforme til kunstig intelligens som software as a service [SaaS]; Software as a service [saas]; Software as a service [SaaS] med software til maskinlæring, dyb læring og dybe neurale netværk; Software as a service [SaaS] med software til maskinlæring; Software as a service [SaaS] med software til dyb læring; Artificial intelligence as a service [AIaaS]; Rådgivning inden for software som en tjeneste (SaaS); Udarbejdelse og vedligeholdelse af software til blogs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "Adviesdiensten met betrekking tot bedrijfsorganisatorische analyse; Commercieel-zakelijke analyses; Ondersteuning, advisering en raadgeving inzake commerciële analyse; Prijsanalyse; Kosten-batenanalyse; Advisering op het gebied van zakelijke strategieën; Advisering inzake beheer van commerciële zaken en bedrijfsorganisatie; Raadgeving inzake bedrijfsorganisatie en -voering; Advisering voor bedrijfsleiding; Advisering met betrekking tot bedrijfsefficiëntie; Advisering inzake het commercieel beheer van zaken en bedrijfsorganisatie; Verstrekking van onlineprijsvergelijkingen; Advisering inzake commercieel management van zaken via internet; Prijsvergelijkingsdiensten; Ter beschikking stellen van online vergelijkingen van financiële diensten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "nl",
+      "description": "Financiële analyse; Analyse en onderzoek op financieel gebied; Financiële analyse en advisering; Financieel informatiebeheer en financiële analyse; Financiële evaluatie en analyse; Verschaffen van financiële informatie; Financiële advies- en informatiediensten; Financiële advisering met betrekking tot leningen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Platforms voor artificiële intelligentie als software-als-een-dienst [SaaS]; Ter beschikking stellen van software [SaaS]; Software-als-een-dienst [SaaS] diensten met software voor machinaal leren, diep leren en diepe neurale netwerken; Software-als-een-dienst [SaaS] met software voor machinaal leren; Software-als-een-dienst [SaaS] met software voor diep leren; Artificiële intelligentie als dienst (AIaaS); Advisering op het gebied van het ter beschikking stellen van software [SaaS]; Creëren en onderhouden van software voor blogs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Advisory services relating to business analysis; Business analysis services; Assistance, advisory services and consultancy with regard to business analysis; Price analysis services; Cost benefit analysis; Consultancy services regarding business strategies; Advice relating to the organisation and management of business; Business organization and operation consultancy; Advisory services for business management; Consultancy relating to business efficiency; Business management and enterprise organization consultancy; Provision of online price comparison services; Business management consultancy via the Internet; Price comparison services; Provision of online financial services comparisons.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Financial analysis; Financial analysis and research services; Financial analysis and consultancy; Financial information management and analysis services; Financial evaluation and analysis; Financial information; Financial consultancy and information services; Financial consultancy relating to loans.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Platforms for artificial intelligence as software as a service [SaaS]; Software as a service [SaaS]; Software as a service [SaaS] services featuring software for machine learning, deep learning and deep neural networks; Software as a service [SaaS] featuring software for machine learning; Software as a service [SaaS] featuring software for deep learning; Artificial intelligence as a service [AIaaS]; Consulting services in the field of software as a service [SaaS]; Creation and maintenance of software for blogs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "et",
+      "description": "Ärianalüüsiga seotud nõustamisteenused; Ärianalüüs; Abi-, nõustamis- ja konsultatsiooniteenused seoses ärianalüüsiga; Hinnaanalüüsid; Tasuvusanalüüside koostamine; Äristrateegiaid puudutavad konsultatsiooniteenused; Äritegevuse juhtimise ja korraldamise nõustamine; Ärikorralduse ja -tegevuse nõustamine; Äritegevuse juhtimise nõustamine; Äriefektiivsuse nõustamine; Ärijuhtimise ja -korraldamise konsultatsioonid; Hinnavõrdlusteenuste pakkumine veebis; Äritegevuse juhtimiskonsultatsioonid Interneti teel; Hinnavõrdlusteenused; Finantsteenuste sidusvõrdluste pakkumine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "et",
+      "description": "Finants-, rahandusanalüüsid; Finantsanalüüsid ja -uuringud; Finantsanalüüs ja -konsultatsioon; Finantsinfo haldamise ja analüüsi teenused; Finantshindamine ja -analüüs; Finantsteave, -info, rahandusteave, -info; Finantsnõustamise ja -teabe teenused; Finantsnõustamine laenude valdkonnas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Tehisintellektiplatvormid kui teenustarkvara [SaaS]; Pilveteenused [SaaS]; Masinõppe, süvaõppe ja sügavate närvivõrkude tarkvara sisaldavad teenustarkvara [SaaS] teenused; Masinõppe tarkvaraga teenustarkvara [SaaS]; Süvaõppe tarkvaraga teenustarkvara [SaaS]; Tehisintellekt teenusena [AIaaS]; Teenustarkvara [SaaS] valdkonna konsulteerimisteenused; Blogitarkvara loomine ja hooldamine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fi",
+      "description": "Liiketoiminta-analyyseihin liittyvät neuvontapalvelut; Yritysanalyysipalvelut; Liiketoiminnallisiin analyyseihin liittyvät avustus-, neuvonta- ja konsultointipalvelut; Hintojen analysointipalvelut; Kustannus-hyötyanalyysit; Yritysstrategiakonsultointi; Liiketoiminnan organisointiin ja johtamiseen liittyvä neuvonta; Liiketoiminnan organisointia ja hoitamista koskeva konsultointi; Liikkeenhoitoa koskevat neuvontapalvelut; Liiketoiminnan tehokkuuteen liittyvä konsultointi; Liikkeenjohtoon ja yritysorganisaatioon liittyvä konsultointi; Online-hintavertailupalveluiden tarjoaminen; Liikkeenjohdon konsultointi Internetin välityksellä; Vertailupalvelut (hintojen); Rahoituspalvelujen vertailujen tarjoaminen online-periaatteella.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "fi",
+      "description": "Rahoitusanalyysit; Rahoitusanalyysi- ja -tutkimuspalvelut; Rahoitukseen liittyvä analysointi ja neuvonta; Rahataloudellisten tietojen hallinta- ja analysointipalvelut; Rahatalouteen liittyvä analysointi ja arviointi; Rahoitusneuvonta; Rahataloudelliset konsultointi- ja tiedotuspalvelut; Rahoituskonsultointi lainojen alalla.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Tekoäly-ympäristöt sovellusvuokrauspalveluna [SaaS-palveluna]; Verkkosovelluspalvelut [SaaS]; Verkkosovelluspalvelut [SaaS] ohjelmistoilla, jotka on tarkoitettu koneoppimiseen, syväoppimiseen ja syviin neuroverkkoihin; Verkkosovelluspalvelut [SaaS] ohjelmistoilla koneoppimista varten; Verkkosovelluspalvelut [SaaS] ohjelmistoilla syväoppimista varten; Tekoäly palveluna [AIaaS]; Konsultointipalvelut verkkosovelluspalvelujen [SaaS] alalla; Blogeja varten tarkoitettujen ohjelmistojen laatiminen ja ylläpito.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Services de conseil en matière d'analyse commerciale; Services d'analyses commerciales; Services d'assistance et de conseil en matière d'analyse commerciale; Services d'analyse de prix; Analyses coûts-avantages; Services de conseils en stratégies commerciales; Services de conseils en organisation et gestion d'entreprise; Services de conseils en matière d'organisation et d'exploitation commerciales; Services de conseils pour la gestion d'affaires; Services de conseils en matière de productivité d'entreprises; Services de conseils en matière d'organisation des entreprises et de gestion commerciale; Fourniture de services de comparaison des prix en ligne; Services de conseil en gestion commerciale par le biais d'Internet; Services de comparaison de prix; Comparaisons de services financiers en ligne.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "fr",
+      "description": "Analyses financières; Services d'analyse financière; Services d'analyse et de recherche financières; Services de conseil et d'analyse financiers; Services de gestion et d'analyse d'informations financières; Analyses et évaluations financières; Services d'informations financières; Services d'informations et de conseils financiers; Services de conseils financiers en matière de prêts.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Plates-formes pour intelligence artificielle en tant que logiciel-service [SaaS]; Logiciels en tant que service [SaaS]; Services de logiciel en tant que service (SaaS) proposant des logiciels pour l'apprentissage automatique, l'apprentissage profond et les réseaux d'apprentissage profond; Logiciel en tant que service [SaaS] en tant que logiciel pour l'apprentissage automatique; Logiciel à la demande (SaaS) en tant que logiciels pour l'apprentissage profond; Intelligence artificielle en tant que service [IAaaS]; Services d'assistance dans le domaine des services de logiciels-services (SaaS); Création et maintenance de software pour blogs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Beratungsdienste in Bezug auf Geschäftsanalysen; Unternehmensanalyseservice; Unterstützung und Beratung bei der Unternehmensanalyse; Preisanalysedienste; Erstellen von Kosten-Nutzen-Analysen; Strategische Beratung in Geschäftsangelegenheiten; Beratung bei der Geschäftsorganisation und Geschäftsführung; Beratung betreffend Unternehmensorganisation und -führung; Beratungsdienste in Fragen der Geschäftsführung; Beratung in Bezug auf die Wirtschaftlichkeit von Unternehmen; Beratung bei Geschäftsführung und Unternehmensorganisation; Online bereitgestellte Preisvergleichsdienste; Beratung über das Internet in Bezug auf Geschäftsführung; Preisvergleichsdienste; Bereitstellen von Online-Vergleichen von Finanzdienstleistungen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "de",
+      "description": "Finanzanalysen; Dienstleistungen der Finanzanalyse und -recherchen; Finanzanalysen und -beratung; Management und Analyse von Finanzinformationen; Erstellen von Finanzgutachten und -analysen; Erteilung von Finanzauskünften; Informationen und Beratung in Finanzangelegenheiten; Finanzberatung für Darlehen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Plattformen für künstliche Intelligenz als Software as a Service [SaaS]; Software as a Service [SaaS]; Software as a Service [SaaS] mit Software für maschinelles Lernen, Deep Learning und tiefe neuronale Netzwerke; Software as a Service [SaaS] mit Software für maschinelles Lernen; Software as a Service [SaaS] mit Deep-Learning-Software; Artificial Intelligence as a Service [AIaaS]; Beratung im Bereich Software as a Service [SaaS]; Erstellung und Wartung von Software für Blogs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hr",
+      "description": "Savjetodavne usluge koje se odnose na poslovnu analizu; Usluge poslovnih analiza; Podrska, konzultacijske usluge i savjetovanje za poslovnu analizu; Usluge analiza cijena; Analiza troskova i koristi; Savjetodavne usluge u svezi poslovnih strategija; Savjeti u svezi s organizacijom i upravljanjem poslovnim djelatnostima; Savjetodavne usluge u svezi s poslovnim organizacijama i djelovanjem; Usluge savjetovanja za upravljanje poduzecima; Savjetovanje u svezi poslovne ucinkovitosti; Savjetovanje u vezi poslovnog upravljanja i organizacije poduzeca; Pruzanje usluga usporedbe cijena na mrezi; Online konzultantske usluge koje se odnose na poslovno upravljanje; Usluge usporedbe cijena; Pruzanje usporedbi financijskih usluga na mrezi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "hr",
+      "description": "Financijska analiza; Usluge financijske analize i istrazivanja; Financijska analiza i konzultantske usluge; Usluge upravljanja i analize financijskih informacija; Usluge financijskog ocjenjivanja i analize; Financijske obavijesti; Konzultantske usluge i pruzanje informacija o financijama; Financijsko savjetovanje koje se odnosi na zajmove.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Platforme za umjetnu inteligenciju kao softvera kao usluge [SaaS]; Softver kao usluga [SaaS]; Softver kao usluge [SaaS] sa softverom za strojno ucenje, dubinsko ucenje i duboke neuronske mreze; Softver kao usluga [SaaS] sa softverom za strojno ucenje; Softver kao usluga [SaaS] sa softverom za dubinsko ucenje; Umjetna inteligencija kao usluga [AIaaS]; Usluge savjetovanja u podrucju softvera kao usluge (SAAS); Izrada i odrzavanje blogova.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hu",
+      "description": "Üzleti elemzéssel kapcsolatos tanácsadási szolgáltatások; Üzleti elemzési szolgáltatások; Üzleti elemzéssel kapcsolatos segítségnyújtás, tanácsadási szolgáltatások és konzultáció; Árelemzo szolgáltatások; Költség-haszon elemzések készítése; Üzleti stratégiai konzultáció; Üzletszervezéssel és üzletvezetéssel kapcsolatos tanácsadás; Üzletszervezési és muködtetési tanácsadás; Üzletvezetési tanácsadási szolgáltatások; Üzleti hatékonysághoz kapcsolódó tanácsadás; Üzletvezetési és vállalatszervezési konzultáció; Online árösszehasonlítási szolgáltatások; Interneten keresztül nyújtott üzletvezetési szaktanácsadás; Árösszehasonlító szolgáltatások; Online pénzügyi szolgáltatás-összehasonlítások biztosítása.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "hu",
+      "description": "Pénzügyi elemzések; Pénzügyi elemzések és kutatási szolgáltatások; Pénzügyi elemzés és tanácsadás; Pénzügyi információs menedzsment és elemzési szolgáltatások; Pénzügyi értékelés és elemzés; Pénzügyi információs szolgáltatások; Pénzügyi tanácsadás és információs szolgáltatások; Kölcsönökkel kapcsolatos pénzügyi szaktanácsadás.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Mesterséges intelligencia platformok szoftver mint szolgáltatásként [SaaS]; Szoftver mint szolgáltatás [SaaS]; Gépi tanulásra, mély tanulásra és mély idegi hálózatokhoz való szoftvereket tartalmazó szoftver mint szolgáltatás [SaaS] szolgáltatások; Gépi tanulásra szolgáló szoftvert tartalmazó szoftver mint szolgáltatás [SaaS]; Mély tanulásra szolgáló szoftvert tartalmazó szoftver mint szolgáltatás [SaaS]; Mesterséges intelligencia mint szolgáltatás [AIaaS]; Szoftverszolgáltatásokkal (SAAS) kapcsolatos konzultáció; Blogokhoz való szoftverek készítése és karbantartása.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "it",
+      "description": "Servizi di consulenza in materia di analisi aziendali; Servizi di analisi aziendali; Assistenza e consulenze in materia d'analisi aziendale; Servizi di analisi di prezzi; Analisi del rapporto costi/benefici; Servizi di consulenza in materia di strategie aziendali; Consulenza relativa all'organizzazione e gestione aziendale; Consulenza in materia di organizzazione e operazione aziendale; Servizi di consulenza per la gestione aziendale; Consulenza in materia di efficienza aziendale; Consulenza in materia di gestione aziendale ed organizzazione aziendale; Servizi di confronto di prezzi online; Consulenza in materia di gestione aziendale via internet; Servizi di comparazione dei prezzi; Fornitura di confronti di servizi finanziari online.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "it",
+      "description": "Analisi finanziaria; Servizi di analisi e ricerche finanziarie; Consulenza e analisi finanziaria; Servizi di gestione e di analisi di informazioni finanziarie; Analisi e valutazioni finanziarie; Informazioni finanziarie; Servizi di consulenza ed informazione finanziaria; Consulenze finanziarie inerenti il prestito.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Piattaforme per intelligenza artificiale sotto forma di software come servizio [SaaS]; Software come servizio [SaaS]; Servizi di software come servizio [SaaS] comprendenti programmi per apprendimento automatico, apprendimento profondo e reti neurali profonde; Software come servizio [SaaS] comprendente programmi per l'apprendimento automatico; Software come servizio [SaaS] comprendente software per l'apprendimento profondo; Intelligenza artificiale come servizio [AIaaS]; Servizi di consulenza in materia di software come servizio [SaaS]; Creazione e manutenzione di software per blog.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lt",
+      "description": "Verslo analizes patareju paslaugos; Verslo analizes paslaugos; Verslo analizes pagalba, patarimai ir konsultacijos; Kainu analizes paslaugos; Sanaudu ir naudos analize; Strateginio verslo valdymo konsultacijos; Verslo organizavimo ir vadybos konsultacijos; Verslo organizavimo ir verslo operaciju konsultacijos; Verslo vadybos patareju paslaugos; Verslo efektyvumo (veiksmingumo) konsultacijos; Verslo vadybos ir imoniu organizavimo konsultavimas; Tiesiogines kreipties kainu palyginimo paslaugu teikimas; Verslo vadybos konsultacijos, teikiamos internetu; Kainu palyginimo paslaugos; Finansiniu paslaugu palyginimu teikimas internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "lt",
+      "description": "Finansu analize; Finansines analizes ir tyrimu paslaugos; Finansine analize ir konsultacijos; Finansines informacijos valdymo ir analizes paslaugos; Finansinis vertinimas ir analize; Finansine informacija; Finansiniu konsultaciju ir informacijos paslaugos; Finansines konsultacijos del paskolu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Programine iranga kaip paslauga [SaaS] dirbtinio intelekto platformoms; Programine iranga kaip paslauga [SaaS]; Programines irangos kaip paslaugos [SaaS] paslaugos su kompiuteriu mokymo, giliojo mokymo ir giliojo mokymosi neuroniniu tinklu funkcijomis; Programine iranga kaip paslauga [SaaS] su kompiuteriu mokymo programine iranga; Programine iranga kaip paslauga [SaaS] su giliojo mokymosi programine iranga; Dirbtinis intelektas kaip paslauga [AIaaS]; Programines irangos kaip paslaugos [SaaS] konsultacijos; Tinklarasciu programines irangos kurimas ir technine prieziura.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lv",
+      "description": "Padomu sniegsana saistiba ar uznemejdarbibas analizi; Uznemejdarbibas analizes pakalpojumi; Atbalsta un konsultaciju sniegsana attieciba uz uznemejdarbibas analizi; Cenu analize; Izmaksu un ieguvumu analize; Konsultaciju sniegsana par uznemejdarbibas strategiju; Konsultaciju sniegsana par uznemejdarbibas organizesanu un parvaldibu; Konsultaciju sniegsana uznemejdarbibas organizesanas un saimnieciskas darbibas joma; Padomu sniegsana darijumu vadisana; Konsultaciju sniegsana par uznemejdarbibas efektivitati; Konsultaciju sniegsana par uznemejdarbibas vadibu un uznemumu strukturu; Cenu salidzinasanas pakalpojumu nodrosinasana tiessaiste; Uznemejdarbibas vadibas konsultaciju sniegsana ar interneta starpniecibu; Cenu salidzinasanas pakalpojumi; Finansu pakalpojumu salidzinasanas nodrosinasana tiessaiste.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "lv",
+      "description": "Finansu analize; Finansu analizes un izpetes pakalpojumi; Finansu analize un konsultacijas; Finansu informacijas vadibas un analizes pakalpojumi; Finansu novertesana un analize; Finansu informacijas sniegsana; Finansu konsultacijas un informacijas pakalpojumi; Finansu konsultaciju sniegsana par aizdevumiem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Programmatura ka pakalpojums (SaaS), kas paredzeta maksliga intelekta platformam; Programmatura ka pakalpojums (SaaS); Programmaturas ka pakalpojums (SaaS), kas ietver programmaturu masinmacisanai, dzilai macisanai un dziliem neironu tikliem; Programmatura ka pakalpojums (SaaS), kas ietver programmaturu masinmacisanai; Programmatura ka pakalpojums (SaaS), kas satur dzilas macisanas programmaturu; Maksligais intelekts ka pakalpojums (AIaaS); Konsultaciju pakalpojumi programmaturas ka pakalpojums (SAAS) joma; Emuaru programmaturas izveide un uzturesana.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' konsulenza dwar analizi tan-negozju; Servizzi ta' analizi tan-negozji; Ghajnuna, servizzi ta' ghoti ta' pariri u konsulenza fl-analizi ta' negozju; Servizzi ta' analizi tal-prezzijiet; Thejjija ta' analizi tal-ispejjez u tal-beneficcji; Servizzi ta' konsulenza dwar l-istrategiji tan-negozju; Pariri dwar l-organizzazzjoni u l-gestjoni tan-negozju; Konsulenza dwar l-operazzjoni u l-organizzazzjoni tan-negozju; Servizzi ta' pariri dwar il-gestjoni ta' negozju; Konsulenza dwar l-efficjenza fin-negozju; Konsulenza dwar il-gestjoni fin-negozju u l-organizzazzjoni tal-intraprizi; Provvista ta' servizzi ta' paragun ta' prezzijiet onlajn; Konsulenza dwar il-gestjoni tan-negozju permezz tal-Internet; Servizzi ta' paragun tal-prezzijiet; Provvista ta' tqabbil onlajn ta' servizzi finanzjarji.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "mt",
+      "description": "Analizi (Finanzjarja); Servizzi ta' analizi u ricerka finanzjarja; Analizi u konsulenza finanzjarja; Servizzi ta' gestjoni u analizi ta' informazzjoni finanzjarja; Evalwazzjoni u analizi finanzjarja; Informazzjoni finanzjarja; Servizzi ta' konsulenza u informazzjoni finanzjarja; Konsulenza finanzjarja relatata mas-self.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Pjattaformi ghal intelligenza artificjali bhala softwer bhala servizz [SaaS]; Softwer bhala servizz [SaaS]; Servizzi ta' softwer bhala servizz [SaaS] li jinkludu softwer ghal taghlim bil-magni, taghlim fil-fond, u netwerks newrali fil-fond; Softwer bhala servizz [SaaS] li jinkludu softwer ghal taghlim bil-magni; Softwer bhala servizz [SaaS] li jinkludi softwer ghal taghlim profond; Intelligenza artificjali bhala servizz [AIaaS]; Servizzi ta' konsulenza fil-qasam tas-softwer bhala servizz [SAAS]; Holqien u manutenzjoni ta' softwer ta' blogs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pl",
+      "description": "Uslugi doradcze w zakresie analizy biznesowej; Uslugi w zakresie analiz dotyczacych dzialalnosci gospodarczej; Pomoc, uslugi doradcze i konsultacje w zakresie analizy biznesowej; Uslugi w zakresie analizy cen; Analizy kosztów i korzysci; Uslugi doradcze w zakresie strategii w dzialalnosci gospodarczej; Doradztwo w zakresie organizacji i zarzadzania przedsiebiorstwami; Doradztwo w zakresie organizacji i prowadzenia dzialalnosci gospodarczej; Uslugi doradcze w zarzadzaniu dzialalnoscia gospodarcza; Doradztwo w zakresie wydajnosci przedsiebiorstw; Doradztwo w zakresie zarzadzania biznesowego i organizacji przedsiebiorstw; Swiadczenie uslug porównania cen online; Uslugi doradztwa w zakresie zarzadzania biznesowego za posrednictwem Internetu; Uslugi w zakresie porównywania cen; Porównywanie uslug finansowych online.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "pl",
+      "description": "Analizy finansowe; Uslugi w zakresie badan i analiz finansowych; Doradztwo i analiza finansowa; Zarzadzanie informacja finansowa i uslugi analityczne; Wyceny i analizy finansowe; Informacje finansowe; Uslugi doradztwa i udzielania informacji finansowych; Doradztwo finansowe zwiazane z pozyczkami.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Platformy do sztucznej inteligencji jako oprogramowanie jako usluga [SaaS]; Oprogramowanie jako usluga [SaaS]; Uslugi oprogramowania jako uslugi [SaaS] obejmujace oprogramowanie do uczenia maszynowego, glebokiego uczenia i glebokich sieci neuronalnych; Oprogramowanie jako usluga [SaaS] obejmujace oprogramowanie do uczenia maszynowego; Oprogramowanie jako usluga [SaaS] obejmujace oprogramowanie do glebokiego uczenia; Sztuczna inteligencja jako usluga [AIaaS]; Uslugi doradztwa w zakresie oprogramowania jako uslugi [SaaS]; Tworzenie i utrzymywanie oprogramowania do blogów.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pt",
+      "description": "Serviços de assessoria relacionados com análise de negócios comerciais; Serviços de análise de negócios; Assistência, serviços de assessoria e consultoria em análise comercial; Serviços de análise de preços; Análise da relação custo/benefício; Serviços de consultoria em matéria de estratégias comerciais; Assessoria relacionada com a organização e a gestão de negócios comerciais; Consultoria de organização e funcionamento de empresas; Serviços de assessores para a direção de negócios comerciais; Consultoria em eficiência empresarial; Consultoria em matéria de gestão de negócios e organização de empresas; Fornecimento de serviços de comparação de preços em linha; Consultoria em matéria de gestão de negócios através da Internet; Serviços de comparação de preços; Fornecimento de comparações de serviços financeiros em linha.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "pt",
+      "description": "Análise financeira; Serviços de análise e pesquisa financeira; Análise e consultadoria financeiras; Serviços de análise e gestão de informação financeira; Avaliação e análise financeira; Informações financeiras; Serviços de informação e consultoria financeira; Consultoria financeira em matéria de empréstimos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Plataformas de inteligência artificial sob a forma de software como serviço [SaaS]; Software como serviço [SaaS]; Serviços de software como serviço [SaaS] que incluem software para aprendizagem automática, aprendizagem profunda e redes neuronais profundas; Software sob a forma de serviço [SaaS] incluindo software para aprendizagem automática; Serviços de software como serviço [SaaS] que incluem software para aprendizagem profunda; Inteligência artificial como serviço [AIaaS]; Serviços de consultadoria no domínio do software como serviço [SaaS]; Criação e manutenção de softtware para blogues.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ro",
+      "description": "Servicii de consiliere privind analiza activitatii economice; Servicii de analiza comerciala; Asistenta, consiliere si consultanta privind analiza comerciala; Analiza de pret; Analize cost-beneficiu; Servicii de consultanta privind strategiile comerciale; Consultanta privind organizarea si managementul afacerilor; Consultanta privind organizarea si functionarea afacerilor; Conducerea afacerilor (Servicii de consultanta pentru -); Consultanta privind eficienta afacerilor; Managementul afacerilor si consultanta în materie de organizare a întreprinderii; Furnizarea de servicii online de comparare de preturi; Servicii de consultanta în managementul afacerilor, prin intermediul internetului; Servicii de comparare a preturilor.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "ro",
+      "description": "Analiza financiara; Servicii de analiza si cercetare financiara; Analiza si consultanta financiara; Servicii de gestionare si analiza a informatiilor financiare; Evaluare si analiza financiara; Informatii financiare; Servicii de consultanta si de informatii financiare; Consultanta financiara privind împrumuturile.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Platforme pentru inteligenta artificiala sub forma de software ca serviciu [SaaS]; Software ca serviciu [SaaS]; Servicii software ca serviciu (SAAS) care ofera software pentru învatare automata, învatare aprofundata si retele neurale profunde; Software ca serviciu (SAAS) care ofera software de învatare automata; Software ca serviciu (SAAS) care ofera software pentru învatare profunda; Inteligenta artificiala ca serviciu [AIaaS]; Consultanta în domeniul software-ului ca serviciu [SAAS]; Creare si întretinere de software pentru bloguri.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sk",
+      "description": "Poradenské sluzby súvisiace s podnikovými analýzami; Sluzby podnikovej analýzy; Asistencné, poradenské a konzultacné sluzby v oblasti obchodnej analýzy; Sluzby v oblasti analýzy nákladov; Analýza nákladov a výnosov; Konzultacné sluzby v oblasti obchodných stratégií; Poradenstvo v oblasti organizovania a riadenia podnikov; Konzultacné sluzby v oblasti obchodnej organizácie a prevádzky; Poradenské sluzby pri riadení obchodnej cinnosti; Poradenské sluzby pri vyhodnocovaní efektivity podnikov; Obchodný manazment a poradenstvo ohladom organizácie podnikov; Poskytovanie sluzieb v oblasti on-line porovnávania cien; Poradenstvo v oblasti obchodného manazmentu prostredníctvom internetu; Sluzby porovnávania cien; Poskytovanie porovnávania financných sluzieb on-line.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "sk",
+      "description": "Financné analýzy; Sluzby financných analýz a výskumov; Financné analýzy a poradenstvo; Sluzby manazmentu financných informácii a analýz; Financné ocenovanie a analýza; Financné informácie; Financné konzultacné a informacné sluzby; Financné konzultácie v oblasti pôziciek.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Platformy pre umelú inteligenciu vo forme softvéru ako sluzby [SaaS]; Poskytovanie softvéru prostredníctvom internetu (SaaS); Sluzby softvéru ako sluzby [SaaS] obsahujúceho softvér pre strojové ucenie, hlbkové ucenie a hlbkové umelé neurónové siete; Softvér ako sluzba [SaaS] obsahujúci softvér na strojové ucenie; Softvér ako sluzba [SaaS] obsahujúci softvér na hlbkové ucenie; Umelá inteligencia ako sluzba [AIaaS]; Konzultacné sluzby v oblasti softvéru ako sluzby [SaaS]; Tvorba a údrzba blogového softvéru.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sl",
+      "description": "Svetovalne storitve v zvezi s poslovnimi analizami; Poslovna analiza; Pomoc, svetovalne storitve in svetovanje v zvezi s poslovno analizo; Storitve cenovne analize; Analize stroskov in koristi; Svetovalne storitve v zvezi s poslovnimi strategijami; Svetovanje v zvezi z organizacijo in upravljanjem podjetja; Svetovanje pri poslovni organizaciji in delovanju; Svetovalne storitve s podrocja poslovnega vodenja; Svetovanje v zvezi s poslovno ucinkovitostjo; Svetovanje v zvezi s poslovodenjem in organizacijo podjetij; Nudenje storitev spletne primerjave cen; Poslovodno svetovanje preko interneta; Storitve primerjave cen; Zagotavljanje spletnih primerjav financnih storitev.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "sl",
+      "description": "Financna analiza; Financna analiza in raziskovalne storitve; Financne analize in svetovanje; Storitve upravljanja in analize financnih informacij; Financne ocene in analiza; Financno informiranje; Storitve financnega posvetovanja in informiranja; Financno svetovanje v zvezi s posojili.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Platforme za umetno inteligenco kot programska oprema kot storitev [SaaS]; Programska oprema kot storitev [SaaS]; Programska oprema kot storitev [SaaS] s programsko opremo za strojno ucenje, globoko ucenje in globoka nevronska omrezja; Programska oprema kot storitev [SaaS] s programsko opremo za strojno ucenje; Programska oprema kot storitev [SaaS] s programsko opremo za globoko ucenje; Umetna inteligenca kot storitev [AIaaS]; Svetovalne storitve na podrocju programske opreme kot storitve [SaaS]; Oblikovanje in vzdrzevanje programske opreme za spletne dnevnike.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Servicios de asesoría relacionados con el análisis empresarial; Servicios de análisis de negocios comerciales; Asistencia, servicios de asesoramiento y consultoría de análisis empresarial; Servicios de análisis de precios; Análisis de costo-beneficio; Servicios de consultoría sobre estrategia comercial; Asesoramiento relacionado con la organización y la gestión de negocios; Consultoría sobre organización y funcionamiento empresarial; Asesoramiento sobre gestión empresarial; Consultoría sobre eficacia empresarial; Gestión empresarial y consultoría de organización empresarial; Prestación de servicios de comparación de precios en línea; Consultoría por Internet en gestión comercial; Servicios de comparación de precios; Facilitación de comparaciones de servicios financieros en línea.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "es",
+      "description": "Análisis financiero; Servicios de investigación y análisis financieros; Análisis y consultoría financieras; Servicios de gestión y análisis de informaciones financieras; Valoraciones y análisis financieros; Información financiera; Servicios de consultoría e información financieras; Consultoría financiera en materia de préstamos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Plataformas para inteligencia artificial como software en forma de servicio [SaaS]; Software como servicio [SaaS]; Software como servicio (SaaS) con software para el aprendizaje automático, aprendizaje profundo y redes neurales profundas; Software como servicio [SaaS] con software para aprendizaje automático; Software como servicio (saas) con software de aprendizaje profundo; Inteligencia artificial como servicio [IAaaS]; Servicios de consultoría en materia de software como un servicio [SaaS]; Creación y mantenimiento de software para blogs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sw",
+      "description": "Rådgivningstjänster gällande företagsanalyser; Företagsanalystjänster; Assistans, rådgivningstjänster och konsultationer avseende affärsanalys; Prisanalystjänster; Lönsamhetsanalyser; Konsulttjänster avseende företagsstrategier; Rådgivning relaterad till företagsledning och -organisation; Konsultation avseende företagsorganisation och -verksamhet; Rådgivningstjänster för företagsledning; Konsultation avseende företagseffektivitet; Konsultationer inom områdena affärsledning och verksamhetsorganisation; Tillhandahållande av tjänster avseende prisjämförelser online; Konsultation om företagsledning via internet; Prisjämförelser; Tillhandahållande av direktanslutna jämförelser av finansiella tjänster.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "sw",
+      "description": "Finansiella analyser; Finansiella analyser och undersökningar; Finansiell analys och konsultation; Tjänster avseende hantering och analys av finansiell information; Finansiella analyser och bedömningar; Finansiell information; Tjänster avseende finansiell rådgivning och information; Finansiell rådgivning om lån.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Plattformar för artificiell intelligens i form av programvaror som tjänst [SaaS]; Molntjänster [SaaS]; Molntjänster med programvaror för maskininlärning, djupinlärning och djupa neurala nätverk [SaaS]; Molntjänster med programvaror för maskininlärning [SaaS]; Molntjänster med programvaror för djupinlärning [SaaS]; Artificiell intelligens som en tjänst [AIaaS]; Rådgivning avseende molntjänster [SaaS]; Skapande och underhåll av programvara för bloggar.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "VOINOT Pierre-Emmanuel",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "93 Chemin des Forges,Roussayrolles, 81140",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "VOINOT Pierre-Emmanuel"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Poradenské sluzby týkající se analýzy hospodárské cinnosti; Sluzby obchodní analýzy; Pomoc, poradenské sluzby a konzultace týkající se analýz obchodní cinnosti; Sluzby v oblasti analýzy cen; Analýzy nákladu a prínosu; Poradenství v otázkách obchodní taktiky; Poradenství v oblasti organizace a obchodního rízení; Konzultace v oblasti obchodní organizace a provozu; Poradenské sluzby pro obchodní vedení; Poradenství v oblasti efektivity podnikání; Poradenství v oblasti rízení obchodní cinnosti a podnikové organizace; Poskytování online sluzeb týkajících se porovnávání cen; Poradenství v oblasti obchodního managementu prostrednictvím internetu; Srovnávání cen; Poskytování sluzeb financního srovnávání on-line."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Financní analýza; Sluzby v oblasti financní analýzy a pruzkumu; Financní analýzy a poradenství; Sluzby správy financních informací a analýz; Financní ocenování a analýzy; Financní informace; Financní poradenství a informacní sluzby; Financní poradenství zamerené na pujcky."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Platformy pro umelou inteligenci ve forme softwaru jako sluzby [SaaS]; Software jako sluzba [SaaS]; Sluzby softwaru jako sluzby [SaaS] zamerené na software pro strojové ucení, hluboké ucení a hluboké neuronové síte; Software jako sluzba [SaaS] zamerený na software pro strojové ucení; Software jako sluzba [SaaS] zamerený na software pro hluboké ucení; Umelá inteligence jako sluzba [AIaaS]; Konzultacní sluzby v oboru software jako sluzba (SAAS); Tvorba a údrzba softwaru pro blogy."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Rådgivningstjenester vedrørende erhvervsanalyse; Ydelser i form af forretningsanalyse [virksomhedsanalyse]; Bistand, rådgivning og konsulentvirksomhed vedrørende virksomhedsanalyse; Prisanalyser; Cost-benefit-analyser; Rådgivning vedrørende forretningsstrategier; Rådgivning i forbindelse med forretningsorganisation og -ledelse; Rådgivning vedrørende forretningsorganisation og forretningsdrift; Rådgivning vedrørende forretningsledelse; Rådgivning i forbindelse med virksomhedseffektivitet; Rådgivning vedrørende forretningsledelse og -organisation; Tilvejebringelse af en onlineprissammenligningstjeneste; Konsulentbistand vedrørende forretningsledelse udbudt via internettet; Sammenligning af priser; Sammenligninger af finansiel virksomhed udbudt online."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Finansielle analyser; Tjenesteydelser inden for finansiel analyse og undersøgelser; Finansiel analyse og konsulentbistand; Forvaltning og analyse af finansiel information; Finansiel vurdering og analyse; Finansiel information; Finansiel konsulentbistand og informationsvirksomhed; Finansiel konsulentbistand i forbindelse med lån."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Platforme til kunstig intelligens som software as a service [SaaS]; Software as a service [saas]; Software as a service [SaaS] med software til maskinlæring, dyb læring og dybe neurale netværk; Software as a service [SaaS] med software til maskinlæring; Software as a service [SaaS] med software til dyb læring; Artificial intelligence as a service [AIaaS]; Rådgivning inden for software som en tjeneste (SaaS); Udarbejdelse og vedligeholdelse af software til blogs."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Adviesdiensten met betrekking tot bedrijfsorganisatorische analyse; Commercieel-zakelijke analyses; Ondersteuning, advisering en raadgeving inzake commerciële analyse; Prijsanalyse; Kosten-batenanalyse; Advisering op het gebied van zakelijke strategieën; Advisering inzake beheer van commerciële zaken en bedrijfsorganisatie; Raadgeving inzake bedrijfsorganisatie en -voering; Advisering voor bedrijfsleiding; Advisering met betrekking tot bedrijfsefficiëntie; Advisering inzake het commercieel beheer van zaken en bedrijfsorganisatie; Verstrekking van onlineprijsvergelijkingen; Advisering inzake commercieel management van zaken via internet; Prijsvergelijkingsdiensten; Ter beschikking stellen van online vergelijkingen van financiële diensten."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Financiële analyse; Analyse en onderzoek op financieel gebied; Financiële analyse en advisering; Financieel informatiebeheer en financiële analyse; Financiële evaluatie en analyse; Verschaffen van financiële informatie; Financiële advies- en informatiediensten; Financiële advisering met betrekking tot leningen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Platforms voor artificiële intelligentie als software-als-een-dienst [SaaS]; Ter beschikking stellen van software [SaaS]; Software-als-een-dienst [SaaS] diensten met software voor machinaal leren, diep leren en diepe neurale netwerken; Software-als-een-dienst [SaaS] met software voor machinaal leren; Software-als-een-dienst [SaaS] met software voor diep leren; Artificiële intelligentie als dienst (AIaaS); Advisering op het gebied van het ter beschikking stellen van software [SaaS]; Creëren en onderhouden van software voor blogs."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Advisory services relating to business analysis; Business analysis services; Assistance, advisory services and consultancy with regard to business analysis; Price analysis services; Cost benefit analysis; Consultancy services regarding business strategies; Advice relating to the organisation and management of business; Business organization and operation consultancy; Advisory services for business management; Consultancy relating to business efficiency; Business management and enterprise organization consultancy; Provision of online price comparison services; Business management consultancy via the Internet; Price comparison services; Provision of online financial services comparisons."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Financial analysis; Financial analysis and research services; Financial analysis and consultancy; Financial information management and analysis services; Financial evaluation and analysis; Financial information; Financial consultancy and information services; Financial consultancy relating to loans."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Platforms for artificial intelligence as software as a service [SaaS]; Software as a service [SaaS]; Software as a service [SaaS] services featuring software for machine learning, deep learning and deep neural networks; Software as a service [SaaS] featuring software for machine learning; Software as a service [SaaS] featuring software for deep learning; Artificial intelligence as a service [AIaaS]; Consulting services in the field of software as a service [SaaS]; Creation and maintenance of software for blogs."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Ärianalüüsiga seotud nõustamisteenused; Ärianalüüs; Abi-, nõustamis- ja konsultatsiooniteenused seoses ärianalüüsiga; Hinnaanalüüsid; Tasuvusanalüüside koostamine; Äristrateegiaid puudutavad konsultatsiooniteenused; Äritegevuse juhtimise ja korraldamise nõustamine; Ärikorralduse ja -tegevuse nõustamine; Äritegevuse juhtimise nõustamine; Äriefektiivsuse nõustamine; Ärijuhtimise ja -korraldamise konsultatsioonid; Hinnavõrdlusteenuste pakkumine veebis; Äritegevuse juhtimiskonsultatsioonid Interneti teel; Hinnavõrdlusteenused; Finantsteenuste sidusvõrdluste pakkumine."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Finants-, rahandusanalüüsid; Finantsanalüüsid ja -uuringud; Finantsanalüüs ja -konsultatsioon; Finantsinfo haldamise ja analüüsi teenused; Finantshindamine ja -analüüs; Finantsteave, -info, rahandusteave, -info; Finantsnõustamise ja -teabe teenused; Finantsnõustamine laenude valdkonnas."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Tehisintellektiplatvormid kui teenustarkvara [SaaS]; Pilveteenused [SaaS]; Masinõppe, süvaõppe ja sügavate närvivõrkude tarkvara sisaldavad teenustarkvara [SaaS] teenused; Masinõppe tarkvaraga teenustarkvara [SaaS]; Süvaõppe tarkvaraga teenustarkvara [SaaS]; Tehisintellekt teenusena [AIaaS]; Teenustarkvara [SaaS] valdkonna konsulteerimisteenused; Blogitarkvara loomine ja hooldamine."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Liiketoiminta-analyyseihin liittyvät neuvontapalvelut; Yritysanalyysipalvelut; Liiketoiminnallisiin analyyseihin liittyvät avustus-, neuvonta- ja konsultointipalvelut; Hintojen analysointipalvelut; Kustannus-hyötyanalyysit; Yritysstrategiakonsultointi; Liiketoiminnan organisointiin ja johtamiseen liittyvä neuvonta; Liiketoiminnan organisointia ja hoitamista koskeva konsultointi; Liikkeenhoitoa koskevat neuvontapalvelut; Liiketoiminnan tehokkuuteen liittyvä konsultointi; Liikkeenjohtoon ja yritysorganisaatioon liittyvä konsultointi; Online-hintavertailupalveluiden tarjoaminen; Liikkeenjohdon konsultointi Internetin välityksellä; Vertailupalvelut (hintojen); Rahoituspalvelujen vertailujen tarjoaminen online-periaatteella."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Rahoitusanalyysit; Rahoitusanalyysi- ja -tutkimuspalvelut; Rahoitukseen liittyvä analysointi ja neuvonta; Rahataloudellisten tietojen hallinta- ja analysointipalvelut; Rahatalouteen liittyvä analysointi ja arviointi; Rahoitusneuvonta; Rahataloudelliset konsultointi- ja tiedotuspalvelut; Rahoituskonsultointi lainojen alalla."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tekoäly-ympäristöt sovellusvuokrauspalveluna [SaaS-palveluna]; Verkkosovelluspalvelut [SaaS]; Verkkosovelluspalvelut [SaaS] ohjelmistoilla, jotka on tarkoitettu koneoppimiseen, syväoppimiseen ja syviin neuroverkkoihin; Verkkosovelluspalvelut [SaaS] ohjelmistoilla koneoppimista varten; Verkkosovelluspalvelut [SaaS] ohjelmistoilla syväoppimista varten; Tekoäly palveluna [AIaaS]; Konsultointipalvelut verkkosovelluspalvelujen [SaaS] alalla; Blogeja varten tarkoitettujen ohjelmistojen laatiminen ja ylläpito."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de conseil en matière d'analyse commerciale; Services d'analyses commerciales; Services d'assistance et de conseil en matière d'analyse commerciale; Services d'analyse de prix; Analyses coûts-avantages; Services de conseils en stratégies commerciales; Services de conseils en organisation et gestion d'entreprise; Services de conseils en matière d'organisation et d'exploitation commerciales; Services de conseils pour la gestion d'affaires; Services de conseils en matière de productivité d'entreprises; Services de conseils en matière d'organisation des entreprises et de gestion commerciale; Fourniture de services de comparaison des prix en ligne; Services de conseil en gestion commerciale par le biais d'Internet; Services de comparaison de prix; Comparaisons de services financiers en ligne."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Analyses financières; Services d'analyse financière; Services d'analyse et de recherche financières; Services de conseil et d'analyse financiers; Services de gestion et d'analyse d'informations financières; Analyses et évaluations financières; Services d'informations financières; Services d'informations et de conseils financiers; Services de conseils financiers en matière de prêts."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Plates-formes pour intelligence artificielle en tant que logiciel-service [SaaS]; Logiciels en tant que service [SaaS]; Services de logiciel en tant que service (SaaS) proposant des logiciels pour l'apprentissage automatique, l'apprentissage profond et les réseaux d'apprentissage profond; Logiciel en tant que service [SaaS] en tant que logiciel pour l'apprentissage automatique; Logiciel à la demande (SaaS) en tant que logiciels pour l'apprentissage profond; Intelligence artificielle en tant que service [IAaaS]; Services d'assistance dans le domaine des services de logiciels-services (SaaS); Création et maintenance de software pour blogs."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Beratungsdienste in Bezug auf Geschäftsanalysen; Unternehmensanalyseservice; Unterstützung und Beratung bei der Unternehmensanalyse; Preisanalysedienste; Erstellen von Kosten-Nutzen-Analysen; Strategische Beratung in Geschäftsangelegenheiten; Beratung bei der Geschäftsorganisation und Geschäftsführung; Beratung betreffend Unternehmensorganisation und -führung; Beratungsdienste in Fragen der Geschäftsführung; Beratung in Bezug auf die Wirtschaftlichkeit von Unternehmen; Beratung bei Geschäftsführung und Unternehmensorganisation; Online bereitgestellte Preisvergleichsdienste; Beratung über das Internet in Bezug auf Geschäftsführung; Preisvergleichsdienste; Bereitstellen von Online-Vergleichen von Finanzdienstleistungen."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Finanzanalysen; Dienstleistungen der Finanzanalyse und -recherchen; Finanzanalysen und -beratung; Management und Analyse von Finanzinformationen; Erstellen von Finanzgutachten und -analysen; Erteilung von Finanzauskünften; Informationen und Beratung in Finanzangelegenheiten; Finanzberatung für Darlehen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Plattformen für künstliche Intelligenz als Software as a Service [SaaS]; Software as a Service [SaaS]; Software as a Service [SaaS] mit Software für maschinelles Lernen, Deep Learning und tiefe neuronale Netzwerke; Software as a Service [SaaS] mit Software für maschinelles Lernen; Software as a Service [SaaS] mit Deep-Learning-Software; Artificial Intelligence as a Service [AIaaS]; Beratung im Bereich Software as a Service [SaaS]; Erstellung und Wartung von Software für Blogs."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Savjetodavne usluge koje se odnose na poslovnu analizu; Usluge poslovnih analiza; Podrska, konzultacijske usluge i savjetovanje za poslovnu analizu; Usluge analiza cijena; Analiza troskova i koristi; Savjetodavne usluge u svezi poslovnih strategija; Savjeti u svezi s organizacijom i upravljanjem poslovnim djelatnostima; Savjetodavne usluge u svezi s poslovnim organizacijama i djelovanjem; Usluge savjetovanja za upravljanje poduzecima; Savjetovanje u svezi poslovne ucinkovitosti; Savjetovanje u vezi poslovnog upravljanja i organizacije poduzeca; Pruzanje usluga usporedbe cijena na mrezi; Online konzultantske usluge koje se odnose na poslovno upravljanje; Usluge usporedbe cijena; Pruzanje usporedbi financijskih usluga na mrezi."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Financijska analiza; Usluge financijske analize i istrazivanja; Financijska analiza i konzultantske usluge; Usluge upravljanja i analize financijskih informacija; Usluge financijskog ocjenjivanja i analize; Financijske obavijesti; Konzultantske usluge i pruzanje informacija o financijama; Financijsko savjetovanje koje se odnosi na zajmove."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Platforme za umjetnu inteligenciju kao softvera kao usluge [SaaS]; Softver kao usluga [SaaS]; Softver kao usluge [SaaS] sa softverom za strojno ucenje, dubinsko ucenje i duboke neuronske mreze; Softver kao usluga [SaaS] sa softverom za strojno ucenje; Softver kao usluga [SaaS] sa softverom za dubinsko ucenje; Umjetna inteligencija kao usluga [AIaaS]; Usluge savjetovanja u podrucju softvera kao usluge (SAAS); Izrada i odrzavanje blogova."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Üzleti elemzéssel kapcsolatos tanácsadási szolgáltatások; Üzleti elemzési szolgáltatások; Üzleti elemzéssel kapcsolatos segítségnyújtás, tanácsadási szolgáltatások és konzultáció; Árelemzo szolgáltatások; Költség-haszon elemzések készítése; Üzleti stratégiai konzultáció; Üzletszervezéssel és üzletvezetéssel kapcsolatos tanácsadás; Üzletszervezési és muködtetési tanácsadás; Üzletvezetési tanácsadási szolgáltatások; Üzleti hatékonysághoz kapcsolódó tanácsadás; Üzletvezetési és vállalatszervezési konzultáció; Online árösszehasonlítási szolgáltatások; Interneten keresztül nyújtott üzletvezetési szaktanácsadás; Árösszehasonlító szolgáltatások; Online pénzügyi szolgáltatás-összehasonlítások biztosítása."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Pénzügyi elemzések; Pénzügyi elemzések és kutatási szolgáltatások; Pénzügyi elemzés és tanácsadás; Pénzügyi információs menedzsment és elemzési szolgáltatások; Pénzügyi értékelés és elemzés; Pénzügyi információs szolgáltatások; Pénzügyi tanácsadás és információs szolgáltatások; Kölcsönökkel kapcsolatos pénzügyi szaktanácsadás."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Mesterséges intelligencia platformok szoftver mint szolgáltatásként [SaaS]; Szoftver mint szolgáltatás [SaaS]; Gépi tanulásra, mély tanulásra és mély idegi hálózatokhoz való szoftvereket tartalmazó szoftver mint szolgáltatás [SaaS] szolgáltatások; Gépi tanulásra szolgáló szoftvert tartalmazó szoftver mint szolgáltatás [SaaS]; Mély tanulásra szolgáló szoftvert tartalmazó szoftver mint szolgáltatás [SaaS]; Mesterséges intelligencia mint szolgáltatás [AIaaS]; Szoftverszolgáltatásokkal (SAAS) kapcsolatos konzultáció; Blogokhoz való szoftverek készítése és karbantartása."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di consulenza in materia di analisi aziendali; Servizi di analisi aziendali; Assistenza e consulenze in materia d'analisi aziendale; Servizi di analisi di prezzi; Analisi del rapporto costi/benefici; Servizi di consulenza in materia di strategie aziendali; Consulenza relativa all'organizzazione e gestione aziendale; Consulenza in materia di organizzazione e operazione aziendale; Servizi di consulenza per la gestione aziendale; Consulenza in materia di efficienza aziendale; Consulenza in materia di gestione aziendale ed organizzazione aziendale; Servizi di confronto di prezzi online; Consulenza in materia di gestione aziendale via internet; Servizi di comparazione dei prezzi; Fornitura di confronti di servizi finanziari online."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Analisi finanziaria; Servizi di analisi e ricerche finanziarie; Consulenza e analisi finanziaria; Servizi di gestione e di analisi di informazioni finanziarie; Analisi e valutazioni finanziarie; Informazioni finanziarie; Servizi di consulenza ed informazione finanziaria; Consulenze finanziarie inerenti il prestito."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Piattaforme per intelligenza artificiale sotto forma di software come servizio [SaaS]; Software come servizio [SaaS]; Servizi di software come servizio [SaaS] comprendenti programmi per apprendimento automatico, apprendimento profondo e reti neurali profonde; Software come servizio [SaaS] comprendente programmi per l'apprendimento automatico; Software come servizio [SaaS] comprendente software per l'apprendimento profondo; Intelligenza artificiale come servizio [AIaaS]; Servizi di consulenza in materia di software come servizio [SaaS]; Creazione e manutenzione di software per blog."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Verslo analizes patareju paslaugos; Verslo analizes paslaugos; Verslo analizes pagalba, patarimai ir konsultacijos; Kainu analizes paslaugos; Sanaudu ir naudos analize; Strateginio verslo valdymo konsultacijos; Verslo organizavimo ir vadybos konsultacijos; Verslo organizavimo ir verslo operaciju konsultacijos; Verslo vadybos patareju paslaugos; Verslo efektyvumo (veiksmingumo) konsultacijos; Verslo vadybos ir imoniu organizavimo konsultavimas; Tiesiogines kreipties kainu palyginimo paslaugu teikimas; Verslo vadybos konsultacijos, teikiamos internetu; Kainu palyginimo paslaugos; Finansiniu paslaugu palyginimu teikimas internetu."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Finansu analize; Finansines analizes ir tyrimu paslaugos; Finansine analize ir konsultacijos; Finansines informacijos valdymo ir analizes paslaugos; Finansinis vertinimas ir analize; Finansine informacija; Finansiniu konsultaciju ir informacijos paslaugos; Finansines konsultacijos del paskolu."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Programine iranga kaip paslauga [SaaS] dirbtinio intelekto platformoms; Programine iranga kaip paslauga [SaaS]; Programines irangos kaip paslaugos [SaaS] paslaugos su kompiuteriu mokymo, giliojo mokymo ir giliojo mokymosi neuroniniu tinklu funkcijomis; Programine iranga kaip paslauga [SaaS] su kompiuteriu mokymo programine iranga; Programine iranga kaip paslauga [SaaS] su giliojo mokymosi programine iranga; Dirbtinis intelektas kaip paslauga [AIaaS]; Programines irangos kaip paslaugos [SaaS] konsultacijos; Tinklarasciu programines irangos kurimas ir technine prieziura."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Padomu sniegsana saistiba ar uznemejdarbibas analizi; Uznemejdarbibas analizes pakalpojumi; Atbalsta un konsultaciju sniegsana attieciba uz uznemejdarbibas analizi; Cenu analize; Izmaksu un ieguvumu analize; Konsultaciju sniegsana par uznemejdarbibas strategiju; Konsultaciju sniegsana par uznemejdarbibas organizesanu un parvaldibu; Konsultaciju sniegsana uznemejdarbibas organizesanas un saimnieciskas darbibas joma; Padomu sniegsana darijumu vadisana; Konsultaciju sniegsana par uznemejdarbibas efektivitati; Konsultaciju sniegsana par uznemejdarbibas vadibu un uznemumu strukturu; Cenu salidzinasanas pakalpojumu nodrosinasana tiessaiste; Uznemejdarbibas vadibas konsultaciju sniegsana ar interneta starpniecibu; Cenu salidzinasanas pakalpojumi; Finansu pakalpojumu salidzinasanas nodrosinasana tiessaiste."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Finansu analize; Finansu analizes un izpetes pakalpojumi; Finansu analize un konsultacijas; Finansu informacijas vadibas un analizes pakalpojumi; Finansu novertesana un analize; Finansu informacijas sniegsana; Finansu konsultacijas un informacijas pakalpojumi; Finansu konsultaciju sniegsana par aizdevumiem."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Programmatura ka pakalpojums (SaaS), kas paredzeta maksliga intelekta platformam; Programmatura ka pakalpojums (SaaS); Programmaturas ka pakalpojums (SaaS), kas ietver programmaturu masinmacisanai, dzilai macisanai un dziliem neironu tikliem; Programmatura ka pakalpojums (SaaS), kas ietver programmaturu masinmacisanai; Programmatura ka pakalpojums (SaaS), kas satur dzilas macisanas programmaturu; Maksligais intelekts ka pakalpojums (AIaaS); Konsultaciju pakalpojumi programmaturas ka pakalpojums (SAAS) joma; Emuaru programmaturas izveide un uzturesana."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' konsulenza dwar analizi tan-negozju; Servizzi ta' analizi tan-negozji; Ghajnuna, servizzi ta' ghoti ta' pariri u konsulenza fl-analizi ta' negozju; Servizzi ta' analizi tal-prezzijiet; Thejjija ta' analizi tal-ispejjez u tal-beneficcji; Servizzi ta' konsulenza dwar l-istrategiji tan-negozju; Pariri dwar l-organizzazzjoni u l-gestjoni tan-negozju; Konsulenza dwar l-operazzjoni u l-organizzazzjoni tan-negozju; Servizzi ta' pariri dwar il-gestjoni ta' negozju; Konsulenza dwar l-efficjenza fin-negozju; Konsulenza dwar il-gestjoni fin-negozju u l-organizzazzjoni tal-intraprizi; Provvista ta' servizzi ta' paragun ta' prezzijiet onlajn; Konsulenza dwar il-gestjoni tan-negozju permezz tal-Internet; Servizzi ta' paragun tal-prezzijiet; Provvista ta' tqabbil onlajn ta' servizzi finanzjarji."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Analizi (Finanzjarja); Servizzi ta' analizi u ricerka finanzjarja; Analizi u konsulenza finanzjarja; Servizzi ta' gestjoni u analizi ta' informazzjoni finanzjarja; Evalwazzjoni u analizi finanzjarja; Informazzjoni finanzjarja; Servizzi ta' konsulenza u informazzjoni finanzjarja; Konsulenza finanzjarja relatata mas-self."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Pjattaformi ghal intelligenza artificjali bhala softwer bhala servizz [SaaS]; Softwer bhala servizz [SaaS]; Servizzi ta' softwer bhala servizz [SaaS] li jinkludu softwer ghal taghlim bil-magni, taghlim fil-fond, u netwerks newrali fil-fond; Softwer bhala servizz [SaaS] li jinkludu softwer ghal taghlim bil-magni; Softwer bhala servizz [SaaS] li jinkludi softwer ghal taghlim profond; Intelligenza artificjali bhala servizz [AIaaS]; Servizzi ta' konsulenza fil-qasam tas-softwer bhala servizz [SAAS]; Holqien u manutenzjoni ta' softwer ta' blogs."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi doradcze w zakresie analizy biznesowej; Uslugi w zakresie analiz dotyczacych dzialalnosci gospodarczej; Pomoc, uslugi doradcze i konsultacje w zakresie analizy biznesowej; Uslugi w zakresie analizy cen; Analizy kosztów i korzysci; Uslugi doradcze w zakresie strategii w dzialalnosci gospodarczej; Doradztwo w zakresie organizacji i zarzadzania przedsiebiorstwami; Doradztwo w zakresie organizacji i prowadzenia dzialalnosci gospodarczej; Uslugi doradcze w zarzadzaniu dzialalnoscia gospodarcza; Doradztwo w zakresie wydajnosci przedsiebiorstw; Doradztwo w zakresie zarzadzania biznesowego i organizacji przedsiebiorstw; Swiadczenie uslug porównania cen online; Uslugi doradztwa w zakresie zarzadzania biznesowego za posrednictwem Internetu; Uslugi w zakresie porównywania cen; Porównywanie uslug finansowych online."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Analizy finansowe; Uslugi w zakresie badan i analiz finansowych; Doradztwo i analiza finansowa; Zarzadzanie informacja finansowa i uslugi analityczne; Wyceny i analizy finansowe; Informacje finansowe; Uslugi doradztwa i udzielania informacji finansowych; Doradztwo finansowe zwiazane z pozyczkami."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Platformy do sztucznej inteligencji jako oprogramowanie jako usluga [SaaS]; Oprogramowanie jako usluga [SaaS]; Uslugi oprogramowania jako uslugi [SaaS] obejmujace oprogramowanie do uczenia maszynowego, glebokiego uczenia i glebokich sieci neuronalnych; Oprogramowanie jako usluga [SaaS] obejmujace oprogramowanie do uczenia maszynowego; Oprogramowanie jako usluga [SaaS] obejmujace oprogramowanie do glebokiego uczenia; Sztuczna inteligencja jako usluga [AIaaS]; Uslugi doradztwa w zakresie oprogramowania jako uslugi [SaaS]; Tworzenie i utrzymywanie oprogramowania do blogów."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de assessoria relacionados com análise de negócios comerciais; Serviços de análise de negócios; Assistência, serviços de assessoria e consultoria em análise comercial; Serviços de análise de preços; Análise da relação custo/benefício; Serviços de consultoria em matéria de estratégias comerciais; Assessoria relacionada com a organização e a gestão de negócios comerciais; Consultoria de organização e funcionamento de empresas; Serviços de assessores para a direção de negócios comerciais; Consultoria em eficiência empresarial; Consultoria em matéria de gestão de negócios e organização de empresas; Fornecimento de serviços de comparação de preços em linha; Consultoria em matéria de gestão de negócios através da Internet; Serviços de comparação de preços; Fornecimento de comparações de serviços financeiros em linha."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Análise financeira; Serviços de análise e pesquisa financeira; Análise e consultadoria financeiras; Serviços de análise e gestão de informação financeira; Avaliação e análise financeira; Informações financeiras; Serviços de informação e consultoria financeira; Consultoria financeira em matéria de empréstimos."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Plataformas de inteligência artificial sob a forma de software como serviço [SaaS]; Software como serviço [SaaS]; Serviços de software como serviço [SaaS] que incluem software para aprendizagem automática, aprendizagem profunda e redes neuronais profundas; Software sob a forma de serviço [SaaS] incluindo software para aprendizagem automática; Serviços de software como serviço [SaaS] que incluem software para aprendizagem profunda; Inteligência artificial como serviço [AIaaS]; Serviços de consultadoria no domínio do software como serviço [SaaS]; Criação e manutenção de softtware para blogues."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de consiliere privind analiza activitatii economice; Servicii de analiza comerciala; Asistenta, consiliere si consultanta privind analiza comerciala; Analiza de pret; Analize cost-beneficiu; Servicii de consultanta privind strategiile comerciale; Consultanta privind organizarea si managementul afacerilor; Consultanta privind organizarea si functionarea afacerilor; Conducerea afacerilor (Servicii de consultanta pentru -); Consultanta privind eficienta afacerilor; Managementul afacerilor si consultanta în materie de organizare a întreprinderii; Furnizarea de servicii online de comparare de preturi; Servicii de consultanta în managementul afacerilor, prin intermediul internetului; Servicii de comparare a preturilor."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Analiza financiara; Servicii de analiza si cercetare financiara; Analiza si consultanta financiara; Servicii de gestionare si analiza a informatiilor financiare; Evaluare si analiza financiara; Informatii financiare; Servicii de consultanta si de informatii financiare; Consultanta financiara privind împrumuturile."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Platforme pentru inteligenta artificiala sub forma de software ca serviciu [SaaS]; Software ca serviciu [SaaS]; Servicii software ca serviciu (SAAS) care ofera software pentru învatare automata, învatare aprofundata si retele neurale profunde; Software ca serviciu (SAAS) care ofera software de învatare automata; Software ca serviciu (SAAS) care ofera software pentru învatare profunda; Inteligenta artificiala ca serviciu [AIaaS]; Consultanta în domeniul software-ului ca serviciu [SAAS]; Creare si întretinere de software pentru bloguri."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Poradenské sluzby súvisiace s podnikovými analýzami; Sluzby podnikovej analýzy; Asistencné, poradenské a konzultacné sluzby v oblasti obchodnej analýzy; Sluzby v oblasti analýzy nákladov; Analýza nákladov a výnosov; Konzultacné sluzby v oblasti obchodných stratégií; Poradenstvo v oblasti organizovania a riadenia podnikov; Konzultacné sluzby v oblasti obchodnej organizácie a prevádzky; Poradenské sluzby pri riadení obchodnej cinnosti; Poradenské sluzby pri vyhodnocovaní efektivity podnikov; Obchodný manazment a poradenstvo ohladom organizácie podnikov; Poskytovanie sluzieb v oblasti on-line porovnávania cien; Poradenstvo v oblasti obchodného manazmentu prostredníctvom internetu; Sluzby porovnávania cien; Poskytovanie porovnávania financných sluzieb on-line."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Financné analýzy; Sluzby financných analýz a výskumov; Financné analýzy a poradenstvo; Sluzby manazmentu financných informácii a analýz; Financné ocenovanie a analýza; Financné informácie; Financné konzultacné a informacné sluzby; Financné konzultácie v oblasti pôziciek."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Platformy pre umelú inteligenciu vo forme softvéru ako sluzby [SaaS]; Poskytovanie softvéru prostredníctvom internetu (SaaS); Sluzby softvéru ako sluzby [SaaS] obsahujúceho softvér pre strojové ucenie, hlbkové ucenie a hlbkové umelé neurónové siete; Softvér ako sluzba [SaaS] obsahujúci softvér na strojové ucenie; Softvér ako sluzba [SaaS] obsahujúci softvér na hlbkové ucenie; Umelá inteligencia ako sluzba [AIaaS]; Konzultacné sluzby v oblasti softvéru ako sluzby [SaaS]; Tvorba a údrzba blogového softvéru."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Svetovalne storitve v zvezi s poslovnimi analizami; Poslovna analiza; Pomoc, svetovalne storitve in svetovanje v zvezi s poslovno analizo; Storitve cenovne analize; Analize stroskov in koristi; Svetovalne storitve v zvezi s poslovnimi strategijami; Svetovanje v zvezi z organizacijo in upravljanjem podjetja; Svetovanje pri poslovni organizaciji in delovanju; Svetovalne storitve s podrocja poslovnega vodenja; Svetovanje v zvezi s poslovno ucinkovitostjo; Svetovanje v zvezi s poslovodenjem in organizacijo podjetij; Nudenje storitev spletne primerjave cen; Poslovodno svetovanje preko interneta; Storitve primerjave cen; Zagotavljanje spletnih primerjav financnih storitev."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Financna analiza; Financna analiza in raziskovalne storitve; Financne analize in svetovanje; Storitve upravljanja in analize financnih informacij; Financne ocene in analiza; Financno informiranje; Storitve financnega posvetovanja in informiranja; Financno svetovanje v zvezi s posojili."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Platforme za umetno inteligenco kot programska oprema kot storitev [SaaS]; Programska oprema kot storitev [SaaS]; Programska oprema kot storitev [SaaS] s programsko opremo za strojno ucenje, globoko ucenje in globoka nevronska omrezja; Programska oprema kot storitev [SaaS] s programsko opremo za strojno ucenje; Programska oprema kot storitev [SaaS] s programsko opremo za globoko ucenje; Umetna inteligenca kot storitev [AIaaS]; Svetovalne storitve na podrocju programske opreme kot storitve [SaaS]; Oblikovanje in vzdrzevanje programske opreme za spletne dnevnike."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de asesoría relacionados con el análisis empresarial; Servicios de análisis de negocios comerciales; Asistencia, servicios de asesoramiento y consultoría de análisis empresarial; Servicios de análisis de precios; Análisis de costo-beneficio; Servicios de consultoría sobre estrategia comercial; Asesoramiento relacionado con la organización y la gestión de negocios; Consultoría sobre organización y funcionamiento empresarial; Asesoramiento sobre gestión empresarial; Consultoría sobre eficacia empresarial; Gestión empresarial y consultoría de organización empresarial; Prestación de servicios de comparación de precios en línea; Consultoría por Internet en gestión comercial; Servicios de comparación de precios; Facilitación de comparaciones de servicios financieros en línea."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Análisis financiero; Servicios de investigación y análisis financieros; Análisis y consultoría financieras; Servicios de gestión y análisis de informaciones financieras; Valoraciones y análisis financieros; Información financiera; Servicios de consultoría e información financieras; Consultoría financiera en materia de préstamos."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Plataformas para inteligencia artificial como software en forma de servicio [SaaS]; Software como servicio [SaaS]; Software como servicio (SaaS) con software para el aprendizaje automático, aprendizaje profundo y redes neurales profundas; Software como servicio [SaaS] con software para aprendizaje automático; Software como servicio (saas) con software de aprendizaje profundo; Inteligencia artificial como servicio [IAaaS]; Servicios de consultoría en materia de software como un servicio [SaaS]; Creación y mantenimiento de software para blogs."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Rådgivningstjänster gällande företagsanalyser; Företagsanalystjänster; Assistans, rådgivningstjänster och konsultationer avseende affärsanalys; Prisanalystjänster; Lönsamhetsanalyser; Konsulttjänster avseende företagsstrategier; Rådgivning relaterad till företagsledning och -organisation; Konsultation avseende företagsorganisation och -verksamhet; Rådgivningstjänster för företagsledning; Konsultation avseende företagseffektivitet; Konsultationer inom områdena affärsledning och verksamhetsorganisation; Tillhandahållande av tjänster avseende prisjämförelser online; Konsultation om företagsledning via internet; Prisjämförelser; Tillhandahållande av direktanslutna jämförelser av finansiella tjänster."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Finansiella analyser; Finansiella analyser och undersökningar; Finansiell analys och konsultation; Tjänster avseende hantering och analys av finansiell information; Finansiella analyser och bedömningar; Finansiell information; Tjänster avseende finansiell rådgivning och information; Finansiell rådgivning om lån."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Plattformar för artificiell intelligens i form av programvaror som tjänst [SaaS]; Molntjänster [SaaS]; Molntjänster med programvaror för maskininlärning, djupinlärning och djupa neurala nätverk [SaaS]; Molntjänster med programvaror för maskininlärning [SaaS]; Molntjänster med programvaror för djupinlärning [SaaS]; Artificiell intelligens som en tjänst [AIaaS]; Rådgivning avseende molntjänster [SaaS]; Skapande och underhåll av programvara för bloggar."
+        }
+      ]
+    },
+    "id": "64cff351-991d-4374-b92f-671d3c249a7b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "84"
+      }
+    ],
+    "recordLastUpdated": "20260827",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260429",
+        "applicationNumber": "19356087"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360429",
+      "lastPublicationDate": "20260507",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260815",
+        "registrationNumber": "19356087"
+      }
+    },
+    "version": "20260827020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Valqoris"
+    }
+  },
+  "_uri": "/mark/em/64cff351-991d-4374-b92f-671d3c249a7b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.396Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "uri": "/mark/de/c5b0c781-8444-4731-a082-9159c81fbe3d",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "c5b0c781-8444-4731-a082-9159c81fbe3d",
+  "applicationNumber": "302026224139.5",
+  "registrationNumber": "302026224139",
+  "applicationDate": "2026-04-30",
+  "registrationDate": "2026-07-07",
+  "expiryDate": "2036-04-30",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-08-07",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VIANCORA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Unternehmensanalyse- und -informationsdienste sowie Marktforschung; Unternehmensberatung; Hilfe in Geschäftsangelegenheiten, Geschäftsführung und administrative Dienstleistungen",
+      "translation_language": "en",
+      "translation": "Business analysis and information services and market research; business consulting; assistance in business matters, management and administrative services."
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Bildung, Erziehung, Unterhaltung und sportliche Aktivitäten",
+      "translation_language": "en",
+      "translation": "Education, training, entertainment and sporting activities."
+    }
+  ],
+  "owner": "Vauth, Robin",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "40235 Düsseldorf",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Vauth, Robin"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Business analysis and information services and market research; business consulting; assistance in business matters, management and administrative services.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Unternehmensanalyse- und -informationsdienste sowie Marktforschung; Unternehmensberatung; Hilfe in Geschäftsangelegenheiten, Geschäftsführung und administrative Dienstleistungen"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education, training, entertainment and sporting activities.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Bildung, Erziehung, Unterhaltung und sportliche Aktivitäten"
+        }
+      ]
+    },
+    "id": "c5b0c781-8444-4731-a082-9159c81fbe3d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "32"
+      }
+    ],
+    "recordLastUpdated": "20260816",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Vauth, Margaretenstr. 1, 40235 Düsseldorf"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260430",
+        "applicationNumber": "302026224139.5"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360430",
+      "lastPublicationDate": "20260807",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20260707",
+        "registrationNumber": "302026224139"
+      }
+    },
+    "version": "20260816020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VIANCORA"
+    }
+  },
+  "_uri": "/mark/de/c5b0c781-8444-4731-a082-9159c81fbe3d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.820Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

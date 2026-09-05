@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/cn/1ac428d9-a193-4a72-8121-56a08bcc20ac",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "1ac428d9-a193-4a72-8121-56a08bcc20ac",
+  "applicationNumber": "67914780",
+  "registrationNumber": "67914780",
+  "applicationDate": "2022-10-24",
+  "registrationDate": "2023-05-07",
+  "expiryDate": "2033-05-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-02-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ORITAIN VERIFIED PROVEN ORIGIN",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "科学研究;农业研究;食品研究;药物研究服务;生物学研究;药品检测;材料测试;纺织品测试;消费品安全测试;化学分析;生物学研究和分析;质量控制",
+      "translation_language": "en",
+      "translation": "scientific research; agricultural research; food research; pharmaceutical research services; biological research; pharmaceutical testing; materials testing; textile testing; consumer product safety testing; chemical analysis; biological research and analysis; quality control"
+    }
+  ],
+  "owner": "ORITAIN GLOBAL LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "NZ",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "新西兰奥克兰市奥克兰中心码头街147号22号仓库,邮编:1010 HEIMSATH ALEXANDER, SHED 22, 147 QUAY STREET, AUCKLAND CENTRAL, AUCKLAND, 1010, NZ",
+        "applicantAddressCountryCode": "NZ",
+        "applicantAddressCountryName": "New Zealand",
+        "applicantName": "ORITAIN GLOBAL LIMITED",
+        "applicantNativeName": "源定全球有限公司;ORITAIN GLOBAL LIMITED"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "scientific research; agricultural research; food research; pharmaceutical research services; biological research; pharmaceutical testing; materials testing; textile testing; consumer product safety testing; chemical analysis; biological research and analysis; quality control",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "科学研究;农业研究;食品研究;药物研究服务;生物学研究;药品检测;材料测试;纺织品测试;消费品安全测试;化学分析;生物学研究和分析;质量控制"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Chemical research service",
+        "Biological research service",
+        "Survey service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4211",
+          "subNatGoodsServicesDescription": "Chemical research service"
+        },
+        {
+          "subNatClassNumber": "4212",
+          "subNatGoodsServicesDescription": "Biological research service"
+        },
+        {
+          "subNatClassNumber": "4214",
+          "subNatGoodsServicesDescription": "Survey service"
+        }
+      ]
+    },
+    "id": "1ac428d9-a193-4a72-8121-56a08bcc20ac",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1826"
+      }
+    ],
+    "recordLastUpdated": "20260828",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "罗思(上海)咨询有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20221024",
+        "applicationNumber": "67914780"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330506",
+      "lastPublicationDate": "20230206",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20230507",
+        "registrationNumber": "67914780"
+      }
+    },
+    "version": "20260828020204",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ORITAIN VERIFIED PROVEN ORIGIN"
+    }
+  },
+  "_uri": "/mark/cn/1ac428d9-a193-4a72-8121-56a08bcc20ac",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

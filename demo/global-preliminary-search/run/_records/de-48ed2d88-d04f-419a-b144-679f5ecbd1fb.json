@@ -1,0 +1,154 @@
+{
+  "uri": "/mark/de/48ed2d88-d04f-419a-b144-679f5ecbd1fb",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "48ed2d88-d04f-419a-b144-679f5ecbd1fb",
+  "applicationNumber": "302018200888.0",
+  "registrationNumber": "302018200888",
+  "applicationDate": "2018-01-10",
+  "registrationDate": "2018-03-02",
+  "expiryDate": "2028-01-31",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-04-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Avenor",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    39,
+    41,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        39
+      ],
+      "language": "de",
+      "description": "Krankentransportdienste",
+      "translation_language": "en",
+      "translation": "Ambulance services"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Betrieb von Bildungsstätten; Bildung, Erziehung und Unterricht; Bildungsberatung; Dienstleistungen von Bildungseinrichtungen; Organisation und Durchführung von Bildungsveranstaltungen; Organisation von Bildungsseminaren; Telefonische Informationsdienste in Bezug auf Bildung; Verleihung von Bildungszertifikaten; Veröffentlichung von gedrucktem Erziehungs- und Bildungsmaterial",
+      "translation_language": "en",
+      "translation": "Educational facilities; Education, upbringing and education; Educational counseling; Educational services; Organization and conducting of educational events; Organization of educational seminars; Telephone information services relating to education; Granting of educational certificates; Publication of Printed Educational Material"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "de",
+      "description": "Ergotherapie und berufliche Rehabilitation",
+      "translation_language": "en",
+      "translation": "Occupational Therapy and Occupational Rehabilitation"
+    }
+  ],
+  "owner": "Avenor Gemeinnützige Servicegesellschaft sozialer Dienste mbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "10827 Berlin",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Avenor Gemeinnützige Servicegesellschaft sozialer Dienste mbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Ambulance services",
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Krankentransportdienste"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Educational facilities; Education, upbringing and education; Educational counseling; Educational services; Organization and conducting of educational events; Organization of educational seminars; Telephone information services relating to education; Granting of educational certificates; Publication of Printed Educational Material",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Betrieb von Bildungsstätten; Bildung, Erziehung und Unterricht; Bildungsberatung; Dienstleistungen von Bildungseinrichtungen; Organisation und Durchführung von Bildungsveranstaltungen; Organisation von Bildungsseminaren; Telefonische Informationsdienste in Bezug auf Bildung; Verleihung von Bildungszertifikaten; Veröffentlichung von gedrucktem Erziehungs- und Bildungsmaterial"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Occupational Therapy and Occupational Rehabilitation",
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Ergotherapie und berufliche Rehabilitation"
+        }
+      ]
+    },
+    "id": "48ed2d88-d04f-419a-b144-679f5ecbd1fb",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "14"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Avenor Gemeinnützige Servicegesellschaft sozialer Dienste mbH, Feurigstr. 54, 10827 Berlin"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180110",
+        "applicationNumber": "302018200888.0"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280131",
+      "lastPublicationDate": "20180406",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180302",
+        "registrationNumber": "302018200888"
+      }
+    },
+    "version": "20250627162444",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Avenor"
+    }
+  },
+  "_uri": "/mark/de/48ed2d88-d04f-419a-b144-679f5ecbd1fb",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.813Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

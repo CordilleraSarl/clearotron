@@ -1,0 +1,133 @@
+{
+  "uri": "/mark/br/e954f695-f227-460d-a4c6-7042ec1c9e7e",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "e954f695-f227-460d-a4c6-7042ec1c9e7e",
+  "applicationNumber": "814677835",
+  "registrationNumber": null,
+  "applicationDate": "1989-01-27",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    21,
+    22,
+    37
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        21,
+        22,
+        37
+      ],
+      "language": "pt",
+      "description": "Veículos hidroviários, outras embarcações e seus implementos.",
+      "translation_language": "en",
+      "translation": "Waterway vehicles, other vessels and their implements."
+    }
+  ],
+  "owner": "SULIBRA COMERCIO E PARTICIPAÇÕES LTDA.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "No agent available",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "SULIBRA COMERCIO E PARTICIPAÇÕES LTDA."
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Waterway vehicles, other vessels and their implements.",
+          "intClassNumber": "06,07,08,09,10,11,12,13,14,21,22,37",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Veículos hidroviários, outras embarcações e seus implementos."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "07.35"
+        }
+      ]
+    },
+    "id": "e954f695-f227-460d-a4c6-7042ec1c9e7e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "No agent available"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19890127",
+        "applicationNumber": "814677835"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20250630195043",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/br/e954f695-f227-460d-a4c6-7042ec1c9e7e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.178Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

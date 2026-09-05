@@ -1,0 +1,302 @@
+{
+  "uri": "/mark/us/3aa54106-79d1-4c70-b1c9-3d83318827ee",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "3aa54106-79d1-4c70-b1c9-3d83318827ee",
+  "applicationNumber": "78338786",
+  "registrationNumber": "3057122",
+  "applicationDate": "2003-12-10",
+  "registrationDate": "2006-02-07",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2005-11-15"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2012-10-05",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "THE VENORTEX GROUP INCORPORATED",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": [
+    "\"GROUP INCORPORATED\""
+  ],
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 information technology services, namely, management of information technology for use in the field of billing solutions",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "The Venortex Group Incorporated",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Natalia Utrera, Esq.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "89-66 210th Place, Queens Village, NY, 11427",
+        "applicantAddressCity": "Queens Village",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "11427",
+        "applicantAddressStateName": "NEW YORK",
+        "applicantAddressStreet": "89-66 210th Place",
+        "applicantJurisdictionOfIncorporation": "NEW YORK",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "The Venortex Group Incorporated"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "01.15.02",
+      "02.01.01",
+      "02.03.06",
+      "26.21.02",
+      "26.21.08",
+      "27.03.02",
+      "30.01.24",
+      "30.05.01",
+      "30.05.08"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 information technology services, namely, management of information technology for use in the field of billing solutions"
+        }
+      ]
+    },
+    "id": "3aa54106-79d1-4c70-b1c9-3d83318827ee",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "\"GROUP INCORPORATED\""
+    ],
+    "markEvents": [
+      {
+        "date": "20121005",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20060207",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20051115",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20051026",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20050929",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20050923",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20050919",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20050916",
+        "descriptionText": "AMENDMENT FROM APPLICANT ENTERED"
+      },
+      {
+        "date": "20050906",
+        "descriptionText": "PAPER RECEIVED"
+      },
+      {
+        "date": "20050906",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20050301",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "20050228",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20050201",
+        "descriptionText": "AMENDMENT FROM APPLICANT ENTERED"
+      },
+      {
+        "date": "20050113",
+        "descriptionText": "PAPER RECEIVED"
+      },
+      {
+        "date": "20050113",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20040708",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "20040624",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20040105",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "The color gray is claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The color gray appears on the symbol and the word \"Venortex\".",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "89-66 210th Place, Queens Village, NY, 11427",
+        "city": "Queens Village",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NEW YORK",
+        "legalEntity": "CORPORATION",
+        "name": "The Venortex Group Incorporated",
+        "postalCode": "11427",
+        "stateName": "NEW YORK",
+        "street": "89-66 210th Place"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "89-66 210th Place, Queens Village, NY, 11427",
+        "city": "Queens Village",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NEW YORK",
+        "legalEntity": "CORPORATION",
+        "name": "The Venortex Group Incorporated",
+        "postalCode": "11427",
+        "stateName": "NEW YORK",
+        "street": "89-66 210th Place"
+      },
+      {
+        "address": "89-66 210th Place, Queens Village, NY, 11427",
+        "city": "Queens Village",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NEW YORK",
+        "legalEntity": "CORPORATION",
+        "name": "The Venortex Group Incorporated",
+        "postalCode": "11427",
+        "stateName": "NEW YORK",
+        "street": "89-66 210th Place"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "89-66 210th Place, Queens Village, NY, 11427",
+        "city": "Queens Village",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NEW YORK",
+        "legalEntity": "CORPORATION",
+        "name": "The Venortex Group Incorporated",
+        "postalCode": "11427",
+        "stateName": "NEW YORK",
+        "street": "89-66 210th Place"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representatives": [
+      {
+        "representativeName": "Natalia Utrera, Esq."
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20031210",
+        "applicationNumber": "78338786"
+      },
+      "cancellationDate": "20121005",
+      "cancellationPublicationDate": "20121113",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20021210"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20021210"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20121005",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT",
+          "Color Drawing Currently"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20051115"
+      ],
+      "registration": {
+        "registrationDate": "20060207",
+        "registrationNumber": "3057122"
+      }
+    },
+    "version": "20260109205939",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "THE VENORTEX GROUP INCORPORATED"
+    }
+  },
+  "_uri": "/mark/us/3aa54106-79d1-4c70-b1c9-3d83318827ee",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

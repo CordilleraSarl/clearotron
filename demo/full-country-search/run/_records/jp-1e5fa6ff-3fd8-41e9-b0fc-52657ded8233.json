@@ -1,0 +1,194 @@
+{
+  "uri": "/mark/jp/1e5fa6ff-3fd8-41e9-b0fc-52657ded8233",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "1e5fa6ff-3fd8-41e9-b0fc-52657ded8233",
+  "applicationNumber": "2013-097663",
+  "registrationNumber": "5661723",
+  "applicationDate": "2013-12-12",
+  "registrationDate": "2014-04-04",
+  "expiryDate": "2024-04-04",
+  "renewalDate": null,
+  "lastPublicationDate": "2014-05-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＱＯＲＯＳ",
+  "markTransliteration": "KOROSU KUOROSU",
+  "markTranslation": "QOROS",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    38
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "データ処理装置，コンピュータソフトウェア（記憶されたもの），コンピュータ周辺機器，時間記録用装置，乗物用ナビゲーション装置（コンピュータ内蔵のもの），衛星ナビゲーション装置，電話機械器具，無線電話機，無線通信機械器具，全地球測位装置（ＧＰＳ），電気制御用機械器具，乗物用走行制御装置，遠隔制御装置，エンジン・タイヤ及び乗物を電気的に制御する装置，盗難防止警報装置，電子応用機械器具及びその部品，電気通信機械器具，配電用又は制御用の機械器具，回転変流機，調相機",
+      "translation_language": "en",
+      "translation": "Data processing device, computer software (stored), computer peripheral device, time recording device, vehicle navigation device (with built-in computer), satellite navigation device, telephone machine tool, wireless telephone, wireless communication machine tool, all Earth positioning device (GPS), electric control machine equipment, vehicle travel control equipment, remote control equipment, equipment for electrically controlling engines and tires and vehicles, anti-theft alarm equipment, electronic appliances appliances and parts thereof, electric Communication machinery equipment, mechanical equipment for power distribution or control, rotary current transformer, phase compensator"
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": null,
+      "description": "電気通信（「放送」を除く。），放送，ラジオ放送，データ通信，ニュースの電子送信，電子計算機端末による通信ネットワーク又はデータベースへの接続の提供，電話による通信，データネットワーク経由による情報への接続用回線の提供，付加価値通信網による通信，無線呼出し，データベースへの接続用回線の提供，電子メール及びインスタントメッセージによる通信，インターネット利用のチャットルーム形式による電子掲示板通信，電子掲示板による通信，テレショッピングのための電気通信回線（放送を含む。）の提供，電気通信に関する情報の提供，報道をする者に対するニュースの供給，電話機・ファクシミリその他の通信機器の貸与",
+      "translation_language": "en",
+      "translation": "Telecommunications (excluding \"broadcasting\"), broadcasting, radio broadcasting, data communication, electronic transmission of news, provision of a connection to a communication network or database by an electronic computer terminal, communication by telephone, connection to information via a data network Provide a line for communication, value communication network communication, radio calling, providing a line for connection to a database, communication by e-mail and instant message, electronic bulletin board communication in chat room format using Internet, communication by electronic bulletin board, tele shopping Providing information on telecommunications lines (including broadcasting), providing information on telecommunications, providing news for news coverage, lending of telephones, facsimiles and other communication equipment"
+    }
+  ],
+  "owner": "QOROS AUTOMOTIVE CO LTD",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "AOKI ATSUSHI",
+  "priorities": [
+    {
+      "priorityDate": "20131212"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "QOROS AUTOMOTIVE CO LTD",
+        "applicantNativeAddress": "中華人民共和国",
+        "applicantNativeName": "クオロス　オートモーティブ　カンパニー　リミテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Data processing device, computer software (stored), computer peripheral device, time recording device, vehicle navigation device (with built-in computer), satellite navigation device, telephone machine tool, wireless telephone, wireless communication machine tool, all Earth positioning device (GPS), electric control machine equipment, vehicle travel control equipment, remote control equipment, equipment for electrically controlling engines and tires and vehicles, anti-theft alarm equipment, electronic appliances appliances and parts thereof, electric Communication machinery equipment, mechanical equipment for power distribution or control, rotary current transformer, phase compensator",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "データ処理装置，コンピュータソフトウェア（記憶されたもの），コンピュータ周辺機器，時間記録用装置，乗物用ナビゲーション装置（コンピュータ内蔵のもの），衛星ナビゲーション装置，電話機械器具，無線電話機，無線通信機械器具，全地球測位装置（ＧＰＳ），電気制御用機械器具，乗物用走行制御装置，遠隔制御装置，エンジン・タイヤ及び乗物を電気的に制御する装置，盗難防止警報装置，電子応用機械器具及びその部品，電気通信機械器具，配電用又は制御用の機械器具，回転変流機，調相機"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Telecommunications (excluding \"broadcasting\"), broadcasting, radio broadcasting, data communication, electronic transmission of news, provision of a connection to a communication network or database by an electronic computer terminal, communication by telephone, connection to information via a data network Provide a line for communication, value communication network communication, radio calling, providing a line for connection to a database, communication by e-mail and instant message, electronic bulletin board communication in chat room format using Internet, communication by electronic bulletin board, tele shopping Providing information on telecommunications lines (including broadcasting), providing information on telecommunications, providing news for news coverage, lending of telephones, facsimiles and other communication equipment",
+          "intClassNumber": "38",
+          "intGoodsServicesDescription": "電気通信（「放送」を除く。），放送，ラジオ放送，データ通信，ニュースの電子送信，電子計算機端末による通信ネットワーク又はデータベースへの接続の提供，電話による通信，データネットワーク経由による情報への接続用回線の提供，付加価値通信網による通信，無線呼出し，データベースへの接続用回線の提供，電子メール及びインスタントメッセージによる通信，インターネット利用のチャットルーム形式による電子掲示板通信，電子掲示板による通信，テレショッピングのための電気通信回線（放送を含む。）の提供，電気通信に関する情報の提供，報道をする者に対するニュースの供給，電話機・ファクシミリその他の通信機器の貸与"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "09D01",
+          "natGoodsServicesDescription": "Blueprint apparatus; Cash registers; Coin counting or sorting machines; Photo-copying machines; Mathematical instruments; Time and date stamping machines; Time clocks [time recording devices]; Punched card office machines; Voting machines; Postage stamp checking apparatus"
+        },
+        {
+          "natClassNumber": "09G04",
+          "natGoodsServicesDescription": "Fire alarms; Gas alarms; Anti-theft warning apparatus"
+        },
+        {
+          "natClassNumber": "11A01",
+          "natGoodsServicesDescription": "Power distribution or control machines and apparatus; Rotary converters; Phase modifiers; Solar batteries"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Telecommunication machines and apparatus; Personal digital assistants"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door opening and closing control systems; Electron microscopes"
+        },
+        {
+          "natClassNumber": "38A01",
+          "natGoodsServicesDescription": "Telecommunication, other than broadcasting"
+        },
+        {
+          "natClassNumber": "38B01",
+          "natGoodsServicesDescription": "Broadcasting"
+        },
+        {
+          "natClassNumber": "38C01",
+          "natGoodsServicesDescription": "News agency services"
+        },
+        {
+          "natClassNumber": "38D01",
+          "natGoodsServicesDescription": "Rental of telecommunication equipment including telephones and facsimile apparatus"
+        }
+      ]
+    },
+    "id": "1e5fa6ff-3fd8-41e9-b0fc-52657ded8233",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20131212"
+      }
+    ],
+    "recordLastUpdated": "20250418",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "AOKI ATSUSHI",
+        "representativeNativeName": "青木　篤"
+      },
+      {
+        "representativeName": "OOBASHI KEIHO",
+        "representativeNativeName": "大橋　啓輔"
+      },
+      {
+        "representativeName": "TAJIMA HISASHI",
+        "representativeNativeName": "田島　壽"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20131212",
+        "applicationNumber": "2013-097663"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20240404",
+      "lastPublicationDate": "20140513",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20140404",
+        "registrationNumber": "5661723"
+      }
+    },
+    "version": "20250418084948",
+    "wordMarkSpecification": {
+      "markTranslation": "QOROS",
+      "markTransliteration": "KOROSU KUOROSU",
+      "markVerbalElementText": "ＱＯＲＯＳ"
+    }
+  },
+  "_uri": "/mark/jp/1e5fa6ff-3fd8-41e9-b0fc-52657ded8233",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.708Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

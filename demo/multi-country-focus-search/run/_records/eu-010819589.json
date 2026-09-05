@@ -1,0 +1,59 @@
+{
+  "uri": "/mark/eu/010819589",
+  "provider": "euipo",
+  "office": "EU",
+  "id": "010819589",
+  "applicationNumber": "010819589",
+  "registrationNumber": "010819589",
+  "applicationDate": "2012-04-19",
+  "registrationDate": "2012-09-18",
+  "expiryDate": "2032-04-19",
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "statusDate": "2012-09-20",
+  "markText": "JORI",
+  "markFeature": "WORD",
+  "markKind": "INDIVIDUAL",
+  "markBasis": "EU_TRADEMARK",
+  "niceClasses": [],
+  "owner": "Elten GmbH",
+  "ownerCountry": null,
+  "representative": "RÖSLER · RASCH · VAN DER HEIDE & PARTNER PATENT- UND RECHTSANWÄLTE PARTNERSCHAFTSGESELLSCHAFT MBB",
+  "goodsAndServices": [
+    {
+      "classNumber": 9,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Shoes for protection against accidents, irradiation and fire, safety shoes, protective shoes"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 35,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Wholesaling and retailing in the field of shoes for protection against accidents, irradiation and fire, safety shoes, protective shoes"
+          ]
+        }
+      ]
+    }
+  ],
+  "oppositions": [],
+  "cancellations": [],
+  "appeals": [],
+  "decisions": [],
+  "_provenance": {
+    "proceedings": "detail record — an empty list means none are recorded on the register"
+  },
+  "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/010819589",
+  "_uri": "/mark/eu/010819589",
+  "_receipt": {
+    "fetched_at": "2026-08-11T07:53:29.595Z",
+    "context": "prelim-tmp0001-venqori-sample-capture-screen-gate-refetch"
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/kr/7f02badc-5d1c-4b10-874a-afbd0c5acbd3",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "7f02badc-5d1c-4b10-874a-afbd0c5acbd3",
+  "applicationNumber": "40-2007-0000625",
+  "registrationNumber": null,
+  "applicationDate": "2007-01-05",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VENTURI",
+  "markTransliteration": "VENTURI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "dmb수신기, lcd모니터, mp3플레이어, pmp, 네비게이션장치, 디지털카메라, 오디오수신기, 카메라, 컴퓨터모니터, 텔레비전 수신기",
+      "translation_language": "en",
+      "translation": "DMB receiver, LCD monitor, mp3 player, PMP, navigation device, digital camera, audio receiver, camera, computer monitor, television receiver"
+    }
+  ],
+  "owner": "LEE GYU HANG",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "김종화 (Kim Chong Hwa)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 금천구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "LEE GYU HANG",
+        "applicantNativeName": "이규항"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "DMB receiver, LCD monitor, mp3 player, PMP, navigation device, digital camera, audio receiver, camera, computer monitor, television receiver",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "dmb수신기, lcd모니터, mp3플레이어, pmp, 네비게이션장치, 디지털카메라, 오디오수신기, 카메라, 컴퓨터모니터, 텔레비전 수신기"
+        }
+      ]
+    },
+    "id": "7f02badc-5d1c-4b10-874a-afbd0c5acbd3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260430",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 서초구 명달로 (서초동) *층 호(변리사김종화특허법률사무소)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김종화 (Kim Chong Hwa)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20070105",
+        "applicationNumber": "40-2007-0000625"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260430020254",
+    "wordMarkSpecification": {
+      "markTransliteration": "VENTURI",
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/kr/7f02badc-5d1c-4b10-874a-afbd0c5acbd3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.179Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

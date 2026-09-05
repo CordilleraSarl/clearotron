@@ -1,0 +1,102 @@
+{
+  "uri": "/mark/ng/a2542e00-2b89-4ed1-978f-e68278deca60",
+  "provider": "clarivate",
+  "office": "ng",
+  "guid": "a2542e00-2b89-4ed1-978f-e68278deca60",
+  "applicationNumber": "F/TM/O/2020/166494",
+  "registrationNumber": null,
+  "applicationDate": "2020-01-21",
+  "registrationDate": null,
+  "expiryDate": "2027-01-21",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "LORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software; downloadable computer software; downloadable software and mobile applications, online computer software; online software and mobile applications; including but not limited to software and mobile applications used to connect clients with drivers for the purpose of transporting cargo; ancillary and supplementary goods to the aforegoing, included in the class",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "LORI SYSTEMS CORP.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "ORANGE STREET WILMINGTON DELAWARE COUNTY OF NEW CASTLE",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "LORI SYSTEMS CORP."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software; downloadable computer software; downloadable software and mobile applications, online computer software; online software and mobile applications; including but not limited to software and mobile applications used to connect clients with drivers for the purpose of transporting cargo; ancillary and supplementary goods to the aforegoing, included in the class"
+        }
+      ]
+    },
+    "id": "a2542e00-2b89-4ed1-978f-e68278deca60",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "NG",
+    "registrationOfficeName": "Nigeria",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200121",
+        "applicationNumber": "F/TM/O/2020/166494"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20270121",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20240320104242",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LORI"
+    }
+  },
+  "_uri": "/mark/ng/a2542e00-2b89-4ed1-978f-e68278deca60",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.455Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/cn/817a4fcd-a0f3-4048-b0de-2d9b598ca7f5",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "817a4fcd-a0f3-4048-b0de-2d9b598ca7f5",
+  "applicationNumber": "37216828A",
+  "registrationNumber": "37216828A",
+  "applicationDate": "2019-04-01",
+  "registrationDate": "2020-01-28",
+  "expiryDate": "2030-01-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-10-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENKURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "移动电源(可充电电池);放映设备;电源插座;测距仪",
+      "translation_language": "en",
+      "translation": "Portable power bank (rechargeable battery); projection equipment; power socket; rangefinder"
+    }
+  ],
+  "owner": "Yiwu Tengding Umbrella Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "浙江省金华市义乌市后宅街道神舟路251号8号楼4楼(自主申报)",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Yiwu Tengding Umbrella Co., Ltd.",
+        "applicantNativeName": "义乌市腾鼎伞业有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Portable power bank (rechargeable battery); projection equipment; power socket; rangefinder",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "移动电源(可充电电池);放映设备;电源插座;测距仪"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Apparatus and instruments for photographic and cinematographic",
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "817a4fcd-a0f3-4048-b0de-2d9b598ca7f5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1669"
+      }
+    ],
+    "recordLastUpdated": "20260130",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市前海普集知识产权代理有限公司义乌分公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190401",
+        "applicationNumber": "37216828A"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300127",
+      "lastPublicationDate": "20191027",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20200128",
+        "registrationNumber": "37216828A"
+      }
+    },
+    "version": "20260130020706",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENKURI"
+    }
+  },
+  "_uri": "/mark/cn/817a4fcd-a0f3-4048-b0de-2d9b598ca7f5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.819Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

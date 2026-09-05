@@ -1,0 +1,116 @@
+{
+  "uri": "/mark/id/94a1882e-727b-417c-89bb-5c7508ce0e4f",
+  "provider": "clarivate",
+  "office": "id",
+  "guid": "94a1882e-727b-417c-89bb-5c7508ce0e4f",
+  "applicationNumber": "DID2020026099",
+  "registrationNumber": "IDM000922139",
+  "applicationDate": "2020-05-29",
+  "registrationDate": "2021-11-15",
+  "expiryDate": "2030-05-29",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QOQI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "id",
+      "description": "Perangkat lunak komputer untuk digunakan dalam mengotomatisasi dan mengelola proses bisnis, perangkat lunak komputer untuk integrasi aplikasi dan basis data, perangkat lunak komputer untuk keperluan bisnis, perangkat lunak komputer untuk keperluan bisnis, yaitu, perangkat lunak untuk mengumpulkan dan menganalisis data, perangkat lunak komputer untuk mengendalikan terminal swalayan, perangkat lunak untuk pos (point of sale) terminal, terminal point - of - sale [pos].",
+      "translation_language": "en",
+      "translation": "Computer software for use in automating and managing business processes, computer software for application and database integration, computer software for business purposes, computer software for business purposes, that is, software for collecting and analyzing data, computer software for controlling self-service terminals, software for point of sale terminals, point-of-sale [pos] terminals."
+    }
+  ],
+  "owner": "QOQI INDONESIA DIGITAL",
+  "ownerNative": null,
+  "ownerCountry": "ID",
+  "representative": "CESAR RESHA, S. E, S. H.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "OFFICE BUILDING DE PLOEIT CENTRALE LT. 2 UNIT 202, JL. PLUIT SELATAN RAYA BLOK Q, PLUIT, PENJARINGAN; ID",
+        "applicantAddressCountryCode": "ID",
+        "applicantAddressCountryName": "Indonesia",
+        "applicantName": "QOQI INDONESIA DIGITAL"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software for use in automating and managing business processes, computer software for application and database integration, computer software for business purposes, computer software for business purposes, that is, software for collecting and analyzing data, computer software for controlling self-service terminals, software for point of sale terminals, point-of-sale [pos] terminals.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "id",
+          "intGoodsServicesDescription": "Perangkat lunak komputer untuk digunakan dalam mengotomatisasi dan mengelola proses bisnis, perangkat lunak komputer untuk integrasi aplikasi dan basis data, perangkat lunak komputer untuk keperluan bisnis, perangkat lunak komputer untuk keperluan bisnis, yaitu, perangkat lunak untuk mengumpulkan dan menganalisis data, perangkat lunak komputer untuk mengendalikan terminal swalayan, perangkat lunak untuk pos (point of sale) terminal, terminal point - of - sale [pos]."
+        }
+      ]
+    },
+    "id": "94a1882e-727b-417c-89bb-5c7508ce0e4f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250105",
+    "registrationOfficeCode": "ID",
+    "registrationOfficeName": "Indonesia",
+    "representatives": [
+      {
+        "representativeAddress": "D MANSION @JATINEGARA INDAH BLOK A - 4, JL. KRT RADJIMAN WIDYODININGRAT; ID",
+        "representativeAddressCountryCode": "ID",
+        "representativeAddressCountryName": "Indonesia",
+        "representativeName": "CESAR RESHA, S. E, S. H."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200529",
+        "applicationNumber": "DID2020026099"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300529",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20211115",
+        "registrationNumber": "IDM000922139"
+      }
+    },
+    "version": "20250105152202",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOQI"
+    }
+  },
+  "_uri": "/mark/id/94a1882e-727b-417c-89bb-5c7508ce0e4f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:48.754Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

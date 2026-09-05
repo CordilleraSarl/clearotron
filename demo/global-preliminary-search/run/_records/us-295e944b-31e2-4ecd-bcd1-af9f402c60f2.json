@@ -1,0 +1,252 @@
+{
+  "uri": "/mark/us/295e944b-31e2-4ecd-bcd1-af9f402c60f2",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "295e944b-31e2-4ecd-bcd1-af9f402c60f2",
+  "applicationNumber": "99517633",
+  "registrationNumber": null,
+  "applicationDate": "2025-11-26",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    12,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Apparatus and instruments for conducting, switching, transforming, accumulating, regulating or controlling the distribution or use of electricity; Apparatus and instruments for recording, transmitting, reproducing or processing sound, images or data; Diving suits; Divers' masks; Ear plugs for divers; Nose clips for divers and swimmers; Gloves for divers; Breathing apparatus for underwater swimming; Fire extinguishers; Smart rings; Directional compasses; Head guards for sports; Protective head guards for industrial purposes; Covers for smartphones; Smartwatches; Smartphones in the shape of a watch; Personal digital assistants; Timers; Cameras; Video cameras; GPS navigation device; GPS tracking devices; Wearable computers in the nature of smartwatches; Blank compact discs; Compact discs featuring music; Optical compact discs featuring music, videos, e-books and textual reports about entertainment, current affairs, news, motion pictures, technology, business, the arts, politics, environmental causes; Blank recordable DVDs; Pre-recorded DVDs featuring music; DVDs featuring music, videos, e-books and textual reports about entertainment, current affairs, news, motion pictures, technology, business, the arts, politics, environmental causes, children's entertainment, animation, motion pictures and television shows about a wide variety of general interest topics, fictional stories, entertainment, current affairs, news, motion pictures, technology, business, the arts, politics, environmental causes; Pre-recorded digital media devices featuring music, videos, e-books and textual reports about entertainment, current affairs, news, motion pictures, technology, business, the arts, politics, environmental causes, children's entertainment, animation, motion pictures and television shows about a wide variety of general interest topics, fictional stories, entertainment, current affairs, news, motion pictures, technology, business, the arts, politics, environmental causes; Downloadable computer software applications for regulation of on-board systems within electrically powered land vehicles, watercraft, aircraft, and space vehicles, and for regulation of electrical storage batteries and power generation devices; Downloadable game software; Downloadable computer networking software; Downloadable computer software for use in database management; Downloadable computer software applications for social networking and managing exchange of text, image, and video between users; Computers; Portable computers; Personal computers; Mobile computers; Tablet computers; Laptop computers; Palmtop computers; Wearable computers in the nature of smartglasses; Computer peripheral devices; MP3 players; Telephone apparatus; Mobile telephones; Smartphones; Telecommunication switches; Telecommunications transmitters; Computer hardware for telecommunications; Antennas for telecommunications networks; Batteries; Solar batteries; Fuel cells; Spectacles; Downloadable digital collectibles being image and video files in the field of digital animated and non-animated designs of avatars, celebrities, land vehicles, space vehicles, watercraft, aircraft, planets, geographic features authenticated by non-fungible tokens (NFTs); Downloadable image files containing digital animated and non-animated designs of avatars, celebrities, land vehicles, space vehicles, watercraft, aircraft, planets, geographic features",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": null,
+      "description": "INT. CL. 12 Land vehicles; Aircraft; Space vehicles; Boats; Ships; Structural parts for helicopters; Structural parts for boats; Structural parts for airplanes; Structural parts for automobiles; Structural parts for ships; Structural parts for drones; Personal watercraft, namely, small powerboats, personal jet boats, water scooters; Space vehicles, namely, lunar rovers, mars rovers, shuttles, rockets; Drones; Military drones; Civilian drones; Camera drones; Remotely controlled land vehicle; Underwater remotely operated vehicles (ROVs) for transport; Autonomous ships; Autonomous land vehicles; Autonomous air vehicles; All-terrain vehicles; Antitheft alarms for vehicles; Antitheft devices for vehicles",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Scientific research; Product research and development; New product design services; Technical consultancy in the field of industrial research; Industrial design; Quality control for others; Scientific research and development; Online data storage; Server hosting; Computer software design, computer programming, and maintenance of computer software; Drafting of plans and engineering drawings for others; Computer graphics design services; Mapping services; Engineering services; Hosting of web sites; Hosting of computer platforms; Computer technology consultancy; Conducting scientific feasibility studies; Technological consultation in the technology field of space travel and space exploration, aeronautics, electric vehicles, energy storage, climate change and global warming, computer networking technologies, propulsion technologies, artificial intelligence, transportation, physics, chemistry, biology; Technology research in the field of space travel and space exploration, aeronautics, electric vehicles, energy storage, climate change and global warming, computer networking technologies, propulsion technologies, artificial intelligence, transportation, physics, chemistry, biology; Research in the field of climate change; Providing scientific information in the fields of climate change and global warming; Design of interior decor; Urban planning; Surveying; Architectural services; Architectural consultancy services; Design of costumes; Set design for theatrical enterprises; Design of models, sets and props for motion pictures, videos, commercials and movie trailers",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Gildo-Pierre Pallanca-Pastor",
+  "ownerNative": null,
+  "ownerCountry": "MC",
+  "representative": "NICHOLAS D. WELLS",
+  "priorities": [
+    {
+      "priorityApplicationDate": "20251121",
+      "priorityApplicationNumber": "019280435"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "7, rue du Gabian, Monaco, 98000, MONA",
+        "applicantAddressCity": "Monaco",
+        "applicantAddressCountryCode": "MC",
+        "applicantAddressCountryName": "Monaco",
+        "applicantAddressPostalCode": "98000",
+        "applicantAddressStreet": "7, rue du Gabian",
+        "applicantJurisdictionOfIncorporation": "MONACO",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Gildo-Pierre Pallanca-Pastor"
+      }
+    ],
+    "associatedMarks": [
+      {
+        "registrationNumbers": [
+          "3419708",
+          "4196300",
+          "4257833",
+          "4270201",
+          "6292349",
+          "7208020",
+          "7208021"
+        ]
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Apparatus and instruments for conducting, switching, transforming, accumulating, regulating or controlling the distribution or use of electricity; Apparatus and instruments for recording, transmitting, reproducing or processing sound, images or data; Diving suits; Divers' masks; Ear plugs for divers; Nose clips for divers and swimmers; Gloves for divers; Breathing apparatus for underwater swimming; Fire extinguishers; Smart rings; Directional compasses; Head guards for sports; Protective head guards for industrial purposes; Covers for smartphones; Smartwatches; Smartphones in the shape of a watch; Personal digital assistants; Timers; Cameras; Video cameras; GPS navigation device; GPS tracking devices; Wearable computers in the nature of smartwatches; Blank compact discs; Compact discs featuring music; Optical compact discs featuring music, videos, e-books and textual reports about entertainment, current affairs, news, motion pictures, technology, business, the arts, politics, environmental causes; Blank recordable DVDs; Pre-recorded DVDs featuring music; DVDs featuring music, videos, e-books and textual reports about entertainment, current affairs, news, motion pictures, technology, business, the arts, politics, environmental causes, children's entertainment, animation, motion pictures and television shows about a wide variety of general interest topics, fictional stories, entertainment, current affairs, news, motion pictures, technology, business, the arts, politics, environmental causes; Pre-recorded digital media devices featuring music, videos, e-books and textual reports about entertainment, current affairs, news, motion pictures, technology, business, the arts, politics, environmental causes, children's entertainment, animation, motion pictures and television shows about a wide variety of general interest topics, fictional stories, entertainment, current affairs, news, motion pictures, technology, business, the arts, politics, environmental causes; Downloadable computer software applications for regulation of on-board systems within electrically powered land vehicles, watercraft, aircraft, and space vehicles, and for regulation of electrical storage batteries and power generation devices; Downloadable game software; Downloadable computer networking software; Downloadable computer software for use in database management; Downloadable computer software applications for social networking and managing exchange of text, image, and video between users; Computers; Portable computers; Personal computers; Mobile computers; Tablet computers; Laptop computers; Palmtop computers; Wearable computers in the nature of smartglasses; Computer peripheral devices; MP3 players; Telephone apparatus; Mobile telephones; Smartphones; Telecommunication switches; Telecommunications transmitters; Computer hardware for telecommunications; Antennas for telecommunications networks; Batteries; Solar batteries; Fuel cells; Spectacles; Downloadable digital collectibles being image and video files in the field of digital animated and non-animated designs of avatars, celebrities, land vehicles, space vehicles, watercraft, aircraft, planets, geographic features authenticated by non-fungible tokens (NFTs); Downloadable image files containing digital animated and non-animated designs of avatars, celebrities, land vehicles, space vehicles, watercraft, aircraft, planets, geographic features"
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsServicesDescription": "INT. CL. 12 Land vehicles; Aircraft; Space vehicles; Boats; Ships; Structural parts for helicopters; Structural parts for boats; Structural parts for airplanes; Structural parts for automobiles; Structural parts for ships; Structural parts for drones; Personal watercraft, namely, small powerboats, personal jet boats, water scooters; Space vehicles, namely, lunar rovers, mars rovers, shuttles, rockets; Drones; Military drones; Civilian drones; Camera drones; Remotely controlled land vehicle; Underwater remotely operated vehicles (ROVs) for transport; Autonomous ships; Autonomous land vehicles; Autonomous air vehicles; All-terrain vehicles; Antitheft alarms for vehicles; Antitheft devices for vehicles"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Scientific research; Product research and development; New product design services; Technical consultancy in the field of industrial research; Industrial design; Quality control for others; Scientific research and development; Online data storage; Server hosting; Computer software design, computer programming, and maintenance of computer software; Drafting of plans and engineering drawings for others; Computer graphics design services; Mapping services; Engineering services; Hosting of web sites; Hosting of computer platforms; Computer technology consultancy; Conducting scientific feasibility studies; Technological consultation in the technology field of space travel and space exploration, aeronautics, electric vehicles, energy storage, climate change and global warming, computer networking technologies, propulsion technologies, artificial intelligence, transportation, physics, chemistry, biology; Technology research in the field of space travel and space exploration, aeronautics, electric vehicles, energy storage, climate change and global warming, computer networking technologies, propulsion technologies, artificial intelligence, transportation, physics, chemistry, biology; Research in the field of climate change; Providing scientific information in the fields of climate change and global warming; Design of interior decor; Urban planning; Surveying; Architectural services; Architectural consultancy services; Design of costumes; Set design for theatrical enterprises; Design of models, sets and props for motion pictures, videos, commercials and movie trailers"
+        }
+      ]
+    },
+    "id": "295e944b-31e2-4ecd-bcd1-af9f402c60f2",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260618",
+        "descriptionText": "APPLICATION EXTENSION TO RESPONSE PERIOD - RECEIVED"
+      },
+      {
+        "date": "20260618",
+        "descriptionText": "APPLICATION EXTENSION GRANTED/RECEIPT PROVIDED"
+      },
+      {
+        "date": "20260318",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20260318",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20260318",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20260313",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20260212",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20251126",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20251126",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "7, rue du Gabian, Monaco, 98000, MONA",
+        "city": "Monaco",
+        "countryCode": "MC",
+        "countryName": "Monaco",
+        "jurisdictionOfIncorporation": "MONACO",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Gildo-Pierre Pallanca-Pastor",
+        "postalCode": "98000",
+        "street": "7, rue du Gabian"
+      },
+      {
+        "address": "7, rue du Gabian, Monaco, 98000, MONA",
+        "city": "Monaco",
+        "countryCode": "MC",
+        "countryName": "Monaco",
+        "jurisdictionOfIncorporation": "MONACO",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Gildo-Pierre Pallanca-Pastor",
+        "postalCode": "98000",
+        "street": "7, rue du Gabian"
+      }
+    ],
+    "priorities": [
+      {
+        "priorityApplicationDate": "20251121",
+        "priorityApplicationNumber": "019280435"
+      }
+    ],
+    "recordLastUpdated": "20260623",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Kaysville, UT 84037, United States",
+        "representativeCorrespondentAddressLines": [
+          "Kaysville, UT 84037",
+          "United States"
+        ],
+        "representativeCorrespondentName": "NICHOLAS D. WELLS LEGENDS LAW GROUP, PLLC, 330 N. Main St."
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Kaysville, UT 84037, United States",
+        "representativeAddressLines": [
+          "Kaysville, UT 84037",
+          "United States"
+        ],
+        "representativeName": "NICHOLAS D. WELLS"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251126",
+        "applicationNumber": "99517633"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "NON-FINAL ACTION - MAILED",
+        "markOfficialStatusCode": "641",
+        "markOfficialStatusDate": "20260318",
+        "markOfficialStatusEvents": [
+          "Section 44(D)",
+          "Section 44(d) Filed",
+          "Section 44(d) Currently"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260623052244",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/us/295e944b-31e2-4ecd-bcd1-af9f402c60f2",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.179Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

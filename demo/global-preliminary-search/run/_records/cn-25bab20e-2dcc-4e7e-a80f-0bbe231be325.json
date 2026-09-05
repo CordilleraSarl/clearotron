@@ -1,0 +1,141 @@
+{
+  "uri": "/mark/cn/25bab20e-2dcc-4e7e-a80f-0bbe231be325",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "25bab20e-2dcc-4e7e-a80f-0bbe231be325",
+  "applicationNumber": "12167033",
+  "registrationNumber": "12167033",
+  "applicationDate": "2013-02-07",
+  "registrationDate": "2015-03-21",
+  "expiryDate": "2035-03-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2014-12-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "成套无线电话机;电话机;可视电话;手提电话;电话用成套免提工具;手机带;电话机套;电池充电器;电池;耳塞机",
+      "translation_language": "en",
+      "translation": "Complete sets of wireless telephones; Telephones; Videophones; Mobile phones; Complete sets of hands-free tools for telephones; Mobile phone straps; Telephone cases; Battery chargers; Batteries; Earbud machines"
+    }
+  ],
+  "owner": "Shenzhen Kalan Shi Trading Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市龙岗区坂田街道新雪社区上雪科技工业城C区G栋G502",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Kalan Shi Trading Co., Ltd.",
+        "applicantNativeName": "深圳市卡兰士贸易有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Complete sets of wireless telephones; Telephones; Videophones; Mobile phones; Complete sets of hands-free tools for telephones; Mobile phone straps; Telephone cases; Battery chargers; Batteries; Earbud machines",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "成套无线电话机;电话机;可视电话;手提电话;电话用成套免提工具;手机带;电话机套;电池充电器;电池;耳塞机"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "25bab20e-2dcc-4e7e-a80f-0bbe231be325",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1436"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市鼎诚知识产权事务所有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20130207",
+        "applicationNumber": "12167033"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350320",
+      "lastPublicationDate": "20141220",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20150321",
+        "registrationNumber": "12167033"
+      },
+      "renewalPublishedDate": "20240620"
+    },
+    "version": "20251002045909",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NORI"
+    }
+  },
+  "_uri": "/mark/cn/25bab20e-2dcc-4e7e-a80f-0bbe231be325",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.692Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

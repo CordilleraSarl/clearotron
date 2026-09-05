@@ -1,0 +1,245 @@
+{
+  "uri": "/mark/ca/9dfd2a58-644e-48e7-acc4-59f9a15931c9",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "9dfd2a58-644e-48e7-acc4-59f9a15931c9",
+  "applicationNumber": "1221568",
+  "registrationNumber": "TMA644353",
+  "applicationDate": "2004-06-15",
+  "registrationDate": "2005-07-14",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2005-01-19"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "OHA HEALTHACHIEVE NORTH AMERICA'S MOST IMPORTANT HEALTH CARE SHOW",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": [
+    "The right to the exclusive use of the words HEALTH CARE is disclaimed apart from the trademark."
+  ],
+  "niceClasses": [
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35,
+        41
+      ],
+      "language": "en",
+      "description": "(1) Trade shows in the form of seminars and exhibits, all on the subject of health care issues.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ONTARIO HOSPITAL ASSOCIATION (AN ONTARIO NONPROFIT CORPORATION)",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": "BORDEN LADNER GERVAIS LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "200 Front Street West, Suite 2800, Toronto, ONTARIO, M5V3L1",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressLines": [
+          "200 Front Street West, Suite 2800",
+          "Toronto",
+          "ONTARIO"
+        ],
+        "applicantAddressPostalCode": "M5V3L1",
+        "applicantName": "ONTARIO HOSPITAL ASSOCIATION (AN ONTARIO NONPROFIT CORPORATION)"
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Declaration of Use filed June 20, 2005 on services (1)",
+        "typeDescription": "Declaration of Use Info"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35,41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Trade shows in the form of seminars and exhibits, all on the subject of health care issues."
+        }
+      ]
+    },
+    "id": "9dfd2a58-644e-48e7-acc4-59f9a15931c9",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markDisclaimers": [
+      "The right to the exclusive use of the words HEALTH CARE is disclaimed apart from the trademark."
+    ],
+    "markEvents": [
+      {
+        "date": "20210513",
+        "descriptionText": "Expunged - Failure to Renew",
+        "information": "DP: 2021/05/13"
+      },
+      {
+        "date": "20200805",
+        "descriptionText": "Renewal Notice Sent",
+        "responseDate": "20210114"
+      },
+      {
+        "date": "20170711",
+        "descriptionText": "Rep for Service Changed",
+        "information": "From: 6489 To: 6237 / Voir Preuve au dossier/See evidence on File No. 1015337"
+      },
+      {
+        "date": "20161214",
+        "descriptionText": "Rep for Service Changed",
+        "information": "From: 72 To: 6489 / Voir Preuve au dossier/See evidence on File No. 1224889"
+      },
+      {
+        "date": "20050714",
+        "descriptionText": "Registered",
+        "responseDate": "20200714"
+      },
+      {
+        "date": "20050408",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20070615"
+      },
+      {
+        "date": "20050408",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20050119",
+        "descriptionText": "Advertised",
+        "information": "Vol.52 Issue 2621"
+      },
+      {
+        "date": "20041220",
+        "descriptionText": "Approved"
+      },
+      {
+        "date": "20041015",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20050215"
+      },
+      {
+        "date": "20041015",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20040705",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20040625",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20040615",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "200 Front Street West, Suite 2800, Toronto, ONTARIO, M5V3L1",
+        "addressLines": [
+          "200 Front Street West, Suite 2800",
+          "Toronto",
+          "ONTARIO",
+          "M5V3L1"
+        ],
+        "countryName": "Canada",
+        "name": "ONTARIO HOSPITAL ASSOCIATION (AN ONTARIO NONPROFIT CORPORATION)",
+        "postalCode": "M5V3L1"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "2621",
+        "publicationVolume": "52"
+      }
+    ],
+    "recordLastUpdated": "20250624",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "BORDEN LADNER GERVAIS LLP",
+          "Bay Adelaide Centre, East Tower",
+          "22 Adelaide St. West",
+          "TORONTO",
+          "ONTARIO M5H4E3"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "BORDEN LADNER GERVAIS LLP"
+      }
+    ],
+    "status": {
+      "active": false,
+      "allowanceDate": [
+        "20050408"
+      ],
+      "application": {
+        "applicationDate": "20040615",
+        "applicationNumber": "1221568"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "expungementDate": "20210513",
+      "formalisationDate": "20040705",
+      "markCurrentStatus": "Expunged",
+      "nextRenewalDate": "20200714",
+      "publicationDate": [
+        "20050119"
+      ],
+      "registration": {
+        "registrationDate": "20050714",
+        "registrationNumber": "TMA644353"
+      }
+    },
+    "subjectHeadings": [
+      "OHA HEALTHACHIEVE NORTH AMERICA'S MOST IMPORTANT HEALTH CARE SHOW",
+      "HEALTH ACHIEVE"
+    ],
+    "version": "20250624150412",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "OHA HEALTH ACHIEVE NORTH AMERICAS MOST IMPORTANT HEALTH CARE SHOW",
+      "markVerbalElementText": "OHA HEALTHACHIEVE NORTH AMERICA'S MOST IMPORTANT HEALTH CARE SHOW",
+      "markVerbalElementTextFormal": "OHA HEALTHACHIEVE NORTH AMERICA'S MOST IMPORTANT HEALTH CARE SHOW"
+    }
+  },
+  "_uri": "/mark/ca/9dfd2a58-644e-48e7-acc4-59f9a15931c9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

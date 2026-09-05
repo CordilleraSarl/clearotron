@@ -1,0 +1,239 @@
+{
+  "uri": "/mark/ca/c783176e-0373-4306-b460-eba4bd8099fa",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "c783176e-0373-4306-b460-eba4bd8099fa",
+  "applicationNumber": "2439335",
+  "registrationNumber": null,
+  "applicationDate": "2025-11-25",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    9,
+    12,
+    14,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7,
+        9,
+        12,
+        14,
+        35,
+        42
+      ],
+      "language": "fr",
+      "description": "(1) Appareils et instruments scientifiques, de recherche, de navigation, géodésiques, photographiques, cinématographiques, audiovisuels, optiques, de pesage, de mesurage, de signalisation, de détection, d'essai, d'inspection, de secours (sauvetage) et d'enseignement; appareils et instruments pour la conduite, la distribution, la transformation, l'accumulation, le réglage ou la commande de la distribution ou de la consommation d'électricité; appareils et instruments pour l'enregistrement, la transmission, la reproduction ou le traitement de sons, d'images ou de données; combinaisons de plongée; masques de plongée; tampons d'oreilles pour la plongée; pinces nasales pour plongeurs et nageurs; gants de plongée; appareils respiratoires pour la nage subaquatique; extincteurs; bagues intelligentes; boussoles; casques de protection; coques pour smartphones; smartphones en forme de montre; assistants numériques personnels sous la forme de montres; instruments de mesure temporelle (sans inclure les horloges et les montres); dispositifs de communications portables sous la forme de montres-bracelets; disques compacts, dvd et autres supports d'enregistrement numériques; logiciels; ordinateurs; ordinateurs portables; ordinateurs de poche; ordinateurs mobiles; ordinateurs personnels; ordinateurs à porter sur soi; périphériques d'ordinateurs; montres intelligentes; bracelets connectés (instruments de mesure); lecteurs MP3; téléphones; téléphones portables; smartphones; appareils de télécommunication et de communication; appareils pour l'enregistrement, la transmission, la reproduction du son ou des images; batteries; piles solaires; piles rechargeables; piles électriques; piles à combustible; lunettes; fichiers d'images numériques téléchargeables authentifiés par des jetons non fongibles (NFT). \n(2) Véhicules et moyens de transport; Appareils de locomotion terrestres, aériens, spatiaux et maritimes; Pièces et parties constitutives de véhicules nautiques, terrestres, aériens et spatiaux; Astromobiles; Spationefs; Vaisseaux; Aéronefs; Appareils, machines et dispositifs pour l'aéronautique; Drones; Drones à caméra; Drones militaires et civils; Objets volants télécommandés; Véhicules télécommandés autres que jouets; Véhicules autonomes; Véhicules géodésiques sans pilote; Véhicules lanceurs de satellites; Véhicules submersibles; Véhicules sans pilote; Véhicules tout-terrains; Alarmes et antivols pour véhicules.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7,
+        9,
+        12,
+        14,
+        35,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Scientific apparatus and instruments, of research, navigation, geodesics, photographic, cinematographic, audiovisual, optics, weighing, measuring, signaling, detection, test, inspection, rescue (rescue) and teaching;devices and instruments for driving, the distribution, the transformation, accumulation, regulating or controlling the distribution or consumption of electricity;apparatus and instruments for recording, the transmission, reproduction or processing of sounds, images or data;diving suits;diving masks;ear plugs for diving;nose clips for divers and swimmers;diving gloves;breathing apparatus for underwater swimming;fire extinguishers;smart rings;compasses;protective helmets;smartphone cases;watch-shaped smartphones;personal digital assistants in the form of watches;timekeeping instruments (excluding clocks and watches);wearable communication devices in the form of wrist watches;compact discs, DVDs and other digital recording media;software;computers;laptop;handheld computers;mobile computers;personal computers;personal computers;computer peripherals;smart watches;connected bracelets (measuring instruments);MP3 players;phones;mobile phones;smartphones;telecommunications and communication devices;recording devices, the transmission, reproduction of sound or images;batteries;solar cells;Rechargeable batteries;electric batteries;fuel cells;glasses;Downloadable digital image files authenticated by non-fungible tokens (NFT). (2) Vehicles and means of transport;Land locomotion devices, aerial, space and maritime;Components and parts of watercraft, terrestrial, air and space;Astromobiles;Spaceships;Vessels;Aircraft;Devices, machines and devices for aeronautics;Drones;Camera drones;Military and civilian drones;Remote-controlled flying objects;Remote-controlled vehicles other than toys;Autonomous vehicles;Unmanned geodetic vehicles;Satellite launch vehicles;Submersible vehicles;Unmanned vehicles;All-terrain vehicles;Alarms and anti-theft devices for vehicles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7,
+        9,
+        12,
+        14,
+        35,
+        42
+      ],
+      "language": "fr",
+      "description": "(1) Services scientifiques et technologiques; Services de conception; Services d'analyses industrielles, de recherches industrielles et de dessin industriel; Services de contrôle de qualité et d'authentification; Stylisme (esthétique industrielle); Services de recherche et développement; Stockage de données en ligne; Recherche, conception et développement de produits; Dessin technique; Dessin industriel; Services d'infographie; Services de cartographie; Travaux d'ingénieurs; Hébergement et stockage électronique de données; Conseils en matière de technologie; Mise à disposition d'informations en matière de recherches technologiques; Mise à disposition d'informations scientifiques dans les domaines du changement climatique et du réchauffement planétaire; Décoration intérieure; Services d'architecture et d'urbanisme; Conception de costumes et de décors de spectacles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7,
+        9,
+        12,
+        14,
+        35,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Scientific and technological services;Design services;Industrial analysis services, industrial research and industrial design;Quality control and authentication services;Styling (industrial aesthetics);Research and development services;Online data storage;Research, product design and development;Technical drawing;Industrial design;Graphic design services;Mapping services;Engineering work;Hosting and electronic data storage;Technology advice;Provision of information on technological research;Provision of scientific information in the fields of climate change and global warming;Interior decoration;Architecture and urban planning services;Costume and set design for shows.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Gildo-Pierre Pallanca-Pastor",
+  "ownerNative": null,
+  "ownerCountry": "MC",
+  "representative": "DECODE LEGAL",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "7 Rue Du Gabian, Monaco, 98000",
+        "applicantAddressCountryCode": "MC",
+        "applicantAddressCountryName": "Monaco",
+        "applicantAddressLines": [
+          "7 Rue Du Gabian",
+          "Monaco, 98000"
+        ],
+        "applicantName": "Gildo-Pierre Pallanca-Pastor"
+      }
+    ],
+    "categorizedTexts": {},
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "07,09,12,14,35,42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "(1) Appareils et instruments scientifiques, de recherche, de navigation, géodésiques, photographiques, cinématographiques, audiovisuels, optiques, de pesage, de mesurage, de signalisation, de détection, d'essai, d'inspection, de secours (sauvetage) et d'enseignement; appareils et instruments pour la conduite, la distribution, la transformation, l'accumulation, le réglage ou la commande de la distribution ou de la consommation d'électricité; appareils et instruments pour l'enregistrement, la transmission, la reproduction ou le traitement de sons, d'images ou de données; combinaisons de plongée; masques de plongée; tampons d'oreilles pour la plongée; pinces nasales pour plongeurs et nageurs; gants de plongée; appareils respiratoires pour la nage subaquatique; extincteurs; bagues intelligentes; boussoles; casques de protection; coques pour smartphones; smartphones en forme de montre; assistants numériques personnels sous la forme de montres; instruments de mesure temporelle (sans inclure les horloges et les montres); dispositifs de communications portables sous la forme de montres-bracelets; disques compacts, dvd et autres supports d'enregistrement numériques; logiciels; ordinateurs; ordinateurs portables; ordinateurs de poche; ordinateurs mobiles; ordinateurs personnels; ordinateurs à porter sur soi; périphériques d'ordinateurs; montres intelligentes; bracelets connectés (instruments de mesure); lecteurs MP3; téléphones; téléphones portables; smartphones; appareils de télécommunication et de communication; appareils pour l'enregistrement, la transmission, la reproduction du son ou des images; batteries; piles solaires; piles rechargeables; piles électriques; piles à combustible; lunettes; fichiers d'images numériques téléchargeables authentifiés par des jetons non fongibles (NFT). \n(2) Véhicules et moyens de transport; Appareils de locomotion terrestres, aériens, spatiaux et maritimes; Pièces et parties constitutives de véhicules nautiques, terrestres, aériens et spatiaux; Astromobiles; Spationefs; Vaisseaux; Aéronefs; Appareils, machines et dispositifs pour l'aéronautique; Drones; Drones à caméra; Drones militaires et civils; Objets volants télécommandés; Véhicules télécommandés autres que jouets; Véhicules autonomes; Véhicules géodésiques sans pilote; Véhicules lanceurs de satellites; Véhicules submersibles; Véhicules sans pilote; Véhicules tout-terrains; Alarmes et antivols pour véhicules."
+        },
+        {
+          "intClassNumber": "07,09,12,14,35,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Scientific apparatus and instruments, of research, navigation, geodesics, photographic, cinematographic, audiovisual, optics, weighing, measuring, signaling, detection, test, inspection, rescue (rescue) and teaching;devices and instruments for driving, the distribution, the transformation, accumulation, regulating or controlling the distribution or consumption of electricity;apparatus and instruments for recording, the transmission, reproduction or processing of sounds, images or data;diving suits;diving masks;ear plugs for diving;nose clips for divers and swimmers;diving gloves;breathing apparatus for underwater swimming;fire extinguishers;smart rings;compasses;protective helmets;smartphone cases;watch-shaped smartphones;personal digital assistants in the form of watches;timekeeping instruments (excluding clocks and watches);wearable communication devices in the form of wrist watches;compact discs, DVDs and other digital recording media;software;computers;laptop;handheld computers;mobile computers;personal computers;personal computers;computer peripherals;smart watches;connected bracelets (measuring instruments);MP3 players;phones;mobile phones;smartphones;telecommunications and communication devices;recording devices, the transmission, reproduction of sound or images;batteries;solar cells;Rechargeable batteries;electric batteries;fuel cells;glasses;Downloadable digital image files authenticated by non-fungible tokens (NFT). (2) Vehicles and means of transport;Land locomotion devices, aerial, space and maritime;Components and parts of watercraft, terrestrial, air and space;Astromobiles;Spaceships;Vessels;Aircraft;Devices, machines and devices for aeronautics;Drones;Camera drones;Military and civilian drones;Remote-controlled flying objects;Remote-controlled vehicles other than toys;Autonomous vehicles;Unmanned geodetic vehicles;Satellite launch vehicles;Submersible vehicles;Unmanned vehicles;All-terrain vehicles;Alarms and anti-theft devices for vehicles."
+        },
+        {
+          "intClassNumber": "07,09,12,14,35,42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "(1) Services scientifiques et technologiques; Services de conception; Services d'analyses industrielles, de recherches industrielles et de dessin industriel; Services de contrôle de qualité et d'authentification; Stylisme (esthétique industrielle); Services de recherche et développement; Stockage de données en ligne; Recherche, conception et développement de produits; Dessin technique; Dessin industriel; Services d'infographie; Services de cartographie; Travaux d'ingénieurs; Hébergement et stockage électronique de données; Conseils en matière de technologie; Mise à disposition d'informations en matière de recherches technologiques; Mise à disposition d'informations scientifiques dans les domaines du changement climatique et du réchauffement planétaire; Décoration intérieure; Services d'architecture et d'urbanisme; Conception de costumes et de décors de spectacles."
+        },
+        {
+          "intClassNumber": "07,09,12,14,35,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Scientific and technological services;Design services;Industrial analysis services, industrial research and industrial design;Quality control and authentication services;Styling (industrial aesthetics);Research and development services;Online data storage;Research, product design and development;Technical drawing;Industrial design;Graphic design services;Mapping services;Engineering work;Hosting and electronic data storage;Technology advice;Provision of information on technological research;Provision of scientific information in the fields of climate change and global warming;Interior decoration;Architecture and urban planning services;Costume and set design for shows."
+        }
+      ]
+    },
+    "id": "c783176e-0373-4306-b460-eba4bd8099fa",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20260806",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20270206"
+      },
+      {
+        "date": "20260806",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20260226",
+        "descriptionText": "Agent Name Changed"
+      },
+      {
+        "date": "20251211",
+        "descriptionText": "287",
+        "information": "Plusieurs raisons"
+      },
+      {
+        "date": "20251125",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20251125",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20251125",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "7 Rue Du Gabian, Monaco, 98000",
+        "addressLines": [
+          "7 Rue Du Gabian",
+          "Monaco, 98000"
+        ],
+        "countryName": "Monaco",
+        "name": "Gildo-Pierre Pallanca-Pastor"
+      }
+    ],
+    "recordLastUpdated": "20260812",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "DECODE LEGAL",
+          "560 boul. Crémazie Est",
+          "3e étage",
+          "Montréal",
+          "QUEBEC H2P1E8"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "DECODE LEGAL",
+        "representativeReferenceNumber": "TM8170CA00"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251125",
+        "applicationNumber": "2439335"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "formalisationDate": "20251125",
+      "markCurrentStatus": "Searched"
+    },
+    "subjectHeadings": [
+      "VENTURI"
+    ],
+    "version": "20260812150030",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI",
+      "markVerbalElementTextFormal": "VENTURI"
+    }
+  },
+  "_uri": "/mark/ca/c783176e-0373-4306-b460-eba4bd8099fa",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.177Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

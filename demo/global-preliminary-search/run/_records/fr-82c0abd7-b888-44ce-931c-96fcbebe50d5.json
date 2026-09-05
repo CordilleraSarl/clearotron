@@ -1,0 +1,165 @@
+{
+  "uri": "/mark/fr/82c0abd7-b888-44ce-931c-96fcbebe50d5",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "82c0abd7-b888-44ce-931c-96fcbebe50d5",
+  "applicationNumber": "25 5191528",
+  "registrationNumber": "25 5191528",
+  "applicationDate": "2025-10-21",
+  "registrationDate": null,
+  "expiryDate": "2035-10-21",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-04-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Safety&Haven Corporation",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": ": Publicité ; gestion, organisation et administration des affaires commerciales ; travaux de bureau ; services de publipostage ; services d'abonnement à des journaux pour des tiers ; services d'abonnement à des services de télécommunications pour des tiers ; comptabilité ; services de photocopie ; services de bureaux de placement ; portage salarial ; service de gestion informatisée de fichiers ; optimisation du trafic pour des sites internet ; organisation d'expositions à des fins commerciales ou publicitaires ; publicité en ligne sur un réseau informatique ; location de temps publicitaire sur tout moyen de communication ; publication de textes publicitaires ; location d'espaces publicitaires ; diffusion d'annonces publicitaires ; conseils en communication (publicité) ; relations publiques ; conseils en communication (relations publiques) ; audits d'entreprises (analyses commerciales) ; services d'intermédiation commerciale",
+      "translation_language": "en",
+      "translation": "Advertising; management, organization and administration of commercial affairs; office work; direct mail services; newspaper subscription services for third parties; telecommunications subscription services for third parties; accounting; photocopying services; employment agency services; salary portage; computerized file management service; traffic optimization for websites; organization of exhibitions for commercial or advertising purposes; online advertising on a computer network; rental of advertising time on any means of communication; publication of advertising texts; rental of advertising space; dissemination of advertisements; communication consultancy (advertising); public relations; communication consultancy (public relations); business audits (business analyses); commercial intermediation services"
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "fr",
+      "description": ": Services d'assurance ; services bancaires ; services bancaires en ligne ; services de caisses de prévoyance ; émission de cartes de crédit ; services de paiement par porte-monnaie électronique ; estimations immobilières ; gestion financière ; gérance de biens immobiliers ; services de bien immobiliers ; services de financement ; analyse financière ; constitution de capitaux ; investissement de capitaux ; consultation en matière financière ; estimations financières (assurances, banques, immobilier) ; placement de fonds",
+      "translation_language": "en",
+      "translation": "Insurance services; banking services; online banking services; provident fund services; credit card issuance; electronic wallet payment services; real estate appraisals; financial management; real estate management; real estate services; financing services; financial analysis; capital formation; capital investment; financial consultancy; financial appraisals (insurance, banking, real estate); investment of funds"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": ": Expertises (travaux d'ingénieurs) ; recherches scientifiques ; recherches technologiques ; développement de logiciels ; recherche et développement de nouveaux produits pour des tiers ; conduite d'études de projets techniques ; architecture ; décoration intérieure ; élaboration (conception) de logiciels ; installation de logiciels ; maintenance de logiciels ; mise à jour de logiciels ; location de logiciels ; fourniture de logiciels non téléchargeables en ligne ; programmation informatique ; analyse de systèmes informatiques ; conception de systèmes informatiques ; services de conseillers en matière de conception et de développement de matériel informatique ; numérisation de documents ; logiciels en tant que services (SaaS) ; mise à disposition de systèmes informatiques virtuels par l'informatique en nuage ; services d'assistance en technologie de l'information (TI) (dépannage de logiciels) ; hébergement de serveurs ; contrôle technique de véhicules automobiles ; services de conception d'art graphique ; stylisme (esthétique industrielle) ; authentification d'oeuvres d'art ; audits en matière d'énergie ; stockage électronique de données",
+      "translation_language": "en",
+      "translation": "Expertise (engineering work); scientific research; technological research; software development; research and development of new products for third parties; conducting technical project studies; architecture; interior design; software development (design); software installation; software maintenance; software updating; software rental; provision of non-downloadable software online; computer programming; computer systems analysis; computer systems design; hardware design and development consultancy services; document scanning; software as a service (SaaS); provision of virtual computer systems via cloud computing; information technology (IT) support services (software troubleshooting); server hosting; motor vehicle technical inspection; graphic art design services; styling (industrial aesthetics); art authentication; energy audits; electronic data storage"
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "fr",
+      "description": ": Services juridiques ; médiation ; services de sécurité pour la protection des biens matériels et des individus ; services d'agences matrimoniales ; célébration de cérémonies religieuses ; établissement d'horoscopes ; services de pompes funèbres ; services de crémation ; services d'agences de surveillance nocturne ; surveillance des alarmes anti-intrusion ; services de conseillers en matière de sécurité physique ; ouverture de serrures ; location de vêtements ; services d'agences de détectives ; recherches juridiques ; conseils en propriété intellectuelle ; location de noms de domaine sur Internet ; services de réseautage social en ligne ; garde d'enfants à domicile.",
+      "translation_language": "en",
+      "translation": "Legal services; mediation; security services for the protection of material property and individuals; marriage agency services; celebration of religious ceremonies; establishment of horoscopes; funeral services; cremation services; night surveillance agency services; monitoring of intrusion alarms; physical security consultant services; lock opening; clothing rental; detective agency services; legal research; intellectual property consultancy; rental of Internet domain names; online social networking services; home childcare."
+    }
+  ],
+  "owner": "AXEL TOGBE",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "211 Rue de la Carmagnole, 77550 Moissy-Cramayel",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "AXEL TOGBE"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising; management, organization and administration of commercial affairs; office work; direct mail services; newspaper subscription services for third parties; telecommunications subscription services for third parties; accounting; photocopying services; employment agency services; salary portage; computerized file management service; traffic optimization for websites; organization of exhibitions for commercial or advertising purposes; online advertising on a computer network; rental of advertising time on any means of communication; publication of advertising texts; rental of advertising space; dissemination of advertisements; communication consultancy (advertising); public relations; communication consultancy (public relations); business audits (business analyses); commercial intermediation services",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Publicité ; gestion, organisation et administration des affaires commerciales ; travaux de bureau ; services de publipostage ; services d'abonnement à des journaux pour des tiers ; services d'abonnement à des services de télécommunications pour des tiers ; comptabilité ; services de photocopie ; services de bureaux de placement ; portage salarial ; service de gestion informatisée de fichiers ; optimisation du trafic pour des sites internet ; organisation d'expositions à des fins commerciales ou publicitaires ; publicité en ligne sur un réseau informatique ; location de temps publicitaire sur tout moyen de communication ; publication de textes publicitaires ; location d'espaces publicitaires ; diffusion d'annonces publicitaires ; conseils en communication (publicité) ; relations publiques ; conseils en communication (relations publiques) ; audits d'entreprises (analyses commerciales) ; services d'intermédiation commerciale"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Insurance services; banking services; online banking services; provident fund services; credit card issuance; electronic wallet payment services; real estate appraisals; financial management; real estate management; real estate services; financing services; financial analysis; capital formation; capital investment; financial consultancy; financial appraisals (insurance, banking, real estate); investment of funds",
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Services d'assurance ; services bancaires ; services bancaires en ligne ; services de caisses de prévoyance ; émission de cartes de crédit ; services de paiement par porte-monnaie électronique ; estimations immobilières ; gestion financière ; gérance de biens immobiliers ; services de bien immobiliers ; services de financement ; analyse financière ; constitution de capitaux ; investissement de capitaux ; consultation en matière financière ; estimations financières (assurances, banques, immobilier) ; placement de fonds"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Expertise (engineering work); scientific research; technological research; software development; research and development of new products for third parties; conducting technical project studies; architecture; interior design; software development (design); software installation; software maintenance; software updating; software rental; provision of non-downloadable software online; computer programming; computer systems analysis; computer systems design; hardware design and development consultancy services; document scanning; software as a service (SaaS); provision of virtual computer systems via cloud computing; information technology (IT) support services (software troubleshooting); server hosting; motor vehicle technical inspection; graphic art design services; styling (industrial aesthetics); art authentication; energy audits; electronic data storage",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Expertises (travaux d'ingénieurs) ; recherches scientifiques ; recherches technologiques ; développement de logiciels ; recherche et développement de nouveaux produits pour des tiers ; conduite d'études de projets techniques ; architecture ; décoration intérieure ; élaboration (conception) de logiciels ; installation de logiciels ; maintenance de logiciels ; mise à jour de logiciels ; location de logiciels ; fourniture de logiciels non téléchargeables en ligne ; programmation informatique ; analyse de systèmes informatiques ; conception de systèmes informatiques ; services de conseillers en matière de conception et de développement de matériel informatique ; numérisation de documents ; logiciels en tant que services (SaaS) ; mise à disposition de systèmes informatiques virtuels par l'informatique en nuage ; services d'assistance en technologie de l'information (TI) (dépannage de logiciels) ; hébergement de serveurs ; contrôle technique de véhicules automobiles ; services de conception d'art graphique ; stylisme (esthétique industrielle) ; authentification d'oeuvres d'art ; audits en matière d'énergie ; stockage électronique de données"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Legal services; mediation; security services for the protection of material property and individuals; marriage agency services; celebration of religious ceremonies; establishment of horoscopes; funeral services; cremation services; night surveillance agency services; monitoring of intrusion alarms; physical security consultant services; lock opening; clothing rental; detective agency services; legal research; intellectual property consultancy; rental of Internet domain names; online social networking services; home childcare.",
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Services juridiques ; médiation ; services de sécurité pour la protection des biens matériels et des individus ; services d'agences matrimoniales ; célébration de cérémonies religieuses ; établissement d'horoscopes ; services de pompes funèbres ; services de crémation ; services d'agences de surveillance nocturne ; surveillance des alarmes anti-intrusion ; services de conseillers en matière de sécurité physique ; ouverture de serrures ; location de vêtements ; services d'agences de détectives ; recherches juridiques ; conseils en propriété intellectuelle ; location de noms de domaine sur Internet ; services de réseautage social en ligne ; garde d'enfants à domicile."
+        }
+      ]
+    },
+    "id": "82c0abd7-b888-44ce-931c-96fcbebe50d5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "15"
+      }
+    ],
+    "recordLastUpdated": "20260414",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251021",
+        "applicationNumber": "25 5191528"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20351021",
+      "lastPublicationDate": "20260410",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "25 5191528"
+      }
+    },
+    "version": "20260414020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Safety&Haven Corporation"
+    }
+  },
+  "_uri": "/mark/fr/82c0abd7-b888-44ce-931c-96fcbebe50d5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.744Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

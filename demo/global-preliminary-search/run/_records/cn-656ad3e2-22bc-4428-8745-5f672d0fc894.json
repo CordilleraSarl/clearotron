@@ -1,0 +1,141 @@
+{
+  "uri": "/mark/cn/656ad3e2-22bc-4428-8745-5f672d0fc894",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "656ad3e2-22bc-4428-8745-5f672d0fc894",
+  "applicationNumber": "70169855",
+  "registrationNumber": "70169855",
+  "applicationDate": "2023-03-14",
+  "registrationDate": "2023-09-28",
+  "expiryDate": "2033-09-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-06-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "麒日",
+  "markTransliteration": "QI RI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "电池充电装置;电站自动化装置;高压防爆配电装置;工业遥控操作用电气设备;机动车辆用充电装置;可充电设备用充电装置;配电控制台(电);配电盘(电);配电箱(电);整流用电力装置",
+      "translation_language": "en",
+      "translation": "Battery charging devices; power station automation devices; high-voltage explosion-proof distribution devices; electrical equipment for industrial remote control operations; charging devices for motor vehicles; charging devices for rechargeable equipment; power distribution consoles (electricity); switchboards (electricity); Box (electricity); power device for rectification"
+    }
+  ],
+  "owner": "Shanghai Haori Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "上海市宝山区富联三路99号14幢A区1019室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shanghai Haori Technology Co., Ltd.",
+        "applicantNativeName": "上海麒日科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Battery charging devices; power station automation devices; high-voltage explosion-proof distribution devices; electrical equipment for industrial remote control operations; charging devices for motor vehicles; charging devices for rechargeable equipment; power distribution consoles (electricity); switchboards (electricity); Box (electricity); power device for rectification",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "电池充电装置;电站自动化装置;高压防爆配电装置;工业遥控操作用电气设备;机动车辆用充电装置;可充电设备用充电装置;配电控制台(电);配电盘(电);配电箱(电);整流用电力装置"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Electrical controlling apparatus and equipments",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0914",
+          "subNatGoodsServicesDescription": "Electrical controlling apparatus and equipments"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "656ad3e2-22bc-4428-8745-5f672d0fc894",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1845"
+      }
+    ],
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "国铭(北京)国际知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230314",
+        "applicationNumber": "70169855"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330927",
+      "lastPublicationDate": "20230627",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20230928",
+        "registrationNumber": "70169855"
+      }
+    },
+    "version": "20251005031722",
+    "wordMarkSpecification": {
+      "markTransliteration": "QI RI",
+      "markVerbalElementText": "麒日"
+    }
+  },
+  "_uri": "/mark/cn/656ad3e2-22bc-4428-8745-5f672d0fc894",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:38.359Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

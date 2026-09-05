@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/jp/f9da3aa3-9355-4e42-ac42-aa198ba402de",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "f9da3aa3-9355-4e42-ac42-aa198ba402de",
+  "applicationNumber": "2010-038154",
+  "registrationNumber": "5365872",
+  "applicationDate": "2010-05-17",
+  "registrationDate": "2010-11-05",
+  "expiryDate": "2030-11-05",
+  "renewalDate": null,
+  "lastPublicationDate": "2010-12-07",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＫＩＮＥＴＩＳ",
+  "markTransliteration": "KINETISU",
+  "markTranslation": "KINETIS",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "半導体，集積回路，マイクロコントローラ，その他の電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Semiconductors, integrated circuits, microcontrollers, other electronic applied equipment and parts thereof"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "IWASE YOSHIKAZU",
+  "priorities": [
+    {
+      "priorityDate": "20100429"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductors, integrated circuits, microcontrollers, other electronic applied equipment and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "半導体，集積回路，マイクロコントローラ，その他の電子応用機械器具及びその部品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        }
+      ]
+    },
+    "id": "f9da3aa3-9355-4e42-ac42-aa198ba402de",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20100429"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "IWASE YOSHIKAZU",
+        "representativeNativeName": "岩瀬　吉和"
+      },
+      {
+        "representativeName": "SHIROYAMA YASUFUMI",
+        "representativeNativeName": "城山　康文"
+      },
+      {
+        "representativeName": "KITAGUCHI TAKAHIRO",
+        "representativeNativeName": "北口　貴大"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20100517",
+        "applicationNumber": "2010-038154"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20301105",
+      "lastPublicationDate": "20101207",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20101105",
+        "registrationNumber": "5365872"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "KINETIS",
+      "markTransliteration": "KINETISU",
+      "markVerbalElementText": "ＫＩＮＥＴＩＳ"
+    }
+  },
+  "_uri": "/mark/jp/f9da3aa3-9355-4e42-ac42-aa198ba402de",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.461Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

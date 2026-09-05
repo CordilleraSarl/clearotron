@@ -1,0 +1,115 @@
+{
+  "uri": "/mark/ae/b1f81cfb-dac5-43d3-a356-cf68b8d15ee9",
+  "provider": "clarivate",
+  "office": "ae",
+  "guid": "b1f81cfb-dac5-43d3-a356-cf68b8d15ee9",
+  "applicationNumber": "44575",
+  "registrationNumber": "36837",
+  "applicationDate": "2001-10-06",
+  "registrationDate": "2003-04-05",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR HOUSE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ar",
+      "description": "الخدمات الفندقية و خدمات المطاعم و خدمات الكافتريات و مطاعم الوجبات الخفيفة خدمات الصالونات تصفيف الشعر و صالونات التجميل و خدمات مراكز التدليك خدمات مراكز الحضانة خدمات الحجز في الفنادق و استئجار شقق و بيوت السكن المؤقت",
+      "translation_language": "en",
+      "translation": "Hotel services and catering services and cafeterias and snack bars hairdressing salons and beauty salons and massage centers Services Services Services Incubation Centers reservation services in hotels and renting apartments and houses temporary housing"
+    }
+  ],
+  "owner": null,
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "10رو فير سينجيتوريكس , باريس 75014",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantNativeName": "ميريديان اس ايه اس"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Hotel services and catering services and cafeterias and snack bars hairdressing salons and beauty salons and massage centers Services Services Services Incubation Centers reservation services in hotels and renting apartments and houses temporary housing",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ar",
+          "intGoodsServicesDescription": "الخدمات الفندقية و خدمات المطاعم و خدمات الكافتريات و مطاعم الوجبات الخفيفة خدمات الصالونات تصفيف الشعر و صالونات التجميل و خدمات مراكز التدليك خدمات مراكز الحضانة خدمات الحجز في الفنادق و استئجار شقق و بيوت السكن المؤقت"
+        }
+      ]
+    },
+    "id": "b1f81cfb-dac5-43d3-a356-cf68b8d15ee9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "AE",
+    "registrationOfficeName": "United Arab Emirates",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "UAE",
+        "representativeAddressCountryName": "United Arab Emirates",
+        "representativeNativeAddress": "ص ب:29180 الشارقه",
+        "representativeNativeName": "الامارات لخدمات الملكيه الفكريه"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20011006",
+        "applicationNumber": "44575"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20030405",
+        "registrationNumber": "36837"
+      }
+    },
+    "version": "20230427150246",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR HOUSE"
+    }
+  },
+  "_uri": "/mark/ae/b1f81cfb-dac5-43d3-a356-cf68b8d15ee9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,301 @@
+{
+  "uri": "/mark/us/344e2bac-5914-4fca-b277-2d3e351e3b9b",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "344e2bac-5914-4fca-b277-2d3e351e3b9b",
+  "applicationNumber": "99409649",
+  "registrationNumber": "8260117",
+  "applicationDate": "2025-09-24",
+  "registrationDate": "2026-05-19",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2026-03-31"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Downloadable computer software and mobile applications for family organization, namely, for managing shared calendars, tasks, chores, meal planning, shopping lists, and household communication, integrating artificial intelligence assistants for voice and text interaction; Touch-enabled electronic computer display screens embedded with software for family organization, namely, for managing shared calendars, tasks, chores, meal planning, shopping lists, and household communication, integrating artificial intelligence assistants for voice and text interaction",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Domus Next Inc.",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "WENZHU YU",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "651 N. Broad St., Suite 308, Middletown, DE, 19709, USAM",
+        "applicantAddressCity": "Middletown",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "19709",
+        "applicantAddressStateName": "DELAWARE",
+        "applicantAddressStreet": "651 N. Broad St., Suite 308",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Domus Next Inc."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Downloadable computer software and mobile applications for family organization, namely, for managing shared calendars, tasks, chores, meal planning, shopping lists, and household communication, integrating artificial intelligence assistants for voice and text interaction; Touch-enabled electronic computer display screens embedded with software for family organization, namely, for managing shared calendars, tasks, chores, meal planning, shopping lists, and household communication, integrating artificial intelligence assistants for voice and text interaction"
+        }
+      ]
+    },
+    "id": "344e2bac-5914-4fca-b277-2d3e351e3b9b",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260519",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20260519",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20260519",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20260331",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20260331",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20260325",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20260305",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20260227",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20260226",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20260226",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20260224",
+        "descriptionText": "USE AMENDMENT ACCEPTED"
+      },
+      {
+        "date": "20260224",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20260224",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20260224",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20260217",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20260209",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20251125",
+        "descriptionText": "TEAS AMENDMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20251125",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20251125",
+        "descriptionText": "AMENDMENT TO USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20250924",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20250924",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "651 N. Broad St., Suite 308, Middletown, DE, 19709, USAM",
+        "city": "Middletown",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Domus Next Inc.",
+        "postalCode": "19709",
+        "stateName": "DELAWARE",
+        "street": "651 N. Broad St., Suite 308"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "651 N. Broad St., Suite 308, Middletown, DE, 19709, USAM",
+        "city": "Middletown",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Domus Next Inc.",
+        "postalCode": "19709",
+        "stateName": "DELAWARE",
+        "street": "651 N. Broad St., Suite 308"
+      },
+      {
+        "address": "651 N. Broad St., Suite 308, Middletown, DE, 19709, USAM",
+        "city": "Middletown",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Domus Next Inc.",
+        "postalCode": "19709",
+        "stateName": "DELAWARE",
+        "street": "651 N. Broad St., Suite 308"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "651 N. Broad St., Suite 308, Middletown, DE, 19709, USAM",
+        "city": "Middletown",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Domus Next Inc.",
+        "postalCode": "19709",
+        "stateName": "DELAWARE",
+        "street": "651 N. Broad St., Suite 308"
+      }
+    ],
+    "recordLastUpdated": "20260521",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Beijing, 100600, CHINA",
+        "representativeCorrespondentAddressLines": [
+          "Beijing, 100600",
+          "CHINA"
+        ],
+        "representativeCorrespondentName": "WENZHU YU ANJIE BROAD LAW FIRM, No. 19 Dongfangdonglu, Chaoyang District"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Beijing, 100600, CHINA",
+        "representativeAddressLines": [
+          "Beijing, 100600",
+          "CHINA"
+        ],
+        "representativeName": "WENZHU YU"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250924",
+        "applicationNumber": "99409649"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20251105"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20251105"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20260519",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20260331"
+      ],
+      "registration": {
+        "registrationDate": "20260519",
+        "registrationNumber": "8260117"
+      }
+    },
+    "version": "20260521053438",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NORI"
+    }
+  },
+  "_uri": "/mark/us/344e2bac-5914-4fca-b277-2d3e351e3b9b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.691Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

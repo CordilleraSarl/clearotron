@@ -1,0 +1,379 @@
+{
+  "uri": "/mark/us/d7bb1c5b-ef6c-46f4-a93e-5df47424d994",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "d7bb1c5b-ef6c-46f4-a93e-5df47424d994",
+  "applicationNumber": "79263377",
+  "registrationNumber": "6104121",
+  "applicationDate": "2019-05-15",
+  "registrationDate": "2020-07-21",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2020-05-05"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "AVENCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Downloadable software improving performance and cost optimization of industrial companies; recorded computer programs improving performance and cost optimization of industrial companies; downloadable computer software applications improving performance and cost optimization of industrial companies; downloadable computer software platforms improving performance and cost optimization of industrial companies",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Business management assistance; business management and organization consultancy; business management consultancy; professional business consultancy; cost price analysis; price comparison services; business management assistance to industrial companies; business advisory services; business appraisals; business project management services; computer-assisted business information and research services, namely, research of business information in computer files for others; market study; market research; commercial business appraisal; business efficiency expert services; financial auditing, namely, commercial analyses; compilation of information into computer databases; database management; collection and analysis of quality metric data for industrial companies for business purposes; business organization consultancy, namely, improving performance and cost optimization of companies",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Design and development of software; computer system design; research and development of new software for third parties; design, installation, maintenance, updating, rental of computer software; programming for computers; conversion of computer programs and data, other than physical conversion; conversion of data or documents from physical to electronic media; software as a service (SaaS) services featuring software improving performance and cost optimization of industrial companies; electronic data storage; computer project management services; quality control for others",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "AVENCORE",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "61-63 avenue des Champs-Élysées, PARIS, F-75008, FRAN",
+        "applicantAddressCity": "PARIS",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantAddressPostalCode": "F-75008",
+        "applicantAddressStreet": "61-63 avenue des Champs-Élysées",
+        "applicantJurisdictionOfIncorporation": "FRANCE",
+        "applicantName": "AVENCORE"
+      }
+    ],
+    "associatedMarks": [
+      {
+        "registrationNumbers": [
+          "3822079"
+        ]
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Downloadable software improving performance and cost optimization of industrial companies; recorded computer programs improving performance and cost optimization of industrial companies; downloadable computer software applications improving performance and cost optimization of industrial companies; downloadable computer software platforms improving performance and cost optimization of industrial companies"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Business management assistance; business management and organization consultancy; business management consultancy; professional business consultancy; cost price analysis; price comparison services; business management assistance to industrial companies; business advisory services; business appraisals; business project management services; computer-assisted business information and research services, namely, research of business information in computer files for others; market study; market research; commercial business appraisal; business efficiency expert services; financial auditing, namely, commercial analyses; compilation of information into computer databases; database management; collection and analysis of quality metric data for industrial companies for business purposes; business organization consultancy, namely, improving performance and cost optimization of companies"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Design and development of software; computer system design; research and development of new software for third parties; design, installation, maintenance, updating, rental of computer software; programming for computers; conversion of computer programs and data, other than physical conversion; conversion of data or documents from physical to electronic media; software as a service (SaaS) services featuring software improving performance and cost optimization of industrial companies; electronic data storage; computer project management services; quality control for others"
+        }
+      ]
+    },
+    "id": "d7bb1c5b-ef6c-46f4-a93e-5df47424d994",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1478028",
+        "markCurrentStatus": "REQUEST FOR EXTENSION OF PROTECTION ESTABLISHED",
+        "markCurrentStatusDate": "20190718",
+        "priorityClaimDate": "20181205",
+        "protectionGrantedDate": "20210118",
+        "publicationDate": "20190718",
+        "registrationDate": "20190515",
+        "renewalDate": "20290515"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20251119",
+        "descriptionText": "REGISTERED - SEC. 71 ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20251119",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 71 & 15 - E-MAILED"
+      },
+      {
+        "date": "20251117",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20250722",
+        "descriptionText": "TEAS SECTION 71 & 15 RECEIVED"
+      },
+      {
+        "date": "20250721",
+        "descriptionText": "COURTESY REMINDER - SEC. 71 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20201205",
+        "descriptionText": "FINAL DECISION TRANSACTION PROCESSED BY IB"
+      },
+      {
+        "date": "20201113",
+        "descriptionText": "FINAL DISPOSITION NOTICE SENT TO IB"
+      },
+      {
+        "date": "20201112",
+        "descriptionText": "FINAL DISPOSITION PROCESSED"
+      },
+      {
+        "date": "20201021",
+        "descriptionText": "FINAL DISPOSITION NOTICE CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20200721",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20200505",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20200505",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20200415",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20200330",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20200324",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20200227",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20200227",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20200227",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20190913",
+        "descriptionText": "REFUSAL PROCESSED BY IB"
+      },
+      {
+        "date": "20190829",
+        "descriptionText": "REFUSAL PROCESSED BY MPU"
+      },
+      {
+        "date": "20190829",
+        "descriptionText": "NON-FINAL ACTION MAILED - REFUSAL SENT TO IB"
+      },
+      {
+        "date": "20190807",
+        "descriptionText": "NON-FINAL ACTION (IB REFUSAL) PREPARED FOR REVIEW"
+      },
+      {
+        "date": "20190806",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20190731",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20190724",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      },
+      {
+        "date": "20190720",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20190718",
+        "descriptionText": "SN ASSIGNED FOR SECT 66A APPL FROM IB"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "61-63 avenue des Champs-Élysées, FRAN",
+        "countryCode": "FR",
+        "countryName": "France",
+        "jurisdictionOfIncorporation": "FRANCE",
+        "name": "AVENCORE",
+        "secondaryAddressUnit": "F-75008 PARIS",
+        "street": "61-63 avenue des Champs-Élysées"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "61-63 avenue des Champs-Élysées, PARIS, F-75008, FRAN",
+        "city": "PARIS",
+        "countryCode": "FR",
+        "countryName": "France",
+        "jurisdictionOfIncorporation": "FRANCE",
+        "name": "AVENCORE",
+        "postalCode": "F-75008",
+        "street": "61-63 avenue des Champs-Élysées"
+      },
+      {
+        "address": "61-63 avenue des Champs-Élysées, PARIS, F-75008, FRAN",
+        "city": "PARIS",
+        "countryCode": "FR",
+        "countryName": "France",
+        "jurisdictionOfIncorporation": "FRANCE",
+        "name": "AVENCORE",
+        "postalCode": "F-75008",
+        "street": "61-63 avenue des Champs-Élysées"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "61-63 avenue des Champs-Élysées, FRAN",
+        "countryCode": "FR",
+        "countryName": "France",
+        "jurisdictionOfIncorporation": "FRANCE",
+        "name": "AVENCORE",
+        "secondaryAddressUnit": "F-75008 PARIS",
+        "street": "61-63 avenue des Champs-Élysées"
+      }
+    ],
+    "recordLastUpdated": "20251121",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "79071705",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "AVENCORE",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "79071705",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "AVENCORE",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "79071705",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "AVENCORE",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "79071705",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "AVENCORE",
+            "refusalStatus": "Cited"
+          }
+        ],
+        "refusalStatus": "Refused"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Houston, TX 77002, United States",
+        "representativeCorrespondentAddressLines": [
+          "Houston, TX 77002",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Michael F. Swartz Egbert, McDaniel & Swartz, PLLC, 1001 Texas Ave., Suite 1250"
+      }
+    ],
+    "representatives": [
+      {
+        "domesticRepresentativeName": "Michael F. Swartz",
+        "representativeAddress": "Houston, TX 77002, United States",
+        "representativeAddressLines": [
+          "Houston, TX 77002",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190515",
+        "applicationNumber": "79263377"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatus": "SECTION 71 & 15 - ACCEPTED AND ACKNOWLEDGED",
+        "markOfficialStatusCode": "739",
+        "markOfficialStatusDate": "20251119",
+        "markOfficialStatusEvents": [
+          "Section 66(a) (Madrid Protocol) - Filed",
+          "Section 66(a) (Madrid Protocol) - Current",
+          "International Priority Claimed",
+          "Notice of First Refusal"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20200505"
+      ],
+      "registration": {
+        "registrationDate": "20200721",
+        "registrationNumber": "6104121"
+      }
+    },
+    "version": "20251121064001",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENCORE"
+    }
+  },
+  "_uri": "/mark/us/d7bb1c5b-ef6c-46f4-a93e-5df47424d994",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.729Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

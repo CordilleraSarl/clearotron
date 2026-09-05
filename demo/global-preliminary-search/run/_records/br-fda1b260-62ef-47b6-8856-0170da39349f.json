@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/br/fda1b260-62ef-47b6-8856-0170da39349f",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "fda1b260-62ef-47b6-8856-0170da39349f",
+  "applicationNumber": "820197432",
+  "registrationNumber": "820197432",
+  "applicationDate": "1997-09-12",
+  "registrationDate": "2019-02-19",
+  "expiryDate": "2029-02-19",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "DORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    5,
+    29,
+    30,
+    31,
+    32,
+    33,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        5,
+        29,
+        30,
+        31,
+        32,
+        33,
+        42
+      ],
+      "language": "pt",
+      "description": "Biscoitos e bolachas.",
+      "translation_language": "en",
+      "translation": "COOKIES AND CRACKERS."
+    }
+  ],
+  "owner": "DORI ALIMENTOS S. A",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "TINOCO, SOARES & FILHO S/C LTDA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "DORI ALIMENTOS S. A"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "COOKIES AND CRACKERS.",
+          "intClassNumber": "05,29,30,31,32,33,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Biscoitos e bolachas."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "32.10"
+        }
+      ]
+    },
+    "id": "fda1b260-62ef-47b6-8856-0170da39349f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.01.01",
+      "27.05.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "TINOCO, SOARES & FILHO S/C LTDA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19970912",
+        "applicationNumber": "820197432"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290219",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20190219",
+        "registrationNumber": "820197432"
+      }
+    },
+    "version": "20250630200523",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DORI"
+    }
+  },
+  "_uri": "/mark/br/fda1b260-62ef-47b6-8856-0170da39349f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.998Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

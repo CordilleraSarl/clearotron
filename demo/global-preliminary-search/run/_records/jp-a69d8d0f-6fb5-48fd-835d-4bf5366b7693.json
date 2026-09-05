@@ -1,0 +1,186 @@
+{
+  "uri": "/mark/jp/a69d8d0f-6fb5-48fd-835d-4bf5366b7693",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "a69d8d0f-6fb5-48fd-835d-4bf5366b7693",
+  "applicationNumber": "S59-051487",
+  "registrationNumber": "1972898",
+  "applicationDate": "1984-05-22",
+  "registrationDate": "1987-07-23",
+  "expiryDate": "2007-07-23",
+  "renewalDate": null,
+  "lastPublicationDate": "1986-11-26",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＶＥＮＴＵＲＩ　ベンチュリ－",
+  "markTransliteration": "BENCHURII",
+  "markTranslation": "VENTURI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    8,
+    9,
+    14,
+    15,
+    16,
+    18,
+    19,
+    20,
+    21,
+    22,
+    24,
+    25,
+    26,
+    27,
+    28,
+    31
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        8,
+        9,
+        14,
+        15,
+        16,
+        18,
+        19,
+        20,
+        21,
+        22,
+        24,
+        25,
+        26,
+        27,
+        28,
+        31
+      ],
+      "language": null,
+      "description": "おもちや、人形、娯楽用具、運動具、楽器、演奏補助品、蓄音機、レコ－ド、これらの部品及び附属品",
+      "translation_language": "en",
+      "translation": "Toy, dolls, recreational equipment, exercise equipment, musical instruments, supplementary aids for music, gramophones, records, these parts and accessories"
+    }
+  ],
+  "owner": "MITSUI & CO., LTD.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19840522"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CHIYODA TOKYO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "MITSUI & CO., LTD.",
+        "applicantNativeAddress": "東京都千代田区大手町一丁目２番１号",
+        "applicantNativeName": "三　井　物　産　株　式　会　社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Toy, dolls, recreational equipment, exercise equipment, musical instruments, supplementary aids for music, gramophones, records, these parts and accessories",
+          "intClassNumber": "06,08,09,14,15,16,18,19,20,21,22,24,25,26,27,28,31",
+          "intGoodsServicesDescription": "おもちや、人形、娯楽用具、運動具、楽器、演奏補助品、蓄音機、レコ－ド、これらの部品及び附属品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "24A01"
+        },
+        {
+          "natClassNumber": "24A02"
+        },
+        {
+          "natClassNumber": "24B01"
+        },
+        {
+          "natClassNumber": "24B02"
+        },
+        {
+          "natClassNumber": "24C01"
+        },
+        {
+          "natClassNumber": "24C02"
+        },
+        {
+          "natClassNumber": "24C03"
+        },
+        {
+          "natClassNumber": "24C04"
+        },
+        {
+          "natClassNumber": "24E01"
+        },
+        {
+          "natClassNumber": "24E02"
+        }
+      ]
+    },
+    "id": "a69d8d0f-6fb5-48fd-835d-4bf5366b7693",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19840522"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19840522",
+        "applicationNumber": "S59-051487"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20070723",
+      "lastPublicationDate": "19861126",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19870723",
+        "registrationNumber": "1972898"
+      }
+    },
+    "version": "20240320151001",
+    "wordMarkSpecification": {
+      "markTranslation": "VENTURI",
+      "markTransliteration": "BENCHURII",
+      "markVerbalElementText": "ＶＥＮＴＵＲＩ　ベンチュリ－"
+    }
+  },
+  "_uri": "/mark/jp/a69d8d0f-6fb5-48fd-835d-4bf5366b7693",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.177Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

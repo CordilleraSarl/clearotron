@@ -1,0 +1,177 @@
+{
+  "uri": "/mark/de/25b4a3be-fa65-40d3-9760-e3012a7b2a14",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "25b4a3be-fa65-40d3-9760-e3012a7b2a14",
+  "applicationNumber": "302024003476.1",
+  "registrationNumber": "302024003476",
+  "applicationDate": "2024-03-21",
+  "registrationDate": "2024-05-03",
+  "expiryDate": "2034-03-21",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-06-07",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENQS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Apparate für wissenschaftliche Forschung und Labor, Unterrichtsapparate und Simulatoren; Aufgezeichnete oder herunterladbare Datensätze; Aus dem Internet herunterladbare Software; Herunterladbare Software; Herunterladbare Software-Anwendungen; Herunterladbare und aufgezeichnete Daten; Kommunikationsausrüstung; Mathematische Instrumente; Quantencomputer; Satelliten; Sensoren, Detektoren sowie Überwachungsinstrumente und -apparate; Simulationsapparate; Simulationsgeräte; Simulationsinstrumente; Simulationssoftware; Simulationssoftware [Schulung]; Simulationssoftware zur Verwendung in digitalen Computern; Simulatoren; Software für erweiterte Realität für die Simulation; Software für Satellitennavigationssysteme; Software für virtuelle und erweiterte Realität; Virtual Reality [VR]-Bewegungssimulatoren; Virtual-Reality-Software für Simulationszwecke; Vorstehende Waren der",
+      "translation_language": "en",
+      "translation": "Scientific research and laboratory apparatus, teaching apparatus and simulators; Recorded or downloadable data sets; Software downloadable from the Internet; Downloadable software; Downloadable software applications; Downloadable and recorded data; Communications equipment; Mathematical instruments; Quantum computers; Satellites; Sensors, detectors and monitoring instruments and apparatus; Simulation apparatus; Simulation devices; Simulation instruments; Simulation software; Simulation software [training]; Simulation software for use in digital computers; Simulators; Augmented reality software for simulation; Software for satellite navigation systems; Virtual and augmented reality software; Virtual reality [VR] motion simulators; Virtual reality software for simulation purposes; The aforesaid goods in"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "insbesondere für die Simulation der Bewegung von Objekten im dreidimensionalen Raum",
+      "translation_language": "en",
+      "translation": "in particular for simulating the movement of objects in three-dimensional space"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Aktualisierung von Software für Kommunikationssysteme; Beratungsleistungen zu Software für Kommunikationssysteme; Bereitstellung von nicht herunterladbarer Online-Computersoftware; Bereitstellung von virtuellen Computersystemen durch Cloud-Computing; Design von Prototypen; Dienstleistungen von Ingenieuren; Durchführung technischer Machbarkeitsstudien; Entwicklung von Computerprogrammen für die Simulation von Laborversuchen; Entwicklung von Programmen zur Simulation von Versuchen oder Versuchsreihen in einem virtuellen optischen Labor; Entwurf mathematischer Modelle; Entwurf von mathematischen Modellen; Ermöglichung der zeitweiligen Nutzung von nicht herunterladbarer Online-Software zum Übertragen von Informationen; Erstellen von Programmen für computergestützte Machbarkeitsstudien; Erstellung technischer Machbarkeitsstudien; Forschung auf dem Gebiet der Quantenpräzisionsmessung; Forschung auf dem Gebiet der Quantensimulation; Forschung im Bereich der Kommunikationstechnologie; Forschung im Bereich der Quanten-Kommunikationstechnologie; Ingenieurdienstleistungen bezüglich des Entwurfs von Kommunikationssystemen; Ingenieurleistungen zur Kommunikationstechnologie; IT-Dienstleistungen; Konzeption von Software für die virtuelle Realität; Mathematische Forschungsdienstleistungen; Naturwissenschaftliche Dienstleistungen; Online-Bereitstellung von nicht herunterladbarer Software; Pflege von Software für Kommunikationssysteme; Programmierung von Datenverarbeitungs- und Kommunikationssystemen; Prüfung, Authentifizierung und Qualitätskontrolle; Wartung und Aktualisierung von Software für Kommunikationssysteme; Wissenschaftliche Forschung in Bezug auf Quantencomputing; Wissenschaftliche und technologische Dienstleistungen; Zurverfügungstellung von nicht herunterladbarer Computersoftware zur zeitweiligen Nutzung; Vorstehende Dienstleistungen der",
+      "translation_language": "en",
+      "translation": "Updating software for communication systems; Consultancy services relating to software for communication systems; Provision of non-downloadable online computer software; Provision of virtual computer systems through cloud computing; Design of prototypes; Engineering services; Conducting technical feasibility studies; Development of computer programs for simulating laboratory experiments; Development of programs for simulating experiments or series of experiments in a virtual optical laboratory; Design of mathematical models; Design of mathematical models; Enabling the temporary use of non-downloadable online software for transferring information; Creating programs for computer-aided feasibility studies; Creating technical feasibility studies; Research in the field of quantum precision measurement; Research in the field of quantum simulation; Research in the field of communications technology; Research in the field of quantum communications technology; Engineering services related to the design of communications systems; Engineering services related to communications technology; IT services; Design of software for virtual reality; Mathematical research services; Scientific services; Online provision of non-downloadable software; Maintenance of software for communications systems; Programming of data processing and communications systems; Testing, authentication and quality control; Maintenance and updating of software for communications systems; Scientific research related to quantum computing; Scientific and technological services; Providing of non-downloadable computer software for temporary use; the aforesaid services in"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "insbesondere für die Erstellung von Simulationen der Bewegung von Objekten im dreidimensionalen Raum",
+      "translation_language": "en",
+      "translation": "in particular for creating simulations of the movement of objects in three-dimensional space"
+    }
+  ],
+  "owner": "Deutsches Zentrum für Luft- und Raumfahrt e.V.",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "Burauer, Stefan, Patentassessor Dr.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "53227 Bonn",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Deutsches Zentrum für Luft- und Raumfahrt e.V."
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific research and laboratory apparatus, teaching apparatus and simulators; Recorded or downloadable data sets; Software downloadable from the Internet; Downloadable software; Downloadable software applications; Downloadable and recorded data; Communications equipment; Mathematical instruments; Quantum computers; Satellites; Sensors, detectors and monitoring instruments and apparatus; Simulation apparatus; Simulation devices; Simulation instruments; Simulation software; Simulation software [training]; Simulation software for use in digital computers; Simulators; Augmented reality software for simulation; Software for satellite navigation systems; Virtual and augmented reality software; Virtual reality [VR] motion simulators; Virtual reality software for simulation purposes; The aforesaid goods in",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Apparate für wissenschaftliche Forschung und Labor, Unterrichtsapparate und Simulatoren; Aufgezeichnete oder herunterladbare Datensätze; Aus dem Internet herunterladbare Software; Herunterladbare Software; Herunterladbare Software-Anwendungen; Herunterladbare und aufgezeichnete Daten; Kommunikationsausrüstung; Mathematische Instrumente; Quantencomputer; Satelliten; Sensoren, Detektoren sowie Überwachungsinstrumente und -apparate; Simulationsapparate; Simulationsgeräte; Simulationsinstrumente; Simulationssoftware; Simulationssoftware [Schulung]; Simulationssoftware zur Verwendung in digitalen Computern; Simulatoren; Software für erweiterte Realität für die Simulation; Software für Satellitennavigationssysteme; Software für virtuelle und erweiterte Realität; Virtual Reality [VR]-Bewegungssimulatoren; Virtual-Reality-Software für Simulationszwecke; Vorstehende Waren der"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "in particular for simulating the movement of objects in three-dimensional space",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "insbesondere für die Simulation der Bewegung von Objekten im dreidimensionalen Raum"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Updating software for communication systems; Consultancy services relating to software for communication systems; Provision of non-downloadable online computer software; Provision of virtual computer systems through cloud computing; Design of prototypes; Engineering services; Conducting technical feasibility studies; Development of computer programs for simulating laboratory experiments; Development of programs for simulating experiments or series of experiments in a virtual optical laboratory; Design of mathematical models; Design of mathematical models; Enabling the temporary use of non-downloadable online software for transferring information; Creating programs for computer-aided feasibility studies; Creating technical feasibility studies; Research in the field of quantum precision measurement; Research in the field of quantum simulation; Research in the field of communications technology; Research in the field of quantum communications technology; Engineering services related to the design of communications systems; Engineering services related to communications technology; IT services; Design of software for virtual reality; Mathematical research services; Scientific services; Online provision of non-downloadable software; Maintenance of software for communications systems; Programming of data processing and communications systems; Testing, authentication and quality control; Maintenance and updating of software for communications systems; Scientific research related to quantum computing; Scientific and technological services; Providing of non-downloadable computer software for temporary use; the aforesaid services in",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Aktualisierung von Software für Kommunikationssysteme; Beratungsleistungen zu Software für Kommunikationssysteme; Bereitstellung von nicht herunterladbarer Online-Computersoftware; Bereitstellung von virtuellen Computersystemen durch Cloud-Computing; Design von Prototypen; Dienstleistungen von Ingenieuren; Durchführung technischer Machbarkeitsstudien; Entwicklung von Computerprogrammen für die Simulation von Laborversuchen; Entwicklung von Programmen zur Simulation von Versuchen oder Versuchsreihen in einem virtuellen optischen Labor; Entwurf mathematischer Modelle; Entwurf von mathematischen Modellen; Ermöglichung der zeitweiligen Nutzung von nicht herunterladbarer Online-Software zum Übertragen von Informationen; Erstellen von Programmen für computergestützte Machbarkeitsstudien; Erstellung technischer Machbarkeitsstudien; Forschung auf dem Gebiet der Quantenpräzisionsmessung; Forschung auf dem Gebiet der Quantensimulation; Forschung im Bereich der Kommunikationstechnologie; Forschung im Bereich der Quanten-Kommunikationstechnologie; Ingenieurdienstleistungen bezüglich des Entwurfs von Kommunikationssystemen; Ingenieurleistungen zur Kommunikationstechnologie; IT-Dienstleistungen; Konzeption von Software für die virtuelle Realität; Mathematische Forschungsdienstleistungen; Naturwissenschaftliche Dienstleistungen; Online-Bereitstellung von nicht herunterladbarer Software; Pflege von Software für Kommunikationssysteme; Programmierung von Datenverarbeitungs- und Kommunikationssystemen; Prüfung, Authentifizierung und Qualitätskontrolle; Wartung und Aktualisierung von Software für Kommunikationssysteme; Wissenschaftliche Forschung in Bezug auf Quantencomputing; Wissenschaftliche und technologische Dienstleistungen; Zurverfügungstellung von nicht herunterladbarer Computersoftware zur zeitweiligen Nutzung; Vorstehende Dienstleistungen der"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "in particular for creating simulations of the movement of objects in three-dimensional space",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "insbesondere für die Erstellung von Simulationen der Bewegung von Objekten im dreidimensionalen Raum"
+        }
+      ]
+    },
+    "id": "25b4a3be-fa65-40d3-9760-e3012a7b2a14",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "23"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Burauer, Linder Höhe, 51147 Köln"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "51147 Köln",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "Burauer, Stefan, Patentassessor Dr."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240321",
+        "applicationNumber": "302024003476.1"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340321",
+      "lastPublicationDate": "20240607",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20240503",
+        "registrationNumber": "302024003476"
+      }
+    },
+    "version": "20250627172248",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENQS"
+    }
+  },
+  "_uri": "/mark/de/25b4a3be-fa65-40d3-9760-e3012a7b2a14",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.566Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

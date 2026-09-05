@@ -1,0 +1,123 @@
+{
+  "uri": "/mark/pe/7fcced14-6774-42fa-89e0-c28f47927da4",
+  "provider": "clarivate",
+  "office": "pe",
+  "guid": "7fcced14-6774-42fa-89e0-c28f47927da4",
+  "applicationNumber": "904625-2021",
+  "registrationNumber": "S00133007",
+  "applicationDate": "2021-07-04",
+  "registrationDate": "2021-09-02",
+  "expiryDate": "2031-09-02",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORI INC.",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "servicios científicos y tecnológicos, así como servicios de investigación y diseño en estos ámbitos; servicios de análisis e investigación industriales; diseño y desarrollo de equipos informáticos y de software.",
+      "translation_language": "en",
+      "translation": "scientific and technological services, as well as research and design services in these fields; industrial analysis and research services; design and development of computer equipment and software."
+    }
+  ],
+  "owner": "INDIGO SMART SOLUTIONS S. A. C.",
+  "ownerNative": null,
+  "ownerCountry": "UNKN",
+  "representative": "MEJIA SPILLMANN STEPHANIE KAROLINE",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "LIMA - LIMA - JESUS MARIA",
+        "applicantAddressCountryCode": "UNKN",
+        "applicantAddressCountryName": "Unknown Applicant Country/Region",
+        "applicantName": "INDIGO SMART SOLUTIONS S. A. C."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "scientific and technological services, as well as research and design services in these fields; industrial analysis and research services; design and development of computer equipment and software.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "servicios científicos y tecnológicos, así como servicios de investigación y diseño en estos ámbitos; servicios de análisis e investigación industriales; diseño y desarrollo de equipos informáticos y de software."
+        }
+      ]
+    },
+    "id": "7fcced14-6774-42fa-89e0-c28f47927da4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "01.03.20",
+      "25.01.05",
+      "27.05.17",
+      "04.05.04"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260813",
+    "registrationOfficeCode": "PE",
+    "registrationOfficeName": "Peru",
+    "representatives": [
+      {
+        "representativeAddress": "LIMA - LIMA - SAN BORJA",
+        "representativeAddressCountryCode": "PE",
+        "representativeAddressCountryName": "Peru",
+        "representativeName": "MEJIA SPILLMANN STEPHANIE KAROLINE"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210704",
+        "applicationNumber": "904625-2021"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310902",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20210902",
+        "registrationNumber": "S00133007"
+      }
+    },
+    "version": "20260813020823",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORI INC."
+    }
+  },
+  "_uri": "/mark/pe/7fcced14-6774-42fa-89e0-c28f47927da4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.399Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

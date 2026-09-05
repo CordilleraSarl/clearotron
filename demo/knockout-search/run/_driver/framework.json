@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "framework_key": "house-triage",
+  "title": "House knockout triage ladder (Stage 0)",
+  "source_deck": "Ported from the interactive knockout-searches skill's 5-tier rating system (SKILL.md rating table + calibration rules), doc 50 shape",
+  "entity_label": "the client",
+  "bands": [
+    {
+      "label": "Very High",
+      "tone": "severe"
+    },
+    {
+      "label": "High",
+      "tone": "high"
+    },
+    {
+      "label": "Medium",
+      "tone": "medium"
+    },
+    {
+      "label": "Manageable",
+      "tone": "low"
+    },
+    {
+      "label": "Low",
+      "tone": "minimal"
+    }
+  ],
+  "structure": {
+    "kind": "bands",
+    "display_note": "Knockout triage bands — a fast kill/no-kill screen, not a clearance verdict. Sub-gradation qualifiers (e.g. \"Medium (low)\") are allowed beside the band word."
+  }
+}

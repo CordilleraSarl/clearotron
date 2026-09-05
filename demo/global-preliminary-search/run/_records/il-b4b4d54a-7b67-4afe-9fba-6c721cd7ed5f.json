@@ -1,0 +1,143 @@
+{
+  "uri": "/mark/il/b4b4d54a-7b67-4afe-9fba-6c721cd7ed5f",
+  "provider": "clarivate",
+  "office": "il",
+  "guid": "b4b4d54a-7b67-4afe-9fba-6c721cd7ed5f",
+  "applicationNumber": "373073",
+  "registrationNumber": null,
+  "applicationDate": "2024-04-09",
+  "registrationDate": "2024-10-07",
+  "expiryDate": "2034-04-09",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "EVE NORTH PARK",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "STYLIZED LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "marketing and management of residential real estate sales projects that include a mix of commercial and hotel uses and urban renewal projects; real estate sales management; administrative services related to contracting; all included in class 35",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "real estate business; land acquisition services for a project for commercial and hotel uses and including urban renewal projects; real estate management; sale of real estate; all of which are included in class 36",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "architectural and construction planning of residential, hotel, commercial, office and real estate projects; all included class 42",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ICR ISRAEL CANADA REM HOLDING LTD",
+  "ownerNative": null,
+  "ownerCountry": "IL",
+  "representative": "Sa'ar, Plinner & Co , Adv",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Shaul Hamelech Boulevard 35, Tel Aviv - Yafo, 6492702, Israel",
+        "applicantAddressCountryCode": "IL",
+        "applicantAddressCountryName": "Israel",
+        "applicantName": "ICR ISRAEL CANADA REM HOLDING LTD"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "marketing and management of residential real estate sales projects that include a mix of commercial and hotel uses and urban renewal projects; real estate sales management; administrative services related to contracting; all included in class 35"
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "real estate business; land acquisition services for a project for commercial and hotel uses and including urban renewal projects; real estate management; sale of real estate; all of which are included in class 36"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "architectural and construction planning of residential, hotel, commercial, office and real estate projects; all included class 42"
+        }
+      ]
+    },
+    "id": "b4b4d54a-7b67-4afe-9fba-6c721cd7ed5f",
+    "ipRightKind": "tmk",
+    "markFeature": "STYLIZED LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260331",
+    "registrationOfficeCode": "IL",
+    "registrationOfficeName": "Israel",
+    "representatives": [
+      {
+        "representativeAddress": "35 Jabotinsky Street, Twin Tower 2, Ramat Gan, 52511, Israel",
+        "representativeAddressCountryCode": "IL",
+        "representativeAddressCountryName": "Israel",
+        "representativeName": "Sa'ar, Plinner & Co , Adv"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240409",
+        "applicationNumber": "373073"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340409",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20241007"
+      }
+    },
+    "version": "20260331112558",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "EVE NORTH PARK"
+    }
+  },
+  "_uri": "/mark/il/b4b4d54a-7b67-4afe-9fba-6c721cd7ed5f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.831Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

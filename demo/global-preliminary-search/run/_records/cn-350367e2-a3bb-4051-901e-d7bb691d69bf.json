@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/cn/350367e2-a3bb-4051-901e-d7bb691d69bf",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "350367e2-a3bb-4051-901e-d7bb691d69bf",
+  "applicationNumber": "12846692A",
+  "registrationNumber": "12846692A",
+  "applicationDate": "2013-07-02",
+  "registrationDate": "2015-05-21",
+  "expiryDate": "2035-05-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2015-02-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "博日",
+  "markTransliteration": "bo ri",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "平板仪(测量仪器);测量水平仪;水准仪;测面仪;水平仪(测量水平线仪器);水准仪.",
+      "translation_language": "en",
+      "translation": "Plane meter (measuring instrument); measuring level; level; plane measuring instrument; level (instrument for measuring horizontal line); level."
+    }
+  ],
+  "owner": "Yang Yintao",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "江苏省启东市吕四港镇水产路719号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Yang Yintao",
+        "applicantNativeName": "杨银涛"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Plane meter (measuring instrument); measuring level; level; plane measuring instrument; level (instrument for measuring horizontal line); level.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "平板仪(测量仪器);测量水平仪;水准仪;测面仪;水平仪(测量水平线仪器);水准仪."
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        }
+      ]
+    },
+    "id": "350367e2-a3bb-4051-901e-d7bb691d69bf",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1444"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "南通金洋商标事务所有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20130702",
+        "applicationNumber": "12846692A"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350520",
+      "lastPublicationDate": "20150220",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20150521",
+        "registrationNumber": "12846692A"
+      },
+      "renewalPublishedDate": "20240906"
+    },
+    "version": "20251002080258",
+    "wordMarkSpecification": {
+      "markTransliteration": "bo ri",
+      "markVerbalElementText": "博日"
+    }
+  },
+  "_uri": "/mark/cn/350367e2-a3bb-4051-901e-d7bb691d69bf",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.211Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

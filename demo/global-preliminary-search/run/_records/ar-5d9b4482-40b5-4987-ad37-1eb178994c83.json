@@ -1,0 +1,112 @@
+{
+  "uri": "/mark/ar/5d9b4482-40b5-4987-ad37-1eb178994c83",
+  "provider": "clarivate",
+  "office": "ar",
+  "guid": "5d9b4482-40b5-4987-ad37-1eb178994c83",
+  "applicationNumber": "4493808",
+  "registrationNumber": "3747109",
+  "applicationDate": "2025-04-15",
+  "registrationDate": "2025-10-21",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LA CLAVE NORTEÑA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Clase 41 : Internacional Limitada SOLAMENTE:CONJUNTO MUSICAL.",
+      "translation_language": "en",
+      "translation": "Class 41: International Limited ONLY: MUSICAL SET."
+    }
+  ],
+  "owner": "CEBALLOS, VIDAL",
+  "ownerNative": null,
+  "ownerCountry": "AR",
+  "representative": "ESCANDELL, PALMIRA E.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "AR",
+        "applicantAddressCountryName": "Argentina",
+        "applicantName": "CEBALLOS, VIDAL"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 41: International Limited ONLY: MUSICAL SET.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Clase 41 : Internacional Limitada SOLAMENTE:CONJUNTO MUSICAL."
+        }
+      ]
+    },
+    "id": "5d9b4482-40b5-4987-ad37-1eb178994c83",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251105",
+    "registrationOfficeCode": "AR",
+    "registrationOfficeName": "Argentina",
+    "representatives": [
+      {
+        "representativeName": "ESCANDELL, PALMIRA E."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250415",
+        "applicationNumber": "4493808"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTERED TRADEMARK",
+      "registration": {
+        "registrationDate": "20251021",
+        "registrationNumber": "3747109"
+      }
+    },
+    "version": "20251105020241",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LA CLAVE NORTEÑA"
+    }
+  },
+  "_uri": "/mark/ar/5d9b4482-40b5-4987-ad37-1eb178994c83",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "uri": "/mark/cl/c5be6375-ef8c-4142-949e-2ad144a2276f",
+  "provider": "clarivate",
+  "office": "cl",
+  "guid": "c5be6375-ef8c-4142-949e-2ad144a2276f",
+  "applicationNumber": "1651907",
+  "registrationNumber": "1505216",
+  "applicationDate": "2025-12-11",
+  "registrationDate": "2026-07-29",
+  "expiryDate": "2036-07-29",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Heavensy",
+  "markTransliteration": "NEOLOGISMO DERIVADO DE 'HEAVEN', QUE ES 'CIELO'",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "(Concedida) Aplicaciones descargables.",
+      "translation_language": "en",
+      "translation": "(Granted) Downloadable applications."
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "(Concedida) Asistencia sobre gestión comercial; asesoramiento comercial sobre marketing; análisis de marketing; asesoramiento empresarial en relación con marketing estratégico; gestión de la atención al cliente.",
+      "translation_language": "en",
+      "translation": "(Granted) Assistance on business management; business advice on marketing; marketing analysis; business advice in relation to strategic marketing; customer service management."
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "es",
+      "description": "(Concedida) Provisión de salas de chat en línea para redes sociales; servicios de foros de discusión.",
+      "translation_language": "en",
+      "translation": "(Granted) Provision of online chat rooms for social networks; discussion forum services."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "(Concedida) Alojamiento de plataformas de software para la colaboración profesional basada en la realidad virtual; alojamiento de servidores, software como servicio.",
+      "translation_language": "en",
+      "translation": "(Granted) Hosting of software platforms for professional collaboration based on virtual reality; server hosting, software as a service."
+    }
+  ],
+  "owner": "María Pía Moya Rivera",
+  "ownerNative": null,
+  "ownerCountry": "CL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "CL",
+        "applicantAddressCountryName": "Chile",
+        "applicantName": "María Pía Moya Rivera"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "(Granted) Downloadable applications.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "(Concedida) Aplicaciones descargables."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "(Granted) Assistance on business management; business advice on marketing; marketing analysis; business advice in relation to strategic marketing; customer service management.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "(Concedida) Asistencia sobre gestión comercial; asesoramiento comercial sobre marketing; análisis de marketing; asesoramiento empresarial en relación con marketing estratégico; gestión de la atención al cliente."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "(Granted) Provision of online chat rooms for social networks; discussion forum services.",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "(Concedida) Provisión de salas de chat en línea para redes sociales; servicios de foros de discusión."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "(Granted) Hosting of software platforms for professional collaboration based on virtual reality; server hosting, software as a service.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "(Concedida) Alojamiento de plataformas de software para la colaboración profesional basada en la realidad virtual; alojamiento de servidores, software como servicio."
+        }
+      ]
+    },
+    "id": "c5be6375-ef8c-4142-949e-2ad144a2276f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "La marca consiste en diseño circular que contiene una figura superior semejante a un sol con múltiples rayos y una figura inferior en forma de semicírculo. Debajo del diseño esta la palabra 'Heavensy' en tipografía estilizada."
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260812",
+    "registrationOfficeCode": "CL",
+    "registrationOfficeName": "Chile",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251211",
+        "applicationNumber": "1651907"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360729",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20260729",
+        "registrationNumber": "1505216"
+      }
+    },
+    "version": "20260812120437",
+    "wordMarkSpecification": {
+      "markTransliteration": "NEOLOGISMO DERIVADO DE 'HEAVEN', QUE ES 'CIELO'",
+      "markVerbalElementText": "Heavensy"
+    }
+  },
+  "_uri": "/mark/cl/c5be6375-ef8c-4142-949e-2ad144a2276f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.565Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

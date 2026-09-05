@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/cn/dd40d87a-1a6f-4a93-9c0e-1ff9addfd09e",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "dd40d87a-1a6f-4a93-9c0e-1ff9addfd09e",
+  "applicationNumber": "72992468",
+  "registrationNumber": "72992468",
+  "applicationDate": "2023-07-21",
+  "registrationDate": "2024-01-14",
+  "expiryDate": "2034-01-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-10-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "安排、举办和组织专家讨论会;安排和组织教育会议;补习学校辅导;大学或学院教育;关于培训、科学、公共法律和社会事务的文件出版;教科书的出版;教育测试;教育考核服务;商业培训;商业培训咨询服务;提供培训和教育考试(教育认证服务);提供语言教学课程;提供在线教育信息;通过全球计算机网络出版网站编辑内容;语言培训",
+      "translation_language": "en",
+      "translation": "Arranging, conducting and organizing expert seminars; arranging and organizing educational conferences; tutoring in cram schools; university or college education; publication of documents on training, science, public law and social affairs; publication of textbooks; educational testing; educational assessment services; Business training; Business training consulting services; Providing training and educational examinations (educational certification services); Providing language teaching courses; Providing online educational information; Publishing website editing content through global computer networks; Language training"
+    }
+  ],
+  "owner": "Jiangsu Zhengchuwei Network Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "江苏省南京市雨花台区雨花路201号(汇芯谷)3层320室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Jiangsu Zhengchuwei Network Technology Co., Ltd.",
+        "applicantNativeName": "江苏正初为网络科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Arranging, conducting and organizing expert seminars; arranging and organizing educational conferences; tutoring in cram schools; university or college education; publication of documents on training, science, public law and social affairs; publication of textbooks; educational testing; educational assessment services; Business training; Business training consulting services; Providing training and educational examinations (educational certification services); Providing language teaching courses; Providing online educational information; Publishing website editing content through global computer networks; Language training",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "安排、举办和组织专家讨论会;安排和组织教育会议;补习学校辅导;大学或学院教育;关于培训、科学、公共法律和社会事务的文件出版;教科书的出版;教育测试;教育考核服务;商业培训;商业培训咨询服务;提供培训和教育考试(教育认证服务);提供语言教学课程;提供在线教育信息;通过全球计算机网络出版网站编辑内容;语言培训"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Publishing service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4104",
+          "subNatGoodsServicesDescription": "Publishing service"
+        }
+      ]
+    },
+    "id": "dd40d87a-1a6f-4a93-9c0e-1ff9addfd09e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1859"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "知域互联科技有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230721",
+        "applicationNumber": "72992468"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340113",
+      "lastPublicationDate": "20231013",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20240114",
+        "registrationNumber": "72992468"
+      }
+    },
+    "version": "20260113020218",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/cn/dd40d87a-1a6f-4a93-9c0e-1ff9addfd09e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

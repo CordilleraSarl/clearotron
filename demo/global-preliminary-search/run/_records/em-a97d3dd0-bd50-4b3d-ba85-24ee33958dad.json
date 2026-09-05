@@ -1,0 +1,1412 @@
+{
+  "uri": "/mark/em/a97d3dd0-bd50-4b3d-ba85-24ee33958dad",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "a97d3dd0-bd50-4b3d-ba85-24ee33958dad",
+  "applicationNumber": "18449633",
+  "registrationNumber": "18449633",
+  "applicationDate": "2021-04-09",
+  "registrationDate": "2021-08-03",
+  "expiryDate": "2031-04-09",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-04-26",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    37,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Pocítacový software pro automatické ukládání dat; Software pro vývoj výrobku; Software pro prumyslovou automatizaci; Pocítacový software k pouzití pri migraci mezi ruznými pocítacovými sítovými operacními systémy; Cloudové servery.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "cs",
+      "description": "Odrusení elektrických prístroju (sluzby); Odrusování elektrických prístroju.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "cs",
+      "description": "Sluzby bezdrátové hlasové posty; Sluzby komunikace prostrednictvím internetové telefonie [VoIP]; Telefonní sluzby a mobilní telefonní sluzby; Pocítacová komunikace a prístup k internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Poradenské sluzby v oblasti vývoje produktu a zlepsování kvality softwaru; Poradenství v oblasti pocítacového softwaru; Poradenství v oblasti pocítacového softwaru; Vytvárení softwaru; Vývoj softwaru; Návrhy softwarových balíku na zakázku; Vývoj a údrzba pocítacového softwaru; Poradenství vztahující se k softwaru pro komunikacní systémy; Údrzba softwaru pro komunikacní systémy; Poskytování softwaru on line bez moznosti stazení k pouzití pri komunikaci; Poradenské a konzultacní sluzby týkající se pocítacového hardwaru; Konzultacní a poradenské sluzby v oblasti pocítacového hardwaru a softwaru; Vývoj výrobku; Webhostingové sluzby a software jako sluzba a pronájem softwaru; Sluzby zabezpecení, ochrany a obnovy v oblasti informacních technologií.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Computersoftware til automatisering af datalagring; Produktudviklingssoftware; Software til industriel automatisering; Computersoftware til brug ved migrering mellem forskellige styresystemer til computernetværk; Cloudservere.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "da",
+      "description": "Tjenesteydelser inden for interferensdæmpning til elektriske apparater; Undertrykkelse af interferens i elektriske apparater.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "da",
+      "description": "Trådløse telefonsvarertjenester; VoIP-kommunikationstjenester; Telefon og mobiltelefontjenesteydelser; Computerkommunikation og tilvejebringelse af adgang til internettet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Rådgivningsvirksomhed inden for produktudvikling og kvalitetsforbedring af software; Rådgivning vedrørende computer software; Rådgivning vedrørende computer software; Udarbejdelse af software; Softwareudvikling; Specialdesign af softwarepakker; Udvikling og vedligeholdelse af computersoftware; Konsulentbistand vedrørende software til kommunikationssystemer; Vedligeholdelse af software til kommunikationssystemer; Stille ikke-downloadable online software til rådighed til brug i kommunikation; Rådgivnings- og konsulentvirksomhed vedrørende computerhardware; Konsulent- og rådgivningsvirksomhed vedrørende computerhardware og -software; Produktudvikling; Hostingtjenesteydelser og software as a service og udlejning af software; IT-sikkerhed, -beskyttelse og -retablering.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Software voor het automatiseren van gegevensopslag; Software voor productontwikkeling; Software voor industriële automatisering; Software voor gebruik bij het migreren tussen verschillende computernetwerkbedieningssystemen; Cloudservers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "nl",
+      "description": "Storingsoplossingsdiensten voor elektrische apparaten; Ontstoring van elektrische installaties.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "nl",
+      "description": "Draadloze gesproken berichten; VoIP-communicatiediensten; Telefoon- en mobiele telefoondiensten; Computercommunicatie en toegang tot Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Advisering op het gebied van productontwikkeling en kwaliteitsverbetering met betrekking tot software; Advisering op het gebied van software; Advisering op het gebied van software; Het creëren van software; Ontwikkeling van software; Softwarepakketten (Klantspecifiek ontwerp van -); Ontwikkeling en onderhoud van computer software; Advisering met betrekking tot software voor communicatiesystemen; Onderhoud van software voor communicatiesystemen; Ter beschikking stellen van niet-downloadbare onlinesoftware voor gebruik bij communicatie; Advisering en consultancy met betrekking tot hardware; Consultancy en advisering inzake hardware en software; Productontwikkeling; Hostingdiensten en ter beschikking stellen van software (Saas) en verhuur van software; IT-beveiliging, -bescherming en -bewaking.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software to automate data warehousing; Software for product development; Industrial automation software; Computer software for use in migrating between different computer network operating systems; Cloud servers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Interference suppression services for electrical apparatus; Interference suppression in electrical apparatus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "en",
+      "description": "Wireless voice mail services; Voice over Internet Protocol [VoIP] communication services; Telephone and mobile telephone services; Computer communication and Internet access.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Advisory services in the field of product development and quality improvement of software; Computer software consultancy; Computer software consultancy; Software creation; Software development; Custom design of software packages; Development and maintenance of computer software; Consultancy relating to software for communication systems; Maintenance of software for communication systems; Providing online non-downloadable software for use in communication; Advisory and consultancy services relating to computer hardware; Consultancy and advice on computer software and hardware; Product development; Hosting services, software as a service, and rental of software; IT security, protection and restoration.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Arvutitarkvara andmete säilitamise automatiseerimiseks; Tootearendustarkvara; Tööstusautomaatika tarkvara; Arvutitarkvara, mida kasutatakse erinevate arvutivõrkude operatiivsüsteemide vahel liikumiseks; Pilveserverid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "et",
+      "description": "Elektriseadmete häiresummutusteenused; Häirete kõrvaldamine elektriseadmetest.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "et",
+      "description": "Traadita kõneposti teenused; VOIP-sideteenused; Telefoni- ja mobiiltelefoniteenused; Arvutisideteenused ja juurdepääs internetile.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Tarkvara toote- ja kvaliteediarenduse nõustamine; Arvutitarkvarakonsultatsioonid; Arvutitarkvarakonsultatsioonid; Tarkvara loomine; Tarkvara arendamine; Tellimuspõhine tarkvarapakettide projekteerimine; Arvutitarkvara arendamine ja hooldamine; Sidesüsteemide tarkvara nõustamine; Sidesüsteemide tarkvara hooldus; Mitteallalaaditava veebitarkvara pakkumine teabevahetuseks; Arvuti riistvaraga seotud nõustamis- ja konsultatsiooniteenused; Arvuti riist- ja tarkvara konsultatsiooni- ja nõustamisteenused; Tootearendus; Hostimine ja pilveteenused (SaaS) ning tarkvara rent; IT-turvalisuse, -kaitse ja -taastamise teenused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Tietokoneohjelmistot datan varastoinnin automatisointiin; Tuotekehitysohjelmistot; Ohjelmistot teollisuuden automaatiota varten; Tietokoneohjelmistot käytettäviksi siirryttäessä eri tietokoneverkkojen käyttöjärjestelmien välillä; Pilvipalvelimet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "fi",
+      "description": "Sähkölaitteiden häiriönestopalvelut; Häiriönpoisto sähkölaitteista.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "fi",
+      "description": "Langattomat puhepostipalvelut; Nettipuhelupalvelut [VoIP]; Puhelin- ja matkapuhelinverkkopalvelut; Tietokoneliikenne ja Internet-käyttöliittymät.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Neuvontapalvelut tietokoneohjelmistojen tuotekehittelyn ja laadun parantamisen alalla; Konsultointi liittyen tietokoneohjelmistoihin; Konsultointi liittyen tietokoneohjelmistoihin; Tietokoneohjelmistojen luominen; Ohjelmistokehitys; Ohjelmistopakettien suunnittelu tilauksesta; Tietokoneohjelmistojen kehittäminen ja ylläpito; Viestintäjärjestelmissä käytettäviä ohjelmistoja koskeva neuvonta; Viestintäjärjestelmissä käytettävien ohjelmistojen ylläpito; Muiden kuin ladattavien ohjelmistojen tarjoaminen verkossa käytettäväksi viestinnässä; Tietokonelaitteistoihin liittyvät neuvonta- ja konsultointipalvelut; Konsultointi- ja neuvontapalvelut tietokonelaitteistojen ja ohjelmistojen alalla; Tuotekehittely; Verkkoisännöintipalvelut ja verkkosovelluspalvelut (SaaS) sekä ohjelmistojen vuokraus; IT-asioihin liittyvät turvallisuus-, suojaus- ja palauttamispalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciels de stockage de données automatique; Logiciels pour le développement de produits; Logiciels pour l'automatisation industrielle; Logiciels pour la migration entre divers systèmes d'exploitation de réseaux d'ordinateurs; Serveurs en nuage.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "fr",
+      "description": "Services d'installation d'appareils pour supprimer les interférences d'appareils électriques; Déparasitage d'installations électriques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "fr",
+      "description": "Services de messagerie vocale sans fil; Services de communication de voix sur IP [VoIP]; Services de téléphonie et de téléphonie mobile; Communication informatique et accès à Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services de conseil dans le domaine du développement de produits et de l'amélioration de la qualité de logiciels; Consultation en matière de logiciels; Consultation en matière de logiciels; Création de logiciels; Développement de logiciels; Conception sur commande de progiciels; Développement et maintenance de logiciels; Services de conseils en matière de logiciels pour des systèmes de communication; Maintenance de logiciels pour des systèmes de communication; Mise à disposition de logiciels non téléchargeables en ligne utilisés pour la communication; Services de conseils et de consultation en matière de matériel informatique; Services de consultation et de conseil dans le domaine du matériel et des logiciels informatiques; Développement de produits; Services d'hébergement et logiciel en tant que service, et location de logiciel; Sécurité, protection et restauration des technologies de l'information.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Computersoftware zur Automatisierung des Data-Warehousing; Software für die Produktentwicklung; Software für die industrielle Automatisierung; Computersoftware zur Verwendung bei der Migration zwischen verschiedenen Computernetz-Betriebssystemen; Cloud-Server.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "de",
+      "description": "Entstörung in elektrischen Geräten; Entstörung in elektrischen Anlagen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "de",
+      "description": "Drahtlose Voicemail-Dienste; Kommunikationsdienste für Voice over-IP; Fernsprech- und Mobiltelefondienste; Computerkommunikations- und Internetzugriffsdienste.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Beratung auf dem Gebiet der Produktentwicklung und der Qualitätsverbesserung von Software; Beratung in Bezug auf Computersoftware; Softwareberatung; Softwareerstellung; Softwareentwicklung; Kundenspezifisches Design von Softwarepaketen; Entwicklung und Wartung von Software; Beratungsleistungen zu Software für Kommunikationssysteme; Pflege von Software für Kommunikationssysteme; Online Bereitstellung von nicht herunterladbarer Software für den Einsatz in der Kommunikation; Beratungs- und -Consultingdienste in Bezug auf Computerhardware; Consulting und Beratung auf dem Gebiet der Computerhardware- und -software; Produktentwicklung; Hosting-Dienste, Software as a Service (SaaS) und Vermietung von Software; IT-Sicherheits-, -Schutz- und Instandsetzungsdienste.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Racunalni programi za automatizaciju pohranjivanja podataka; Softver za razvijanje proizvoda; Softver za industrijsku automatizaciju; Racunalni programi za uporabu u migraciji izmedu razlicitih racunalnih mreznih operativnih sustava; Serveri u oblaku.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "hr",
+      "description": "Usluge sprjecavanja smetnji za elektricne aparate; Uklanjanje smetnji u elektricnim uredajima.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "hr",
+      "description": "Usluge bezicne glasovne poste; Komunikacijske usluge putem protokola za internetski prijenos glasa [VoIP]; Telefonske usluge i mobilna telefonija; Racunalna komunikacija i pristup Internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Savjetodavne usluge na podrucju razvoja i poboljsanja kakvoce softverskih proizvoda; Konzultantske usluge u svezi s racunalnim softverom; Konzultantske usluge u svezi s racunalnim softverom; Kreiranje softvera; Razvoj softvera; Dizajniranje racunalnih programskih paketa po narudzbi; Razvoj i odrzavanje racunalnih programa; Konzultantske usluge koje se odnose na softver za komunikacijske sustave; Odrzavanje softvera za komunikacijske sustave; Ponuda softvera na mrezi za upotrebu u komunikaciji koji se ne moze preuzeti; Savjetodavne i konzultantske usluge u svezi s racunalnom opremom; Konzultacije i pruzanje savjeta o racunalnom softveru i hardveru; Razvoj proizvoda; Usluge hostinga i softver kao usluga te iznajmljivanje softvera; Sigurnost, zastita i obnova informacijske tehnologije.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Számítógépes szoftverek adattárolás automatizálásához; Szoftverek termékfejlesztéshez; Ipari automatizálási szoftverek; Számítógépes szoftverek különbözo számítógépes hálózati operációs rendszerek közötti migrációhoz; Felho alapú szerverek.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "hu",
+      "description": "Elektromos berendezések interferencia szurése; Elektromos berendezések zavarmentesítése.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "hu",
+      "description": "Vezeték nélküli hangposta szolgáltatások; Internetes beszédprotokollos (VOIP) kommunikációs szolgáltatások; Telefon- és mobiltelefon szolgáltatások; Számítógépes kommunikáció és internet hozzáférés.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Tanácsadási szolgáltatások szoftverek fejlesztésének és minoségjavításának területén; Számítógép szoftver tanácsadás; Számítógép szoftver tanácsadás; Szoftveralkotás; Számítógépes szoftver fejlesztése; Szoftvercsomagok igény szerinti tervezése; Számítógépes szoftverek fejlesztése és karbantartása; Kommunikációs rendszerekhez való szoftverekkel kapcsolatos tanácsadás; Kommunikációs rendszerekhez készült szoftverek karbantartása; Nem letöltheto online szoftverek biztosítása kommunikációs célokra; Számítógépes hardverre vonatkozó tanácsadó és szakértoi szolgáltatás; Számítógéphardverrel és -szoftverrel kapcsolatos szaktanácsadói és konzultációs szolgáltatások; Termékfejlesztés; Webtárhely és szoftver szolgáltatások, szoftver bérlés; Információtechnológiai [IT] biztonság, védelem és helyreállítás.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Software per l'automazione dell'archiviazione di dati; Software per lo sviluppo di prodotti; Software per automazione industriale; Software per il trasferimento tra diversi sistemi operativi di reti informatiche; Server per cloud computing.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "it",
+      "description": "Servizi di soppressione delle interferenze per apparecchi elettrici; Bonifica di interferenze negli apparati elettrici.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "it",
+      "description": "Messaggeria vocale senza filo; Servizi di comunicazione vocale tramite protocollo Internet [VoIP]; Servizi di telefonia fissa e mobile; Comunicazione per computer ed accesso ad Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Consulenza in materia di sviluppo di prodotti e miglioramento della qualità di software; Consulenza in materia di software; Consulenza in materia di software; Creazione di software; Sviluppo di software; Progettazione personalizzata di pacchetti software; Sviluppo e manutenzione di software informatici; Consulenze in tema di software per sistemi di comunicazione; Manutenzione di software per sistemi di comunicazione; Fornitura di software non scaricabili online per la comunicazione; Servizi di consulenza in materia di hardware informatico; Consulenza nel settore dell'hardware e del software; Sviluppo di prodotti; Servizi di hosting e software come servizio e noleggio di software; Sicurezza informatica, protezione e recupero.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Automatizuoto duomenu saugojimo programine iranga; Gaminiu kurimo programine iranga; Pramones automatizavimo programine iranga; Kompiuteriu programine iranga, naudojama migruojant tarp skirtingu kompiuteriu tinklu operaciniu sistemu; Debesijos serveriai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "lt",
+      "description": "Trikdziu slopinimas elektros prietaisuose; Trukdziu slopinimas (elektriniuose aparatuose).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "lt",
+      "description": "Belaidzio balso pasto paslaugos; Balso rysio paslaugos naudojant interneto protokola [VoIP]; Telefono ir mobiliojo telefono paslaugos; Kompiuteriniai rysiai ir internetine prieiga.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Programines irangos tobulinimo ir kokybes gerinimo konsultacijos; Kompiuteriu programines irangos konsultacijos; Kompiuteriu programines irangos konsultacijos; Programines irangos kurimas; Programines irangos tobulinimas; Uzsakytinis programines irangos paketu projektavimas; Kompiuteriu programines irangos tobulinimas ir prieziura; Konsultacijos, susijusios su rysio sistemu programine iranga; Rysiu sistemu programines irangos prieziura; Internetines ne parsisiunciamos rysiu programines irangos parupinimas; Patarimai ir konsultacijos, susijusios su kompiuteriu aparatine iranga; Konsultacijos ir patarimai kompiuteriu programines ir aparatines irangos srityje; Produktu pletra; Prieglobos (talpinimo) paslaugos ir programine iranga kaip paslauga bei programines irangos nuoma; Informaciniu technologiju saugumas, apsauga, atkurimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Datoru programmatura datu uzglabasanas automatizacijai; Programmatura produktu izstradei; Razosanas automatizacijas programmatura; Datoru programmatura darbibam starp dazadam datortikla operetajsistemam; Makonu serveri.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "lv",
+      "description": "Elektroiericu interferences slapesanas pakalpojumi; Traucejumu slapesana elektroiericu darba.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "lv",
+      "description": "Bezvadu balss pasta pakalpojumi; IP balss parraides [VoIP] komunikacijas pakalpojumi; Telefonu un mobilo telefonu sakaru pakalpojumi; Datorkomunikacija un Interneta piekluves pakalpojumi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Konsultativie pakalpojumi programmaturas produktu izstrades un kvalitates uzlabosanas joma; Konsultesana datoru programmaturas joma; Konsultesana datoru programmaturas joma; Programmaturas izveide; Programmaturas izstrade; Programmaturas pakotnu individuala projektesana; Datoru programmaturas izstrade un uzturesana; Konsultacijas saistiba ar komunikaciju sistemu programmaturu; Sakaru sistemam paredzetas programmaturas uzturesana; Nelejupieladejamas programmaturas sniegsana tiessaiste, ko izmanto sakaros; Padomu sniegsana un konsultacijas saistiba ar datoru aparaturu; Konsultacijas un padomi datoru aparaturas un programmaturas joma; Produktu attistisana; Datnu izvietosanas un uzturesanas pakalpojumi, ari programmaturas izvietosana un uzturesana makoni un programmaturas iznomasana; Informacijas tehnologijas sistemu drosiba, aizsardziba un atjaunosana.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Softwer tal-kompjuter ghall-awtomatizzazzjoni tad-data; Softwer ghall-izvilupp ta' prodotti; Softwer ta' awtomazzjoni industrijali; Softwer tal-kompjuters ghall-uzu fil-migrazzjoni bejn sistemi operattivi differenti tan-networks tal-kompjuters; Cloud tas-servers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' tnehhija tal-interferenza ghal apparat tal-elettriku; Tnehhija ta' interferenza f'apparat elettriku.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' messaggi bil-vuci bla fili; Servizzi ta' komunikazzjoni tat-tip Vuci fuq Protokoll tal-Internet (VOIP); Servizzi tat-telefon u telefon mobbli; Kommunikazzjoni tal-kompjuter u access ghall-Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' ghoti ta' pariri fil-qasam tal-izvilupp tal-prodotti u tat-titjib tal-kwalità tas-softwer; Konsulenza (fis-softwer tal-kompjuter); Konsulenza (fis-softwer tal-kompjuter); Holqien ta' softwer; Zvilupp ta' softwer; Disinn ta' pakketti ta' softwer maghmula skont l-ordni; Zvilupp u manutenzjoni ta' softwer tal-kompjuter; Konsulenza relatata ma' softwer ghal sistemi tal-komunikazzjoni; Manutenzjoni ta' softwer ghal sistemi ta' komunikazzjoni; Provvista ta' softwer online li ma jistax jitnizzel ghall-uzu fil-komunikazzjoni; Servizzi ta' pariri u konsulenza relatati ma' hardwer tal-kompjuter; Servizzi ta' konsulenza u pariri fil-qasam tal-hardwer u s-softwer tal-kompjuter; L-izviluppar ta' prodotti; Servizzi ta' hosting u softwer bhala servizz u kiri ta' softwer; Sigurtà, protezzjoni u restawr tal-IT.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Oprogramowanie komputerowe do automatyzacji hurtowni danych; Oprogramowanie do rozwoju produktów; Oprogramowanie do automatyzacji przemyslowej; Oprogramowanie komputerowe do wykorzystania przy migracji miedzy róznymi systemami operacyjnymi sieci komputerowych; Serwery w chmurze.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "pl",
+      "description": "Uslugi w zakresie eliminacji zaklócen dla urzadzen elektrycznych; Eliminacja zaklócen w instalacjach elektrycznych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "pl",
+      "description": "Uslugi bezprzewodowej poczty glosowej; Uslugi komunikacji glosowej za pomoca protokolów internetowych [VoIP]; Uslugi telefoniczne; Lacznosc poprzez sieci komputerowe i dostep do Internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Uslugi doradcze w dziedzinie opracowywania produktów i podnoszenia jakosci oprogramowania; Doradztwo w zakresie oprogramowania komputerowego; Doradztwo w zakresie oprogramowania komputerowego; Tworzenie oprogramowania komputerowego; Opracowywanie oprogramowania komputerowego; Projektowanie pakietów oprogramowania na zamówienie; Opracowywanie i konserwacja oprogramowania komputerowego; Doradztwo zwiazane z oprogramowaniem do systemów komunikacyjnych; Konserwacja oprogramowania do systemów lacznosci; Zapewnianie oprogramowania online, nie do pobrania, do uzytku w komunikacji; Doradztwo i konsultacje w zakresie sprzetu komputerowego; Doradztwo i konsultacje w zakresie sprzetu i oprogramowania komputerowego; Opracowywanie produktów; Hosting, oprogramowanie jako usluga oraz wypozyczanie oprogramowania komputerowego; Uslugi w zakresie ochrony, bezpieczenstwa i odzyskiwania systemów informatycznych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Software para automatizar armazenamento de dados; Software para desenvolvimento de produtos; Software para automação industrial; Software para usar na migração entre diferentes sistemas operativos de redes informáticas; Servidores para computação em nuvem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "pt",
+      "description": "Serviços de eliminação de interferências em aparelhos elétricos; Supressão de interferências em aparelhos elétricos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "pt",
+      "description": "Serviços de correio de voz sem fios; Serviços de comunicações de voz sobre protocolo Internet [VoIP]; Serviços de telefone e telemóveis; Comunicação informática e acesso à Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Serviços de assessoria no domínio do desenvolvimento de produtos e da melhoria da qualidade de software; Consultoria em software; Consultoria em software; Criação de software; Desenvolvimento de software; Design customizado de pacotes de software; Desenvolvimento e manutenção de software; Consultoria em software para sistemas de comunicação; Manutenção de software para sistemas de comunicação; Fornecimento de software on-line não descarregável para uso em comunicação; Serviços de assessoria e de consultadoria relacionados com o hardware para computadores; Serviços de consultoria e assessoria em matéria de hardware e software; Desenvolvimento de produtos; Serviços de alojamento de sites de Internet e software como serviço e aluguer de software; Segurança, proteção e recuperação em matéria de TI (tecnologias de informação).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Software pentru automatizarea arhivarii de date; Software pentru dezvoltare de produse; Software pentru automatizare industriala; Software de calculator pentru migrarea între distinctele sisteme de operare folosite de reteaua informatica; Servere cloud.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "ro",
+      "description": "Servicii de deparazitare pentru instalatii electrice; Deparazitarea instalatiilor electrice.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "ro",
+      "description": "Servicii de posta vocala fara fir; Servicii de comunicare prin protocolul de telefonie prin internet [VoIP]; Servicii de telefonie si telefonie mobila; Comunicarea cu terminale de computere si acces internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Servicii de consultanta în domeniul dezvoltarii de produse si al îmbunatatirii calitatii produselor software; Consultanta în domeniul programelor de calculator; Consultanta în domeniul programelor de calculator; Creare de software; Dezvoltare de software; Proiectare la comanda de pachete de software; Dezvoltare si întretinere de software de calculator; Consultanta privind software-ul pentru sisteme de comunicatii; Întretinere de software pentru sisteme de comunicatii; Furnizare de software online care nu poate fi descarcat, pentru utilizare în comunicatii; Servicii de consiliere si consultanta privind hardware-ul de calculator; Consultanta si consiliere în materie de hardware si software de calculator; Dezvoltare de produse; Servicii de gazduire, software ca si serviciu si închiriere de software; Securitate, protectie si reconstituire IT.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Pocítacový softvér na automatizáciu skladovania dát; Softvér na vývoj produktov; Softvér pre priemyselnú automatizáciu; Pocítacový software pre pouzitie pri migrácii medzi odlisnými pocítacovými sietovými operacnými systémami; Cloudové servery.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "sk",
+      "description": "Odrusovanie elektrických prístrojov; Odrusovanie elektrických prístrojov a zariadení.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "sk",
+      "description": "Sluzby bezdrôtových hlasových schránok; VoIP komunikacné sluzby; Telefónne a mobilné telefónne sluzby; Pocítacová komunikácia a prístup na internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Poradenské sluzby v oblasti vývoja produktov a zlepsovania kvality softvéru; Poradenstvo v oblasti pocítacových programov; Poradenstvo v oblasti pocítacových programov; Tvorba softvéru; Vývoj pocítacového softvéru; Zákazkové navrhovanie softvérových balíkov; Vývoj a údrzba pocítacového softvéru; Konzultácie v oblasti softvéru pre komunikacné systémy; Údrzba softvéru pre komunikacné systémy; Poskytovanie online softvéru na pouzitie v oblasti komunikácie, bez moznosti stiahnutia; Poradenské a konzultacné sluzby týkajúce sa pocítacového hardvéru; Poradenstvo v oblasti pocítacového hardvéru a softvéru; Vývoj výrobkov; Hostovanie na internetových stránkach, softvérové sluzby, prenájom softvéru; Bezpecnost, ochrana a obnovovanie v oblasti informacných technológií.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Racunalniska programska oprema za avtomatizacijo shranjevanja podatkov; Programska oprema za razvoj izdelkov; Programska oprema za industrijsko avtomatizacijo; Racunalniska programska oprema, ki se uporablja pri migraciji med razlicnimi omreznimi operacijskimi sistemi; Strezniki v oblaku.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "sl",
+      "description": "Storitve odpravljanja motenj pri elektricnih napravah; Odpravljanje motenj v elektricnih aparatih.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "sl",
+      "description": "Storitve brezzicne glasovne poste; Komunikacijske storitve govora prek internetnega protokola [VoIP]; Telefonske storitve in storitve mobilne telefonije; Racunalniske komunikacije in dostop do svetovnega spleta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Svetovalne storitve na podrocju razvoja proizvodov in izboljsanja kakovosti programske opreme; Svetovanje na podrocju racunalniske programske opreme; Svetovanje na podrocju racunalniske programske opreme; Ustvarjanje programske opreme; Razvoj programske opreme; Oblikovanje paketov programske opreme po meri; Razvoj in vzdrzevanje racunalniske programske opreme; Svetovanje v zvezi s programsko opremo za komunikacijske sisteme; Vzdrzevanje programske opreme za komunikacijske sisteme; Zagotavljanje neprenosljive spletne programske opreme za uporabo pri komuniciranju; Svetovalne in posvetovalne storitve v zvezi z racunalnisko strojno opremo; Svetovanje na podrocju racunalniske programske in strojne opreme; Razvoj izdelkov; Storitve gostovanja in nudenje programske opreme preko spleta ter dajanje programske opreme v najem; Racunalniska varnost, zascita in ponovna vzpostavitev racunalniskih sistemov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software informático para automatizar el almacenamiento de datos; Software para el desarrollo de productos; Software para la automatización industrial; Programas informáticos para su uso en la migración entre diferentes sistemas operativos de redes informáticas; Servidores para la nube.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "es",
+      "description": "Servicios de supresión de interferencias para aparatos eléctricos; Supresión de interferencias de instalaciones eléctricas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "es",
+      "description": "Servicios de mensajería de voz inalámbrica; Servicios de comunicación mediante Protocolo de Transmisión de la Voz por Internet [VoIP]; Servicios de telefonía móvil y fija; Comunicaciones telemáticas y acceso a internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios de asesoramiento en materia de desarrollo de productos y mejora de la calidad de software; Consultoría sobre software; Consultoría sobre software; Creación de software; Desarrollo de software; Diseño personalizado de paquetes de software; Desarrollo y mantenimiento de software; Consultoría en software para sistemas de comunicación; Mantenimiento de software para sistemas de comunicación; Acceso a software en línea no descargable para su uso en la comunicación; Servicios de asesoramiento y consultoría de hardware informático; Servicios de consultoría y asesoría en el campo del hardware y software informáticos; Desarrollo de productos; Servicios de alojamientos de sitios web y alquiler de software; Seguridad, protección y restauración informáticas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Programvara för automatisering av datalagringsverksamhet; Programvara för produktutveckling; Programvara för industriautomation; Programvara för användning vid övergång mellan olika datornätoperativsystem; Molnservrar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "sw",
+      "description": "Avstörningstjänster för elektriska apparater; Avstörning av elektrisk apparatur.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "sw",
+      "description": "Trådlösa röstposttjänster; Kommunikationstjänster avseende internettelefoni [VoIP]; Telefoni- och mobiltelefonitjänster; Datorkommunikation och internetåtkomst.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Rådgivning inom området för produktutveckling och kvalitetsförbättring av programvara; Rådgivning avseende datormjukvara; Rådgivning avseende datormjukvara; Skapande av mjukvaror; Utveckling av mjukvara; Specialutformning av programvarupaket; Utveckling och underhåll av programvara; Rådgivning om programvara för kommunikationssystem; Underhåll av programvara för kommunikationssystem; Tillhandahållande av icke nedladdningsbar programvara online för användning vid kommunikation; Konsult- och rådgivningstjänster relaterade till datormaskinvara; Konsulttjänster och rådgivning inom området datormaskinvara och datorprogramvara; Produktutveckling; Hostingtjänster, molntjänster (SaaS) och uthyrning av mjukvara; IT-säkerhetstjänster, -skyddstjänster och -återställande.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Avarno GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "Geitz Patentanwälte PartG mbB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Mörikestraße 7,Zuzenhausen, 74939",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Avarno GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "cmMarkImageEUclassification": [
+      "03.07.15",
+      "25.05.25",
+      "26.01.01",
+      "26.01.12",
+      "26.01.16"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Pocítacový software pro automatické ukládání dat; Software pro vývoj výrobku; Software pro prumyslovou automatizaci; Pocítacový software k pouzití pri migraci mezi ruznými pocítacovými sítovými operacními systémy; Cloudové servery."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Odrusení elektrických prístroju (sluzby); Odrusování elektrických prístroju."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Sluzby bezdrátové hlasové posty; Sluzby komunikace prostrednictvím internetové telefonie [VoIP]; Telefonní sluzby a mobilní telefonní sluzby; Pocítacová komunikace a prístup k internetu."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Poradenské sluzby v oblasti vývoje produktu a zlepsování kvality softwaru; Poradenství v oblasti pocítacového softwaru; Poradenství v oblasti pocítacového softwaru; Vytvárení softwaru; Vývoj softwaru; Návrhy softwarových balíku na zakázku; Vývoj a údrzba pocítacového softwaru; Poradenství vztahující se k softwaru pro komunikacní systémy; Údrzba softwaru pro komunikacní systémy; Poskytování softwaru on line bez moznosti stazení k pouzití pri komunikaci; Poradenské a konzultacní sluzby týkající se pocítacového hardwaru; Konzultacní a poradenské sluzby v oblasti pocítacového hardwaru a softwaru; Vývoj výrobku; Webhostingové sluzby a software jako sluzba a pronájem softwaru; Sluzby zabezpecení, ochrany a obnovy v oblasti informacních technologií."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Computersoftware til automatisering af datalagring; Produktudviklingssoftware; Software til industriel automatisering; Computersoftware til brug ved migrering mellem forskellige styresystemer til computernetværk; Cloudservere."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Tjenesteydelser inden for interferensdæmpning til elektriske apparater; Undertrykkelse af interferens i elektriske apparater."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Trådløse telefonsvarertjenester; VoIP-kommunikationstjenester; Telefon og mobiltelefontjenesteydelser; Computerkommunikation og tilvejebringelse af adgang til internettet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Rådgivningsvirksomhed inden for produktudvikling og kvalitetsforbedring af software; Rådgivning vedrørende computer software; Rådgivning vedrørende computer software; Udarbejdelse af software; Softwareudvikling; Specialdesign af softwarepakker; Udvikling og vedligeholdelse af computersoftware; Konsulentbistand vedrørende software til kommunikationssystemer; Vedligeholdelse af software til kommunikationssystemer; Stille ikke-downloadable online software til rådighed til brug i kommunikation; Rådgivnings- og konsulentvirksomhed vedrørende computerhardware; Konsulent- og rådgivningsvirksomhed vedrørende computerhardware og -software; Produktudvikling; Hostingtjenesteydelser og software as a service og udlejning af software; IT-sikkerhed, -beskyttelse og -retablering."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Software voor het automatiseren van gegevensopslag; Software voor productontwikkeling; Software voor industriële automatisering; Software voor gebruik bij het migreren tussen verschillende computernetwerkbedieningssystemen; Cloudservers."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Storingsoplossingsdiensten voor elektrische apparaten; Ontstoring van elektrische installaties."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Draadloze gesproken berichten; VoIP-communicatiediensten; Telefoon- en mobiele telefoondiensten; Computercommunicatie en toegang tot Internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Advisering op het gebied van productontwikkeling en kwaliteitsverbetering met betrekking tot software; Advisering op het gebied van software; Advisering op het gebied van software; Het creëren van software; Ontwikkeling van software; Softwarepakketten (Klantspecifiek ontwerp van -); Ontwikkeling en onderhoud van computer software; Advisering met betrekking tot software voor communicatiesystemen; Onderhoud van software voor communicatiesystemen; Ter beschikking stellen van niet-downloadbare onlinesoftware voor gebruik bij communicatie; Advisering en consultancy met betrekking tot hardware; Consultancy en advisering inzake hardware en software; Productontwikkeling; Hostingdiensten en ter beschikking stellen van software (Saas) en verhuur van software; IT-beveiliging, -bescherming en -bewaking."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software to automate data warehousing; Software for product development; Industrial automation software; Computer software for use in migrating between different computer network operating systems; Cloud servers."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Interference suppression services for electrical apparatus; Interference suppression in electrical apparatus."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Wireless voice mail services; Voice over Internet Protocol [VoIP] communication services; Telephone and mobile telephone services; Computer communication and Internet access."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Advisory services in the field of product development and quality improvement of software; Computer software consultancy; Computer software consultancy; Software creation; Software development; Custom design of software packages; Development and maintenance of computer software; Consultancy relating to software for communication systems; Maintenance of software for communication systems; Providing online non-downloadable software for use in communication; Advisory and consultancy services relating to computer hardware; Consultancy and advice on computer software and hardware; Product development; Hosting services, software as a service, and rental of software; IT security, protection and restoration."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Arvutitarkvara andmete säilitamise automatiseerimiseks; Tootearendustarkvara; Tööstusautomaatika tarkvara; Arvutitarkvara, mida kasutatakse erinevate arvutivõrkude operatiivsüsteemide vahel liikumiseks; Pilveserverid."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Elektriseadmete häiresummutusteenused; Häirete kõrvaldamine elektriseadmetest."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Traadita kõneposti teenused; VOIP-sideteenused; Telefoni- ja mobiiltelefoniteenused; Arvutisideteenused ja juurdepääs internetile."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Tarkvara toote- ja kvaliteediarenduse nõustamine; Arvutitarkvarakonsultatsioonid; Arvutitarkvarakonsultatsioonid; Tarkvara loomine; Tarkvara arendamine; Tellimuspõhine tarkvarapakettide projekteerimine; Arvutitarkvara arendamine ja hooldamine; Sidesüsteemide tarkvara nõustamine; Sidesüsteemide tarkvara hooldus; Mitteallalaaditava veebitarkvara pakkumine teabevahetuseks; Arvuti riistvaraga seotud nõustamis- ja konsultatsiooniteenused; Arvuti riist- ja tarkvara konsultatsiooni- ja nõustamisteenused; Tootearendus; Hostimine ja pilveteenused (SaaS) ning tarkvara rent; IT-turvalisuse, -kaitse ja -taastamise teenused."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tietokoneohjelmistot datan varastoinnin automatisointiin; Tuotekehitysohjelmistot; Ohjelmistot teollisuuden automaatiota varten; Tietokoneohjelmistot käytettäviksi siirryttäessä eri tietokoneverkkojen käyttöjärjestelmien välillä; Pilvipalvelimet."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Sähkölaitteiden häiriönestopalvelut; Häiriönpoisto sähkölaitteista."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Langattomat puhepostipalvelut; Nettipuhelupalvelut [VoIP]; Puhelin- ja matkapuhelinverkkopalvelut; Tietokoneliikenne ja Internet-käyttöliittymät."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Neuvontapalvelut tietokoneohjelmistojen tuotekehittelyn ja laadun parantamisen alalla; Konsultointi liittyen tietokoneohjelmistoihin; Konsultointi liittyen tietokoneohjelmistoihin; Tietokoneohjelmistojen luominen; Ohjelmistokehitys; Ohjelmistopakettien suunnittelu tilauksesta; Tietokoneohjelmistojen kehittäminen ja ylläpito; Viestintäjärjestelmissä käytettäviä ohjelmistoja koskeva neuvonta; Viestintäjärjestelmissä käytettävien ohjelmistojen ylläpito; Muiden kuin ladattavien ohjelmistojen tarjoaminen verkossa käytettäväksi viestinnässä; Tietokonelaitteistoihin liittyvät neuvonta- ja konsultointipalvelut; Konsultointi- ja neuvontapalvelut tietokonelaitteistojen ja ohjelmistojen alalla; Tuotekehittely; Verkkoisännöintipalvelut ja verkkosovelluspalvelut (SaaS) sekä ohjelmistojen vuokraus; IT-asioihin liittyvät turvallisuus-, suojaus- ja palauttamispalvelut."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciels de stockage de données automatique; Logiciels pour le développement de produits; Logiciels pour l'automatisation industrielle; Logiciels pour la migration entre divers systèmes d'exploitation de réseaux d'ordinateurs; Serveurs en nuage."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services d'installation d'appareils pour supprimer les interférences d'appareils électriques; Déparasitage d'installations électriques."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de messagerie vocale sans fil; Services de communication de voix sur IP [VoIP]; Services de téléphonie et de téléphonie mobile; Communication informatique et accès à Internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de conseil dans le domaine du développement de produits et de l'amélioration de la qualité de logiciels; Consultation en matière de logiciels; Consultation en matière de logiciels; Création de logiciels; Développement de logiciels; Conception sur commande de progiciels; Développement et maintenance de logiciels; Services de conseils en matière de logiciels pour des systèmes de communication; Maintenance de logiciels pour des systèmes de communication; Mise à disposition de logiciels non téléchargeables en ligne utilisés pour la communication; Services de conseils et de consultation en matière de matériel informatique; Services de consultation et de conseil dans le domaine du matériel et des logiciels informatiques; Développement de produits; Services d'hébergement et logiciel en tant que service, et location de logiciel; Sécurité, protection et restauration des technologies de l'information."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Computersoftware zur Automatisierung des Data-Warehousing; Software für die Produktentwicklung; Software für die industrielle Automatisierung; Computersoftware zur Verwendung bei der Migration zwischen verschiedenen Computernetz-Betriebssystemen; Cloud-Server."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Entstörung in elektrischen Geräten; Entstörung in elektrischen Anlagen."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Drahtlose Voicemail-Dienste; Kommunikationsdienste für Voice over-IP; Fernsprech- und Mobiltelefondienste; Computerkommunikations- und Internetzugriffsdienste."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Beratung auf dem Gebiet der Produktentwicklung und der Qualitätsverbesserung von Software; Beratung in Bezug auf Computersoftware; Softwareberatung; Softwareerstellung; Softwareentwicklung; Kundenspezifisches Design von Softwarepaketen; Entwicklung und Wartung von Software; Beratungsleistungen zu Software für Kommunikationssysteme; Pflege von Software für Kommunikationssysteme; Online Bereitstellung von nicht herunterladbarer Software für den Einsatz in der Kommunikation; Beratungs- und -Consultingdienste in Bezug auf Computerhardware; Consulting und Beratung auf dem Gebiet der Computerhardware- und -software; Produktentwicklung; Hosting-Dienste, Software as a Service (SaaS) und Vermietung von Software; IT-Sicherheits-, -Schutz- und Instandsetzungsdienste."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Racunalni programi za automatizaciju pohranjivanja podataka; Softver za razvijanje proizvoda; Softver za industrijsku automatizaciju; Racunalni programi za uporabu u migraciji izmedu razlicitih racunalnih mreznih operativnih sustava; Serveri u oblaku."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Usluge sprjecavanja smetnji za elektricne aparate; Uklanjanje smetnji u elektricnim uredajima."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Usluge bezicne glasovne poste; Komunikacijske usluge putem protokola za internetski prijenos glasa [VoIP]; Telefonske usluge i mobilna telefonija; Racunalna komunikacija i pristup Internetu."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Savjetodavne usluge na podrucju razvoja i poboljsanja kakvoce softverskih proizvoda; Konzultantske usluge u svezi s racunalnim softverom; Konzultantske usluge u svezi s racunalnim softverom; Kreiranje softvera; Razvoj softvera; Dizajniranje racunalnih programskih paketa po narudzbi; Razvoj i odrzavanje racunalnih programa; Konzultantske usluge koje se odnose na softver za komunikacijske sustave; Odrzavanje softvera za komunikacijske sustave; Ponuda softvera na mrezi za upotrebu u komunikaciji koji se ne moze preuzeti; Savjetodavne i konzultantske usluge u svezi s racunalnom opremom; Konzultacije i pruzanje savjeta o racunalnom softveru i hardveru; Razvoj proizvoda; Usluge hostinga i softver kao usluga te iznajmljivanje softvera; Sigurnost, zastita i obnova informacijske tehnologije."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Számítógépes szoftverek adattárolás automatizálásához; Szoftverek termékfejlesztéshez; Ipari automatizálási szoftverek; Számítógépes szoftverek különbözo számítógépes hálózati operációs rendszerek közötti migrációhoz; Felho alapú szerverek."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Elektromos berendezések interferencia szurése; Elektromos berendezések zavarmentesítése."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Vezeték nélküli hangposta szolgáltatások; Internetes beszédprotokollos (VOIP) kommunikációs szolgáltatások; Telefon- és mobiltelefon szolgáltatások; Számítógépes kommunikáció és internet hozzáférés."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Tanácsadási szolgáltatások szoftverek fejlesztésének és minoségjavításának területén; Számítógép szoftver tanácsadás; Számítógép szoftver tanácsadás; Szoftveralkotás; Számítógépes szoftver fejlesztése; Szoftvercsomagok igény szerinti tervezése; Számítógépes szoftverek fejlesztése és karbantartása; Kommunikációs rendszerekhez való szoftverekkel kapcsolatos tanácsadás; Kommunikációs rendszerekhez készült szoftverek karbantartása; Nem letöltheto online szoftverek biztosítása kommunikációs célokra; Számítógépes hardverre vonatkozó tanácsadó és szakértoi szolgáltatás; Számítógéphardverrel és -szoftverrel kapcsolatos szaktanácsadói és konzultációs szolgáltatások; Termékfejlesztés; Webtárhely és szoftver szolgáltatások, szoftver bérlés; Információtechnológiai [IT] biztonság, védelem és helyreállítás."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Software per l'automazione dell'archiviazione di dati; Software per lo sviluppo di prodotti; Software per automazione industriale; Software per il trasferimento tra diversi sistemi operativi di reti informatiche; Server per cloud computing."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di soppressione delle interferenze per apparecchi elettrici; Bonifica di interferenze negli apparati elettrici."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Messaggeria vocale senza filo; Servizi di comunicazione vocale tramite protocollo Internet [VoIP]; Servizi di telefonia fissa e mobile; Comunicazione per computer ed accesso ad Internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Consulenza in materia di sviluppo di prodotti e miglioramento della qualità di software; Consulenza in materia di software; Consulenza in materia di software; Creazione di software; Sviluppo di software; Progettazione personalizzata di pacchetti software; Sviluppo e manutenzione di software informatici; Consulenze in tema di software per sistemi di comunicazione; Manutenzione di software per sistemi di comunicazione; Fornitura di software non scaricabili online per la comunicazione; Servizi di consulenza in materia di hardware informatico; Consulenza nel settore dell'hardware e del software; Sviluppo di prodotti; Servizi di hosting e software come servizio e noleggio di software; Sicurezza informatica, protezione e recupero."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Automatizuoto duomenu saugojimo programine iranga; Gaminiu kurimo programine iranga; Pramones automatizavimo programine iranga; Kompiuteriu programine iranga, naudojama migruojant tarp skirtingu kompiuteriu tinklu operaciniu sistemu; Debesijos serveriai."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Trikdziu slopinimas elektros prietaisuose; Trukdziu slopinimas (elektriniuose aparatuose)."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Belaidzio balso pasto paslaugos; Balso rysio paslaugos naudojant interneto protokola [VoIP]; Telefono ir mobiliojo telefono paslaugos; Kompiuteriniai rysiai ir internetine prieiga."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Programines irangos tobulinimo ir kokybes gerinimo konsultacijos; Kompiuteriu programines irangos konsultacijos; Kompiuteriu programines irangos konsultacijos; Programines irangos kurimas; Programines irangos tobulinimas; Uzsakytinis programines irangos paketu projektavimas; Kompiuteriu programines irangos tobulinimas ir prieziura; Konsultacijos, susijusios su rysio sistemu programine iranga; Rysiu sistemu programines irangos prieziura; Internetines ne parsisiunciamos rysiu programines irangos parupinimas; Patarimai ir konsultacijos, susijusios su kompiuteriu aparatine iranga; Konsultacijos ir patarimai kompiuteriu programines ir aparatines irangos srityje; Produktu pletra; Prieglobos (talpinimo) paslaugos ir programine iranga kaip paslauga bei programines irangos nuoma; Informaciniu technologiju saugumas, apsauga, atkurimas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Datoru programmatura datu uzglabasanas automatizacijai; Programmatura produktu izstradei; Razosanas automatizacijas programmatura; Datoru programmatura darbibam starp dazadam datortikla operetajsistemam; Makonu serveri."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Elektroiericu interferences slapesanas pakalpojumi; Traucejumu slapesana elektroiericu darba."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Bezvadu balss pasta pakalpojumi; IP balss parraides [VoIP] komunikacijas pakalpojumi; Telefonu un mobilo telefonu sakaru pakalpojumi; Datorkomunikacija un Interneta piekluves pakalpojumi."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Konsultativie pakalpojumi programmaturas produktu izstrades un kvalitates uzlabosanas joma; Konsultesana datoru programmaturas joma; Konsultesana datoru programmaturas joma; Programmaturas izveide; Programmaturas izstrade; Programmaturas pakotnu individuala projektesana; Datoru programmaturas izstrade un uzturesana; Konsultacijas saistiba ar komunikaciju sistemu programmaturu; Sakaru sistemam paredzetas programmaturas uzturesana; Nelejupieladejamas programmaturas sniegsana tiessaiste, ko izmanto sakaros; Padomu sniegsana un konsultacijas saistiba ar datoru aparaturu; Konsultacijas un padomi datoru aparaturas un programmaturas joma; Produktu attistisana; Datnu izvietosanas un uzturesanas pakalpojumi, ari programmaturas izvietosana un uzturesana makoni un programmaturas iznomasana; Informacijas tehnologijas sistemu drosiba, aizsardziba un atjaunosana."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Softwer tal-kompjuter ghall-awtomatizzazzjoni tad-data; Softwer ghall-izvilupp ta' prodotti; Softwer ta' awtomazzjoni industrijali; Softwer tal-kompjuters ghall-uzu fil-migrazzjoni bejn sistemi operattivi differenti tan-networks tal-kompjuters; Cloud tas-servers."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' tnehhija tal-interferenza ghal apparat tal-elettriku; Tnehhija ta' interferenza f'apparat elettriku."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' messaggi bil-vuci bla fili; Servizzi ta' komunikazzjoni tat-tip Vuci fuq Protokoll tal-Internet (VOIP); Servizzi tat-telefon u telefon mobbli; Kommunikazzjoni tal-kompjuter u access ghall-Internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' ghoti ta' pariri fil-qasam tal-izvilupp tal-prodotti u tat-titjib tal-kwalità tas-softwer; Konsulenza (fis-softwer tal-kompjuter); Konsulenza (fis-softwer tal-kompjuter); Holqien ta' softwer; Zvilupp ta' softwer; Disinn ta' pakketti ta' softwer maghmula skont l-ordni; Zvilupp u manutenzjoni ta' softwer tal-kompjuter; Konsulenza relatata ma' softwer ghal sistemi tal-komunikazzjoni; Manutenzjoni ta' softwer ghal sistemi ta' komunikazzjoni; Provvista ta' softwer online li ma jistax jitnizzel ghall-uzu fil-komunikazzjoni; Servizzi ta' pariri u konsulenza relatati ma' hardwer tal-kompjuter; Servizzi ta' konsulenza u pariri fil-qasam tal-hardwer u s-softwer tal-kompjuter; L-izviluppar ta' prodotti; Servizzi ta' hosting u softwer bhala servizz u kiri ta' softwer; Sigurtà, protezzjoni u restawr tal-IT."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Oprogramowanie komputerowe do automatyzacji hurtowni danych; Oprogramowanie do rozwoju produktów; Oprogramowanie do automatyzacji przemyslowej; Oprogramowanie komputerowe do wykorzystania przy migracji miedzy róznymi systemami operacyjnymi sieci komputerowych; Serwery w chmurze."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi w zakresie eliminacji zaklócen dla urzadzen elektrycznych; Eliminacja zaklócen w instalacjach elektrycznych."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi bezprzewodowej poczty glosowej; Uslugi komunikacji glosowej za pomoca protokolów internetowych [VoIP]; Uslugi telefoniczne; Lacznosc poprzez sieci komputerowe i dostep do Internetu."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi doradcze w dziedzinie opracowywania produktów i podnoszenia jakosci oprogramowania; Doradztwo w zakresie oprogramowania komputerowego; Doradztwo w zakresie oprogramowania komputerowego; Tworzenie oprogramowania komputerowego; Opracowywanie oprogramowania komputerowego; Projektowanie pakietów oprogramowania na zamówienie; Opracowywanie i konserwacja oprogramowania komputerowego; Doradztwo zwiazane z oprogramowaniem do systemów komunikacyjnych; Konserwacja oprogramowania do systemów lacznosci; Zapewnianie oprogramowania online, nie do pobrania, do uzytku w komunikacji; Doradztwo i konsultacje w zakresie sprzetu komputerowego; Doradztwo i konsultacje w zakresie sprzetu i oprogramowania komputerowego; Opracowywanie produktów; Hosting, oprogramowanie jako usluga oraz wypozyczanie oprogramowania komputerowego; Uslugi w zakresie ochrony, bezpieczenstwa i odzyskiwania systemów informatycznych."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Software para automatizar armazenamento de dados; Software para desenvolvimento de produtos; Software para automação industrial; Software para usar na migração entre diferentes sistemas operativos de redes informáticas; Servidores para computação em nuvem."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de eliminação de interferências em aparelhos elétricos; Supressão de interferências em aparelhos elétricos."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de correio de voz sem fios; Serviços de comunicações de voz sobre protocolo Internet [VoIP]; Serviços de telefone e telemóveis; Comunicação informática e acesso à Internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de assessoria no domínio do desenvolvimento de produtos e da melhoria da qualidade de software; Consultoria em software; Consultoria em software; Criação de software; Desenvolvimento de software; Design customizado de pacotes de software; Desenvolvimento e manutenção de software; Consultoria em software para sistemas de comunicação; Manutenção de software para sistemas de comunicação; Fornecimento de software on-line não descarregável para uso em comunicação; Serviços de assessoria e de consultadoria relacionados com o hardware para computadores; Serviços de consultoria e assessoria em matéria de hardware e software; Desenvolvimento de produtos; Serviços de alojamento de sites de Internet e software como serviço e aluguer de software; Segurança, proteção e recuperação em matéria de TI (tecnologias de informação)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Software pentru automatizarea arhivarii de date; Software pentru dezvoltare de produse; Software pentru automatizare industriala; Software de calculator pentru migrarea între distinctele sisteme de operare folosite de reteaua informatica; Servere cloud."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de deparazitare pentru instalatii electrice; Deparazitarea instalatiilor electrice."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de posta vocala fara fir; Servicii de comunicare prin protocolul de telefonie prin internet [VoIP]; Servicii de telefonie si telefonie mobila; Comunicarea cu terminale de computere si acces internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de consultanta în domeniul dezvoltarii de produse si al îmbunatatirii calitatii produselor software; Consultanta în domeniul programelor de calculator; Consultanta în domeniul programelor de calculator; Creare de software; Dezvoltare de software; Proiectare la comanda de pachete de software; Dezvoltare si întretinere de software de calculator; Consultanta privind software-ul pentru sisteme de comunicatii; Întretinere de software pentru sisteme de comunicatii; Furnizare de software online care nu poate fi descarcat, pentru utilizare în comunicatii; Servicii de consiliere si consultanta privind hardware-ul de calculator; Consultanta si consiliere în materie de hardware si software de calculator; Dezvoltare de produse; Servicii de gazduire, software ca si serviciu si închiriere de software; Securitate, protectie si reconstituire IT."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Pocítacový softvér na automatizáciu skladovania dát; Softvér na vývoj produktov; Softvér pre priemyselnú automatizáciu; Pocítacový software pre pouzitie pri migrácii medzi odlisnými pocítacovými sietovými operacnými systémami; Cloudové servery."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Odrusovanie elektrických prístrojov; Odrusovanie elektrických prístrojov a zariadení."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Sluzby bezdrôtových hlasových schránok; VoIP komunikacné sluzby; Telefónne a mobilné telefónne sluzby; Pocítacová komunikácia a prístup na internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Poradenské sluzby v oblasti vývoja produktov a zlepsovania kvality softvéru; Poradenstvo v oblasti pocítacových programov; Poradenstvo v oblasti pocítacových programov; Tvorba softvéru; Vývoj pocítacového softvéru; Zákazkové navrhovanie softvérových balíkov; Vývoj a údrzba pocítacového softvéru; Konzultácie v oblasti softvéru pre komunikacné systémy; Údrzba softvéru pre komunikacné systémy; Poskytovanie online softvéru na pouzitie v oblasti komunikácie, bez moznosti stiahnutia; Poradenské a konzultacné sluzby týkajúce sa pocítacového hardvéru; Poradenstvo v oblasti pocítacového hardvéru a softvéru; Vývoj výrobkov; Hostovanie na internetových stránkach, softvérové sluzby, prenájom softvéru; Bezpecnost, ochrana a obnovovanie v oblasti informacných technológií."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Racunalniska programska oprema za avtomatizacijo shranjevanja podatkov; Programska oprema za razvoj izdelkov; Programska oprema za industrijsko avtomatizacijo; Racunalniska programska oprema, ki se uporablja pri migraciji med razlicnimi omreznimi operacijskimi sistemi; Strezniki v oblaku."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Storitve odpravljanja motenj pri elektricnih napravah; Odpravljanje motenj v elektricnih aparatih."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Storitve brezzicne glasovne poste; Komunikacijske storitve govora prek internetnega protokola [VoIP]; Telefonske storitve in storitve mobilne telefonije; Racunalniske komunikacije in dostop do svetovnega spleta."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Svetovalne storitve na podrocju razvoja proizvodov in izboljsanja kakovosti programske opreme; Svetovanje na podrocju racunalniske programske opreme; Svetovanje na podrocju racunalniske programske opreme; Ustvarjanje programske opreme; Razvoj programske opreme; Oblikovanje paketov programske opreme po meri; Razvoj in vzdrzevanje racunalniske programske opreme; Svetovanje v zvezi s programsko opremo za komunikacijske sisteme; Vzdrzevanje programske opreme za komunikacijske sisteme; Zagotavljanje neprenosljive spletne programske opreme za uporabo pri komuniciranju; Svetovalne in posvetovalne storitve v zvezi z racunalnisko strojno opremo; Svetovanje na podrocju racunalniske programske in strojne opreme; Razvoj izdelkov; Storitve gostovanja in nudenje programske opreme preko spleta ter dajanje programske opreme v najem; Racunalniska varnost, zascita in ponovna vzpostavitev racunalniskih sistemov."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software informático para automatizar el almacenamiento de datos; Software para el desarrollo de productos; Software para la automatización industrial; Programas informáticos para su uso en la migración entre diferentes sistemas operativos de redes informáticas; Servidores para la nube."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de supresión de interferencias para aparatos eléctricos; Supresión de interferencias de instalaciones eléctricas."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de mensajería de voz inalámbrica; Servicios de comunicación mediante Protocolo de Transmisión de la Voz por Internet [VoIP]; Servicios de telefonía móvil y fija; Comunicaciones telemáticas y acceso a internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de asesoramiento en materia de desarrollo de productos y mejora de la calidad de software; Consultoría sobre software; Consultoría sobre software; Creación de software; Desarrollo de software; Diseño personalizado de paquetes de software; Desarrollo y mantenimiento de software; Consultoría en software para sistemas de comunicación; Mantenimiento de software para sistemas de comunicación; Acceso a software en línea no descargable para su uso en la comunicación; Servicios de asesoramiento y consultoría de hardware informático; Servicios de consultoría y asesoría en el campo del hardware y software informáticos; Desarrollo de productos; Servicios de alojamientos de sitios web y alquiler de software; Seguridad, protección y restauración informáticas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Programvara för automatisering av datalagringsverksamhet; Programvara för produktutveckling; Programvara för industriautomation; Programvara för användning vid övergång mellan olika datornätoperativsystem; Molnservrar."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Avstörningstjänster för elektriska apparater; Avstörning av elektrisk apparatur."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Trådlösa röstposttjänster; Kommunikationstjänster avseende internettelefoni [VoIP]; Telefoni- och mobiltelefonitjänster; Datorkommunikation och internetåtkomst."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Rådgivning inom området för produktutveckling och kvalitetsförbättring av programvara; Rådgivning avseende datormjukvara; Rådgivning avseende datormjukvara; Skapande av mjukvaror; Utveckling av mjukvara; Specialutformning av programvarupaket; Utveckling och underhåll av programvara; Rådgivning om programvara för kommunikationssystem; Underhåll av programvara för kommunikationssystem; Tillhandahållande av icke nedladdningsbar programvara online för användning vid kommunikation; Konsult- och rådgivningstjänster relaterade till datormaskinvara; Konsulttjänster och rådgivning inom området datormaskinvara och datorprogramvara; Produktutveckling; Hostingtjänster, molntjänster (SaaS) och uthyrning av mjukvara; IT-säkerhetstjänster, -skyddstjänster och -återställande."
+        }
+      ]
+    },
+    "id": "a97d3dd0-bd50-4b3d-ba85-24ee33958dad",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "03.07.15",
+      "03.07.24",
+      "25.12.03",
+      "26.01.03"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "76"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Obere Wässere 3-7,Reutlingen, 72764",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "Geitz Patentanwälte PartG mbB"
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210409",
+        "applicationNumber": "18449633"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310409",
+      "lastPublicationDate": "20210426",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20210803",
+        "registrationNumber": "18449633"
+      }
+    },
+    "version": "20260511230258",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LORI"
+    }
+  },
+  "_uri": "/mark/em/a97d3dd0-bd50-4b3d-ba85-24ee33958dad",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.454Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

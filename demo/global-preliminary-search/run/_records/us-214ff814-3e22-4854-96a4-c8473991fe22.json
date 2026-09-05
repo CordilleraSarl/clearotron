@@ -1,0 +1,196 @@
+{
+  "uri": "/mark/us/214ff814-3e22-4854-96a4-c8473991fe22",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "214ff814-3e22-4854-96a4-c8473991fe22",
+  "applicationNumber": "99753270",
+  "registrationNumber": null,
+  "applicationDate": "2026-04-09",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QORO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Downloadable software for social networking; Downloadable computer application software for mobile phones, namely, software for social networking and community management; Downloadable software in the nature of a mobile application for social networking and community management",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Software as a service (SAAS) services featuring software for social networking and community management",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "QORO, LTD.",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Kevin Keener",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "124-128 City Road, London, EC1V 2NX, GBRI",
+        "applicantAddressCity": "London",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantAddressPostalCode": "EC1V 2NX",
+        "applicantAddressStreet": "124-128 City Road",
+        "applicantJurisdictionOfIncorporation": "UNITED KINGDOM",
+        "applicantName": "QORO, LTD."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Downloadable software for social networking; Downloadable computer application software for mobile phones, namely, software for social networking and community management; Downloadable software in the nature of a mobile application for social networking and community management"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Software as a service (SAAS) services featuring software for social networking and community management"
+        }
+      ]
+    },
+    "id": "214ff814-3e22-4854-96a4-c8473991fe22",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260820",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20260818",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20260730",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20260409",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20260409",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "124-128 City Road, London, EC1V 2NX, GBRI",
+        "city": "London",
+        "countryCode": "GB",
+        "countryName": "United Kingdom",
+        "jurisdictionOfIncorporation": "UNITED KINGDOM",
+        "name": "QORO, LTD.",
+        "postalCode": "EC1V 2NX",
+        "street": "124-128 City Road"
+      },
+      {
+        "address": "124-128 City Road, London, EC1V 2NX, GBRI",
+        "city": "London",
+        "countryCode": "GB",
+        "countryName": "United Kingdom",
+        "jurisdictionOfIncorporation": "UNITED KINGDOM",
+        "name": "QORO, LTD.",
+        "postalCode": "EC1V 2NX",
+        "street": "124-128 City Road"
+      }
+    ],
+    "recordLastUpdated": "20260902",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Suite 1000, Chicago, IL 60602, United States",
+        "representativeCorrespondentAddressLines": [
+          "Suite 1000",
+          "Chicago, IL 60602",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Kevin Keener KEENER AND ASSOCIATES, P.C., 33 North Dearborn Street"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Suite 1000, Chicago, IL 60602, United States",
+        "representativeAddressLines": [
+          "Suite 1000",
+          "Chicago, IL 60602",
+          "United States"
+        ],
+        "representativeName": "Kevin Keener"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260409",
+        "applicationNumber": "99753270"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "PUBLICATION & ISSUE REVIEW COMPLETE",
+        "markOfficialStatusCode": "681",
+        "markOfficialStatusDate": "20260828",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260902054130",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORO"
+    }
+  },
+  "_uri": "/mark/us/214ff814-3e22-4854-96a4-c8473991fe22",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:17.666Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

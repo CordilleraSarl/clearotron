@@ -1,0 +1,753 @@
+{
+  "uri": "/mark/em/40ae38f7-cd3f-412e-8c01-ac58c75e0036",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "40ae38f7-cd3f-412e-8c01-ac58c75e0036",
+  "applicationNumber": "18985046",
+  "registrationNumber": "18985046",
+  "applicationDate": "2024-02-09",
+  "registrationDate": "2024-07-23",
+  "expiryDate": "2034-02-09",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-04-15",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "DORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Vedecké prístroje a nástroje na merení; Skenery (snímace obrazu); 3D skenery; Lasery pro úcely merení; Software pro lékarské úcely; Software pro prístroje a nástroje pro merení; Mericí prístroje a zarízení.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "cs",
+      "description": "Optické skenery pro úcely lékarského vysetrení; Skenery na lékarskou diagnostiku; Zarízení pro analýzu ucha; Zarízení pro analýzu naslouchacích aparátu; Vybavení pro vysetrení ucha; Lékarské prístroje na merení, ovládání a analýzu pro reprodukci dat na pocítacové obrazovce pomocí softwaru a bezdrátového prenosu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Videnskabelige apparater og instrumenter til måling; Billedskannere; 3D-scannere; Lasere til brug ved målinger; Software til medicinsk brug; Software til måleapparater og -instrumenter; Måleinstrumenter og -apparatur.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "da",
+      "description": "Optiske scannere til anvendelse ved medicinsk undersøgelse; Scannere til medicinsk diagnosticering; Apparater til analyse af øret; Apparater til analyse af høreapparater; Udstyr til undersøgelse af øret; Medicinske apparater til måling, styring og analyse til gengivelse af data på en computerskærm ved hjælp af software og ved trådløs transmission.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Wetenschappelijke toestellen en instrumenten voor het meten; Beeldscanners; 3D scanners; Lasers voor meetdoeleinden; Software voor medisch gebruik; Software voor meettoestellen en -instrumenten; Meetapparatuur en -instrumenten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "nl",
+      "description": "Optische scanners voor medische inspectiedoeleinden; Scanners voor medische diagnose; Analysetoestellen voor de oren; Analysetoestellen voor gehoorapparaten; Uitrusting voor ooronderzoek; Medische meet-, bedienings- en analysetoestellen voor het weergeven van gegevens op een computerscherm met behulp van software en via draadloze transmissiewegen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Scientific apparatus and instruments for measurement; Image scanners; 3D scanners; Lasers for measuring purposes; software for medical purposes; Software for measuring apparatus and instruments; Measuring apparatus and instruments.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "en",
+      "description": "Optical scanners for medical inspection purposes; Scanners for medical diagnosis; Ear analysis devices; Hearing aid devices; Equipment for examination of the ear; Medical measuring, control and analysis instruments for the reproduction of data on a computer screen using software and wireless transmission.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Väljahingatavas õhus sisalduva atsetooni mõõtmise; Kujutise skannerid; 3D-skannerid; Mõõtelaserid; Meditsiiniliseks otstarbeks kasutatav tarkvara; Tarkvara mõõteseadmete ja -instrumentide tarbeks; Mõõtevahendid ja -seadmed.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "et",
+      "description": "Meditsiiniliste uuringute optilised skannerid; Skannerid meditsiiniliseks diagnoosiks; Kõrvaanalüüsiseadmed; Kuulmisseadmete analüüsiseadmed; Kõrvauuringute seadmed; Meditsiinilised mõõte-, juhtimis- ja analüüsiseadmed andmete reprodutseerimiseks arvutiekraanil tarkvara abil ja juhtmeta edastamise teel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Tieteelliset laitteet ja kojeet; Skannerit; 3D-skannerit; Laserit mittaustarkoituksiin; Ohjelmistot lääkinnälliseen käyttöön; Mittauslaitteiden ja -kojeiden ohjelmistot; Mittauslaitteet ja välineet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "fi",
+      "description": "Optiset skannerit lääketieteellisiin tutkimustarkoituksiin; Skannerit lääketieteellistä diagnosointia varten; Korvan analyysilaitteet; Kuulolaitteiden analyysilaitteet; Laitteet korvan tutkimiseen; Lääketieteelliset mittaus-, ohjaus- ja analyysilaitteet tietojen näyttämiseksi tietokonenäytöllä ohjelmistojen avulla ja langattomasti siirrettyinä.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Appareils et instruments scientifiques de mesurage; scanners; scanners tridimensionnels; lasers de mesure; logiciel à usage médical; logiciels pour appareils et instruments de mesurage; appareils et instruments de mesurage.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "fr",
+      "description": "Scanners optiques pour examens médicaux; scanners pour le diagnostic médical; dispositifs d'analyse de l'oreille; dispositifs d'analyse d'appareils auditifs; équipements d'examen d'oreilles; appareils médicaux de mesure, de commande et d'analyse pour la reproduction de données sur un écran d'ordinateur à l'aide de logiciels et par voie de transmission sans fil.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Wissenschaftliche Apparate und Instrumente für die Messung; Bildscanner; 3D-Scanner; Laser für Messzwecke; Software für medizinische Zwecke; Software für Messapparate und -instrumente; Messapparate und -instrumente.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "de",
+      "description": "Optische Scanner für medizinische Untersuchungszwecke; Scanner für medizinische Diagnosen; Vorrichtungen zur Analyse des Ohrs; Vorrichtungen zur Analyse von Hörgeräten; Ausrüstung zur Ohrenuntersuchung; Medizinische Geräte zur Messung, Steuerung und Analyse für die Reproduktion von Daten auf einem Computerbildschirm mithilfe von Programmen und durch drahtlose Übertragung.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Znanstveni uredaji i instrumenti za mjerenje; Skeneri za slike; 3D skeneri; Laseri za uporabu u mjerenju; Softver za medicinske potrebe; Softver za mjerne uredaje i instrumente; Mjerni aparati i instrumenti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "hr",
+      "description": "Opticki skeneri za medicinski pregled; Skeneri za medicinsku dijagnostiku; Uredaji za analizu uha; Uredaji za analizu slusnih pomagala; Oprema za pregled usiju; Medicinski uredaji za mjerenje, upravljanje i analizu za reprodukciju podataka na zaslonu racunala pomocu softvera i bezicnog prijenosa.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Tudományos készülékek és eszközök a kilélegzett levego acetontartalmának mérésére; Képszkennerek; Háromdimenziós szkennerek; Lézerek mérési célokra; Szoftverek gyógyászati célokra; Méroberendezésekhez és -muszerekhez való szoftverek; Méroeszközök- és berendezések.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "hu",
+      "description": "Optikai szkennerek gyógyászati vizsgálati célokra; Orvosi diagnosztikai szkennerek; Fülelemzo eszközök; Hallókészülék-elemzo eszközök; Fülvizsgáló eszközök; Gyógyászati méro-, vezérlo- és elemzokészülékek adatok számítógép képernyon történo másolásához szoftverek segítségével és vezeték nélküli átvitel útján.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Apparecchi e strumenti scientifici per la misura; Scanner di immagini; Scanner 3D; Laser per misurazioni; Software per uso medico; Software per apparecchi e strumenti per misurazioni; Apparecchi e strumenti di misura.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "it",
+      "description": "Scanner ottici per controlli medici; Scanner per diagnostica medica; Dispositivi per l'analisi dell'orecchio; Dispositivi per l'analisi di apparecchi acustici; Attrezzatura per esame all'apparato uditivo; Apparecchi medici di misurazione, controllo e analisi per la riproduzione di dati su uno schermo per computer per mezzo di software e mediante trasmissione wireless.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Moksliniai aparatai ir prietaisai; Vaizdo skeneriai; 3D skeneriai; Lazeriai matavimo reikmems; Programine iranga medicinos reikmems; Matavimo prietaisu ir aparatu programine iranga; Matavimo aparatai ir instrumentai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "lt",
+      "description": "Optiniai skaitytuvai medicinines apziuros reikmems; Medicinines diagnozes nustatymo skaitytuvai; Ausu analizes prietaisai; Klausos aparatu analizes prietaisai; Iranga ausu tyrimui; Medicininiai matavimo, valdymo ir analizes prietaisai, skirti duomenims atkurti kompiuterio ekrane naudojant programine iranga ir belaidziu rysiu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Zinatniska aparatura un instrumenti; Attelu skeneri; 3D skeneri; Lazeri merisanas nolukiem; Programmatura mediciniskai lietosanai; Programmatura iericu un instrumentu merisanai; Merisanas ierices un instrumenti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "lv",
+      "description": "Optiskie skeneri medicinisko parbauzu merkiem; Skeneri mediciniskai diagnostikai; Ierices ausu analizei; Ierices dzirdes aparatu analizei; Iekartas auss parbaudei; Mediciniski meraparati, vadibas un analizes aparati datu reproducesanai uz datora ekrana, izmantojot programmaturu un bezvadu parraidi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Apparat u strumenti xjentifici ghall-kejl; Magna li tiskannja l-immagini; Skaners 3D; Lejzers ghal skopijiet ta' kejl; Softwer ghal skopjiet medici; Softwer ghall-apparat u l-istrumenti tal-kejl; Apparat u strumenti ta' kejl.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "mt",
+      "description": "Skaners ottici ghal skopijiet ta' spezzjoni medika; Skaners ghall-uzu ta' dijanjosi medika; Taghmir ghall-analizi tal-widnejn; Taghmir ghall-analizi ta' apparat tas-smigh; Taghmir ghall-ezami tal-widna; Apparat mediku ghall-kejl, ghall-kontroll u ghall-analizi ghar-riproduzzjoni ta' data fuq skrin tal-kompjuter bis-sahha ta' software tal-kompjuter u permezz tat-trazmissjoni minghajr fili.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Urzadzenia i przyrzady naukowe do pomiaru; Skanery obrazu; Skanery 3D; Lasery do celów pomiarowych; Oprogramowanie do celów medycznych; Oprogramowanie do urzadzen i przyrzadów pomiarowych; Urzadzenia i instrumenty pomiarowe.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "pl",
+      "description": "Skanery optyczne do badan medycznych; Skanery do diagnostyki medycznej; Urzadzenia do badania uszu; Urzadzenia do analizy aparatów sluchowych; Sprzet do badania ucha; Medyczne urzadzenia pomiarowe, kontrolne i analityczne do odtwarzania danych na ekranie komputera przy pomocy oprogramowania i za posrednictwem transmisji bezprzewodowej.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Aparelhos e instrumentos científicos para medição; Scanners de imagem; Digitalizadores (scanners) tridimensionais; Lasers para usar em medição; Software para uso medicinal; Software para aparelhos e instrumentos de medida; Instrumentos e aparelhos de medição.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "pt",
+      "description": "Scanners óticos para fins de inspeção médica; Scanners para diagnóstico médico; Dispositivos de análise do ouvido; Dispositivos de análise de aparelhos auditivos; Equipamento para exame dos ouvidos; Aparelhos médicos de medida, de comando e de análise para a reprodução de dados num ecrã de computador, com recurso a software e por via de transmissão sem fios.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Aparate si instrumente stiintifice pentru masurarea; Scanere de imagini; Scanere 3D; Lasere utilizate pentru masurare; Software pentru scopuri medicale; Software pentru aparate si instrumente de masurare; Instrumente si aparate de masurat.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "ro",
+      "description": "Scanere optice pentru inspectie medicala; Scanere pentru diagnosticare medicala; Dispozitive de analizare a urechii; Dispozitive de analizare a aparatului auditiv; Echipament pentru examinarea urechilor; Aparate medicale de masurare, de comanda si de analizare pentru reproducerea de date pe un ecran de calculator cu ajutorul softurilor si prin transmisie fara fir.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Vedecké prístroje a nástroje na meranie; Skenery; 3D skenery; Laser na úcely merania; Softvér na lekárske úcely; Softvér pre meracie zariadenia a prístroje; Zariadenia a nástroje na meranie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "sk",
+      "description": "Optické skenery na úcely lekárskeho vysetrenia; Skenery na lekársku diagnostiku; Zariadenia na analýzu ucha; Zariadenia na analýzu nacúvacích prístrojov; Vybavenie na vysetrenie usí; Lekárske prístroje na meranie, ovládanie a analýzu, ktoré umoznujú reprodukciu údajov na monitore pocítaca pomocou softvéru a bezdrôtového prenosu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Znanstveni aparati in instrumenti za merjenje; Skenerji; 3D skenerji; Laserji za merjenje; Programska oprema za medicinske namene; Programska oprema za merilne aparate in instrumente; Merilni aparati in instrumenti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "sl",
+      "description": "Opticni citalniki za namene medicinskega pregledovanja; Skenerji za medicinsko diagnosticiranje; Usesni analizatorji; Analizatorji slusnih aparatov; Oprema za pregled uses; Medicinski merilni, krmilni in analizni aparati za reprodukcijo podatkov na racunalniskem zaslonu s pomocjo racunalniske programske opreme in z brezzicnim prenosom.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Aparatos e instrumentos científicos para medir; Aparatos de escáner de imágenes; Escáneres 3D; Láseres destinados a la medición; Programas de ordenador para uso médico; Software de aparatos e instrumentos medidores; Instrumentos y aparatos de medición.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "es",
+      "description": "Escáneres ópticos con una finalidad de inspección médica; Escáneres para diagnósticos médicos; Dispositivos de análisis auditivo; Dispositivos para el análisis de audífonos; Equipos de examen del oído; Aparatos médicos de medición, control y análisis para la reproducción de datos en una pantalla de ordenador con ayuda de software y transmisión inalámbrica.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Vetenskapliga apparater och instrument för mätning; Bildskannrar; 3D-skannrar; Lasrar för mätändamål; Programvara för medicinska ändamål; Programvara för mätpparater och -instrument; Mätapparater och instrument.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "sw",
+      "description": "Optiska skannrar för medicinska inspektionsändamål; Skannrar för medicinsk diagnos; Anordningar för analys av öron; Anordningar för analys av hörapparater; Utrustning för öronundersökning; Medicinska apparater för mätning, kontroll och analys för återgivning av data på en datorskärm med hjälp av programvara och via trådlös överföring.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "PROD' EMBOUT TECHNOLOGIE",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "CABINET @MARK",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Créteil Parc - 10, rue Soddy,Créteil, 94000",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "PROD' EMBOUT TECHNOLOGIE"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Vedecké prístroje a nástroje na merení; Skenery (snímace obrazu); 3D skenery; Lasery pro úcely merení; Software pro lékarské úcely; Software pro prístroje a nástroje pro merení; Mericí prístroje a zarízení."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Optické skenery pro úcely lékarského vysetrení; Skenery na lékarskou diagnostiku; Zarízení pro analýzu ucha; Zarízení pro analýzu naslouchacích aparátu; Vybavení pro vysetrení ucha; Lékarské prístroje na merení, ovládání a analýzu pro reprodukci dat na pocítacové obrazovce pomocí softwaru a bezdrátového prenosu."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Videnskabelige apparater og instrumenter til måling; Billedskannere; 3D-scannere; Lasere til brug ved målinger; Software til medicinsk brug; Software til måleapparater og -instrumenter; Måleinstrumenter og -apparatur."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Optiske scannere til anvendelse ved medicinsk undersøgelse; Scannere til medicinsk diagnosticering; Apparater til analyse af øret; Apparater til analyse af høreapparater; Udstyr til undersøgelse af øret; Medicinske apparater til måling, styring og analyse til gengivelse af data på en computerskærm ved hjælp af software og ved trådløs transmission."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Wetenschappelijke toestellen en instrumenten voor het meten; Beeldscanners; 3D scanners; Lasers voor meetdoeleinden; Software voor medisch gebruik; Software voor meettoestellen en -instrumenten; Meetapparatuur en -instrumenten."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Optische scanners voor medische inspectiedoeleinden; Scanners voor medische diagnose; Analysetoestellen voor de oren; Analysetoestellen voor gehoorapparaten; Uitrusting voor ooronderzoek; Medische meet-, bedienings- en analysetoestellen voor het weergeven van gegevens op een computerscherm met behulp van software en via draadloze transmissiewegen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific apparatus and instruments for measurement; Image scanners; 3D scanners; Lasers for measuring purposes; software for medical purposes; Software for measuring apparatus and instruments; Measuring apparatus and instruments."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Optical scanners for medical inspection purposes; Scanners for medical diagnosis; Ear analysis devices; Hearing aid devices; Equipment for examination of the ear; Medical measuring, control and analysis instruments for the reproduction of data on a computer screen using software and wireless transmission."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Väljahingatavas õhus sisalduva atsetooni mõõtmise; Kujutise skannerid; 3D-skannerid; Mõõtelaserid; Meditsiiniliseks otstarbeks kasutatav tarkvara; Tarkvara mõõteseadmete ja -instrumentide tarbeks; Mõõtevahendid ja -seadmed."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Meditsiiniliste uuringute optilised skannerid; Skannerid meditsiiniliseks diagnoosiks; Kõrvaanalüüsiseadmed; Kuulmisseadmete analüüsiseadmed; Kõrvauuringute seadmed; Meditsiinilised mõõte-, juhtimis- ja analüüsiseadmed andmete reprodutseerimiseks arvutiekraanil tarkvara abil ja juhtmeta edastamise teel."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tieteelliset laitteet ja kojeet; Skannerit; 3D-skannerit; Laserit mittaustarkoituksiin; Ohjelmistot lääkinnälliseen käyttöön; Mittauslaitteiden ja -kojeiden ohjelmistot; Mittauslaitteet ja välineet."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Optiset skannerit lääketieteellisiin tutkimustarkoituksiin; Skannerit lääketieteellistä diagnosointia varten; Korvan analyysilaitteet; Kuulolaitteiden analyysilaitteet; Laitteet korvan tutkimiseen; Lääketieteelliset mittaus-, ohjaus- ja analyysilaitteet tietojen näyttämiseksi tietokonenäytöllä ohjelmistojen avulla ja langattomasti siirrettyinä."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Appareils et instruments scientifiques de mesurage; scanners; scanners tridimensionnels; lasers de mesure; logiciel à usage médical; logiciels pour appareils et instruments de mesurage; appareils et instruments de mesurage."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Scanners optiques pour examens médicaux; scanners pour le diagnostic médical; dispositifs d'analyse de l'oreille; dispositifs d'analyse d'appareils auditifs; équipements d'examen d'oreilles; appareils médicaux de mesure, de commande et d'analyse pour la reproduction de données sur un écran d'ordinateur à l'aide de logiciels et par voie de transmission sans fil."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Wissenschaftliche Apparate und Instrumente für die Messung; Bildscanner; 3D-Scanner; Laser für Messzwecke; Software für medizinische Zwecke; Software für Messapparate und -instrumente; Messapparate und -instrumente."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Optische Scanner für medizinische Untersuchungszwecke; Scanner für medizinische Diagnosen; Vorrichtungen zur Analyse des Ohrs; Vorrichtungen zur Analyse von Hörgeräten; Ausrüstung zur Ohrenuntersuchung; Medizinische Geräte zur Messung, Steuerung und Analyse für die Reproduktion von Daten auf einem Computerbildschirm mithilfe von Programmen und durch drahtlose Übertragung."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Znanstveni uredaji i instrumenti za mjerenje; Skeneri za slike; 3D skeneri; Laseri za uporabu u mjerenju; Softver za medicinske potrebe; Softver za mjerne uredaje i instrumente; Mjerni aparati i instrumenti."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Opticki skeneri za medicinski pregled; Skeneri za medicinsku dijagnostiku; Uredaji za analizu uha; Uredaji za analizu slusnih pomagala; Oprema za pregled usiju; Medicinski uredaji za mjerenje, upravljanje i analizu za reprodukciju podataka na zaslonu racunala pomocu softvera i bezicnog prijenosa."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Tudományos készülékek és eszközök a kilélegzett levego acetontartalmának mérésére; Képszkennerek; Háromdimenziós szkennerek; Lézerek mérési célokra; Szoftverek gyógyászati célokra; Méroberendezésekhez és -muszerekhez való szoftverek; Méroeszközök- és berendezések."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Optikai szkennerek gyógyászati vizsgálati célokra; Orvosi diagnosztikai szkennerek; Fülelemzo eszközök; Hallókészülék-elemzo eszközök; Fülvizsgáló eszközök; Gyógyászati méro-, vezérlo- és elemzokészülékek adatok számítógép képernyon történo másolásához szoftverek segítségével és vezeték nélküli átvitel útján."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Apparecchi e strumenti scientifici per la misura; Scanner di immagini; Scanner 3D; Laser per misurazioni; Software per uso medico; Software per apparecchi e strumenti per misurazioni; Apparecchi e strumenti di misura."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Scanner ottici per controlli medici; Scanner per diagnostica medica; Dispositivi per l'analisi dell'orecchio; Dispositivi per l'analisi di apparecchi acustici; Attrezzatura per esame all'apparato uditivo; Apparecchi medici di misurazione, controllo e analisi per la riproduzione di dati su uno schermo per computer per mezzo di software e mediante trasmissione wireless."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Moksliniai aparatai ir prietaisai; Vaizdo skeneriai; 3D skeneriai; Lazeriai matavimo reikmems; Programine iranga medicinos reikmems; Matavimo prietaisu ir aparatu programine iranga; Matavimo aparatai ir instrumentai."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Optiniai skaitytuvai medicinines apziuros reikmems; Medicinines diagnozes nustatymo skaitytuvai; Ausu analizes prietaisai; Klausos aparatu analizes prietaisai; Iranga ausu tyrimui; Medicininiai matavimo, valdymo ir analizes prietaisai, skirti duomenims atkurti kompiuterio ekrane naudojant programine iranga ir belaidziu rysiu."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Zinatniska aparatura un instrumenti; Attelu skeneri; 3D skeneri; Lazeri merisanas nolukiem; Programmatura mediciniskai lietosanai; Programmatura iericu un instrumentu merisanai; Merisanas ierices un instrumenti."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Optiskie skeneri medicinisko parbauzu merkiem; Skeneri mediciniskai diagnostikai; Ierices ausu analizei; Ierices dzirdes aparatu analizei; Iekartas auss parbaudei; Mediciniski meraparati, vadibas un analizes aparati datu reproducesanai uz datora ekrana, izmantojot programmaturu un bezvadu parraidi."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Apparat u strumenti xjentifici ghall-kejl; Magna li tiskannja l-immagini; Skaners 3D; Lejzers ghal skopijiet ta' kejl; Softwer ghal skopjiet medici; Softwer ghall-apparat u l-istrumenti tal-kejl; Apparat u strumenti ta' kejl."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Skaners ottici ghal skopijiet ta' spezzjoni medika; Skaners ghall-uzu ta' dijanjosi medika; Taghmir ghall-analizi tal-widnejn; Taghmir ghall-analizi ta' apparat tas-smigh; Taghmir ghall-ezami tal-widna; Apparat mediku ghall-kejl, ghall-kontroll u ghall-analizi ghar-riproduzzjoni ta' data fuq skrin tal-kompjuter bis-sahha ta' software tal-kompjuter u permezz tat-trazmissjoni minghajr fili."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Urzadzenia i przyrzady naukowe do pomiaru; Skanery obrazu; Skanery 3D; Lasery do celów pomiarowych; Oprogramowanie do celów medycznych; Oprogramowanie do urzadzen i przyrzadów pomiarowych; Urzadzenia i instrumenty pomiarowe."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Skanery optyczne do badan medycznych; Skanery do diagnostyki medycznej; Urzadzenia do badania uszu; Urzadzenia do analizy aparatów sluchowych; Sprzet do badania ucha; Medyczne urzadzenia pomiarowe, kontrolne i analityczne do odtwarzania danych na ekranie komputera przy pomocy oprogramowania i za posrednictwem transmisji bezprzewodowej."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Aparelhos e instrumentos científicos para medição; Scanners de imagem; Digitalizadores (scanners) tridimensionais; Lasers para usar em medição; Software para uso medicinal; Software para aparelhos e instrumentos de medida; Instrumentos e aparelhos de medição."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Scanners óticos para fins de inspeção médica; Scanners para diagnóstico médico; Dispositivos de análise do ouvido; Dispositivos de análise de aparelhos auditivos; Equipamento para exame dos ouvidos; Aparelhos médicos de medida, de comando e de análise para a reprodução de dados num ecrã de computador, com recurso a software e por via de transmissão sem fios."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Aparate si instrumente stiintifice pentru masurarea; Scanere de imagini; Scanere 3D; Lasere utilizate pentru masurare; Software pentru scopuri medicale; Software pentru aparate si instrumente de masurare; Instrumente si aparate de masurat."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Scanere optice pentru inspectie medicala; Scanere pentru diagnosticare medicala; Dispozitive de analizare a urechii; Dispozitive de analizare a aparatului auditiv; Echipament pentru examinarea urechilor; Aparate medicale de masurare, de comanda si de analizare pentru reproducerea de date pe un ecran de calculator cu ajutorul softurilor si prin transmisie fara fir."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Vedecké prístroje a nástroje na meranie; Skenery; 3D skenery; Laser na úcely merania; Softvér na lekárske úcely; Softvér pre meracie zariadenia a prístroje; Zariadenia a nástroje na meranie."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Optické skenery na úcely lekárskeho vysetrenia; Skenery na lekársku diagnostiku; Zariadenia na analýzu ucha; Zariadenia na analýzu nacúvacích prístrojov; Vybavenie na vysetrenie usí; Lekárske prístroje na meranie, ovládanie a analýzu, ktoré umoznujú reprodukciu údajov na monitore pocítaca pomocou softvéru a bezdrôtového prenosu."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Znanstveni aparati in instrumenti za merjenje; Skenerji; 3D skenerji; Laserji za merjenje; Programska oprema za medicinske namene; Programska oprema za merilne aparate in instrumente; Merilni aparati in instrumenti."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Opticni citalniki za namene medicinskega pregledovanja; Skenerji za medicinsko diagnosticiranje; Usesni analizatorji; Analizatorji slusnih aparatov; Oprema za pregled uses; Medicinski merilni, krmilni in analizni aparati za reprodukcijo podatkov na racunalniskem zaslonu s pomocjo racunalniske programske opreme in z brezzicnim prenosom."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aparatos e instrumentos científicos para medir; Aparatos de escáner de imágenes; Escáneres 3D; Láseres destinados a la medición; Programas de ordenador para uso médico; Software de aparatos e instrumentos medidores; Instrumentos y aparatos de medición."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Escáneres ópticos con una finalidad de inspección médica; Escáneres para diagnósticos médicos; Dispositivos de análisis auditivo; Dispositivos para el análisis de audífonos; Equipos de examen del oído; Aparatos médicos de medición, control y análisis para la reproducción de datos en una pantalla de ordenador con ayuda de software y transmisión inalámbrica."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Vetenskapliga apparater och instrument för mätning; Bildskannrar; 3D-skannrar; Lasrar för mätändamål; Programvara för medicinska ändamål; Programvara för mätpparater och -instrument; Mätapparater och instrument."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Optiska skannrar för medicinska inspektionsändamål; Skannrar för medicinsk diagnos; Anordningar för analys av öron; Anordningar för analys av hörapparater; Utrustning för öronundersökning; Medicinska apparater för mätning, kontroll och analys för återgivning av data på en datorskärm med hjälp av programvara och via trådlös överföring."
+        }
+      ]
+    },
+    "id": "40ae38f7-cd3f-412e-8c01-ac58c75e0036",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "71"
+      }
+    ],
+    "recordLastUpdated": "20260512",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "16, rue Milton,Paris, 75009",
+        "representativeAddressCountryCode": "FR",
+        "representativeAddressCountryName": "France",
+        "representativeName": "CABINET @MARK"
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240209",
+        "applicationNumber": "18985046"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340209",
+      "lastPublicationDate": "20240415",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20240723",
+        "registrationNumber": "18985046"
+      }
+    },
+    "version": "20260512005403",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DORI"
+    }
+  },
+  "_uri": "/mark/em/40ae38f7-cd3f-412e-8c01-ac58c75e0036",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.997Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

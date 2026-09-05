@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/cn/7f9b1f49-dd42-4aab-b1af-bdf475e02229",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "7f9b1f49-dd42-4aab-b1af-bdf475e02229",
+  "applicationNumber": "7763198",
+  "registrationNumber": "7763198",
+  "applicationDate": "2009-10-16",
+  "registrationDate": "2011-03-21",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2010-12-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2023-11-20",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "KORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "计算机软件(已录制);印刷电路;集成电路;变压器;整流器;配电箱(电);控制板(电);整流用电力装置;电镀设备;电解装置",
+      "translation_language": "en",
+      "translation": "Computer software (recorded); printed circuits; integrated circuits; transformers; rectifiers; distribution boxes (electricity); control panels (electricity); power devices for rectification; electroplating equipment; electrolysis devices"
+    }
+  ],
+  "owner": "Hunan Kerui Transformer Electric Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "湖南省株洲(国家)高新技术开发区黑龙江路629号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Hunan Kerui Transformer Electric Co., Ltd.",
+        "applicantNativeName": "湖南科瑞变流电气股份有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software (recorded); printed circuits; integrated circuits; transformers; rectifiers; distribution boxes (electricity); control panels (electricity); power devices for rectification; electroplating equipment; electrolysis devices",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计算机软件(已录制);印刷电路;集成电路;变压器;整流器;配电箱(电);控制板(电);整流用电力装置;电镀设备;电解装置"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Electrical controlling apparatus and equipments",
+        "Apparatus for electroplating and electrolysers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0914",
+          "subNatGoodsServicesDescription": "Electrical controlling apparatus and equipments"
+        },
+        {
+          "subNatClassNumber": "0915",
+          "subNatGoodsServicesDescription": "Apparatus for electroplating and electrolysers"
+        }
+      ]
+    },
+    "id": "7f9b1f49-dd42-4aab-b1af-bdf475e02229",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1244"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "湖南维智知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20091016",
+        "applicationNumber": "7763198"
+      },
+      "cancellationDate": "20231120",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20101220",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20110321",
+        "registrationNumber": "7763198"
+      }
+    },
+    "version": "20251002001939",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "KORI"
+    }
+  },
+  "_uri": "/mark/cn/7f9b1f49-dd42-4aab-b1af-bdf475e02229",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.792Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

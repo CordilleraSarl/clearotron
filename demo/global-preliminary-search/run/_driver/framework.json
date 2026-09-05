@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "framework_key": "house-default",
+  "title": "Generic default risk framework",
+  "source_deck": "Generic house default — IP Risk Assessment Framework.pptx (Privileged & Confidential), completed by the reviewing lawyer 2026-08-31; supersedes the 2026-07-05 transcription (doc 50), which was partial",
+  "entity_label": "the company",
+  "bands": [
+    {
+      "label": "Very High",
+      "tone": "severe"
+    },
+    {
+      "label": "High",
+      "tone": "high"
+    },
+    {
+      "label": "Moderate",
+      "tone": "medium"
+    },
+    {
+      "label": "Manageable",
+      "tone": "low"
+    }
+  ],
+  "structure": {
+    "kind": "bands"
+  }
+}

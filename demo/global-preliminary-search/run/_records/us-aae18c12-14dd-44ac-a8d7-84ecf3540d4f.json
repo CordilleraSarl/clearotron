@@ -1,0 +1,268 @@
+{
+  "uri": "/mark/us/aae18c12-14dd-44ac-a8d7-84ecf3540d4f",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "aae18c12-14dd-44ac-a8d7-84ecf3540d4f",
+  "applicationNumber": "88718835",
+  "registrationNumber": null,
+  "applicationDate": "2019-12-07",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2020-11-12",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "LEAVE NO RIM NETLESS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Provision of information in the field of recreational activities, namely, basketball focusing on making sure every basketball hoop has a net on it",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "netz 4 Life",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "13681 Newport Ave., Ste.8-163, Tustin, CA, 92780",
+        "applicantAddressCity": "Tustin",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "92780",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "13681 Newport Ave., Ste.8-163",
+        "applicantJurisdictionOfIncorporation": "CALIFORNIA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "netz 4 Life",
+        "applicantSecondaryAddressUnit": "13681Newport Ave, Ste. 8-163"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Provision of information in the field of recreational activities, namely, basketball focusing on making sure every basketball hoop has a net on it"
+        }
+      ]
+    },
+    "id": "aae18c12-14dd-44ac-a8d7-84ecf3540d4f",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20201127",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - INCOMPLETE RESPONSE"
+      },
+      {
+        "date": "20201126",
+        "descriptionText": "ABANDONMENT - INCOMPLETE RESPONSE"
+      },
+      {
+        "date": "20200511",
+        "descriptionText": "ACTION REQ FOR RECON DENIED NO APPEAL FILED COUNTED NOT MAILED"
+      },
+      {
+        "date": "20200511",
+        "descriptionText": "ACTION FOR REQ FOR RECON DENIED NO APPEAL FILED E-MAILED"
+      },
+      {
+        "date": "20200511",
+        "descriptionText": "NOTIFICATION FOR REQ FOR RECON DENIED NO APPEAL FILED"
+      },
+      {
+        "date": "20200420",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20200420",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20200420",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20200413",
+        "descriptionText": "TEAS REQUEST FOR RECONSIDERATION RECEIVED"
+      },
+      {
+        "date": "20200318",
+        "descriptionText": "FINAL REFUSAL  WRITTEN"
+      },
+      {
+        "date": "20200318",
+        "descriptionText": "NOTIFICATION OF FINAL REFUSAL EMAILED"
+      },
+      {
+        "date": "20200318",
+        "descriptionText": "FINAL REFUSAL E-MAILED"
+      },
+      {
+        "date": "20200317",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20200317",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20200317",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20200313",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20200313",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20200313",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20200309",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20191211",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20191211",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "13681 Newport Ave., Ste.8-163, Tustin, CA, 92780",
+        "city": "Tustin",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "netz 4 Life",
+        "postalCode": "92780",
+        "secondaryAddressUnit": "13681Newport Ave, Ste. 8-163",
+        "stateName": "CALIFORNIA",
+        "street": "13681 Newport Ave., Ste.8-163"
+      },
+      {
+        "address": "13681 Newport Ave., Ste.8-163, Tustin, CA, 92780",
+        "city": "Tustin",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "netz 4 Life",
+        "postalCode": "92780",
+        "secondaryAddressUnit": "13681Newport Ave, Ste. 8-163",
+        "stateName": "CALIFORNIA",
+        "street": "13681 Newport Ave., Ste.8-163"
+      }
+    ],
+    "recordLastUpdated": "20260508",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "13681 Newport Ave., Ste.8-163, Tustin, CA 92780, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "13681 Newport Ave., Ste.8-163",
+          "Tustin, CA 92780",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "netz 4 Life, 13681Newport Ave, Ste. 8-163"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "13681 Newport Ave., Ste.8-163, Tustin, CA 92780, UNITED STATES",
+        "representativeAddressLines": [
+          "13681 Newport Ave., Ste.8-163",
+          "Tustin, CA 92780",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20201112",
+      "active": false,
+      "application": {
+        "applicationDate": "20191207",
+        "applicationNumber": "88718835"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20050121"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20050831"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-INCOMPLETE RESPONSE",
+        "markOfficialStatusCode": "600",
+        "markOfficialStatusDate": "20201126",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260508173420",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LEAVE NO RIM NETLESS"
+    }
+  },
+  "_uri": "/mark/us/aae18c12-14dd-44ac-a8d7-84ecf3540d4f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

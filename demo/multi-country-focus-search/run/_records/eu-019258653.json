@@ -1,0 +1,89 @@
+{
+  "uri": "/mark/eu/019258653",
+  "provider": "euipo",
+  "office": "EU",
+  "id": "019258653",
+  "applicationNumber": "019258653",
+  "registrationNumber": "019258653",
+  "applicationDate": "2025-10-09",
+  "registrationDate": "2026-03-04",
+  "expiryDate": "2035-10-09",
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "statusDate": "2026-03-05",
+  "markText": "SORI",
+  "markFeature": "WORD",
+  "markKind": "INDIVIDUAL",
+  "markBasis": "EU_TRADEMARK",
+  "niceClasses": [],
+  "owner": "startext GmbH",
+  "ownerCountry": null,
+  "representative": "MARTINI MOGG VOGT PARTGMBB",
+  "goodsAndServices": [
+    {
+      "classNumber": 9,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Software",
+            " Computer programmes for data processing",
+            " Databases",
+            " Database engines",
+            " Computer database servers",
+            " Data management software",
+            " Computer software for database management",
+            " Memory management software for long-term archiving"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 42,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Advisory services in the field of product development and quality improvement of software",
+            " Consulting services in the field of software as a service [SaaS]",
+            " Software as a service [SaaS]",
+            " Consultancy and advice on computer software and hardware",
+            " Development of software for multimedia data storing and recalling",
+            " Development of software for data and multimedia content conversion from and to different protocols",
+            " Development, updating and maintenance of software and database systems",
+            " Installation and customisation of computer applications software",
+            " Custom design of software packages",
+            " Providing online, non-downloadable software",
+            " Computer software technical support services",
+            " Design and development of memory management software",
+            " Design and development of software for database management"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 45,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Licensing of computer software [legal services]"
+          ]
+        }
+      ]
+    }
+  ],
+  "oppositions": [],
+  "cancellations": [],
+  "appeals": [],
+  "decisions": [],
+  "_provenance": {
+    "proceedings": "detail record — an empty list means none are recorded on the register"
+  },
+  "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/019258653",
+  "_uri": "/mark/eu/019258653",
+  "_receipt": {
+    "fetched_at": "2026-08-11T07:53:30.940Z",
+    "context": "prelim-tmp0001-venqori-sample-capture-screen-gate-refetch"
+  }
+}

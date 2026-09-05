@@ -1,0 +1,108 @@
+{
+  "uri": "/mark/id/fa0f073e-7bfe-4c43-b6ee-1e1887c87a5d",
+  "provider": "clarivate",
+  "office": "id",
+  "guid": "fa0f073e-7bfe-4c43-b6ee-1e1887c87a5d",
+  "applicationNumber": "J002015043546",
+  "registrationNumber": "IDM000801379",
+  "applicationDate": "2015-10-07",
+  "registrationDate": "2020-09-11",
+  "expiryDate": "2025-10-07",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "17SEVEN ORIGINAL",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "id",
+      "description": "Jasa - jasa perangkat lunak komputer (pengembangan);desain perangkat, lunak (komputer).",
+      "translation_language": "en",
+      "translation": "Computer software services (development); software design, software (computers)."
+    }
+  ],
+  "owner": "DICKY ARIA MARGITA",
+  "ownerNative": null,
+  "ownerCountry": "ID",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "JALAN AYUB OTISTA III NOMOR 35 RT 016/RW 008 KELURAHAN BIDARA CINA, KEC. JATINEGARA, JAKARTA TIMUR - 13330; ID",
+        "applicantAddressCountryCode": "ID",
+        "applicantAddressCountryName": "Indonesia",
+        "applicantName": "DICKY ARIA MARGITA"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software services (development); software design, software (computers).",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "id",
+          "intGoodsServicesDescription": "Jasa - jasa perangkat lunak komputer (pengembangan);desain perangkat, lunak (komputer)."
+        }
+      ]
+    },
+    "id": "fa0f073e-7bfe-4c43-b6ee-1e1887c87a5d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250105",
+    "registrationOfficeCode": "ID",
+    "registrationOfficeName": "Indonesia",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20151007",
+        "applicationNumber": "J002015043546"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20251007",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20200911",
+        "registrationNumber": "IDM000801379"
+      }
+    },
+    "version": "20250105122417",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "17SEVEN ORIGINAL"
+    }
+  },
+  "_uri": "/mark/id/fa0f073e-7bfe-4c43-b6ee-1e1887c87a5d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.828Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

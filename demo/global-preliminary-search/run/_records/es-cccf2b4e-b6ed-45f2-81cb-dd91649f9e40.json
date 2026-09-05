@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/es/cccf2b4e-b6ed-45f2-81cb-dd91649f9e40",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "cccf2b4e-b6ed-45f2-81cb-dd91649f9e40",
+  "applicationNumber": "2520696 M6",
+  "registrationNumber": "2520696 M6",
+  "applicationDate": "2003-01-10",
+  "registrationDate": "2003-11-12",
+  "expiryDate": null,
+  "renewalDate": "2012-10-08",
+  "lastPublicationDate": "2003-03-01",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2025-02-28",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "HOTEL TREVENQUE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    39,
+    41,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35,
+        39,
+        41,
+        43,
+        44,
+        45
+      ],
+      "language": "es",
+      "description": "Servicios de ayuda y asesoramiento en la gestion de empresas y negocios, servicios de relaciones publicas, servicios de publicidad, servicios de ayuda a la explotacion comercial en regimen de franquicia, servicios de organizacion de exposiciones con fines comerciales y de publicidad, servicios de venta al detall en comercios a traves de redes mundiales de informatica.servicios de organizacion de viajes y excursiones, acompañamiento de viajeros, alquiler de vehiculos con o sin conductor, reserva de plazas de transporte, agencias de turismo y visitas turisticas.servicios de diversion, esparcimiento y actividades culturales y deportivas, servicios de campos de perfeccionamiento deportivo, servicios de organizacion de espectaculos y competiciones deportivas, servicios de explotacion de campos de golf, servicios de juego (casinos), servicios de discoteca, servicios de orquestas y organizacion de bailes de salon, servicios de montaje y produccion de programas de radio, television, peliculas y salon , servicios de montaje y produccion de programas de radio, television , peliculas y de cintas de video, servicios de organizacion y direccion de coloquios,conferencias, seminarios, simposiums y congresos, servicios de organizacion de exposiciones con fines culturales y educativos y congresos, servicios de informacion en materiade recreo y entretenimiento.servicios de hotel, restaurante, bar y cafeteria, servicios de reserva de alojamiento para viajeros prestado por agencias de viajes y servicios de residencia para animales.servicios medicos y veterinarios, servicios de cuidados de higiene y de belleza para personas o animales.servicios personales y sociales prestados por terceros destinados a satisfacer necesidades individuales y servicios de seguridad para la proteccion de bienes y personas.",
+      "translation_language": "en",
+      "translation": "SERVICES OF HELP AND ADVICE IN THE MANAGEMENT OF COMPANIES AND BUSINESSES, SERVICES OF PUBLIC RELATIONS, SERVICES OF PUBLICITY, SERVICES OF AID TO THE COMMERCIAL EXPLOITATION IN REGIME OF FRANCHISE, SERVICES OF ORGANIZATION OF EXHIBITIONS WITH COMMERCIAL PURPOSES AND OF PUBLICITY, SERVICES OF SALE TO THE DETAIL IN SHOPS THROUGH WORLDWIDE INFORMATICS NETWORKS. TRAVEL ORGANIZATION SERVICES AND EXCURSIONS, ACCOMPANYING TRAVELERS, RENTING VEHICLES WITH OR WITHOUT DRIVER, RESERVATION OF TRANSPORTATION SQUARES, TOURIST AGENCIES AND TOURIST VISITS. FUNERAL SERVICES, LEISURE AND CULTURAL AND SPORTS ACTIVITIES, SPORTS PERFORMING FIELD SERVICES, SPORTS AND SPORTS COMPETITION ORGANIZATION SERVICES, GOLF FIELD EXPLOITATION SERVICES, GAME SERVICES (CASINOS), DISCOTECA SERVICES, ORCHESTRA SERVICES AND ORGANIZATION OF SALON DANCES, SERVICES OF MOUNTING AND PRODUCTION OF RADIO, TELEVISION, FILMS PROGRAMS AND SALON, ASSEMBLY SERVICES AND PRODUCTION OF RADIO, TELEVISION, MOVIE AND VIDEO TAPE PROGRAMS, ORGANIZATION SERVICES AND COLLOQUIUM ADDRESS, CONFERENCES, SEMINARS, SIMPOSIUMS AND CONGRESSES, EXHIBITION ORGANIZATION SERVICES FOR CULTURAL AND EDUCATIONAL PURPOSES AND CONGRESSES , INFORMATION SERVICES IN RECREATIONAL AND ENTERTAINMENT MATERIALS. SERVICES OF HOTEL, RESTAURANT, BAR AND CAFETERIA, RESERVATION SERVICES OF ACCOMMODATION FOR TRAVELERS PROVIDED BY TRAVEL AGENCIES AND RESIDENCE SERVICES FOR ANIMALS. MEDICAL AND VETERINARY SERVICES, SERVICES OF CARE OF HYGIENE AND OF BEAUTY FOR PEOPLE OR ANIMALS. PERSONAL AND SOCIAL SERVICES PROVIDED BY THIRD PARTIES INTENDED TO SATISFY INDIVIDUAL NEEDS AND SECURITY SERVICES FOR THE PROTECTION OF GOODS AND PERSONS."
+    }
+  ],
+  "owner": "CETURSA SIERRA NEVADA, S.A",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "MOLERO MORALEDA, FELIPE",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "CETURSA SIERRA NEVADA, S.A"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SERVICES OF HELP AND ADVICE IN THE MANAGEMENT OF COMPANIES AND BUSINESSES, SERVICES OF PUBLIC RELATIONS, SERVICES OF PUBLICITY, SERVICES OF AID TO THE COMMERCIAL EXPLOITATION IN REGIME OF FRANCHISE, SERVICES OF ORGANIZATION OF EXHIBITIONS WITH COMMERCIAL PURPOSES AND OF PUBLICITY, SERVICES OF SALE TO THE DETAIL IN SHOPS THROUGH WORLDWIDE INFORMATICS NETWORKS. TRAVEL ORGANIZATION SERVICES AND EXCURSIONS, ACCOMPANYING TRAVELERS, RENTING VEHICLES WITH OR WITHOUT DRIVER, RESERVATION OF TRANSPORTATION SQUARES, TOURIST AGENCIES AND TOURIST VISITS. FUNERAL SERVICES, LEISURE AND CULTURAL AND SPORTS ACTIVITIES, SPORTS PERFORMING FIELD SERVICES, SPORTS AND SPORTS COMPETITION ORGANIZATION SERVICES, GOLF FIELD EXPLOITATION SERVICES, GAME SERVICES (CASINOS), DISCOTECA SERVICES, ORCHESTRA SERVICES AND ORGANIZATION OF SALON DANCES, SERVICES OF MOUNTING AND PRODUCTION OF RADIO, TELEVISION, FILMS PROGRAMS AND SALON, ASSEMBLY SERVICES AND PRODUCTION OF RADIO, TELEVISION, MOVIE AND VIDEO TAPE PROGRAMS, ORGANIZATION SERVICES AND COLLOQUIUM ADDRESS, CONFERENCES, SEMINARS, SIMPOSIUMS AND CONGRESSES, EXHIBITION ORGANIZATION SERVICES FOR CULTURAL AND EDUCATIONAL PURPOSES AND CONGRESSES , INFORMATION SERVICES IN RECREATIONAL AND ENTERTAINMENT MATERIALS. SERVICES OF HOTEL, RESTAURANT, BAR AND CAFETERIA, RESERVATION SERVICES OF ACCOMMODATION FOR TRAVELERS PROVIDED BY TRAVEL AGENCIES AND RESIDENCE SERVICES FOR ANIMALS. MEDICAL AND VETERINARY SERVICES, SERVICES OF CARE OF HYGIENE AND OF BEAUTY FOR PEOPLE OR ANIMALS. PERSONAL AND SOCIAL SERVICES PROVIDED BY THIRD PARTIES INTENDED TO SATISFY INDIVIDUAL NEEDS AND SECURITY SERVICES FOR THE PROTECTION OF GOODS AND PERSONS.",
+          "intClassNumber": "35,39,41,43,44,45",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de ayuda y asesoramiento en la gestion de empresas y negocios, servicios de relaciones publicas, servicios de publicidad, servicios de ayuda a la explotacion comercial en regimen de franquicia, servicios de organizacion de exposiciones con fines comerciales y de publicidad, servicios de venta al detall en comercios a traves de redes mundiales de informatica.servicios de organizacion de viajes y excursiones, acompañamiento de viajeros, alquiler de vehiculos con o sin conductor, reserva de plazas de transporte, agencias de turismo y visitas turisticas.servicios de diversion, esparcimiento y actividades culturales y deportivas, servicios de campos de perfeccionamiento deportivo, servicios de organizacion de espectaculos y competiciones deportivas, servicios de explotacion de campos de golf, servicios de juego (casinos), servicios de discoteca, servicios de orquestas y organizacion de bailes de salon, servicios de montaje y produccion de programas de radio, television, peliculas y salon , servicios de montaje y produccion de programas de radio, television , peliculas y de cintas de video, servicios de organizacion y direccion de coloquios,conferencias, seminarios, simposiums y congresos, servicios de organizacion de exposiciones con fines culturales y educativos y congresos, servicios de informacion en materiade recreo y entretenimiento.servicios de hotel, restaurante, bar y cafeteria, servicios de reserva de alojamiento para viajeros prestado por agencias de viajes y servicios de residencia para animales.servicios medicos y veterinarios, servicios de cuidados de higiene y de belleza para personas o animales.servicios personales y sociales prestados por terceros destinados a satisfacer necesidades individuales y servicios de seguridad para la proteccion de bienes y personas."
+        }
+      ]
+    },
+    "id": "cccf2b4e-b6ed-45f2-81cb-dd91649f9e40",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "06311",
+        "publicationVolume": "2782"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "representatives": [
+      {
+        "representativeAddress": "PASEO DE LA CASTELLANA,173,BAJO IZQ. - 28046 - MADRID",
+        "representativeName": "MOLERO MORALEDA, FELIPE"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20030110",
+        "applicationNumber": "2520696 M6"
+      },
+      "cancellationDate": "20250228",
+      "cmNormalisedStatus": "CANCELLED",
+      "lastPublicationDate": "20030301",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20031112",
+        "registrationNumber": "2520696 M6"
+      },
+      "renewalDate": "20121008",
+      "renewalPublishedDate": "20121019"
+    },
+    "version": "20260427154046",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "HOTEL TREVENQUE"
+    }
+  },
+  "_uri": "/mark/es/cccf2b4e-b6ed-45f2-81cb-dd91649f9e40",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.565Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

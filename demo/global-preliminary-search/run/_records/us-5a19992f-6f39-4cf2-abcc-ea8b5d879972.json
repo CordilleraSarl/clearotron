@@ -1,0 +1,412 @@
+{
+  "uri": "/mark/us/5a19992f-6f39-4cf2-abcc-ea8b5d879972",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "5a19992f-6f39-4cf2-abcc-ea8b5d879972",
+  "applicationNumber": "76404506",
+  "registrationNumber": "3609064",
+  "applicationDate": "2002-05-08",
+  "registrationDate": "2009-04-21",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2008-06-03"
+  ],
+  "abandonmentDate": "2003-02-20",
+  "cancellationDate": "2015-11-27",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VENCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Leasing of office furniture",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": null,
+      "description": "INT. CL. 38 Leasing of telecommunications systems",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Leasing of computers",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Vencore Solutions LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "John M. McCormack",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "7155 SW Varns Street, Portland, OR, 97233",
+        "applicantAddressCity": "Portland",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "97233",
+        "applicantAddressStateName": "OREGON",
+        "applicantAddressStreet": "7155 SW Varns Street",
+        "applicantJurisdictionOfIncorporation": "OREGON",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "Vencore Solutions LLC"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Leasing of office furniture"
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsServicesDescription": "INT. CL. 38 Leasing of telecommunications systems"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Leasing of computers"
+        }
+      ]
+    },
+    "id": "5a19992f-6f39-4cf2-abcc-ea8b5d879972",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20151127",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20090421",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20090318",
+        "descriptionText": "LAW OFFICE REGISTRATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20090317",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20090226",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20090226",
+        "descriptionText": "UNRESPONSIVE/DUPLICATE PAPER RECEIVED"
+      },
+      {
+        "date": "20090225",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20090224",
+        "descriptionText": "FAX RECEIVED"
+      },
+      {
+        "date": "20090224",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20090224",
+        "descriptionText": "FAX RECEIVED"
+      },
+      {
+        "date": "20090220",
+        "descriptionText": "REVIEW OF CORRESPONDENCE COMPLETE"
+      },
+      {
+        "date": "20090220",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20090121",
+        "descriptionText": "PAPER RECEIVED"
+      },
+      {
+        "date": "20090115",
+        "descriptionText": "FAX RECEIVED"
+      },
+      {
+        "date": "20090115",
+        "descriptionText": "REVIEW OF CORRESPONDENCE COMPLETE"
+      },
+      {
+        "date": "20080826",
+        "descriptionText": "NOA MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20080603",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20080514",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20080514",
+        "descriptionText": "CASE FILE IN TICRS"
+      },
+      {
+        "date": "20080512",
+        "descriptionText": "FAX RECEIVED"
+      },
+      {
+        "date": "20080429",
+        "descriptionText": "ELECTRONIC RECORD REVIEW COMPLETE"
+      },
+      {
+        "date": "20080307",
+        "descriptionText": "PAPER RECEIVED"
+      },
+      {
+        "date": "20080215",
+        "descriptionText": "ON HOLD - ELECTRONIC RECORD REVIEW REQUIRED"
+      },
+      {
+        "date": "20080211",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20080209",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20080105",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20071213",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20060926",
+        "descriptionText": "REINSTATEMENT GRANTED - RESPONSE RECEIVED"
+      },
+      {
+        "date": "20060606",
+        "descriptionText": "PETITION TO REVIVE-RECEIVED"
+      },
+      {
+        "date": "20030926",
+        "descriptionText": "AMENDMENT FROM APPLICANT ENTERED"
+      },
+      {
+        "date": "20030606",
+        "descriptionText": "PAPER RECEIVED"
+      },
+      {
+        "date": "20030606",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20030403",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20030227",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20020820",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "20020819",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "7155 SW Varns Street, Portland, OR, 97233",
+        "city": "Portland",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "OREGON",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Vencore Solutions LLC",
+        "postalCode": "97233",
+        "stateName": "OREGON",
+        "street": "7155 SW Varns Street"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "7155 SW Varns Street, Portland, OR, 97233",
+        "city": "Portland",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "OREGON",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Vencore Solutions LLC",
+        "postalCode": "97233",
+        "stateName": "OREGON",
+        "street": "7155 SW Varns Street"
+      },
+      {
+        "address": "7155 SW Varns Street, Portland, OR, 97233",
+        "city": "Portland",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "OREGON",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Vencore Solutions LLC",
+        "postalCode": "97233",
+        "stateName": "OREGON",
+        "street": "7155 SW Varns Street"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "7155 SW Varns Street, Portland, OR, 97233",
+        "city": "Portland",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "OREGON",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Vencore Solutions LLC",
+        "postalCode": "97233",
+        "stateName": "OREGON",
+        "street": "7155 SW Varns Street"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "520 S W YAMHILL ST, PORTLAND, OR 97204, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "520 S W YAMHILL ST",
+          "PORTLAND, OR 97204",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "JOHN M MCCORMACK KOLISCH, HARTWELL, DICKINSON, MCCORMACK, 200 PACIFIC BLDG"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "520 S W YAMHILL ST, PORTLAND, OR 97204, UNITED STATES",
+        "representativeAddressLines": [
+          "520 S W YAMHILL ST",
+          "PORTLAND, OR 97204",
+          "UNITED STATES"
+        ],
+        "representativeName": "John M. McCormack"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20030220",
+      "active": false,
+      "application": {
+        "applicationDate": "20020508",
+        "applicationNumber": "76404506"
+      },
+      "cancellationDate": "20151127",
+      "cancellationPublicationDate": "20160105",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "35",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20021007"
+        },
+        {
+          "firstUsedClass": "38",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20021007"
+        },
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20021007"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "35",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20021007"
+        },
+        {
+          "firstUsedCommerceClass": "38",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20021007"
+        },
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20021007"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20151127",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20080603"
+      ],
+      "registration": {
+        "registrationDate": "20090421",
+        "registrationNumber": "3609064"
+      },
+      "revivalDate": "20060927"
+    },
+    "version": "20260109053222",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENCORE"
+    }
+  },
+  "_uri": "/mark/us/5a19992f-6f39-4cf2-abcc-ea8b5d879972",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.729Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

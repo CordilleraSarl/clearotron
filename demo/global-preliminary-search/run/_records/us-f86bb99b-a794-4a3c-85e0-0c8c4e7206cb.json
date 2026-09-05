@@ -1,0 +1,287 @@
+{
+  "uri": "/mark/us/f86bb99b-a794-4a3c-85e0-0c8c4e7206cb",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "f86bb99b-a794-4a3c-85e0-0c8c4e7206cb",
+  "applicationNumber": "86283770",
+  "registrationNumber": "4687563",
+  "applicationDate": "2014-05-16",
+  "registrationDate": "2015-02-17",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2014-12-02"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2021-09-24",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "AVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Downloadable software for providing voice and data services via mobile devices; Fixed location telephones; Mobile phones; Modems; Network routers; Telephone call routers; Telephone terminals",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Avenor Limited",
+  "ownerNative": null,
+  "ownerCountry": "HK",
+  "representative": "Matthew H. Swyers, Esq.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "132 Nathan Road, Kowloon, HOKO",
+        "applicantAddressCity": "Kowloon",
+        "applicantAddressCountryCode": "HK",
+        "applicantAddressCountryName": "Hong Kong",
+        "applicantAddressStreet": "132 Nathan Road",
+        "applicantJurisdictionOfIncorporation": "HONG KONG, REPUBLIC OF CHINA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Avenor Limited",
+        "applicantSecondaryAddressUnit": "Unit 1010, Miramar Tower"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Downloadable software for providing voice and data services via mobile devices; Fixed location telephones; Mobile phones; Modems; Network routers; Telephone call routers; Telephone terminals"
+        }
+      ]
+    },
+    "id": "f86bb99b-a794-4a3c-85e0-0c8c4e7206cb",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20210924",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20200217",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20150217",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20141202",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20141202",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20141112",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20141030",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20141029",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20141010",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20141009",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20141009",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20141009",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20140905",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20140905",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20140905",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20140902",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20140530",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20140520",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "132 Nathan Road, Kowloon, HOKO",
+        "city": "Kowloon",
+        "countryCode": "HK",
+        "countryName": "Hong Kong",
+        "jurisdictionOfIncorporation": "HONG KONG, REPUBLIC OF CHINA",
+        "legalEntity": "CORPORATION",
+        "name": "Avenor Limited",
+        "secondaryAddressUnit": "Unit 1010, Miramar Tower",
+        "street": "132 Nathan Road"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "132 Nathan Road, Kowloon, HOKO",
+        "city": "Kowloon",
+        "countryCode": "HK",
+        "countryName": "Hong Kong",
+        "jurisdictionOfIncorporation": "HONG KONG, REPUBLIC OF CHINA",
+        "legalEntity": "CORPORATION",
+        "name": "Avenor Limited",
+        "secondaryAddressUnit": "Unit 1010, Miramar Tower",
+        "street": "132 Nathan Road"
+      },
+      {
+        "address": "132 Nathan Road, Kowloon, HOKO",
+        "city": "Kowloon",
+        "countryCode": "HK",
+        "countryName": "Hong Kong",
+        "jurisdictionOfIncorporation": "HONG KONG, REPUBLIC OF CHINA",
+        "legalEntity": "CORPORATION",
+        "name": "Avenor Limited",
+        "secondaryAddressUnit": "Unit 1010, Miramar Tower",
+        "street": "132 Nathan Road"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "132 Nathan Road, Kowloon, HOKO",
+        "city": "Kowloon",
+        "countryCode": "HK",
+        "countryName": "Hong Kong",
+        "jurisdictionOfIncorporation": "HONG KONG, REPUBLIC OF CHINA",
+        "legalEntity": "CORPORATION",
+        "name": "Avenor Limited",
+        "secondaryAddressUnit": "Unit 1010, Miramar Tower",
+        "street": "132 Nathan Road"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "VIENNA, VA 22180-5612, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "VIENNA, VA 22180-5612",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "MATTHEW H. SWYERS, ESQ. THE TRADEMARK COMPANY, 344 MAPLE AVE W STE 151"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "VIENNA, VA 22180-5612, UNITED STATES",
+        "representativeAddressLines": [
+          "VIENNA, VA 22180-5612",
+          "UNITED STATES"
+        ],
+        "representativeName": "Matthew H. Swyers, Esq."
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20140516",
+        "applicationNumber": "86283770"
+      },
+      "cancellationDate": "20210924",
+      "cancellationPublicationDate": "20211102",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20140514"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20140514"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20210924",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20141202"
+      ],
+      "registration": {
+        "registrationDate": "20150217",
+        "registrationNumber": "4687563"
+      }
+    },
+    "version": "20260110204317",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENOR"
+    }
+  },
+  "_uri": "/mark/us/f86bb99b-a794-4a3c-85e0-0c8c4e7206cb",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

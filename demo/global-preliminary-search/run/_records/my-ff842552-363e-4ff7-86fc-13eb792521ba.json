@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/my/ff842552-363e-4ff7-86fc-13eb792521ba",
+  "provider": "clarivate",
+  "office": "my",
+  "guid": "ff842552-363e-4ff7-86fc-13eb792521ba",
+  "applicationNumber": "2013058345",
+  "registrationNumber": null,
+  "applicationDate": "2013-08-14",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "THE WORLD TAEKWONDO FEDERATION",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Instruction, teaching and education of a martial art namely Taekwon-Do which consists of defense and attack movements; Entertainment services in the nature of live mixed martial arts (MMA) events; Hapkido instruction; Martial arts instruction; Operating of martial arts' schools; Operating of martial arts' studios; Organizing live mixed martial arts events and competitions; Presentation of mixed martial arts (MMA) events; Providing classes, workshops, seminars and camps in the fields of fitness, exercise, boxing, kick boxing and mixed martial arts; Providing general fitness and mixed martial arts facilities that require memberships and are focused in the fields of general fitness, exercise, and mixed martial arts; Taekwondo instruction; all included in class 41.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "TAEKWONDO MALAYSIA (WTF)",
+  "ownerNative": null,
+  "ownerCountry": "MY",
+  "representative": "Lim Bee Chian",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "GATE D, GROUND FLOOR, GYMNASIUM 1, KOMPLEKS SUKAN NEGARA, BUKIT JALIL, 57000 SRI PETALING WILAYAH PERSEKUTUAN KUALA LUMPUR 57000 Kuala Lumpur",
+        "applicantAddressCountryCode": "MY",
+        "applicantAddressCountryName": "Malaysia",
+        "applicantName": "TAEKWONDO MALAYSIA (WTF)"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Instruction, teaching and education of a martial art namely Taekwon-Do which consists of defense and attack movements; Entertainment services in the nature of live mixed martial arts (MMA) events; Hapkido instruction; Martial arts instruction; Operating of martial arts' schools; Operating of martial arts' studios; Organizing live mixed martial arts events and competitions; Presentation of mixed martial arts (MMA) events; Providing classes, workshops, seminars and camps in the fields of fitness, exercise, boxing, kick boxing and mixed martial arts; Providing general fitness and mixed martial arts facilities that require memberships and are focused in the fields of general fitness, exercise, and mixed martial arts; Taekwondo instruction; all included in class 41."
+        }
+      ]
+    },
+    "id": "ff842552-363e-4ff7-86fc-13eb792521ba",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "01.05.01",
+      "01.05.02",
+      "01.05.06",
+      "01.05.07",
+      "02.07.13",
+      "28.03.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260901",
+    "registrationOfficeCode": "MY",
+    "registrationOfficeName": "Malaysia",
+    "representatives": [
+      {
+        "representativeAddress": "IP PRO Sdn Bhd No. 5B, Persiaran Greentown 6 Greentown Business Centre Ipoh Ipoh 30450 Perak",
+        "representativeAddressCountryCode": "MY",
+        "representativeAddressCountryName": "Malaysia",
+        "representativeName": "Lim Bee Chian"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20130814",
+        "applicationNumber": "2013058345"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20260901050117",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "THE WORLD TAEKWONDO FEDERATION"
+    }
+  },
+  "_uri": "/mark/my/ff842552-363e-4ff7-86fc-13eb792521ba",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

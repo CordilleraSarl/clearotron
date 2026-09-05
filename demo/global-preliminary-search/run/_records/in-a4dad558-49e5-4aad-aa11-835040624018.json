@@ -1,0 +1,129 @@
+{
+  "uri": "/mark/in/a4dad558-49e5-4aad-aa11-835040624018",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "a4dad558-49e5-4aad-aa11-835040624018",
+  "applicationNumber": "4986799",
+  "registrationNumber": null,
+  "applicationDate": "2021-05-28",
+  "registrationDate": null,
+  "expiryDate": "2031-05-28",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Venturi",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Advertising; business management, organization and administration; office functions; organization of trade fairs and exhibitions for commercial or advertising purposes; Services for the promotion of educational opportunities and cultural relations.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education; providing of training; entertainment; sporting and cultural activities; Educational consultancy; Services for the development of educational opportunities and cultural relations; organization of exhibitions for cultural or educational purposes, arranging and conducting of conferences, congresses and symposiums; information and advisory services relating to education.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "IMS LEARNING RESOURCES PRIVATE LIMITED Body Incorporate",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "VUTTS & ASSOCIATES[17299]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6th Floor, NCL Building, E- Block, Bandra Kurla Complex, BKC Road, Bandra East, Mumbai - 400051",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "IMS LEARNING RESOURCES PRIVATE LIMITED Body Incorporate"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Advertising; business management, organization and administration; office functions; organization of trade fairs and exhibitions for commercial or advertising purposes; Services for the promotion of educational opportunities and cultural relations."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education; providing of training; entertainment; sporting and cultural activities; Educational consultancy; Services for the development of educational opportunities and cultural relations; organization of exhibitions for cultural or educational purposes, arranging and conducting of conferences, congresses and symposiums; information and advisory services relating to education."
+        }
+      ]
+    },
+    "id": "a4dad558-49e5-4aad-aa11-835040624018",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2013"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "SUITE NO. 704, THE CASTLE, PLOT 36-A,SECTOR-56, GURGAON-110002. (HARYANA).",
+        "representativeName": "VUTTS & ASSOCIATES[17299]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210528",
+        "applicationNumber": "4986799"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310528",
+      "markCurrentStatus": "REGISTERED"
+    },
+    "version": "20250710153744",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Venturi"
+    }
+  },
+  "_uri": "/mark/in/a4dad558-49e5-4aad-aa11-835040624018",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.171Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,165 @@
+{
+  "uri": "/mark/gb/c3154106-158a-4756-b8f6-116bc310172f",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "c3154106-158a-4756-b8f6-116bc310172f",
+  "applicationNumber": "4344644",
+  "registrationNumber": "4344644",
+  "applicationDate": "2026-02-24",
+  "registrationDate": "2026-05-15",
+  "expiryDate": "2036-02-24",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENCORA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Business consultancy; Business Support; Business management; Business Organisation; Business strategic management services; Services relating to the acquisition of financial services technology companies; Corporate expansion; development and implementation of corporate expansion plans; Mergers and acquisitions; Operator of financial services technology companies; Business networking services in the financial technology industry; Business development services in the financial services technology industry; Business consultancy and advice relating to the foregoing in the financial services technology industry; Providing business support services namely, business consultation, business management, access to sales networks, product growth, professional support; information, consultancy and advisory services relating to all of the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Financial services; Financial consultancy in the field of mergers and acquisitions; Financing of acquisitions; Financial management of businesses; Provision of capital; Venture capital; Growth capital; Financial management of venture, investment management; Investment and growth; Capital investment; Insurance services; information, consultancy and advisory services relating to all of the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education; Business Education; Training; Business training; Coaching, Workshops, Seminars; Arranging conferences; conducting seminars, workshops and courses; Organizing events; Development of networks; Development of Sales Networks; Development of business forums; information, consultancy and advisory services relating to all of the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Software engineering; Design of software; Development of software; Developing and updating of software; Research and development of software; Creating, testing and maintaining software; Software as a service [SaaS] for the financial services sector and financial services technology industry; Software support services; electronic data storage; provision of non downloadable software; Data encryption services; Computer security consultancy; data mining; information, consultancy and advisory services relating to all of the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Vencora UK Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Freeths LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "3rd Floor, West Bowling Mill, Dean Clough Mills, Halifax HX3 5AX",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Vencora UK Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Business consultancy; Business Support; Business management; Business Organisation; Business strategic management services; Services relating to the acquisition of financial services technology companies; Corporate expansion; development and implementation of corporate expansion plans; Mergers and acquisitions; Operator of financial services technology companies; Business networking services in the financial technology industry; Business development services in the financial services technology industry; Business consultancy and advice relating to the foregoing in the financial services technology industry; Providing business support services namely, business consultation, business management, access to sales networks, product growth, professional support; information, consultancy and advisory services relating to all of the aforesaid."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Financial services; Financial consultancy in the field of mergers and acquisitions; Financing of acquisitions; Financial management of businesses; Provision of capital; Venture capital; Growth capital; Financial management of venture, investment management; Investment and growth; Capital investment; Insurance services; information, consultancy and advisory services relating to all of the aforesaid."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education; Business Education; Training; Business training; Coaching, Workshops, Seminars; Arranging conferences; conducting seminars, workshops and courses; Organizing events; Development of networks; Development of Sales Networks; Development of business forums; information, consultancy and advisory services relating to all of the aforesaid."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software engineering; Design of software; Development of software; Developing and updating of software; Research and development of software; Creating, testing and maintaining software; Software as a service [SaaS] for the financial services sector and financial services technology industry; Software support services; electronic data storage; provision of non downloadable software; Data encryption services; Computer security consultancy; data mining; information, consultancy and advisory services relating to all of the aforesaid."
+        }
+      ]
+    },
+    "id": "c3154106-158a-4756-b8f6-116bc310172f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2026/010"
+      }
+    ],
+    "recordLastUpdated": "20260522",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "3rd Floor, The Colmore Building, 20 Colmore Circus, Queensway, Birmingham B4 6AT, West Midlands",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Freeths LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260224",
+        "applicationNumber": "4344644"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360224",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260515",
+        "registrationNumber": "4344644"
+      }
+    },
+    "version": "20260522020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENCORA"
+    }
+  },
+  "_uri": "/mark/gb/c3154106-158a-4756-b8f6-116bc310172f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.819Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

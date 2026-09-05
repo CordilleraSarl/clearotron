@@ -1,0 +1,113 @@
+{
+  "uri": "/mark/ar/2bd7b316-36fa-4998-bb9b-1e8c7538044d",
+  "provider": "clarivate",
+  "office": "ar",
+  "guid": "2bd7b316-36fa-4998-bb9b-1e8c7538044d",
+  "applicationNumber": "4612713",
+  "registrationNumber": "3838966",
+  "applicationDate": "2025-11-26",
+  "registrationDate": "2026-04-14",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2025-12-03",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Clase 09 : Internacional Limitada APARATOS AUDIOVISUALES ;APARATOS FOTOGRAFICOS ;APLICACIONES DE MOVILES ;APLICACIONES DE SOFTWARE DESCARGABLES ;CONTROLADORES DE SOFTWARE DE DISPOSITIVOS ELECTRONICOS PARA PERMITIR LA COMUNICACION ENTRE HARDWARE INFORMATICO Y DISPOSITIVOS ELECTRONICOS ;DISPOSITIVOS DE COMUNICACION INALAMBRICOS ;DISPOSITIVOS DE COMUNICACION INALAMBRICOS DE TRANSMISION DE VOZ, DATOS O IMAGENES ;DISPOSITIVOS DE COMUNICACION INALAMBRICOS PARA LA TRANSMISION DE CONTENIDOS MULTIMEDIA ;EQUIPOS DE COMUNICACIONES ;HARDWARE ;SOFTWARE ;SOFTWARE DE APLICACIONES PARA SERVICIOS DE CONEXION EN REDES SOCIALES A TRAVES DE INTERNET ;SOFTWARE DE APLICACIONES PARA SERVICIOS DE INFORMATICA EN LA NUBE ;SOFTWARE DE COMERCIO ELECTRONICO Y PAGOS ELECTRONICOS ;TECNOLOGIA DE LA INFORMACION Y EQUIPO AUDIOVISUL, MULTIMEDIA Y FOTOGRAFICO ;",
+      "translation_language": "en",
+      "translation": "Class 09: International Limited Audiovisual equipment; photographic equipment; mobile applications; downloadable software applications; software drivers for electronic devices to enable communication between computer hardware and electronic devices; wireless communication devices; wireless communication devices for transmitting voice, data, or images; wireless communication devices for transmitting multimedia content; communications equipment; hardware; software; application software for social networking services via the internet; application software for services of Cloud computing; e-commerce and electronic payments software; information technology and audiovisual, multimedia and photographic equipment;"
+    }
+  ],
+  "owner": "CORPOTECH S.A.",
+  "ownerNative": null,
+  "ownerCountry": "AR",
+  "representative": "NOETINGER, MATIAS F.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "AR",
+        "applicantAddressCountryName": "Argentina",
+        "applicantName": "CORPOTECH S.A."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 09: International Limited Audiovisual equipment; photographic equipment; mobile applications; downloadable software applications; software drivers for electronic devices to enable communication between computer hardware and electronic devices; wireless communication devices; wireless communication devices for transmitting voice, data, or images; wireless communication devices for transmitting multimedia content; communications equipment; hardware; software; application software for social networking services via the internet; application software for services of Cloud computing; e-commerce and electronic payments software; information technology and audiovisual, multimedia and photographic equipment;",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Clase 09 : Internacional Limitada APARATOS AUDIOVISUALES ;APARATOS FOTOGRAFICOS ;APLICACIONES DE MOVILES ;APLICACIONES DE SOFTWARE DESCARGABLES ;CONTROLADORES DE SOFTWARE DE DISPOSITIVOS ELECTRONICOS PARA PERMITIR LA COMUNICACION ENTRE HARDWARE INFORMATICO Y DISPOSITIVOS ELECTRONICOS ;DISPOSITIVOS DE COMUNICACION INALAMBRICOS ;DISPOSITIVOS DE COMUNICACION INALAMBRICOS DE TRANSMISION DE VOZ, DATOS O IMAGENES ;DISPOSITIVOS DE COMUNICACION INALAMBRICOS PARA LA TRANSMISION DE CONTENIDOS MULTIMEDIA ;EQUIPOS DE COMUNICACIONES ;HARDWARE ;SOFTWARE ;SOFTWARE DE APLICACIONES PARA SERVICIOS DE CONEXION EN REDES SOCIALES A TRAVES DE INTERNET ;SOFTWARE DE APLICACIONES PARA SERVICIOS DE INFORMATICA EN LA NUBE ;SOFTWARE DE COMERCIO ELECTRONICO Y PAGOS ELECTRONICOS ;TECNOLOGIA DE LA INFORMACION Y EQUIPO AUDIOVISUL, MULTIMEDIA Y FOTOGRAFICO ;"
+        }
+      ]
+    },
+    "id": "2bd7b316-36fa-4998-bb9b-1e8c7538044d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260507",
+    "registrationOfficeCode": "AR",
+    "registrationOfficeName": "Argentina",
+    "representatives": [
+      {
+        "representativeName": "NOETINGER, MATIAS F."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251126",
+        "applicationNumber": "4612713"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "lastPublicationDate": "20251203",
+      "markCurrentStatus": "REGISTERED TRADEMARK",
+      "registration": {
+        "registrationDate": "20260414",
+        "registrationNumber": "3838966"
+      }
+    },
+    "version": "20260507020141",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORP"
+    }
+  },
+  "_uri": "/mark/ar/2bd7b316-36fa-4998-bb9b-1e8c7538044d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:05.014Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

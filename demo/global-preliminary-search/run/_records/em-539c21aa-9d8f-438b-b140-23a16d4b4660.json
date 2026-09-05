@@ -1,0 +1,1399 @@
+{
+  "uri": "/mark/em/539c21aa-9d8f-438b-b140-23a16d4b4660",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "539c21aa-9d8f-438b-b140-23a16d4b4660",
+  "applicationNumber": "18575624",
+  "registrationNumber": "18575624",
+  "applicationDate": "2021-10-12",
+  "registrationDate": "2022-04-28",
+  "expiryDate": "2031-10-12",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-10-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "qori",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    36,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Aplikace ke stazení pro pouzití s mobilními zarízeními; Software pro mobilní telefony; Pocítacový aplikacní software do mobilních telefonu; Pocítacový software; Platební software; Pocítacový software pro technologii blockchain ke stazení; Software ke zpracování elektronických plateb; Pocítacový aplikacní software do mobilních telefonu; Software ke zpracování elektronických plateb; Software a aplikace pro mobilní zarízení; Sifrovací klíce s mozností stazení k získávání a pouzívání kryptoaktiv; Vsechny výse uvedené výrobky ve vztahu k následujícím oborum: Financní prevody a transakce, Platební sluzby, Vernostní programové sluzby, Pobídkových programu a Bonusové programy; Zádný z výse uvedených výrobku ohledne techto oboru: Rízení rizik nebo bezpecnost, Rízení investic, Investicní fondy, Financní indexy, Investicní poradenství nebo Penzijní plány.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "cs",
+      "description": "Obchodní administrativa; Marketing; Propagace; Obchodní informace a rady pro spotrebitele [poradna pro spotrebitele]; Organizování, provozování a kontrola vernostních a motivacních programu; Správa vernostních programu; Správa programu udelování pobídek na podporu prodeje výrobku a sluzeb jiných subjektu; Vernostní zákaznické sluzby ke komercním, propagacním a/nebo reklamním úcelum; Vsechny výse uvedené sluzby ve vztahu k následujícím oborum: Financní prevody a Financní transakce, Platební sluzby, Vernostní, pobídkové a prémiové programy; Zádné z výse uvedených sluzeb se nevztahují k následujícím výrobkum: Rízení rizik nebo bezpecnost, Investicní management, Investicní fondy, Financní indexy, investicní poradenství nebo plánování penze.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "cs",
+      "description": "Online bankovnictví; Vydávání hodnotových poukazu ve forme dárkových poukazu; Vydávání hodnotových poukazu jako odmen za zákaznickou vernost; Vydávání hodnotových poukázek v souvislosti s motivacními programy; Elektronické zpracování plateb; Sluzby elektronické penezenky (platební sluzby); Zpracování platebních transakcí prostrednictvím internetu; Zpracování plateb za nákup zbozí a sluzeb prostrednictvím elektronické komunikacní síte; Sluzby v oblasti penezních prevodu; Elektronické platební sluzby; Automatizované bankovnictví; Vydávání predplacených dárkových poukázek; Bezkontaktní platební sluzby; Financní transakce prostrednictvím blockchainu; Sluzby elektronické penezenky (platební sluzby); Financní výmena virtuální meny; Sluzby financní; Financní prevody a transakce a platební sluzby; Internetové bankovnictví; Vystavování hodnotných poukázek; Zpracování plateb kreditní kartou; Sluzby týkající se kreditních a platebních karet; Financní výmena kryptoaktiv; Elektronický prenos kryptoaktiv; Vydávání kreditních karet; Vydávání kreditních karet; Nic z výse uvedeného není ve vztahu k následujícím oborum: Investicní management, Investicní fondy, Financní indexy, Investicní poradenství nebo Penzijní plány.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Vývoj softwaru; Programování pocítacu pro tisk cárových kódu; Programování softwaru pro vyhodnocování chování zákazníku v on-line obchodech; Software jako sluzba [SaaS]; Navrhování, vývoj a programování pocítacového softwaru; Platforma jako sluzba (PAAS); Vsechny uvedené sluzby ve vztahu k následujícím oborum: Financní prevody a transakce, Platební sluzby, Vernostní programy, Pobídkových programu a Bonusové programy; Zádné z výse uvedených sluzeb se nevztahují k následujícím výrobkum: Rízení rizik nebo bezpecnost, Rízení investic, Investicní fondy, Financní indexy, Investicní poradenství nebo Penzijní plány.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Applikationer, der kan downloades, til anvendelse med mobile apparater; Mobil software; Computerapplikationssoftware til mobiltelefoner; Software; Software til betaling; Downloadbar computersoftware til blockchain-teknologi; Software til behandling af elektroniske betalinger; Computerapplikationssoftware til mobiltelefoner; Software til behandling af elektroniske betalinger; Software og applikationer til mobilenheder; Downloadable kryptografiske nøgler til modtagelse af og betaling med kryptoaktiver; Alle førnævnte varer i forbindelse med følgende områder: Overførsler og finansielle transaktioner, Betalingsservice, Tjenesteydelser i forbindelse med medlemsordninger, Tilskyndende programmer og Bonusprogrammer; Førnævnte varer ikke inden for følgende områder: Risikostyring eller sikkerhed, Investeringsrådgivning, Investeringsselskaber, Finansielle indekser, Investeringsrådgivning eller Pensionsplanlægning.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "da",
+      "description": "Forretningsadministration; Marketing; Annonce- og reklamevirksomhed; Kommerciel information og rådgivning til forbrugere [forbrugerrådgivning]; Organisering, drift og overvågning af loyalitetsprogrammer og incitamentsprogrammer; Administration af kundeloyalitetsordninger; Administration af bonusordninger til promovering af salg af varer og tjenester for andre; Kundeloyalitetsydelser i kommercielt, salgsfremmende og/eller reklamemæssigt øjemed; Alle førnævnte tjenesteydelser i forbindelse med følgende områder: Finanstransfer- og Finansielle transaktioner, Betalingsservice, Loyalitets- og bonusprogrammer; Ingen af førnævnte tjenesteydelser vedrørende følgende områder: Risikostyring eller sikkerhed, Investeringsrådgivning, Investeringsselskaber, Finansielle indekser, investeringsrådgivning eller pensionsplanlægning.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "da",
+      "description": "Netbank; Udstedelse af værdikuponer i form af gavekort; Udstedelse af værdikuponer som en belønning for kundeloyalitet; Udstedelse af værdikuponer i forbindelse med incitamentsordninger; Behandling af elektroniske betalinger; E-wallet betalingsydelser; Behandling af betalingstransaktioner via internettet; Behandling af betalinger for køb af varer og tjenesteydelser via et elektronisk telekommunikationsnetværk; Kapitaloverførsler; Elektroniske betalingstjenester; Automatiseret bankvirksomhed; Udstedelse af gavekuponer; Kontaktfri betalingsvirksomhed; Finansielle transaktioner via blockchain; E-wallet betalingsydelser; Finansiel veksling af virtuelle valutaer; Finansiel virksomhed; Finansielle overførsler og transaktioner og betalingstjenesteydelser; Bankvirksomhed via internettet; Udstedelse af værdikuponer; Behandling af kreditkortsbetalinger; Tjenesteydelser vedrørende kreditkort og betalingskort; Finansiel veksling af kryptoaktiver; Elektronisk overførsel af kryptoaktiver; Udstedelse af kreditkort; Udstedelse af kreditkort; Ingen af ovennævnte i forbindelse med følgende områder: Forvaltning af investeringer, Investeringsselskaber, Finansielle indekser, Rådgivning om finansiel investering eller Pensionsplanlægning.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Softwareudvikling; Programmering af computere til udskrivning af stregkoder; Programmering af software til evaluering af kundeadfærd i onlinebutikker; Software as a service [saas]; Design, udvikling og programmering af computersoftware; Platform as a Service [PaaS]; Alle førnævnte tjenesteydelser vedrørende følgende områder: Finansielle overførsler og transaktioner, Betalingsservice, Loyalitetsprogrammer, Tilskyndende programmer og Bonusprogrammer; Ingen af førnævnte tjenesteydelser vedrørende følgende områder: Risikostyring eller sikkerhed, Investeringsrådgivning, Investeringsselskaber, Finansielle indekser, Investeringsrådgivning eller Pensionsplanlægning.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Downloadbare applicaties voor gebruik met mobiele apparaten; Mobiele software; Applicatiesoftware voor mobiele telefoons; Software; Betalingssoftware; Downloadbare software voor blockchaintechnologie; Elektronische-betalingssoftware; Applicatiesoftware voor mobiele telefoons; Elektronische-betalingssoftware; Software en applicaties voor mobiele toestellen; Downloadbare cryptografische sleutels voor het ontvangen en uitgeven van cryptovaluta; Alle voornoemde goederen op de volgende gebieden: Financiële overboekingen en transacties, Betaaldiensten, Diensten met betrekking tot klantenbindingsprogramma's, Aanmoedigingsacties en Bonusprogramma's; Geen van de voornoemde goederen met betrekking tot: Risicobeheer of beveiliging, Beheer van investeringen, Beleggingsfondsen, Financiële indexen, Beleggingsadvies of Pensioenplanning.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "Zakelijke administratie; Marketing; Publiciteit; Handelsinformatie en -adviezen voor consumenten; Organiseren, uitvoeren van en toezicht houden op loyaliteits- en aanmoedigingsacties; Administratief beheer van loyaliteitsprogramma's; Beheer van aanmoedigingsprogramma's ter bevordering van de verkoop van goederen en diensten van derden; Diensten in verband met klantenbinding voor commerciële, promotionele en/of reclamedoeleinden; Alle voornoemde diensten in verband met de volgende gebieden: Financiële overboekingen en Financiële transacties, Betaaldiensten, Loyaliteits-, aanmoedigings- en bonusprogramma's; Geen van de voornoemde diensten heeft betrekking op de volgende gebieden: Risicobeheer of beveiliging, Beheer van investeringen, Beleggingsfondsen, Financiële indexen, beleggingsadvies of pensioenplanning.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "nl",
+      "description": "Thuisbankieren; Uitgifte van waardebonnen in de vorm van cadeaucheques; Uitgifte van waardebonnen als beloning voor consumentenloyaliteit; Uitgeven van waardebonnen in verband met aanmoedigingsacties; Elektronische verwerking van betalingen; E-wallet betaaldiensten; Verwerking van betalingstransacties via het internet; Verwerken van betalingen voor de aankoop van goederen en diensten via een elektronisch communicatienetwerk; Overboeking van gelden; Diensten op het gebied van elektronische betaling; Geautomatiseerde bankdiensten; Uitgifte van cadeaubonnen; Contactloze betalingen; Financiële transacties via de blockchain; E-wallet betaaldiensten; Financiële omwisseling van virtuele valuta's; Financiële diensten; Financiële overboekingen en transacties, en betaaldiensten; Bankdiensten via internet; Uitgifte van waardebonnen; Het uitvoeren van credit card betalingen; Creditcard- en betaalkaartdiensten; Financiële transacties met crypto-activa; Elektronische overdracht van crypto-activa; Uitgifte van creditcards; Uitgifte van creditcards; Niets van het voornoemde heeft betrekking op de volgende gebieden: Beheer van investeringen, Beleggingsfondsen, Financiële indexen, Financiële beleggingsadvisering of Pensioenplanning.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Ontwikkeling van software; Computerprogrammering voor het printen van barcodes; Programmering van software voor het analyseren van gedrag van klanten in onlinewinkels; Ter beschikking stellen van software [SaaS]; Ontwerp, ontwikkeling en programmering van software; Platform als een dienst (PaaS); Alle voornoemde diensten hebben betrekking op de volgende gebieden: Financiële overboekingen en transacties, Betaaldiensten, Klantenbindingsprogramma's, Aanmoedigingsacties en Bonusprogramma's; Geen van de voornoemde diensten heeft betrekking op de volgende gebieden: Risicobeheer of beveiliging, Beheer van investeringen, Beleggingsfondsen, Financiële indexen, Beleggingsadvies of Pensioenplanning.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Downloadable mobile applications; Mobile software; Computer application software for mobile telephones; Computer software; Payment software; Downloadable computer software for blockchain technology; Computer software for facilitating payment transactions by electronic means; Software applications for use with mobile devices; Online payment software; Software and applications for mobile devices; Downloadable cryptographic keys for receiving and spending crypto assets; all the aforesaid relating to financial transfers and transactions, and payment services, loyalty, incentive and bonus programs; none of the aforesaid in connection with risk management or security, investment management, investment funds, financial indices, investment advice or retirement planning.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Business administration; Marketing; Advertising; Commercial information and advice for consumers [consumer advice shop]; Organisation, operation and supervision of loyalty and incentive schemes; Administration of loyalty rewards programmes; Administration of incentive award programs to promote the sale of the goods and services of others; Customer loyalty services for commercial, promotional and/or advertising purposes; all the aforesaid relating to financial transfers and transactions, and payment services, loyalty, incentive and bonus programs; none of the aforesaid in connection with risk management or security, investment management, investment funds, financial indices, investment advice or retirement planning.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Online banking services; Issuing tokens of value in the nature of gift vouchers; Issuing tokens of value as a reward for customer loyalty; Issuing of tokens of value in relation to incentive schemes; Electronic processing of payments; Electronic wallet services (payment services); Processing of payment transactions via the Internet; Processing payments for the purchase of goods and services via an electronic communications network; Money transfer services; Electronic payment services; Automated banking services; Issuing of payment gift vouchers; Contactless payment services; Financial transactions via blockchain; E-wallet payment services; Financial exchange of virtual currency; Financial services; Financial transfers and transactions, and payment services; Internet banking services; Issue of tokens of value; Processing of credit card payments; Credit card and payment card services; Financial exchange of crypto assets; Electronic transfer of crypto assets; Issuance of credit cards; Issuing credit cards; none of the aforesaid in connection with investment management, investment funds, financial indices, investment advice or retirement planning.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Development of software; Programming of computers for the printing of bar codes; Programming of software for evaluating customer behaviour in online shops; Software as a service [SaaS]; Design, development and programming of computer software; Platform as a service [PaaS]; all the aforesaid relating to financial transfers and transactions, and payment services, loyalty, incentive and bonus programs; none of the aforesaid in connection with risk management or security, investment management, investment funds, financial indices, investment advice or retirement planning.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Allalaaditavad mobiilseadmerakendused; Mobiiltelefonide tarkvara; Arvutirakendustarkvara mobiiltelefonidele; Arvutitarkvara; Maksetarkvara; Allalaaditav arvutitarkvara plokiahela tehnoloogia jaoks; Elektrooniliste maksete tarkvara; Arvutirakendustarkvara mobiiltelefonidele; Elektrooniliste maksete tarkvara; Mobiilseadmete tarkvara ja rakendused; Krüptovarade saamise ja kasutamise allalaaditavad krüptovõtmed; Kõik eelnimetatud kaubad on seotud järgmiste valdkondadega: Finantsülekanded ja -tehingud, Makseteenused, Püsikliendiprogrammidega seotud teenused, Ergutusprogrammides ja Boonusprogrammid; Ükski eelnimetatud kaupadest ei ole seotud järgmiste valdkondadega: Riskijuhtimine või turvalisus, Investeeringute haldamise, Investeerimisfondid, Finantsindeksid, Investeerimisalane nõustamine või Pensioniplaneerimine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "et",
+      "description": "Ärijuhtimine; Turundus; Reklaamiteenused; Äriteave ja klientide äriline nõustamine [klientide nõustamise keskus]; Püsikliendi- ja boonusprogrammide organiseerimine, haldamine ja järelevalve; Püsikliendiprogrammide haldamine; Motivatsiooniprogrammide haldamine kolmandate isikute toodete ja teenuste müügiedenduseks; Lojaalsusprogrammiteenused äri, müügiedenduse ja/või reklaami eesmärgil; Kõik eelnimetatud teenused seoses järgmiste valdkondadega: Rahaülekande- ja Finantstehingud, Makseteenused, Püsikliendi-, preemia- ja boonusprogrammid; Ükski eelnimetatud teenustest seoses järgmiste valdkondadega: Riskijuhtimine või turvalisus, Investeerimisalane ärijuhtimine, Investeerimisfondid, Finantsindeksid, investeerimisnõustamine või pensioni planeerimine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "et",
+      "description": "Onlain-pangandus; Väärtusmärkide väljastamine kinkekupongidena; Püsikliendiprogrammi preemiana väärtusmärkide väljastamine; Rahalise väärtusega zetoonide väljastamine boonusprogrammide jaoks; Maksete elektrooniline töötlemine; Elektroonilise rahakoti teenused (makseteenused); Maksetehingute töötlemine Interneti kaudu; Kaupade ja teenuste ostumaksete töötlemine elektroonilise sidevõrgu kaudu; Rahaülekanne; Elektroonilised makseteenused; Automatiseeritud pangateenused; Ettemaksega kinkevautserite väljastamine; Kontaktivabade maksete teenused; Plokiahel-finantstehingud; Elektroonilise rahakoti teenused (makseteenused); Virtuaalraha finantsvahetus; Finantsteenused; Rahaülekande- ja -tehinguteenused ja makseteenused; Onlain-pangandus; Rahalise väärtusega zetoonide väljastamine; Krediitkaardimaksete töötlemine; Krediitkaardi- ja maksekaarditeenused; Krüptovarade finantsvahetus; Krüptovarade elektrooniline ülekandmine; Krediitkaartide käibele laskmine, väljalase; Krediitkaartide käibele laskmine, väljalase; Mitte ükski eelnimetatuist seoses järgmiste valdkondadega: Investeeringute haldamine, Investeerimisfondid, Finantsindeksid, Finantsinvesteeringute nõustamisteenused või Pensioniplaneerimine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Tarkvara arendamine; Arvutite programmeerimine vöötkoodide trükkimiseks; Klientide online-kauplustes käitumise hindamise tarkvara programmeerimine; Pilveteenused [SaaS]; Arvutitarkvara projekteerimine, arendamine ja programmeerimine; Platvorm teenusena [PaaS]; Kõik eelnimetatud teenused seoses järgmiste valdkondadega: Finantsülekanded ja -tehingud, Makseteenused, Lojaalsusprogrammid, Ergutusprogrammides ja Boonusprogrammid; Ükski eelnimetatud teenustest seoses järgmiste valdkondadega: Riskijuhtimine või turvalisus, Investeeringute haldamise, Investeerimisfondid, Finantsindeksid, Investeerimisalane nõustamine või Pensioniplaneerimine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Ladattavat sovellukset käytettäväksi kannettavissa laitteissa; Matkapuhelinlaitteiden ohjelmistot; Tietokoneohjelmisto mobiilipuhelimille; Ohjelmistot; Maksuohjelmistot; Ladattavat tietokoneohjelmistot lohkoketjuteknologiaa varten; E-maksuohjelmistot; Tietokoneohjelmisto mobiilipuhelimille; E-maksuohjelmistot; Ohjelmistot ja sovellukset mobiililaitteisiin; Ladattavat salausavaimet kryptovarojen vastaanottamiseen ja käyttämiseen; Kaikki edellä mainitut tavarat liittyvät seuraaviin aloihin: Varojen siirrot ja rahoitustapahtumat, Maksupalvelut, Kanta-asiakasohjelmiin liittyvät palvelut, Kannustinohjelmien ja Bonus-ohjelmat; Mitkään edellä mainituista tavaroista eivät liity seuraaviin aloihin: Riskien hallinta tai turvallisuus, Sijoitusten hallinta, Sijoitusrahastot, Taloudelliset indeksit, Sijoitusneuvonta tai Eläkesuunnittelu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fi",
+      "description": "Yrityshallinto; Markkinointi; Mainonta; Kaupallinen tiedotus ja kuluttajaneuvonta; Kanta-asiakas- ja kannustinjärjestelmien järjestäminen, hoitaminen ja valvonta; Kanta-asiakasohjelmien hallinnointi; Kannustinohjelmien hallinnointi muille kuuluvien tuotteiden ja palvelujen myynnin edistämiseksi; Kanta-asiakaspalvelut kaupallisiin, myynninedistämis- ja/tai mainontatarkoituksiin; Kaikki edellä mainitut palvelut liittyvät seuraaviin aloihin: Rahansiirtopalvelut ja Rahoitustapahtumat, Maksupalvelut, Kanta-asiakas-, kannustin- ja bonusohjelmat; Mitkään edellä mainituista palveluista eivät liity seuraaviin aloihin:: Riskien hallinta tai turvallisuus, Sijoitusten hallinta, Sijoitusrahastot, Taloudelliset indeksit, sijoitusneuvonta tai eläkesuunnittelu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "fi",
+      "description": "Kotipankkitoiminta; Lahjakorttien muodossa olevien arvosetelien antaminen; Arvosetelien antaminen kanta-asiakasohjelmien palkintoina; Kannustinjärjestelmiin liittyvien arvokuponkien anto; Maksujen elektroninen käsittely; Elektroniset lompakkopalvelut (maksupalvelut); Maksutapahtumien käsittely Internetin välityksellä; Sellaisten maksujen käsittely, jotka liittyvät tavaroiden ja palvelujen ostamiseen elektronisen viestintäverkon välityksellä; Rahansiirtopalvelut; Elektroniset maksupalvelut; Automatisoidut pankkipalvelut; Ennalta maksettujen lahjakorttien liikkeellelaskeminen; Etämaksupalvelut; Rahoitustapahtumat lohkoketjun kautta; Elektroniset lompakkopalvelut (maksupalvelut); Virtuaalivaluutan vaihto rahamarkkinoilla; Rahoituspalvelut; Rahansiirrot ja rahoitustapahtumat ja maksupalvelut; Internet-pankkipalvelut; Arvoseteleiden anto; Luottokorttimaksujen käsittely; Luottokortti- ja maksukorttipalvelut; Kryptovarojen vaihto rahamarkkinoilla; Kryptovarojen elektroninen siirto; Luottokorttien myöntäminen; Luottokorttien myöntäminen; Mitkään edellä mainitusta eivät liity seuraaviin aloihin:: Sijoitusten hallinta, Sijoitusrahastot, Taloudelliset indeksit, Sijoittamiseen liittyvät neuvontapalvelut tai Eläkesuunnittelu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Ohjelmistokehitys; Tietokoneiden ohjelmointi viivakoodien tulostusta varten; Ohjelmistojen ohjelmointi asiakaskäyttäytymisen arviointiin online-kaupoissa; Verkkosovelluspalvelut [SaaS]; Ohjelmistojen suunnittelu, kehittäminen ja ohjelmointi; Sovellusalusta palveluna (PaaS); Kaikki edellä mainitut palvelut liittyvät seuraaviin aloihin:: Varainsiirrot ja rahoitustapahtumat, Maksupalvelut, Kanta-asiakasohjelmat, Kannustinohjelmien ja Bonus-ohjelmat; Mitkään edellä mainituista palveluista eivät liity seuraaviin aloihin:: Riskien hallinta tai turvallisuus, Sijoitusten hallinta, Sijoitusrahastot, Taloudelliset indeksit, Sijoitusneuvonta tai Eläkesuunnittelu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Applications téléchargeables pour dispositifs mobiles; Logiciels pour téléphones mobiles; Logiciels d'applications informatiques pour téléphones portables; Logiciels pour ordinateurs; Logiciels de paiement; Logiciels informatiques téléchargeables pour la technologie de la chaîne de blocs [blockchain]; Logiciels de paiements électroniques; Logiciels d'applications informatiques pour téléphones portables; Logiciels de paiements électroniques; Logiciels et applications pour dispositifs mobiles; Clés cryptographiques téléchargeables pour la réception et la dépense des crypto-actifs; Tous les produits précités en rapport avec les domaines suivants: Versements et transactions financières, Services de paiement, Services de programmes de fidélisation, Des programmes incitatifs et Programmes de bonifications; Tous les produits précités n'étant pas en relation avec les domaines suivants: Gestion des risques ou sécurité, gestion d'investissements, Fonds d'investissements, Indices financiers, Conseils en investissement ou Plan de retraite.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Administration commerciale; Marketing; Publicité; Informations et conseils commerciaux aux consommateurs; Organisation, gestion et supervision de programmes de fidélisation et de primes; Gestion de programmes de primes de fidélité; Administration de programmes de primes d'encouragement pour la promotion de la vente des produits et services de tiers; Services de fidélisation de la clientèle à des fins commerciales, promotionnelles ou publicitaires; Tous les services précités n'étant pas en relation avec les domaines suivants: Services de transfert financier et Transactions financières, Services de paiement, Programmes de fidélité, d'incitation et de primes destinés aux clients; Aucun des services précités ne se rapportant aux domaines suivants: Gestion des risques ou sécurité, Gestion des investissements, Fonds d'investissements, Indices financiers, conseils en investissement ou planification des retraites.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "fr",
+      "description": "Services bancaires en ligne; Émission de bons de valeur sous forme de bons-cadeaux; Émission de bons de valeur afin de récompenser la fidélité de la clientèle; Émission de coupons de valeur dans le cadre de programmes d'incitation; Traitement électronique de paiements; Services de paiement par porte-monnaie électronique; Traitement de transactions de paiement par le biais d'Internet; Traitement de paiements pour l'achat de produits et services par le biais d'un réseau de communication électronique; Transfert d'argent; Services de paiement électronique; Services bancaires automatisés; Emission de chèques cadeaux de paiement; Services de paiement sans contact; Transactions financières par l'intermédiaire de chaînes de blocs; Services de paiement par porte-monnaie électronique; Opérations de change en matière de monnaie virtuelle; Services financiers; Transferts et transactions financières et services de paiement; Services bancaires sur Internet; Émission de bons de valeur; Traitement de paiements par cartes de crédit; Services de cartes de crédit et de cartes de paiement; Échange financier de crypto-actifs; Transfert électronique de crypto-actifs; Émission de cartes de crédit; Émission de cartes de crédit; Aucun des services précités ne se rapportant aux domaines suivants: Gestion d'investissements, Fonds d'investissements, Indices financiers, Prestation de conseils en placements financiers ou Plan de retraite.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Développement de logiciels; Programmation informatique pour l'impression de codes-barres; Programmation de logiciels pour évaluer le comportement des clients sur des boutiques en ligne; Logiciels en tant que service [SaaS]; Conception, développement et programmation de logiciels; Plateforme informatique en tant que service [PaaS]; Tous les services précités concernant les domaines suivants: De transactions et transferts financiers, Services de paiement, Programmes de fidélité, Des programmes incitatifs et Programmes de bonifications; Aucun des services précités ne se rapportant aux domaines suivants: Gestion des risques ou sécurité, gestion d'investissements, Fonds d'investissements, Indices financiers, Conseils en investissements ou Plan de retraite.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Herunterladbare Softwareapplikationen zur Verwendung mit mobilen Geräten; Software für Mobilgeräte; Computer-Anwendungssoftware für Mobiltelefone; Computersoftware; Zahlungssoftware; Herunterladbare Computersoftware für Blockchain-Technologie; Software zur Bearbeitung elektronischer Zahlungen; Computer-Anwendungssoftware für Mobiltelefone; Software zur Bearbeitung elektronischer Zahlungen; Software und Softwareapplikationen für mobile Geräte; Herunterladbare kryptografische Schlüssel für den Empfang und das Ausgeben von Krypto-Vermögenswerten; Alle vorstehend genannten Waren in Bezug auf die folgenden Bereiche: Überweisungen und Finanzgeschäfte, Zahlungsverkehr, Leistungen von Kundenbindungsprogrammen, Für Kundentreueprogramme und Bonusprogramme; alle vorgenannten Waren nicht in Bezug auf folgende Bereiche: Risikomanagement oder Sicherheit, Anlagenmanagement, Investmentfonds, Bereitstellung von Finanzindizes, Anlageberatung oder Pensionsplanung.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Geschäftsverwaltung; Marketing; Werbung; Erteilung von Auskünften [Information] und Beratung für Verbraucher in Handels- und Geschäftsangelegenheiten [Verbraucherberatung]; Organisation, Durchführung und Überwachung von Treueprogrammen und Bonusprogrammen; Verwaltung von Treueprämienprogrammen; Verwaltung von Anreiz- und Bonusprogrammen zur Förderung des Verkaufs von Waren und Dienstleistungen Dritter; Dienstleistungen im Bereich Kundenbindung für Geschäfts-, Verkaufsförderungs- und/oder Werbezwecke; Alle vorstehend genannten Dienstleistungen in Bezug auf folgende Bereiche: Finanztransfer- und Finanztransaktionen, Bezahldienstleistungen, Kundenbindungs-, Anreiz- und Prämienprogramme; Keine der vorstehend genannten Dienstleistungen in Bezug auf die folgenden Bereiche: Risikomanagement oder Sicherheit, Investmentmanagement, Investmentfonds, Finanzindizes, Kapitalanlageberatung oder Pensionsplanung.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "de",
+      "description": "Online-Banking; Ausgabe von Wertgutscheinen als Geschenkgutscheine; Ausgabe von Wertgutscheinen als Belohnung für Kundentreue; Ausgabe von Wertmarken für Prämienprogramme; Elektronische Zahlungsverarbeitung; E-Wallet-Bezahldienste; Bearbeitung von Zahlungsvorgängen über das Internet; Bearbeitung von Zahlungen für den Kauf von Waren und Dienstleistungen über ein elektronisches Kommunikationsnetz; Geldtransfer; Elektronische Zahlungsdienste; Automatisierte Bankgeschäfte; Ausgabe von Guthaben-Geschenkschecks; Kontaktloser Zahlungsverkehr; Finanzielle Transaktionen über eine Blockchain; E-Wallet-Bezahldienste; Wechseln virtueller Währung; Finanzdienstleistungen; Finanztransfer-, Finanztransaktions- und Zahlungsdienste; Internetbanking; Ausgabe von Gutscheinen und Wertmarken; Abwickeln von Zahlungen mit Kreditkarten; Abwicklung von Zahlungen mit Kredit- und Geldkarten; Wechseln von Krypto-Vermögenswerten; Elektronischer Transfer von Krypto-Vermögenswerten; Ausgabe von Kreditkarten; Ausgabe von Kreditkarten; Das vorstehend Genannte nicht in Bezug auf die folgenden Bereiche: Kapitalanlagenmanagement, Investmentfonds, Bereitstellung von Finanzindizes, Finanzanlagenberatung oder Pensionsplanung.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Softwareentwicklung; Programmierung von Computern zum Drucken von Strichcodes; Programmieren von Software zur Evaluierung des Kundenverhaltens in Online-Shops; Software as a Service [SaaS]; Entwurf, Entwicklung und Programmierung von Computersoftware; Platform as a Service [PaaS]; Alle vorstehend genannten Dienstleistungen in Bezug auf die folgenden Bereiche: Für Finanztransfers und -transaktionen, Bezahldienstleistungen, Kundentreueprogramme, Für Kundentreueprogramme und Bonusprogramme; Keine der vorstehend genannten Dienstleistungen in Bezug auf die folgenden Bereiche: Risikomanagement oder Sicherheit, Anlagenmanagement, Investmentfonds, Bereitstellung von Finanzindizes, Kapitalanlageberatung oder Pensionsplanung.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Aplikacije koje se mogu preuzeti za upotrebu s mobilnim uredajima; Softver za mobilne uredaje; Racunali softver za aplikacije za mobilne telefone; Softver; Softver za placanje; Racunalni softver za tehnologiju lanca blokova koji se moze preuzeti; Softver za elektronicko placanje; Racunali softver za aplikacije za mobilne telefone; Softver za elektronicko placanje; Softveri i aplikacije za mobilne uredaje; Kriptografski kljucevi koji se mogu preuzeti za primanje i trosenje kriptoimovine; Svi navedeni proizvodi u vezi su sa sljedecim podrucjima: Financijski transferi i transakcije, Platne usluge, Usluge programa za zadrzavanje vjernosti korisnika, Poticajnih programa i Bonus programi; Nijedan od prethodno navedenih proizvoda nije u vezi sa sljedecim proizvodima: Upravljanje rizikom ili sigurnoscu, Upravljanje investicijama, Investicijski fondovi, Financijski indeksi, Investicijsko savjetovanje ili Planiranje umirovljenja.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hr",
+      "description": "Upravljanje poduzecima; Marketing; Oglasavanje; Potrosaci [pruzanje komercijalni savjeta i informacija potrosacima]; Organiziranje, provodenje i nadzor programa vjernosti i motivacijskih programa; Upravljanje programom nagradivanja vjernosti; Administracija programa poticajnih nagrada za promicanje prodaje proizvoda i usluga drugih; Usluge korisnicke vjernosti u komercijalne, promotivne i/ili reklamne svrhe; Sve prethodno navedene usluge povezane su sa sljedecim podrucjima: Usluge financijskih prijenosa i Financijske transakcije, Platne usluge, Programi vjernosti, motivacije i bonusa; Nijedna od prethodno navedenih usluga nije u vezi sa sljedecim podrucjima: Upravljanje rizikom ili sigurnoscu, Upravljanje ulaganjem, Investicijski fondovi, Financijski indeksi, investicijski savjeti ili planiranje umirovljenja.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "hr",
+      "description": "Kucno bankarstvo; Izdavanje vrijednosnih bonova u obliku poklon bonova; Izdavanje vrijednosnih kupona kao nagrade za lojalnost potrosaca; Izdavanje zetona s vrijednoscu u svezi s motivacijskim programima; Elektronicka obrada placanja; Usluge elektronickog novcanika [usluge placanja]; Obrada platnih transakcija putem Interneta; Obrada uplata za kupnju robe i usluga putem elektronicke komunikacijske mreze; Usluge prijenosa novca; Usluge elektronickog placanja; Usluge automatiziranog bankarstva; Izdavanje darovnih bonova; Usluge beskontaktnog placanja; Financijske transakcije primjenom tehnologije lanac blokova; Usluge elektronickog novcanika [usluge placanja]; Financijska razmjena virtualnih valuta; Financijske usluge; Usluge financijskih prijenosa i transakcija te usluge placanja; Internet bankarstvo; Izdavanje vrijednosnih bonova; Obrada placanja putem kreditne kartice; Usluge u svezi s kreditnim karticama i karticama za placanje; Financijska razmjena kriptoimovine; Elektronicki prijenos kriptoimovine; Izdavanje kreditnih kartica; Izdavanje kreditnih kartica; Nista od navedenog nije u vezi sa sljedecim podrucjima: Upravljanje ulaganjem, Investicijski fondovi, Financijski indeksi, Savjetodavne usluge povezane s financijskim investicijama ili Planiranje umirovljenja.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Razvoj softvera; Programiranje racunala za ispis bar kodova; Programiranje softvera za procjenu ponasanja kupaca u mreznim trgovinama; Softver kao usluga [SaaS]; Dizajn, razvoj i programiranje racunalnih programa; Platforma kao usluga (PaaS); Sve navedene usluge u vezi sa sljedecim podrucjima: Financijske prijenose i transakcije, Platne usluge, Programi vjernosti, Poticajnih programa i Bonus programi; Nijedna od prethodno navedenih usluga nije u vezi sa sljedecim podrucjima: Upravljanje rizikom ili sigurnoscu, Upravljanje investicijama, Investicijski fondovi, Financijski indeksi, Savjeti u vezi s ulaganjem ili Planiranje umirovljenja.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Letöltheto alkalmazások mobil eszközökkel történo használatra; Mobil szoftverek; Számítógépes alkalmazások mobiltelefonokhoz; Szoftverek; Fizetoszoftverek; Letöltheto számítógépes szoftverek blokklánc technológiához; Szoftverek elektronikus fizetések feldolgozásához; Számítógépes alkalmazások mobiltelefonokhoz; Szoftverek elektronikus fizetések feldolgozásához; Szoftverek és alkalmazások mobil eszközökhöz; Letöltheto kriptografikus kulcsok kriptoeszközök fogadásához és költéséhez; A fenti áruk mindegyike a következo területekkel kapcsolatban: Átutalások és pénzügyi muveletek, Fizetési szolgáltatások, Huségprogram szolgáltatások, Ösztönzo programok és Bónusz programok; Valamennyi fent nevezett termék nem a következo területekre vonatkozóan: Kockázatkezelés vagy biztonság, Befektetések kezelése, Befektetési alapok, Pénzügyi mutatók, Befektetési tanácsadás vagy Nyugdíjtervezés.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hu",
+      "description": "Üzleti adminisztráció; Marketing szolgáltatások; Hirdetési- és reklámszolgáltatások; Kereskedelmi információ és tanácsadás fogyasztóknak [fogyasztói tanácsadás]; Huségprogramok és ösztönzési programok megszervezése, muködtetése és felügyelete; Huségprogramok adminisztrációja; Mások termékeinek és szolgáltatásainak népszerusítését szolgáló ösztönzo programok adminisztrálása; Vásárlói huségszolgáltatások kereskedelmi-, promóciós- és/vagy reklámcélokra; A fent említett szolgáltatások mindegyike az alábbi területeken: Pénzutalási és Pénzügyi tranzakciók, Fizetési szolgáltatások, Huség-, ösztönzo- és bónuszprogramok; A fenti szolgáltatások egyike sem a következo területeken: Kockázatkezelés vagy biztonság, Beruházási management, Befektetési alapok, Pénzügyi indexek, befektetési tanácsadás vagy nyugdíjtervezés.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "hu",
+      "description": "Online banki szolgáltatások; Értékbónok ajándékutalványok formájában való kibocsátása; Vásárlói huség jutalmazására szolgáló értékbónok kibocsátása; Ösztönzo rendszerekkel kapcsolatos értékzsetonok kibocsátása; Kifizetések elektronikus feldolgozása; Elektronikus úton történo tranzakciók (fizetési szolgáltatások); Interneten keresztül történo fizetési muveletek feldolgozása; Áruk és szolgáltatások elektronikus kommunikációs hálózaton keresztül való megvásárlásához kapcsolódó kifizetések feldolgozása; Pénzátutalás; Elektronikus fizetési szolgáltatások; Automatizált banki szolgáltatások; Fizetésre alkalmas ajándékutalványok kibocsátása; Érintésmentes fizetési szolgáltatások; Pénzügyi tranzakciók blokklánc segítségével; Elektronikus úton történo tranzakciók (fizetési szolgáltatások); Virtuális valuták pénzügyi átváltása; Pénzügyi szolgáltatások; Pénzügyi átutalások és tranzakciók, fizetési szolgáltatások; Internetes banki tevékenység; Értékutalványok kibocsátása; Hitelkártyás fizetések feldolgozása; Hitelkártya és bankkártya szolgáltatások; Kriptoeszközök pénzügyi átváltása; Kriptoeszközök elektronikus átvitele; Hitelkártyák kibocsátása; Hitelkártyák kibocsátása; A fentiek egyike sem a következo területekkel kapcsolatos: Befektetés menedzsment, Befektetési alapok, Pénzügyi mutatók, Pénzügyi befektetéssel kapcsolatos szaktanácsadási szolgáltatások vagy Nyugdíjtervezés.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Számítógépes szoftver fejlesztése; Számítógépek programozása vonalkódok nyomtatásához; Online áruházakban vásárlói szokások kiértékelésére szolgáló szoftverek programozása; Szoftver mint szolgáltatás [SaaS]; Számítógépes szoftverek tervezése, fejlesztése és programozása; Platform-mint-szolgáltatás (PAAS); Az összes fent említett szolgáltatás a következo mezokhöz kapcsolódóan: Pénzügyi átutalások és tranzakciók, Fizetési szolgáltatások, Huségprogramok, Ösztönzo programok és Bónusz programok; A fenti szolgáltatások egyike sem a következo területeken: Kockázatkezelés vagy biztonság, Befektetések kezelése, Befektetési alapok, Pénzügyi mutatók, Pénzügyi befektetéssel kapcsolatos szaktanácsadás vagy Nyugdíjtervezés.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Applicazioni scaricabili per uso su dispositivi cellulari; Software per cellulari; Software applicativi per telefoni cellulari; Programmi software per computer; Software di pagamento; Software scaricabile per computer per tecnologia blockchain; Software per l'elaborazione di pagamenti elettronici da e per terzi; Software applicativi per telefoni cellulari; Software per l'elaborazione di pagamenti elettronici da e per terzi; Software ed applicazioni per dispositivi mobili; Chiavi crittografiche scaricabili per ricevere e spendere criptoattività; Tutti i suddetti prodotti in relazione ai seguenti settori: Trasferimenti e transazioni finanziari, Servizi di pagamento, Servizi di programmi di fidelizzazione, Programmi di incentivi e Programmi di bonus; Tutti i suddetti prodotti non relativi ai seguenti settori: Gestione del rischio o sicurezza, gestione d'investimenti, Fondi di investimento, Indici finanziari, consulenza in materia d'investimenti o Piani pensione.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "it",
+      "description": "Amministrazione commerciale; Marketing; Pubblicità; Informazioni e consulenza commerciale ai consumatori; Organizzazione, gestione e supervisione di programmi fedeltà e programmi di incentivi; Amministrazione di programmi di fidelizzazione a premi; Amministrazione di programmi di incentivazione a premi per promuovere la vendita di prodotti e servizi per conto terzi; Servizi di fedeltà della clientela per scopi commerciali, promozionali e/o pubblicitari; Tutti i suddetti servizi in relazione ai seguenti settori: Operazioni di trasferimento finanziario e Transazioni finanziarie, Servizi di corresponsione di pagamenti, Programmi di fedeltà, d'incentivazione e di premiazione; Nessuno dei suddetti servizi in relazione ai seguenti campi: Gestione del rischio o sicurezza, Gestione d'investimenti, Fondi di investimento, Indici finanziari, consulenza in materia d'investimenti o pianificazione della pensione.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "it",
+      "description": "Online banking; Emissione di buoni di valore, sotto forma di voucher regalo; Emissione di buoni di valore come premi di programmi fedeltà; Emissione di buoni di valore relativamente a piani di incentivi; Elaborazione elettronica di pagamenti; Servizi di pagamento con portafoglio elettronico; Elaborazione di transazioni di pagamento tramite internet; Elaborazione di pagamenti per l'acquisto di prodotti e servizi tramite una rete di comunicazione elettronica; Trasferimento di denaro; Servizi di pagamento elettronico; Servizi bancari automatizzati; Emissione di buoni regalo per il pagamento; Servizi di pagamento senza contatto; Transazioni finanziarie tramite blockchain; Servizi di pagamento con portafoglio elettronico; Scambio finanziario di valute virtuali; Affari finanziari; Trasferimenti e transazioni finanziarie, e servizi di pagamento; Servizi bancari attraverso Internet; Emissione di buoni di valore; Trattamento di pagamenti con carte di credito; Servizi di carte di credito e carte di pagamento; Scambio finanziario di criptoattività; Trasferimento elettronico di criptoattività; Emissione di carte di credito; Emissione di carte di credito; Niente di quanto suddetto in relazione ai seguenti campi: Gestione di investimenti, Fondi di investimento, Indici finanziari, Servizi di consulenza in materia di investimenti finanziari o Piani pensione.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Sviluppo di software; Programmazione di computer per la stampa di codici a barre; Programmazione di software per l'analisi del comportamento dei clienti nei negozi online; Software come servizio [SaaS]; Progettazione, sviluppo e programmazione di software informatici; Piattaforma come servizio [PaaS]; Tutti i suddetti servizi in materia dei seguenti ambiti: Trasferimenti e transazioni finanziarie, Servizi di corresponsione di pagamenti, Programmi fedeltà, Programmi di incentivi e Programmi di bonus; Nessuno dei suddetti servizi in relazione ai seguenti campi: Gestione del rischio o sicurezza, gestione d'investimenti, Fondi di investimento, Indici finanziari, Consulenza in materia di investimenti o Piani pensione.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Parsisiunciamosios mobiliuju prietaisu taikomosios programos; Mobilioji programine iranga; Kompiuteriu programine iranga mobiliesiems telefonams; Kompiuteriu programine iranga; Mokejimo programine iranga; Parsisiunciamoji programine iranga bloku grandines technologijai; Elektroniniu mokejimu programine iranga; Kompiuteriu programine iranga mobiliesiems telefonams; Elektroniniu mokejimu programine iranga; Mobiliuju prietaisu programine iranga ir taikomosios programos; Parsisiunciamieji kriptografiniai raktai kriptoturtui gauti ir isleisti; Visos minetos prekes, susijusios su siomis sritimis: Pervedimai ir banko operacijos, Mokejimo paslaugos, Lojalumo programu paslaugos, Skatinimo programoms ir Premiju programos; Visos pirmiau isvardytos prekes nesusijusios su siomis sritimis: Rizikos valdymas arba saugumas, Investiciju valdymas, Investiciniai fondai, Finansiniai indeksai, Investavimo patarimai ar Pensiju planai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lt",
+      "description": "Verslo tvarkyba; Rinkodara; Reklama; Komercine informacija ir patarimai vartotojams [konsultaciju teikimas]; Lojalumo ir skatinimo programu organizavimas, vykdymas ir prieziura; Atlygio uz lojaluma programu administravimas; Skatinamuju premijavimo programu administravimas skatinant treciuju asmenu prekiu ir paslaugu pardavima; Klientu lojalumo paslaugos komercijos, skatinimo ir/ar reklamos reikmems; Visos pirmiau minetos paslaugos, susijusios su siomis sritimis: Finansu pervedimo paslaugos ir Finansiniai sandoriai, Mokejimo paslaugos, Lojalumo, skatinamuju ir premijavimo programos; Ne viena is pirmiau minetu paslaugu nera susijusi su siomis sritimis: Rizikos valdymas arba saugumas, Investiciju valdymas [vadyba], Investiciniai fondai, Finansiniai indeksai, patarimai del investavimo ar isejimo i pensija planavimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "lt",
+      "description": "Internetine bankininkyste; Dovanu kuponu pobudzio vertybiniu popieriu isleidimas; Vertybiniu talonu kaip atlygio uz klientu lojaluma isleidimas; Vertybiniu zetonu, susijusiu su lojalumo programomis, emisija; Elektroninis mokejimu apdorojimas; Elektroniniu piniginiu mokejimo paslaugos; Mokejimu transakciju apdorojimas internetu; Mokejimu uz prekiu ir paslaugu isigijima apdorojimas elektroniniais rysiu tinklais; Pinigu pervedimas; Elektroninio mokejimo paslaugos; Automatizuotos bankininkystes paslaugos; Isankstinio apmokejimo dovanu cekiu isdavimas; Bekontakciu mokejimu paslaugos; Finansines operacijos naudojant bloku grandine; Elektroniniu piniginiu mokejimo paslaugos; Finansinis virtualiosios valiutos keitimas; Finansines paslaugos; Finansiniai pervedimai ir operacijos bei mokejimu paslaugos; Internetines bankininkystes paslaugos; Vertybiniu popieriu isleidimas; Mokejimu kredito kortelemis apdorojimas; Kreditiniu ir mokejimo korteliu paslaugos; Finansinis kriptoturto keitimas; Elektroninis kriptoturto pervedimas; Kredito korteliu isleidimas; Kredito korteliu isleidimas; Ne vienas is pirmiau minetuju nera susijes su siomis sritimis: Investiciju valdymas, Investiciniai fondai, Finansiniai indeksai, Patarimai investavimo klausimais ar Pensiju planai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Programines irangos tobulinimas; Kompiuteriu programavimas bruksniniu kodu spausdinimo reikmems; Programines irangos programavimas klientu elgsenos internetinese parduotuvese vertinimo reikmems; Programine iranga kaip paslauga [SaaS]; Kompiuteriu programines irangos projektavimas, tobulinimas ir programavimas; Platforma kaip paslauga [PaaS]; Visos minetos paslaugos, susijusios su siomis sritimis: Pinigu pervedimai ir sandoriai, Mokejimo paslaugos, Lojalumo programos, Skatinimo programoms ir Premiju programos; Ne viena is pirmiau minetu paslaugu nera susijusi su siomis sritimis: Rizikos valdymas arba saugumas, Investiciju valdymas, Investiciniai fondai, Finansiniai indeksai, Patarimai investavimo klausimais ar Pensiju planai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Lejupieladejamas lietotnes mobilajam iekartam; Parvietojama programmatura; Mobilajiem telefoniem paredzeta datoru lietojumprogrammatura; Datoru programmatura; Maksajumu programmatura; Lejupieladejamas datorprogrammas blokkezu tehnologijam; Programmatura elektroniskajiem maksajumiem; Mobilajiem telefoniem paredzeta datoru lietojumprogrammatura; Programmatura elektroniskajiem maksajumiem; Mobilo iericu programmatura un lietojumprogrammas; Lejupieladejamas sifresanas atslegas kriptoaktivu sanemsanai un izlietosanai; Visas ieprieksminetas preces saistiba ar sadam jomam: Finansu parvedumi un darijumi, Maksajumu pakalpojumi, Lojalitates programmu pakalpojumi, Stimulu programmas un Bonusa programmas; Visas ieprieks minetas preces nav saistitas ar sekojosam jomam: Riska vadisana vai drosiba, Investiciju vadiba, Ieguldijumu fondi, Finansu indeksi, Ieguldijumu konsultacijas vai Pensiju plani.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lv",
+      "description": "Uznemumu parvaldisana; Marketinga pakalpojumi; Reklama; Komercialas informacijas un padomu sniegsana pateretajiem (pateretaju padomu sniegsanas centri); Lojalitates un motivesanas programmu organizesana, vadiba un parraudziba; Lojalitates balvu programmu administresana; Stimulejosu balvu programmu administresana tresajam personam piederosu precu un pakalpojumu pardosanas veicinasanai; Klientu lojalitates pakalpojumi komercialiem, pardosanas veicinasanas un/vai reklamas nolukiem; Visi ieprieksminetie pakalpojumi saistiba ar sadam jomam: Finansu transfera un Finansiali darijumi, Maksasanas pakalpojumi, Lojalitates, iniciativas un premijas programmas; Neviens no ieprieks minetajiem pakalpojumiem saistiba ar sadam jomam: Riska vadisana vai drosiba, Investiciju vadiba, Ieguldijumu fondi, Finansu indeksi, ieguldijumu konsultacijas vai pensiju plani.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "lv",
+      "description": "Banku pakalpojumi tiessaiste; Vertszimju izdosana davanu kuponu veida; Noteiktas vertibas kuponu izdosana ka klientu lojalitates balva; Naudas aizstajeju izlaisana saistiba ar stimulesanas sistemam; Maksajumu elektroniska apstrade; Elektroniska maka maksajumu pakalpojumi; Maksajuma darijumu apstrade interneta; Maksajumu apstrade precu un pakalpojumu iegadei, izmantojot elektronisko komunikaciju tiklu; Naudas parskaitijumi; Elektronisko maksajumu pakalpojumi; Automatizeti banku pakalpojumi; Prieksapmaksas davanu ceku izdosana; Bezkontakta maksajumu pakalpojumi; Finansu transakcijas, izmantojot blokkedi; Elektroniska maka maksajumu pakalpojumi; Finansu mainas darijumi ar virtualo valutu; Finansu pakalpojumi; Naudas parvedumi un darijumi, maksajumu pakalpojumi; Internetbankas pakalpojumi; Vertspapiru emisija; Kreditkarsu maksajumu apstrade; Kreditkarsu un maksajumu karsu pakalpojumi; Kriptoaktivu finansu mainas darijumi; Kriptoaktivu elektroniskie parvedumi; Kreditkarsu izsniegsana; Kreditkarsu izsniegsana; Neviens no ieprieksminetajiem nav saistits ar sadam jomam: Ieguldijumu parvaldiba, Ieguldijumu fondi, Finansu indeksi, Konsultacijas saistiba ar finansu investicijam vai Pensiju plani.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Programmaturas izstrade; Datoru programmesana svitrkodu drukasanai; Programmaturas programmesana klientu uzvedibas izvertesanai tiessaistes veikalos; Programmatura ka pakalpojums (SaaS); Datoru programmaturas projektesana, izstrade un programmesana; Platforma ka pakalpojums (PaaS); Visi ieprieks minetie pakalpojumi saistiba ar sadam jomam: Finansu parvedumi un darijumi, Maksasanas pakalpojumi, Lojalitates programmam, Stimulu programmas un Bonusa programmas; Neviens no ieprieks minetajiem pakalpojumiem saistiba ar sadam jomam: Riska vadisana vai drosiba, Investiciju vadiba, Ieguldijumu fondi, Finansu indeksi, Konsultacijas investiciju joma vai Pensiju plani.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Applikazzjonijiet li jistghu jitnizzlu ghall-uzu ma' taghmir mobbli; Softwer tal-mowbajl; Softwer bhala applikazzjoni tal-kompjuter ghall-mowbajls; Softwer; Softwer tal-hlas; Software tal-kompjuter li jista' jigi ddawnlowdjat ghal teknologija blockchain; Softwer tal-hlas elettroniku; Softwer bhala applikazzjoni tal-kompjuter ghall-mowbajls; Softwer tal-hlas elettroniku; Softwer u applikazzjonijiet ghal taghmir mobbli; Kjavi kriptografici li jistghu jitnizzlu biex jircievu u jonfqu l-kriptoassi; L-oggetti kollha msemmija qabel huma relatati mal-oqsma li gejjin: Trasferimenti u tranzazzjonijiet finanzjarji, Servizzi ta' hlas, Servizzi ta' programmi ta' lealta, Programmi ta' incentivi u Programmi ta' bonus; Il-prodotti kollha msemmija qabel mhux relatati mal-oqsma li gejjin: Gestjoni tar-riskju jew sigurtà, Servizzi ta' gestjoni, Servizzi ta' investiment ta' trust, Indici finanzjarji, Pariri dwar investimenti jew Ippjanar marbut mal-irtirar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "mt",
+      "description": "Amministrazzjoni ta' negozju; Servizzi ta' kummercjalizzazzjoni; Reklamar; Konsumaturi (Taghrif kummercjali u pariri ghal -) [centru ta' pariri lill-konsumatur]; L-organizzazzjoni, t-tmexxija u s-supervizjoni ta' skemi ta' lealtà u skemi ta' incentivi; Amministrazzjoni ta' programmi ta' premjijiet ghal-lealtà; Amministrazzjoni ta' programmi dwar l-ghoti ta' incentivi ghall-promozzjoni tal-bejgh ta' oggetti u servizzi ta' ohrajn; Servizzi ta' lealtà ghall-klijent ghal skopijiet kummercjali, promozzjonali u/jew ta' reklamar; Is-servizzi kollha msemmija qabel fir-rigward tal-oqsma li gejjin: Trasferiment finanzjarju u Transazzjonijiet finanzjarji, Servizzi ta' hlas, Programmi ta' lealtà, ta' incentivi u ta' bonusijiet; L-ebda wiehed mis-servizzi msemmija qabel mhu b'rabta mal-oqsma li gejjin: Gestjoni tar-riskju jew sigurtà, Il-gestjoni ta' l-investiment, Servizzi ta' investiment ta' trust, Indici finanzjarji, pariri dwar l-investiment jew l-ippjanar tal-irtirar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "mt",
+      "description": "Servizzi bankarji online; Hrug ta' towkins ta' valur fl-ghamla ta' vawcers bhala rigal; Hrug ta' towkins ta' valur bhala premju ghal-lealtà tal-klijent; Hrug ta' towkins ta' valur relatati ma' skemi ta' incentivi; Ipprocessar elettroniku ta' pagamenti; Servizzi b'mezzi ta' hlas elettroniku (servizzi ta' hlas); L-ipprocessar ta' transazzjonijiet ta' pagamenti permezz tal-Internet; L-ipprocessar ta' pagamenti ghax-xiri ta' oggetti u servizzi permezz ta' netwerk tal-komunikazzjonijiet elettronici; Servizzi ta' trasmissjoni ta' flus; Servizzi ta' hlas b'mezz elettroniku; Servizzi bankarji awtomatizzati; Il-hrug ta' vawcers (gift cards); Servizzi ta' hlasijiet minghajr kuntatt; Transazzjonijiet finanzjarji permezz ta' blockchain; Servizzi b'mezzi ta' hlas elettroniku (servizzi ta' hlas); Skambju finanzjarju ta' muniti virtwali; Servizzi f'finanzi; Transfers u transazzjonijiet finanzjarji, u servizzi ta' hlas; Servizzi bankarji bl-Internet; Hrug ta' tokens ta' valur; Processar ta' pagamenti minn karti ta' kreditu; Servizzi ta' kards tal-kreditu u kards tal-hlas; Skambju finanzjarju ta' kriptoassi; Trasferiment elettroniku tal-kriptoassi; Il-hrug ta' karti tal-kreditu; Il-hrug ta' karti tal-kreditu; Fejn l-ebda wiehed minn dawk imsemmija hawn qabel mhu relatat mal-oqsma li gejjin: Il-gestjoni ta' investimenti, Servizzi ta' investiment ta' trust, Indici finanzjarji, Servizzi ta' pariri relatati mal-investiment finanzjarju jew Ippjanar marbut mal-irtirar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Zvilupp ta' softwer; L-ipprogrammar ta' kompjuters ghall-istampar ta' barkowds; Programmar ta' softwer ghall-evalwazzjoni tal-imgiba tal-klijenti fi hwienet onlajn; Softwer bhala servizz [SaaS]; Disinn, zvilupp u pprogrammar ta' softwer tal-kompjuter; Pjattaforma bhala Servizz (PAAS); Is-servizzi kollha msemmija qabel b'rabta mal-oqsma li gejjin: Trasferimenti u tranzazzjonijiet finanzjarji, Servizzi ta' hlas, Programmi ta' lealtà, Programmi ta' incentivi u Programmi ta' bonus; L-ebda wiehed mis-servizzi msemmija qabel mhu b'rabta mal-oqsma li gejjin: Gestjoni tar-riskju jew sigurtà, Servizzi ta' gestjoni, Servizzi ta' investiment ta' trust, Indici finanzjarji, Pariri dwar l-investiment jew Ippjanar marbut mal-irtirar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Aplikacje do pobrania do uzytku z telefonami komórkowymi; Oprogramowanie do telefonów komórkowych; Komputerowe oprogramowanie uzytkowe do telefonów komórkowych; Oprogramowanie; Oprogramowanie do wykonywania platnosci; Oprogramowanie komputerowe do pobrania dla technologii blockchain; Oprogramowanie do platnosci elektronicznych; Komputerowe oprogramowanie uzytkowe do telefonów komórkowych; Oprogramowanie do platnosci elektronicznych; Oprogramowanie i aplikacje do urzadzen przenosnych; Klucze kryptograficzne do pobrania do otrzymywania i wydawania kryptoaktywów; Wszystkie wyzej wymienione towary zwiazane z nastepujacymi dziedzinami: przelewy i transakcje finansowe, Uslugi platnicze, Uslugi w zakresie programów pozyskiwania stalych klientów, Programów motywacyjnych i Programy bonusowe; Wszystkie wyzej wymienione produkty nieodnoszace sie do nastepujacych dziedzin: Zarzadzanie ryzykiem lub w zakresie bezpieczenstwa, Zarzadzanie inwestycjami, Fundusze inwestycyjne, Wskazniki finansowe, Doradztwo inwestycyjne lub Planowanie emerytury.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pl",
+      "description": "Administrowanie dzialalnoscia gospodarcza; Uslugi marketingowe; Reklama; Handlowe informacje i porady udzielane konsumentom [punkty informacji konsumenckiej]; Organizacja, prowadzenie i nadzorowanie programów lojalnosciowych dla klientów i programów motywacyjnych; Zarzadzanie programami lojalnosciowymi; Administrowanie programami motywacyjnymi w celu promowania sprzedazy towarów i uslug dla osób trzecich; Uslugi programów lojalnosciowych dla celów handlowych, promocyjnych i/lub reklamowych; Wszystkie wyzej wymienione uslugi zwiazane z nastepujacymi dziedzinami: Przekazy pieniezne i Transakcje finansowe, uslugi platnicze, Uslugi programów lojalnosciowych, motywacyjnych i bonusowych; Zadna z wyzej wymienionych uslug nie jest zwiazana z nastepujacymi dziedzinami: Zarzadzanie ryzykiem lub w zakresie bezpieczenstwa, zarzadzanie inwestycjami, Fundusze inwestycyjne, Wskazniki finansowe, doradztwo inwestycyjne lub planowanie emerytury.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "pl",
+      "description": "Bankowosc online; Emisja bonów wartosciowych w postaci bonów upominkowych; Emisja bonów wartosciowych jako nagroda za lojalnosc klienta; Emisja bonów wartosciowych w zwiazku z programami motywacyjnymi; Elektroniczne przetwarzanie platnosci; Uslugi portfela elektronicznego (uslugi w zakresie platnosci); Przetwarzanie transakcji platniczych za posrednictwem Internetu; Przetwarzanie platnosci za zakup towarów i uslug za posrednictwem elektronicznej sieci lacznosciowej; Przelewy pieniezne; Uslugi w zakresie elektronicznych platnosci; Zautomatyzowane uslugi bankowe; Wydawanie platniczych czeków upominkowych; Uslugi platnosci bezdotykowych; Transakcje finansowe za posrednictwem lancucha blokowego; Uslugi portfela elektronicznego (uslugi w zakresie platnosci); Wymiana finansowa waluty wirtualnej; Uslugi finansowe; Przelewy i transakcje finansowe oraz uslugi platnicze; Bankowosc internetowa; Emisja bonów wartosciowych; Przetwarzanie platnosci dokonanych za pomoca kart kredytowych; Uslugi zwiazane z kartami kredytowymi i kartami platniczymi; Wymiana finansowa kryptoaktywów; Transfer elektroniczny kryptoaktywów; Emisja kart kredytowych; Emisja kart kredytowych; Zadna z wyzej wymienionych niezwiazana z nastepujacymi dziedzinami: Zarzadzanie inwestycjami, Fundusze inwestycyjne, Wskazniki finansowe, Uslugi doradcze dotyczace inwestycji finansowych lub Planowanie emerytury.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Opracowywanie oprogramowania komputerowego; Programowanie komputerów do drukowania kodów kreskowych; Programowanie oprogramowania do oceny zachowania klientów w sklepach online; Oprogramowanie jako usluga [SaaS]; Projektowanie, opracowywanie i programowanie oprogramowania komputerowego; Platforma jako usluga [PaaS]; Wszystkie wyzej wymienione uslugi zwiazane z nastepujacymi dziedzinami: Do obslugi przelewów i transakcji finansowych, Uslugi platnicze, Programy lojalnosciowe, Programów motywacyjnych i Programy bonusowe; Zadna z wyzej wymienionych uslug nie jest zwiazana z nastepujacymi dziedzinami: Zarzadzanie ryzykiem lub w zakresie bezpieczenstwa, Zarzadzanie inwestycjami, Fundusze inwestycyjne, Wskazniki finansowe, Doradztwo inwestycyjne lub Planowanie emerytury.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Aplicações descarregáveis destinadas a dispositivos móveis; Software móvel; Software de aplicação para computadores para telemóveis; Software; Software de pagamento; Software descarregável para a tecnologia de cadeia de blocos; Software para processamento de pagamentos eletrónicos para e de terceiros; Software de aplicação para computadores para telemóveis; Software para processamento de pagamentos eletrónicos para e de terceiros; Software e aplicações para dispositivos móveis; Chaves criptográficas descarregáveis para receção e gasto de criptoativos; Todos os produtos atrás referidos relacionados com os seguintes domínios: Transferências e transações financeiras, Serviços de pagamentos, Serviços de programas de fidelização, Programas de incentivos e Programas de bónus; Todos os produtos atrás referidos não relacionados com as seguintes áreas: Gestão de riscos ou segurança, Gestão de investimentos, Fundos de investimento, Índices financeiros, Assessoria em investimento ou Planeamento de pensões de reforma.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pt",
+      "description": "Administração de empresas; Marketing; Publicidade; Serviços de aconselhamento e informação comercial aos consumidores [loja do consumidor]; Organização, execução e supervisão de programas de fidelidade e planos de incentivos; Administração de programas de prémios de fidelização; Administração de programas de prémios de incentivo para promover a venda de produtos e serviços de terceiros; Serviços de fidelização de clientes para fins comerciais, promocionais e/ou publicitários; Todos os serviços atrás referidos relacionados com os seguintes domínios: Serviços de transferências financeiras e Transacções financeiras, Serviços de pagamento, Programas de fidelização, incentivo e bonificação de clientes; Nenhum dos serviços atrás referidos relacionado com os seguintes domínios: Gestão de riscos ou segurança, Gestão de investimentos, Fundos de investimento, Índices financeiros, assessoria em investimento ou planeamento de pensões de reforma.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "pt",
+      "description": "Serviços bancários on-line; Emissão de títulos de valor sob a forma de cheques-oferta; Emissão de títulos de valor para fidelização de clientes; Emissão de títulos de valores relacionados com planos de incentivos; Processamento eletrónico de pagamentos; Serviços de carteira eletrónica (serviços de pagamentos); Processamento de transações de pagamento através da Internet; Processamento de pagamentos para a compra de produtos e serviços através de uma rede de comunicações eletrónicas; Transferência de dinheiro; Serviços de pagamento eletrónico; Serviços bancários automatizados; Emissão de vouchers de oferta pré-pagos; Serviços de pagamento sem contacto; Transações financeiras através de cadeias de blocos; Serviços de carteira eletrónica (serviços de pagamentos); Câmbio de moedas virtuais; Serviços financeiros; Transferências e transações financeiras e serviços de pagamento; Operações bancárias através da Internet; Emissão de ordens de pagamento de valores; Processamento de pagamentos por cartão de crédito; Serviços de cartões de crédito e de cartões de pagamento; Intercâmbio financeiro de criptoativos; Transferência eletrónica de cripto-ativos; Emissão de cartões de crédito; Emissão de cartões de crédito; Nenhum dos serviços atrás referidos relacionado com os seguintes domínios: Gestão de investimentos, Fundos de investimento, Índices financeiros, Serviços de assessoria em matéria de investimentos financeiros ou Planeamento de pensões de reforma.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Desenvolvimento de software; Programação de computadores para a impressão de códigos de barras; Programação de software para a avaliação do comportamento de clientes em lojas em linha; Software como serviço [SaaS]; Conceção, desenvolvimento e programação de software; Plataformas como um serviço [PaaS]; Todos os serviços atrás referidos relacionados com os seguintes domínios: Transferências e transações financeiras, Serviços de pagamento, Programas de fidelização, Programas de incentivos e Programas de bónus; Nenhum dos serviços atrás referidos relacionado com os seguintes domínios: Gestão de riscos ou segurança, Gestão de investimentos, Fundos de investimento, Índices financeiros, Assessoria de investimento ou Planeamento de pensões de reforma.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Aplicatii descarcabile destinate utilizarii cu dispozitive mobile; Software mobil; Software pentru telefoane mobile; Software; Software pentru plati; Software de calculator descarcabil pentru tehnologie blockchain; Software pentru plati electronice; Software pentru telefoane mobile; Software pentru plati electronice; Software si aplicatii pentru dispozitive mobile; Chei criptografice descarcabile pentru primit si cheltuit criptoactive; Toate produsele susmentionate în legatura cu urmatoarele domenii: Transferuri si tranzactii financiare, Servicii de plati, Servicii de promovare de fidelizare, Programe de stimulare si Programe cu bonusuri; Niciunele din toate produsele susmentionate nefiind în legatura cu urmatoarele domenii: Gestionarea riscurilor sau securitate, Administrarea investitiilor, Fonduri de investitii, Indici financiari, Consiliere in investitii sau Planificarea pensiei.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ro",
+      "description": "Administrarea afacerilor; Servicii de marketing; Publicitate; Informatii si asistenta comerciale pentru consumatori; Organizare, gestionare si monitorizare a programelor de stimulare si fidelizare; Administrare de programe cu premii de fidelitate; Administrare a programelor de stimulare pentru promovarea vânzarii de produse si servicii ale tertilor; Servicii de fidelizare de clienti în scopuri comerciale, promotionale si/sau publicitare; Toate serviciile susmentionate în legatura cu urmatoarele domenii: Servicii de transfer financiar si Tranzactii financiare, Servicii de plata, Programe de fidelitate, de stimulare si de bonusuri; Niciunele din servicii le susmentionate nu sunt în legatura cu urmatoarele domenii: Gestionarea riscurilor sau securitate, Investitii în domeniul administrativ, Fonduri de investitii, Indici financiari, asistenta în investiti sau planificarea pensiei.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "ro",
+      "description": "Tranzactii bancare la domiciliu [home banking]; Emitere de bonuri valorice sub forma de cupoane-cadou; Emitere de bonuri valorice ca si recompensa pentru fidelitatea clientilor; Emisiune de bonuri de valori privind programele de stimulare; Procesare electronica de plati; Servicii de portofel electronic (servicii de plati); Procesarea operatiunilor de plata pe internet; Procesarea platilor pentru achizitionarea de produse si servicii printr-o retea de comunicatii electronice; Servicii de transfer de bani; Servicii de plata electronica; Servicii bancare automate; Emitere de cupoane cadou preplatite; Servicii de plata fara contact; Tranzactii financiare prin blockchain; Servicii de portofel electronic (servicii de plati); Schimb financiar de monede virtuale; Servicii financiare; Tranzactii si transferuri financiare, servicii de plata; Servicii bancare prin Internet; Emitere de bonuri valorice; Procesarea platilor efectuate cu card de credit; Servicii referitoare la carduri de credit si carduri de plati; Schimburi financiare de criptomonede; Transfer electronic de criptoactive; Emitere de carti de credit; Emitere de carti de credit; Niciunele din cele susmentionate nu sunt în legatura cu urmatoarele domenii: Gestiunea investitiilor, Fonduri de investitii, Indici financiari, Servicii de consiliere privind investitiile financiare sau Planificarea pensiei.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Dezvoltare de software; Programare de calculatoare pentru imprimarea de coduri de bare; Programare de software pentru evaluarea comportamentului clientilor în magazine online; Software ca serviciu [SaaS]; Proiectare, dezvoltare si programare de software de calculator; Platforma ca serviciu [PaaS]; Toate serviciile susmentionate în legatura cu urmatoarele domenii: Transferuri si tranzactii financiare, Servicii de plata, Programe de loialitate, Programe de stimulare si Programe cu bonusuri; Niciunele din servicii le susmentionate nu sunt în legatura cu urmatoarele domenii: Gestionarea riscurilor sau securitate, Administrarea investitiilor, Fonduri de investitii, Indici financiari, Consiliere în investitii sau Planificarea pensiei.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Aplikácie s moznostou prevzatia pre mobilné zariadenia; Softvér pre mobilné telefóny; Softvér pocítacových aplikácií pre mobilné telefóny; Pocítacový softvér (nahraté pocítacové programy); Platobný softvér; Stahovatelný pocítacový softvér pre technológiu blockchain; Softvér pre spracovanie elektronických platieb pre tretie osoby a od tretích osôb; Softvér pocítacových aplikácií pre mobilné telefóny; Softvér pre spracovanie elektronických platieb pre tretie osoby a od tretích osôb; Softvér a aplikácie pre mobilné zariadenia; Stahovatelné sifrovacie klúce na príjem a výdaj kryptoaktív; Vsetky vyssie uvedené výrobky súvisia s nasledujúcimi oblastami: Financné prevody a transakcie, Platobné sluzby, Sluzby vernostných programov, Motivacných programov a Bonusové programy; Vsetky vymenované tovary, okrem so zameraním na nasledovné oblasti: Riadenie rizík alebo bezpecnost, Správy investícií, Investicné fondy, Financné indexy, Investicné poradenstvo alebo Plánovanie dôchodku.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sk",
+      "description": "Obchodná administratíva; Marketing; Reklama; Obchodné informácie a rady spotrebitelom pri výbere tovarov a sluzieb; Pripravovanie a vedenie vernostných a motivacných programov a dohlad nad nimi; Správa vernostných programov odmenovania; Správa motivacných programov s udelením cien na podporu predaja tovaru a sluzieb tretích strán; Zákaznícke vernostné sluzby na komercné, propagacné a/alebo reklamné úcely; Vsetky vyssie uvedené sluzby súvisia s nasledujúcimi oblastami: Financný transfer a Financné transakcie, Platitelské sluzby, Sluzby vernostných, motivacných a bonusových programov; Ziadne z vyssie uvedených sluzieb nesúvisia s nasledujúcou oblastou: Riadenie rizík alebo bezpecnost, Investicný management, Investicné fondy, Financné indexy, investicné poradenstvo alebo plánovanie dôchodku.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "sk",
+      "description": "Bankové sluzby priamo k zákazníkom (homebanking); Vydávanie poukázok v podobe darcekových poukázok; Vydávanie poukázok ako odmenu za vernost zákazníkov; Vydávanie penazných poukázok k motivacným programom; Elektronické spracovanie platieb; Sluzby elektronickej penazenky (platobné sluzby); Spracovanie platobných transakcií prostredníctvom internetu; Spracovanie platieb za nákup tovarov a sluzieb prostredníctvom elektronickej komunikacnej siete; Sluzby prevodu penazí; Elektronické platobné sluzby; Automatizované bankové sluzby; Vydávanie predplatených darcekových poukázok; Sluzby bezkontaktných platieb; Financné transakcie prostredníctvom blockchainu; Sluzby elektronickej penazenky (platobné sluzby); Financná výmena virtuálnej meny; Sluzby v oblasti financníctva; Financné prevody a transakcie, platobné sluzby; Internetové bankovníctvo; Vydávanie cenných papierov; Spracovanie platieb kreditnými kartami; Sluzby kreditných a platobných kariet; Financné prevody kryptoaktív; Elektronický prenos kryptoaktív; Vydávanie kreditných kariet; Vydávanie kreditných kariet; Ziadne z uvedených výrobkov nesúvisia s nasledujúcou oblastou: Investicný manazment, Investicné fondy, Financné indexy, Poradenské sluzby v oblasti investovania financií alebo Plánovanie dôchodku.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Vývoj pocítacového softvéru; Programovanie pocítacov na tlac ciarových kódov; Programovanie softvéru na vyhodnocovanie správania sa zákazníka v on-line obchodoch; Poskytovanie softvéru prostredníctvom internetu (SaaS); Navrhovanie, vývoj a programovanie pocítacového softvéru; Platforma ako sluzba (Paas); Vsetky vyssie uvedené sluzby súvisia s nasledujúcimi oblastami: Financné prevody a transakcie, Platitelské sluzby, Vernostné programy, Motivacných programov a Bonusové programy; Ziadne z vyssie uvedených sluzieb nesúvisia s nasledujúcou oblastou: Riadenie rizík alebo bezpecnost, Správy investícií, Investicné fondy, Financné indexy, Investicné poradenstvo alebo Plánovanie dôchodku.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Prenosljive aplikacije za uporabo z mobilnimi napravami; Mobilna programska oprema; Racunalniska programska oprema za aplikacije, za mobilne telefone; Programska oprema; Programska oprema za placevanje; Nalozljiva racunalniska programska oprema za tehnologijo verige podatkovnih blokov; Programska oprema za elektronsko placevanje; Racunalniska programska oprema za aplikacije, za mobilne telefone; Programska oprema za elektronsko placevanje; Programska oprema in aplikacije za mobilne naprave; Nalozljivi kriptografski kljuci za prejem in porabo kriptosredstev; Vsi navedeni izdelki so v zvezi z naslednjimi podrocji: Financni prelivi in transakcije, Placilne storitve, Storitve programov za zvestobo, Programe spodbude in Programi bonusov; Nic od omenjenega blaga ni v zvezi z naslednjimi podrocji: Obvladovanje tveganja ali varovanje, Investicijsko upravljanje, Storitve investicijskih skladov, Financni indeksi, Investicijsko svetovanje ali Upokojitveno nacrtovanje.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sl",
+      "description": "Poslovna administracija; Storitve trzenja; Oglasevanje in oglasevalske storitve; Komercialne informacije in svetovanje za potrosnike (poslovalnica za svetovanje potrosnikom); Organizacija, izvajanje in nadzorovanje programov zvestobe in spodbujevalnih shem; Upravljanje programov nagrajevanja zvestobe strank; Upravljanje spodbujevalnih programov nagrajevanja za pospesevanje prodaje blaga in storitev za druge; Storitve zvestobe strank za komercialne, promocijske in/ali oglasevalne namene; Vse prej navedene storitve so v zvezi z naslednjimi podrocji: Financni transfer in Financne transakcije, Placilne storitve, Programi zvestobe, spodbud in bonusov; Nobena od prej navedenih storitev ni v zvezi z naslednjimi podrocji: Obvladovanje tveganja ali varovanje, Investicijsko upravljanje, Storitve investicijskih skladov, Financni indeksi, nalozbeno svetovanje ali nacrtovanje upokojitve.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "sl",
+      "description": "Domace bancnistvo; Izdajanje vrednostnih bonov v obliki darilnih bonov; Izdajanje vrednostnih bonov kot nagrad za zvestobo stranke; Izdaja vrednostnih zetonov v okviru spodbujevalnih shem; Elektronska obdelava placil; Storitve elektronske denarnice (storitve placilnega prometa); Obdelava placilnih transakcij prek interneta; Obdelava placil za nakup izdelkov in storitev preko elektronskega komunikacijskega omrezja; Storitve prenosa denarja; Elektronske placilne storitve; Avtomatizirane bancne storitve; Izdajanje placilnih darilnih bonov; Storitve brezkontaktnega placevanja; Financne transakcije prek verige; Storitve elektronske denarnice (storitve placilnega prometa); Financna menjava virtualnih valut; Financne storitve; Financni prenosi in transakcije ter placilne storitve; Internetno bancnistvo; Izdajanje vrednostnih bonov; Obdelava placil s kreditno kartico; Storitve kreditnih in placilnih kartic; Financna menjava kriptosredstev; Elektronski prenos kriptosredstev; Izdaja kreditnih kartic; Izdaja kreditnih kartic; Nasteto ni v zvezi z naslednjimi podrocji: Upravljanje investicij, Storitve investicijskih skladov, Financni indeksi, Posvetovalne storitve v zvezi s financnimi nalozbami ali Upokojitveno nacrtovanje.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Razvoj programske opreme; Programiranje racunalnikov za tiskanje crtne kode; Programiranje programske opreme za ocenjevanje vedenja kupcev v spletnih trgovinah; Programska oprema kot storitev [SaaS]; Oblikovanje, razvoj in programiranje racunalniske programske opreme; Platforma kot storitev[PaaS]; Vse navedene storitve v zvezi z naslednjimi podrocji: Financni transferji in transakcije, Placilne storitve, Programi zvestobe, Programe spodbude in Programi bonusov; Nobena od prej navedenih storitev ni v zvezi z naslednjimi podrocji: Obvladovanje tveganja ali varovanje, Investicijsko upravljanje, Storitve investicijskih skladov, Financni indeksi, Investicijsko svetovanje ali Upokojitveno nacrtovanje.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Aplicaciones descargables para su uso con dispositivos móviles; Software móvil; Software de aplicaciones de ordenador para teléfonos móviles; Software informático; Software de pagos; Software informático descargable para tecnología de cadena de bloques; Software para tramitar pagos electrónicos a terceros, así como de terceros; Software de aplicaciones de ordenador para teléfonos móviles; Software para tramitar pagos electrónicos a terceros, así como de terceros; Software y aplicaciones para dispositivos móviles; Llaves criptográficas descargables para recibir y gastar criptodivisas; Todos los productos mencionados tienen relación con los siguientes ámbitos: Transferencias y actividades financieras, Servicios de pago, Servicios de programas de fidelización, Programas de incentivos y Programas de bonos; Ninguno de estos productos está relacionado con los siguientes ámbitos: Gestión de riesgos o seguridad, Gestión de inversiones, Fondos de inversiones, Índices financieros, Asesoramiento sobre inversiones o Planes de jubilación.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Administración de negocios; Marketing; Publicidad; Información y asesoramiento comerciales al consumidor; Organización, operación y supervisión de programas de fidelización y de incentivos; Administración de programas de recompensas por fidelización; Administración de programas de premios de incentivos para promover la venta de productos y servicios de terceros; Servicios de fidelización de clientes con fines comerciales, promocionales o publicitarios; Todos los servicios mencionados están relacionados con los siguientes ámbitos: Servicios de transferencias financieras y Transacciones financieras, Servicios de pago, Programas de fidelización, incentivación y bonos para clientes; Ninguno de los servicios mencionados está relacionado con los siguientes ámbitos: Gestión de riesgos o seguridad, Gestión de inversiones, Fondos de inversiones, Índices financieros, asesoramiento sobre inversiones o planes de jubilación.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "es",
+      "description": "Servicios bancarios en línea; Emisión de bonos de valor en forma de vales de regalo; Emisión de bonos de valor para recompensar la fidelidad de la clientela; Emisión de vales en relación con planes de incentivos; Tramitación electrónica de pagos; Servicios de pago por billetera electrónica; Tramitación de operaciones de pago por internet; Tramitación de pagos en concepto de compra de productos y servicios a través de una red electrónica de comunicaciones; Transferencia de dinero; Servicios de pago electrónico; Servicios bancarios automatizados; Emisión de tiques de regalo; Servicios de pago sin contacto; Transacciones financieras mediante cadena de bloques [blockchain]; Servicios de pago por billetera electrónica; Intercambio financiero de moneda virtual; Servicios financieros; Servicios de transferencias y transacciones financieras, servicios de pago; Banca por Internet; Emisión de bonos de valor; Procesamiento de pagos por tarjeta de crédito; Servicios de tarjetas de crédito y tarjetas de pago; Intercambio financiero de valores en criptomonedas; Transferencia electrónica de activos criptográficos; Emisión de tarjetas de crédito; Emisión de tarjetas de crédito; Ninguno de los mencionados está relacionado con los siguientes ámbitos: Gestión de inversiones, Fondos de inversiones, Índices financieros, Servicios de asesoramiento sobre inversiones financieras o Planes de jubilación.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Desarrollo de software; Programación de ordenadores para la impresión de códigos de barras; Programación de software para evaluar el comportamiento de clientes en tiendas en línea; Software como servicio [SaaS]; Diseño, desarrollo y programación de software; Plataforma como servicio [PaaS]; Todos los servicios mencionados están relacionados con los siguientes ámbitos: Transferencias y transacciones financieras, Servicios de pago, Programas de fidelización, Programas de incentivos y Programas de bonos; Ninguno de los servicios mencionados está relacionado con los siguientes ámbitos: Gestión de riesgos o seguridad, Gestión de inversiones, Fondos de inversiones, Índices financieros, Asesoramiento sobre inversiones o Planes de jubilación.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Nerladdningsbara applikationer för användning med mobila anordningar; Mobil programvara; Programvara för datorapplikationer för mobiltelefoner; Datormjukvaror; Programvara för betalning; Nedladdningsbar datorprogramvara för blockkedjeteknik; Programvara för elektroniska betalningar; Programvara för datorapplikationer för mobiltelefoner; Programvara för elektroniska betalningar; Programvara och applikationer för mobila anordningar; Nedladdningsbara kryptografiska nycklar för att ta emot och betala med kryptotillgångar; Samtliga nämnda varor i samband med följande områden: Ekonomiska överföringar och transaktioner, Betalningstjänster, Program för uppbyggnad av en trogen kundkrets, Bonusprogram och Bonusprogram; Samtliga nämnda varor ej avseende följande områden: Riskförvaltning eller säkerhet, Investeringsförvaltning, Investeringsfonder, Finansiella index, Investeringsrådgivning eller Pensionsplanering.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sw",
+      "description": "Företagsadministration; Marketing; Reklam; Rådgivning för konsumenter (kommersiell information och -) [konsumentrådgivningsbutik]; Organisering, hantering och kontroll av lojalitets- och säljfrämjande program (administrativ); Administration av lojalitets- och belöningsprogram; Administration av stimulerande belöningsprogram för marknadsföring av andras varor och tjänster; Kundlojalitetstjänster för kommersiella, säljfrämjande och/eller reklammässiga ändamål; Samtliga nämnda tjänster avseende följande områden: Finanstransfererings- och Finansiella transaktioner, Betaltjänster, Lojalitets-, motivations- och bonusprogram; Inga nämnda tjänster avseende följande områden: Riskförvaltning eller säkerhet, Investeringsförvaltning, Investeringsfonder, Finansiella index, investeringsrådgivning eller pensionsplanering.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "sw",
+      "description": "Onlinebanktjänster; Utställande av värdebevis i form av presentkort; Utfärdande av värdebevis som en belöning för kunders lojalitet; Utfärdande av värdekuponger relaterade till stimulansprogram; Elektronisk behandling av betalningar; Elektroniska plånbokstjänster (betaltjänster); Behandling av betalningstransaktioner via internet; Hantering av betalningar för inköp av varor och tjänster via ett elektroniskt kommunikationsnät; Penningöverföring; Elektroniska betalningstjänster; Automatiserade banktjänster; Utfärdande av presentcheckar för betalning; Kontaktlösa betalningstjänster; Finansiella transaktioner via blockchain; Elektroniska plånbokstjänster (betaltjänster); Finansiell växling av virtuella valutor; Finansiella tjänster; Finansiella överföringar och transaktioner, betalningstjänster; Internetbanktjänster; Utfärdande av värdecheckar; Behandling av kreditkortsbetalningar; Kreditkorts- och betalkortstjänster; Finansiella transaktioner avseende kryptotillgångar; Elektronisk överföring av kryptotillgångar; Utfärdande av kreditkort; Utfärdande av kreditkort; Inga av de nämnda i samband med följande områden: Förvaltning av investeringar, Investeringsfonder, Finansiella index, Rådgivningstjänster avseende finansiella investeringar eller Pensionsplanering.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Utveckling av mjukvara; Datorprogrammering avseende tryckning av streckkoder; Programmering av programvara för utvärdering av kundbeteenden i onlinebutiker; Molntjänster [SaaS]; Design, utveckling och programmering av programvara; Plattform som en tjänst (PAAS); Samtliga nämnda tjänster avser följande områden: Finansiella överföringar och transaktioner, Betaltjänster, Lojalitetsprogram, Bonusprogram och Bonusprogram; Inga nämnda tjänster avseende följande områden: Riskförvaltning eller säkerhet, Investeringsförvaltning, Investeringsfonder, Finansiella index, Investeringsrådgivning eller Pensionsplanering.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Firepay Merchant Services",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "Andrej Bukovnik",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "25, Rue de Ponthieu,Paris, 75008",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "Firepay Merchant Services"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Aplikace ke stazení pro pouzití s mobilními zarízeními; Software pro mobilní telefony; Pocítacový aplikacní software do mobilních telefonu; Pocítacový software; Platební software; Pocítacový software pro technologii blockchain ke stazení; Software ke zpracování elektronických plateb; Pocítacový aplikacní software do mobilních telefonu; Software ke zpracování elektronických plateb; Software a aplikace pro mobilní zarízení; Sifrovací klíce s mozností stazení k získávání a pouzívání kryptoaktiv; Vsechny výse uvedené výrobky ve vztahu k následujícím oborum: Financní prevody a transakce, Platební sluzby, Vernostní programové sluzby, Pobídkových programu a Bonusové programy; Zádný z výse uvedených výrobku ohledne techto oboru: Rízení rizik nebo bezpecnost, Rízení investic, Investicní fondy, Financní indexy, Investicní poradenství nebo Penzijní plány."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Obchodní administrativa; Marketing; Propagace; Obchodní informace a rady pro spotrebitele [poradna pro spotrebitele]; Organizování, provozování a kontrola vernostních a motivacních programu; Správa vernostních programu; Správa programu udelování pobídek na podporu prodeje výrobku a sluzeb jiných subjektu; Vernostní zákaznické sluzby ke komercním, propagacním a/nebo reklamním úcelum; Vsechny výse uvedené sluzby ve vztahu k následujícím oborum: Financní prevody a Financní transakce, Platební sluzby, Vernostní, pobídkové a prémiové programy; Zádné z výse uvedených sluzeb se nevztahují k následujícím výrobkum: Rízení rizik nebo bezpecnost, Investicní management, Investicní fondy, Financní indexy, investicní poradenství nebo plánování penze."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Online bankovnictví; Vydávání hodnotových poukazu ve forme dárkových poukazu; Vydávání hodnotových poukazu jako odmen za zákaznickou vernost; Vydávání hodnotových poukázek v souvislosti s motivacními programy; Elektronické zpracování plateb; Sluzby elektronické penezenky (platební sluzby); Zpracování platebních transakcí prostrednictvím internetu; Zpracování plateb za nákup zbozí a sluzeb prostrednictvím elektronické komunikacní síte; Sluzby v oblasti penezních prevodu; Elektronické platební sluzby; Automatizované bankovnictví; Vydávání predplacených dárkových poukázek; Bezkontaktní platební sluzby; Financní transakce prostrednictvím blockchainu; Sluzby elektronické penezenky (platební sluzby); Financní výmena virtuální meny; Sluzby financní; Financní prevody a transakce a platební sluzby; Internetové bankovnictví; Vystavování hodnotných poukázek; Zpracování plateb kreditní kartou; Sluzby týkající se kreditních a platebních karet; Financní výmena kryptoaktiv; Elektronický prenos kryptoaktiv; Vydávání kreditních karet; Vydávání kreditních karet; Nic z výse uvedeného není ve vztahu k následujícím oborum: Investicní management, Investicní fondy, Financní indexy, Investicní poradenství nebo Penzijní plány."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Vývoj softwaru; Programování pocítacu pro tisk cárových kódu; Programování softwaru pro vyhodnocování chování zákazníku v on-line obchodech; Software jako sluzba [SaaS]; Navrhování, vývoj a programování pocítacového softwaru; Platforma jako sluzba (PAAS); Vsechny uvedené sluzby ve vztahu k následujícím oborum: Financní prevody a transakce, Platební sluzby, Vernostní programy, Pobídkových programu a Bonusové programy; Zádné z výse uvedených sluzeb se nevztahují k následujícím výrobkum: Rízení rizik nebo bezpecnost, Rízení investic, Investicní fondy, Financní indexy, Investicní poradenství nebo Penzijní plány."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Applikationer, der kan downloades, til anvendelse med mobile apparater; Mobil software; Computerapplikationssoftware til mobiltelefoner; Software; Software til betaling; Downloadbar computersoftware til blockchain-teknologi; Software til behandling af elektroniske betalinger; Computerapplikationssoftware til mobiltelefoner; Software til behandling af elektroniske betalinger; Software og applikationer til mobilenheder; Downloadable kryptografiske nøgler til modtagelse af og betaling med kryptoaktiver; Alle førnævnte varer i forbindelse med følgende områder: Overførsler og finansielle transaktioner, Betalingsservice, Tjenesteydelser i forbindelse med medlemsordninger, Tilskyndende programmer og Bonusprogrammer; Førnævnte varer ikke inden for følgende områder: Risikostyring eller sikkerhed, Investeringsrådgivning, Investeringsselskaber, Finansielle indekser, Investeringsrådgivning eller Pensionsplanlægning."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Forretningsadministration; Marketing; Annonce- og reklamevirksomhed; Kommerciel information og rådgivning til forbrugere [forbrugerrådgivning]; Organisering, drift og overvågning af loyalitetsprogrammer og incitamentsprogrammer; Administration af kundeloyalitetsordninger; Administration af bonusordninger til promovering af salg af varer og tjenester for andre; Kundeloyalitetsydelser i kommercielt, salgsfremmende og/eller reklamemæssigt øjemed; Alle førnævnte tjenesteydelser i forbindelse med følgende områder: Finanstransfer- og Finansielle transaktioner, Betalingsservice, Loyalitets- og bonusprogrammer; Ingen af førnævnte tjenesteydelser vedrørende følgende områder: Risikostyring eller sikkerhed, Investeringsrådgivning, Investeringsselskaber, Finansielle indekser, investeringsrådgivning eller pensionsplanlægning."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Netbank; Udstedelse af værdikuponer i form af gavekort; Udstedelse af værdikuponer som en belønning for kundeloyalitet; Udstedelse af værdikuponer i forbindelse med incitamentsordninger; Behandling af elektroniske betalinger; E-wallet betalingsydelser; Behandling af betalingstransaktioner via internettet; Behandling af betalinger for køb af varer og tjenesteydelser via et elektronisk telekommunikationsnetværk; Kapitaloverførsler; Elektroniske betalingstjenester; Automatiseret bankvirksomhed; Udstedelse af gavekuponer; Kontaktfri betalingsvirksomhed; Finansielle transaktioner via blockchain; E-wallet betalingsydelser; Finansiel veksling af virtuelle valutaer; Finansiel virksomhed; Finansielle overførsler og transaktioner og betalingstjenesteydelser; Bankvirksomhed via internettet; Udstedelse af værdikuponer; Behandling af kreditkortsbetalinger; Tjenesteydelser vedrørende kreditkort og betalingskort; Finansiel veksling af kryptoaktiver; Elektronisk overførsel af kryptoaktiver; Udstedelse af kreditkort; Udstedelse af kreditkort; Ingen af ovennævnte i forbindelse med følgende områder: Forvaltning af investeringer, Investeringsselskaber, Finansielle indekser, Rådgivning om finansiel investering eller Pensionsplanlægning."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Softwareudvikling; Programmering af computere til udskrivning af stregkoder; Programmering af software til evaluering af kundeadfærd i onlinebutikker; Software as a service [saas]; Design, udvikling og programmering af computersoftware; Platform as a Service [PaaS]; Alle førnævnte tjenesteydelser vedrørende følgende områder: Finansielle overførsler og transaktioner, Betalingsservice, Loyalitetsprogrammer, Tilskyndende programmer og Bonusprogrammer; Ingen af førnævnte tjenesteydelser vedrørende følgende områder: Risikostyring eller sikkerhed, Investeringsrådgivning, Investeringsselskaber, Finansielle indekser, Investeringsrådgivning eller Pensionsplanlægning."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Downloadbare applicaties voor gebruik met mobiele apparaten; Mobiele software; Applicatiesoftware voor mobiele telefoons; Software; Betalingssoftware; Downloadbare software voor blockchaintechnologie; Elektronische-betalingssoftware; Applicatiesoftware voor mobiele telefoons; Elektronische-betalingssoftware; Software en applicaties voor mobiele toestellen; Downloadbare cryptografische sleutels voor het ontvangen en uitgeven van cryptovaluta; Alle voornoemde goederen op de volgende gebieden: Financiële overboekingen en transacties, Betaaldiensten, Diensten met betrekking tot klantenbindingsprogramma's, Aanmoedigingsacties en Bonusprogramma's; Geen van de voornoemde goederen met betrekking tot: Risicobeheer of beveiliging, Beheer van investeringen, Beleggingsfondsen, Financiële indexen, Beleggingsadvies of Pensioenplanning."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Zakelijke administratie; Marketing; Publiciteit; Handelsinformatie en -adviezen voor consumenten; Organiseren, uitvoeren van en toezicht houden op loyaliteits- en aanmoedigingsacties; Administratief beheer van loyaliteitsprogramma's; Beheer van aanmoedigingsprogramma's ter bevordering van de verkoop van goederen en diensten van derden; Diensten in verband met klantenbinding voor commerciële, promotionele en/of reclamedoeleinden; Alle voornoemde diensten in verband met de volgende gebieden: Financiële overboekingen en Financiële transacties, Betaaldiensten, Loyaliteits-, aanmoedigings- en bonusprogramma's; Geen van de voornoemde diensten heeft betrekking op de volgende gebieden: Risicobeheer of beveiliging, Beheer van investeringen, Beleggingsfondsen, Financiële indexen, beleggingsadvies of pensioenplanning."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Thuisbankieren; Uitgifte van waardebonnen in de vorm van cadeaucheques; Uitgifte van waardebonnen als beloning voor consumentenloyaliteit; Uitgeven van waardebonnen in verband met aanmoedigingsacties; Elektronische verwerking van betalingen; E-wallet betaaldiensten; Verwerking van betalingstransacties via het internet; Verwerken van betalingen voor de aankoop van goederen en diensten via een elektronisch communicatienetwerk; Overboeking van gelden; Diensten op het gebied van elektronische betaling; Geautomatiseerde bankdiensten; Uitgifte van cadeaubonnen; Contactloze betalingen; Financiële transacties via de blockchain; E-wallet betaaldiensten; Financiële omwisseling van virtuele valuta's; Financiële diensten; Financiële overboekingen en transacties, en betaaldiensten; Bankdiensten via internet; Uitgifte van waardebonnen; Het uitvoeren van credit card betalingen; Creditcard- en betaalkaartdiensten; Financiële transacties met crypto-activa; Elektronische overdracht van crypto-activa; Uitgifte van creditcards; Uitgifte van creditcards; Niets van het voornoemde heeft betrekking op de volgende gebieden: Beheer van investeringen, Beleggingsfondsen, Financiële indexen, Financiële beleggingsadvisering of Pensioenplanning."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Ontwikkeling van software; Computerprogrammering voor het printen van barcodes; Programmering van software voor het analyseren van gedrag van klanten in onlinewinkels; Ter beschikking stellen van software [SaaS]; Ontwerp, ontwikkeling en programmering van software; Platform als een dienst (PaaS); Alle voornoemde diensten hebben betrekking op de volgende gebieden: Financiële overboekingen en transacties, Betaaldiensten, Klantenbindingsprogramma's, Aanmoedigingsacties en Bonusprogramma's; Geen van de voornoemde diensten heeft betrekking op de volgende gebieden: Risicobeheer of beveiliging, Beheer van investeringen, Beleggingsfondsen, Financiële indexen, Beleggingsadvies of Pensioenplanning."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Downloadable mobile applications; Mobile software; Computer application software for mobile telephones; Computer software; Payment software; Downloadable computer software for blockchain technology; Computer software for facilitating payment transactions by electronic means; Software applications for use with mobile devices; Online payment software; Software and applications for mobile devices; Downloadable cryptographic keys for receiving and spending crypto assets; all the aforesaid relating to financial transfers and transactions, and payment services, loyalty, incentive and bonus programs; none of the aforesaid in connection with risk management or security, investment management, investment funds, financial indices, investment advice or retirement planning."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Business administration; Marketing; Advertising; Commercial information and advice for consumers [consumer advice shop]; Organisation, operation and supervision of loyalty and incentive schemes; Administration of loyalty rewards programmes; Administration of incentive award programs to promote the sale of the goods and services of others; Customer loyalty services for commercial, promotional and/or advertising purposes; all the aforesaid relating to financial transfers and transactions, and payment services, loyalty, incentive and bonus programs; none of the aforesaid in connection with risk management or security, investment management, investment funds, financial indices, investment advice or retirement planning."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Online banking services; Issuing tokens of value in the nature of gift vouchers; Issuing tokens of value as a reward for customer loyalty; Issuing of tokens of value in relation to incentive schemes; Electronic processing of payments; Electronic wallet services (payment services); Processing of payment transactions via the Internet; Processing payments for the purchase of goods and services via an electronic communications network; Money transfer services; Electronic payment services; Automated banking services; Issuing of payment gift vouchers; Contactless payment services; Financial transactions via blockchain; E-wallet payment services; Financial exchange of virtual currency; Financial services; Financial transfers and transactions, and payment services; Internet banking services; Issue of tokens of value; Processing of credit card payments; Credit card and payment card services; Financial exchange of crypto assets; Electronic transfer of crypto assets; Issuance of credit cards; Issuing credit cards; none of the aforesaid in connection with investment management, investment funds, financial indices, investment advice or retirement planning."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Development of software; Programming of computers for the printing of bar codes; Programming of software for evaluating customer behaviour in online shops; Software as a service [SaaS]; Design, development and programming of computer software; Platform as a service [PaaS]; all the aforesaid relating to financial transfers and transactions, and payment services, loyalty, incentive and bonus programs; none of the aforesaid in connection with risk management or security, investment management, investment funds, financial indices, investment advice or retirement planning."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Allalaaditavad mobiilseadmerakendused; Mobiiltelefonide tarkvara; Arvutirakendustarkvara mobiiltelefonidele; Arvutitarkvara; Maksetarkvara; Allalaaditav arvutitarkvara plokiahela tehnoloogia jaoks; Elektrooniliste maksete tarkvara; Arvutirakendustarkvara mobiiltelefonidele; Elektrooniliste maksete tarkvara; Mobiilseadmete tarkvara ja rakendused; Krüptovarade saamise ja kasutamise allalaaditavad krüptovõtmed; Kõik eelnimetatud kaubad on seotud järgmiste valdkondadega: Finantsülekanded ja -tehingud, Makseteenused, Püsikliendiprogrammidega seotud teenused, Ergutusprogrammides ja Boonusprogrammid; Ükski eelnimetatud kaupadest ei ole seotud järgmiste valdkondadega: Riskijuhtimine või turvalisus, Investeeringute haldamise, Investeerimisfondid, Finantsindeksid, Investeerimisalane nõustamine või Pensioniplaneerimine."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Ärijuhtimine; Turundus; Reklaamiteenused; Äriteave ja klientide äriline nõustamine [klientide nõustamise keskus]; Püsikliendi- ja boonusprogrammide organiseerimine, haldamine ja järelevalve; Püsikliendiprogrammide haldamine; Motivatsiooniprogrammide haldamine kolmandate isikute toodete ja teenuste müügiedenduseks; Lojaalsusprogrammiteenused äri, müügiedenduse ja/või reklaami eesmärgil; Kõik eelnimetatud teenused seoses järgmiste valdkondadega: Rahaülekande- ja Finantstehingud, Makseteenused, Püsikliendi-, preemia- ja boonusprogrammid; Ükski eelnimetatud teenustest seoses järgmiste valdkondadega: Riskijuhtimine või turvalisus, Investeerimisalane ärijuhtimine, Investeerimisfondid, Finantsindeksid, investeerimisnõustamine või pensioni planeerimine."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Onlain-pangandus; Väärtusmärkide väljastamine kinkekupongidena; Püsikliendiprogrammi preemiana väärtusmärkide väljastamine; Rahalise väärtusega zetoonide väljastamine boonusprogrammide jaoks; Maksete elektrooniline töötlemine; Elektroonilise rahakoti teenused (makseteenused); Maksetehingute töötlemine Interneti kaudu; Kaupade ja teenuste ostumaksete töötlemine elektroonilise sidevõrgu kaudu; Rahaülekanne; Elektroonilised makseteenused; Automatiseeritud pangateenused; Ettemaksega kinkevautserite väljastamine; Kontaktivabade maksete teenused; Plokiahel-finantstehingud; Elektroonilise rahakoti teenused (makseteenused); Virtuaalraha finantsvahetus; Finantsteenused; Rahaülekande- ja -tehinguteenused ja makseteenused; Onlain-pangandus; Rahalise väärtusega zetoonide väljastamine; Krediitkaardimaksete töötlemine; Krediitkaardi- ja maksekaarditeenused; Krüptovarade finantsvahetus; Krüptovarade elektrooniline ülekandmine; Krediitkaartide käibele laskmine, väljalase; Krediitkaartide käibele laskmine, väljalase; Mitte ükski eelnimetatuist seoses järgmiste valdkondadega: Investeeringute haldamine, Investeerimisfondid, Finantsindeksid, Finantsinvesteeringute nõustamisteenused või Pensioniplaneerimine."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Tarkvara arendamine; Arvutite programmeerimine vöötkoodide trükkimiseks; Klientide online-kauplustes käitumise hindamise tarkvara programmeerimine; Pilveteenused [SaaS]; Arvutitarkvara projekteerimine, arendamine ja programmeerimine; Platvorm teenusena [PaaS]; Kõik eelnimetatud teenused seoses järgmiste valdkondadega: Finantsülekanded ja -tehingud, Makseteenused, Lojaalsusprogrammid, Ergutusprogrammides ja Boonusprogrammid; Ükski eelnimetatud teenustest seoses järgmiste valdkondadega: Riskijuhtimine või turvalisus, Investeeringute haldamise, Investeerimisfondid, Finantsindeksid, Investeerimisalane nõustamine või Pensioniplaneerimine."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Ladattavat sovellukset käytettäväksi kannettavissa laitteissa; Matkapuhelinlaitteiden ohjelmistot; Tietokoneohjelmisto mobiilipuhelimille; Ohjelmistot; Maksuohjelmistot; Ladattavat tietokoneohjelmistot lohkoketjuteknologiaa varten; E-maksuohjelmistot; Tietokoneohjelmisto mobiilipuhelimille; E-maksuohjelmistot; Ohjelmistot ja sovellukset mobiililaitteisiin; Ladattavat salausavaimet kryptovarojen vastaanottamiseen ja käyttämiseen; Kaikki edellä mainitut tavarat liittyvät seuraaviin aloihin: Varojen siirrot ja rahoitustapahtumat, Maksupalvelut, Kanta-asiakasohjelmiin liittyvät palvelut, Kannustinohjelmien ja Bonus-ohjelmat; Mitkään edellä mainituista tavaroista eivät liity seuraaviin aloihin: Riskien hallinta tai turvallisuus, Sijoitusten hallinta, Sijoitusrahastot, Taloudelliset indeksit, Sijoitusneuvonta tai Eläkesuunnittelu."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Yrityshallinto; Markkinointi; Mainonta; Kaupallinen tiedotus ja kuluttajaneuvonta; Kanta-asiakas- ja kannustinjärjestelmien järjestäminen, hoitaminen ja valvonta; Kanta-asiakasohjelmien hallinnointi; Kannustinohjelmien hallinnointi muille kuuluvien tuotteiden ja palvelujen myynnin edistämiseksi; Kanta-asiakaspalvelut kaupallisiin, myynninedistämis- ja/tai mainontatarkoituksiin; Kaikki edellä mainitut palvelut liittyvät seuraaviin aloihin: Rahansiirtopalvelut ja Rahoitustapahtumat, Maksupalvelut, Kanta-asiakas-, kannustin- ja bonusohjelmat; Mitkään edellä mainituista palveluista eivät liity seuraaviin aloihin:: Riskien hallinta tai turvallisuus, Sijoitusten hallinta, Sijoitusrahastot, Taloudelliset indeksit, sijoitusneuvonta tai eläkesuunnittelu."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Kotipankkitoiminta; Lahjakorttien muodossa olevien arvosetelien antaminen; Arvosetelien antaminen kanta-asiakasohjelmien palkintoina; Kannustinjärjestelmiin liittyvien arvokuponkien anto; Maksujen elektroninen käsittely; Elektroniset lompakkopalvelut (maksupalvelut); Maksutapahtumien käsittely Internetin välityksellä; Sellaisten maksujen käsittely, jotka liittyvät tavaroiden ja palvelujen ostamiseen elektronisen viestintäverkon välityksellä; Rahansiirtopalvelut; Elektroniset maksupalvelut; Automatisoidut pankkipalvelut; Ennalta maksettujen lahjakorttien liikkeellelaskeminen; Etämaksupalvelut; Rahoitustapahtumat lohkoketjun kautta; Elektroniset lompakkopalvelut (maksupalvelut); Virtuaalivaluutan vaihto rahamarkkinoilla; Rahoituspalvelut; Rahansiirrot ja rahoitustapahtumat ja maksupalvelut; Internet-pankkipalvelut; Arvoseteleiden anto; Luottokorttimaksujen käsittely; Luottokortti- ja maksukorttipalvelut; Kryptovarojen vaihto rahamarkkinoilla; Kryptovarojen elektroninen siirto; Luottokorttien myöntäminen; Luottokorttien myöntäminen; Mitkään edellä mainitusta eivät liity seuraaviin aloihin:: Sijoitusten hallinta, Sijoitusrahastot, Taloudelliset indeksit, Sijoittamiseen liittyvät neuvontapalvelut tai Eläkesuunnittelu."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Ohjelmistokehitys; Tietokoneiden ohjelmointi viivakoodien tulostusta varten; Ohjelmistojen ohjelmointi asiakaskäyttäytymisen arviointiin online-kaupoissa; Verkkosovelluspalvelut [SaaS]; Ohjelmistojen suunnittelu, kehittäminen ja ohjelmointi; Sovellusalusta palveluna (PaaS); Kaikki edellä mainitut palvelut liittyvät seuraaviin aloihin:: Varainsiirrot ja rahoitustapahtumat, Maksupalvelut, Kanta-asiakasohjelmat, Kannustinohjelmien ja Bonus-ohjelmat; Mitkään edellä mainituista palveluista eivät liity seuraaviin aloihin:: Riskien hallinta tai turvallisuus, Sijoitusten hallinta, Sijoitusrahastot, Taloudelliset indeksit, Sijoitusneuvonta tai Eläkesuunnittelu."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Applications téléchargeables pour dispositifs mobiles; Logiciels pour téléphones mobiles; Logiciels d'applications informatiques pour téléphones portables; Logiciels pour ordinateurs; Logiciels de paiement; Logiciels informatiques téléchargeables pour la technologie de la chaîne de blocs [blockchain]; Logiciels de paiements électroniques; Logiciels d'applications informatiques pour téléphones portables; Logiciels de paiements électroniques; Logiciels et applications pour dispositifs mobiles; Clés cryptographiques téléchargeables pour la réception et la dépense des crypto-actifs; Tous les produits précités en rapport avec les domaines suivants: Versements et transactions financières, Services de paiement, Services de programmes de fidélisation, Des programmes incitatifs et Programmes de bonifications; Tous les produits précités n'étant pas en relation avec les domaines suivants: Gestion des risques ou sécurité, gestion d'investissements, Fonds d'investissements, Indices financiers, Conseils en investissement ou Plan de retraite."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Administration commerciale; Marketing; Publicité; Informations et conseils commerciaux aux consommateurs; Organisation, gestion et supervision de programmes de fidélisation et de primes; Gestion de programmes de primes de fidélité; Administration de programmes de primes d'encouragement pour la promotion de la vente des produits et services de tiers; Services de fidélisation de la clientèle à des fins commerciales, promotionnelles ou publicitaires; Tous les services précités n'étant pas en relation avec les domaines suivants: Services de transfert financier et Transactions financières, Services de paiement, Programmes de fidélité, d'incitation et de primes destinés aux clients; Aucun des services précités ne se rapportant aux domaines suivants: Gestion des risques ou sécurité, Gestion des investissements, Fonds d'investissements, Indices financiers, conseils en investissement ou planification des retraites."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services bancaires en ligne; Émission de bons de valeur sous forme de bons-cadeaux; Émission de bons de valeur afin de récompenser la fidélité de la clientèle; Émission de coupons de valeur dans le cadre de programmes d'incitation; Traitement électronique de paiements; Services de paiement par porte-monnaie électronique; Traitement de transactions de paiement par le biais d'Internet; Traitement de paiements pour l'achat de produits et services par le biais d'un réseau de communication électronique; Transfert d'argent; Services de paiement électronique; Services bancaires automatisés; Emission de chèques cadeaux de paiement; Services de paiement sans contact; Transactions financières par l'intermédiaire de chaînes de blocs; Services de paiement par porte-monnaie électronique; Opérations de change en matière de monnaie virtuelle; Services financiers; Transferts et transactions financières et services de paiement; Services bancaires sur Internet; Émission de bons de valeur; Traitement de paiements par cartes de crédit; Services de cartes de crédit et de cartes de paiement; Échange financier de crypto-actifs; Transfert électronique de crypto-actifs; Émission de cartes de crédit; Émission de cartes de crédit; Aucun des services précités ne se rapportant aux domaines suivants: Gestion d'investissements, Fonds d'investissements, Indices financiers, Prestation de conseils en placements financiers ou Plan de retraite."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Développement de logiciels; Programmation informatique pour l'impression de codes-barres; Programmation de logiciels pour évaluer le comportement des clients sur des boutiques en ligne; Logiciels en tant que service [SaaS]; Conception, développement et programmation de logiciels; Plateforme informatique en tant que service [PaaS]; Tous les services précités concernant les domaines suivants: De transactions et transferts financiers, Services de paiement, Programmes de fidélité, Des programmes incitatifs et Programmes de bonifications; Aucun des services précités ne se rapportant aux domaines suivants: Gestion des risques ou sécurité, gestion d'investissements, Fonds d'investissements, Indices financiers, Conseils en investissements ou Plan de retraite."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Herunterladbare Softwareapplikationen zur Verwendung mit mobilen Geräten; Software für Mobilgeräte; Computer-Anwendungssoftware für Mobiltelefone; Computersoftware; Zahlungssoftware; Herunterladbare Computersoftware für Blockchain-Technologie; Software zur Bearbeitung elektronischer Zahlungen; Computer-Anwendungssoftware für Mobiltelefone; Software zur Bearbeitung elektronischer Zahlungen; Software und Softwareapplikationen für mobile Geräte; Herunterladbare kryptografische Schlüssel für den Empfang und das Ausgeben von Krypto-Vermögenswerten; Alle vorstehend genannten Waren in Bezug auf die folgenden Bereiche: Überweisungen und Finanzgeschäfte, Zahlungsverkehr, Leistungen von Kundenbindungsprogrammen, Für Kundentreueprogramme und Bonusprogramme; alle vorgenannten Waren nicht in Bezug auf folgende Bereiche: Risikomanagement oder Sicherheit, Anlagenmanagement, Investmentfonds, Bereitstellung von Finanzindizes, Anlageberatung oder Pensionsplanung."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Geschäftsverwaltung; Marketing; Werbung; Erteilung von Auskünften [Information] und Beratung für Verbraucher in Handels- und Geschäftsangelegenheiten [Verbraucherberatung]; Organisation, Durchführung und Überwachung von Treueprogrammen und Bonusprogrammen; Verwaltung von Treueprämienprogrammen; Verwaltung von Anreiz- und Bonusprogrammen zur Förderung des Verkaufs von Waren und Dienstleistungen Dritter; Dienstleistungen im Bereich Kundenbindung für Geschäfts-, Verkaufsförderungs- und/oder Werbezwecke; Alle vorstehend genannten Dienstleistungen in Bezug auf folgende Bereiche: Finanztransfer- und Finanztransaktionen, Bezahldienstleistungen, Kundenbindungs-, Anreiz- und Prämienprogramme; Keine der vorstehend genannten Dienstleistungen in Bezug auf die folgenden Bereiche: Risikomanagement oder Sicherheit, Investmentmanagement, Investmentfonds, Finanzindizes, Kapitalanlageberatung oder Pensionsplanung."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Online-Banking; Ausgabe von Wertgutscheinen als Geschenkgutscheine; Ausgabe von Wertgutscheinen als Belohnung für Kundentreue; Ausgabe von Wertmarken für Prämienprogramme; Elektronische Zahlungsverarbeitung; E-Wallet-Bezahldienste; Bearbeitung von Zahlungsvorgängen über das Internet; Bearbeitung von Zahlungen für den Kauf von Waren und Dienstleistungen über ein elektronisches Kommunikationsnetz; Geldtransfer; Elektronische Zahlungsdienste; Automatisierte Bankgeschäfte; Ausgabe von Guthaben-Geschenkschecks; Kontaktloser Zahlungsverkehr; Finanzielle Transaktionen über eine Blockchain; E-Wallet-Bezahldienste; Wechseln virtueller Währung; Finanzdienstleistungen; Finanztransfer-, Finanztransaktions- und Zahlungsdienste; Internetbanking; Ausgabe von Gutscheinen und Wertmarken; Abwickeln von Zahlungen mit Kreditkarten; Abwicklung von Zahlungen mit Kredit- und Geldkarten; Wechseln von Krypto-Vermögenswerten; Elektronischer Transfer von Krypto-Vermögenswerten; Ausgabe von Kreditkarten; Ausgabe von Kreditkarten; Das vorstehend Genannte nicht in Bezug auf die folgenden Bereiche: Kapitalanlagenmanagement, Investmentfonds, Bereitstellung von Finanzindizes, Finanzanlagenberatung oder Pensionsplanung."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Softwareentwicklung; Programmierung von Computern zum Drucken von Strichcodes; Programmieren von Software zur Evaluierung des Kundenverhaltens in Online-Shops; Software as a Service [SaaS]; Entwurf, Entwicklung und Programmierung von Computersoftware; Platform as a Service [PaaS]; Alle vorstehend genannten Dienstleistungen in Bezug auf die folgenden Bereiche: Für Finanztransfers und -transaktionen, Bezahldienstleistungen, Kundentreueprogramme, Für Kundentreueprogramme und Bonusprogramme; Keine der vorstehend genannten Dienstleistungen in Bezug auf die folgenden Bereiche: Risikomanagement oder Sicherheit, Anlagenmanagement, Investmentfonds, Bereitstellung von Finanzindizes, Kapitalanlageberatung oder Pensionsplanung."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Aplikacije koje se mogu preuzeti za upotrebu s mobilnim uredajima; Softver za mobilne uredaje; Racunali softver za aplikacije za mobilne telefone; Softver; Softver za placanje; Racunalni softver za tehnologiju lanca blokova koji se moze preuzeti; Softver za elektronicko placanje; Racunali softver za aplikacije za mobilne telefone; Softver za elektronicko placanje; Softveri i aplikacije za mobilne uredaje; Kriptografski kljucevi koji se mogu preuzeti za primanje i trosenje kriptoimovine; Svi navedeni proizvodi u vezi su sa sljedecim podrucjima: Financijski transferi i transakcije, Platne usluge, Usluge programa za zadrzavanje vjernosti korisnika, Poticajnih programa i Bonus programi; Nijedan od prethodno navedenih proizvoda nije u vezi sa sljedecim proizvodima: Upravljanje rizikom ili sigurnoscu, Upravljanje investicijama, Investicijski fondovi, Financijski indeksi, Investicijsko savjetovanje ili Planiranje umirovljenja."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Upravljanje poduzecima; Marketing; Oglasavanje; Potrosaci [pruzanje komercijalni savjeta i informacija potrosacima]; Organiziranje, provodenje i nadzor programa vjernosti i motivacijskih programa; Upravljanje programom nagradivanja vjernosti; Administracija programa poticajnih nagrada za promicanje prodaje proizvoda i usluga drugih; Usluge korisnicke vjernosti u komercijalne, promotivne i/ili reklamne svrhe; Sve prethodno navedene usluge povezane su sa sljedecim podrucjima: Usluge financijskih prijenosa i Financijske transakcije, Platne usluge, Programi vjernosti, motivacije i bonusa; Nijedna od prethodno navedenih usluga nije u vezi sa sljedecim podrucjima: Upravljanje rizikom ili sigurnoscu, Upravljanje ulaganjem, Investicijski fondovi, Financijski indeksi, investicijski savjeti ili planiranje umirovljenja."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Kucno bankarstvo; Izdavanje vrijednosnih bonova u obliku poklon bonova; Izdavanje vrijednosnih kupona kao nagrade za lojalnost potrosaca; Izdavanje zetona s vrijednoscu u svezi s motivacijskim programima; Elektronicka obrada placanja; Usluge elektronickog novcanika [usluge placanja]; Obrada platnih transakcija putem Interneta; Obrada uplata za kupnju robe i usluga putem elektronicke komunikacijske mreze; Usluge prijenosa novca; Usluge elektronickog placanja; Usluge automatiziranog bankarstva; Izdavanje darovnih bonova; Usluge beskontaktnog placanja; Financijske transakcije primjenom tehnologije lanac blokova; Usluge elektronickog novcanika [usluge placanja]; Financijska razmjena virtualnih valuta; Financijske usluge; Usluge financijskih prijenosa i transakcija te usluge placanja; Internet bankarstvo; Izdavanje vrijednosnih bonova; Obrada placanja putem kreditne kartice; Usluge u svezi s kreditnim karticama i karticama za placanje; Financijska razmjena kriptoimovine; Elektronicki prijenos kriptoimovine; Izdavanje kreditnih kartica; Izdavanje kreditnih kartica; Nista od navedenog nije u vezi sa sljedecim podrucjima: Upravljanje ulaganjem, Investicijski fondovi, Financijski indeksi, Savjetodavne usluge povezane s financijskim investicijama ili Planiranje umirovljenja."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Razvoj softvera; Programiranje racunala za ispis bar kodova; Programiranje softvera za procjenu ponasanja kupaca u mreznim trgovinama; Softver kao usluga [SaaS]; Dizajn, razvoj i programiranje racunalnih programa; Platforma kao usluga (PaaS); Sve navedene usluge u vezi sa sljedecim podrucjima: Financijske prijenose i transakcije, Platne usluge, Programi vjernosti, Poticajnih programa i Bonus programi; Nijedna od prethodno navedenih usluga nije u vezi sa sljedecim podrucjima: Upravljanje rizikom ili sigurnoscu, Upravljanje investicijama, Investicijski fondovi, Financijski indeksi, Savjeti u vezi s ulaganjem ili Planiranje umirovljenja."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Letöltheto alkalmazások mobil eszközökkel történo használatra; Mobil szoftverek; Számítógépes alkalmazások mobiltelefonokhoz; Szoftverek; Fizetoszoftverek; Letöltheto számítógépes szoftverek blokklánc technológiához; Szoftverek elektronikus fizetések feldolgozásához; Számítógépes alkalmazások mobiltelefonokhoz; Szoftverek elektronikus fizetések feldolgozásához; Szoftverek és alkalmazások mobil eszközökhöz; Letöltheto kriptografikus kulcsok kriptoeszközök fogadásához és költéséhez; A fenti áruk mindegyike a következo területekkel kapcsolatban: Átutalások és pénzügyi muveletek, Fizetési szolgáltatások, Huségprogram szolgáltatások, Ösztönzo programok és Bónusz programok; Valamennyi fent nevezett termék nem a következo területekre vonatkozóan: Kockázatkezelés vagy biztonság, Befektetések kezelése, Befektetési alapok, Pénzügyi mutatók, Befektetési tanácsadás vagy Nyugdíjtervezés."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Üzleti adminisztráció; Marketing szolgáltatások; Hirdetési- és reklámszolgáltatások; Kereskedelmi információ és tanácsadás fogyasztóknak [fogyasztói tanácsadás]; Huségprogramok és ösztönzési programok megszervezése, muködtetése és felügyelete; Huségprogramok adminisztrációja; Mások termékeinek és szolgáltatásainak népszerusítését szolgáló ösztönzo programok adminisztrálása; Vásárlói huségszolgáltatások kereskedelmi-, promóciós- és/vagy reklámcélokra; A fent említett szolgáltatások mindegyike az alábbi területeken: Pénzutalási és Pénzügyi tranzakciók, Fizetési szolgáltatások, Huség-, ösztönzo- és bónuszprogramok; A fenti szolgáltatások egyike sem a következo területeken: Kockázatkezelés vagy biztonság, Beruházási management, Befektetési alapok, Pénzügyi indexek, befektetési tanácsadás vagy nyugdíjtervezés."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Online banki szolgáltatások; Értékbónok ajándékutalványok formájában való kibocsátása; Vásárlói huség jutalmazására szolgáló értékbónok kibocsátása; Ösztönzo rendszerekkel kapcsolatos értékzsetonok kibocsátása; Kifizetések elektronikus feldolgozása; Elektronikus úton történo tranzakciók (fizetési szolgáltatások); Interneten keresztül történo fizetési muveletek feldolgozása; Áruk és szolgáltatások elektronikus kommunikációs hálózaton keresztül való megvásárlásához kapcsolódó kifizetések feldolgozása; Pénzátutalás; Elektronikus fizetési szolgáltatások; Automatizált banki szolgáltatások; Fizetésre alkalmas ajándékutalványok kibocsátása; Érintésmentes fizetési szolgáltatások; Pénzügyi tranzakciók blokklánc segítségével; Elektronikus úton történo tranzakciók (fizetési szolgáltatások); Virtuális valuták pénzügyi átváltása; Pénzügyi szolgáltatások; Pénzügyi átutalások és tranzakciók, fizetési szolgáltatások; Internetes banki tevékenység; Értékutalványok kibocsátása; Hitelkártyás fizetések feldolgozása; Hitelkártya és bankkártya szolgáltatások; Kriptoeszközök pénzügyi átváltása; Kriptoeszközök elektronikus átvitele; Hitelkártyák kibocsátása; Hitelkártyák kibocsátása; A fentiek egyike sem a következo területekkel kapcsolatos: Befektetés menedzsment, Befektetési alapok, Pénzügyi mutatók, Pénzügyi befektetéssel kapcsolatos szaktanácsadási szolgáltatások vagy Nyugdíjtervezés."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Számítógépes szoftver fejlesztése; Számítógépek programozása vonalkódok nyomtatásához; Online áruházakban vásárlói szokások kiértékelésére szolgáló szoftverek programozása; Szoftver mint szolgáltatás [SaaS]; Számítógépes szoftverek tervezése, fejlesztése és programozása; Platform-mint-szolgáltatás (PAAS); Az összes fent említett szolgáltatás a következo mezokhöz kapcsolódóan: Pénzügyi átutalások és tranzakciók, Fizetési szolgáltatások, Huségprogramok, Ösztönzo programok és Bónusz programok; A fenti szolgáltatások egyike sem a következo területeken: Kockázatkezelés vagy biztonság, Befektetések kezelése, Befektetési alapok, Pénzügyi mutatók, Pénzügyi befektetéssel kapcsolatos szaktanácsadás vagy Nyugdíjtervezés."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Applicazioni scaricabili per uso su dispositivi cellulari; Software per cellulari; Software applicativi per telefoni cellulari; Programmi software per computer; Software di pagamento; Software scaricabile per computer per tecnologia blockchain; Software per l'elaborazione di pagamenti elettronici da e per terzi; Software applicativi per telefoni cellulari; Software per l'elaborazione di pagamenti elettronici da e per terzi; Software ed applicazioni per dispositivi mobili; Chiavi crittografiche scaricabili per ricevere e spendere criptoattività; Tutti i suddetti prodotti in relazione ai seguenti settori: Trasferimenti e transazioni finanziari, Servizi di pagamento, Servizi di programmi di fidelizzazione, Programmi di incentivi e Programmi di bonus; Tutti i suddetti prodotti non relativi ai seguenti settori: Gestione del rischio o sicurezza, gestione d'investimenti, Fondi di investimento, Indici finanziari, consulenza in materia d'investimenti o Piani pensione."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Amministrazione commerciale; Marketing; Pubblicità; Informazioni e consulenza commerciale ai consumatori; Organizzazione, gestione e supervisione di programmi fedeltà e programmi di incentivi; Amministrazione di programmi di fidelizzazione a premi; Amministrazione di programmi di incentivazione a premi per promuovere la vendita di prodotti e servizi per conto terzi; Servizi di fedeltà della clientela per scopi commerciali, promozionali e/o pubblicitari; Tutti i suddetti servizi in relazione ai seguenti settori: Operazioni di trasferimento finanziario e Transazioni finanziarie, Servizi di corresponsione di pagamenti, Programmi di fedeltà, d'incentivazione e di premiazione; Nessuno dei suddetti servizi in relazione ai seguenti campi: Gestione del rischio o sicurezza, Gestione d'investimenti, Fondi di investimento, Indici finanziari, consulenza in materia d'investimenti o pianificazione della pensione."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Online banking; Emissione di buoni di valore, sotto forma di voucher regalo; Emissione di buoni di valore come premi di programmi fedeltà; Emissione di buoni di valore relativamente a piani di incentivi; Elaborazione elettronica di pagamenti; Servizi di pagamento con portafoglio elettronico; Elaborazione di transazioni di pagamento tramite internet; Elaborazione di pagamenti per l'acquisto di prodotti e servizi tramite una rete di comunicazione elettronica; Trasferimento di denaro; Servizi di pagamento elettronico; Servizi bancari automatizzati; Emissione di buoni regalo per il pagamento; Servizi di pagamento senza contatto; Transazioni finanziarie tramite blockchain; Servizi di pagamento con portafoglio elettronico; Scambio finanziario di valute virtuali; Affari finanziari; Trasferimenti e transazioni finanziarie, e servizi di pagamento; Servizi bancari attraverso Internet; Emissione di buoni di valore; Trattamento di pagamenti con carte di credito; Servizi di carte di credito e carte di pagamento; Scambio finanziario di criptoattività; Trasferimento elettronico di criptoattività; Emissione di carte di credito; Emissione di carte di credito; Niente di quanto suddetto in relazione ai seguenti campi: Gestione di investimenti, Fondi di investimento, Indici finanziari, Servizi di consulenza in materia di investimenti finanziari o Piani pensione."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Sviluppo di software; Programmazione di computer per la stampa di codici a barre; Programmazione di software per l'analisi del comportamento dei clienti nei negozi online; Software come servizio [SaaS]; Progettazione, sviluppo e programmazione di software informatici; Piattaforma come servizio [PaaS]; Tutti i suddetti servizi in materia dei seguenti ambiti: Trasferimenti e transazioni finanziarie, Servizi di corresponsione di pagamenti, Programmi fedeltà, Programmi di incentivi e Programmi di bonus; Nessuno dei suddetti servizi in relazione ai seguenti campi: Gestione del rischio o sicurezza, gestione d'investimenti, Fondi di investimento, Indici finanziari, Consulenza in materia di investimenti o Piani pensione."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Parsisiunciamosios mobiliuju prietaisu taikomosios programos; Mobilioji programine iranga; Kompiuteriu programine iranga mobiliesiems telefonams; Kompiuteriu programine iranga; Mokejimo programine iranga; Parsisiunciamoji programine iranga bloku grandines technologijai; Elektroniniu mokejimu programine iranga; Kompiuteriu programine iranga mobiliesiems telefonams; Elektroniniu mokejimu programine iranga; Mobiliuju prietaisu programine iranga ir taikomosios programos; Parsisiunciamieji kriptografiniai raktai kriptoturtui gauti ir isleisti; Visos minetos prekes, susijusios su siomis sritimis: Pervedimai ir banko operacijos, Mokejimo paslaugos, Lojalumo programu paslaugos, Skatinimo programoms ir Premiju programos; Visos pirmiau isvardytos prekes nesusijusios su siomis sritimis: Rizikos valdymas arba saugumas, Investiciju valdymas, Investiciniai fondai, Finansiniai indeksai, Investavimo patarimai ar Pensiju planai."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Verslo tvarkyba; Rinkodara; Reklama; Komercine informacija ir patarimai vartotojams [konsultaciju teikimas]; Lojalumo ir skatinimo programu organizavimas, vykdymas ir prieziura; Atlygio uz lojaluma programu administravimas; Skatinamuju premijavimo programu administravimas skatinant treciuju asmenu prekiu ir paslaugu pardavima; Klientu lojalumo paslaugos komercijos, skatinimo ir/ar reklamos reikmems; Visos pirmiau minetos paslaugos, susijusios su siomis sritimis: Finansu pervedimo paslaugos ir Finansiniai sandoriai, Mokejimo paslaugos, Lojalumo, skatinamuju ir premijavimo programos; Ne viena is pirmiau minetu paslaugu nera susijusi su siomis sritimis: Rizikos valdymas arba saugumas, Investiciju valdymas [vadyba], Investiciniai fondai, Finansiniai indeksai, patarimai del investavimo ar isejimo i pensija planavimas."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Internetine bankininkyste; Dovanu kuponu pobudzio vertybiniu popieriu isleidimas; Vertybiniu talonu kaip atlygio uz klientu lojaluma isleidimas; Vertybiniu zetonu, susijusiu su lojalumo programomis, emisija; Elektroninis mokejimu apdorojimas; Elektroniniu piniginiu mokejimo paslaugos; Mokejimu transakciju apdorojimas internetu; Mokejimu uz prekiu ir paslaugu isigijima apdorojimas elektroniniais rysiu tinklais; Pinigu pervedimas; Elektroninio mokejimo paslaugos; Automatizuotos bankininkystes paslaugos; Isankstinio apmokejimo dovanu cekiu isdavimas; Bekontakciu mokejimu paslaugos; Finansines operacijos naudojant bloku grandine; Elektroniniu piniginiu mokejimo paslaugos; Finansinis virtualiosios valiutos keitimas; Finansines paslaugos; Finansiniai pervedimai ir operacijos bei mokejimu paslaugos; Internetines bankininkystes paslaugos; Vertybiniu popieriu isleidimas; Mokejimu kredito kortelemis apdorojimas; Kreditiniu ir mokejimo korteliu paslaugos; Finansinis kriptoturto keitimas; Elektroninis kriptoturto pervedimas; Kredito korteliu isleidimas; Kredito korteliu isleidimas; Ne vienas is pirmiau minetuju nera susijes su siomis sritimis: Investiciju valdymas, Investiciniai fondai, Finansiniai indeksai, Patarimai investavimo klausimais ar Pensiju planai."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Programines irangos tobulinimas; Kompiuteriu programavimas bruksniniu kodu spausdinimo reikmems; Programines irangos programavimas klientu elgsenos internetinese parduotuvese vertinimo reikmems; Programine iranga kaip paslauga [SaaS]; Kompiuteriu programines irangos projektavimas, tobulinimas ir programavimas; Platforma kaip paslauga [PaaS]; Visos minetos paslaugos, susijusios su siomis sritimis: Pinigu pervedimai ir sandoriai, Mokejimo paslaugos, Lojalumo programos, Skatinimo programoms ir Premiju programos; Ne viena is pirmiau minetu paslaugu nera susijusi su siomis sritimis: Rizikos valdymas arba saugumas, Investiciju valdymas, Investiciniai fondai, Finansiniai indeksai, Patarimai investavimo klausimais ar Pensiju planai."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Lejupieladejamas lietotnes mobilajam iekartam; Parvietojama programmatura; Mobilajiem telefoniem paredzeta datoru lietojumprogrammatura; Datoru programmatura; Maksajumu programmatura; Lejupieladejamas datorprogrammas blokkezu tehnologijam; Programmatura elektroniskajiem maksajumiem; Mobilajiem telefoniem paredzeta datoru lietojumprogrammatura; Programmatura elektroniskajiem maksajumiem; Mobilo iericu programmatura un lietojumprogrammas; Lejupieladejamas sifresanas atslegas kriptoaktivu sanemsanai un izlietosanai; Visas ieprieksminetas preces saistiba ar sadam jomam: Finansu parvedumi un darijumi, Maksajumu pakalpojumi, Lojalitates programmu pakalpojumi, Stimulu programmas un Bonusa programmas; Visas ieprieks minetas preces nav saistitas ar sekojosam jomam: Riska vadisana vai drosiba, Investiciju vadiba, Ieguldijumu fondi, Finansu indeksi, Ieguldijumu konsultacijas vai Pensiju plani."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Uznemumu parvaldisana; Marketinga pakalpojumi; Reklama; Komercialas informacijas un padomu sniegsana pateretajiem (pateretaju padomu sniegsanas centri); Lojalitates un motivesanas programmu organizesana, vadiba un parraudziba; Lojalitates balvu programmu administresana; Stimulejosu balvu programmu administresana tresajam personam piederosu precu un pakalpojumu pardosanas veicinasanai; Klientu lojalitates pakalpojumi komercialiem, pardosanas veicinasanas un/vai reklamas nolukiem; Visi ieprieksminetie pakalpojumi saistiba ar sadam jomam: Finansu transfera un Finansiali darijumi, Maksasanas pakalpojumi, Lojalitates, iniciativas un premijas programmas; Neviens no ieprieks minetajiem pakalpojumiem saistiba ar sadam jomam: Riska vadisana vai drosiba, Investiciju vadiba, Ieguldijumu fondi, Finansu indeksi, ieguldijumu konsultacijas vai pensiju plani."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Banku pakalpojumi tiessaiste; Vertszimju izdosana davanu kuponu veida; Noteiktas vertibas kuponu izdosana ka klientu lojalitates balva; Naudas aizstajeju izlaisana saistiba ar stimulesanas sistemam; Maksajumu elektroniska apstrade; Elektroniska maka maksajumu pakalpojumi; Maksajuma darijumu apstrade interneta; Maksajumu apstrade precu un pakalpojumu iegadei, izmantojot elektronisko komunikaciju tiklu; Naudas parskaitijumi; Elektronisko maksajumu pakalpojumi; Automatizeti banku pakalpojumi; Prieksapmaksas davanu ceku izdosana; Bezkontakta maksajumu pakalpojumi; Finansu transakcijas, izmantojot blokkedi; Elektroniska maka maksajumu pakalpojumi; Finansu mainas darijumi ar virtualo valutu; Finansu pakalpojumi; Naudas parvedumi un darijumi, maksajumu pakalpojumi; Internetbankas pakalpojumi; Vertspapiru emisija; Kreditkarsu maksajumu apstrade; Kreditkarsu un maksajumu karsu pakalpojumi; Kriptoaktivu finansu mainas darijumi; Kriptoaktivu elektroniskie parvedumi; Kreditkarsu izsniegsana; Kreditkarsu izsniegsana; Neviens no ieprieksminetajiem nav saistits ar sadam jomam: Ieguldijumu parvaldiba, Ieguldijumu fondi, Finansu indeksi, Konsultacijas saistiba ar finansu investicijam vai Pensiju plani."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Programmaturas izstrade; Datoru programmesana svitrkodu drukasanai; Programmaturas programmesana klientu uzvedibas izvertesanai tiessaistes veikalos; Programmatura ka pakalpojums (SaaS); Datoru programmaturas projektesana, izstrade un programmesana; Platforma ka pakalpojums (PaaS); Visi ieprieks minetie pakalpojumi saistiba ar sadam jomam: Finansu parvedumi un darijumi, Maksasanas pakalpojumi, Lojalitates programmam, Stimulu programmas un Bonusa programmas; Neviens no ieprieks minetajiem pakalpojumiem saistiba ar sadam jomam: Riska vadisana vai drosiba, Investiciju vadiba, Ieguldijumu fondi, Finansu indeksi, Konsultacijas investiciju joma vai Pensiju plani."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Applikazzjonijiet li jistghu jitnizzlu ghall-uzu ma' taghmir mobbli; Softwer tal-mowbajl; Softwer bhala applikazzjoni tal-kompjuter ghall-mowbajls; Softwer; Softwer tal-hlas; Software tal-kompjuter li jista' jigi ddawnlowdjat ghal teknologija blockchain; Softwer tal-hlas elettroniku; Softwer bhala applikazzjoni tal-kompjuter ghall-mowbajls; Softwer tal-hlas elettroniku; Softwer u applikazzjonijiet ghal taghmir mobbli; Kjavi kriptografici li jistghu jitnizzlu biex jircievu u jonfqu l-kriptoassi; L-oggetti kollha msemmija qabel huma relatati mal-oqsma li gejjin: Trasferimenti u tranzazzjonijiet finanzjarji, Servizzi ta' hlas, Servizzi ta' programmi ta' lealta, Programmi ta' incentivi u Programmi ta' bonus; Il-prodotti kollha msemmija qabel mhux relatati mal-oqsma li gejjin: Gestjoni tar-riskju jew sigurtà, Servizzi ta' gestjoni, Servizzi ta' investiment ta' trust, Indici finanzjarji, Pariri dwar investimenti jew Ippjanar marbut mal-irtirar."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Amministrazzjoni ta' negozju; Servizzi ta' kummercjalizzazzjoni; Reklamar; Konsumaturi (Taghrif kummercjali u pariri ghal -) [centru ta' pariri lill-konsumatur]; L-organizzazzjoni, t-tmexxija u s-supervizjoni ta' skemi ta' lealtà u skemi ta' incentivi; Amministrazzjoni ta' programmi ta' premjijiet ghal-lealtà; Amministrazzjoni ta' programmi dwar l-ghoti ta' incentivi ghall-promozzjoni tal-bejgh ta' oggetti u servizzi ta' ohrajn; Servizzi ta' lealtà ghall-klijent ghal skopijiet kummercjali, promozzjonali u/jew ta' reklamar; Is-servizzi kollha msemmija qabel fir-rigward tal-oqsma li gejjin: Trasferiment finanzjarju u Transazzjonijiet finanzjarji, Servizzi ta' hlas, Programmi ta' lealtà, ta' incentivi u ta' bonusijiet; L-ebda wiehed mis-servizzi msemmija qabel mhu b'rabta mal-oqsma li gejjin: Gestjoni tar-riskju jew sigurtà, Il-gestjoni ta' l-investiment, Servizzi ta' investiment ta' trust, Indici finanzjarji, pariri dwar l-investiment jew l-ippjanar tal-irtirar."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi bankarji online; Hrug ta' towkins ta' valur fl-ghamla ta' vawcers bhala rigal; Hrug ta' towkins ta' valur bhala premju ghal-lealtà tal-klijent; Hrug ta' towkins ta' valur relatati ma' skemi ta' incentivi; Ipprocessar elettroniku ta' pagamenti; Servizzi b'mezzi ta' hlas elettroniku (servizzi ta' hlas); L-ipprocessar ta' transazzjonijiet ta' pagamenti permezz tal-Internet; L-ipprocessar ta' pagamenti ghax-xiri ta' oggetti u servizzi permezz ta' netwerk tal-komunikazzjonijiet elettronici; Servizzi ta' trasmissjoni ta' flus; Servizzi ta' hlas b'mezz elettroniku; Servizzi bankarji awtomatizzati; Il-hrug ta' vawcers (gift cards); Servizzi ta' hlasijiet minghajr kuntatt; Transazzjonijiet finanzjarji permezz ta' blockchain; Servizzi b'mezzi ta' hlas elettroniku (servizzi ta' hlas); Skambju finanzjarju ta' muniti virtwali; Servizzi f'finanzi; Transfers u transazzjonijiet finanzjarji, u servizzi ta' hlas; Servizzi bankarji bl-Internet; Hrug ta' tokens ta' valur; Processar ta' pagamenti minn karti ta' kreditu; Servizzi ta' kards tal-kreditu u kards tal-hlas; Skambju finanzjarju ta' kriptoassi; Trasferiment elettroniku tal-kriptoassi; Il-hrug ta' karti tal-kreditu; Il-hrug ta' karti tal-kreditu; Fejn l-ebda wiehed minn dawk imsemmija hawn qabel mhu relatat mal-oqsma li gejjin: Il-gestjoni ta' investimenti, Servizzi ta' investiment ta' trust, Indici finanzjarji, Servizzi ta' pariri relatati mal-investiment finanzjarju jew Ippjanar marbut mal-irtirar."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Zvilupp ta' softwer; L-ipprogrammar ta' kompjuters ghall-istampar ta' barkowds; Programmar ta' softwer ghall-evalwazzjoni tal-imgiba tal-klijenti fi hwienet onlajn; Softwer bhala servizz [SaaS]; Disinn, zvilupp u pprogrammar ta' softwer tal-kompjuter; Pjattaforma bhala Servizz (PAAS); Is-servizzi kollha msemmija qabel b'rabta mal-oqsma li gejjin: Trasferimenti u tranzazzjonijiet finanzjarji, Servizzi ta' hlas, Programmi ta' lealtà, Programmi ta' incentivi u Programmi ta' bonus; L-ebda wiehed mis-servizzi msemmija qabel mhu b'rabta mal-oqsma li gejjin: Gestjoni tar-riskju jew sigurtà, Servizzi ta' gestjoni, Servizzi ta' investiment ta' trust, Indici finanzjarji, Pariri dwar l-investiment jew Ippjanar marbut mal-irtirar."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Aplikacje do pobrania do uzytku z telefonami komórkowymi; Oprogramowanie do telefonów komórkowych; Komputerowe oprogramowanie uzytkowe do telefonów komórkowych; Oprogramowanie; Oprogramowanie do wykonywania platnosci; Oprogramowanie komputerowe do pobrania dla technologii blockchain; Oprogramowanie do platnosci elektronicznych; Komputerowe oprogramowanie uzytkowe do telefonów komórkowych; Oprogramowanie do platnosci elektronicznych; Oprogramowanie i aplikacje do urzadzen przenosnych; Klucze kryptograficzne do pobrania do otrzymywania i wydawania kryptoaktywów; Wszystkie wyzej wymienione towary zwiazane z nastepujacymi dziedzinami: przelewy i transakcje finansowe, Uslugi platnicze, Uslugi w zakresie programów pozyskiwania stalych klientów, Programów motywacyjnych i Programy bonusowe; Wszystkie wyzej wymienione produkty nieodnoszace sie do nastepujacych dziedzin: Zarzadzanie ryzykiem lub w zakresie bezpieczenstwa, Zarzadzanie inwestycjami, Fundusze inwestycyjne, Wskazniki finansowe, Doradztwo inwestycyjne lub Planowanie emerytury."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Administrowanie dzialalnoscia gospodarcza; Uslugi marketingowe; Reklama; Handlowe informacje i porady udzielane konsumentom [punkty informacji konsumenckiej]; Organizacja, prowadzenie i nadzorowanie programów lojalnosciowych dla klientów i programów motywacyjnych; Zarzadzanie programami lojalnosciowymi; Administrowanie programami motywacyjnymi w celu promowania sprzedazy towarów i uslug dla osób trzecich; Uslugi programów lojalnosciowych dla celów handlowych, promocyjnych i/lub reklamowych; Wszystkie wyzej wymienione uslugi zwiazane z nastepujacymi dziedzinami: Przekazy pieniezne i Transakcje finansowe, uslugi platnicze, Uslugi programów lojalnosciowych, motywacyjnych i bonusowych; Zadna z wyzej wymienionych uslug nie jest zwiazana z nastepujacymi dziedzinami: Zarzadzanie ryzykiem lub w zakresie bezpieczenstwa, zarzadzanie inwestycjami, Fundusze inwestycyjne, Wskazniki finansowe, doradztwo inwestycyjne lub planowanie emerytury."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Bankowosc online; Emisja bonów wartosciowych w postaci bonów upominkowych; Emisja bonów wartosciowych jako nagroda za lojalnosc klienta; Emisja bonów wartosciowych w zwiazku z programami motywacyjnymi; Elektroniczne przetwarzanie platnosci; Uslugi portfela elektronicznego (uslugi w zakresie platnosci); Przetwarzanie transakcji platniczych za posrednictwem Internetu; Przetwarzanie platnosci za zakup towarów i uslug za posrednictwem elektronicznej sieci lacznosciowej; Przelewy pieniezne; Uslugi w zakresie elektronicznych platnosci; Zautomatyzowane uslugi bankowe; Wydawanie platniczych czeków upominkowych; Uslugi platnosci bezdotykowych; Transakcje finansowe za posrednictwem lancucha blokowego; Uslugi portfela elektronicznego (uslugi w zakresie platnosci); Wymiana finansowa waluty wirtualnej; Uslugi finansowe; Przelewy i transakcje finansowe oraz uslugi platnicze; Bankowosc internetowa; Emisja bonów wartosciowych; Przetwarzanie platnosci dokonanych za pomoca kart kredytowych; Uslugi zwiazane z kartami kredytowymi i kartami platniczymi; Wymiana finansowa kryptoaktywów; Transfer elektroniczny kryptoaktywów; Emisja kart kredytowych; Emisja kart kredytowych; Zadna z wyzej wymienionych niezwiazana z nastepujacymi dziedzinami: Zarzadzanie inwestycjami, Fundusze inwestycyjne, Wskazniki finansowe, Uslugi doradcze dotyczace inwestycji finansowych lub Planowanie emerytury."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Opracowywanie oprogramowania komputerowego; Programowanie komputerów do drukowania kodów kreskowych; Programowanie oprogramowania do oceny zachowania klientów w sklepach online; Oprogramowanie jako usluga [SaaS]; Projektowanie, opracowywanie i programowanie oprogramowania komputerowego; Platforma jako usluga [PaaS]; Wszystkie wyzej wymienione uslugi zwiazane z nastepujacymi dziedzinami: Do obslugi przelewów i transakcji finansowych, Uslugi platnicze, Programy lojalnosciowe, Programów motywacyjnych i Programy bonusowe; Zadna z wyzej wymienionych uslug nie jest zwiazana z nastepujacymi dziedzinami: Zarzadzanie ryzykiem lub w zakresie bezpieczenstwa, Zarzadzanie inwestycjami, Fundusze inwestycyjne, Wskazniki finansowe, Doradztwo inwestycyjne lub Planowanie emerytury."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Aplicações descarregáveis destinadas a dispositivos móveis; Software móvel; Software de aplicação para computadores para telemóveis; Software; Software de pagamento; Software descarregável para a tecnologia de cadeia de blocos; Software para processamento de pagamentos eletrónicos para e de terceiros; Software de aplicação para computadores para telemóveis; Software para processamento de pagamentos eletrónicos para e de terceiros; Software e aplicações para dispositivos móveis; Chaves criptográficas descarregáveis para receção e gasto de criptoativos; Todos os produtos atrás referidos relacionados com os seguintes domínios: Transferências e transações financeiras, Serviços de pagamentos, Serviços de programas de fidelização, Programas de incentivos e Programas de bónus; Todos os produtos atrás referidos não relacionados com as seguintes áreas: Gestão de riscos ou segurança, Gestão de investimentos, Fundos de investimento, Índices financeiros, Assessoria em investimento ou Planeamento de pensões de reforma."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Administração de empresas; Marketing; Publicidade; Serviços de aconselhamento e informação comercial aos consumidores [loja do consumidor]; Organização, execução e supervisão de programas de fidelidade e planos de incentivos; Administração de programas de prémios de fidelização; Administração de programas de prémios de incentivo para promover a venda de produtos e serviços de terceiros; Serviços de fidelização de clientes para fins comerciais, promocionais e/ou publicitários; Todos os serviços atrás referidos relacionados com os seguintes domínios: Serviços de transferências financeiras e Transacções financeiras, Serviços de pagamento, Programas de fidelização, incentivo e bonificação de clientes; Nenhum dos serviços atrás referidos relacionado com os seguintes domínios: Gestão de riscos ou segurança, Gestão de investimentos, Fundos de investimento, Índices financeiros, assessoria em investimento ou planeamento de pensões de reforma."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços bancários on-line; Emissão de títulos de valor sob a forma de cheques-oferta; Emissão de títulos de valor para fidelização de clientes; Emissão de títulos de valores relacionados com planos de incentivos; Processamento eletrónico de pagamentos; Serviços de carteira eletrónica (serviços de pagamentos); Processamento de transações de pagamento através da Internet; Processamento de pagamentos para a compra de produtos e serviços através de uma rede de comunicações eletrónicas; Transferência de dinheiro; Serviços de pagamento eletrónico; Serviços bancários automatizados; Emissão de vouchers de oferta pré-pagos; Serviços de pagamento sem contacto; Transações financeiras através de cadeias de blocos; Serviços de carteira eletrónica (serviços de pagamentos); Câmbio de moedas virtuais; Serviços financeiros; Transferências e transações financeiras e serviços de pagamento; Operações bancárias através da Internet; Emissão de ordens de pagamento de valores; Processamento de pagamentos por cartão de crédito; Serviços de cartões de crédito e de cartões de pagamento; Intercâmbio financeiro de criptoativos; Transferência eletrónica de cripto-ativos; Emissão de cartões de crédito; Emissão de cartões de crédito; Nenhum dos serviços atrás referidos relacionado com os seguintes domínios: Gestão de investimentos, Fundos de investimento, Índices financeiros, Serviços de assessoria em matéria de investimentos financeiros ou Planeamento de pensões de reforma."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Desenvolvimento de software; Programação de computadores para a impressão de códigos de barras; Programação de software para a avaliação do comportamento de clientes em lojas em linha; Software como serviço [SaaS]; Conceção, desenvolvimento e programação de software; Plataformas como um serviço [PaaS]; Todos os serviços atrás referidos relacionados com os seguintes domínios: Transferências e transações financeiras, Serviços de pagamento, Programas de fidelização, Programas de incentivos e Programas de bónus; Nenhum dos serviços atrás referidos relacionado com os seguintes domínios: Gestão de riscos ou segurança, Gestão de investimentos, Fundos de investimento, Índices financeiros, Assessoria de investimento ou Planeamento de pensões de reforma."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Aplicatii descarcabile destinate utilizarii cu dispozitive mobile; Software mobil; Software pentru telefoane mobile; Software; Software pentru plati; Software de calculator descarcabil pentru tehnologie blockchain; Software pentru plati electronice; Software pentru telefoane mobile; Software pentru plati electronice; Software si aplicatii pentru dispozitive mobile; Chei criptografice descarcabile pentru primit si cheltuit criptoactive; Toate produsele susmentionate în legatura cu urmatoarele domenii: Transferuri si tranzactii financiare, Servicii de plati, Servicii de promovare de fidelizare, Programe de stimulare si Programe cu bonusuri; Niciunele din toate produsele susmentionate nefiind în legatura cu urmatoarele domenii: Gestionarea riscurilor sau securitate, Administrarea investitiilor, Fonduri de investitii, Indici financiari, Consiliere in investitii sau Planificarea pensiei."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Administrarea afacerilor; Servicii de marketing; Publicitate; Informatii si asistenta comerciale pentru consumatori; Organizare, gestionare si monitorizare a programelor de stimulare si fidelizare; Administrare de programe cu premii de fidelitate; Administrare a programelor de stimulare pentru promovarea vânzarii de produse si servicii ale tertilor; Servicii de fidelizare de clienti în scopuri comerciale, promotionale si/sau publicitare; Toate serviciile susmentionate în legatura cu urmatoarele domenii: Servicii de transfer financiar si Tranzactii financiare, Servicii de plata, Programe de fidelitate, de stimulare si de bonusuri; Niciunele din servicii le susmentionate nu sunt în legatura cu urmatoarele domenii: Gestionarea riscurilor sau securitate, Investitii în domeniul administrativ, Fonduri de investitii, Indici financiari, asistenta în investiti sau planificarea pensiei."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Tranzactii bancare la domiciliu [home banking]; Emitere de bonuri valorice sub forma de cupoane-cadou; Emitere de bonuri valorice ca si recompensa pentru fidelitatea clientilor; Emisiune de bonuri de valori privind programele de stimulare; Procesare electronica de plati; Servicii de portofel electronic (servicii de plati); Procesarea operatiunilor de plata pe internet; Procesarea platilor pentru achizitionarea de produse si servicii printr-o retea de comunicatii electronice; Servicii de transfer de bani; Servicii de plata electronica; Servicii bancare automate; Emitere de cupoane cadou preplatite; Servicii de plata fara contact; Tranzactii financiare prin blockchain; Servicii de portofel electronic (servicii de plati); Schimb financiar de monede virtuale; Servicii financiare; Tranzactii si transferuri financiare, servicii de plata; Servicii bancare prin Internet; Emitere de bonuri valorice; Procesarea platilor efectuate cu card de credit; Servicii referitoare la carduri de credit si carduri de plati; Schimburi financiare de criptomonede; Transfer electronic de criptoactive; Emitere de carti de credit; Emitere de carti de credit; Niciunele din cele susmentionate nu sunt în legatura cu urmatoarele domenii: Gestiunea investitiilor, Fonduri de investitii, Indici financiari, Servicii de consiliere privind investitiile financiare sau Planificarea pensiei."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Dezvoltare de software; Programare de calculatoare pentru imprimarea de coduri de bare; Programare de software pentru evaluarea comportamentului clientilor în magazine online; Software ca serviciu [SaaS]; Proiectare, dezvoltare si programare de software de calculator; Platforma ca serviciu [PaaS]; Toate serviciile susmentionate în legatura cu urmatoarele domenii: Transferuri si tranzactii financiare, Servicii de plata, Programe de loialitate, Programe de stimulare si Programe cu bonusuri; Niciunele din servicii le susmentionate nu sunt în legatura cu urmatoarele domenii: Gestionarea riscurilor sau securitate, Administrarea investitiilor, Fonduri de investitii, Indici financiari, Consiliere în investitii sau Planificarea pensiei."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Aplikácie s moznostou prevzatia pre mobilné zariadenia; Softvér pre mobilné telefóny; Softvér pocítacových aplikácií pre mobilné telefóny; Pocítacový softvér (nahraté pocítacové programy); Platobný softvér; Stahovatelný pocítacový softvér pre technológiu blockchain; Softvér pre spracovanie elektronických platieb pre tretie osoby a od tretích osôb; Softvér pocítacových aplikácií pre mobilné telefóny; Softvér pre spracovanie elektronických platieb pre tretie osoby a od tretích osôb; Softvér a aplikácie pre mobilné zariadenia; Stahovatelné sifrovacie klúce na príjem a výdaj kryptoaktív; Vsetky vyssie uvedené výrobky súvisia s nasledujúcimi oblastami: Financné prevody a transakcie, Platobné sluzby, Sluzby vernostných programov, Motivacných programov a Bonusové programy; Vsetky vymenované tovary, okrem so zameraním na nasledovné oblasti: Riadenie rizík alebo bezpecnost, Správy investícií, Investicné fondy, Financné indexy, Investicné poradenstvo alebo Plánovanie dôchodku."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Obchodná administratíva; Marketing; Reklama; Obchodné informácie a rady spotrebitelom pri výbere tovarov a sluzieb; Pripravovanie a vedenie vernostných a motivacných programov a dohlad nad nimi; Správa vernostných programov odmenovania; Správa motivacných programov s udelením cien na podporu predaja tovaru a sluzieb tretích strán; Zákaznícke vernostné sluzby na komercné, propagacné a/alebo reklamné úcely; Vsetky vyssie uvedené sluzby súvisia s nasledujúcimi oblastami: Financný transfer a Financné transakcie, Platitelské sluzby, Sluzby vernostných, motivacných a bonusových programov; Ziadne z vyssie uvedených sluzieb nesúvisia s nasledujúcou oblastou: Riadenie rizík alebo bezpecnost, Investicný management, Investicné fondy, Financné indexy, investicné poradenstvo alebo plánovanie dôchodku."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Bankové sluzby priamo k zákazníkom (homebanking); Vydávanie poukázok v podobe darcekových poukázok; Vydávanie poukázok ako odmenu za vernost zákazníkov; Vydávanie penazných poukázok k motivacným programom; Elektronické spracovanie platieb; Sluzby elektronickej penazenky (platobné sluzby); Spracovanie platobných transakcií prostredníctvom internetu; Spracovanie platieb za nákup tovarov a sluzieb prostredníctvom elektronickej komunikacnej siete; Sluzby prevodu penazí; Elektronické platobné sluzby; Automatizované bankové sluzby; Vydávanie predplatených darcekových poukázok; Sluzby bezkontaktných platieb; Financné transakcie prostredníctvom blockchainu; Sluzby elektronickej penazenky (platobné sluzby); Financná výmena virtuálnej meny; Sluzby v oblasti financníctva; Financné prevody a transakcie, platobné sluzby; Internetové bankovníctvo; Vydávanie cenných papierov; Spracovanie platieb kreditnými kartami; Sluzby kreditných a platobných kariet; Financné prevody kryptoaktív; Elektronický prenos kryptoaktív; Vydávanie kreditných kariet; Vydávanie kreditných kariet; Ziadne z uvedených výrobkov nesúvisia s nasledujúcou oblastou: Investicný manazment, Investicné fondy, Financné indexy, Poradenské sluzby v oblasti investovania financií alebo Plánovanie dôchodku."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Vývoj pocítacového softvéru; Programovanie pocítacov na tlac ciarových kódov; Programovanie softvéru na vyhodnocovanie správania sa zákazníka v on-line obchodoch; Poskytovanie softvéru prostredníctvom internetu (SaaS); Navrhovanie, vývoj a programovanie pocítacového softvéru; Platforma ako sluzba (Paas); Vsetky vyssie uvedené sluzby súvisia s nasledujúcimi oblastami: Financné prevody a transakcie, Platitelské sluzby, Vernostné programy, Motivacných programov a Bonusové programy; Ziadne z vyssie uvedených sluzieb nesúvisia s nasledujúcou oblastou: Riadenie rizík alebo bezpecnost, Správy investícií, Investicné fondy, Financné indexy, Investicné poradenstvo alebo Plánovanie dôchodku."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Prenosljive aplikacije za uporabo z mobilnimi napravami; Mobilna programska oprema; Racunalniska programska oprema za aplikacije, za mobilne telefone; Programska oprema; Programska oprema za placevanje; Nalozljiva racunalniska programska oprema za tehnologijo verige podatkovnih blokov; Programska oprema za elektronsko placevanje; Racunalniska programska oprema za aplikacije, za mobilne telefone; Programska oprema za elektronsko placevanje; Programska oprema in aplikacije za mobilne naprave; Nalozljivi kriptografski kljuci za prejem in porabo kriptosredstev; Vsi navedeni izdelki so v zvezi z naslednjimi podrocji: Financni prelivi in transakcije, Placilne storitve, Storitve programov za zvestobo, Programe spodbude in Programi bonusov; Nic od omenjenega blaga ni v zvezi z naslednjimi podrocji: Obvladovanje tveganja ali varovanje, Investicijsko upravljanje, Storitve investicijskih skladov, Financni indeksi, Investicijsko svetovanje ali Upokojitveno nacrtovanje."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Poslovna administracija; Storitve trzenja; Oglasevanje in oglasevalske storitve; Komercialne informacije in svetovanje za potrosnike (poslovalnica za svetovanje potrosnikom); Organizacija, izvajanje in nadzorovanje programov zvestobe in spodbujevalnih shem; Upravljanje programov nagrajevanja zvestobe strank; Upravljanje spodbujevalnih programov nagrajevanja za pospesevanje prodaje blaga in storitev za druge; Storitve zvestobe strank za komercialne, promocijske in/ali oglasevalne namene; Vse prej navedene storitve so v zvezi z naslednjimi podrocji: Financni transfer in Financne transakcije, Placilne storitve, Programi zvestobe, spodbud in bonusov; Nobena od prej navedenih storitev ni v zvezi z naslednjimi podrocji: Obvladovanje tveganja ali varovanje, Investicijsko upravljanje, Storitve investicijskih skladov, Financni indeksi, nalozbeno svetovanje ali nacrtovanje upokojitve."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Domace bancnistvo; Izdajanje vrednostnih bonov v obliki darilnih bonov; Izdajanje vrednostnih bonov kot nagrad za zvestobo stranke; Izdaja vrednostnih zetonov v okviru spodbujevalnih shem; Elektronska obdelava placil; Storitve elektronske denarnice (storitve placilnega prometa); Obdelava placilnih transakcij prek interneta; Obdelava placil za nakup izdelkov in storitev preko elektronskega komunikacijskega omrezja; Storitve prenosa denarja; Elektronske placilne storitve; Avtomatizirane bancne storitve; Izdajanje placilnih darilnih bonov; Storitve brezkontaktnega placevanja; Financne transakcije prek verige; Storitve elektronske denarnice (storitve placilnega prometa); Financna menjava virtualnih valut; Financne storitve; Financni prenosi in transakcije ter placilne storitve; Internetno bancnistvo; Izdajanje vrednostnih bonov; Obdelava placil s kreditno kartico; Storitve kreditnih in placilnih kartic; Financna menjava kriptosredstev; Elektronski prenos kriptosredstev; Izdaja kreditnih kartic; Izdaja kreditnih kartic; Nasteto ni v zvezi z naslednjimi podrocji: Upravljanje investicij, Storitve investicijskih skladov, Financni indeksi, Posvetovalne storitve v zvezi s financnimi nalozbami ali Upokojitveno nacrtovanje."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Razvoj programske opreme; Programiranje racunalnikov za tiskanje crtne kode; Programiranje programske opreme za ocenjevanje vedenja kupcev v spletnih trgovinah; Programska oprema kot storitev [SaaS]; Oblikovanje, razvoj in programiranje racunalniske programske opreme; Platforma kot storitev[PaaS]; Vse navedene storitve v zvezi z naslednjimi podrocji: Financni transferji in transakcije, Placilne storitve, Programi zvestobe, Programe spodbude in Programi bonusov; Nobena od prej navedenih storitev ni v zvezi z naslednjimi podrocji: Obvladovanje tveganja ali varovanje, Investicijsko upravljanje, Storitve investicijskih skladov, Financni indeksi, Investicijsko svetovanje ali Upokojitveno nacrtovanje."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aplicaciones descargables para su uso con dispositivos móviles; Software móvil; Software de aplicaciones de ordenador para teléfonos móviles; Software informático; Software de pagos; Software informático descargable para tecnología de cadena de bloques; Software para tramitar pagos electrónicos a terceros, así como de terceros; Software de aplicaciones de ordenador para teléfonos móviles; Software para tramitar pagos electrónicos a terceros, así como de terceros; Software y aplicaciones para dispositivos móviles; Llaves criptográficas descargables para recibir y gastar criptodivisas; Todos los productos mencionados tienen relación con los siguientes ámbitos: Transferencias y actividades financieras, Servicios de pago, Servicios de programas de fidelización, Programas de incentivos y Programas de bonos; Ninguno de estos productos está relacionado con los siguientes ámbitos: Gestión de riesgos o seguridad, Gestión de inversiones, Fondos de inversiones, Índices financieros, Asesoramiento sobre inversiones o Planes de jubilación."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Administración de negocios; Marketing; Publicidad; Información y asesoramiento comerciales al consumidor; Organización, operación y supervisión de programas de fidelización y de incentivos; Administración de programas de recompensas por fidelización; Administración de programas de premios de incentivos para promover la venta de productos y servicios de terceros; Servicios de fidelización de clientes con fines comerciales, promocionales o publicitarios; Todos los servicios mencionados están relacionados con los siguientes ámbitos: Servicios de transferencias financieras y Transacciones financieras, Servicios de pago, Programas de fidelización, incentivación y bonos para clientes; Ninguno de los servicios mencionados está relacionado con los siguientes ámbitos: Gestión de riesgos o seguridad, Gestión de inversiones, Fondos de inversiones, Índices financieros, asesoramiento sobre inversiones o planes de jubilación."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios bancarios en línea; Emisión de bonos de valor en forma de vales de regalo; Emisión de bonos de valor para recompensar la fidelidad de la clientela; Emisión de vales en relación con planes de incentivos; Tramitación electrónica de pagos; Servicios de pago por billetera electrónica; Tramitación de operaciones de pago por internet; Tramitación de pagos en concepto de compra de productos y servicios a través de una red electrónica de comunicaciones; Transferencia de dinero; Servicios de pago electrónico; Servicios bancarios automatizados; Emisión de tiques de regalo; Servicios de pago sin contacto; Transacciones financieras mediante cadena de bloques [blockchain]; Servicios de pago por billetera electrónica; Intercambio financiero de moneda virtual; Servicios financieros; Servicios de transferencias y transacciones financieras, servicios de pago; Banca por Internet; Emisión de bonos de valor; Procesamiento de pagos por tarjeta de crédito; Servicios de tarjetas de crédito y tarjetas de pago; Intercambio financiero de valores en criptomonedas; Transferencia electrónica de activos criptográficos; Emisión de tarjetas de crédito; Emisión de tarjetas de crédito; Ninguno de los mencionados está relacionado con los siguientes ámbitos: Gestión de inversiones, Fondos de inversiones, Índices financieros, Servicios de asesoramiento sobre inversiones financieras o Planes de jubilación."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Desarrollo de software; Programación de ordenadores para la impresión de códigos de barras; Programación de software para evaluar el comportamiento de clientes en tiendas en línea; Software como servicio [SaaS]; Diseño, desarrollo y programación de software; Plataforma como servicio [PaaS]; Todos los servicios mencionados están relacionados con los siguientes ámbitos: Transferencias y transacciones financieras, Servicios de pago, Programas de fidelización, Programas de incentivos y Programas de bonos; Ninguno de los servicios mencionados está relacionado con los siguientes ámbitos: Gestión de riesgos o seguridad, Gestión de inversiones, Fondos de inversiones, Índices financieros, Asesoramiento sobre inversiones o Planes de jubilación."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Nerladdningsbara applikationer för användning med mobila anordningar; Mobil programvara; Programvara för datorapplikationer för mobiltelefoner; Datormjukvaror; Programvara för betalning; Nedladdningsbar datorprogramvara för blockkedjeteknik; Programvara för elektroniska betalningar; Programvara för datorapplikationer för mobiltelefoner; Programvara för elektroniska betalningar; Programvara och applikationer för mobila anordningar; Nedladdningsbara kryptografiska nycklar för att ta emot och betala med kryptotillgångar; Samtliga nämnda varor i samband med följande områden: Ekonomiska överföringar och transaktioner, Betalningstjänster, Program för uppbyggnad av en trogen kundkrets, Bonusprogram och Bonusprogram; Samtliga nämnda varor ej avseende följande områden: Riskförvaltning eller säkerhet, Investeringsförvaltning, Investeringsfonder, Finansiella index, Investeringsrådgivning eller Pensionsplanering."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Företagsadministration; Marketing; Reklam; Rådgivning för konsumenter (kommersiell information och -) [konsumentrådgivningsbutik]; Organisering, hantering och kontroll av lojalitets- och säljfrämjande program (administrativ); Administration av lojalitets- och belöningsprogram; Administration av stimulerande belöningsprogram för marknadsföring av andras varor och tjänster; Kundlojalitetstjänster för kommersiella, säljfrämjande och/eller reklammässiga ändamål; Samtliga nämnda tjänster avseende följande områden: Finanstransfererings- och Finansiella transaktioner, Betaltjänster, Lojalitets-, motivations- och bonusprogram; Inga nämnda tjänster avseende följande områden: Riskförvaltning eller säkerhet, Investeringsförvaltning, Investeringsfonder, Finansiella index, investeringsrådgivning eller pensionsplanering."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Onlinebanktjänster; Utställande av värdebevis i form av presentkort; Utfärdande av värdebevis som en belöning för kunders lojalitet; Utfärdande av värdekuponger relaterade till stimulansprogram; Elektronisk behandling av betalningar; Elektroniska plånbokstjänster (betaltjänster); Behandling av betalningstransaktioner via internet; Hantering av betalningar för inköp av varor och tjänster via ett elektroniskt kommunikationsnät; Penningöverföring; Elektroniska betalningstjänster; Automatiserade banktjänster; Utfärdande av presentcheckar för betalning; Kontaktlösa betalningstjänster; Finansiella transaktioner via blockchain; Elektroniska plånbokstjänster (betaltjänster); Finansiell växling av virtuella valutor; Finansiella tjänster; Finansiella överföringar och transaktioner, betalningstjänster; Internetbanktjänster; Utfärdande av värdecheckar; Behandling av kreditkortsbetalningar; Kreditkorts- och betalkortstjänster; Finansiella transaktioner avseende kryptotillgångar; Elektronisk överföring av kryptotillgångar; Utfärdande av kreditkort; Utfärdande av kreditkort; Inga av de nämnda i samband med följande områden: Förvaltning av investeringar, Investeringsfonder, Finansiella index, Rådgivningstjänster avseende finansiella investeringar eller Pensionsplanering."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Utveckling av mjukvara; Datorprogrammering avseende tryckning av streckkoder; Programmering av programvara för utvärdering av kundbeteenden i onlinebutiker; Molntjänster [SaaS]; Design, utveckling och programmering av programvara; Plattform som en tjänst (PAAS); Samtliga nämnda tjänster avser följande områden: Finansiella överföringar och transaktioner, Betaltjänster, Lojalitetsprogram, Bonusprogram och Bonusprogram; Inga nämnda tjänster avseende följande områden: Riskförvaltning eller säkerhet, Investeringsförvaltning, Investeringsfonder, Finansiella index, Investeringsrådgivning eller Pensionsplanering."
+        }
+      ]
+    },
+    "id": "539c21aa-9d8f-438b-b140-23a16d4b4660",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "200"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Slomskova 17a,Ljubljana, 1000",
+        "representativeAddressCountryCode": "SI",
+        "representativeAddressCountryName": "Slovenia",
+        "representativeName": "Andrej Bukovnik"
+      }
+    ],
+    "secondLanguageCode": "fr",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20211012",
+        "applicationNumber": "18575624"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311012",
+      "lastPublicationDate": "20211020",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20220428",
+        "registrationNumber": "18575624"
+      }
+    },
+    "version": "20260511230441",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "qori"
+    }
+  },
+  "_uri": "/mark/em/539c21aa-9d8f-438b-b140-23a16d4b4660",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.394Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

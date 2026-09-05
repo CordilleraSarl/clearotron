@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/cn/55395ad3-503f-4d1a-b0e5-90e95c12c94a",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "55395ad3-503f-4d1a-b0e5-90e95c12c94a",
+  "applicationNumber": "76262905",
+  "registrationNumber": "76262905",
+  "applicationDate": "2024-01-08",
+  "registrationDate": "2024-07-14",
+  "expiryDate": "2034-07-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-04-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "IORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "半导体收音机;便携式媒体播放器;电池;电池充电器;耳机;计算机外围设备;计算机无线外围设备;扩音器;录像机;录音装置;麦克风",
+      "translation_language": "en",
+      "translation": "Semiconductor radios; portable media players; batteries; battery chargers; earphones; computer peripherals; computer wireless peripherals; loudspeakers; video recorders; recording devices; microphones"
+    }
+  ],
+  "owner": "Shenzhen Technology Co., Ltd. crazy person",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市宝安区西乡街道盐田社区银田工业区B8栋507",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Technology Co., Ltd. crazy person",
+        "applicantNativeName": "深圳市疯狂者科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductor radios; portable media players; batteries; battery chargers; earphones; computer peripherals; computer wireless peripherals; loudspeakers; video recorders; recording devices; microphones",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "半导体收音机;便携式媒体播放器;电池;电池充电器;耳机;计算机外围设备;计算机无线外围设备;扩音器;录像机;录音装置;麦克风"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Apparatus for sound and images",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "55395ad3-503f-4d1a-b0e5-90e95c12c94a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1883"
+      }
+    ],
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "私人订制(深圳)企业管理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240108",
+        "applicationNumber": "76262905"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340713",
+      "lastPublicationDate": "20240413",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20240714",
+        "registrationNumber": "76262905"
+      }
+    },
+    "version": "20251005223757",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "IORI"
+    }
+  },
+  "_uri": "/mark/cn/55395ad3-503f-4d1a-b0e5-90e95c12c94a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:47.226Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

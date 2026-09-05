@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/kr/439284fa-ff3f-48dd-b691-7bec09f9a550",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "439284fa-ff3f-48dd-b691-7bec09f9a550",
+  "applicationNumber": "40-2026-0073329",
+  "registrationNumber": null,
+  "applicationDate": "2026-04-14",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "enqor",
+  "markTransliteration": "enqor",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "공연이벤트 제작업, 교육 또는 연예오락에 관한 대회 준비 및 진행업, 문화 및 예술행사 조직업, 문화적 또는 교육적 목적의 시각예술 및 문학작품 공연업, 스포츠활동업, 연예오락 또는 문화목적의 사용자 등급제공업, 영화/비디오 및 오디오 기록물/라디오 및 텔레비전 프로그램 기록/제작/배포업, 클럽서비스업(연예오락 및 교육), 통신강좌업, 파티 계획업",
+      "translation_language": "en",
+      "translation": "Performance event production, preparation and implementation of education or entertainment-related competitions, cultural and artistic event organization, visual art and literary work performance for cultural or educational purposes, sports activity business, entertainment or cultural purpose user rating business, film/video and audio records/radio and television program recording/production/distribution business, club service business (entertainment and education), correspondence course business, party planning business"
+    }
+  ],
+  "owner": "Align Networks Inc.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "특허법인테헤란 (TEHERAN PATENT FIRM)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 강남구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Align Networks Inc.",
+        "applicantNativeName": "주식회사 얼라인네트웍스"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Performance event production, preparation and implementation of education or entertainment-related competitions, cultural and artistic event organization, visual art and literary work performance for cultural or educational purposes, sports activity business, entertainment or cultural purpose user rating business, film/video and audio records/radio and television program recording/production/distribution business, club service business (entertainment and education), correspondence course business, party planning business",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "공연이벤트 제작업, 교육 또는 연예오락에 관한 대회 준비 및 진행업, 문화 및 예술행사 조직업, 문화적 또는 교육적 목적의 시각예술 및 문학작품 공연업, 스포츠활동업, 연예오락 또는 문화목적의 사용자 등급제공업, 영화/비디오 및 오디오 기록물/라디오 및 텔레비전 프로그램 기록/제작/배포업, 클럽서비스업(연예오락 및 교육), 통신강좌업, 파티 계획업"
+        }
+      ]
+    },
+    "id": "439284fa-ff3f-48dd-b691-7bec09f9a550",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260428",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 강남구 테헤란로 *층(대치동, 케이티선릉타워웨스트)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "특허법인테헤란 (TEHERAN PATENT FIRM)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260414",
+        "applicationNumber": "40-2026-0073329"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLIED"
+    },
+    "version": "20260428020345",
+    "wordMarkSpecification": {
+      "markTransliteration": "enqor",
+      "markVerbalElementText": "enqor"
+    }
+  },
+  "_uri": "/mark/kr/439284fa-ff3f-48dd-b691-7bec09f9a550",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:13.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/gb/f768a6e2-a91e-4b81-8e4d-da092492a18c",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "f768a6e2-a91e-4b81-8e4d-da092492a18c",
+  "applicationNumber": "UK00910819589",
+  "registrationNumber": "UK00910819589",
+  "applicationDate": "2012-04-19",
+  "registrationDate": "2012-09-18",
+  "expiryDate": "2032-04-19",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Shoes for protection against accidents, irradiation and fire, safety shoes, protective shoes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Wholesaling and retailing in the field of shoes for protection against accidents, irradiation and fire, safety shoes, protective shoes.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Elten GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "ip21 Limited",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Ostwall 7-9, Uedem 47589",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Elten GmbH"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Shoes for protection against accidents, irradiation and fire, safety shoes, protective shoes."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Wholesaling and retailing in the field of shoes for protection against accidents, irradiation and fire, safety shoes, protective shoes."
+        }
+      ]
+    },
+    "id": "f768a6e2-a91e-4b81-8e4d-da092492a18c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Central Formalities Department, Suite 2, The Old Dairy, Elm Farm Business Park, Wymondham, Norwich, Norfolk NR18 0SW",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "ip21 Limited"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20120419",
+        "applicationNumber": "UK00910819589"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320419",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20120918",
+        "registrationNumber": "UK00910819589"
+      }
+    },
+    "version": "20250627204454",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JORI"
+    }
+  },
+  "_uri": "/mark/gb/f768a6e2-a91e-4b81-8e4d-da092492a18c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:22.073Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,383 @@
+{
+  "uri": "/mark/us/7f900316-a021-41da-ae11-9158ce819518",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "7f900316-a021-41da-ae11-9158ce819518",
+  "applicationNumber": "77825606",
+  "registrationNumber": "3849540",
+  "applicationDate": "2009-09-14",
+  "registrationDate": "2010-09-21",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2010-07-06"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2021-04-23",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "RORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Marketing and advertising services; business consulting in the field of retail investment directed to manufacturers of consumer packaged goods and retailers in all industries for the purpose of generating consumer interest; advertising consulting services; conducting tradeshows and business conferences in the field of retail investment services, all directed to manufacturers of consumer packaged goods and retailers in all industries for the purpose of generating consumer interest; market research",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Education and educational information services directed to manufacturers of consumer packaged goods and retailers in all industries, namely, providing educational programs, live educational presentations, and educational conferences in the field of retail investment and specifically featuring information on generating consumer interest; conducting educational programs and educational seminar presentations regarding retail investment strategies, all directed to manufacturers of consumer packaged goods and retailers in all industries for the purpose of generating consumer interest",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Pelco Advisors LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Gene S. Winter",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20170410",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "P. O. Box 7598, Wilton, CT, 06897",
+        "applicantAddressCity": "Wilton",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "06897",
+        "applicantAddressStateName": "CONNECTICUT",
+        "applicantAddressStreet": "P. O. Box 7598",
+        "applicantJurisdictionOfIncorporation": "CONNECTICUT",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "Pelco Advisors LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Marketing and advertising services; business consulting in the field of retail investment directed to manufacturers of consumer packaged goods and retailers in all industries for the purpose of generating consumer interest; advertising consulting services; conducting tradeshows and business conferences in the field of retail investment services, all directed to manufacturers of consumer packaged goods and retailers in all industries for the purpose of generating consumer interest; market research"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Education and educational information services directed to manufacturers of consumer packaged goods and retailers in all industries, namely, providing educational programs, live educational presentations, and educational conferences in the field of retail investment and specifically featuring information on generating consumer interest; conducting educational programs and educational seminar presentations regarding retail investment strategies, all directed to manufacturers of consumer packaged goods and retailers in all industries for the purpose of generating consumer interest"
+        }
+      ]
+    },
+    "id": "7f900316-a021-41da-ae11-9158ce819518",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20210423",
+        "descriptionText": "CANCELLED SEC. 8 (10-YR)/EXPIRED SECTION 9"
+      },
+      {
+        "date": "20190921",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20170410",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20170410",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 15 - E-MAILED"
+      },
+      {
+        "date": "20170331",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20170202",
+        "descriptionText": "TEAS SECTION 8 & 15 RECEIVED"
+      },
+      {
+        "date": "20100921",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20100706",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20100706",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20100603",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20100603",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20100520",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20100520",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20100520",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20100520",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20100520",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20100504",
+        "descriptionText": "ACTION CONTINUING A FINAL - COMPLETED"
+      },
+      {
+        "date": "20100504",
+        "descriptionText": "NOTIFICATION OF SUBSEQUENT FINAL EMAILED"
+      },
+      {
+        "date": "20100504",
+        "descriptionText": "CONTINUATION OF FINAL REFUSAL E-MAILED"
+      },
+      {
+        "date": "20100429",
+        "descriptionText": "TEAS REQUEST FOR RECONSIDERATION RECEIVED"
+      },
+      {
+        "date": "20100429",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20100429",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20100303",
+        "descriptionText": "FINAL REFUSAL  WRITTEN"
+      },
+      {
+        "date": "20100303",
+        "descriptionText": "NOTIFICATION OF FINAL REFUSAL EMAILED"
+      },
+      {
+        "date": "20100303",
+        "descriptionText": "FINAL REFUSAL E-MAILED"
+      },
+      {
+        "date": "20100218",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20100218",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20100218",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20091215",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20091215",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20091215",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20091214",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20090917",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20090917",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "P. O. Box 7598, Wilton, CT, 06897",
+        "city": "Wilton",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CONNECTICUT",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Pelco Advisors LLC",
+        "postalCode": "06897",
+        "stateName": "CONNECTICUT",
+        "street": "P. O. Box 7598"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "P. O. Box 7598, Wilton, CT, 06897",
+        "city": "Wilton",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CONNECTICUT",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Pelco Advisors LLC",
+        "postalCode": "06897",
+        "stateName": "CONNECTICUT",
+        "street": "P. O. Box 7598"
+      },
+      {
+        "address": "P. O. Box 7598, Wilton, CT, 06897",
+        "city": "Wilton",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CONNECTICUT",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Pelco Advisors LLC",
+        "postalCode": "06897",
+        "stateName": "CONNECTICUT",
+        "street": "P. O. Box 7598"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "P. O. Box 7598, Wilton, CT, 06897",
+        "city": "Wilton",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CONNECTICUT",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Pelco Advisors LLC",
+        "postalCode": "06897",
+        "stateName": "CONNECTICUT",
+        "street": "P. O. Box 7598"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "STAMFORD, CT 06905, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "STAMFORD, CT 06905",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "GENE S. WINTER ST. ONGE STEWARD JOHNSTON & REENS LLC, 986 Bedford Street"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "STAMFORD, CT 06905, UNITED STATES",
+        "representativeAddressLines": [
+          "STAMFORD, CT 06905",
+          "UNITED STATES"
+        ],
+        "representativeName": "Gene S. Winter"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20090914",
+        "applicationNumber": "77825606"
+      },
+      "cancellationDate": "20210423",
+      "cancellationPublicationDate": "20210601",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "35",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20090323"
+        },
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20090323"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "35",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20090323"
+        },
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20090323"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20210423",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20100706"
+      ],
+      "registration": {
+        "registrationDate": "20100921",
+        "registrationNumber": "3849540"
+      }
+    },
+    "version": "20260109205043",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RORI"
+    }
+  },
+  "_uri": "/mark/us/7f900316-a021-41da-ae11-9158ce819518",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:43.691Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

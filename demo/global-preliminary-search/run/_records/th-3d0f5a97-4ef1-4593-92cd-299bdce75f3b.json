@@ -1,0 +1,116 @@
+{
+  "uri": "/mark/th/3d0f5a97-4ef1-4593-92cd-299bdce75f3b",
+  "provider": "clarivate",
+  "office": "th",
+  "guid": "3d0f5a97-4ef1-4593-92cd-299bdce75f3b",
+  "applicationNumber": "924312",
+  "registrationNumber": "71376",
+  "applicationDate": "2014-01-22",
+  "registrationDate": "2016-04-12",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "th",
+      "description": "บริการด้านวิทยาศาสตร์เกี่ยวกับเครื่องมือสำหรับการเคลื่อนที่โดยยานพาหนะทางบก ทางอากาศ ทางน้ำ และไฟฟ้า บริการด้านเทคโนโลยีเกี่ยวกับเครื่องมือสำหรับการเคลื่อนที่โดยยานพาหนะทางบก ทางอากาศ ทางน้ำ และไฟฟ้า การวิจัยเกี่ยวกับเครื่องมือสำหรับการเคลื่อนที่โดยยานพาหนะทางบก ทางอากาศ ทางน้ำ และไฟฟ้า การออกแบบเกี่ยวกับเครื่องมือสำหรับการเคลื่อนที่โดยยานพาหนะทางบก ทางอากาศ ทางน้ำ และไฟฟ้า บริการวิเคราะห์และวิจัยด้านอุตสาหกรรม บริการออกแบบและพัฒนาฮาร์ดแวร์คอมพิวเตอร์และซอฟแวร์คอมพิวเตอร์ บริการทดสอบวัสดุที่ใช้ในด้านกีฬาและรถยนต์.",
+      "translation_language": "en",
+      "translation": "Service science with tools for moving vehicles on land, air, water and electrical services, technology tools for moving vehicles on land, air, water and power research tool for mobile vehicles. vehicles, land, air, water and electrical design with tools for moving vehicles on land, air, water and electrical services, industrial analysis and research. Design and development of computer hardware and computer software. Test materials used in sports and cars."
+    }
+  ],
+  "owner": "Venturi Automobile",
+  "ownerNative": null,
+  "ownerCountry": "TH",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "TH",
+        "applicantAddressCountryName": "Thailand",
+        "applicantName": "Venturi Automobile",
+        "applicantNativeAddress": "7 รู เดอ กาเบียน เอ็มซี - 98000 ประเทศไทย",
+        "applicantNativeName": "เวนทูริ ออโต้โมบีล"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Service science with tools for moving vehicles on land, air, water and electrical services, technology tools for moving vehicles on land, air, water and power research tool for mobile vehicles. vehicles, land, air, water and electrical design with tools for moving vehicles on land, air, water and electrical services, industrial analysis and research. Design and development of computer hardware and computer software. Test materials used in sports and cars.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "th",
+          "intGoodsServicesDescription": "บริการด้านวิทยาศาสตร์เกี่ยวกับเครื่องมือสำหรับการเคลื่อนที่โดยยานพาหนะทางบก ทางอากาศ ทางน้ำ และไฟฟ้า บริการด้านเทคโนโลยีเกี่ยวกับเครื่องมือสำหรับการเคลื่อนที่โดยยานพาหนะทางบก ทางอากาศ ทางน้ำ และไฟฟ้า การวิจัยเกี่ยวกับเครื่องมือสำหรับการเคลื่อนที่โดยยานพาหนะทางบก ทางอากาศ ทางน้ำ และไฟฟ้า การออกแบบเกี่ยวกับเครื่องมือสำหรับการเคลื่อนที่โดยยานพาหนะทางบก ทางอากาศ ทางน้ำ และไฟฟ้า บริการวิเคราะห์และวิจัยด้านอุตสาหกรรม บริการออกแบบและพัฒนาฮาร์ดแวร์คอมพิวเตอร์และซอฟแวร์คอมพิวเตอร์ บริการทดสอบวัสดุที่ใช้ในด้านกีฬาและรถยนต์."
+        }
+      ]
+    },
+    "id": "3d0f5a97-4ef1-4593-92cd-299bdce75f3b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250127",
+    "registrationOfficeCode": "TH",
+    "registrationOfficeName": "Thailand",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "บริษัท ติลลิกีแอนด์กิบบินส์ อินเตอร์เนชั่นแนล จำกัด ที่อยู่ เลขที่ 1011 อาคารศุภาลัย แกรนด์ ทาวเวอร์ ชั้นที่ 20 - 26 ถนนพระราม 3",
+        "representativeNativeName": "บริษัท ติลลิกีแอนด์กิบบินส์ อินเตอร์เนชั่นแนล จำกัด, นางดารานีย์ วัจนะวุฒิวงศ์, นางสาวสุคนธ์ทิพย์ จิตมงคลทอง, นายศรีลา ทองกลาง, นายนันทน อินทนนท์"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20140122",
+        "applicationNumber": "924312"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20160412",
+        "registrationNumber": "71376"
+      }
+    },
+    "version": "20250127150839",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/th/3d0f5a97-4ef1-4593-92cd-299bdce75f3b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.181Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

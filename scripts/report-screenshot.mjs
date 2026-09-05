@@ -5,11 +5,11 @@
 //
 // HOW TO REGENERATE IT (the report is not tracked — it is RENDERED from the tracked run):
 //
-//     npm run example -- --once            # publishes examples/sample-run through the real publisher
+//     npm run example -- --once            # publishes demo through the real publisher
 //     node scripts/report-screenshot.mjs <the report.html path it printed>
 //
 // The demo prints the path it wrote. There is no committed `report.html` anywhere in this repository —
-// `examples/sample-run/` holds the run's ARTIFACTS and the publisher renders the page from them, which
+// `demo/` holds the run's ARTIFACTS and the publisher renders the page from them, which
 // is the whole point of the sample: it proves the real publisher works, rather than shipping a file
 // somebody could have hand-written.
 //

@@ -1,0 +1,166 @@
+{
+  "uri": "/mark/de/086b28c3-6e48-44de-8b0d-3a39801fe2da",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "086b28c3-6e48-44de-8b0d-3a39801fe2da",
+  "applicationNumber": "302024222537.8",
+  "registrationNumber": "302024222537",
+  "applicationDate": "2024-06-11",
+  "registrationDate": "2024-11-15",
+  "expiryDate": "2034-06-11",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-12-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "venora",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Öffentlichkeitsarbeit; Produktvorführungen und -präsentationen; Handelsmesse- und kommerzielle Ausstellungsdienste; Dienstleistungen in Bezug auf Kundenbindungs-, Anreiz- und Bonusprogramme; Verteilung von Werbe-, Marketing- und verkaufsfördernden Materialien",
+      "translation_language": "en",
+      "translation": "Public relations services; product demonstrations and presentations; trade fair and commercial exhibition services; customer loyalty, incentive and bonus program services; distribution of advertising, marketing and promotional materials"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Audio-, Video- und Multimediaproduktionen sowie Fotografieren",
+      "translation_language": "en",
+      "translation": "Audio, video and multimedia production and photography services"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Designdienstleistungen",
+      "translation_language": "en",
+      "translation": "Design services"
+    }
+  ],
+  "owner": "Hübler, Maximilian",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "01099 Dresden",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Hübler, Maximilian"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "cmMarkImageEUclassification": [
+      "55.00.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Public relations services; product demonstrations and presentations; trade fair and commercial exhibition services; customer loyalty, incentive and bonus program services; distribution of advertising, marketing and promotional materials",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Öffentlichkeitsarbeit; Produktvorführungen und -präsentationen; Handelsmesse- und kommerzielle Ausstellungsdienste; Dienstleistungen in Bezug auf Kundenbindungs-, Anreiz- und Bonusprogramme; Verteilung von Werbe-, Marketing- und verkaufsfördernden Materialien"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Audio, video and multimedia production and photography services",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Audio-, Video- und Multimediaproduktionen sowie Fotografieren"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Design services",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Designdienstleistungen"
+        }
+      ]
+    },
+    "id": "086b28c3-6e48-44de-8b0d-3a39801fe2da",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.07",
+      "26.04.24",
+      "27.01.03",
+      "27.05.01",
+      "27.05.09",
+      "27.05.10",
+      "29.01.08"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "51"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Hübler, Lessingstr. 5, 01099 Dresden"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240611",
+        "applicationNumber": "302024222537.8"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340611",
+      "lastPublicationDate": "20241220",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20241115",
+        "registrationNumber": "302024222537"
+      }
+    },
+    "version": "20250627172248",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "venora"
+    }
+  },
+  "_uri": "/mark/de/086b28c3-6e48-44de-8b0d-3a39801fe2da",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.814Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

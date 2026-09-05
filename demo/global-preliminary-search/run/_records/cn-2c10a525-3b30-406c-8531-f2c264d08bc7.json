@@ -1,0 +1,175 @@
+{
+  "uri": "/mark/cn/2c10a525-3b30-406c-8531-f2c264d08bc7",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "2c10a525-3b30-406c-8531-f2c264d08bc7",
+  "applicationNumber": "28458558",
+  "registrationNumber": "28458558",
+  "applicationDate": "2018-01-02",
+  "registrationDate": "2019-02-14",
+  "expiryDate": "2029-02-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-11-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "计算机外围设备;手机;计数器;头戴式耳机;USB线;电池充电器;半导体;电子防盗装置;自拍杆(手持单脚架);眼镜",
+      "translation_language": "en",
+      "translation": "Computer peripheral equipment; mobile phones; counters; headsets; USB cables; battery chargers; semiconductors; electronic anti-theft devices; selfie sticks (handheld monopods); glasses"
+    }
+  ],
+  "owner": "Wuhan Xiehouyu commerce limited liability company",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "湖北省武汉市江汉区常青路金雅大厦第6层办公4号房(爱帮商务秘书-005)",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Wuhan Xiehouyu commerce limited liability company",
+        "applicantNativeName": "武汉市歇后语商贸有限责任公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer peripheral equipment; mobile phones; counters; headsets; USB cables; battery chargers; semiconductors; electronic anti-theft devices; selfie sticks (handheld monopods); glasses",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计算机外围设备;手机;计数器;头戴式耳机;USB线;电池充电器;半导体;电子防盗装置;自拍杆(手持单脚架);眼镜"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Data-processing equipments used in recording and automatic vending machines",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Apparatus and instruments for photographic and cinematographic",
+        "Cables",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Warning equipments, bells",
+        "Glasses and those accessories",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0902",
+          "subNatGoodsServicesDescription": "Data-processing equipments used in recording and automatic vending machines"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0912",
+          "subNatGoodsServicesDescription": "Cables"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0920",
+          "subNatGoodsServicesDescription": "Warning equipments, bells"
+        },
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "2c10a525-3b30-406c-8531-f2c264d08bc7",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1623"
+      }
+    ],
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "武汉标马商标代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180102",
+        "applicationNumber": "28458558"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290213",
+      "lastPublicationDate": "20181113",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20190214",
+        "registrationNumber": "28458558"
+      }
+    },
+    "version": "20251003015249",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VORI"
+    }
+  },
+  "_uri": "/mark/cn/2c10a525-3b30-406c-8531-f2c264d08bc7",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:11.871Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

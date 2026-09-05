@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/es/d79a7bda-6a35-4755-839d-e1fab0f90893",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "d79a7bda-6a35-4755-839d-e1fab0f90893",
+  "applicationNumber": "2854237 M1",
+  "registrationNumber": "2854237 M1",
+  "applicationDate": "2008-11-26",
+  "registrationDate": "2009-04-01",
+  "expiryDate": "2028-11-25",
+  "renewalDate": "2018-07-13",
+  "lastPublicationDate": "2009-01-01",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JOVEN ORQUESTA Y CORO DE LA COMUNIDAD DE MADRID",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de una orquesta y servicios de produccion de espectaculos musicales.",
+      "translation_language": "en",
+      "translation": "SERVICES OF AN ORCHESTRA AND PRODUCTION SERVICES OF MUSIC SHOWS."
+    }
+  ],
+  "owner": "COMUNIDAD DE MADRID",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Pons Ariño, Ángel",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "COMUNIDAD DE MADRID"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SERVICES OF AN ORCHESTRA AND PRODUCTION SERVICES OF MUSIC SHOWS.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de una orquesta y servicios de produccion de espectaculos musicales."
+        }
+      ]
+    },
+    "id": "d79a7bda-6a35-4755-839d-e1fab0f90893",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2922"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "representatives": [
+      {
+        "representativeName": "Pons Ariño, Ángel"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20081126",
+        "applicationNumber": "2854237 M1"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20281125",
+      "lastPublicationDate": "20090101",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20090401",
+        "registrationNumber": "2854237 M1"
+      },
+      "renewalDate": "20180713",
+      "renewalPublishedDate": "20180719"
+    },
+    "version": "20260427160730",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOVEN ORQUESTA Y CORO DE LA COMUNIDAD DE MADRID"
+    }
+  },
+  "_uri": "/mark/es/d79a7bda-6a35-4755-839d-e1fab0f90893",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

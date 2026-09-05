@@ -1,0 +1,176 @@
+{
+  "uri": "/mark/cn/ea1a50a5-d1aa-483c-92e3-c6a586e8c185",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "ea1a50a5-d1aa-483c-92e3-c6a586e8c185",
+  "applicationNumber": "46884189",
+  "registrationNumber": "46884189",
+  "applicationDate": "2020-06-02",
+  "registrationDate": "2021-04-07",
+  "expiryDate": "2031-04-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-01-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "澳日",
+  "markTransliteration": "AO RI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "生物指纹门锁,内部通信装置,灭火设备,个人用防事故装置,眼镜,电池,曝光胶卷,电站自动化装置,电解装置,望远镜",
+      "translation_language": "en",
+      "translation": "Biological fingerprint door lock, internal communication device, fire extinguishing equipment, personal accident prevention device, glasses, battery, exposure film, power station automation device, electrolysis device, telescope"
+    }
+  ],
+  "owner": "Zou Yongfeng",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "陕西省勉县褒城镇邹寨村三组092号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Zou Yongfeng",
+        "applicantNativeName": "邹永锋"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Biological fingerprint door lock, internal communication device, fire extinguishing equipment, personal accident prevention device, glasses, battery, exposure film, power station automation device, electrolysis device, telescope",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "生物指纹门锁,内部通信装置,灭火设备,个人用防事故装置,眼镜,电池,曝光胶卷,电站自动化装置,电解装置,望远镜"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Equipments used in communication and navigation",
+        "Optical instruments",
+        "Electrical controlling apparatus and equipments",
+        "Apparatus for electroplating and electrolysers",
+        "Fire extinguishing instruments",
+        "Life-saving instruments",
+        "Warning equipments, bells",
+        "Glasses and those accessories",
+        "Batteries, chargers",
+        "Films, exposed materials"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0911",
+          "subNatGoodsServicesDescription": "Optical instruments"
+        },
+        {
+          "subNatClassNumber": "0914",
+          "subNatGoodsServicesDescription": "Electrical controlling apparatus and equipments"
+        },
+        {
+          "subNatClassNumber": "0915",
+          "subNatGoodsServicesDescription": "Apparatus for electroplating and electrolysers"
+        },
+        {
+          "subNatClassNumber": "0916",
+          "subNatGoodsServicesDescription": "Fire extinguishing instruments"
+        },
+        {
+          "subNatClassNumber": "0919",
+          "subNatGoodsServicesDescription": "Life-saving instruments"
+        },
+        {
+          "subNatClassNumber": "0920",
+          "subNatGoodsServicesDescription": "Warning equipments, bells"
+        },
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        },
+        {
+          "subNatClassNumber": "0923",
+          "subNatGoodsServicesDescription": "Films, exposed materials"
+        }
+      ]
+    },
+    "id": "ea1a50a5-d1aa-483c-92e3-c6a586e8c185",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1726"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "佛山市传诚知识产权服务有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200602",
+        "applicationNumber": "46884189"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310406",
+      "lastPublicationDate": "20210106",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20210407",
+        "registrationNumber": "46884189"
+      }
+    },
+    "version": "20251004033236",
+    "wordMarkSpecification": {
+      "markTransliteration": "AO RI",
+      "markVerbalElementText": "澳日"
+    }
+  },
+  "_uri": "/mark/cn/ea1a50a5-d1aa-483c-92e3-c6a586e8c185",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:50.843Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

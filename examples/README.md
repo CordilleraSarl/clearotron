@@ -1,22 +1,26 @@
 # examples
 
-One finished clearance, frozen, and the two input files you copy. Nothing here needs a credential and
-nothing here contacts anything.
+The two input files you copy. Nothing here needs a credential and nothing here contacts anything.
 
 | Path | What it is |
 |---|---|
-| `sample-run/` | a real engine run on an invented mark, frozen to the file subset the publisher reads |
 | `job.euipo.json` | the whole input contract for one clearance — 14 fields, ready to copy and edit |
 | `grants.example.json` | who may read which account's runs: three tenants, three grant shapes |
 
-## What reads it
+## The finished runs moved to `demo/`
 
-`npx clearotron demo` (`bin/example.mjs`) republishes `sample-run/` through the ordinary publisher into a local
-pool and serves it over loopback. No model, no register, no network — it is the one thing a stranger
-with a clone can look at, which is also why nothing under `sample-run/run/` may be hand-edited. Three
-driver tests read files straight out of it — `sample-run-render.test.mjs`, `ask-answer-label.test.mjs`
-and `report-card-frame.test.mjs` — and three more cite it as the delivered specimen they were written
-against, so an edit here surfaces as a failing test rather than as a wrong report.
+They used to sit here as `sample-run/`. The owner's 2026-08-29 ruling asked for one term — **demo** —
+and one frozen run per product type, so they live in [`../demo/`](../demo/) now, each in a directory
+named by the product id that produced it.
+
+`npx clearotron demo` (`bin/example.mjs`) replays one of them through the ordinary publisher into a
+local pool and serves it over loopback: no model, no register, no network. `--product <id>` picks one;
+with nothing given it takes the first. The installed portal seeds its archive from the same container,
+so a demo added there appears in both places with no code change.
+
+Nothing under a `demo/<product-id>/run/` directory may be hand-edited. Several driver tests read files
+straight out of it and more cite it as the delivered specimen they were written against, so an edit
+surfaces as a failing test rather than as a wrong report.
 
 `grants.example.json` is loaded by `mcp-server/test/grants.test.mjs` through the real loader
 (`loadGrants` in `shared/scope.mjs`) and asserted to grant what it looks like it grants — `../INSTALL.md`

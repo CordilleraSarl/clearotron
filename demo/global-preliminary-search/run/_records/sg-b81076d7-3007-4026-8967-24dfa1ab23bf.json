@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/sg/b81076d7-3007-4026-8967-24dfa1ab23bf",
+  "provider": "clarivate",
+  "office": "sg",
+  "guid": "b81076d7-3007-4026-8967-24dfa1ab23bf",
+  "applicationNumber": "40202614759U",
+  "registrationNumber": null,
+  "applicationDate": "2026-06-05",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    36,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software;Computer software applications, downloadable;Computer software for analysing market information;Computer software for database management;Computer software for application and database integration;Computer software for business purposes;Downloadable computer software;Downloadable computer software for data processing;Downloadable business management software;Software and applications for mobile devices;Artificial intelligence software;Computer hardware and software for artificial intelligence;Downloadable artificial intelligence software;Downloadable artificial intelligence software for analysis;Downloadable computer software using artificial intelligence for data analysis;Downloadable computer software for use as a digital wallet;Downloadable computer software for creating, managing, storing, accessing, sending, receiving, exchanging, validating and selling digital assets",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Brokerage of carbon credits;Brokerage of currencies;Business liquidation services, financial;Capital investment;Charitable fund raising;Clearing, financial;Credit bureau services;Issuance of credit cards;Crowdfunding;Deposits of valuables;E-wallet payment services;Electronic funds transfer;Electronic transfer of virtual currencies;Exchanging money;Factoring;Financial analysis;Financial appraisals in responding to calls for tenders;Financial appraisals in responding to requests for proposals [RFPs];Financial consultancy;Financial customs brokerage services;Financial evaluation [insurance, banking, real estate];Financial evaluation of development costs relating to the oil, gas and mining industries;Financial valuation of standing timber;Financial valuation of wool;Financial exchange of virtual currency;Financial management;Financial management of reimbursement payments for others;Financial research;Financial sponsorship;Financial valuation of intellectual property assets;Providing financial information;Providing financial information via a website;Financing services;Fiscal valuation;Instalment loans;Insurance brokerage;Insurance consultancy;Insurance underwriting;Providing insurance information;Investment of funds;Lending against security;Loans [financing];Organization of monetary collections;Mortgage banking;Mutual funds;Online banking;Pawnbrokerage;Processing of credit card payments;Processing of debit card payments;Provident fund services;Preparation of quotes for cost estimation purposes;Safe deposit services;Savings bank services;Securities brokerage;Stock brokerage services;Stock exchange quotations;Stocks and bonds brokerage;Issuance of tokens of value;Trusteeship;Fiduciary",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Artificial intelligence technology services;Software as a service [SaaS];Artificial intelligence as a service [AIaaS] featuring software using artificial intelligence for business analytics;Application service provider [ASP] services;Consultancy relating to the design and development of information and communications technology;Design and development of computer systems;Design and development of operating system software;Design, development and programming of computer software;Computer software consulting;Computer software design for others;Computer website design;Creating and designing web pages for others",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "QORE3 PTE. LTD.",
+  "ownerNative": null,
+  "ownerCountry": "SG",
+  "representative": "QUAHE WOO & PALMER LLC",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "11 COLLYER QUAY #16-02 THE ARCADE Singapore 049317",
+        "applicantAddressCountryCode": "SG",
+        "applicantAddressCountryName": "Singapore",
+        "applicantName": "QORE3 PTE. LTD."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software;Computer software applications, downloadable;Computer software for analysing market information;Computer software for database management;Computer software for application and database integration;Computer software for business purposes;Downloadable computer software;Downloadable computer software for data processing;Downloadable business management software;Software and applications for mobile devices;Artificial intelligence software;Computer hardware and software for artificial intelligence;Downloadable artificial intelligence software;Downloadable artificial intelligence software for analysis;Downloadable computer software using artificial intelligence for data analysis;Downloadable computer software for use as a digital wallet;Downloadable computer software for creating, managing, storing, accessing, sending, receiving, exchanging, validating and selling digital assets"
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Brokerage of carbon credits;Brokerage of currencies;Business liquidation services, financial;Capital investment;Charitable fund raising;Clearing, financial;Credit bureau services;Issuance of credit cards;Crowdfunding;Deposits of valuables;E-wallet payment services;Electronic funds transfer;Electronic transfer of virtual currencies;Exchanging money;Factoring;Financial analysis;Financial appraisals in responding to calls for tenders;Financial appraisals in responding to requests for proposals [RFPs];Financial consultancy;Financial customs brokerage services;Financial evaluation [insurance, banking, real estate];Financial evaluation of development costs relating to the oil, gas and mining industries;Financial valuation of standing timber;Financial valuation of wool;Financial exchange of virtual currency;Financial management;Financial management of reimbursement payments for others;Financial research;Financial sponsorship;Financial valuation of intellectual property assets;Providing financial information;Providing financial information via a website;Financing services;Fiscal valuation;Instalment loans;Insurance brokerage;Insurance consultancy;Insurance underwriting;Providing insurance information;Investment of funds;Lending against security;Loans [financing];Organization of monetary collections;Mortgage banking;Mutual funds;Online banking;Pawnbrokerage;Processing of credit card payments;Processing of debit card payments;Provident fund services;Preparation of quotes for cost estimation purposes;Safe deposit services;Savings bank services;Securities brokerage;Stock brokerage services;Stock exchange quotations;Stocks and bonds brokerage;Issuance of tokens of value;Trusteeship;Fiduciary"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Artificial intelligence technology services;Software as a service [SaaS];Artificial intelligence as a service [AIaaS] featuring software using artificial intelligence for business analytics;Application service provider [ASP] services;Consultancy relating to the design and development of information and communications technology;Design and development of computer systems;Design and development of operating system software;Design, development and programming of computer software;Computer software consulting;Computer software design for others;Computer website design;Creating and designing web pages for others"
+        }
+      ]
+    },
+    "id": "b81076d7-3007-4026-8967-24dfa1ab23bf",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260902",
+    "registrationOfficeCode": "SG",
+    "registrationOfficeName": "Singapore",
+    "representatives": [
+      {
+        "representativeAddress": "510 THOMSON ROAD, #08-00 SLF BUILDING, Singapore 298135",
+        "representativeAddressCountryCode": "SG",
+        "representativeAddressCountryName": "Singapore",
+        "representativeName": "QUAHE WOO & PALMER LLC"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260605",
+        "applicationNumber": "40202614759U"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260902020558",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORE"
+    }
+  },
+  "_uri": "/mark/sg/b81076d7-3007-4026-8967-24dfa1ab23bf",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:55.424Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

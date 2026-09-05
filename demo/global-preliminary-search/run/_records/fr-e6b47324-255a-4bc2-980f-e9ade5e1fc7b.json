@@ -1,0 +1,137 @@
+{
+  "uri": "/mark/fr/e6b47324-255a-4bc2-980f-e9ade5e1fc7b",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "e6b47324-255a-4bc2-980f-e9ade5e1fc7b",
+  "applicationNumber": "21 4743137",
+  "registrationNumber": "21 4743137",
+  "applicationDate": "2021-03-12",
+  "registrationDate": null,
+  "expiryDate": "2031-03-12",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-09-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ProvenCore",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": ": Equipement pour le traitement de l'information ; programmes d'ordinateurs (logiciels téléchargeables) ; périphériques d'ordinateurs ; mémoires pour ordinateur ; ordinateurs y compris ordinateurs personnels et micro-ordinateurs ; calculateurs de processus ; dispositifs à microprocesseurs et systèmes à microprocesseurs ; logiciels ; ordinateurs, micro-ordinateurs, terminaux informatiques ; équipements de saisie, de stockage, de traitement des informations ou données ; supports pour l'enregistrement et la reproduction des sons, images, signaux et données ; matériel informatique et micrologiciels pour ordinateurs, objets connectés et pour l'Internet des Objets; plateformes informatiques sous forme de logiciels enregistrés ou téléchargeables ; logiciels de systèmes d'exploitation pour ordinateurs, systèmes embarqués, objets connectés et pour l'Internet des Objets; systèmes d'exploitation pour ordinateurs, objets connectés et pour l'Internet des Objets; logiciels de sécurité pour ordinateurs, objets connectés et pour l'Internet des Objets; logiciels pare-feu pour ordinateurs, objets connectés et pour l'Internet des Objets ",
+      "translation_language": "en",
+      "translation": "Equipment for information processing; computer programs (downloadable software); computer peripherals; computer memories; computers including personal computers and microcomputers; process calculators; microprocessor devices and microprocessor systems; software; computers, microcomputers, computer terminals; equipment for inputting, storing, processing information or data; media for recording and reproducing sounds, images, signals and data; computer hardware and firmware for computers, connected objects and for the Internet of Things; computer platforms in the form of recorded or downloadable software; operating system software for computers, embedded systems, connected objects and for the Internet of Things; operating systems for computers, connected objects and for the Internet of Things; security software for computers, connected objects and for the Internet of Things; firewall software for computers, connected objects and for the Internet of Things"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": ": Services de programmation (services informatiques) ; conception, maintenance et mise à jour de logiciels ; conception, installation, test et entretien de logiciels et services de sécurité des informations en matière d'interaction commerciale à travers un réseau informatique mondial ; études de projets techniques dans le domaine du matériel informatique et des logiciels ; conseils en matière d'ordinateur ; services d'analyse de systèmes informatiques ; location d'ordinateurs et de logiciels ; duplication de programmes informatiques ; services de recherches scientifiques et industrielles ; conception et développement de logiciels de système d'exploitation pour ordinateurs, systèmes embarqués, objets connectés et pour l'Internet des Objets ; services de sécurité informatique pour objets connectés et pour l'Internet des Objets; services de sécurité de données [firewalls] pour objets connectés et pour l'Internet des Objets ; conception de logiciels, micrologiciels, matériel informatique et systèmes informatiques pour objets connectés et pour l'Internet des Objets.",
+      "translation_language": "en",
+      "translation": "Programming services (computer services); software design, maintenance and updating; design, installation, testing and maintenance of information security software and services relating to business interaction via a global computer network; technical project studies in the field of computer hardware and software; computer advice; computer systems analysis services; rental of computers and software; duplication of computer programs; scientific and industrial research services; design and development of operating system software for computers, embedded systems, connected objects and for the Internet of Things; computer security services for connected objects and for the Internet of Things; data security services [firewalls] for connected objects and for the Internet of Things; design of software, firmware, computer hardware and computer systems for connected objects and for the Internet of Things."
+    }
+  ],
+  "owner": "PROVENRUN Société par actions simplifiée",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "NOVAGRAAF FRANCE, Madame Marine DISSOUBRAY",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "77 avenue Niel, 75017 Paris",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "PROVENRUN Société par actions simplifiée"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Equipment for information processing; computer programs (downloadable software); computer peripherals; computer memories; computers including personal computers and microcomputers; process calculators; microprocessor devices and microprocessor systems; software; computers, microcomputers, computer terminals; equipment for inputting, storing, processing information or data; media for recording and reproducing sounds, images, signals and data; computer hardware and firmware for computers, connected objects and for the Internet of Things; computer platforms in the form of recorded or downloadable software; operating system software for computers, embedded systems, connected objects and for the Internet of Things; operating systems for computers, connected objects and for the Internet of Things; security software for computers, connected objects and for the Internet of Things; firewall software for computers, connected objects and for the Internet of Things",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Equipement pour le traitement de l'information ; programmes d'ordinateurs (logiciels téléchargeables) ; périphériques d'ordinateurs ; mémoires pour ordinateur ; ordinateurs y compris ordinateurs personnels et micro-ordinateurs ; calculateurs de processus ; dispositifs à microprocesseurs et systèmes à microprocesseurs ; logiciels ; ordinateurs, micro-ordinateurs, terminaux informatiques ; équipements de saisie, de stockage, de traitement des informations ou données ; supports pour l'enregistrement et la reproduction des sons, images, signaux et données ; matériel informatique et micrologiciels pour ordinateurs, objets connectés et pour l'Internet des Objets; plateformes informatiques sous forme de logiciels enregistrés ou téléchargeables ; logiciels de systèmes d'exploitation pour ordinateurs, systèmes embarqués, objets connectés et pour l'Internet des Objets; systèmes d'exploitation pour ordinateurs, objets connectés et pour l'Internet des Objets; logiciels de sécurité pour ordinateurs, objets connectés et pour l'Internet des Objets; logiciels pare-feu pour ordinateurs, objets connectés et pour l'Internet des Objets "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Programming services (computer services); software design, maintenance and updating; design, installation, testing and maintenance of information security software and services relating to business interaction via a global computer network; technical project studies in the field of computer hardware and software; computer advice; computer systems analysis services; rental of computers and software; duplication of computer programs; scientific and industrial research services; design and development of operating system software for computers, embedded systems, connected objects and for the Internet of Things; computer security services for connected objects and for the Internet of Things; data security services [firewalls] for connected objects and for the Internet of Things; design of software, firmware, computer hardware and computer systems for connected objects and for the Internet of Things.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Services de programmation (services informatiques) ; conception, maintenance et mise à jour de logiciels ; conception, installation, test et entretien de logiciels et services de sécurité des informations en matière d'interaction commerciale à travers un réseau informatique mondial ; études de projets techniques dans le domaine du matériel informatique et des logiciels ; conseils en matière d'ordinateur ; services d'analyse de systèmes informatiques ; location d'ordinateurs et de logiciels ; duplication de programmes informatiques ; services de recherches scientifiques et industrielles ; conception et développement de logiciels de système d'exploitation pour ordinateurs, systèmes embarqués, objets connectés et pour l'Internet des Objets ; services de sécurité informatique pour objets connectés et pour l'Internet des Objets; services de sécurité de données [firewalls] pour objets connectés et pour l'Internet des Objets ; conception de logiciels, micrologiciels, matériel informatique et systèmes informatiques pour objets connectés et pour l'Internet des Objets."
+        }
+      ]
+    },
+    "id": "e6b47324-255a-4bc2-980f-e9ade5e1fc7b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00108",
+        "publicationVolume": "36"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeName": "NOVAGRAAF FRANCE, Madame Marine DISSOUBRAY"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210312",
+        "applicationNumber": "21 4743137"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310312",
+      "lastPublicationDate": "20210910",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "21 4743137"
+      }
+    },
+    "version": "20250426164842",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ProvenCore"
+    }
+  },
+  "_uri": "/mark/fr/e6b47324-255a-4bc2-980f-e9ade5e1fc7b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.731Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -26,7 +26,7 @@ it. `driver/test/brand.test.mjs` fails when either drifts off the tokens — so 
 
 `npm run tokens:check` writes nothing and is what CI runs. It fails when either generated file is stale,
 and it asserts one thing more: that `portal-ui/index.html` carries `PRE_PAINT_SCRIPT` verbatim, and that
-the built `portal-ui/dist/index.html` still does. That inline script has to run before first paint or a
+the built portal's entry document still does. That inline script has to run before first paint or a
 dark-mode reader gets a white flash, so the SPA's CSP admits it by `sha256-` hash computed from the same
 exported constant. If the file drifts, or the build rewrites the script, the CSP blocks it silently and
 everyone who chose dark first-paints light.

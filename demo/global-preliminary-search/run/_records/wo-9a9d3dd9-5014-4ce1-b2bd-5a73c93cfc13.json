@@ -1,0 +1,186 @@
+{
+  "uri": "/mark/wo/9a9d3dd9-5014-4ce1-b2bd-5a73c93cfc13",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "9a9d3dd9-5014-4ce1-b2bd-5a73c93cfc13",
+  "applicationNumber": null,
+  "registrationNumber": "1927485",
+  "applicationDate": null,
+  "registrationDate": "2026-05-25",
+  "expiryDate": "2036-05-25",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-07-09",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Technology consulting services in the field of design and development of data management systems and facility information management for sports and entertainment venues; consulting services in the field of facility information management and data strategy; integration of computer systems and networks.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services de conseillers technologiques dans le domaine de la conception et du développement de systèmes de gestion de données et de la gestion d'informations d'installations pour lieux de sport et de divertissement; services de conseillers dans le domaine de la stratégie de données et de la gestion d'informations d'installations; intégration de systèmes et réseaux informatiques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios de consultoría tecnológica en los ámbitos del diseño y el desarrollo de sistemas de gestión de datos y la gestión de información de instalaciones para locales deportivos y de entretenimiento; servicios de consultoría en el ámbito de la gestión de información de instalaciones y estrategias de datos; integración de redes y sistemas informáticos.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "GROTH & CO. KB",
+  "priorities": [
+    {
+      "priorityCountryCode": "EM",
+      "priorityCountryName": "EU trade marks",
+      "priorityDate": "20260522",
+      "priorityNumber": "019368837"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20260522",
+          "basicApplicationNumber": "019368837"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "EM"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "US"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Forskargatan 3 SE-781 70 Borlänge",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20260522",
+            "basicApplicationNumber": "019368837"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "EM"
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "US"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Technology consulting services in the field of design and development of data management systems and facility information management for sports and entertainment venues; consulting services in the field of facility information management and data strategy; integration of computer systems and networks."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de conseillers technologiques dans le domaine de la conception et du développement de systèmes de gestion de données et de la gestion d'informations d'installations pour lieux de sport et de divertissement; services de conseillers dans le domaine de la stratégie de données et de la gestion d'informations d'installations; intégration de systèmes et réseaux informatiques."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de consultoría tecnológica en los ámbitos del diseño y el desarrollo de sistemas de gestión de datos y la gestión de información de instalaciones para locales deportivos y de entretenimiento; servicios de consultoría en el ámbito de la gestión de información de instalaciones y estrategias de datos; integración de redes y sistemas informáticos."
+        }
+      ]
+    },
+    "id": "9a9d3dd9-5014-4ce1-b2bd-5a73c93cfc13",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "EM",
+        "priorityCountryName": "EU trade marks",
+        "priorityDate": "20260522",
+        "priorityNumber": "019368837"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "26"
+      }
+    ],
+    "recordLastUpdated": "20260721",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "Post Box 6107 SE-102 32 Stockholm",
+        "representativeAddressCountryCode": "SE",
+        "representativeAddressCountryName": "Sweden",
+        "representativeName": "GROTH & CO. KB"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360525",
+      "lastPublicationDate": "20260709",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20260525",
+        "registrationNumber": "1927485"
+      }
+    },
+    "version": "20260721020004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENCORE"
+    }
+  },
+  "_uri": "/mark/wo/9a9d3dd9-5014-4ce1-b2bd-5a73c93cfc13",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.731Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

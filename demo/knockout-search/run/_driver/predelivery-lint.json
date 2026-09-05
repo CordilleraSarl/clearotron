@@ -1,0 +1,211 @@
+{
+  "ts": "2026-09-04T21:48:51.264Z",
+  "lane": "knockout",
+  "checks": [
+    {
+      "id": "permission-prose:knockout",
+      "family": "coverage",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "scope-numbers-in-prose",
+      "family": "counting",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "counting-consistency",
+      "family": "counting",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "wipo-designation-language",
+      "family": "registry",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "prescription-prose",
+      "family": "voice",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "permission-prose:knockout-working",
+      "family": "coverage",
+      "surface": "findings",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "failures": [],
+  "notApplicable": [
+    {
+      "id": "names-cell-populated",
+      "family": "template",
+      "reason": "the summary table is code-rendered from the rated marks — there is no NAME(S) row to populate"
+    },
+    {
+      "id": "assessment-row",
+      "family": "template",
+      "reason": "one row per rated mark is code-rendered, and plan⇄rated parity is already a hard gate on this lane (validateMergedFindings)"
+    },
+    {
+      "id": "rating-position",
+      "family": "template",
+      "reason": "the rating sits on the mark's own code-rendered row; no model-typed table places it"
+    },
+    {
+      "id": "candidate-self-legacy",
+      "family": "template",
+      "reason": "polices a retired clearance report treatment this lane never had"
+    },
+    {
+      "id": "reference-integrity",
+      "family": "reference",
+      "reason": "no \"Only you can close\" ask bucket — this lane authors no actions"
+    },
+    {
+      "id": "self-comparison",
+      "family": "reference",
+      "reason": "reads per-card \"X against Y\" prose; the knockout report has no cards"
+    },
+    {
+      "id": "registry-arithmetic",
+      "family": "registry",
+      "reason": "no register record store — this lane counts register hits, it does not retrieve records"
+    },
+    {
+      "id": "registry-record-match",
+      "family": "registry",
+      "reason": "same: no retrieved record to check a filing or registration year against"
+    },
+    {
+      "id": "registry-record-coverage",
+      "family": "registry",
+      "reason": "same: no per-record fetch state to report coverage over"
+    },
+    {
+      "id": "record-verification-claim",
+      "family": "registry",
+      "reason": "same: no record set behind which a verification claim could be empty"
+    },
+    {
+      "id": "finding-provenance",
+      "family": "registry",
+      "reason": "binds a report card to its record URI; this lane has neither cards nor record URIs"
+    },
+    {
+      "id": "senior-rights-present",
+      "family": "registry",
+      "reason": "no senior-right receipt — the closure that owes it is clearance machinery"
+    },
+    {
+      "id": "senior-right-coverage",
+      "family": "registry",
+      "reason": "same"
+    },
+    {
+      "id": "counting-vs-findings",
+      "family": "counting",
+      "reason": "reads the clearance finding set's owner + registration URIs; knockout findings carry neither"
+    },
+    {
+      "id": "correction-consistency",
+      "family": "corrections",
+      "reason": "no reviewer correction cycle on this lane — nothing is corrected or withdrawn after rating"
+    },
+    {
+      "id": "client-tier-match",
+      "family": "client",
+      "reason": "no client summary (one report), so there is no second tier word to disagree"
+    },
+    {
+      "id": "overall-tier",
+      "family": "client",
+      "reason": "the overall band is DERIVED in code (worstBand over the rated marks) and cannot drift from the finding set"
+    },
+    {
+      "id": "actions-reachability",
+      "family": "actions",
+      "reason": "no actions register and no ask bucket"
+    },
+    {
+      "id": "actions-register-present",
+      "family": "verdict",
+      "reason": "the typed actions register is clearance machinery this lane never arms"
+    },
+    {
+      "id": "only-you-register",
+      "family": "verdict",
+      "reason": "same"
+    },
+    {
+      "id": "verdict-actions-coherence",
+      "family": "verdict",
+      "reason": "no verdict sidecar and no actions to cohere with it"
+    },
+    {
+      "id": "verdict-actions-stale",
+      "family": "verdict",
+      "reason": "same"
+    },
+    {
+      "id": "statement-tier",
+      "family": "verdict",
+      "reason": "no composed risk statement — the knockout headline is the band word itself"
+    },
+    {
+      "id": "statement-stance",
+      "family": "verdict",
+      "reason": "same"
+    },
+    {
+      "id": "statement-conditional-form",
+      "family": "verdict",
+      "reason": "same"
+    },
+    {
+      "id": "statement-unconditional",
+      "family": "verdict",
+      "reason": "same"
+    },
+    {
+      "id": "conditional-text-coherence",
+      "family": "verdict",
+      "reason": "same: no CONDITIONAL disposition exists on this lane"
+    },
+    {
+      "id": "intake-ask",
+      "family": "intake",
+      "reason": "no intake-ask register on this lane"
+    },
+    {
+      "id": "mark-assessment-present",
+      "family": "mark-assessment",
+      "reason": "the standing \"The mark itself\" block is a v4 clearance field"
+    },
+    {
+      "id": "card-budget-fold",
+      "family": "levels",
+      "reason": "no card assembly and no level budgets to fold against"
+    }
+  ],
+  "judged": {
+    "marks": 1,
+    "findings": 2
+  },
+  "receipts": {
+    "marks": 1,
+    "citing": 1,
+    "findings": 2,
+    "urls": 2
+  }
+}

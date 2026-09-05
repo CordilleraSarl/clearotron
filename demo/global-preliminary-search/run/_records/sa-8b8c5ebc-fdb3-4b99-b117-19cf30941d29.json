@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/sa/8b8c5ebc-fdb3-4b99-b117-19cf30941d29",
+  "provider": "clarivate",
+  "office": "sa",
+  "guid": "8b8c5ebc-fdb3-4b99-b117-19cf30941d29",
+  "applicationNumber": "142006176",
+  "registrationNumber": null,
+  "applicationDate": "2001-09-19",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "جروسفينو بلس GROSVENOR PLUS GROSVENOR PLUS GROSVENOR PLUS",
+  "markTransliteration": "GROSVENOR PLUS",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "No goods available",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": null,
+  "ownerNative": null,
+  "ownerCountry": "IT",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "نوفار هاوس 24 كوينز رود وابيريدج سري كيه تي 9 13 يو اكس، بريطانيا،",
+        "applicantAddressCountryCode": "IT",
+        "applicantAddressCountryName": "Italy",
+        "applicantNativeName": "\"نوفار اي دي اند اس ليمتد"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "No goods available"
+        }
+      ]
+    },
+    "id": "8b8c5ebc-fdb3-4b99-b117-19cf30941d29",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "281",
+      "27.05.11"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20230620",
+    "registrationOfficeCode": "SA",
+    "registrationOfficeName": "Saudi Arabia",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "SA",
+        "representativeAddressCountryName": "Saudi Arabia",
+        "representativeNativeAddress": "ص.ب 17854الرياض 11494 ، المملكة العربية السعودية،",
+        "representativeNativeName": "سماس للملكية الفكرية،"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20010919",
+        "applicationNumber": "142006176"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTRATION"
+    },
+    "version": "20230620090010",
+    "wordMarkSpecification": {
+      "markTransliteration": "GROSVENOR PLUS",
+      "markVerbalElementText": "جروسفينو بلس GROSVENOR PLUS GROSVENOR PLUS GROSVENOR PLUS"
+    }
+  },
+  "_uri": "/mark/sa/8b8c5ebc-fdb3-4b99-b117-19cf30941d29",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.828Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

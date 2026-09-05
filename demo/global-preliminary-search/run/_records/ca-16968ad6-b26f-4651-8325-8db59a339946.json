@@ -1,0 +1,227 @@
+{
+  "uri": "/mark/ca/16968ad6-b26f-4651-8325-8db59a339946",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "16968ad6-b26f-4651-8325-8db59a339946",
+  "applicationNumber": "1375505",
+  "registrationNumber": null,
+  "applicationDate": "2007-12-05",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2009-04-15",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "CONTACTSERVE NORTH AMERICA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    40
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        35,
+        40
+      ],
+      "language": "fr",
+      "description": "(1) Des composantes et des pièces électriques, nommément: des connecteurs, des relais, des fils électrique et harnais, des pochettes protectrices, des interrupteurs de circuit et des systèmes de protection.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        35,
+        40
+      ],
+      "language": "en",
+      "description": "(1) Electrical components and parts, namely: connectors, Relays, electrical wires and harnesses, protective pouches, circuit breakers and protection systems.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        35,
+        40
+      ],
+      "language": "fr",
+      "description": "(1) La fabrication, l'assemblage et la vente de composantes et de pièces électriques, nommément: des connecteurs, des relais, des fils électrique et harnais, des pochettes protectrices, des interrupteurs de circuit et des systèmes de protection.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        35,
+        40
+      ],
+      "language": "en",
+      "description": "(1) Manufacturing, assembly and sale of electrical components and parts, namely: connectors, Relays, electrical wires and harnesses, protective pouches, circuit breakers and protection systems.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Olcotech Inc.",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "8401 rue St-Hubert, Montréal, QUÉBEC, H2P1Z6",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressLines": [
+          "8401 rue St-Hubert",
+          "Montréal",
+          "QUÉBEC"
+        ],
+        "applicantAddressPostalCode": "H2P1Z6",
+        "applicantName": "Olcotech Inc."
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Proposed use in CANADA on wares marked (1) on services (1)",
+        "typeDescription": "Proposed Use"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09,35,40",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "(1) Des composantes et des pièces électriques, nommément: des connecteurs, des relais, des fils électrique et harnais, des pochettes protectrices, des interrupteurs de circuit et des systèmes de protection."
+        },
+        {
+          "intClassNumber": "09,35,40",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Electrical components and parts, namely: connectors, Relays, electrical wires and harnesses, protective pouches, circuit breakers and protection systems."
+        },
+        {
+          "intClassNumber": "09,35,40",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "(1) La fabrication, l'assemblage et la vente de composantes et de pièces électriques, nommément: des connecteurs, des relais, des fils électrique et harnais, des pochettes protectrices, des interrupteurs de circuit et des systèmes de protection."
+        },
+        {
+          "intClassNumber": "09,35,40",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Manufacturing, assembly and sale of electrical components and parts, namely: connectors, Relays, electrical wires and harnesses, protective pouches, circuit breakers and protection systems."
+        }
+      ]
+    },
+    "id": "16968ad6-b26f-4651-8325-8db59a339946",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20090415",
+        "descriptionText": "Abandoned - Section 36"
+      },
+      {
+        "date": "20090120",
+        "descriptionText": "Default Notice Sent",
+        "information": "Defaulting Action Date: 2008/07/18",
+        "responseDate": "20090320"
+      },
+      {
+        "date": "20080718",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20081118"
+      },
+      {
+        "date": "20080718",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20071218",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20071211",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20071205",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "8401 rue St-Hubert, Montréal, QUÉBEC, H2P1Z6",
+        "addressLines": [
+          "8401 rue St-Hubert",
+          "Montréal",
+          "QUÉBEC",
+          "H2P1Z6"
+        ],
+        "countryName": "Canada",
+        "name": "Olcotech Inc.",
+        "postalCode": "H2P1Z6"
+      }
+    ],
+    "recordLastUpdated": "20250806",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "status": {
+      "abandonmentDate": "20090415",
+      "active": false,
+      "application": {
+        "applicationDate": "20071205",
+        "applicationNumber": "1375505"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "defaultNotice": {
+        "dueDate": "20090320",
+        "sentDate": "20090120"
+      },
+      "formalisationDate": "20071218",
+      "markCurrentStatus": "Abandoned - Section 36"
+    },
+    "subjectHeadings": [
+      "CONTACTSERVE NORTH AMERICA",
+      "SERVE NORTH AMERICA, CONTACT"
+    ],
+    "version": "20250806080013",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "CONTACT SERVE NORTH AMERICA",
+      "markVerbalElementText": "CONTACTSERVE NORTH AMERICA",
+      "markVerbalElementTextFormal": "CONTACTSERVE NORTH AMERICA"
+    }
+  },
+  "_uri": "/mark/ca/16968ad6-b26f-4651-8325-8db59a339946",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

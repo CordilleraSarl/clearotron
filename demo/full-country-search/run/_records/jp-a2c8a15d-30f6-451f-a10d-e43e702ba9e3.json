@@ -1,0 +1,142 @@
+{
+  "uri": "/mark/jp/a2c8a15d-30f6-451f-a10d-e43e702ba9e3",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "a2c8a15d-30f6-451f-a10d-e43e702ba9e3",
+  "applicationNumber": "2007-018222",
+  "registrationNumber": "5077415",
+  "applicationDate": "2007-03-02",
+  "registrationDate": "2007-09-14",
+  "expiryDate": "2017-09-14",
+  "renewalDate": null,
+  "lastPublicationDate": "2007-10-16",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＣＬＩＮＡＤＶＩＳＯＲ",
+  "markTransliteration": "KURINADOBAIZAA",
+  "markTranslation": "CLINADVISOR",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "個人の歯の状態の評価に使用される及び歯列矯正処置・治療の計画のための歯科専門家用コンピュータソフトウェア，その他のコンピュータソフトウェア",
+      "translation_language": "en",
+      "translation": "Dental professional computer software used for the evaluation of individual's dental condition and for orthodontic treatment · treatment plan, other computer software"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YASUMURA TAKAAKI",
+  "priorities": [
+    {
+      "priorityDate": "20060906"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dental professional computer software used for the evaluation of individual's dental condition and for orthodontic treatment · treatment plan, other computer software",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "個人の歯の状態の評価に使用される及び歯列矯正処置・治療の計画のための歯科専門家用コンピュータソフトウェア，その他のコンピュータソフトウェア"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        }
+      ]
+    },
+    "id": "a2c8a15d-30f6-451f-a10d-e43e702ba9e3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20060906"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YASUMURA TAKAAKI",
+        "representativeNativeName": "安村　高明"
+      },
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20070302",
+        "applicationNumber": "2007-018222"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20170914",
+      "lastPublicationDate": "20071016",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20070914",
+        "registrationNumber": "5077415"
+      }
+    },
+    "version": "20240320153104",
+    "wordMarkSpecification": {
+      "markTranslation": "CLINADVISOR",
+      "markTransliteration": "KURINADOBAIZAA",
+      "markVerbalElementText": "ＣＬＩＮＡＤＶＩＳＯＲ"
+    }
+  },
+  "_uri": "/mark/jp/a2c8a15d-30f6-451f-a10d-e43e702ba9e3",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.741Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

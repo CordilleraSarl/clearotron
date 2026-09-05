@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/ve/c980be4a-b628-41f3-a786-1f1db332fc1f",
+  "provider": "clarivate",
+  "office": "ve",
+  "guid": "c980be4a-b628-41f3-a786-1f1db332fc1f",
+  "applicationNumber": "1991-019193",
+  "registrationNumber": null,
+  "applicationDate": "1991-09-23",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VENKOREN",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    9,
+    11
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7,
+        9,
+        11
+      ],
+      "language": "es",
+      "description": "aparatos, maquinas y accesorios electricos.",
+      "translation_language": "en",
+      "translation": "electrical apparatus, machines and accessories."
+    }
+  ],
+  "owner": "AZIER ATELA",
+  "ownerNative": null,
+  "ownerCountry": "VE",
+  "representative": "BARAZARTE LIZARRAGA, LUISA EMILIA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CARACAS",
+        "applicantAddressCountryCode": "VE",
+        "applicantAddressCountryName": "Venezuela",
+        "applicantName": "AZIER ATELA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "electrical apparatus, machines and accessories.",
+          "intClassNumber": "07,09,11",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "aparatos, maquinas y accesorios electricos."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "21"
+        }
+      ]
+    },
+    "id": "c980be4a-b628-41f3-a786-1f1db332fc1f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "VE",
+    "registrationOfficeName": "Venezuela",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "VE",
+        "representativeAddressCountryName": "Venezuela",
+        "representativeName": "BARAZARTE LIZARRAGA, LUISA EMILIA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19910923",
+        "applicationNumber": "1991-019193"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20250630155735",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENKOREN"
+    }
+  },
+  "_uri": "/mark/ve/c980be4a-b628-41f3-a786-1f1db332fc1f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:48.777Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

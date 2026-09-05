@@ -1,0 +1,473 @@
+{
+  "uri": "/mark/jp/1cc4c1ff-0b47-407b-acc2-476b0155c101",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "1cc4c1ff-0b47-407b-acc2-476b0155c101",
+  "applicationNumber": "2026-007449",
+  "registrationNumber": "7041684",
+  "applicationDate": "2026-01-26",
+  "registrationDate": "2026-05-01",
+  "expiryDate": "2036-05-01",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-05-14",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＱＯＲＧＡ",
+  "markTransliteration": "KOOGA KORUGA KUOOGA KUORUGA",
+  "markTranslation": "QORGA",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    41,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "電気通信機械器具，携帯情報端末，腕時計型携帯情報端末，電子応用機械器具及びその部品，電子計算機用プログラム，レコード，インターネットを利用して受信し及び保存することができる音楽ファイル，インターネットを利用して受信し及び保存することができる画像ファイル，録画済みビデオディスク及びビデオテープ，電子出版物，インダクター（電気用のもの），トランスポンダ，信号の電気的遠隔制御装置，相互通信装置，光学式記録媒体，双方向タッチスクリーン端末機，バーチャルミラー（双方向電子ディスプレイ），電子式デジタルディスプレイ，指輪型携帯情報端末，未記録の電子記憶媒体，眼鏡型携帯情報端末，身体装着式携帯情報端末，静電容量式タッチスクリーン装置用フィンガースリーブ，ユーザー認証のためのセキュリティハードウェアトークン，３Ｄ眼鏡，コンピュータ，コンピュータハードウェア，コンピュータプログラム（記憶されたもの），コンピュータ用ゲームソフトウェア（記憶されたもの），ダウンロード可能なコンピュータ用ゲームソフトウェア，コンピュータ周辺機器，コンピュータ操作用プログラム（記憶されたもの），コンピュータ用インターフェース，コンピュータ記憶装置，シンクライアント型コンピュータ，ダウンロード可能なコンピュータソフトウェア用アプリケーション，ダウンロード可能なコンピュータ用プログラム，データ処理装置，ブラックボックス（データ記録装置），医療機器としてのソフトウェア（ＳａＭＤ）（ダウンロード可能なもの），半導体，記録された又はダウンロード可能なコンピュータソフトウェアプラットフォーム，記録された又はダウンロード可能なデータセット，量子コンピュータ，量子ドット発光ダイオード（ＱＬＥＤ），ＵＳＢフラッシュドライブ，３Ｄスキャナー，暗号資産を受信し及び使用するための暗号鍵生成用のダウンロード可能なソフトウェア，ブロックチェーン技術を用いた暗号資産取引を管理するためのダウンロード可能なコンピュータソフトウェア，暗号資産用ハードウェアウォレット，非代替性トークン（ＮＦＴ）生成用のダウンロード可能なコンピュータソフトウェア用アプリケーション，ダウンロード可能な仮想被服，生体認証式錠，ヘッドセット，ヘッドマウントディスプレイ，生体認証式錠，神経系ヘルメット（医療用のものを除く。），触覚スーツ（医療用のものを除く。），テレビゲーム機用メモリーカード，レーザー写真，非代替性トークン（ＮＦＴ）により認証されたダウンロード可能なデジタル音楽ファイル，非代替性トークン（ＮＦＴ）により認証されたダウンロード可能なデジタル画像ファイル，ダウンロード可能なビデオファイル，携帯電話用のダウンロード可能なエモティコン（絵文字）",
+      "translation_language": "en",
+      "translation": "Telecommunications equipment, Personal digital assistants, Personal digital assistant wristwatches, Electronic equipment and parts thereof, Computer programs, Records, Music files that can be received and stored via the internet, Image files that can be received and stored via the internet, Pre-recorded video discs and video tapes, Electronic publications, Electrical inductors, Transponders, Electrical remote signalling control devices, Intercommunication devices, Optical recording media, Two-way touchscreen terminals, Virtual mirrors (two-way electronic displays), Electronic digital displays, Personal digital assistant rings, Unrecorded electronic storage media, Personal digital assistant eyeglasses, Personal digital assistant body-worn devices, Finger sleeves for capacitive touchscreen devices, Security hardware tokens for user authentication, 3D glasses, Computers, Computer hardware, Computer programs (stored), Computer game software (stored), Downloadable computer game software, Computer peripherals, Computer operating programs (stored), Computer interfaces, Computer storage devices, Thin client computers, Downloadable computer software applications, Downloadable computer software applications computer programs, data processing devices, black boxes (data recording devices), downloadable software as a medical device (SaMD), semiconductors, recorded or downloadable computer software platforms, recorded or downloadable datasets, quantum computers, quantum dot light-emitting diodes (QLEDs), USB flash drives, 3D scanners, downloadable software for generating cryptographic keys for receiving and using crypto-assets, downloadable computer software for managing crypto-asset transactions using blockchain technology, crypto-asset hardware wallets, downloadable computer software applications for generating non-fungible tokens (NFTs), downloadable virtual clothing, biometric locks, headsets, head-mounted displays, biometric locks, nervous system helmets (non-medical), tactile suits (non-medical), memory cards for video game consoles, laser photography, downloadable digital music files authenticated by non-fungible tokens (NFTs), downloadable digital image files authenticated by non-fungible tokens (NFTs), downloadable video files, downloadable emoticons (emoji) for mobile phones"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "広告業，インターネットによる広告，経営の診断又は経営に関する助言，事業の管理，市場調査又は分析，商品の販売に関する情報の提供，文書又は磁気テープのファイリング，コンピュータデータベースへの情報編集，電子計算機・タイプライター・テレックス又はこれらに準ずる事務用機器の操作，消費者のための商品及び役務の選択における助言と情報の提供，被服の小売又は卸売の業務において行われる顧客に対する便益の提供，履物の小売又は卸売の業務において行われる顧客に対する便益の提供，かばん類及び袋物の小売又は卸売の業務において行われる顧客に対する便益の提供，織物及び寝具類の小売又は卸売の業務において行われる顧客に対する便益の提供，身の回り品の小売又は卸売の業務において行われる顧客に対する便益の提供，広告用映画の制作，広告のためのコミュニケーション戦略に関する助言，企業の広告及び広報活動の企画・代行，クリック報酬型広告，広告物のレイアウト，マーケティング，コンピュータソフトウェア制作のマーケティング，販売促進のための企画及び実行の代理，ウェブサイトの検索結果の最適化，商業用又は広告用のユーザーによるレビュー情報の提供，商業用又は広告用のユーザーによる評価情報の提供，販売促進のための検索エンジンの検索結果の最適化，ウェブサイト経由による事業に関する情報の提供，世論調査，事業に関する情報の提供，事業に関する指導及び助言，事業のパートナー探し，事業の収益性調査の作成，事業の管理に関する指導及び助言，事業の能率化に関する診断・指導及び助言，事業の評価，事業の調査，会社のための管理業務の代行，取引相手先の商業及び事業に関する情報の提供，商業に関する情報の提供，商業又は工業の管理に関する助言，様々な専門家と顧客のマッチング（事業の仲介），資金を必要とする起業家と潜在的な個人投資家のマッチング（事業の仲介），非代替性トークン（ＮＦＴ）により認証されたダウンロード可能なデジタル画像ファイルの買い手及び売り手のためのオンライン市場の提供，経済予測，統計の編集，他人の商品及びサービスのライセンスに関する事業の管理，第三者のための商取引の交渉及び締結の代理及び代行，コンピュータによるファイルの管理，データ処理（事務処理），コンピュータデータベースへの情報構築，コンピュータデータベースへの情報編集，コンピュータデータベース内のデータの更新及び保守，レジストリ内での情報の更新及び保守，文書情報及びデータの構築，電子計算機を用いて行う情報検索事務の代行",
+      "translation_language": "en",
+      "translation": "Advertising, Internet advertising, business diagnosis or advice, business management, market research or analysis, provision of information on product sales, filing of documents or magnetic tapes, compilation of information into computer databases, operation of computers, typewriters, telex machines or similar office machines, provision of advice and information to consumers in selecting goods and services, provision of facilities to customers in the retail or wholesale of clothing, provision of facilities to customers in the retail or wholesale of footwear, provision of facilities to customers in the retail or wholesale of bags and pouches, provision of facilities to customers in the retail or wholesale of textiles and bedding, provision of facilities to customers in the retail or wholesale of personal accessories, production of advertising films, advice on communication strategies for advertising, planning and acting on behalf of companies' advertising and public relations activities, pay-per-click advertising, layout of advertising materials, marketing, marketing of computer software production, agency planning and execution of sales promotion activities, optimization of website search results, provision of user review information for commercial or advertising purposes, provision of user evaluation information for commercial or advertising purposes, for sales promotion purposes optimizing search engine results for search engines, providing information about businesses via websites, opinion polls, providing information about businesses, business guidance and advice, finding business partners, preparing business profitability studies, guidance and advice on business management, diagnosis, guidance and advice on business efficiency, business evaluation, business research, performing administrative tasks on behalf of companies, providing commercial and business information about counterparties, providing commercial information, advising on commercial or industrial management, matching various professionals with clients (business intermediation), matching entrepreneurs in need of capital with potential individual investors (business intermediation), providing an online marketplace for buyers and sellers of downloadable digital image files authenticated by non-fungible tokens (NFTs), economic forecasting, compiling statistics, managing businesses related to the licensing of other people's goods and services, acting as an agent and representative in negotiating and concluding commercial transactions for third parties, computerized file management, data processing (administrative processing), creating information in computer databases, compiling information in computer databases, updating and maintaining data in computer databases, updating and maintaining information in registries, creating document information and data, performing computer-based information retrieval tasks on behalf of companies"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "技芸・スポーツ又は知識の教授，セミナーの企画・運営又は開催，電子出版物の提供，図書及び記録の供覧，図書の貸与，書籍の制作，インターネットを利用して行う映像の提供，映画の上映・制作又は配給，インターネットを利用して行う音楽の提供，放送番組の制作，ポッドキャストの制作，教育・文化・娯楽・スポーツ用ビデオの制作（映画・放送番組・広告用のものを除く。），映像機器・音声機器等の機器であって放送番組の制作のために使用されるものの操作，ビジネスの知識及びノウハウの伝授（訓練），知識又は技芸の教授，職業訓練，映画の制作（広告用映画の制作を除く。），オンラインによる映像の提供（ダウンロードできないものに限る。），オンラインによる画像の提供（ダウンロードできないものに限る。），非代替性トークン（ＮＦＴ）により認証されたデジタル画像ファイルの提供，オンラインによる音楽の提供（ダウンロードできないものに限る。），娯楽の提供，娯楽分野における情報の提供，受託による作曲，受託による作詞及び作曲，音楽のプロデュース（企画・制作），カリグラフィーの制作，美術品の貸与，書画の貸与，オンラインによるゲームの提供",
+      "translation_language": "en",
+      "translation": "Teaching arts, sports or knowledge, Planning, running or holding seminars, Providing electronic publications, Offering books and records to the public, Lending books, Book production, Providing videos via the internet, Screening, producing or distributing films, Providing music via the internet, Producing broadcast programs, Producing podcasts, Producing videos for education, culture, entertainment or sports (excluding those for films, broadcast programs or advertising), Operating video equipment, audio equipment and other equipment used in broadcast program production, Imparting business knowledge and know-how (training), Teaching knowledge or arts, Vocational training training, film production (excluding the production of films for advertising purposes), online provision of videos (limited to those that cannot be downloaded), online provision of images (limited to those that cannot be downloaded), provision of digital image files authenticated by non-fungible tokens (NFTs), online provision of music (limited to those that cannot be downloaded), provision of entertainment, provision of information in the entertainment field, composing music on a commissioned basis, writing lyrics and composing music on a commissioned basis, music production (planning and production), calligraphy production, lending of artworks, lending of calligraphy and paintings, provision of online games"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "機械・装置若しくは器具（これらの部品を含む。）又はこれらの機械等により構成される設備の設計，デザインの考案，電子計算機のプログラムの設計・作成又は保守，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，機械器具に関する試験又は研究，電子計算機の貸与，電子計算機用プログラムの提供，コンピュータハードウェアの設計及び開発に関する助言，神経模倣工学に関するコンピュータエンジニアリング，ビデオゲーム機・ビデオゲーム機用ソフトウェア及びコンピュータゲームソフトウェアの開発，ウェブサイト経由によるコンピュータ技術及びコンピュータプログラミングに関する情報の提供，コンピュータ技術に関する助言，デジタルトランスフォーメーションのための技術的助言，人工知能に関する助言，人工知能技術の分野に関する研究，技術的課題の研究，ブロックチェーン技術を利用したユーザー認証，シングルサインオンの技術を利用したオンラインソフトウェアアプリケーションのためのユーザー認証，電子商取引のための技術を利用したユーザー認証，ブロックチェーンにおけるスマートコントラクトのための電子計算機のプログラムの設計・作成又は保守，コンピュータシミュレーションモデルの設計，コンピュータセキュリティに関する指導及び助言，データの暗号化処理，工業デザインの考案，服飾デザインの考案，グラフィックアートデザインの考案，工業デザインにおける装飾の考案，量子コンピューティング，暗号資産のマイニング，ウェブサーバーの貸与，オンラインによるアプリケーションソフトウェアの提供（ＳａａＳ），オンラインによるダウンロードが不可能なコンピュータソフトウェアの提供，オンラインによるダウンロードが不可能な非代替性トークン（ＮＦＴ）生成用のコンピュータソフトウェアの提供，クラウドコンピューティングを介した仮想コンピュータシステムの提供，コンピュータソフトウェアプラットフォームの提供（ＰａａＳ），サービスとしての人工知能の提供（ＡＩａａＳ），データセンター施設の貸与，仮想現実における共同作業のためのソフトウェアプラットフォームのホスティング，電子データの保存用記憶領域の貸与，ブロックチェーン技術を利用したアプリケーション開発のためのオンラインプラットフォームの提供",
+      "translation_language": "en",
+      "translation": "Design of machines, devices or instruments (including their parts) or equipment consisting of such machines, etc., design invention, design, creation or maintenance of computer programs, introduction and explanation of the performance and operation methods of computers, automobiles and other machines that require a high level of specialized knowledge, skills or experience to operate correctly according to their intended use, testing or research related to machines and instruments, lending of computers, provision of computer programs, advice on the design and development of computer hardware, computer engineering related to neuromimetic engineering, development of video game consoles, software for video game consoles and computer game software, provision of information on computer technology and computer programming via websites, advice on computer technology, technical advice for digital transformation, advice on artificial intelligence, research in the field of artificial intelligence technology, research on technical issues, user authentication using blockchain technology, user authentication for online software applications using single sign-on technology, user authentication using technology for e-commerce, blockchain Design, creation or maintenance of computer programs for smart contracts on blockchains, design of computer simulation models, guidance and advice on computer security, data encryption processing, industrial design ideas, clothing design ideas, graphic art design ideas, decorative ideas in industrial design, quantum computing, cryptocurrency mining, rental of web servers, provision of online application software (SaaS), provision of computer software that cannot be downloaded online, provision of computer software for generating non-fungible tokens (NFTs) that cannot be downloaded online, provision of virtual computer systems via cloud computing, provision of computer software platforms (PaaS), provision of artificial intelligence as a service (AIaaS), rental of data center facilities, hosting of software platforms for collaborative work in virtual reality, rental of storage space for storing electronic data, provision of online platforms for application development using blockchain technology"
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": null,
+      "description": "知的財産権に関する助言，知的財産権の利用に関する契約の代理又は媒介，法律に関する助言のための知的財産権の監視，法律的事項の監視，ソフトウェア制作における契約の代理又は媒介，法的書類の起草，パテントマップに関する法分野における助言，著作権の管理，衣服の貸与，被服の選定に関するパーソナルカラーの分析，衣装の選定",
+      "translation_language": "en",
+      "translation": "Advice on intellectual property rights, representation or mediation of contracts related to the use of intellectual property rights, monitoring of intellectual property rights for legal advice, monitoring of legal matters, representation or mediation of contracts in software production, drafting of legal documents, legal advice on patent maps, copyright management, clothing rental, analysis of personal colors in relation to clothing selection, costume selection"
+    }
+  ],
+  "owner": "Qorga Corporation",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "Sato, Jun",
+  "priorities": [
+    {
+      "priorityDate": "20260126"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CHIYODA TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "Qorga Corporation",
+        "applicantNativeAddress": "東京都千代田区",
+        "applicantNativeName": "クオルガ株式会社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Telecommunications equipment, Personal digital assistants, Personal digital assistant wristwatches, Electronic equipment and parts thereof, Computer programs, Records, Music files that can be received and stored via the internet, Image files that can be received and stored via the internet, Pre-recorded video discs and video tapes, Electronic publications, Electrical inductors, Transponders, Electrical remote signalling control devices, Intercommunication devices, Optical recording media, Two-way touchscreen terminals, Virtual mirrors (two-way electronic displays), Electronic digital displays, Personal digital assistant rings, Unrecorded electronic storage media, Personal digital assistant eyeglasses, Personal digital assistant body-worn devices, Finger sleeves for capacitive touchscreen devices, Security hardware tokens for user authentication, 3D glasses, Computers, Computer hardware, Computer programs (stored), Computer game software (stored), Downloadable computer game software, Computer peripherals, Computer operating programs (stored), Computer interfaces, Computer storage devices, Thin client computers, Downloadable computer software applications, Downloadable computer software applications computer programs, data processing devices, black boxes (data recording devices), downloadable software as a medical device (SaMD), semiconductors, recorded or downloadable computer software platforms, recorded or downloadable datasets, quantum computers, quantum dot light-emitting diodes (QLEDs), USB flash drives, 3D scanners, downloadable software for generating cryptographic keys for receiving and using crypto-assets, downloadable computer software for managing crypto-asset transactions using blockchain technology, crypto-asset hardware wallets, downloadable computer software applications for generating non-fungible tokens (NFTs), downloadable virtual clothing, biometric locks, headsets, head-mounted displays, biometric locks, nervous system helmets (non-medical), tactile suits (non-medical), memory cards for video game consoles, laser photography, downloadable digital music files authenticated by non-fungible tokens (NFTs), downloadable digital image files authenticated by non-fungible tokens (NFTs), downloadable video files, downloadable emoticons (emoji) for mobile phones",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "電気通信機械器具，携帯情報端末，腕時計型携帯情報端末，電子応用機械器具及びその部品，電子計算機用プログラム，レコード，インターネットを利用して受信し及び保存することができる音楽ファイル，インターネットを利用して受信し及び保存することができる画像ファイル，録画済みビデオディスク及びビデオテープ，電子出版物，インダクター（電気用のもの），トランスポンダ，信号の電気的遠隔制御装置，相互通信装置，光学式記録媒体，双方向タッチスクリーン端末機，バーチャルミラー（双方向電子ディスプレイ），電子式デジタルディスプレイ，指輪型携帯情報端末，未記録の電子記憶媒体，眼鏡型携帯情報端末，身体装着式携帯情報端末，静電容量式タッチスクリーン装置用フィンガースリーブ，ユーザー認証のためのセキュリティハードウェアトークン，３Ｄ眼鏡，コンピュータ，コンピュータハードウェア，コンピュータプログラム（記憶されたもの），コンピュータ用ゲームソフトウェア（記憶されたもの），ダウンロード可能なコンピュータ用ゲームソフトウェア，コンピュータ周辺機器，コンピュータ操作用プログラム（記憶されたもの），コンピュータ用インターフェース，コンピュータ記憶装置，シンクライアント型コンピュータ，ダウンロード可能なコンピュータソフトウェア用アプリケーション，ダウンロード可能なコンピュータ用プログラム，データ処理装置，ブラックボックス（データ記録装置），医療機器としてのソフトウェア（ＳａＭＤ）（ダウンロード可能なもの），半導体，記録された又はダウンロード可能なコンピュータソフトウェアプラットフォーム，記録された又はダウンロード可能なデータセット，量子コンピュータ，量子ドット発光ダイオード（ＱＬＥＤ），ＵＳＢフラッシュドライブ，３Ｄスキャナー，暗号資産を受信し及び使用するための暗号鍵生成用のダウンロード可能なソフトウェア，ブロックチェーン技術を用いた暗号資産取引を管理するためのダウンロード可能なコンピュータソフトウェア，暗号資産用ハードウェアウォレット，非代替性トークン（ＮＦＴ）生成用のダウンロード可能なコンピュータソフトウェア用アプリケーション，ダウンロード可能な仮想被服，生体認証式錠，ヘッドセット，ヘッドマウントディスプレイ，生体認証式錠，神経系ヘルメット（医療用のものを除く。），触覚スーツ（医療用のものを除く。），テレビゲーム機用メモリーカード，レーザー写真，非代替性トークン（ＮＦＴ）により認証されたダウンロード可能なデジタル音楽ファイル，非代替性トークン（ＮＦＴ）により認証されたダウンロード可能なデジタル画像ファイル，ダウンロード可能なビデオファイル，携帯電話用のダウンロード可能なエモティコン（絵文字）"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising, Internet advertising, business diagnosis or advice, business management, market research or analysis, provision of information on product sales, filing of documents or magnetic tapes, compilation of information into computer databases, operation of computers, typewriters, telex machines or similar office machines, provision of advice and information to consumers in selecting goods and services, provision of facilities to customers in the retail or wholesale of clothing, provision of facilities to customers in the retail or wholesale of footwear, provision of facilities to customers in the retail or wholesale of bags and pouches, provision of facilities to customers in the retail or wholesale of textiles and bedding, provision of facilities to customers in the retail or wholesale of personal accessories, production of advertising films, advice on communication strategies for advertising, planning and acting on behalf of companies' advertising and public relations activities, pay-per-click advertising, layout of advertising materials, marketing, marketing of computer software production, agency planning and execution of sales promotion activities, optimization of website search results, provision of user review information for commercial or advertising purposes, provision of user evaluation information for commercial or advertising purposes, for sales promotion purposes optimizing search engine results for search engines, providing information about businesses via websites, opinion polls, providing information about businesses, business guidance and advice, finding business partners, preparing business profitability studies, guidance and advice on business management, diagnosis, guidance and advice on business efficiency, business evaluation, business research, performing administrative tasks on behalf of companies, providing commercial and business information about counterparties, providing commercial information, advising on commercial or industrial management, matching various professionals with clients (business intermediation), matching entrepreneurs in need of capital with potential individual investors (business intermediation), providing an online marketplace for buyers and sellers of downloadable digital image files authenticated by non-fungible tokens (NFTs), economic forecasting, compiling statistics, managing businesses related to the licensing of other people's goods and services, acting as an agent and representative in negotiating and concluding commercial transactions for third parties, computerized file management, data processing (administrative processing), creating information in computer databases, compiling information in computer databases, updating and maintaining data in computer databases, updating and maintaining information in registries, creating document information and data, performing computer-based information retrieval tasks on behalf of companies",
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "広告業，インターネットによる広告，経営の診断又は経営に関する助言，事業の管理，市場調査又は分析，商品の販売に関する情報の提供，文書又は磁気テープのファイリング，コンピュータデータベースへの情報編集，電子計算機・タイプライター・テレックス又はこれらに準ずる事務用機器の操作，消費者のための商品及び役務の選択における助言と情報の提供，被服の小売又は卸売の業務において行われる顧客に対する便益の提供，履物の小売又は卸売の業務において行われる顧客に対する便益の提供，かばん類及び袋物の小売又は卸売の業務において行われる顧客に対する便益の提供，織物及び寝具類の小売又は卸売の業務において行われる顧客に対する便益の提供，身の回り品の小売又は卸売の業務において行われる顧客に対する便益の提供，広告用映画の制作，広告のためのコミュニケーション戦略に関する助言，企業の広告及び広報活動の企画・代行，クリック報酬型広告，広告物のレイアウト，マーケティング，コンピュータソフトウェア制作のマーケティング，販売促進のための企画及び実行の代理，ウェブサイトの検索結果の最適化，商業用又は広告用のユーザーによるレビュー情報の提供，商業用又は広告用のユーザーによる評価情報の提供，販売促進のための検索エンジンの検索結果の最適化，ウェブサイト経由による事業に関する情報の提供，世論調査，事業に関する情報の提供，事業に関する指導及び助言，事業のパートナー探し，事業の収益性調査の作成，事業の管理に関する指導及び助言，事業の能率化に関する診断・指導及び助言，事業の評価，事業の調査，会社のための管理業務の代行，取引相手先の商業及び事業に関する情報の提供，商業に関する情報の提供，商業又は工業の管理に関する助言，様々な専門家と顧客のマッチング（事業の仲介），資金を必要とする起業家と潜在的な個人投資家のマッチング（事業の仲介），非代替性トークン（ＮＦＴ）により認証されたダウンロード可能なデジタル画像ファイルの買い手及び売り手のためのオンライン市場の提供，経済予測，統計の編集，他人の商品及びサービスのライセンスに関する事業の管理，第三者のための商取引の交渉及び締結の代理及び代行，コンピュータによるファイルの管理，データ処理（事務処理），コンピュータデータベースへの情報構築，コンピュータデータベースへの情報編集，コンピュータデータベース内のデータの更新及び保守，レジストリ内での情報の更新及び保守，文書情報及びデータの構築，電子計算機を用いて行う情報検索事務の代行"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Teaching arts, sports or knowledge, Planning, running or holding seminars, Providing electronic publications, Offering books and records to the public, Lending books, Book production, Providing videos via the internet, Screening, producing or distributing films, Providing music via the internet, Producing broadcast programs, Producing podcasts, Producing videos for education, culture, entertainment or sports (excluding those for films, broadcast programs or advertising), Operating video equipment, audio equipment and other equipment used in broadcast program production, Imparting business knowledge and know-how (training), Teaching knowledge or arts, Vocational training training, film production (excluding the production of films for advertising purposes), online provision of videos (limited to those that cannot be downloaded), online provision of images (limited to those that cannot be downloaded), provision of digital image files authenticated by non-fungible tokens (NFTs), online provision of music (limited to those that cannot be downloaded), provision of entertainment, provision of information in the entertainment field, composing music on a commissioned basis, writing lyrics and composing music on a commissioned basis, music production (planning and production), calligraphy production, lending of artworks, lending of calligraphy and paintings, provision of online games",
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "技芸・スポーツ又は知識の教授，セミナーの企画・運営又は開催，電子出版物の提供，図書及び記録の供覧，図書の貸与，書籍の制作，インターネットを利用して行う映像の提供，映画の上映・制作又は配給，インターネットを利用して行う音楽の提供，放送番組の制作，ポッドキャストの制作，教育・文化・娯楽・スポーツ用ビデオの制作（映画・放送番組・広告用のものを除く。），映像機器・音声機器等の機器であって放送番組の制作のために使用されるものの操作，ビジネスの知識及びノウハウの伝授（訓練），知識又は技芸の教授，職業訓練，映画の制作（広告用映画の制作を除く。），オンラインによる映像の提供（ダウンロードできないものに限る。），オンラインによる画像の提供（ダウンロードできないものに限る。），非代替性トークン（ＮＦＴ）により認証されたデジタル画像ファイルの提供，オンラインによる音楽の提供（ダウンロードできないものに限る。），娯楽の提供，娯楽分野における情報の提供，受託による作曲，受託による作詞及び作曲，音楽のプロデュース（企画・制作），カリグラフィーの制作，美術品の貸与，書画の貸与，オンラインによるゲームの提供"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Design of machines, devices or instruments (including their parts) or equipment consisting of such machines, etc., design invention, design, creation or maintenance of computer programs, introduction and explanation of the performance and operation methods of computers, automobiles and other machines that require a high level of specialized knowledge, skills or experience to operate correctly according to their intended use, testing or research related to machines and instruments, lending of computers, provision of computer programs, advice on the design and development of computer hardware, computer engineering related to neuromimetic engineering, development of video game consoles, software for video game consoles and computer game software, provision of information on computer technology and computer programming via websites, advice on computer technology, technical advice for digital transformation, advice on artificial intelligence, research in the field of artificial intelligence technology, research on technical issues, user authentication using blockchain technology, user authentication for online software applications using single sign-on technology, user authentication using technology for e-commerce, blockchain Design, creation or maintenance of computer programs for smart contracts on blockchains, design of computer simulation models, guidance and advice on computer security, data encryption processing, industrial design ideas, clothing design ideas, graphic art design ideas, decorative ideas in industrial design, quantum computing, cryptocurrency mining, rental of web servers, provision of online application software (SaaS), provision of computer software that cannot be downloaded online, provision of computer software for generating non-fungible tokens (NFTs) that cannot be downloaded online, provision of virtual computer systems via cloud computing, provision of computer software platforms (PaaS), provision of artificial intelligence as a service (AIaaS), rental of data center facilities, hosting of software platforms for collaborative work in virtual reality, rental of storage space for storing electronic data, provision of online platforms for application development using blockchain technology",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "機械・装置若しくは器具（これらの部品を含む。）又はこれらの機械等により構成される設備の設計，デザインの考案，電子計算機のプログラムの設計・作成又は保守，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，機械器具に関する試験又は研究，電子計算機の貸与，電子計算機用プログラムの提供，コンピュータハードウェアの設計及び開発に関する助言，神経模倣工学に関するコンピュータエンジニアリング，ビデオゲーム機・ビデオゲーム機用ソフトウェア及びコンピュータゲームソフトウェアの開発，ウェブサイト経由によるコンピュータ技術及びコンピュータプログラミングに関する情報の提供，コンピュータ技術に関する助言，デジタルトランスフォーメーションのための技術的助言，人工知能に関する助言，人工知能技術の分野に関する研究，技術的課題の研究，ブロックチェーン技術を利用したユーザー認証，シングルサインオンの技術を利用したオンラインソフトウェアアプリケーションのためのユーザー認証，電子商取引のための技術を利用したユーザー認証，ブロックチェーンにおけるスマートコントラクトのための電子計算機のプログラムの設計・作成又は保守，コンピュータシミュレーションモデルの設計，コンピュータセキュリティに関する指導及び助言，データの暗号化処理，工業デザインの考案，服飾デザインの考案，グラフィックアートデザインの考案，工業デザインにおける装飾の考案，量子コンピューティング，暗号資産のマイニング，ウェブサーバーの貸与，オンラインによるアプリケーションソフトウェアの提供（ＳａａＳ），オンラインによるダウンロードが不可能なコンピュータソフトウェアの提供，オンラインによるダウンロードが不可能な非代替性トークン（ＮＦＴ）生成用のコンピュータソフトウェアの提供，クラウドコンピューティングを介した仮想コンピュータシステムの提供，コンピュータソフトウェアプラットフォームの提供（ＰａａＳ），サービスとしての人工知能の提供（ＡＩａａＳ），データセンター施設の貸与，仮想現実における共同作業のためのソフトウェアプラットフォームのホスティング，電子データの保存用記憶領域の貸与，ブロックチェーン技術を利用したアプリケーション開発のためのオンラインプラットフォームの提供"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advice on intellectual property rights, representation or mediation of contracts related to the use of intellectual property rights, monitoring of intellectual property rights for legal advice, monitoring of legal matters, representation or mediation of contracts in software production, drafting of legal documents, legal advice on patent maps, copyright management, clothing rental, analysis of personal colors in relation to clothing selection, costume selection",
+          "intClassNumber": "45",
+          "intGoodsServicesDescription": "知的財産権に関する助言，知的財産権の利用に関する契約の代理又は媒介，法律に関する助言のための知的財産権の監視，法律的事項の監視，ソフトウェア制作における契約の代理又は媒介，法的書類の起草，パテントマップに関する法分野における助言，著作権の管理，衣服の貸与，被服の選定に関するパーソナルカラーの分析，衣装の選定"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "09G53",
+          "natGoodsServicesDescription": "Game programs for arcade video game machines"
+        },
+        {
+          "natClassNumber": "09G55"
+        },
+        {
+          "natClassNumber": "09G99"
+        },
+        {
+          "natClassNumber": "10B01",
+          "natGoodsServicesDescription": "Photographic machines and apparatus; Cinematographic machines and apparatus; Optical machines and apparatus"
+        },
+        {
+          "natClassNumber": "10C01",
+          "natGoodsServicesDescription": "Measuring or testing machines and instruments"
+        },
+        {
+          "natClassNumber": "11A01",
+          "natGoodsServicesDescription": "Power distribution or control machines and apparatus; Rotary converters; Phase modifiers; Solar batteries"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Telecommunication machines and apparatus; Personal digital assistants"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door opening and closing control systems; Electron microscopes"
+        },
+        {
+          "natClassNumber": "11D01",
+          "natGoodsServicesDescription": "Magnetic cores; Resistance wires; Electrodes, other than welding electrodes or medical electrodes"
+        },
+        {
+          "natClassNumber": "24A01",
+          "natGoodsServicesDescription": "Game programs for home video game machines; Electronic circuits and CD-ROMs recorded with programs for hand-held games with liquid crystal displays"
+        },
+        {
+          "natClassNumber": "24E02",
+          "natGoodsServicesDescription": "Phonograph records; Downloadable music files; Downloadable image files; Recorded video discs and video tapes"
+        },
+        {
+          "natClassNumber": "26A01",
+          "natGoodsServicesDescription": "Electronic publications"
+        },
+        {
+          "natClassNumber": "26D01",
+          "natGoodsServicesDescription": "Downloadable image files; Recorded video discs and video tapes; Electronic publications; Exposed cinematographic films; Exposed slide films; Slide film mounts"
+        },
+        {
+          "natClassNumber": "16A01"
+        },
+        {
+          "natClassNumber": "17A01"
+        },
+        {
+          "natClassNumber": "17A02"
+        },
+        {
+          "natClassNumber": "17A03"
+        },
+        {
+          "natClassNumber": "17A04"
+        },
+        {
+          "natClassNumber": "17A07"
+        },
+        {
+          "natClassNumber": "17B01"
+        },
+        {
+          "natClassNumber": "17C01"
+        },
+        {
+          "natClassNumber": "19B23"
+        },
+        {
+          "natClassNumber": "21A01"
+        },
+        {
+          "natClassNumber": "21A02"
+        },
+        {
+          "natClassNumber": "21A03"
+        },
+        {
+          "natClassNumber": "21B01"
+        },
+        {
+          "natClassNumber": "21C01"
+        },
+        {
+          "natClassNumber": "21F01"
+        },
+        {
+          "natClassNumber": "22A01"
+        },
+        {
+          "natClassNumber": "22A03"
+        },
+        {
+          "natClassNumber": "22B01"
+        },
+        {
+          "natClassNumber": "22C01"
+        },
+        {
+          "natClassNumber": "35A01",
+          "natGoodsServicesDescription": "Advertising and publicity services"
+        },
+        {
+          "natClassNumber": "35A02",
+          "natGoodsServicesDescription": "Promoting the goods and services of others through the administration of sales and promotional incentive schemes involving trading stamps"
+        },
+        {
+          "natClassNumber": "35B01",
+          "natGoodsServicesDescription": "Business management analysis or business consultancy; Business management; Marketing research or analysis; Providing information concerning commercial sales"
+        },
+        {
+          "natClassNumber": "35G03",
+          "natGoodsServicesDescription": "Office functions, namely filing, in particular documents or magnetic tapes; Compilation of information into computer databases"
+        },
+        {
+          "natClassNumber": "35G04",
+          "natGoodsServicesDescription": "Providing business assistance to others in the operation of data processing apparatus namely, computers, typewriters, telex machines and other similar office machines"
+        },
+        {
+          "natClassNumber": "35K02",
+          "natGoodsServicesDescription": "Retail services or wholesale services for woven fabrics and beddings; Retail services or wholesale services for clothing; Retail services or wholesale services for diapers; Retail services or wholesale services for footwear, other than special footwear for sports; Retail services or wholesale services for bags and pouches; Retail services or wholesale services for personal articles"
+        },
+        {
+          "natClassNumber": "35L01",
+          "natGoodsServicesDescription": "Providing commercial information and advice for consumers in the choice of products and services"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Compilation of information into computer databases"
+        },
+        {
+          "natClassNumber": "41A01",
+          "natGoodsServicesDescription": "Educational and instruction services relating to arts, crafts, sports or general knowledge"
+        },
+        {
+          "natClassNumber": "41A03",
+          "natGoodsServicesDescription": "Arranging, conducting and organization of seminars"
+        },
+        {
+          "natClassNumber": "41C02",
+          "natGoodsServicesDescription": "Providing electronic publications; Services of reference libraries for literature and documentary records; Book rental"
+        },
+        {
+          "natClassNumber": "41D01",
+          "natGoodsServicesDescription": "Publication of books"
+        },
+        {
+          "natClassNumber": "41E01",
+          "natGoodsServicesDescription": "Arranging and planning of movies, shows, plays or musical performances"
+        },
+        {
+          "natClassNumber": "41E02",
+          "natGoodsServicesDescription": "Providing videos from the internet, not downloadable; Movie theatre presentations or movie film production and distribution"
+        },
+        {
+          "natClassNumber": "41E03",
+          "natGoodsServicesDescription": "Providing digital music from the Internet, not downloadable; Presentation of live show performances; Direction or presentation of plays; Presentation of musical performances"
+        },
+        {
+          "natClassNumber": "41E04",
+          "natGoodsServicesDescription": "Production of radio or television programs"
+        },
+        {
+          "natClassNumber": "41E05",
+          "natGoodsServicesDescription": "Production of videotape film in the field of education, culture, entertainment or sports [not for movies or television programs and not for advertising or publicity]"
+        },
+        {
+          "natClassNumber": "41E07",
+          "natGoodsServicesDescription": "Operation of video and audio equipment for production of radio and television programs"
+        },
+        {
+          "natClassNumber": "41F01",
+          "natGoodsServicesDescription": "Organization, arranging and conducting of sports competitions"
+        },
+        {
+          "natClassNumber": "41F06",
+          "natGoodsServicesDescription": "Organization of entertainment events excluding movies, shows, plays, musical performances, sports, horse races, bicycle races, boat races and auto races"
+        },
+        {
+          "natClassNumber": "41G01",
+          "natGoodsServicesDescription": "Organization, arranging and conducting of horse races"
+        },
+        {
+          "natClassNumber": "41G02",
+          "natGoodsServicesDescription": "Organization, arranging and conducting of bicycle races"
+        },
+        {
+          "natClassNumber": "41G03",
+          "natGoodsServicesDescription": "Organization, arranging and conducting of boat races"
+        },
+        {
+          "natClassNumber": "41G04",
+          "natGoodsServicesDescription": "Organization, arranging and conducting of auto races"
+        },
+        {
+          "natClassNumber": "41K01",
+          "natGoodsServicesDescription": "Providing amusement facilities"
+        },
+        {
+          "natClassNumber": "41M09",
+          "natGoodsServicesDescription": "Rental of paintings and calligraphic works"
+        },
+        {
+          "natClassNumber": "41Z99",
+          "natGoodsServicesDescription": "Other education, training, entertainments, sports and cultural activities that do not correspond to any of the listed similar group code(s) for the education, training, entertainments, sports and cultural activities"
+        },
+        {
+          "natClassNumber": "42N03",
+          "natGoodsServicesDescription": "Designing of machines, apparatus, instruments [including their parts] or systems composed of such machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42P01",
+          "natGoodsServicesDescription": "Design services"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42P03",
+          "natGoodsServicesDescription": "Technological advice relating to computers, automobiles and industrial machines"
+        },
+        {
+          "natClassNumber": "42Q01",
+          "natGoodsServicesDescription": "Testing, inspection or research of pharmaceuticals, cosmetics or foodstuffs"
+        },
+        {
+          "natClassNumber": "42Q02",
+          "natGoodsServicesDescription": "Research on building construction or city planning; Testing or research on prevention of pollution; Testing or research on electricity; Testing or research on civil engineering"
+        },
+        {
+          "natClassNumber": "42Q03",
+          "natGoodsServicesDescription": "Testing, inspection or research on agriculture, livestock breeding or fisheries"
+        },
+        {
+          "natClassNumber": "42Q99",
+          "natGoodsServicesDescription": "Testing or research on machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        },
+        {
+          "natClassNumber": "42C01",
+          "natGoodsServicesDescription": "Kimono dressing assistance"
+        },
+        {
+          "natClassNumber": "42G03",
+          "natGoodsServicesDescription": "Information relating to fashion coordination services for individuals"
+        },
+        {
+          "natClassNumber": "42R01",
+          "natGoodsServicesDescription": "Agencies for procedures relating to industrial property rights, preparation of expert opinions; Agencies for legal procedures relating to lawsuits or other legal issues; Legal representation in procedures related to registration or deposits"
+        },
+        {
+          "natClassNumber": "42R02",
+          "natGoodsServicesDescription": "Agencies for copyright licensing"
+        },
+        {
+          "natClassNumber": "42X02",
+          "natGoodsServicesDescription": "Clothing rental"
+        }
+      ]
+    },
+    "id": "1cc4c1ff-0b47-407b-acc2-476b0155c101",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20260126"
+      }
+    ],
+    "recordLastUpdated": "20260529",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "Sato, Jun",
+        "representativeNativeName": "佐藤　淳"
+      },
+      {
+        "representativeName": "HAYASHI EIJI",
+        "representativeNativeName": "林　栄二"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260126",
+        "applicationNumber": "2026-007449"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360501",
+      "lastPublicationDate": "20260514",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260501",
+        "registrationNumber": "7041684"
+      }
+    },
+    "version": "20260529084829",
+    "wordMarkSpecification": {
+      "markTranslation": "QORGA",
+      "markTransliteration": "KOOGA KORUGA KUOOGA KUORUGA",
+      "markVerbalElementText": "ＱＯＲＧＡ"
+    }
+  },
+  "_uri": "/mark/jp/1cc4c1ff-0b47-407b-acc2-476b0155c101",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.708Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

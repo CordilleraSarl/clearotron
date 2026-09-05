@@ -1,0 +1,265 @@
+{
+  "uri": "/mark/us/6d8b0c80-e9e1-4691-a6f1-50108f389d22",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "6d8b0c80-e9e1-4691-a6f1-50108f389d22",
+  "applicationNumber": "99453480",
+  "registrationNumber": "8253481",
+  "applicationDate": "2025-10-21",
+  "registrationDate": "2026-05-12",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2026-03-24"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "R7 ROUTE SEVEN ORLANDO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": [
+    "\"ORLANDO\""
+  ],
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Charitable services, namely, providing educational materials in the nature of mentoring to young men and fathers in the field of personal development.; Education services, namely, mentoring in the field of personal and professional development.; Charitable services, namely, providing training in the field of public speaking.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ROUTE 7 ORLANDO INC.",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "Kimra Major-Morris",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "522 S. Hunt Club Blvd., Apopka, FL, 32703, USAM",
+        "applicantAddressCity": "Apopka",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "32703",
+        "applicantAddressStateName": "FLORIDA",
+        "applicantAddressStreet": "522 S. Hunt Club Blvd.",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantName": "ROUTE 7 ORLANDO INC.",
+        "applicantSecondaryAddressUnit": "#356"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Charitable services, namely, providing educational materials in the nature of mentoring to young men and fathers in the field of personal development.; Education services, namely, mentoring in the field of personal and professional development.; Charitable services, namely, providing training in the field of public speaking."
+        }
+      ]
+    },
+    "id": "6d8b0c80-e9e1-4691-a6f1-50108f389d22",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "\"ORLANDO\""
+    ],
+    "markEvents": [
+      {
+        "date": "20260512",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20260512",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20260324",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20260324",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20260318",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20260302",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20260302",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20260302",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20251021",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20251021",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "522 S. Hunt Club Blvd., Apopka, FL, 32703, USAM",
+        "city": "Apopka",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "name": "ROUTE 7 ORLANDO INC.",
+        "postalCode": "32703",
+        "secondaryAddressUnit": "#356",
+        "stateName": "FLORIDA",
+        "street": "522 S. Hunt Club Blvd."
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "522 S. Hunt Club Blvd., Apopka, FL, 32703, USAM",
+        "city": "Apopka",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "name": "ROUTE 7 ORLANDO INC.",
+        "postalCode": "32703",
+        "secondaryAddressUnit": "#356",
+        "stateName": "FLORIDA",
+        "street": "522 S. Hunt Club Blvd."
+      },
+      {
+        "address": "522 S. Hunt Club Blvd., Apopka, FL, 32703, USAM",
+        "city": "Apopka",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "name": "ROUTE 7 ORLANDO INC.",
+        "postalCode": "32703",
+        "secondaryAddressUnit": "#356",
+        "stateName": "FLORIDA",
+        "street": "522 S. Hunt Club Blvd."
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "522 S. Hunt Club Blvd., Apopka, FL, 32703, USAM",
+        "city": "Apopka",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "name": "ROUTE 7 ORLANDO INC.",
+        "postalCode": "32703",
+        "secondaryAddressUnit": "#356",
+        "stateName": "FLORIDA",
+        "street": "522 S. Hunt Club Blvd."
+      }
+    ],
+    "recordLastUpdated": "20260514",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "#356, Apopka, FL 32703, United States",
+        "representativeCorrespondentAddressLines": [
+          "#356",
+          "Apopka, FL 32703",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Kimra Major-Morris Major-Morris Law, LLC., 522 S. Hunt Club Blvd."
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "#356, Apopka, FL 32703, United States",
+        "representativeAddressLines": [
+          "#356",
+          "Apopka, FL 32703",
+          "United States"
+        ],
+        "representativeName": "Kimra Major-Morris"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251021",
+        "applicationNumber": "99453480"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20181019"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20190102"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20260512",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20260324"
+      ],
+      "registration": {
+        "registrationDate": "20260512",
+        "registrationNumber": "8253481"
+      }
+    },
+    "version": "20260514044046",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "R 7 ROUTE SEVEN ORLANDO, R 7 ROUTE 7 ORLANDO",
+      "markVerbalElementText": "R7 ROUTE SEVEN ORLANDO"
+    }
+  },
+  "_uri": "/mark/us/6d8b0c80-e9e1-4691-a6f1-50108f389d22",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.831Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

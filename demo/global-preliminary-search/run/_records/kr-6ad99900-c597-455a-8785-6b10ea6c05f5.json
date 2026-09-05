@@ -1,0 +1,127 @@
+{
+  "uri": "/mark/kr/6ad99900-c597-455a-8785-6b10ea6c05f5",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "6ad99900-c597-455a-8785-6b10ea6c05f5",
+  "applicationNumber": "40-2008-0000946",
+  "registrationNumber": "4007721680000",
+  "applicationDate": "2008-01-08",
+  "registrationDate": "2008-12-11",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "NORI",
+  "markTransliteration": "NORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7
+      ],
+      "language": "ko",
+      "description": "가정용 전기청소기,세정기계,전기식 청소장치 및 기계,증기를 이용한 청소기구",
+      "translation_language": "en",
+      "translation": "Household electric cleaners, washing machines, electric cleaning machines and machines, steam cleaning machines"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "전기다리미",
+      "translation_language": "en",
+      "translation": "Electric iron"
+    }
+  ],
+  "owner": "Lee Dong Kyu",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 중랑구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Lee Dong Kyu",
+        "applicantNativeName": "이동규"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Household electric cleaners, washing machines, electric cleaning machines and machines, steam cleaning machines",
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "가정용 전기청소기,세정기계,전기식 청소장치 및 기계,증기를 이용한 청소기구"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electric iron",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "전기다리미"
+        }
+      ]
+    },
+    "id": "6ad99900-c597-455a-8785-6b10ea6c05f5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20080108",
+        "applicationNumber": "40-2008-0000946"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20081211",
+        "registrationNumber": "4007721680000"
+      }
+    },
+    "version": "20250625162521",
+    "wordMarkSpecification": {
+      "markTransliteration": "NORI",
+      "markVerbalElementText": "NORI"
+    }
+  },
+  "_uri": "/mark/kr/6ad99900-c597-455a-8785-6b10ea6c05f5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.693Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

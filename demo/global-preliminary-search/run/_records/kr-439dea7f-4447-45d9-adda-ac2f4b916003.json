@@ -1,0 +1,157 @@
+{
+  "uri": "/mark/kr/439dea7f-4447-45d9-adda-ac2f4b916003",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "439dea7f-4447-45d9-adda-ac2f4b916003",
+  "applicationNumber": "45-2004-0003458",
+  "registrationNumber": null,
+  "applicationDate": "2004-10-05",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "NORI",
+  "markTransliteration": "NORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    16,
+    28,
+    38,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        16
+      ],
+      "language": "ko",
+      "description": "서적, 잡지, 카탈로그, 팜플렛",
+      "translation_language": "en",
+      "translation": "Books, magazines, catalogs, pamphlets"
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "ko",
+      "description": "보드게임, 빙고카드, 퍼즐용 그림조각",
+      "translation_language": "en",
+      "translation": "Picture pieces for board games, bingo cards, and puzzles"
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "ko",
+      "description": "교육방송업, 라디오방송업, 유선텔레비전방송업, 인터넷방송업, 텔레비전방송업",
+      "translation_language": "en",
+      "translation": "Educational broadcasting, radio broadcasting, cable television broadcasting, internet broadcasting, television broadcasting"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "온라인 게임 서비스업",
+      "translation_language": "en",
+      "translation": "Online game service industry"
+    }
+  ],
+  "owner": "ITOXI Corp.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 강남구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "ITOXI Corp.",
+        "applicantNativeName": "주식회사 아이톡시"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Books, magazines, catalogs, pamphlets",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "서적, 잡지, 카탈로그, 팜플렛"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Picture pieces for board games, bingo cards, and puzzles",
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "보드게임, 빙고카드, 퍼즐용 그림조각"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Educational broadcasting, radio broadcasting, cable television broadcasting, internet broadcasting, television broadcasting",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "교육방송업, 라디오방송업, 유선텔레비전방송업, 인터넷방송업, 텔레비전방송업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Online game service industry",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "온라인 게임 서비스업"
+        }
+      ]
+    },
+    "id": "439dea7f-4447-45d9-adda-ac2f4b916003",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260529",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20041005",
+        "applicationNumber": "45-2004-0003458"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260529021214",
+    "wordMarkSpecification": {
+      "markTransliteration": "NORI",
+      "markVerbalElementText": "NORI"
+    }
+  },
+  "_uri": "/mark/kr/439dea7f-4447-45d9-adda-ac2f4b916003",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.693Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

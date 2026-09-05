@@ -1,0 +1,226 @@
+{
+  "uri": "/mark/jp/66c3f979-818d-4a4e-97fa-36bb9582283e",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "66c3f979-818d-4a4e-97fa-36bb9582283e",
+  "applicationNumber": "2014-097273",
+  "registrationNumber": "5774869",
+  "applicationDate": "2014-11-18",
+  "registrationDate": "2015-06-26",
+  "expiryDate": "2035-06-26",
+  "renewalDate": null,
+  "lastPublicationDate": "2015-07-28",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＩＴＥＲＯ　ＥＬＥＭＥＮＴ",
+  "markTransliteration": "ITEROEREMENTO",
+  "markTranslation": "ITERO ELEMENT",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    40,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "レーザー光スキャナー・オプティカルスキャナー・コンピュータスクリーン及びそれらと共に使用されるコンピュータソフトウェア，コンピュータ，コンピュータソフトウェア，データ処理装置，電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Laser light scanner · Optical scanner · Computer screen and computer software used with them, computer, computer software, data processing equipment, electronic appliances appliances and parts thereof"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": null,
+      "description": "撮像された医療用画像の表示用のコンピュータソフトウェア及びコンピュータハードウェアから成る医療用機械器具，デジタル医療用画像の撮像・保存・検索及び通信媒体を通じた伝送用の口腔内スキャンカメラ，医療用画像の撮像用スキャンカメラ，歯列矯正器具，外科用・内科用及び歯科用の機器，医療用機械器具",
+      "translation_language": "en",
+      "translation": "Medical machinery and equipment comprising computer software for displaying captured medical images and computer hardware, intraoral scan cameras for imaging, preserving and retrieving digital medical images and for transmission through communication media, medical images for medical images Scan camera for imaging, orthodontic appliances, surgical and medical and dental equipment, medical equipment for medical use"
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": "歯の技工，義肢又は義歯の加工（「医療材料の加工」を含む。）",
+      "translation_language": "en",
+      "translation": "Processing of dental technicians, prostheses or dentures (including \"processing of medical materials\")"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "電子計算機を利用したデータの情報処理，電子計算機用プログラムの設計・作成又は保守",
+      "translation_language": "en",
+      "translation": "Information processing of data using electronic computers, designing, creating or maintaining programs for electronic computers"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": null,
+      "description": "歯科医業，矯正歯科医業，医業，医療情報の提供",
+      "translation_language": "en",
+      "translation": "Dental medical, orthodontic medical, medical, medical information provision"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YAMAMOTO HIDESAKU",
+  "priorities": [
+    {
+      "priorityDate": "20140606"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Laser light scanner · Optical scanner · Computer screen and computer software used with them, computer, computer software, data processing equipment, electronic appliances appliances and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "レーザー光スキャナー・オプティカルスキャナー・コンピュータスクリーン及びそれらと共に使用されるコンピュータソフトウェア，コンピュータ，コンピュータソフトウェア，データ処理装置，電子応用機械器具及びその部品"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Medical machinery and equipment comprising computer software for displaying captured medical images and computer hardware, intraoral scan cameras for imaging, preserving and retrieving digital medical images and for transmission through communication media, medical images for medical images Scan camera for imaging, orthodontic appliances, surgical and medical and dental equipment, medical equipment for medical use",
+          "intClassNumber": "10",
+          "intGoodsServicesDescription": "撮像された医療用画像の表示用のコンピュータソフトウェア及びコンピュータハードウェアから成る医療用機械器具，デジタル医療用画像の撮像・保存・検索及び通信媒体を通じた伝送用の口腔内スキャンカメラ，医療用画像の撮像用スキャンカメラ，歯列矯正器具，外科用・内科用及び歯科用の機器，医療用機械器具"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Processing of dental technicians, prostheses or dentures (including \"processing of medical materials\")",
+          "intClassNumber": "40",
+          "intGoodsServicesDescription": "歯の技工，義肢又は義歯の加工（「医療材料の加工」を含む。）"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Information processing of data using electronic computers, designing, creating or maintaining programs for electronic computers",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "電子計算機を利用したデータの情報処理，電子計算機用プログラムの設計・作成又は保守"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dental medical, orthodontic medical, medical, medical information provision",
+          "intClassNumber": "44",
+          "intGoodsServicesDescription": "歯科医業，矯正歯科医業，医業，医療情報の提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door opening and closing control systems; Electron microscopes"
+        },
+        {
+          "natClassNumber": "10D01",
+          "natGoodsServicesDescription": "Medical apparatus and instruments, other than walking aids, and crutches"
+        },
+        {
+          "natClassNumber": "10D02",
+          "natGoodsServicesDescription": "Walking aids for medical purposes; Crutches"
+        },
+        {
+          "natClassNumber": "40C10",
+          "natGoodsServicesDescription": "Processing of artificial limbs or artificial teeth, including processing of medical materials"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42V02",
+          "natGoodsServicesDescription": "Medical practice; Providing medical information; Physical examination; Dental practice; Dispense medicine"
+        }
+      ]
+    },
+    "id": "66c3f979-818d-4a4e-97fa-36bb9582283e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20140606"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20141118",
+        "applicationNumber": "2014-097273"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350626",
+      "lastPublicationDate": "20150728",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20150626",
+        "registrationNumber": "5774869"
+      }
+    },
+    "version": "20250627084226",
+    "wordMarkSpecification": {
+      "markTranslation": "ITERO ELEMENT",
+      "markTransliteration": "ITEROEREMENTO",
+      "markVerbalElementText": "ＩＴＥＲＯ　ＥＬＥＭＥＮＴ"
+    }
+  },
+  "_uri": "/mark/jp/66c3f979-818d-4a4e-97fa-36bb9582283e",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.739Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

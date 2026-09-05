@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/cn/cd8d77e0-3d77-46d5-991e-66b4324f6d9d",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "cd8d77e0-3d77-46d5-991e-66b4324f6d9d",
+  "applicationNumber": "28561508",
+  "registrationNumber": "28561508",
+  "applicationDate": "2018-01-08",
+  "registrationDate": "2019-08-14",
+  "expiryDate": "2029-08-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-05-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "本源量子",
+  "markTransliteration": "OQ ORIGIN QUANTUM ben yuan liang zi",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "物理研究;云计算;计算机技术咨询;集成电路设计;设备和仪器的功能测试;计算机软件更新;通过网站提供计算机技术和编程信息;计算机编程;计算机软件设计;计算机硬件设计和开发咨询;软件即服务(SaaS);技术项目研究",
+      "translation_language": "en",
+      "translation": "physics research; cloud computing; computer technology consulting; integrated circuit design; functional testing of equipment and instruments; computer software updates; computer technology and programming information provided through the website; computer programming; computer software design; computer hardware design and development consulting; Service (SaaS); technical project research"
+    }
+  ],
+  "owner": "Benyuan Quantum Computing Technology (Hefei) Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "安徽省合肥市高新区城西桥社区服务中心望江西路900号中安创谷科技园一期D8幢",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Benyuan Quantum Computing Technology (Hefei) Co., Ltd.",
+        "applicantNativeName": "本源量子计算科技(合肥)股份有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "physics research; cloud computing; computer technology consulting; integrated circuit design; functional testing of equipment and instruments; computer software updates; computer technology and programming information provided through the website; computer programming; computer software design; computer hardware design and development consulting; Service (SaaS); technical project research",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "物理研究;云计算;计算机技术咨询;集成电路设计;设备和仪器的功能测试;计算机软件更新;通过网站提供计算机技术和编程信息;计算机编程;计算机软件设计;计算机硬件设计和开发咨询;软件即服务(SaaS);技术项目研究"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Survey service",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4214",
+          "subNatGoodsServicesDescription": "Survey service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "cd8d77e0-3d77-46d5-991e-66b4324f6d9d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1647"
+      }
+    ],
+    "recordLastUpdated": "20260312",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180108",
+        "applicationNumber": "28561508"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290813",
+      "lastPublicationDate": "20190513",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20190814",
+        "registrationNumber": "28561508"
+      }
+    },
+    "version": "20260312020141",
+    "wordMarkSpecification": {
+      "markTransliteration": "OQ ORIGIN QUANTUM ben yuan liang zi",
+      "markVerbalElementText": "本源量子"
+    }
+  },
+  "_uri": "/mark/cn/cd8d77e0-3d77-46d5-991e-66b4324f6d9d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.398Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

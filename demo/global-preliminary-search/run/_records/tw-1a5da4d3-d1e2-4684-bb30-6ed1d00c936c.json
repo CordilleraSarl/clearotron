@@ -1,0 +1,106 @@
+{
+  "uri": "/mark/tw/1a5da4d3-d1e2-4684-bb30-6ed1d00c936c",
+  "provider": "clarivate",
+  "office": "tw",
+  "guid": "1a5da4d3-d1e2-4684-bb30-6ed1d00c936c",
+  "applicationNumber": "068015227",
+  "registrationNumber": "00128715",
+  "applicationDate": "1979-08-17",
+  "registrationDate": "1980-02-16",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "KORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "zh",
+      "description": "第080類:計算機、計算器及其他一切應屬本類之商品",
+      "translation_language": "en",
+      "translation": "Class 080: Computers, calculators and all other goods that should fall into this class"
+    }
+  ],
+  "owner": "lin du shui",
+  "ownerNative": null,
+  "ownerCountry": "TW",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "TW",
+        "applicantAddressCountryName": "Taiwan",
+        "applicantName": "lin du shui"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 080: Computers, calculators and all other goods that should fall into this class",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "zh",
+          "intGoodsServicesDescription": "第080類:計算機、計算器及其他一切應屬本類之商品"
+        }
+      ]
+    },
+    "id": "1a5da4d3-d1e2-4684-bb30-6ed1d00c936c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260401",
+    "registrationOfficeCode": "TW",
+    "registrationOfficeName": "Taiwan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19790817",
+        "applicationNumber": "068015227"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "19800216",
+        "registrationNumber": "00128715"
+      }
+    },
+    "version": "20260401102445",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "KORI"
+    }
+  },
+  "_uri": "/mark/tw/1a5da4d3-d1e2-4684-bb30-6ed1d00c936c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.792Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

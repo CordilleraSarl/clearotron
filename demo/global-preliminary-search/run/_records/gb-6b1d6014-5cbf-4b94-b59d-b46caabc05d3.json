@@ -1,0 +1,134 @@
+{
+  "uri": "/mark/gb/6b1d6014-5cbf-4b94-b59d-b46caabc05d3",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "6b1d6014-5cbf-4b94-b59d-b46caabc05d3",
+  "applicationNumber": "3139522",
+  "registrationNumber": "3139522",
+  "applicationDate": "2015-12-07",
+  "registrationDate": "2016-03-04",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "GROSVENOR MUSIC GROUP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    16,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Printed music; Music scores; Sheet music; Music books.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Entertainment in the nature of symphony orchestra performances; Orchestra services; Presentation of orchestra performances; Music entertainment; Music publishing; Music production; Music concerts; Tuition in music; Teaching of music.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Peter Heming (MVO)",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Irwin Mitchell LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "c/o Thomas Eggar LLP, 21 Brunswick Place, Southampton SO15 2AQ, Hampshire",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Peter Heming (MVO)"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Printed music; Music scores; Sheet music; Music books."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Entertainment in the nature of symphony orchestra performances; Orchestra services; Presentation of orchestra performances; Music entertainment; Music publishing; Music production; Music concerts; Tuition in music; Teaching of music."
+        }
+      ]
+    },
+    "id": "6b1d6014-5cbf-4b94-b59d-b46caabc05d3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2015/051"
+      }
+    ],
+    "recordLastUpdated": "20260626",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "40 Holborn Viaduct, London EC1N 2PZ",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Irwin Mitchell LLP"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20151207",
+        "applicationNumber": "3139522"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "REMOVED FROM THE RECORD",
+      "registration": {
+        "registrationDate": "20160304",
+        "registrationNumber": "3139522"
+      }
+    },
+    "version": "20260626020155",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR MUSIC GROUP"
+    }
+  },
+  "_uri": "/mark/gb/6b1d6014-5cbf-4b94-b59d-b46caabc05d3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.815Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

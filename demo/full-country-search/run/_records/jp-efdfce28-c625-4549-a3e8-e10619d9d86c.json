@@ -1,0 +1,186 @@
+{
+  "uri": "/mark/jp/efdfce28-c625-4549-a3e8-e10619d9d86c",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "efdfce28-c625-4549-a3e8-e10619d9d86c",
+  "applicationNumber": "S61-035193",
+  "registrationNumber": "2198459",
+  "applicationDate": "1986-04-04",
+  "registrationDate": "1989-12-25",
+  "expiryDate": "1999-12-25",
+  "renewalDate": null,
+  "lastPublicationDate": "1989-06-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "コニカカラ－セブン　ＫＯＮＩＣＡ　ＣＯＬＯＲ７",
+  "markTransliteration": "KONIKAKARAASEBUN",
+  "markTranslation": "KONICA COLOR SEVEN KONICA COLOR 7",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    2,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    16,
+    17,
+    20,
+    21,
+    26,
+    28
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        2,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        16,
+        17,
+        20,
+        21,
+        26,
+        28
+      ],
+      "language": null,
+      "description": "電子応用機械器具、その他本類に属する商品",
+      "translation_language": "en",
+      "translation": "Electronics applied appliances, other items belonging to this category"
+    }
+  ],
+  "owner": "KONICA K.K.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19860404"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "SHINJUKU TOKYO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "KONICA K.K.",
+        "applicantNativeAddress": "東京都新宿区西新宿１丁目２６番２号",
+        "applicantNativeName": "コニカ株式会社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electronics applied appliances, other items belonging to this category",
+          "intClassNumber": "02,06,07,08,09,10,11,12,16,17,20,21,26,28",
+          "intGoodsServicesDescription": "電子応用機械器具、その他本類に属する商品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11A01"
+        },
+        {
+          "natClassNumber": "11A02"
+        },
+        {
+          "natClassNumber": "11A03"
+        },
+        {
+          "natClassNumber": "11A04"
+        },
+        {
+          "natClassNumber": "11A05"
+        },
+        {
+          "natClassNumber": "11A06"
+        },
+        {
+          "natClassNumber": "11A07"
+        },
+        {
+          "natClassNumber": "11A08"
+        },
+        {
+          "natClassNumber": "11B01"
+        },
+        {
+          "natClassNumber": "11C01"
+        },
+        {
+          "natClassNumber": "11C02"
+        },
+        {
+          "natClassNumber": "11D01"
+        }
+      ]
+    },
+    "id": "efdfce28-c625-4549-a3e8-e10619d9d86c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19860404"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19860404",
+        "applicationNumber": "S61-035193"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "19991225",
+      "lastPublicationDate": "19890606",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19891225",
+        "registrationNumber": "2198459"
+      }
+    },
+    "version": "20240321113934",
+    "wordMarkSpecification": {
+      "markTranslation": "KONICA COLOR SEVEN KONICA COLOR 7",
+      "markTransliteration": "KONIKAKARAASEBUN",
+      "markVerbalElementText": "コニカカラ－セブン　ＫＯＮＩＣＡ　ＣＯＬＯＲ７"
+    }
+  },
+  "_uri": "/mark/jp/efdfce28-c625-4549-a3e8-e10619d9d86c",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:40:16.782Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-transliteration-numeric"
+  }
+}

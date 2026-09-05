@@ -1,0 +1,162 @@
+{
+  "uri": "/mark/jp/e913712a-5335-43ec-9313-c45a1c1f881e",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "e913712a-5335-43ec-9313-c45a1c1f881e",
+  "applicationNumber": "H04-044992",
+  "registrationNumber": null,
+  "applicationDate": "1992-03-31",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＶＥＮＴＵＲＩ",
+  "markTransliteration": "BENCHURI",
+  "markTranslation": "VENTURI",
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    16,
+    20
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        16,
+        20
+      ],
+      "language": null,
+      "description": "写真機械器具、その他本類に属する商品",
+      "translation_language": "en",
+      "translation": "Photographic machinery and equipment, other items belonging to this category"
+    }
+  ],
+  "owner": "HAKIRA K.K.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "TAKEDA MOTOTOSHI",
+  "priorities": [
+    {
+      "priorityDate": "19920331"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "SHIBUYA TOKYO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "HAKIRA K.K.",
+        "applicantNativeAddress": "東京都渋谷区代々木３丁目３３番１５号",
+        "applicantNativeName": "ハキラ株式会社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Photographic machinery and equipment, other items belonging to this category",
+          "intClassNumber": "01,05,06,07,08,09,10,11,12,16,20",
+          "intGoodsServicesDescription": "写真機械器具、その他本類に属する商品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "10A01"
+        },
+        {
+          "natClassNumber": "10B01"
+        },
+        {
+          "natClassNumber": "10C01"
+        },
+        {
+          "natClassNumber": "10D01"
+        },
+        {
+          "natClassNumber": "10D02"
+        },
+        {
+          "natClassNumber": "10E01"
+        }
+      ]
+    },
+    "id": "e913712a-5335-43ec-9313-c45a1c1f881e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19920331"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "TAKEDA MOTOTOSHI",
+        "representativeNativeName": "武田　元敏"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19920331",
+        "applicationNumber": "H04-044992"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "LAPSED [EXPIRED]"
+    },
+    "version": "20230427112623",
+    "wordMarkSpecification": {
+      "markTranslation": "VENTURI",
+      "markTransliteration": "BENCHURI",
+      "markVerbalElementText": "ＶＥＮＴＵＲＩ"
+    }
+  },
+  "_uri": "/mark/jp/e913712a-5335-43ec-9313-c45a1c1f881e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.177Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

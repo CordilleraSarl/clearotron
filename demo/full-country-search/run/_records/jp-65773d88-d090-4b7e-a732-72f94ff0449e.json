@@ -1,0 +1,138 @@
+{
+  "uri": "/mark/jp/65773d88-d090-4b7e-a732-72f94ff0449e",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "65773d88-d090-4b7e-a732-72f94ff0449e",
+  "applicationNumber": "H10-063239",
+  "registrationNumber": "4359031",
+  "applicationDate": "1998-07-24",
+  "registrationDate": "2000-02-04",
+  "expiryDate": "2020-02-04",
+  "renewalDate": null,
+  "lastPublicationDate": "2000-03-21",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "デジタルパワ－　ＤＩＧＩＴＡＬＰＯＷＥＲ",
+  "markTransliteration": "DEJITARUPAWAA DIJITARUPAWAA",
+  "markTranslation": "DIGITALPOWER",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "半導体素子，電子回路（電子計算機用プログラムを記憶させた電子回路を除く。），電子計算機（中央処理装置及び電子計算機用プログラムを記憶させた電子回路・磁気ディスク・磁気テープその他の周辺機器を含む。）",
+      "translation_language": "en",
+      "translation": "Including semiconductor devices, electronic circuits (excluding electronic circuits storing programs for electronic computers), electronic computers (electronic circuits storing programs for central processing units and computers, magnetic disks, magnetic tapes, and other peripheral devices .)"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "ONUKI SHINSUKE",
+  "priorities": [
+    {
+      "priorityDate": "19980724"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Including semiconductor devices, electronic circuits (excluding electronic circuits storing programs for electronic computers), electronic computers (electronic circuits storing programs for central processing units and computers, magnetic disks, magnetic tapes, and other peripheral devices .)",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "半導体素子，電子回路（電子計算機用プログラムを記憶させた電子回路を除く。），電子計算機（中央処理装置及び電子計算機用プログラムを記憶させた電子回路・磁気ディスク・磁気テープその他の周辺機器を含む。）"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, instruments and parts"
+        }
+      ]
+    },
+    "id": "65773d88-d090-4b7e-a732-72f94ff0449e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19980724"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "ONUKI SHINSUKE",
+        "representativeNativeName": "大貫　進介"
+      },
+      {
+        "representativeName": "HONJO  YOSHINORI",
+        "representativeNativeName": "本城　雅則"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19980724",
+        "applicationNumber": "H10-063239"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20200204",
+      "lastPublicationDate": "20000321",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20000204",
+        "registrationNumber": "4359031"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "DIGITALPOWER",
+      "markTransliteration": "DEJITARUPAWAA DIJITARUPAWAA",
+      "markVerbalElementText": "デジタルパワ－　ＤＩＧＩＴＡＬＰＯＷＥＲ"
+    }
+  },
+  "_uri": "/mark/jp/65773d88-d090-4b7e-a732-72f94ff0449e",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.461Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "uri": "/mark/kr/41553b4b-3bd6-4fc5-a00d-fe0e5742134e",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "41553b4b-3bd6-4fc5-a00d-fe0e5742134e",
+  "applicationNumber": "41-2008-0013026",
+  "registrationNumber": null,
+  "applicationDate": "2008-05-15",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "Quri",
+  "markTransliteration": "QURI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "게임서비스업, 복권추첨운영업",
+      "translation_language": "en",
+      "translation": "Game service business, lottery drawing operation business"
+    }
+  ],
+  "owner": "Humanworks",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "김수진 (KIM, Su Jin)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 강남구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Humanworks",
+        "applicantNativeName": "(주)휴먼웍스"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Game service business, lottery drawing operation business",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "게임서비스업, 복권추첨운영업"
+        }
+      ]
+    },
+    "id": "41553b4b-3bd6-4fc5-a00d-fe0e5742134e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "04.01.02"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260506",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 강남구 언주로 **층 (역삼동, 윤익빌딩)(유니스특허법률사무소)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김수진 (KIM, Su Jin)"
+      },
+      {
+        "representativeAddress": "서울특별시 강남구 언주로 **층 유니스특허법률사무소 (역삼동, 윤익빌딩)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "윤의섭 (YOON, Eui Seoup)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20080515",
+        "applicationNumber": "41-2008-0013026"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260506020325",
+    "wordMarkSpecification": {
+      "markTransliteration": "QURI",
+      "markVerbalElementText": "Quri"
+    }
+  },
+  "_uri": "/mark/kr/41553b4b-3bd6-4fc5-a00d-fe0e5742134e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:07.495Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

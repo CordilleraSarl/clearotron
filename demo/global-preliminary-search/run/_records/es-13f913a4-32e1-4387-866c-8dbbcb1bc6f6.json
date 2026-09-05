@@ -1,0 +1,126 @@
+{
+  "uri": "/mark/es/13f913a4-32e1-4387-866c-8dbbcb1bc6f6",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "13f913a4-32e1-4387-866c-8dbbcb1bc6f6",
+  "applicationNumber": "4028440 M9",
+  "registrationNumber": "4028440 M9",
+  "applicationDate": "2019-07-19",
+  "registrationDate": "2020-02-11",
+  "expiryDate": "2029-07-18",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-08-02",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JORCAM JOVEN ORQUESTA Y CORO DE LA COMUNIDAD DE MADRID",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de una orquesta y coro; servicios de esparcimiento, ocio y de actividades culturales; servicios de educacion.",
+      "translation_language": "en",
+      "translation": "SERVICES OF AN ORCHESTRA AND CHORUS; SPORTS, LEISURE AND CULTURAL ACTIVITIES SERVICES; EDUCATION SERVICES"
+    }
+  ],
+  "owner": "FUNDACION ORQUESTA Y CORO DE LA COMUNIDAD DE MADRID",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Julio de Pablos Riba",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "FUNDACION ORQUESTA Y CORO DE LA COMUNIDAD DE MADRID"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "cmMarkImageEUclassification": [
+      "55.00.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SERVICES OF AN ORCHESTRA AND CHORUS; SPORTS, LEISURE AND CULTURAL ACTIVITIES SERVICES; EDUCATION SERVICES",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de una orquesta y coro; servicios de esparcimiento, ocio y de actividades culturales; servicios de educacion."
+        }
+      ]
+    },
+    "id": "13f913a4-32e1-4387-866c-8dbbcb1bc6f6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.09",
+      "27.05.10",
+      "27.05.17"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "5475"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "representatives": [
+      {
+        "representativeAddress": "C/ Los Madrazo, 24 28014 Madrid MADRID",
+        "representativeName": "Julio de Pablos Riba"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190719",
+        "applicationNumber": "4028440 M9"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290718",
+      "lastPublicationDate": "20190802",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20200211",
+        "registrationNumber": "4028440 M9"
+      }
+    },
+    "version": "20260427165601",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JORCAM JOVEN ORQUESTA Y CORO DE LA COMUNIDAD DE MADRID"
+    }
+  },
+  "_uri": "/mark/es/13f913a4-32e1-4387-866c-8dbbcb1bc6f6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

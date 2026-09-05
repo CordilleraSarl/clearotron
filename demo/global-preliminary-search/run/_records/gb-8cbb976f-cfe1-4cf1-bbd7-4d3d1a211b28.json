@@ -1,0 +1,172 @@
+{
+  "uri": "/mark/gb/8cbb976f-cfe1-4cf1-bbd7-4d3d1a211b28",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "8cbb976f-cfe1-4cf1-bbd7-4d3d1a211b28",
+  "applicationNumber": "4240683",
+  "registrationNumber": "4240683",
+  "applicationDate": "2025-07-28",
+  "registrationDate": "2025-10-17",
+  "expiryDate": "2035-07-28",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VenQ",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    35,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Downloadable electronic publications in the nature of toolkits, guides, manuals, templates and workbooks in the fields of business consultancy, retail, entrepreneurship and property; downloadable software and digital tools for use in lease negotiation, retail planning and business development; downloadable instructional materials; downloadable AI prompts and automation tools.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Printed publications; books; workbooks; manuals; printed instructional and teaching materials; stationery; printed educational materials in the fields of retail business, entrepreneurship and consultancy.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Business consultancy; commercial project management; business advisory services relating to retail location and lease negotiation; providing business support services to new and existing retail businesses; business consultancy in the field of shopfitting, store layout and operational setup; business information and advisory services provided via a website; marketing consultancy; provision of business data and reports.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Educational services; providing online training, workshops and courses in the field of retail, property, business development and artificial intelligence; publication of books and educational materials; development and delivery of training programmes and toolkits for entrepreneurs and retail businesses; providing non-downloadable instructional videos and digital content.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Development and provision of artificial intelligence tools; software as a service (SaaS) featuring AI assistants and automation tools for business support, lease management and project planning; providing temporary use of online non-downloadable software for use in business consultancy, retail development and property advice; AI-based business productivity platforms; design and development of proprietary digital tools and systems.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "LRG CONSULTANTS LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "5 Scholars Way, Riddlesden, KEIGHLEY BD20 5QE, West Yorkshire",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "LRG CONSULTANTS LIMITED"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Downloadable electronic publications in the nature of toolkits, guides, manuals, templates and workbooks in the fields of business consultancy, retail, entrepreneurship and property; downloadable software and digital tools for use in lease negotiation, retail planning and business development; downloadable instructional materials; downloadable AI prompts and automation tools."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Printed publications; books; workbooks; manuals; printed instructional and teaching materials; stationery; printed educational materials in the fields of retail business, entrepreneurship and consultancy."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Business consultancy; commercial project management; business advisory services relating to retail location and lease negotiation; providing business support services to new and existing retail businesses; business consultancy in the field of shopfitting, store layout and operational setup; business information and advisory services provided via a website; marketing consultancy; provision of business data and reports."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Educational services; providing online training, workshops and courses in the field of retail, property, business development and artificial intelligence; publication of books and educational materials; development and delivery of training programmes and toolkits for entrepreneurs and retail businesses; providing non-downloadable instructional videos and digital content."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Development and provision of artificial intelligence tools; software as a service (SaaS) featuring AI assistants and automation tools for business support, lease management and project planning; providing temporary use of online non-downloadable software for use in business consultancy, retail development and property advice; AI-based business productivity platforms; design and development of proprietary digital tools and systems."
+        }
+      ]
+    },
+    "id": "8cbb976f-cfe1-4cf1-bbd7-4d3d1a211b28",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2025/032"
+      }
+    ],
+    "recordLastUpdated": "20251023",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250728",
+        "applicationNumber": "4240683"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350728",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20251017",
+        "registrationNumber": "4240683"
+      }
+    },
+    "version": "20251023020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VenQ"
+    }
+  },
+  "_uri": "/mark/gb/8cbb976f-cfe1-4cf1-bbd7-4d3d1a211b28",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.566Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

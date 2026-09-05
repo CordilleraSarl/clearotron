@@ -1,0 +1,160 @@
+{
+  "uri": "/mark/gb/3e578d41-d112-4024-b7ab-624e4e12b9e5",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "3e578d41-d112-4024-b7ab-624e4e12b9e5",
+  "applicationNumber": "UK00801478028",
+  "registrationNumber": "UK00801478028",
+  "applicationDate": "2019-05-15",
+  "registrationDate": "2020-01-03",
+  "expiryDate": "2029-05-15",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "AVENCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Apparatus for recording, transmission, reproduction or processing of sound or images; magnetic recording media; acoustic, magnetic or optical discs; floppy disks; optical, magnetic data media; equipment for data processing and computers; game software; software (recorded programs); recorded computer programs; computer peripheral devices; integrated circuit cards [smart cards]; downloadable computer software applications; downloadable electronic publications; computer platforms in the form of recorded or downloadable software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Business management assistance; business management and organization consultancy; business management consultancy; professional business consultancy; expertise in commercial affairs; business information; business investigations; business research; business inquiries; cost price analysis; price comparison services; procurement services for others [purchasing goods and services for other businesses]; assistance in business professional consultancy; management of commercial or industrial companies; advisory services for business management; commercial or industrial company management assistance; business appraisals; business project management; research of business information in computer files for others; market study; market research; commercial business appraisal; personnel recruitment; projects (business management assistance); company efficiency expert services; organization of exhibitions, trade fairs for commercial or advertising purposes; financial and accounting auditing; company auditing namely commercial analyses; compilation of information into computer databases; database management; collection of data in a central file; consultancy in improving performance and cost optimization of companies (business organization consultancy); on-line retail sale services of downloadable computer software; retail sale services for software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Computer system analysis; design and development of computers and software; computer system design; research and development of new products for third parties; design, installation, maintenance, updating, rental of computer software; programming for computers; computer and software consultancy; information technology (IT) consultancy; conversion of computer programs and data, other than physical conversion; conversion of data or documents from physical to electronic media; analysis for the installation of computer systems; rental of computer software; software as a service [SaaS]; electronic data storage; management of computer projects; quality control.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "AVENCORE",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "Wynne-Jones IP Limited",
+  "priorities": [
+    {
+      "priorityCountryCode": "FR",
+      "priorityCountryName": "France",
+      "priorityDate": "20181205",
+      "priorityNumber": "4505765"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "61-63 avenue des Champs-Élysées F-75008 PARIS",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "AVENCORE"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Apparatus for recording, transmission, reproduction or processing of sound or images; magnetic recording media; acoustic, magnetic or optical discs; floppy disks; optical, magnetic data media; equipment for data processing and computers; game software; software (recorded programs); recorded computer programs; computer peripheral devices; integrated circuit cards [smart cards]; downloadable computer software applications; downloadable electronic publications; computer platforms in the form of recorded or downloadable software."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Business management assistance; business management and organization consultancy; business management consultancy; professional business consultancy; expertise in commercial affairs; business information; business investigations; business research; business inquiries; cost price analysis; price comparison services; procurement services for others [purchasing goods and services for other businesses]; assistance in business professional consultancy; management of commercial or industrial companies; advisory services for business management; commercial or industrial company management assistance; business appraisals; business project management; research of business information in computer files for others; market study; market research; commercial business appraisal; personnel recruitment; projects (business management assistance); company efficiency expert services; organization of exhibitions, trade fairs for commercial or advertising purposes; financial and accounting auditing; company auditing namely commercial analyses; compilation of information into computer databases; database management; collection of data in a central file; consultancy in improving performance and cost optimization of companies (business organization consultancy); on-line retail sale services of downloadable computer software; retail sale services for software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer system analysis; design and development of computers and software; computer system design; research and development of new products for third parties; design, installation, maintenance, updating, rental of computer software; programming for computers; computer and software consultancy; information technology (IT) consultancy; conversion of computer programs and data, other than physical conversion; conversion of data or documents from physical to electronic media; analysis for the installation of computer systems; rental of computer software; software as a service [SaaS]; electronic data storage; management of computer projects; quality control."
+        }
+      ]
+    },
+    "id": "3e578d41-d112-4024-b7ab-624e4e12b9e5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "FR",
+        "priorityCountryName": "France",
+        "priorityDate": "20181205",
+        "priorityNumber": "4505765"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Southgate House, Southgate Street, Gloucester GL1 1UB, Gloucestershire",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Wynne-Jones IP Limited"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190515",
+        "applicationNumber": "UK00801478028"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290515",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20200103",
+        "registrationNumber": "UK00801478028"
+      }
+    },
+    "version": "20250627215715",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENCORE"
+    }
+  },
+  "_uri": "/mark/gb/3e578d41-d112-4024-b7ab-624e4e12b9e5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.730Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

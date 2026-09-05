@@ -1,0 +1,153 @@
+{
+  "uri": "/mark/jp/d28a65d1-ba44-47fb-a055-69faee28b55a",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "d28a65d1-ba44-47fb-a055-69faee28b55a",
+  "applicationNumber": "H05-124849",
+  "registrationNumber": "3370248",
+  "applicationDate": "1993-12-15",
+  "registrationDate": "1998-09-25",
+  "expiryDate": "2018-09-25",
+  "renewalDate": null,
+  "lastPublicationDate": "1996-03-18",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＢＡＬＬ　ＧＲＩＤ　ＡＲＲＡＹ",
+  "markTransliteration": "BOORUGURIDDOAREI",
+  "markTranslation": "BALL GRID ARRAY",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "電気磁気測定機，電気通信機械器具，電子応用機械器具及びその部品，電池",
+      "translation_language": "en",
+      "translation": "Electromagnetism measuring machine, telecommunication machinery equipment, electronic appliances appliances and parts thereof, batteries"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "ONUKI SHINSUKE",
+  "priorities": [
+    {
+      "priorityDate": "19931215"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electromagnetism measuring machine, telecommunication machinery equipment, electronic appliances appliances and parts thereof, batteries",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "電気磁気測定機，電気通信機械器具，電子応用機械器具及びその部品，電池"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11A03",
+          "natGoodsServicesDescription": "Batteries"
+        },
+        {
+          "natClassNumber": "11A04",
+          "natGoodsServicesDescription": "Electric or magnetic measuring machines and instruments"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Electrical communication apparatus and instruments"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, instruments and parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        }
+      ]
+    },
+    "id": "d28a65d1-ba44-47fb-a055-69faee28b55a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19931215"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "ONUKI SHINSUKE",
+        "representativeNativeName": "大貫　進介"
+      },
+      {
+        "representativeName": "HONJO  YOSHINORI",
+        "representativeNativeName": "本城　雅則"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19931215",
+        "applicationNumber": "H05-124849"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20180925",
+      "lastPublicationDate": "19960318",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19980925",
+        "registrationNumber": "3370248"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "BALL GRID ARRAY",
+      "markTransliteration": "BOORUGURIDDOAREI",
+      "markVerbalElementText": "ＢＡＬＬ　ＧＲＩＤ　ＡＲＲＡＹ"
+    }
+  },
+  "_uri": "/mark/jp/d28a65d1-ba44-47fb-a055-69faee28b55a",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.462Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

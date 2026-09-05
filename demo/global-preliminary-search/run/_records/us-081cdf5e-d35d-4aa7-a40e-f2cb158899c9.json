@@ -1,0 +1,403 @@
+{
+  "uri": "/mark/us/081cdf5e-d35d-4aa7-a40e-f2cb158899c9",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "081cdf5e-d35d-4aa7-a40e-f2cb158899c9",
+  "applicationNumber": "79325544",
+  "registrationNumber": "7203764",
+  "applicationDate": "2021-09-06",
+  "registrationDate": "2023-10-31",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2023-08-15"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "PROVENCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Information processing equipment, namely, computer hardware; downloadable and recorded computer operating systems and secure operating systems, hypervisor software, and programs for computer hardware emulation and managing virtual machines on a cloud computing platform; computer peripheral devices; computer memory devices; computers, namely, personal computers and micro-computers; process calculators; microprocessor devices and microprocessor systems, namely, microprocessors for computers; downloadable and recorded operating systems and secure operating systems, hypervisor software, and software for computer hardware emulation and managing virtual machines on a cloud computing platform; computers, micro-computers, computer terminals; information or data input, storage and processing equipment, namely, blank flash drives, internal and external computer hard drives; media being apparatus and instruments for recording and reproducing sounds, images, signals and data; computer hardware, downloadable and recorded firmware operating systems for computers, connected objects and for the Internet of Things; computer platforms in the form of recorded or downloadable operating systems for computer hardware emulation, hypervisor software, and managing virtual machines on a cloud computing platform; downloadable and recorded operating system software for computers, embedded systems, connected objects and for the Internet of Things; downloadable and recorded operating systems for computers, connected objects and for the Internet of Things; downloadable and recorded security software for computers, connected objects and for the Internet of Things; downloadable and recorded firewall software for computers, connected objects and for the Internet of Things",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Computer programming services; design, maintenance and updating of software; design, installation, testing and maintenance of software and computer information security services relating to commercial interaction via a global computer network, namely, computer security consultancy and software development; technical project studies being technical research in the field of computer hardware and software; advice relating to computers; computer system analysis services; rental of computers and software; duplication of computer programs; scientific and industrial research services; design and development of operating system software for computers, embedded systems, connected objects and for the Internet of Things; computer security services for connected objects and for the Internet of Things, namely, computer security consultancy and software development; data security services for connected objects and for the Internet of Things, namely, computer security consultancy and software development; design of software, firmware, computer hardware and computer systems for connected objects and for the Internet of Things",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "PROVENRUN",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "Farzad A. Panjshiri",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "77 avenue Niel, FRAN",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantAddressStreet": "77 avenue Niel",
+        "applicantJurisdictionOfIncorporation": "FRANCE",
+        "applicantName": "PROVENRUN",
+        "applicantSecondaryAddressUnit": "F-75017 Paris"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Information processing equipment, namely, computer hardware; downloadable and recorded computer operating systems and secure operating systems, hypervisor software, and programs for computer hardware emulation and managing virtual machines on a cloud computing platform; computer peripheral devices; computer memory devices; computers, namely, personal computers and micro-computers; process calculators; microprocessor devices and microprocessor systems, namely, microprocessors for computers; downloadable and recorded operating systems and secure operating systems, hypervisor software, and software for computer hardware emulation and managing virtual machines on a cloud computing platform; computers, micro-computers, computer terminals; information or data input, storage and processing equipment, namely, blank flash drives, internal and external computer hard drives; media being apparatus and instruments for recording and reproducing sounds, images, signals and data; computer hardware, downloadable and recorded firmware operating systems for computers, connected objects and for the Internet of Things; computer platforms in the form of recorded or downloadable operating systems for computer hardware emulation, hypervisor software, and managing virtual machines on a cloud computing platform; downloadable and recorded operating system software for computers, embedded systems, connected objects and for the Internet of Things; downloadable and recorded operating systems for computers, connected objects and for the Internet of Things; downloadable and recorded security software for computers, connected objects and for the Internet of Things; downloadable and recorded firewall software for computers, connected objects and for the Internet of Things"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Computer programming services; design, maintenance and updating of software; design, installation, testing and maintenance of software and computer information security services relating to commercial interaction via a global computer network, namely, computer security consultancy and software development; technical project studies being technical research in the field of computer hardware and software; advice relating to computers; computer system analysis services; rental of computers and software; duplication of computer programs; scientific and industrial research services; design and development of operating system software for computers, embedded systems, connected objects and for the Internet of Things; computer security services for connected objects and for the Internet of Things, namely, computer security consultancy and software development; data security services for connected objects and for the Internet of Things, namely, computer security consultancy and software development; design of software, firmware, computer hardware and computer systems for connected objects and for the Internet of Things"
+        }
+      ]
+    },
+    "id": "081cdf5e-d35d-4aa7-a40e-f2cb158899c9",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1625918",
+        "markCurrentStatus": "REQUEST FOR EXTENSION OF PROTECTION ESTABLISHED",
+        "markCurrentStatusDate": "20211111",
+        "priorityClaimDate": "20210312",
+        "protectionGrantedDate": "20230511",
+        "publicationDate": "20211111",
+        "registrationDate": "20210906",
+        "renewalDate": "20310906"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260504",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20260504",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20260504",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20260504",
+        "descriptionText": "TEAS WITHDRAWAL OF ATTORNEY RECEIVED-FIRM RETAINS"
+      },
+      {
+        "date": "20251107",
+        "descriptionText": "NEW REPRESENTATIVE AT IB RECEIVED"
+      },
+      {
+        "date": "20240226",
+        "descriptionText": "FINAL DECISION TRANSACTION PROCESSED BY IB"
+      },
+      {
+        "date": "20240202",
+        "descriptionText": "FINAL DISPOSITION PROCESSED"
+      },
+      {
+        "date": "20240202",
+        "descriptionText": "FINAL DISPOSITION NOTICE SENT TO IB"
+      },
+      {
+        "date": "20240131",
+        "descriptionText": "FINAL DISPOSITION NOTICE CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20231031",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20231031",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20230815",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20230815",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20230814",
+        "descriptionText": "NOTIFICATION PROCESSED BY IB"
+      },
+      {
+        "date": "20230726",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20230726",
+        "descriptionText": "NOTICE OF START OF OPPOSITION PERIOD CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20230726",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION SENT TO IB"
+      },
+      {
+        "date": "20230710",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20230710",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20230710",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20230710",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20230710",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20230504",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20230504",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20230504",
+        "descriptionText": "TEAS WITHDRAWAL OF ATTORNEY RECEIVED-FIRM RETAINS"
+      },
+      {
+        "date": "20230504",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20230501",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION -  PROCESSED BY IB"
+      },
+      {
+        "date": "20230412",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20230412",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION SENT TO IB"
+      },
+      {
+        "date": "20230117",
+        "descriptionText": "FINAL REFUSAL  WRITTEN"
+      },
+      {
+        "date": "20230117",
+        "descriptionText": "FINAL REFUSAL E-MAILED"
+      },
+      {
+        "date": "20230117",
+        "descriptionText": "NOTIFICATION OF FINAL REFUSAL EMAILED"
+      },
+      {
+        "date": "20221227",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20221227",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20221227",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20220719",
+        "descriptionText": "REFUSAL PROCESSED BY IB"
+      },
+      {
+        "date": "20220628",
+        "descriptionText": "REFUSAL PROCESSED BY MPU"
+      },
+      {
+        "date": "20220628",
+        "descriptionText": "NON-FINAL ACTION MAILED - REFUSAL SENT TO IB"
+      },
+      {
+        "date": "20220612",
+        "descriptionText": "NON-FINAL ACTION (IB REFUSAL) PREPARED FOR REVIEW"
+      },
+      {
+        "date": "20220611",
+        "descriptionText": "LETTER OF PROTEST EVIDENCE REVIEWED-NO FURTHER ACTION TAKEN"
+      },
+      {
+        "date": "20220611",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20220609",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20220331",
+        "descriptionText": "LETTER OF PROTEST EVIDENCE FORWARDED"
+      },
+      {
+        "date": "20211120",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      },
+      {
+        "date": "20211116",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20211111",
+        "descriptionText": "SN ASSIGNED FOR SECT 66A APPL FROM IB"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "77 avenue Niel, FRAN",
+        "countryCode": "FR",
+        "countryName": "France",
+        "jurisdictionOfIncorporation": "FRANCE",
+        "name": "PROVENRUN",
+        "secondaryAddressUnit": "F-75017 Paris",
+        "street": "77 avenue Niel"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "77 avenue Niel, FRAN",
+        "countryCode": "FR",
+        "countryName": "France",
+        "jurisdictionOfIncorporation": "FRANCE",
+        "name": "PROVENRUN",
+        "secondaryAddressUnit": "F-75017 Paris",
+        "street": "77 avenue Niel"
+      },
+      {
+        "address": "77 avenue Niel, FRAN",
+        "countryCode": "FR",
+        "countryName": "France",
+        "jurisdictionOfIncorporation": "FRANCE",
+        "name": "PROVENRUN",
+        "secondaryAddressUnit": "F-75017 Paris",
+        "street": "77 avenue Niel"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "77 avenue Niel, FRAN",
+        "countryCode": "FR",
+        "countryName": "France",
+        "jurisdictionOfIncorporation": "FRANCE",
+        "name": "PROVENRUN",
+        "secondaryAddressUnit": "F-75017 Paris",
+        "street": "77 avenue Niel"
+      }
+    ],
+    "recordLastUpdated": "20260508",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "22nd Floor, Hartford, CT 06103, United States",
+        "representativeCorrespondentAddressLines": [
+          "22nd Floor",
+          "Hartford, CT 06103",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Farzad A. Panjshiri Cantor Colburn LLP, 20 Church Street"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "22nd Floor, Hartford, CT 06103, United States",
+        "representativeAddressLines": [
+          "22nd Floor",
+          "Hartford, CT 06103",
+          "United States"
+        ],
+        "representativeName": "Farzad A. Panjshiri"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210906",
+        "applicationNumber": "79325544"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20231031",
+        "markOfficialStatusEvents": [
+          "Section 66(a) (Madrid Protocol) - Filed",
+          "Section 66(a) (Madrid Protocol) - Current",
+          "International Priority Claimed",
+          "Notice of First Refusal"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20230815"
+      ],
+      "registration": {
+        "registrationDate": "20231031",
+        "registrationNumber": "7203764"
+      }
+    },
+    "version": "20260508054202",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "PROVEN CORE",
+      "markVerbalElementText": "PROVENCORE"
+    }
+  },
+  "_uri": "/mark/us/081cdf5e-d35d-4aa7-a40e-f2cb158899c9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.729Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

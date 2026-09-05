@@ -1,0 +1,459 @@
+{
+  "uri": "/mark/us/0564a9b3-6f28-486e-9fbc-fceaad924dec",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "0564a9b3-6f28-486e-9fbc-fceaad924dec",
+  "applicationNumber": "77468121",
+  "registrationNumber": null,
+  "applicationDate": "2008-05-07",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2009-03-10"
+  ],
+  "abandonmentDate": "2010-07-05",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "QOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    41,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Computer communication hardware and software for use by subscribers and members to access a multimedia website on the Internet; computer hardware and computer software for interactive participation in on-line discussion boards, on-line conferences and on-line social networking among subscribers and members via a website on the Internet",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Entertainment services, namely, providing a web site featuring text, video and audio presentations, essays, news stories, analyses and commentaries, in the fields of current events, arts, literature and modern culture",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Computer services, namely, interactive hosting services which allow the user to publish and share their own content and images on-line; computer services, namely, hosting, creating and maintaining an interactive website for social networking among subscribers and members; providing a web site featuring text, video and audio presentations, essays, analyses and commentaries, in the field of the sciences",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": null,
+      "description": "INT. CL. 45 Internet-based social networking services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "McCabe, Edwin A.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Thomas C. Buckley",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "21 Cliff Rd., Brier Neck, Gloucester, MA, 019301970",
+        "applicantAddressCity": "Gloucester",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "019301970",
+        "applicantAddressStateName": "MASSACHUSETTS",
+        "applicantAddressStreet": "21 Cliff Rd., Brier Neck",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "McCabe, Edwin A."
+      },
+      {
+        "applicantAddress": "21 Cliff Rd., Brier Neck, Gloucester, MA, 019301970",
+        "applicantAddressCity": "Gloucester",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "019301970",
+        "applicantAddressStateName": "MASSACHUSETTS",
+        "applicantAddressStreet": "21 Cliff Rd., Brier Neck",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "McCabe, Karren Kelly"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Computer communication hardware and software for use by subscribers and members to access a multimedia website on the Internet; computer hardware and computer software for interactive participation in on-line discussion boards, on-line conferences and on-line social networking among subscribers and members via a website on the Internet"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Entertainment services, namely, providing a web site featuring text, video and audio presentations, essays, news stories, analyses and commentaries, in the fields of current events, arts, literature and modern culture"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Computer services, namely, interactive hosting services which allow the user to publish and share their own content and images on-line; computer services, namely, hosting, creating and maintaining an interactive website for social networking among subscribers and members; providing a web site featuring text, video and audio presentations, essays, analyses and commentaries, in the field of the sciences"
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsServicesDescription": "INT. CL. 45 Internet-based social networking services"
+        }
+      ]
+    },
+    "id": "0564a9b3-6f28-486e-9fbc-fceaad924dec",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20100706",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20100705",
+        "descriptionText": "ABANDONMENT - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20091124",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20091124",
+        "descriptionText": "SOU EXTENSION 1 FILED"
+      },
+      {
+        "date": "20091124",
+        "descriptionText": "SOU EXTENSION 1 GRANTED"
+      },
+      {
+        "date": "20090602",
+        "descriptionText": "NOA MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20090310",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20090218",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20090204",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20090130",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20090129",
+        "descriptionText": "PREVIOUS ALLOWANCE COUNT WITHDRAWN"
+      },
+      {
+        "date": "20090123",
+        "descriptionText": "WITHDRAWN FROM PUB - OG REVIEW QUERY"
+      },
+      {
+        "date": "20090113",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20090109",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20090109",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20090109",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20090109",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20090109",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20090106",
+        "descriptionText": "PREVIOUS ALLOWANCE COUNT WITHDRAWN"
+      },
+      {
+        "date": "20081219",
+        "descriptionText": "WITHDRAWN FROM PUB - OG REVIEW QUERY"
+      },
+      {
+        "date": "20081208",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20081205",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20081205",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20081205",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20081205",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20081205",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20081106",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20081105",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20081105",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20081027",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20081027",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20081027",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20081002",
+        "descriptionText": "PREVIOUS ALLOWANCE COUNT WITHDRAWN"
+      },
+      {
+        "date": "20080926",
+        "descriptionText": "WITHDRAWN FROM PUB - OG REVIEW QUERY"
+      },
+      {
+        "date": "20080917",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20080917",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20080909",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20080909",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20080908",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20080908",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20080822",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20080822",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20080822",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20080822",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20080512",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "21 Cliff Rd., Brier Neck, Gloucester, MA, 019301970",
+        "city": "Gloucester",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "McCabe, Edwin A.",
+        "postalCode": "019301970",
+        "stateName": "MASSACHUSETTS",
+        "street": "21 Cliff Rd., Brier Neck"
+      },
+      {
+        "address": "21 Cliff Rd., Brier Neck, Gloucester, MA, 019301970",
+        "city": "Gloucester",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "McCabe, Karren Kelly",
+        "postalCode": "019301970",
+        "stateName": "MASSACHUSETTS",
+        "street": "21 Cliff Rd., Brier Neck"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "21 Cliff Rd., Brier Neck, Gloucester, MA, 019301970",
+        "city": "Gloucester",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "McCabe, Edwin A.",
+        "postalCode": "019301970",
+        "stateName": "MASSACHUSETTS",
+        "street": "21 Cliff Rd., Brier Neck"
+      },
+      {
+        "address": "21 Cliff Rd., Brier Neck, Gloucester, MA, 019301970",
+        "city": "Gloucester",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "McCabe, Karren Kelly",
+        "postalCode": "019301970",
+        "stateName": "MASSACHUSETTS",
+        "street": "21 Cliff Rd., Brier Neck"
+      },
+      {
+        "address": "21 Cliff Rd., Brier Neck, Gloucester, MA, 019301970",
+        "city": "Gloucester",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "McCabe, Edwin A.",
+        "postalCode": "019301970",
+        "stateName": "MASSACHUSETTS",
+        "street": "21 Cliff Rd., Brier Neck"
+      },
+      {
+        "address": "21 Cliff Rd., Brier Neck, Gloucester, MA, 019301970",
+        "city": "Gloucester",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "McCabe, Karren Kelly",
+        "postalCode": "019301970",
+        "stateName": "MASSACHUSETTS",
+        "street": "21 Cliff Rd., Brier Neck"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Suite 750, Atlanta, GA 30309, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "Suite 750",
+          "Atlanta, GA 30309",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Thomas C. Buckley Stanley, Esrey & Buckley, LLP, 1170 Peachtree Street NE"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Suite 750, Atlanta, GA 30309, UNITED STATES",
+        "representativeAddressLines": [
+          "Suite 750",
+          "Atlanta, GA 30309",
+          "UNITED STATES"
+        ],
+        "representativeName": "Thomas C. Buckley"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20100705",
+      "active": false,
+      "application": {
+        "applicationDate": "20080507",
+        "applicationNumber": "77468121"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-NO STATEMENT OF USE FILED",
+        "markOfficialStatusCode": "606",
+        "markOfficialStatusDate": "20100705",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED",
+      "publicationDate": [
+        "20090310"
+      ],
+      "withdrawalDate": [
+        "20090123"
+      ]
+    },
+    "version": "20260109055245",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOR"
+    }
+  },
+  "_uri": "/mark/us/0564a9b3-6f28-486e-9fbc-fceaad924dec",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:24.142Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

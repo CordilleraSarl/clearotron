@@ -1,0 +1,204 @@
+{
+  "uri": "/mark/ve/bdcbd252-6f1c-4b29-9ae8-f321b2f3c38f",
+  "provider": "clarivate",
+  "office": "ve",
+  "guid": "bdcbd252-6f1c-4b29-9ae8-f321b2f3c38f",
+  "applicationNumber": "1989-017672",
+  "registrationNumber": null,
+  "applicationDate": "1989-11-20",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VENKOREN INC.",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "es",
+      "description": "una empresa dedicada a la fabricacion, distribucion, compra, venta, importacion exportacion de sustancias quimicas, preparaciones farmaceuticas, perfumeria, aparatos, maquinas y accesorios electricos, cuchilleria, ma.",
+      "translation_language": "en",
+      "translation": "a company dedicated to the manufacture, distribution, purchase, sale, import and export of chemical substances, pharmaceutical preparations, perfumery, electrical appliances, machines and accessories, cutlery, ma."
+    }
+  ],
+  "owner": "VENKOREN INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "ARCILA SALGADO GUSTAVO",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "MIAMI, FLORIDA - ESTADOS UNIDOS DE AMÉRICA",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "VENKOREN INC."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "a company dedicated to the manufacture, distribution, purchase, sale, import and export of chemical substances, pharmaceutical preparations, perfumery, electrical appliances, machines and accessories, cutlery, ma.",
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "una empresa dedicada a la fabricacion, distribucion, compra, venta, importacion exportacion de sustancias quimicas, preparaciones farmaceuticas, perfumeria, aparatos, maquinas y accesorios electricos, cuchilleria, ma."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "46"
+        }
+      ]
+    },
+    "id": "bdcbd252-6f1c-4b29-9ae8-f321b2f3c38f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "VE",
+    "registrationOfficeName": "Venezuela",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "VE",
+        "representativeAddressCountryName": "Venezuela",
+        "representativeName": "ARCILA SALGADO GUSTAVO"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19891120",
+        "applicationNumber": "1989-017672"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20250630172143",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENKOREN INC."
+    }
+  },
+  "_uri": "/mark/ve/bdcbd252-6f1c-4b29-9ae8-f321b2f3c38f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:48.777Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

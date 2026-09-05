@@ -1,0 +1,308 @@
+{
+  "uri": "/mark/ca/f9f9eb0e-3ade-49f0-818a-34e8adb2a9c8",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "f9f9eb0e-3ade-49f0-818a-34e8adb2a9c8",
+  "applicationNumber": "1800978",
+  "registrationNumber": "TMA983516",
+  "applicationDate": "2016-09-19",
+  "registrationDate": "2017-10-25",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2017-07-05"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "HOTELS GOUVERNEUR",
+  "markTransliteration": null,
+  "markTranslation": "HOTELS GOVENOR",
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    8,
+    16,
+    18,
+    21,
+    30,
+    35,
+    37,
+    42,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        8,
+        16,
+        18,
+        21,
+        30,
+        35,
+        37,
+        42,
+        43
+      ],
+      "language": "fr",
+      "description": "(1) Articles promotionnels, nommément répertoires, brochures, dépliants, affiches, menus, blocs notes, notes de rappel de messages téléphoniques, nécessaires de toilette et trousse de toilette, sucre en sachets et contenants individuels de beurre; articles en papier et papeterie, nommément: cartes d'invitation, cartes de souhaits;",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8,
+        16,
+        18,
+        21,
+        30,
+        35,
+        37,
+        42,
+        43
+      ],
+      "language": "en",
+      "description": "(1) Promotional Items, namely directories, pamphlets, leaflets, posters, menus, notepads, phone message reminder notes, toiletries and toiletry bag, sugar in packets and individual containers of butter;paper and stationery items, namely: invitation cards, greeting cards;",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8,
+        16,
+        18,
+        21,
+        30,
+        35,
+        37,
+        42,
+        43
+      ],
+      "language": "fr",
+      "description": "(1) Gestion hôtelière; exploitation de boutiques vendant des journaux et des souvenirs; services de gestion et de consultation dans le domaine de l'hôtellerie et de la restauration, nommément: services de conseils en marketing commercial, de promotion de complexes hôteliers pour des tiers, de mise en marché de complexes hôteliers pour des tiers et de conception graphique; conception, préparation et distribution de matériel de gestion, de formules de rapports pour des tiers; \n(2) Planification et organisation des travaux de construction et de rénovation, supervision de la construction et rénovation, supervision [direction] de travaux de construction et de rénovation de complexes hôteliers comprenant des services de restaurant; \n(3) Services hôteliers et de restaurant; services de réservation d'hôtels; exploitation de complexes hôteliers et de restaurants, de bars, de piano-bars et discothèques; services de location de salles pour la tenue de banquets, de réunions, de séminaires et de congrès;",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8,
+        16,
+        18,
+        21,
+        30,
+        35,
+        37,
+        42,
+        43
+      ],
+      "language": "en",
+      "description": "(1) Hotel management;operation of shops selling newspapers and souvenirs;hotel and restaurant management and consulting services, namely: business marketing consulting services, promotion of hotel complexes for third parties, marketing of hotel complexes for third parties and graphic design;design, preparation and distribution of management material, reporting formulas for third parties;(2) Planning and organization of construction and renovation works, supervision of construction and renovation, supervision [management] of construction and renovation works of hotel complexes including restaurant services;(3) Hotel and restaurant services;hotel reservation services;operation of hotel complexes and restaurants, bars, piano bars and nightclubs;banquet hall rental services, of meetings, seminars and congresses;",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "GOUVERNEUR INC.",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": "ROBIC AGENCE PI S.E.C./ ROBIC IP AGENCY LP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1000, rue Sherbrooke ouest, Bureau 2300, Montréal, QUÉBEC, H3A3R3",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressLines": [
+          "1000, rue Sherbrooke ouest",
+          "Bureau 2300",
+          "Montréal",
+          "QUÉBEC"
+        ],
+        "applicantAddressPostalCode": "H3A3R3",
+        "applicantName": "GOUVERNEUR INC."
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Used in CANADA since at least as early as June 29, 2016 on wares marked (1) on services (1) (2) (3)",
+        "typeDescription": "First Use"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "08,16,18,21,30,35,37,42,43",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "(1) Articles promotionnels, nommément répertoires, brochures, dépliants, affiches, menus, blocs notes, notes de rappel de messages téléphoniques, nécessaires de toilette et trousse de toilette, sucre en sachets et contenants individuels de beurre; articles en papier et papeterie, nommément: cartes d'invitation, cartes de souhaits;"
+        },
+        {
+          "intClassNumber": "08,16,18,21,30,35,37,42,43",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Promotional Items, namely directories, pamphlets, leaflets, posters, menus, notepads, phone message reminder notes, toiletries and toiletry bag, sugar in packets and individual containers of butter;paper and stationery items, namely: invitation cards, greeting cards;"
+        },
+        {
+          "intClassNumber": "08,16,18,21,30,35,37,42,43",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "(1) Gestion hôtelière; exploitation de boutiques vendant des journaux et des souvenirs; services de gestion et de consultation dans le domaine de l'hôtellerie et de la restauration, nommément: services de conseils en marketing commercial, de promotion de complexes hôteliers pour des tiers, de mise en marché de complexes hôteliers pour des tiers et de conception graphique; conception, préparation et distribution de matériel de gestion, de formules de rapports pour des tiers; \n(2) Planification et organisation des travaux de construction et de rénovation, supervision de la construction et rénovation, supervision [direction] de travaux de construction et de rénovation de complexes hôteliers comprenant des services de restaurant; \n(3) Services hôteliers et de restaurant; services de réservation d'hôtels; exploitation de complexes hôteliers et de restaurants, de bars, de piano-bars et discothèques; services de location de salles pour la tenue de banquets, de réunions, de séminaires et de congrès;"
+        },
+        {
+          "intClassNumber": "08,16,18,21,30,35,37,42,43",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Hotel management;operation of shops selling newspapers and souvenirs;hotel and restaurant management and consulting services, namely: business marketing consulting services, promotion of hotel complexes for third parties, marketing of hotel complexes for third parties and graphic design;design, preparation and distribution of management material, reporting formulas for third parties;(2) Planning and organization of construction and renovation works, supervision of construction and renovation, supervision [management] of construction and renovation works of hotel complexes including restaurant services;(3) Hotel and restaurant services;hotel reservation services;operation of hotel complexes and restaurants, bars, piano bars and nightclubs;banquet hall rental services, of meetings, seminars and congresses;"
+        }
+      ]
+    },
+    "id": "f9f9eb0e-3ade-49f0-818a-34e8adb2a9c8",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20171025",
+        "descriptionText": "Registered",
+        "responseDate": "20321025"
+      },
+      {
+        "date": "20171020",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20180420"
+      },
+      {
+        "date": "20171020",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20170705",
+        "descriptionText": "Advertised",
+        "information": "Vol.64 Issue 3271"
+      },
+      {
+        "date": "20170615",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20170428",
+        "descriptionText": "Approval Notice Sent",
+        "responseDate": "20170526"
+      },
+      {
+        "date": "20170428",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20160921",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20160920",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20160919",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "1000, rue Sherbrooke ouest, Bureau 2300, Montréal, QUÉBEC, H3A3R3",
+        "addressLines": [
+          "1000, rue Sherbrooke ouest",
+          "Bureau 2300",
+          "Montréal",
+          "QUÉBEC",
+          "H3A3R3"
+        ],
+        "countryName": "Canada",
+        "name": "GOUVERNEUR INC.",
+        "postalCode": "H3A3R3"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3271",
+        "publicationVolume": "64"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "ROBIC AGENCE PI S.E.C./ ROBIC IP AGENCY LP",
+          "630, boul. René-Lévesque Ouest",
+          "20e étage",
+          "Montréal",
+          "QUÉBEC H3B1S6"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "ROBIC AGENCE PI S.E.C./ ROBIC IP AGENCY LP",
+        "representativeReferenceNumber": "001288-0201 DRP/GUB"
+      }
+    ],
+    "status": {
+      "active": true,
+      "allowanceDate": [
+        "20171020"
+      ],
+      "application": {
+        "applicationDate": "20160919",
+        "applicationNumber": "1800978"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20160629",
+          "firstUsedText": "Used in CANADA since at least as early as June 29, 2016 on wares marked (1) on services (1) (2) (3)"
+        }
+      ],
+      "formalisationDate": "20160921",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20321025",
+      "publicationDate": [
+        "20170705"
+      ],
+      "registration": {
+        "registrationDate": "20171025",
+        "registrationNumber": "TMA983516"
+      }
+    },
+    "subjectHeadings": [
+      "HÔTELS GOUVERNEUR"
+    ],
+    "version": "20250625110456",
+    "wordMarkSpecification": {
+      "markTranslation": "HOTELS GOVENOR",
+      "markVerbalElementText": "HOTELS GOUVERNEUR",
+      "markVerbalElementTextFormal": "HÔTELS GOUVERNEUR"
+    }
+  },
+  "_uri": "/mark/ca/f9f9eb0e-3ade-49f0-818a-34e8adb2a9c8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

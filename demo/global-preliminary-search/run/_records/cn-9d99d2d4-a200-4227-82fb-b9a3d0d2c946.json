@@ -1,0 +1,211 @@
+{
+  "uri": "/mark/cn/9d99d2d4-a200-4227-82fb-b9a3d0d2c946",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "9d99d2d4-a200-4227-82fb-b9a3d0d2c946",
+  "applicationNumber": "49948384",
+  "registrationNumber": "49948384",
+  "applicationDate": "2020-09-22",
+  "registrationDate": "2021-10-21",
+  "expiryDate": "2031-10-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-07-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "博日",
+  "markTransliteration": "BO RI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "计步器,邮戳检查装置,自动售票机,口述听写机,验手纹机,秤,闪光信号灯,天线,唱片,近摄镜,数值孔径计,热调节装置,避雷针,电解装置,灭火器,工业用放射设备,个人用防事故装置,报警器,眼镜链,曝光胶卷,钱点数和分拣机,规尺(量具),办公室用打卡机",
+      "translation_language": "en",
+      "translation": "Pedometer, postmark checking device, automatic ticket vending machine, dictation machine, hand-printing machine, scale, flashing signal light, antenna, record, close-up lens, numerical aperture meter, thermal adjustment device, lightning rod, electrolysis device, fire extinguisher, Industrial radiological equipment, personal accident prevention devices, alarms, eyeglass chains, exposure film, money points and sorting machines, rulers (measuring tools), office punch cards"
+    }
+  ],
+  "owner": "Hangzhou Bori Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "浙江省杭州市滨江区高新技术产业开发区滨安路1192号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Hangzhou Bori Technology Co., Ltd.",
+        "applicantNativeName": "杭州博日科技股份有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Pedometer, postmark checking device, automatic ticket vending machine, dictation machine, hand-printing machine, scale, flashing signal light, antenna, record, close-up lens, numerical aperture meter, thermal adjustment device, lightning rod, electrolysis device, fire extinguisher, Industrial radiological equipment, personal accident prevention devices, alarms, eyeglass chains, exposure film, money points and sorting machines, rulers (measuring tools), office punch cards",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计步器,邮戳检查装置,自动售票机,口述听写机,验手纹机,秤,闪光信号灯,天线,唱片,近摄镜,数值孔径计,热调节装置,避雷针,电解装置,灭火器,工业用放射设备,个人用防事故装置,报警器,眼镜链,曝光胶卷,钱点数和分拣机,规尺(量具),办公室用打卡机"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Data-processing equipments used in recording and automatic vending machines",
+        "Machines used in office (except for typewriters, duplicators and printers)",
+        "Scales",
+        "Measures",
+        "Signalling apparatus and instruments",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Apparatus and instruments for photographic and cinematographic",
+        "Optical instruments",
+        "Electrical controlling apparatus and equipments",
+        "Apparatus for electroplating and electrolysers",
+        "Fire extinguishing instruments",
+        "Industrial X ray equipments",
+        "Life-saving instruments",
+        "Warning equipments, bells",
+        "Glasses and those accessories",
+        "Films, exposed materials"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0902",
+          "subNatGoodsServicesDescription": "Data-processing equipments used in recording and automatic vending machines"
+        },
+        {
+          "subNatClassNumber": "0903",
+          "subNatGoodsServicesDescription": "Machines used in office (except for typewriters, duplicators and printers)"
+        },
+        {
+          "subNatClassNumber": "0904",
+          "subNatGoodsServicesDescription": "Scales"
+        },
+        {
+          "subNatClassNumber": "0905",
+          "subNatGoodsServicesDescription": "Measures"
+        },
+        {
+          "subNatClassNumber": "0906",
+          "subNatGoodsServicesDescription": "Signalling apparatus and instruments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0911",
+          "subNatGoodsServicesDescription": "Optical instruments"
+        },
+        {
+          "subNatClassNumber": "0914",
+          "subNatGoodsServicesDescription": "Electrical controlling apparatus and equipments"
+        },
+        {
+          "subNatClassNumber": "0915",
+          "subNatGoodsServicesDescription": "Apparatus for electroplating and electrolysers"
+        },
+        {
+          "subNatClassNumber": "0916",
+          "subNatGoodsServicesDescription": "Fire extinguishing instruments"
+        },
+        {
+          "subNatClassNumber": "0918",
+          "subNatGoodsServicesDescription": "Industrial X ray equipments"
+        },
+        {
+          "subNatClassNumber": "0919",
+          "subNatGoodsServicesDescription": "Life-saving instruments"
+        },
+        {
+          "subNatClassNumber": "0920",
+          "subNatGoodsServicesDescription": "Warning equipments, bells"
+        },
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        },
+        {
+          "subNatClassNumber": "0923",
+          "subNatGoodsServicesDescription": "Films, exposed materials"
+        }
+      ]
+    },
+    "id": "9d99d2d4-a200-4227-82fb-b9a3d0d2c946",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1752"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "超凡知识产权服务股份有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200922",
+        "applicationNumber": "49948384"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311020",
+      "lastPublicationDate": "20210720",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20211021",
+        "registrationNumber": "49948384"
+      }
+    },
+    "version": "20251004064956",
+    "wordMarkSpecification": {
+      "markTransliteration": "BO RI",
+      "markVerbalElementText": "博日"
+    }
+  },
+  "_uri": "/mark/cn/9d99d2d4-a200-4227-82fb-b9a3d0d2c946",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.211Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

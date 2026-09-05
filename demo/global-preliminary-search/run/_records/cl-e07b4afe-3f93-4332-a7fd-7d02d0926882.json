@@ -1,0 +1,116 @@
+{
+  "uri": "/mark/cl/e07b4afe-3f93-4332-a7fd-7d02d0926882",
+  "provider": "clarivate",
+  "office": "cl",
+  "guid": "e07b4afe-3f93-4332-a7fd-7d02d0926882",
+  "applicationNumber": "1271519",
+  "registrationNumber": "1279840",
+  "applicationDate": "2017-11-07",
+  "registrationDate": "2018-08-10",
+  "expiryDate": "2028-08-10",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VIVE NORDICO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "(Concedida) Producción de cine y televisión; edición y distribución de programas de radio y televisión; montaje de programas de radio y de televisión. Grabaciones en audio, video y audiovisuales, estudio de películas, servicios de grabación (filmación) en cintas de video, servicios de producción de shows y espectáculos en general.",
+      "translation_language": "en",
+      "translation": "(Granted) Film and television production; editing and distribution of radio and television programs; editing radio and television programs. Audio, video and audiovisual recordings, film studio, recording (filming) services on video tapes, show production services and shows in general."
+    }
+  ],
+  "owner": "B&V SPA",
+  "ownerNative": null,
+  "ownerCountry": "CL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "LAS CONDES",
+        "applicantAddressCountryCode": "CL",
+        "applicantAddressCountryName": "Chile",
+        "applicantName": "B&V SPA"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "(Granted) Film and television production; editing and distribution of radio and television programs; editing radio and television programs. Audio, video and audiovisual recordings, film studio, recording (filming) services on video tapes, show production services and shows in general.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "(Concedida) Producción de cine y televisión; edición y distribución de programas de radio y televisión; montaje de programas de radio y de televisión. Grabaciones en audio, video y audiovisuales, estudio de películas, servicios de grabación (filmación) en cintas de video, servicios de producción de shows y espectáculos en general."
+        }
+      ]
+    },
+    "id": "e07b4afe-3f93-4332-a7fd-7d02d0926882",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "Etiqueta consistente en la palabra VIVE en color blanco, bajo esta la palabra NÖRDICO cuyas letras 'N, O, R, D' traslucen paisajes de castillos y las letras 'I' y 'C' son de color negro. Todo sobre fondo morado claro. Etiqueta consistente en la palabra VIVE en color blanco, bajo esta la palabra NÖRDICO cuyas letras 'N, O, R, D' traslucen paisajes de castillos y las letras 'I' y 'C' son de color negro. Todo sobre fondo morado claro."
+      }
+    ],
+    "markImageViennaClassification": [
+      "07.01.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260615",
+    "registrationOfficeCode": "CL",
+    "registrationOfficeName": "Chile",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20171107",
+        "applicationNumber": "1271519"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280810",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180810",
+        "registrationNumber": "1279840"
+      }
+    },
+    "version": "20260615160031",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VIVE NORDICO"
+    }
+  },
+  "_uri": "/mark/cl/e07b4afe-3f93-4332-a7fd-7d02d0926882",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.811Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/kr/95331a7a-5943-4b79-9d7d-5cce1086ff2c",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "95331a7a-5943-4b79-9d7d-5cce1086ff2c",
+  "applicationNumber": "40-2010-0021751",
+  "registrationNumber": "4009309050000",
+  "applicationDate": "2010-04-23",
+  "registrationDate": "2012-08-16",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "NORI",
+  "markTransliteration": "NORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "건전지,금전등록기,망원경,모뎀,비디오카메라,전화기,캠코더,페이저,휴대용 통신기계기구,휴대폰용 케이스",
+      "translation_language": "en",
+      "translation": "Batteries, cash registers, telescopes, modems, video cameras, telephones, camcorders, pagers, portable communication machine appliance, cases for mobile phones"
+    }
+  ],
+  "owner": "SAMSUNG ELECTRONICS CO., LTD.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "최덕규 (CHOI, Duk Kyu)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기도 수원시 영통구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "SAMSUNG ELECTRONICS CO., LTD.",
+        "applicantNativeName": "삼성전자주식회사"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Batteries, cash registers, telescopes, modems, video cameras, telephones, camcorders, pagers, portable communication machine appliance, cases for mobile phones",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "건전지,금전등록기,망원경,모뎀,비디오카메라,전화기,캠코더,페이저,휴대용 통신기계기구,휴대폰용 케이스"
+        }
+      ]
+    },
+    "id": "95331a7a-5943-4b79-9d7d-5cce1086ff2c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "(Gangnam Bldg., Seocho-dong) Suite Seocho-daero, Seocho-gu, Seoul Korea(DK CHOI & PARTNERS)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "최덕규 (CHOI, Duk Kyu)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20100423",
+        "applicationNumber": "40-2010-0021751"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20120816",
+        "registrationNumber": "4009309050000"
+      }
+    },
+    "version": "20250625165528",
+    "wordMarkSpecification": {
+      "markTransliteration": "NORI",
+      "markVerbalElementText": "NORI"
+    }
+  },
+  "_uri": "/mark/kr/95331a7a-5943-4b79-9d7d-5cce1086ff2c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.693Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

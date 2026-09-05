@@ -1,0 +1,343 @@
+{
+  "schema_version": 7,
+  "rated_under_framework": "house-default",
+  "corrections": {
+    "applied": true,
+    "note": "narrative spine, Qoris — corrected: the attribution to 'an enterprise risk-management product of the Indian company Udbhata Technologies' and the qoris.io citation appear in no artifact of this run, so both are struck and the name is re-attributed to what the run's material carries — a software-directory listing for which no publisher or vendor of record was established; the dependent 'no Japanese operation and no water offering' claim went with the attribution it rested on.\nnarrative spine, 株式会社VenQ — corrected: the corporate number, the city, the 2015 date and the houjin.jp citation appear in no source file and are struck; the sentence now states only what the run records — the company the search found on the VENQ- root, whose line of business the searched material does not establish — and the dependent conclusion that 'there is nothing an unregistered-name claim could rest on' went with them.\nnarrative spine, VENQ- root exhaustive negative — corrected: narrowed to the only Japanese company on that root the search found, since the corporate-registry channel is carried on the same page as unverified.\nfinding 1 (Ｖｅｎｋｕｒｉ) — corrected: the claim of a scoped Japanese listing/catalogue/webshop search is struck; use is stated as unverified on the Japanese consumer channels and the non-use-vulnerability assessment is narrowed to not established, keeping the finding's reading that the registration is enforceable today. Band, meters and use_check unchanged.\nfinding 2 (ＱＯＲＩＱ) — corrected: goods_proximity moved from low to medium on the fetched record's own 11C01 coding, the legal position now states that the goods sit in the same Japanese similar-group as downloadable software and rests the demotion on mark distance, and off_field_ground moves from different-field to no-material-risk because the parser bars different-field where goods_proximity does not read low. The off-field read is kept, as the quoted specification and the mark-distance receipt earn it.\ncoverage row 'the six Japanese water incumbents by name' — corrected: 'anything shaped like VENQORI in ... its own reagent, purifier and bottled-water classes' narrowed to 'no VENQORI filing appears in the reagent, purifier or bottled-water classes', which is the single exact-term slice actually run in classes 1, 11 and 32; the placement ruling clearing the six count-only owner-portfolio zones on the dictated owner×term slices is adopted, and this narrowing is the class-scope correction that ruling left open.\ncoverage rows and narrative spine — corrected: the internal search-unit names ('saturation-probe', 'primary-sweep', 'transliteration-numeric', 'incumbent-class' and the reconciliation labels) are dropped from the reader-facing coverage lines, and 'the mechanical comparison' is replaced with 'the automatic letter-by-letter comparison of the names' in both places it appeared. States and notes are otherwise unchanged.\ncalibration challenges — corrected: the opening challenge is asked and answered in the client's words with no 'placement', 'borderline' or 'headline'; the two answers that rested on rating vocabulary and prosecution shorthand now state the thing itself.\nNo finding was withdrawn: both flagged findings were correctable on their own fields, and no flag killed a finding."
+  },
+  "findings": [
+    {
+      "ordinal": 1,
+      "mark": "Ｖｅｎｋｕｒｉ",
+      "owner": {
+        "name": "YIWU TENGDING UMBRELLA CO., LTD.",
+        "country": "CN",
+        "registrations": [
+          {
+            "uri": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "borderline_between": [
+        "Moderate",
+        "Manageable"
+      ],
+      "net": "YIWU TENGDING UMBRELLA CO., LTD.'s live Japanese Venkuri registration would more likely than not fail against VENQORI for downloadable water-quality software, though it still stands in the way of a class 9 filing that claims measuring instruments.",
+      "disposition": "adversarial",
+      "legal_position": "VENQORI reads ベンコリ/ヴェンコリ against this registration's own recorded reading, ベンクリ — the same opening, the same four beats, one vowel apart, and that is the phonetic comparison Japanese examination weights. The registered class 9 goods are consumer hardware (rechargeable batteries, video cameras, earphones, electric plugs, battery chargers and monitoring devices with a monitor, among broad goods) sitting in the Japanese goods groups for photographic, measuring, power and telecommunications apparatus rather than the group that holds downloadable software, so the owner is likely to lose against the app as instructed; only the measuring-and-testing coverage would meet a probe or meter sold under the same name.",
+      "practical_position": "The owner is a Yiwu umbrella and consumer-accessories manufacturer selling through general trade rather than app stores. Its use of Venkuri for these goods is unverified on the Japanese consumer channels, so whether the registration is vulnerable to non-use cancellation is not established. The registration has been in force since 2020 and is enforceable today.",
+      "meters": {
+        "mark_similarity": {
+          "token": "high",
+          "basis": "verified-from-record",
+          "source": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150"
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150"
+        },
+        "use": {
+          "token": "not-confirmed",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "enforcer": {
+          "token": "low",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.4,
+        "y": 0.85
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "use_check": {
+        "source": "https://www.sokuhyo.com/cases/83069",
+        "quality": "register-mirror"
+      }
+    },
+    {
+      "ordinal": 2,
+      "mark": "ＱＯＲＩＱ",
+      "owner": {
+        "name": "NXP USA, INC.",
+        "country": "US",
+        "registrations": [
+          {
+            "uri": "/mark/jp/bb31005c-de89-4427-9e3b-eb870618399d"
+          }
+        ]
+      },
+      "net": "NXP's Japanese QorIQ registration covers semiconductors and microprocessors sold to device makers, not anything a Japanese householder downloads.",
+      "disposition": "off-field",
+      "off_field_ground": "no-material-risk",
+      "legal_position": "The specification is semiconductors, customised and multicore microprocessors and application-specific integrated circuits — components rather than software a consumer installs — but the record codes them in Japanese similar-group 11C01, the same group that holds downloadable software, so the distance that decides this record is between the marks and not between the goods. Read aloud they share nothing: コアアイキュー against ヴェンコリ, with only the Latin letters QORI in common.",
+      "practical_position": "NXP is by some distance the largest class 9 owner on this record, and this is one of the few live rights carrying the QORI element in Japanese class 9, so that element is not free there. Its trade is silicon sold to equipment makers through design-win and distribution channels, which never reaches a Japanese app store.",
+      "meters": {
+        "mark_similarity": {
+          "token": "low",
+          "basis": "verified-from-record",
+          "source": "/mark/jp/bb31005c-de89-4427-9e3b-eb870618399d"
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/jp/bb31005c-de89-4427-9e3b-eb870618399d"
+        },
+        "use": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.12,
+        "y": 0.12
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      }
+    }
+  ],
+  "coverage": [
+    {
+      "area": "Register / Japan — the mark and its near-identical spellings",
+      "state": "coverage-limited",
+      "note": "Every named spelling of the name was searched to completion in Japan and in international registrations reaching Japan, and no VENQ- right of any kind exists there. What could not be exhausted is the Japanese class 9, 41 and 42 sound-alike band on the VEN- opening."
+    },
+    {
+      "area": "Register / Japan — the crowded VEN- opening in classes 9, 41 and 42",
+      "state": "coverage-limited",
+      "note": "The VEN- opening is crowded in the instructed classes and the volume was counted rather than read. The one right that changes the advice came out of that zone, reached only because its owner was searched by name."
+    },
+    {
+      "area": "Register / Japan — look-alike spellings written in Greek and Cyrillic letters (vεηqοrι and vеnqоri)",
+      "state": "not-searched",
+      "note": "Could not be searched — the register recognises non-Latin filings only by their romanised reading, not by their characters, so the check cannot be put to it and a repeat attempt returns the same refusal. The plain Latin spelling they stand for was searched in full and returned nothing."
+    },
+    {
+      "area": "Register / Japan — Japanese-script and digit-substitution forms",
+      "state": "confirmed-clean",
+      "note": "All three katakana renderings, the katakana stem, the hiragana form and the digit-substitution spellings were searched in full, as whole strings and as partial matches; nothing bearing on the mark was found."
+    },
+    {
+      "area": "Register / Japan — the six Japanese water incumbents by name",
+      "state": "confirmed-clean",
+      "note": "Mitsubishi Chemical Aqua Solutions, Toray, Horiba, Shimadzu, Kurita and Panasonic were each searched by name against the mark and its root in classes 9, 41 and 42. None holds anything shaped like VENQORI in those classes, and no VENQORI filing appears in the reagent, purifier or bottled-water classes."
+    },
+    {
+      "area": "Register / Japan — the Vencora UK Limited portfolio",
+      "state": "coverage-limited",
+      "note": "Searched twice, under the full legal name and under the bare group name, and neither matched an owner name the register recognises. That is an unverified absence, not a clean result: the group's Japanese filings, if it holds any, could sit under a different spelling, a subsidiary or an agent."
+    },
+    {
+      "area": "Register / Japan — rights reaching Japan by international registration",
+      "state": "confirmed-clean",
+      "note": "International registrations designating Japan were searched alongside national filings; the mark exactly as filed and every near-identical form of it returned nothing."
+    },
+    {
+      "area": "Register / Japan — class 25 clothing, for merchandising",
+      "state": "confirmed-clean",
+      "note": "Checked because an identical mark in clothing can block promotional use even where the filing classes are clear. There is no identical VENQORI mark anywhere on this register, so no merchandising obstacle arises."
+    },
+    {
+      "area": "Common-law / Japanese consumer channels — the domestic marketplaces, app-listing media, press wire and crowdfunding platform",
+      "state": "not-searched",
+      "note": "These channels were named for this matter but are not among the sources the marketplace sweep ran, so a Japanese consumer launch under a neighbouring name was not looked for where it would show first."
+    },
+    {
+      "area": "Common-law / app stores, Japanese e-commerce, software directories and the water trade press",
+      "state": "coverage-limited",
+      "note": "Every spelling of the name was searched across the Apple and Google Play Japan storefronts, Rakuten, Kakaku, the software review directories and the water-industry publications, and nothing similar was found. Carried as limited rather than clean because the sweep's own account of what it reached disagrees with itself."
+    },
+    {
+      "area": "Common-law / worldwide brand databases, Japanese water-industry membership and tender records, instrument-maker catalogues and the Japanese corporate registry",
+      "state": "coverage-limited",
+      "note": "One half of the sweep records these four channels as searched and empty; the other records them as blocked. They are carried as unverified rather than clean."
+    },
+    {
+      "area": "Meaning and connotation of the name",
+      "state": "note",
+      "note": "Fifty-two meaning queries were run across the Latin, katakana and hiragana forms and each result was ruled on. The loaded readings sit on the Quechua word qori and on Spanish forms neighbouring VEN-, not on the mark itself."
+    },
+    {
+      "area": "Applicant identity",
+      "state": "open",
+      "note": "The applicant is unnamed on the instruction, so its own and its group's Japanese filings could not be excluded from conflicts by name. Nothing on this register is VENQORI or any VENQ- form, so no group filing can have been mistaken for a third party's."
+    },
+    {
+      "area": "The businesses behind three Japanese registrations on a QOR- root",
+      "state": "open",
+      "note": "The trade of KK Quest Research and of Qorga Corporation is not established anywhere in the searched material. If either proves to sell consumer environmental sensing or app-based training, its place on this record changes."
+    },
+    {
+      "area": "Japanese-script register equivalents (JP)",
+      "state": "coverage-limited",
+      "note": "Japanese-script same-meaning/phonetic register equivalents not searched on this search — The native-language investigation is offered on a Multi-country focus search and runs automatically on a Full country search."
+    },
+    {
+      "area": "Native-language investigation depth / ja",
+      "state": "coverage-limited",
+      "note": "Japanese-script deepening: the configured depth for this lane was `full` and this run delivered a depth this run's record cannot establish. this build carries no deep slice for the ja lane — the SERP grid and native read are zh-only (JX_SLICES, SERP_LANES), so `full` cannot be delivered here by any environment. The lane ran as a slice-1 candidate lane, which is what it ships as. This is a disclosed limit on what was searched, not a change to any verdict below — the lane's results stand for what it did cover."
+    }
+  ],
+  "mark_assessment": {
+    "distinctiveness": {
+      "read": "A strong name to own. VENQORI is coined, means nothing to a Japanese consumer, and the whole word carries the distinctiveness — there is no weak half for a third party to attack.",
+      "spectrum": "Coined — the strongest position on the spectrum in this field; no descriptive, laudatory, geographic or deceptive flag.",
+      "per_class": [
+        {
+          "class": "42",
+          "note": "The instructed goods describe downloadable software and online training and name no technical service, so class 42 has no anchor in the company's own words."
+        },
+        {
+          "class": "9",
+          "note": "Held to downloadable software the class is clear; drawn wide enough to claim measuring instruments it meets an existing Japanese right."
+        }
+      ],
+      "per_market": [
+        {
+          "market": "JP",
+          "note": "In katakana the name reads ベンコリ or ヴェンコリ. That is the form a Japanese examiner compares, and it is where the mark sits closest to an existing right."
+        }
+      ],
+      "counter_registrations": [
+        {
+          "mark": "Ｖｅｎｋｕｒｉ",
+          "uri": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150",
+          "note": "The only live Japanese right whose own recorded reading sits one vowel from the mark's."
+        }
+      ]
+    },
+    "connotation": "QORI is the Quechua word for gold, and commercial use of Quechua names by non-Indigenous brands has drawn documented public criticism — a reputational point for the business, not a trademark one. Nothing offensive, slang or subcultural attaches to VENQORI itself across the English, Spanish, Japanese and Quechua readings searched."
+  },
+  "four_answers": {
+    "third_party_rights": {
+      "read": "No one holds VENQORI, or any VENQ- form, in Japan. The nearest right is a class 9 hardware registration whose goods stop short of downloadable software.",
+      "token": "weak",
+      "basis": "The enumerated Japanese sweep of every named spelling, and the two rights that survived it.",
+      "ordinals": [
+        1,
+        2
+      ]
+    },
+    "objection_likelihood": {
+      "read": "Neither identified owner trades anywhere near a Japanese consumer water-quality app. An objection would have to come off the register rather than out of the market.",
+      "token": "unlikely",
+      "basis": "The two findings' owner profiles and registered goods.",
+      "ordinals": [
+        1,
+        2
+      ]
+    },
+    "registrability": {
+      "read": "VENQORI is coined and faces no obstacle of its own in Japan. The single live citation risk sits in class 9 and turns on how widely that class is claimed.",
+      "token": "registrable-with-conditions",
+      "basis": "The mark's own distinctiveness and the one live in-class Japanese right.",
+      "ordinals": [
+        1
+      ],
+      "obstacles": [
+        {
+          "class": "9",
+          "note": "A live registration reading ベンクリ covers measuring and testing instruments, so a class 9 specification claiming them meets it."
+        },
+        {
+          "class": "42",
+          "note": "The instructed goods name no service that class 42 would cover, so the class has nothing to rest on."
+        }
+      ]
+    },
+    "client_enforceability": {
+      "read": "A coined seven-letter word with nothing like it on the Japanese register gives the company a wide right to enforce once registered.",
+      "token": "strong",
+      "basis": "The mark's coined distinctiveness against an empty VENQ- band in Japan.",
+      "ordinals": []
+    }
+  },
+  "actions": [
+    {
+      "id": 1,
+      "kind": "client-fact",
+      "text": "Confirm who the applicant is and which companies belong to its group, so their own Japanese filings are not read as conflicts.",
+      "ordinals": []
+    },
+    {
+      "id": 2,
+      "kind": "goods-amendment",
+      "text": "Decide whether to keep any paired probe or meter out of the measuring-instrument goods in the Japanese class 9 filing.",
+      "condition": "A live Japanese class 9 registration reading ベンクリ covers measuring and testing instruments.",
+      "ordinals": [
+        1
+      ]
+    },
+    {
+      "id": 3,
+      "kind": "client-fact",
+      "text": "Confirm what the class 42 filing is meant to cover; the instructed goods name only downloadable software and online training.",
+      "ordinals": []
+    },
+    {
+      "id": 4,
+      "kind": "senior-clearance",
+      "text": "Have the Vencora group's Japanese filings checked under its subsidiary and agent names before this clearance is relied on.",
+      "condition": "Two searches of the Vencora UK Limited portfolio matched no owner name the Japanese register recognises.",
+      "ordinals": []
+    },
+    {
+      "id": 5,
+      "kind": "commercial-decision",
+      "text": "Decide whether the Quechua origin of the QORI element is a reputational risk the business is willing to carry.",
+      "ordinals": []
+    },
+    {
+      "id": 6,
+      "kind": "monitoring",
+      "text": "Keep a watch on the Japanese register for new filings on the VENQ- root, on which nothing is registered today.",
+      "ordinals": []
+    }
+  ],
+  "coverage_judgment": {
+    "sufficient": false,
+    "reason": "Two searches were not closed and both bear on the answer: the Japanese class 9 sound-alike band on the VEN- opening — the ベンコリ neighbourhood — was counted and not read, and it is the zone the one advice-changing right came out of; and the Vencora group's Japanese portfolio matched no owner name the register recognises on either of two attempts, so nothing can be read off that zero.",
+    "rows": [
+      {
+        "area": "saturation-probe (entire axis)",
+        "areaLabel": "field-size count (all of it)",
+        "note": "coverage-limited — The VEN- prefix is saturated in the instructed classes: the register returned 8,449 Japanese class 9/41/42 records on that element and the volume is beyond exha"
+      },
+      {
+        "area": "primary-sweep (entire axis)",
+        "areaLabel": "main register sweep (all of it)",
+        "note": "coverage-limited — Every named form of the mark was searched to completion in Japan and in international registrations reaching Japan — the mark as filed, its spacing, hyphenation"
+      },
+      {
+        "area": "primary-sweep / exact: vεηqοrι [cl 9, 42, 41]",
+        "areaLabel": "main register sweep / exact: vεηqοrι [cl 9, 42, 41]",
+        "note": "deferred — One recall check was written in Greek and Cyrillic look-alike letters that spell the mark to the eye. The register we searched does not index filings by those c"
+      },
+      {
+        "area": "primary-sweep / exact: vеnqоri [cl 9, 42, 41]",
+        "areaLabel": "main register sweep / exact: vеnqоri [cl 9, 42, 41]",
+        "note": "deferred — A second look-alike spelling built from Cyrillic characters was likewise impossible to put to this register, which recognises non-Latin filings only by their ro"
+      },
+      {
+        "area": "incumbent-class / Vencora UK Limited owner portfolio",
+        "areaLabel": "owner portfolio sweep / Vencora UK Limited owner portfolio",
+        "note": "coverage-limited — The portfolio of Vencora UK Limited has now been put to the register twice — once under the full legal styling and once under the bare group name — in classes 9"
+      }
+    ]
+  }
+}

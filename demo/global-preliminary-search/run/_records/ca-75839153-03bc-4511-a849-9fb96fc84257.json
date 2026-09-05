@@ -1,0 +1,227 @@
+{
+  "uri": "/mark/ca/75839153-03bc-4511-a849-9fb96fc84257",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "75839153-03bc-4511-a849-9fb96fc84257",
+  "applicationNumber": "1825603",
+  "registrationNumber": null,
+  "applicationDate": "2017-03-03",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2018-03-14"
+  ],
+  "abandonmentDate": "2020-12-09",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "venturi",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "(1) Logiciel de soutien à la gestion des ventes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "(1) Sales management support software.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Venturi inc.",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "3175 Ch Des Quatre-Bourgeois, Bur. 375, Québec, QUÉBEC, G1W2K7",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressLines": [
+          "3175 Ch Des Quatre-Bourgeois",
+          "Bur. 375",
+          "Québec",
+          "QUÉBEC"
+        ],
+        "applicantAddressPostalCode": "G1W2K7",
+        "applicantName": "Venturi inc."
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Proposed use in CANADA on wares marked (1)",
+        "typeDescription": "Proposed Use"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "(1) Logiciel de soutien à la gestion des ventes."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Sales management support software."
+        }
+      ]
+    },
+    "id": "75839153-03bc-4511-a849-9fb96fc84257",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20201209",
+        "descriptionText": "Abandoned - Section 36"
+      },
+      {
+        "date": "20200921",
+        "descriptionText": "Default Notice Sent",
+        "responseDate": "20201121"
+      },
+      {
+        "date": "20180629",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20200303"
+      },
+      {
+        "date": "20180629",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20180314",
+        "descriptionText": "Advertised",
+        "information": "Vol.65 Issue 3307"
+      },
+      {
+        "date": "20180222",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20180104",
+        "descriptionText": "Approval Notice Sent",
+        "responseDate": "20180201"
+      },
+      {
+        "date": "20180104",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20170306",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20170303",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20170303",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "3175 Ch Des Quatre-Bourgeois, Bur. 375, Québec, QUÉBEC, G1W2K7",
+        "addressLines": [
+          "3175 Ch Des Quatre-Bourgeois",
+          "Bur. 375",
+          "Québec",
+          "QUÉBEC",
+          "G1W2K7"
+        ],
+        "countryName": "Canada",
+        "name": "Venturi inc.",
+        "postalCode": "G1W2K7"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3307",
+        "publicationVolume": "65"
+      }
+    ],
+    "recordLastUpdated": "20260103",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "status": {
+      "abandonmentDate": "20201209",
+      "active": false,
+      "allowanceDate": [
+        "20180629"
+      ],
+      "application": {
+        "applicationDate": "20170303",
+        "applicationNumber": "1825603"
+      },
+      "approvalDate": "20180222",
+      "cmNormalisedStatus": "ABANDONED",
+      "defaultNotice": {
+        "dueDate": "20201121",
+        "sentDate": "20200921"
+      },
+      "formalisationDate": "20170306",
+      "markCurrentStatus": "Abandoned - Section 36",
+      "publicationDate": [
+        "20180314"
+      ],
+      "registrationFee": {
+        "dueDate": "20200303",
+        "requestDate": "20180629"
+      }
+    },
+    "subjectHeadings": [
+      "VENTURI",
+      "VENTURE"
+    ],
+    "version": "20260103012205",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "venturi",
+      "markVerbalElementTextFormal": "venturi"
+    }
+  },
+  "_uri": "/mark/ca/75839153-03bc-4511-a849-9fb96fc84257",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.177Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

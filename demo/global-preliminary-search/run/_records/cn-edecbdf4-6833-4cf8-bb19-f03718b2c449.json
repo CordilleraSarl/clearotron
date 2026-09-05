@@ -1,0 +1,170 @@
+{
+  "uri": "/mark/cn/edecbdf4-6833-4cf8-bb19-f03718b2c449",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "edecbdf4-6833-4cf8-bb19-f03718b2c449",
+  "applicationNumber": "77832040",
+  "registrationNumber": "77832040",
+  "applicationDate": "2024-04-09",
+  "registrationDate": "2024-10-07",
+  "expiryDate": "2034-10-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-07-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "RORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "电池;电锁;耳机;护目镜;计算机外围设备;手机屏幕专用保护膜;数据线;芯片(集成电路);眼镜;智能手机用壳",
+      "translation_language": "en",
+      "translation": "Batteries; electric locks; earphones; goggles; computer peripherals; protective films for mobile phone screens; data cables; chips (integrated circuits); glasses; cases for smart phones"
+    }
+  ],
+  "owner": "Zhang Youchang",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "湖南省涟源市金石镇潼溪村天禄组",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Zhang Youchang",
+        "applicantNativeName": "张佑嫦"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Batteries; electric locks; earphones; goggles; computer peripherals; protective films for mobile phone screens; data cables; chips (integrated circuits); glasses; cases for smart phones",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "电池;电锁;耳机;护目镜;计算机外围设备;手机屏幕专用保护膜;数据线;芯片(集成电路);眼镜;智能手机用壳"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Cables",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Life-saving instruments",
+        "Warning equipments, bells",
+        "Glasses and those accessories",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0912",
+          "subNatGoodsServicesDescription": "Cables"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0919",
+          "subNatGoodsServicesDescription": "Life-saving instruments"
+        },
+        {
+          "subNatClassNumber": "0920",
+          "subNatGoodsServicesDescription": "Warning equipments, bells"
+        },
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "edecbdf4-6833-4cf8-bb19-f03718b2c449",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1894"
+      }
+    ],
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳权皇品牌咨询有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240409",
+        "applicationNumber": "77832040"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20341006",
+      "lastPublicationDate": "20240706",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20241007",
+        "registrationNumber": "77832040"
+      }
+    },
+    "version": "20251005092948",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RORI"
+    }
+  },
+  "_uri": "/mark/cn/edecbdf4-6833-4cf8-bb19-f03718b2c449",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:43.692Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

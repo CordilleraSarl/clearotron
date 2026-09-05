@@ -1,0 +1,190 @@
+{
+  "uri": "/mark/wo/715417bf-6ebb-433b-834f-fd47b1523c48",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "715417bf-6ebb-433b-834f-fd47b1523c48",
+  "applicationNumber": null,
+  "registrationNumber": "1897668",
+  "applicationDate": null,
+  "registrationDate": "2025-11-21",
+  "expiryDate": "2035-11-21",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-01-22",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "AVENCORA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Scientific research in the field of prevention and treatment of kidney diseases and inflammatory diseases; providing medical and scientific research information in the field of kidney diseases and inflammatory diseases.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Recherche scientifique dans le domaine de la prévention et du traitement de maladies rénales et de maladies inflammatoires; fourniture d'informations en matière de recherche médicale et scientifique dans le domaine des maladies rénales et des maladies inflammatoires.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Investigación científica en el ámbito de la prevención y el tratamiento de enfermedades renales y enfermedades inflamatorias; suministro de información sobre investigaciones científicas y médicas en el ámbito de las enfermedades renales y las enfermedades inflamatorias.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Boehringer Ingelheim International GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "DE",
+      "priorityCountryName": "Germany",
+      "priorityDate": "20250522",
+      "priorityNumber": "30 2025 004 917"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicRegistrationApplicationOfficeCode": "DE",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20250618",
+          "basicRegistrationNumber": "30 2025 004 917"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "GB",
+      "US",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "55218 Ingelheim",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Boehringer Ingelheim International GmbH"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicRegistrationApplicationOfficeCode": "DE",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20250618",
+            "basicRegistrationNumber": "30 2025 004 917"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "GB",
+      "US",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific research in the field of prevention and treatment of kidney diseases and inflammatory diseases; providing medical and scientific research information in the field of kidney diseases and inflammatory diseases."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Recherche scientifique dans le domaine de la prévention et du traitement de maladies rénales et de maladies inflammatoires; fourniture d'informations en matière de recherche médicale et scientifique dans le domaine des maladies rénales et des maladies inflammatoires."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Investigación científica en el ámbito de la prevención y el tratamiento de enfermedades renales y enfermedades inflamatorias; suministro de información sobre investigaciones científicas y médicas en el ámbito de las enfermedades renales y las enfermedades inflamatorias."
+        }
+      ]
+    },
+    "id": "715417bf-6ebb-433b-834f-fd47b1523c48",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "DE",
+        "priorityCountryName": "Germany",
+        "priorityDate": "20250522",
+        "priorityNumber": "30 2025 004 917"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "02"
+      }
+    ],
+    "recordLastUpdated": "20260626",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Binger Strasse 173 55218 Ingelheim",
+        "representativeCorrespondentAddressCountryCode": "DE",
+        "representativeCorrespondentAddressCountryName": "Germany",
+        "representativeCorrespondentName": "Boehringer Ingelheim Corporate Center GmbH Trademarks"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20351121",
+      "lastPublicationDate": "20260122",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20251121",
+        "registrationNumber": "1897668"
+      }
+    },
+    "version": "20260626020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENCORA"
+    }
+  },
+  "_uri": "/mark/wo/715417bf-6ebb-433b-834f-fd47b1523c48",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.746Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

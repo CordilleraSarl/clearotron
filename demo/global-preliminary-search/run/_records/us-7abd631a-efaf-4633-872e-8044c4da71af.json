@@ -1,0 +1,902 @@
+{
+  "uri": "/mark/us/7abd631a-efaf-4633-872e-8044c4da71af",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "7abd631a-efaf-4633-872e-8044c4da71af",
+  "applicationNumber": "85636719",
+  "registrationNumber": "4481808",
+  "applicationDate": "2012-05-28",
+  "registrationDate": "2014-02-11",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2013-04-23"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2020-09-18",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "QURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Market research and field research in the nature of market reports and studies; Market research and field research in the nature of market reports and studies, namely, measuring, auditing, tracking, monitoring, and verifying placement, pricing, assortment, merchandising, arrangement, and display of products or competitive products, the distribution and sales of products, the publication and display of advertising, marketing, and promotional material, the effectiveness of advertising, marketing and promotional material and initiatives, and the consumer shopping experience; Research services in the nature of verifying, tracking and measuring consumer viewing of, exposure to, and reactions to advertisements, marketing and promotional material and initiatives; Business and marketing consulting services relating to optimizing placement, pricing, assortment, merchandising, arrangement and display of products, the distribution and sales of products, the publication and display of advertising, marketing, and promotional material and the effectiveness of advertising, marketing and promotional material and initiatives; Advertising and marketing consultancy in the field of developing product marketing and sales strategies; Consulting services in the fields of advertising, marketing and brand awareness; Business and marketing consulting services, namely, consultation in the fields of product tracking, monitoring and auditing to verify placement, pricing, assortment, merchandising, arrangement, and display of products or competitive products, the distribution and sales of products, the publication and display of advertising, marketing, and promotional material and the effectiveness of advertising, marketing and promotional material and initiatives; Providing statistical information services in the nature of market reports and studies, namely, data collection, analysis, and reports on product and product-related statistics, and related season and date, trends, and demographics information about product placement, pricing, assortment, merchandising, arrangement, and display of products or competitive products, the distribution and sales of products, the publication and display of advertising, marketing, and promotional material and the effectiveness of advertising, marketing and promotional material and initiatives",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Software as a service (SAAS) services featuring software for purposes of measuring, auditing, tracking, monitoring, and verifying placement, pricing, assortment, merchandising, arrangement, and display of products or competitive products, the distribution and sales of products, the publication and display of advertising, marketing, and promotional material, the effectiveness of advertising, marketing and promotional material and initiatives, and the consumer shopping experience; Software as a service (SAAS) services featuring software for statistical analysis of sales and marketing information, namely, for use in data collection, analysis, and reports on product and product-related sales and marketing statistics, and related season and date, trends, and demographics information",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "TRAX RETAIL, INC.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Jason Zedeck",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "ONE SUGARLOAF CENTRE, DULUTH, GEORGIA, 30097",
+        "applicantAddressCity": "DULUTH",
+        "applicantAddressPostalCode": "30097",
+        "applicantAddressStateName": "GEORGIA",
+        "applicantAddressStreet": "ONE SUGARLOAF CENTRE",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "TRAX RETAIL, INC.",
+        "applicantSecondaryAddressUnit": "1960 SATELLITE BOULEVARD, SUITE 4100"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "80 RAFFLES PLACE, #32-01 UOB PLAZA, SINGAPORE, 048624, SING",
+            "city": "SINGAPORE",
+            "countryCode": "SG",
+            "countryName": "Singapore",
+            "jurisdictionOfIncorporation": "Singapore",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "TRAX TECHNOLOGY SOLUTIONS PTE. LTD.",
+            "postalCode": "048624",
+            "street": "80 RAFFLES PLACE, #32-01 UOB PLAZA"
+          },
+          {
+            "address": "80 RAFFLES PLACE, #32-01 UOB PLAZA, SINGAPORE, 048624, SING",
+            "city": "SINGAPORE",
+            "countryCode": "SG",
+            "countryName": "Singapore",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "TRAX RETAIL, INC.",
+            "postalCode": "048624",
+            "street": "80 RAFFLES PLACE, #32-01 UOB PLAZA"
+          },
+          {
+            "address": "621 17TH STREET, SUITE 777, DENVER, COLORADO, 80239",
+            "city": "DENVER",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SHOPKICK, INC.",
+            "postalCode": "80239",
+            "stateName": "COLORADO",
+            "street": "621 17TH STREET, SUITE 777"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "ILLINOIS",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "ALTER DOMUS (US) LLC"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "650 TRADE CENTRE WAY, SUITE 200, KALAMAZOO, MI 49002-0402",
+            "addressLines": [
+              "HONIGMAN LLP",
+              "650 TRADE CENTRE WAY, SUITE 200",
+              "KALAMAZOO, MI 49002-0402"
+            ],
+            "name": "HONIGMAN LLP"
+          }
+        ],
+        "descriptionText": "RELEASE BY SECURED PARTY",
+        "executedDate": "20230922",
+        "recordedDate": "20230928",
+        "reelFrameNumber": "8212/0860"
+      },
+      {
+        "assignees": [
+          {
+            "address": "ONE SUGARLOAF CENTRE, 1960 SATELLITE BOULEVARD, SUITE 4100, DULUTH, GEORGIA, 30097",
+            "city": "DULUTH",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "TRAX RETAIL, INC. (F/K/A QURI, INC.)",
+            "postalCode": "30097",
+            "stateName": "GEORGIA",
+            "street": "ONE SUGARLOAF CENTRE, 1960 SATELLITE BOULEVARD, SUITE 4100"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "CALIFORNIA",
+            "legalEntity": "CORPORATION",
+            "name": "SILICON VALLEY BANK"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "355 SOUTH GRAND AVENUE, LOS ANGELES, CA 90071-1560",
+            "addressLines": [
+              "LATHAM & WATKINS LLP",
+              "355 SOUTH GRAND AVENUE",
+              "LOS ANGELES, CA 90071-1560"
+            ],
+            "name": "LATHAM & WATKINS LLP"
+          }
+        ],
+        "descriptionText": "INTELLECTUAL PROPERTY SECURITY AGREEMENT TERMINATION",
+        "executedDate": "20230207",
+        "recordedDate": "20230207",
+        "reelFrameNumber": "7963/0342"
+      },
+      {
+        "assignees": [
+          {
+            "address": "65 CHULIA STREET, #19-01, OCBC CENTRE, SING",
+            "city": "OCBC CENTRE",
+            "countryCode": "SG",
+            "countryName": "Singapore",
+            "jurisdictionOfIncorporation": "Singapore",
+            "legalEntity": "PRIVATE LIMITED COMPANY",
+            "name": "TRAX TECHNOLOGY SOLUTIONS PTE. LTD",
+            "street": "65 CHULIA STREET, #19-01"
+          },
+          {
+            "address": "273 S. RAILROAD AVE., SAN MATEO, CALIFORNIA, 94401",
+            "city": "SAN MATEO",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SHOPKICK, INC.",
+            "postalCode": "94401",
+            "stateName": "CALIFORNIA",
+            "street": "273 S. RAILROAD AVE."
+          },
+          {
+            "address": "38 RUE BREGUET, PARIS, 75011, FRAN",
+            "city": "PARIS",
+            "countryCode": "FR",
+            "countryName": "France",
+            "jurisdictionOfIncorporation": "France",
+            "legalEntity": "SOCIÉTÉ PAR ACTIONS SIMPLIFIÉE (SAS)",
+            "name": "CVDM SOLUTIONS SAS",
+            "postalCode": "75011",
+            "street": "38 RUE BREGUET"
+          },
+          {
+            "address": "ONE SUGARLOAF CENTRE, DULUTH, GEORGIA, 30097",
+            "city": "DULUTH",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "TRAX RETAIL, INC.",
+            "postalCode": "30097",
+            "stateName": "GEORGIA",
+            "street": "ONE SUGARLOAF CENTRE"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "NATIONAL BANKING ASSOCIATION",
+            "name": "JPMORGAN CHASE BANK, N.A., AS ADMINISTRATIVE AGENT"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "650 TOWN CENTER DRIVE, 20TH FLOOR, COSTA MESA, CA 92626",
+            "addressLines": [
+              "LATHAM & WATKINS LLP",
+              "650 TOWN CENTER DRIVE, 20TH FLOOR",
+              "COSTA MESA, CA 92626"
+            ],
+            "name": "LATHAM & WATKINS LLP"
+          }
+        ],
+        "descriptionText": "RELEASE OF TRADEMARK SECURITY INTEREST AT REEL/FRAME NO. 7076/0547",
+        "executedDate": "20211014",
+        "recordedDate": "20211027",
+        "reelFrameNumber": "7475/0385"
+      },
+      {
+        "assignees": [
+          {
+            "address": "225 W WASHINGTON STREET, 9TH FLOOR, CHICAGO, ILLINOIS, 60606",
+            "city": "CHICAGO",
+            "jurisdictionOfIncorporation": "ILLINOIS",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "ALTER DOMUS (US) LLC",
+            "postalCode": "60606",
+            "stateName": "ILLINOIS",
+            "street": "225 W WASHINGTON STREET, 9TH FLOOR"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "Singapore",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "TRAX TECHNOLOGY SOLUTIONS PTE. LTD."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SHOPKICK, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "TRAX RETAIL, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "2050 MAIN ST., SUITE 1100, IP PROSECUTION DEPT, IRVINE, CA 34313",
+            "addressLines": [
+              "ORRICK, HERRINGTON & SUTCLIFFE, LLP",
+              "2050 MAIN ST., SUITE 1100",
+              "IP PROSECUTION DEPT",
+              "IRVINE, CA 34313"
+            ],
+            "name": "ORRICK, HERRINGTON & SUTCLIFFE, LLP"
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "20211014",
+        "recordedDate": "20211015",
+        "reelFrameNumber": "7462/0883"
+      },
+      {
+        "assignees": [
+          {
+            "address": "475 BRANNAN, SAN FRANCISCO, CALIFORNIA, 94107",
+            "city": "SAN FRANCISCO",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "QURI, LLC",
+            "postalCode": "94107",
+            "secondaryAddressUnit": "SUITE 400",
+            "stateName": "CALIFORNIA",
+            "street": "475 BRANNAN"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "QURI, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "650 TOWN CENTER DRIVE, 20TH FLOOR, COSTA MESA, CA 92626",
+            "addressLines": [
+              "LATHAM & WATKINS LLP",
+              "650 TOWN CENTER DRIVE, 20TH FLOOR",
+              "COSTA MESA, CA 92626"
+            ],
+            "name": "LATHAM & WATKINS LLP"
+          }
+        ],
+        "descriptionText": "ENTITY CONVERSION",
+        "executedDate": "20190102",
+        "recordedDate": "20210923",
+        "reelFrameNumber": "7429/0590"
+      },
+      {
+        "assignees": [
+          {
+            "address": "ONE SUGARLOAF CENTRE, DULUTH, GEORGIA, 30097",
+            "city": "DULUTH",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "TRAX RETAIL, INC.",
+            "postalCode": "30097",
+            "secondaryAddressUnit": "1960 SATELLITE BOULEVARD, SUITE 4100",
+            "stateName": "GEORGIA",
+            "street": "ONE SUGARLOAF CENTRE"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "QURI, LLC"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "650 TOWN CENTER DRIVE, 20TH FLOOR, COSTA MESA, CA 92626",
+            "addressLines": [
+              "LATHAM & WATKINS LLP",
+              "650 TOWN CENTER DRIVE, 20TH FLOOR",
+              "COSTA MESA, CA 92626"
+            ],
+            "name": "LATHAM & WATKINS LLP"
+          }
+        ],
+        "descriptionText": "MERGER EFFECTIVE 12/27/2019",
+        "executedDate": "20191227",
+        "recordedDate": "20210923",
+        "reelFrameNumber": "7436/0052"
+      },
+      {
+        "assignees": [
+          {
+            "address": "4 CMC, BROOKLYN, NEW YORK, 11245-0001",
+            "city": "BROOKLYN",
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "NATIONAL BANKING ASSOCIATION",
+            "name": "JPMORGAN CHASE BANK, N.A., AS ADMINISTRATIVE AGENT",
+            "postalCode": "11245-0001",
+            "stateName": "NEW YORK",
+            "street": "4 CMC"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "Singapore",
+            "legalEntity": "PRIVATE LIMITED COMPANY",
+            "name": "TRAX TECHNOLOGY SOLUTIONS PTE. LTD."
+          },
+          {
+            "jurisdictionOfIncorporation": "Singapore",
+            "legalEntity": "CORPORATION",
+            "name": "SHOPKICK, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "France",
+            "legalEntity": "SOCIÉTÉ PAR ACTIONS SIMPLIFIÉE (SAS)",
+            "name": "CVDM SOLUTIONS SAS"
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "TRAX RETAIL, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "1025 VERMONT AVE NW, SUITE 1130, COGENCY GLOBAL INC., WASHINGTON, DC 20005",
+            "addressLines": [
+              "JAY DASILVA",
+              "1025 VERMONT AVE NW, SUITE 1130",
+              "COGENCY GLOBAL INC.",
+              "WASHINGTON, DC 20005"
+            ],
+            "name": "JAY DASILVA"
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "20201013",
+        "recordedDate": "20201014",
+        "reelFrameNumber": "7076/0547"
+      },
+      {
+        "assignees": [
+          {
+            "address": "655 MONTGOMERY ST., SAN FRANCISCO, CALIFORNIA, 94111",
+            "city": "SAN FRANCISCO",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "QURI, INC.",
+            "postalCode": "94111",
+            "secondaryAddressUnit": "SUITE 1400",
+            "stateName": "CALIFORNIA",
+            "street": "655 MONTGOMERY ST."
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "MARYLAND",
+            "legalEntity": "CORPORATION",
+            "name": "VENTURE LENDING & LEASING VI, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "MARYLAND",
+            "legalEntity": "CORPORATION",
+            "name": "VENTURE LENDING & LEASING VII, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "1 FRONT ST., 32ND FLOOR, SAN FRANCISCO, CA 94111",
+            "addressLines": [
+              "JEFFREY T. KLUGMAN",
+              "1 FRONT ST., 32ND FLOOR",
+              "SAN FRANCISCO, CA 94111"
+            ],
+            "name": "JEFFREY T. KLUGMAN"
+          }
+        ],
+        "descriptionText": "RELEASE BY SECURED PARTY",
+        "executedDate": "20190603",
+        "recordedDate": "20190603",
+        "reelFrameNumber": "6660/0307"
+      },
+      {
+        "assignees": [
+          {
+            "address": "3003 TASMAN DRIVE, SANTA CLARA, CALIFORNIA, 95054",
+            "city": "SANTA CLARA",
+            "jurisdictionOfIncorporation": "CALIFORNIA",
+            "legalEntity": "CORPORATION",
+            "name": "SILICON VALLEY BANK",
+            "postalCode": "95054",
+            "secondaryAddressUnit": "HF 150",
+            "stateName": "CALIFORNIA",
+            "street": "3003 TASMAN DRIVE"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "QURI, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "1025 VERMONT AVE NW, SUITE 1130, NATIONAL CORPORATE RESEARCH, LTD, WASHINGTON, DC 20005",
+            "addressLines": [
+              "STEWART WALSH",
+              "1025 VERMONT AVE NW, SUITE 1130",
+              "NATIONAL CORPORATE RESEARCH, LTD",
+              "WASHINGTON, DC 20005"
+            ],
+            "name": "STEWART WALSH"
+          }
+        ],
+        "descriptionText": "INTELLECTUAL PROPERTY SECURITY AGREEMENT",
+        "executedDate": "20160715",
+        "recordedDate": "20160718",
+        "reelFrameNumber": "5836/0036"
+      },
+      {
+        "assignees": [
+          {
+            "address": "104 LA MESA DRIVE, SUITE 102, PORTOLA VALLEY, CALIFORNIA, 94028",
+            "city": "PORTOLA VALLEY",
+            "jurisdictionOfIncorporation": "MARYLAND",
+            "legalEntity": "CORPORATION",
+            "name": "VENTURE LENDING & LEASING VI, INC.",
+            "postalCode": "94028",
+            "stateName": "CALIFORNIA",
+            "street": "104 LA MESA DRIVE, SUITE 102"
+          },
+          {
+            "address": "104 LA MESA DRIVE, SUITE 102, PORTOLA VALLEY, CALIFORNIA, 94028",
+            "city": "PORTOLA VALLEY",
+            "jurisdictionOfIncorporation": "MARYLAND",
+            "legalEntity": "CORPORATION",
+            "name": "VENTURE LENDING & LEASING VII, INC.",
+            "postalCode": "94028",
+            "stateName": "CALIFORNIA",
+            "street": "104 LA MESA DRIVE, SUITE 102"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "QURI, INC.",
+            "previousName": "FORMERLY WISEVIEW RESEARCH, CORP."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "FOUR EMBARCADERO CENTER, SUITE 4000, SAN FRANCISCO, CA 94111",
+            "addressLines": [
+              "JEFFREY T. KLUGMAN",
+              "FOUR EMBARCADERO CENTER, SUITE 4000",
+              "SAN FRANCISCO, CA 94111"
+            ],
+            "name": "JEFFREY T. KLUGMAN"
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "20140102",
+        "recordedDate": "20140116",
+        "reelFrameNumber": "5195/0552"
+      },
+      {
+        "assignees": [
+          {
+            "address": "1010 SIR FRANCIS DRAKE BLVD., SUITE 205, KENTFIELD, CALIFORNIA, 94904",
+            "city": "KENTFIELD",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "QURI, INC.",
+            "postalCode": "94904",
+            "stateName": "CALIFORNIA",
+            "street": "1010 SIR FRANCIS DRAKE BLVD., SUITE 205"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "WISEVIEW RESEARCH, CORP."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "P.O. BOX 35210, LOS ANGELES, CA 90035-0210",
+            "addressLines": [
+              "JASON ZEDECK",
+              "P.O. BOX 35210",
+              "LOS ANGELES, CA 90035-0210"
+            ],
+            "name": "JASON ZEDECK"
+          }
+        ],
+        "descriptionText": "CHANGE OF NAME",
+        "executedDate": "20121025",
+        "recordedDate": "20131106",
+        "reelFrameNumber": "5147/0647"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Market research and field research in the nature of market reports and studies; Market research and field research in the nature of market reports and studies, namely, measuring, auditing, tracking, monitoring, and verifying placement, pricing, assortment, merchandising, arrangement, and display of products or competitive products, the distribution and sales of products, the publication and display of advertising, marketing, and promotional material, the effectiveness of advertising, marketing and promotional material and initiatives, and the consumer shopping experience; Research services in the nature of verifying, tracking and measuring consumer viewing of, exposure to, and reactions to advertisements, marketing and promotional material and initiatives; Business and marketing consulting services relating to optimizing placement, pricing, assortment, merchandising, arrangement and display of products, the distribution and sales of products, the publication and display of advertising, marketing, and promotional material and the effectiveness of advertising, marketing and promotional material and initiatives; Advertising and marketing consultancy in the field of developing product marketing and sales strategies; Consulting services in the fields of advertising, marketing and brand awareness; Business and marketing consulting services, namely, consultation in the fields of product tracking, monitoring and auditing to verify placement, pricing, assortment, merchandising, arrangement, and display of products or competitive products, the distribution and sales of products, the publication and display of advertising, marketing, and promotional material and the effectiveness of advertising, marketing and promotional material and initiatives; Providing statistical information services in the nature of market reports and studies, namely, data collection, analysis, and reports on product and product-related statistics, and related season and date, trends, and demographics information about product placement, pricing, assortment, merchandising, arrangement, and display of products or competitive products, the distribution and sales of products, the publication and display of advertising, marketing, and promotional material and the effectiveness of advertising, marketing and promotional material and initiatives"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Software as a service (SAAS) services featuring software for purposes of measuring, auditing, tracking, monitoring, and verifying placement, pricing, assortment, merchandising, arrangement, and display of products or competitive products, the distribution and sales of products, the publication and display of advertising, marketing, and promotional material, the effectiveness of advertising, marketing and promotional material and initiatives, and the consumer shopping experience; Software as a service (SAAS) services featuring software for statistical analysis of sales and marketing information, namely, for use in data collection, analysis, and reports on product and product-related sales and marketing statistics, and related season and date, trends, and demographics information"
+        }
+      ]
+    },
+    "id": "7abd631a-efaf-4633-872e-8044c4da71af",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20230215",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20211103",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20211006",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20210929",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20200918",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20190211",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20160810",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20140211",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20140107",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE E-MAILED"
+      },
+      {
+        "date": "20140104",
+        "descriptionText": "LAW OFFICE REGISTRATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20140102",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20131222",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20131209",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20131113",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20131113",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20131113",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20130618",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20130423",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20130423",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20130403",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20130319",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20130319",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20130307",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20130307",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20130307",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20130307",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20130307",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20120924",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20120924",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20120924",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20120916",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20120606",
+        "descriptionText": "NOTICE OF PSEUDO MARK MAILED"
+      },
+      {
+        "date": "20120605",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20120531",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Color is not claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "1010 Sir Francis Drake Blvd., Suite 205, Kentfield, CA, 94904",
+        "city": "Kentfield",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Wiseview Research, Corp.",
+        "postalCode": "94904",
+        "stateName": "CALIFORNIA",
+        "street": "1010 Sir Francis Drake Blvd., Suite 205"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "1010 SIR FRANCIS DRAKE BLVD., SUITE 205, KENTFIELD, CA, 94904",
+        "city": "KENTFIELD",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "QURI, INC.",
+        "postalCode": "94904",
+        "stateName": "CALIFORNIA",
+        "street": "1010 SIR FRANCIS DRAKE BLVD., SUITE 205"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "1010 Sir Francis Drake Blvd., Suite 205, Kentfield, CA, 94904",
+        "city": "Kentfield",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Wiseview Research, Corp.",
+        "postalCode": "94904",
+        "stateName": "CALIFORNIA",
+        "street": "1010 Sir Francis Drake Blvd., Suite 205"
+      }
+    ],
+    "postPublicationOwners": [
+      {
+        "address": "1010 SIR FRANCIS DRAKE BLVD., SUITE 205, KENTFIELD, CA, 94904",
+        "city": "KENTFIELD",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "QURI, INC.",
+        "postalCode": "94904",
+        "stateName": "CALIFORNIA",
+        "street": "1010 SIR FRANCIS DRAKE BLVD., SUITE 205"
+      }
+    ],
+    "postRegistrationOwners": [
+      {
+        "address": "ONE SUGARLOAF CENTRE, DULUTH, GA, 30097",
+        "city": "DULUTH",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "TRAX RETAIL, INC.",
+        "postalCode": "30097",
+        "secondaryAddressUnit": "1960 SATELLITE BOULEVARD, SUITE 4100",
+        "stateName": "GEORGIA",
+        "street": "ONE SUGARLOAF CENTRE"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "LOS ANGELES, CA 90035-0210, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "LOS ANGELES, CA 90035-0210",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "JASON ZEDECK LAW OFFICE OF JASON ZEDECK, PO BOX 35210"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "LOS ANGELES, CA 90035-0210, UNITED STATES",
+        "representativeAddressLines": [
+          "LOS ANGELES, CA 90035-0210",
+          "UNITED STATES"
+        ],
+        "representativeName": "Jason Zedeck"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120528",
+        "applicationNumber": "85636719"
+      },
+      "cancellationDate": "20200918",
+      "cancellationPublicationDate": "20201027",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "35",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20120530"
+        },
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20120530"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "35",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20120530"
+        },
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20120530"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20200918",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20130423"
+      ],
+      "registration": {
+        "registrationDate": "20140211",
+        "registrationNumber": "4481808"
+      }
+    },
+    "version": "20260110144409",
+    "wordMarkSpecification": {
+      "markTranslationDescription": "The wording \"QURI\" has no meaning in a foreign language.",
+      "markVerbalElementText": "QURI"
+    }
+  },
+  "_uri": "/mark/us/7abd631a-efaf-4633-872e-8044c4da71af",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:07.495Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

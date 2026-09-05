@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/cn/00a31efa-e576-41b0-8ab8-1cd2ecba5aa2",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "00a31efa-e576-41b0-8ab8-1cd2ecba5aa2",
+  "applicationNumber": "89155864",
+  "registrationNumber": null,
+  "applicationDate": "2025-12-15",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "ISQ ORIGINAL PRODUCTS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "车载手机电池充电器;点火用电池;电池;电动汽车用充电桩;电瓶;机动车辆用充电装置;汽车电池;太阳能充电电池;与汽车点烟器连用的USB充电器;运载工具用蓄电池",
+      "translation_language": "en",
+      "translation": "Car mobile phone battery charger; ignition battery; battery; electric vehicle charging station; battery; motor vehicle charging device; car battery; solar charging battery; USB charger for use with car cigarette lighter; storage battery for vehicles."
+    }
+  ],
+  "owner": "Xue Kai",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "福建省福清市龙田",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Xue Kai",
+        "applicantNativeName": "薛凯"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Car mobile phone battery charger; ignition battery; battery; electric vehicle charging station; battery; motor vehicle charging device; car battery; solar charging battery; USB charger for use with car cigarette lighter; storage battery for vehicles.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "车载手机电池充电器;点火用电池;电池;电动汽车用充电桩;电瓶;机动车辆用充电装置;汽车电池;太阳能充电电池;与汽车点烟器连用的USB充电器;运载工具用蓄电池"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "00a31efa-e576-41b0-8ab8-1cd2ecba5aa2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260312",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京中理通知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251215",
+        "applicationNumber": "89155864"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20260312020142",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ISQ ORIGINAL PRODUCTS"
+    }
+  },
+  "_uri": "/mark/cn/00a31efa-e576-41b0-8ab8-1cd2ecba5aa2",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.398Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

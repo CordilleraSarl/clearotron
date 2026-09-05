@@ -1,0 +1,268 @@
+{
+  "uri": "/mark/us/6b3c055f-51d4-4ecc-bab8-14bea55cf564",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "6b3c055f-51d4-4ecc-bab8-14bea55cf564",
+  "applicationNumber": "98917473",
+  "registrationNumber": null,
+  "applicationDate": "2024-12-22",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2025-09-12",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "W WILLPOWER LEAVE NO ROOM FOR DOUBT",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    25,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        25
+      ],
+      "language": null,
+      "description": "INT. CL. 25 Athletic apparel, namely, shirts, pants, jackets, footwear, hats and caps, athletic uniforms; Athletic footwear for performance training; Athletic tights",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Sports training",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Willpower Resistance Bands, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "61 78th Street, Brooklyn, NY, 11209",
+        "applicantAddressCity": "Brooklyn",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "11209",
+        "applicantAddressStateName": "NEW YORK",
+        "applicantAddressStreet": "61 78th Street",
+        "applicantAliasName": "DBA Willpower USA",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Willpower Resistance Bands, Inc.",
+        "applicantSecondaryAddressUnit": "PH"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "24.01.02",
+      "24.01.03",
+      "26.01.06",
+      "26.01.10",
+      "26.01.37",
+      "26.01.55",
+      "26.19.01",
+      "26.19.07",
+      "30.01.23",
+      "30.05.01"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "25",
+          "intGoodsServicesDescription": "INT. CL. 25 Athletic apparel, namely, shirts, pants, jackets, footwear, hats and caps, athletic uniforms; Athletic footwear for performance training; Athletic tights"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Sports training"
+        }
+      ]
+    },
+    "id": "6b3c055f-51d4-4ecc-bab8-14bea55cf564",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20251002",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20251002",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20250611",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20250611",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20250611",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20250609",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20250530",
+        "descriptionText": "NOTICE OF DESIGN SEARCH CODE E-MAILED"
+      },
+      {
+        "date": "20250530",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20241222",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Color is not claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of The mark consists of a shield containing a stylized \"W\" formed by four lines converging at a central circle. The shield is surrounded by text, with \"WILLPOWER\" appearing above and the tagline \"LEAVE NO ROOM FOR DOUBT\" below, both in bold uppercase letters. The entire mark is rendered in black and white.",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "61 78th Street, Brooklyn, NY, 11209",
+        "aliasName": "DBA Willpower USA",
+        "city": "Brooklyn",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Willpower Resistance Bands, Inc.",
+        "postalCode": "11209",
+        "secondaryAddressUnit": "PH",
+        "stateName": "NEW YORK",
+        "street": "61 78th Street"
+      },
+      {
+        "address": "61 78th Street, Brooklyn, NY, 11209",
+        "aliasName": "DBA Willpower USA",
+        "city": "Brooklyn",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Willpower Resistance Bands, Inc.",
+        "postalCode": "11209",
+        "secondaryAddressUnit": "PH",
+        "stateName": "NEW YORK",
+        "street": "61 78th Street"
+      }
+    ],
+    "recordLastUpdated": "20260130",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "PH, Brooklyn, NY 11209, United States",
+        "representativeCorrespondentAddressLines": [
+          "PH",
+          "Brooklyn, NY 11209",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Willpower Resistance Bands, Inc., 61 78th Street"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "PH, Brooklyn, NY 11209, United States",
+        "representativeAddressLines": [
+          "PH",
+          "Brooklyn, NY 11209",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20250912",
+      "active": false,
+      "application": {
+        "applicationDate": "20241222",
+        "applicationNumber": "98917473"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "25",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20211121"
+        },
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20211121"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "25",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20220922"
+        },
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20220922"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20251002",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260130164034",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "W WILLPOWER LEAVE NO ROOM FOR DOUBT"
+    }
+  },
+  "_uri": "/mark/us/6b3c055f-51d4-4ecc-bab8-14bea55cf564",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.831Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

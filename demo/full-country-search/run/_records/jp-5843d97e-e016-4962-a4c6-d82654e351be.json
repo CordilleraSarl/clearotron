@@ -1,0 +1,137 @@
+{
+  "uri": "/mark/jp/5843d97e-e016-4962-a4c6-d82654e351be",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "5843d97e-e016-4962-a4c6-d82654e351be",
+  "applicationNumber": "2011-042197",
+  "registrationNumber": "5560930",
+  "applicationDate": "2011-06-17",
+  "registrationDate": "2013-03-01",
+  "expiryDate": "2033-03-01",
+  "renewalDate": null,
+  "lastPublicationDate": "2013-04-02",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＭＡＧＮＩＶ",
+  "markTransliteration": "MAGUNIBI MAGUNIBUI",
+  "markTranslation": "MAGNIV",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "半導体，集積回路，マイクロコントローラ，電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Semiconductors, integrated circuits, microcontrollers, electronic appliances appliances and parts thereof"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "SHIROYAMA YASUFUMI",
+  "priorities": [
+    {
+      "priorityDate": "20110617"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductors, integrated circuits, microcontrollers, electronic appliances appliances and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "半導体，集積回路，マイクロコントローラ，電子応用機械器具及びその部品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        }
+      ]
+    },
+    "id": "5843d97e-e016-4962-a4c6-d82654e351be",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20110617"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "SHIROYAMA YASUFUMI",
+        "representativeNativeName": "城山　康文"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20110617",
+        "applicationNumber": "2011-042197"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330301",
+      "lastPublicationDate": "20130402",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20130301",
+        "registrationNumber": "5560930"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "MAGNIV",
+      "markTransliteration": "MAGUNIBI MAGUNIBUI",
+      "markVerbalElementText": "ＭＡＧＮＩＶ"
+    }
+  },
+  "_uri": "/mark/jp/5843d97e-e016-4962-a4c6-d82654e351be",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.462Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

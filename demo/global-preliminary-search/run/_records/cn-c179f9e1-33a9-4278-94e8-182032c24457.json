@@ -1,0 +1,125 @@
+{
+  "uri": "/mark/cn/c179f9e1-33a9-4278-94e8-182032c24457",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "c179f9e1-33a9-4278-94e8-182032c24457",
+  "applicationNumber": "87694668",
+  "registrationNumber": null,
+  "applicationDate": "2025-09-18",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2026-05-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "IORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "电子竞技服务;提供体育设施;体育比赛计时;体育设备出租(车辆除外);玩具出租",
+      "translation_language": "en",
+      "translation": ". Esports services; provision of sports facilities; timing of sports events; rental of sports equipment (excluding vehicles); toy rental."
+    }
+  ],
+  "owner": "Shenzhen Kick Sports Culture Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市龙岗区南湾街道布沙路78号樟树布商业大厦503室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Kick Sports Culture Co., Ltd.",
+        "applicantNativeName": "深圳一起踢体育文化有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": ". Esports services; provision of sports facilities; timing of sports events; rental of sports equipment (excluding vehicles); toy rental.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "电子竞技服务;提供体育设施;体育比赛计时;体育设备出租(车辆除外);玩具出租"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "c179f9e1-33a9-4278-94e8-182032c24457",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1983"
+      }
+    ],
+    "recordLastUpdated": "20260527",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳翼盛智成知识产权事务所(普通合伙)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250918",
+        "applicationNumber": "87694668"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "lastPublicationDate": "20260513",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260527020417",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "IORI"
+    }
+  },
+  "_uri": "/mark/cn/c179f9e1-33a9-4278-94e8-182032c24457",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:47.226Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

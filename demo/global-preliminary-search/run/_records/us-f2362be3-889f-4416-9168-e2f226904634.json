@@ -1,0 +1,350 @@
+{
+  "uri": "/mark/us/f2362be3-889f-4416-9168-e2f226904634",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "f2362be3-889f-4416-9168-e2f226904634",
+  "applicationNumber": "87095486",
+  "registrationNumber": "5302756",
+  "applicationDate": "2016-07-07",
+  "registrationDate": "2017-10-03",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2017-01-24"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2024-04-19",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "QORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Computer services, namely, developing customized on-line web pages featuring a repository of reference data sets which are curated, maintained and published periodically, in the fields of sales/marketing, supply chain, accounting, manufacturing, healthcare, retail, human resource and data management and integration services, excluding financial information and analytics in the field of investments, and providing access thereto through a subscription model",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Annik Technology Services Pvt. Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "Andrew D. Dorisio",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "14th/15th Floor, Silokhera, Gurgaon, 122001, INDI",
+        "applicantAddressCity": "Silokhera, Gurgaon",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantAddressPostalCode": "122001",
+        "applicantAddressStreet": "14th/15th Floor",
+        "applicantJurisdictionOfIncorporation": "INDIA",
+        "applicantLegalEntity": "PRIVATE LIMITED COMPANY",
+        "applicantName": "Annik Technology Services Pvt. Ltd.",
+        "applicantSecondaryAddressUnit": "Block A2, DLF, World Tech Park, SEZ"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Computer services, namely, developing customized on-line web pages featuring a repository of reference data sets which are curated, maintained and published periodically, in the fields of sales/marketing, supply chain, accounting, manufacturing, healthcare, retail, human resource and data management and integration services, excluding financial information and analytics in the field of investments, and providing access thereto through a subscription model"
+        }
+      ]
+    },
+    "id": "f2362be3-889f-4416-9168-e2f226904634",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20240419",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20221003",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20171003",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20170829",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE E-MAILED"
+      },
+      {
+        "date": "20170828",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20170805",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20170804",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20170710",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20170710",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20170321",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20170124",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20170124",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20170104",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20161214",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20161214",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20161214",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20161214",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20161026",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20161026",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20161026",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20161018",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20160919",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20160712",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20160711",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "14/15 Floor, Block A2, World Tech Park, Silokhera, Gurgaon-1, INDI",
+        "city": "Silokhera",
+        "countryCode": "IN",
+        "countryName": "India",
+        "jurisdictionOfIncorporation": "INDIA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Annik Technology Services Pvt. Ltd.",
+        "postalCode": "Gurgaon-1",
+        "street": "14/15 Floor, Block A2, World Tech Park"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "14th/15th Floor, Silokhera, Gurgaon, 122001, INDI",
+        "city": "Silokhera, Gurgaon",
+        "countryCode": "IN",
+        "countryName": "India",
+        "jurisdictionOfIncorporation": "INDIA",
+        "legalEntity": "PRIVATE LIMITED COMPANY",
+        "name": "Annik Technology Services Pvt. Ltd.",
+        "postalCode": "122001",
+        "secondaryAddressUnit": "Block A2, DLF, World Tech Park, SEZ",
+        "street": "14th/15th Floor"
+      },
+      {
+        "address": "14th/15th Floor, Silokhera, Gurgaon, 122001, INDI",
+        "city": "Silokhera, Gurgaon",
+        "countryCode": "IN",
+        "countryName": "India",
+        "jurisdictionOfIncorporation": "INDIA",
+        "legalEntity": "PRIVATE LIMITED COMPANY",
+        "name": "Annik Technology Services Pvt. Ltd.",
+        "postalCode": "122001",
+        "secondaryAddressUnit": "Block A2, DLF, World Tech Park, SEZ",
+        "street": "14th/15th Floor"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "14th/15th Floor, Silokhera, Gurgaon, 122001, INDI",
+        "city": "Silokhera, Gurgaon",
+        "countryCode": "IN",
+        "countryName": "India",
+        "jurisdictionOfIncorporation": "INDIA",
+        "legalEntity": "PRIVATE LIMITED COMPANY",
+        "name": "Annik Technology Services Pvt. Ltd.",
+        "postalCode": "122001",
+        "secondaryAddressUnit": "Block A2, DLF, World Tech Park, SEZ",
+        "street": "14th/15th Floor"
+      }
+    ],
+    "recordLastUpdated": "20260111",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "90596371",
+            "markCurrentStatus": "Pending",
+            "markVerbalElementText": "Q QORE",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "90596371",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "Q QORE",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "90596371",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "Q QORE",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "90596371",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "Q QORE",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "90596371",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "Q QORE",
+            "refusalStatus": "Refused"
+          }
+        ],
+        "refusalStatus": "Cited"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "LEXINGTON, KY 40503, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "LEXINGTON, KY 40503",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "ANDREW D. DORISIO KING & SCHICKLI, PLLC, 800 CORPORATE DRIVE, SUITE 200"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "LEXINGTON, KY 40503, UNITED STATES",
+        "representativeAddressLines": [
+          "LEXINGTON, KY 40503",
+          "UNITED STATES"
+        ],
+        "representativeName": "Andrew D. Dorisio"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20160707",
+        "applicationNumber": "87095486"
+      },
+      "cancellationDate": "20240419",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20161011"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20161011"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20240419",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20170124"
+      ],
+      "registration": {
+        "registrationDate": "20171003",
+        "registrationNumber": "5302756"
+      }
+    },
+    "version": "20260111051145",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORE"
+    }
+  },
+  "_uri": "/mark/us/f2362be3-889f-4416-9168-e2f226904634",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:55.423Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

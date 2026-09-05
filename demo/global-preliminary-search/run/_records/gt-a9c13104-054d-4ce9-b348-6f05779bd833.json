@@ -1,0 +1,192 @@
+{
+  "uri": "/mark/gt/a9c13104-054d-4ce9-b348-6f05779bd833",
+  "provider": "clarivate",
+  "office": "gt",
+  "guid": "a9c13104-054d-4ce9-b348-6f05779bd833",
+  "applicationNumber": "1999002006",
+  "registrationNumber": "10060",
+  "applicationDate": null,
+  "registrationDate": "1999-08-25",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENCORP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "en",
+      "description": "No goods available",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "VENTAJAS CORPORATIVAS, SOCIEDAD ANONIMA",
+  "ownerNative": null,
+  "ownerCountry": "GT",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "GUATEMALA",
+        "applicantAddressCountryCode": "GT",
+        "applicantAddressCountryName": "Guatemala",
+        "applicantName": "VENTAJAS CORPORATIVAS, SOCIEDAD ANONIMA"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "No goods available"
+        }
+      ]
+    },
+    "id": "a9c13104-054d-4ce9-b348-6f05779bd833",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260326",
+    "registrationOfficeCode": "GT",
+    "registrationOfficeName": "Guatemala",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationNumber": "1999002006"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19990825",
+        "registrationNumber": "10060"
+      }
+    },
+    "version": "20260326104914",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENCORP"
+    }
+  },
+  "_uri": "/mark/gt/a9c13104-054d-4ce9-b348-6f05779bd833",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.737Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

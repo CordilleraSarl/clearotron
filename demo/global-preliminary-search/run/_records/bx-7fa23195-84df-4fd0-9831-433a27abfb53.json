@@ -1,0 +1,157 @@
+{
+  "uri": "/mark/bx/7fa23195-84df-4fd0-9831-433a27abfb53",
+  "provider": "clarivate",
+  "office": "bx",
+  "guid": "7fa23195-84df-4fd0-9831-433a27abfb53",
+  "applicationNumber": "1438023",
+  "registrationNumber": "1438023",
+  "applicationDate": "2021-03-11",
+  "registrationDate": "2021-06-25",
+  "expiryDate": "2031-03-11",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-06-25",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ENQORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Apparatuur voor gegevensverwerking; programma's voor gegevensverwerking; software; software voor gegevensverwerking; software voor het bewaken, analyseren, controleren en uitvoeren van verrichtingen in de fysieke wereld; content beheer software; downloadbare computersoftware applicaties; applicatiesoftware voor mobiele communicatieapparatuur, waaronder mobiele telefoons; netwerken voor het overbrengen van gegevens; software voor het beheer van gegevens en bestanden; databasesoftware; big data beheersoftware; elektronische databanken; interactieve databanken; apparatuur voor kunstmatige intelligentie; software met betrekking tot kunstmatige intelligentie en machinaal leren; interactieve software op basis van kunstmatige intelligentie; software met kunstmatige intelligentie voor analyses en toezicht; software voor de integratie van kunstmatige intelligentie en machinaal leren op het gebied van Big Data; testsoftware; testware; software voor het testen van software; software voor het testen van hardware.",
+      "translation_language": "en",
+      "translation": "Data processing equipment; data processing programs; software; data processing software; software for monitoring, analysing, controlling and performing operations in the physical world; content management software; downloadable computer software applications; application software for mobile communications equipment, including mobile telephones; networks for transferring data; data and file management software; database software; big data management software; electronic databases; interactive databases; artificial intelligence equipment; software relating to artificial intelligence and machine learning; interactive software based on artificial intelligence; software incorporating artificial intelligence for analysis and monitoring; computer software for the integration of artificial intelligence and machine learning in the field of big data; test software; testware; software for testing software; hardware testing software."
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "Commercieel-zakelijke advisering, raadgeving en voorlichting; bedrijfsorganisatorische assistentie; bedrijfsorganisatorische assistentie met betrekking tot de planning van personeel voor de ontwikkeling van software; advisering, raadgeving en planning met betrekking tot de inzet van personeel voor de ontwikkeling van software; commercieel zakelijke onderzoeken, evaluaties, expertises, analyses en studies, alsmede het opstellen van rapporten daarover; administratieve diensten; personeelszaken; tijdelijke aanstelling van personeel; personeelswerving; selectie van personeel; outplacement; interim-management; detachering van personeel; advisering, informatieverstrekking en raadgeving op voornoemde gebieden; voornoemde diensten tevens via elektronische netwerken, zoals internet, en via mobiele communicatiemiddelen",
+      "translation_language": "en",
+      "translation": "Commercial business consultancy, consultancy and information; business organizational assistance; business organizational assistance relating to the planning of personnel for software development; consultancy, consultancy and planning relating to the deployment of personnel for software development; commercial business inquiries, evaluations, expertise, analysis and studies, as well as the preparation of reports thereon; administrative services; human resource department; temporary appointment of staff; recruitment; selection of personnel; outplacement; interim management; secondment of personnel; advice, provision of information and consultancy in the aforesaid fields; the aforesaid services also via electronic networks, such as the Internet, and via mobile means of communication"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Wetenschappelijke en technologische diensten, alsmede bijbehorende onderzoeks- en ontwerpdiensten; technisch onderzoek; adviserings- en consultancydiensten met betrekking tot software; ontwerpen, ontwikkelen en onderhouden van computersystemen, software, software applicaties, web applicaties en mobiele applicaties; ontwerpen en ontwikkelen van computers en computerrandapparatuur; computerdiensten te weten het ontwikkelen en verstrekken van software; ter beschikking stellen van software; onderzoek op het gebied van kunstmatige intelligentie; technologisch advies op het gebied van kunstmatige intelligentie; ter beschikking stellen van computerprogramma's met kunstmatige intelligentie op datanetwerken; ontwerp en ontwikkeling van kunstmatige intelligentie software; ontwerp en ontwikkeling van databases; ontwerp en ontwikkeling en onderhoud van databases; testen van software; ontwerp en ontwikkeling van testsoftware; softwareontwikkeling op het gebied van mobiele applicaties; ontwerp en ontwikkeling van gebruikersinterfaces van software; voornoemde diensten tevens via elektronische netwerken, zoals internet, en via mobiele communicatiemiddelen",
+      "translation_language": "en",
+      "translation": "Scientific and technological services and related research and design services; technical research; advisory and consultancy services relating to computer software; design, development and maintenance of computer systems, software, software applications, web applications and mobile applications; design and development of computers and computer peripheral equipment; computer services namely developing and providing software; providing software; research in the field of artificial intelligence; technology consultancy in the field of artificial intelligence; providing computer programs with artificial intelligence on data networks; design and development of artificial intelligence software; design and development of databases; design and development and maintenance of databases; software testing; design and development of test software; software development in the field of mobile applications; design and development of user interfaces of software; the aforesaid services also via electronic networks, such as the Internet, and via mobile means of communication"
+    }
+  ],
+  "owner": "Sparkler B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "MINA IP B.V.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Europalaan 93, 3526 KP Utrecht",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "Sparkler B.V."
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Data processing equipment; data processing programs; software; data processing software; software for monitoring, analysing, controlling and performing operations in the physical world; content management software; downloadable computer software applications; application software for mobile communications equipment, including mobile telephones; networks for transferring data; data and file management software; database software; big data management software; electronic databases; interactive databases; artificial intelligence equipment; software relating to artificial intelligence and machine learning; interactive software based on artificial intelligence; software incorporating artificial intelligence for analysis and monitoring; computer software for the integration of artificial intelligence and machine learning in the field of big data; test software; testware; software for testing software; hardware testing software.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Apparatuur voor gegevensverwerking; programma's voor gegevensverwerking; software; software voor gegevensverwerking; software voor het bewaken, analyseren, controleren en uitvoeren van verrichtingen in de fysieke wereld; content beheer software; downloadbare computersoftware applicaties; applicatiesoftware voor mobiele communicatieapparatuur, waaronder mobiele telefoons; netwerken voor het overbrengen van gegevens; software voor het beheer van gegevens en bestanden; databasesoftware; big data beheersoftware; elektronische databanken; interactieve databanken; apparatuur voor kunstmatige intelligentie; software met betrekking tot kunstmatige intelligentie en machinaal leren; interactieve software op basis van kunstmatige intelligentie; software met kunstmatige intelligentie voor analyses en toezicht; software voor de integratie van kunstmatige intelligentie en machinaal leren op het gebied van Big Data; testsoftware; testware; software voor het testen van software; software voor het testen van hardware."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Commercial business consultancy, consultancy and information; business organizational assistance; business organizational assistance relating to the planning of personnel for software development; consultancy, consultancy and planning relating to the deployment of personnel for software development; commercial business inquiries, evaluations, expertise, analysis and studies, as well as the preparation of reports thereon; administrative services; human resource department; temporary appointment of staff; recruitment; selection of personnel; outplacement; interim management; secondment of personnel; advice, provision of information and consultancy in the aforesaid fields; the aforesaid services also via electronic networks, such as the Internet, and via mobile means of communication",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Commercieel-zakelijke advisering, raadgeving en voorlichting; bedrijfsorganisatorische assistentie; bedrijfsorganisatorische assistentie met betrekking tot de planning van personeel voor de ontwikkeling van software; advisering, raadgeving en planning met betrekking tot de inzet van personeel voor de ontwikkeling van software; commercieel zakelijke onderzoeken, evaluaties, expertises, analyses en studies, alsmede het opstellen van rapporten daarover; administratieve diensten; personeelszaken; tijdelijke aanstelling van personeel; personeelswerving; selectie van personeel; outplacement; interim-management; detachering van personeel; advisering, informatieverstrekking en raadgeving op voornoemde gebieden; voornoemde diensten tevens via elektronische netwerken, zoals internet, en via mobiele communicatiemiddelen"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific and technological services and related research and design services; technical research; advisory and consultancy services relating to computer software; design, development and maintenance of computer systems, software, software applications, web applications and mobile applications; design and development of computers and computer peripheral equipment; computer services namely developing and providing software; providing software; research in the field of artificial intelligence; technology consultancy in the field of artificial intelligence; providing computer programs with artificial intelligence on data networks; design and development of artificial intelligence software; design and development of databases; design and development and maintenance of databases; software testing; design and development of test software; software development in the field of mobile applications; design and development of user interfaces of software; the aforesaid services also via electronic networks, such as the Internet, and via mobile means of communication",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Wetenschappelijke en technologische diensten, alsmede bijbehorende onderzoeks- en ontwerpdiensten; technisch onderzoek; adviserings- en consultancydiensten met betrekking tot software; ontwerpen, ontwikkelen en onderhouden van computersystemen, software, software applicaties, web applicaties en mobiele applicaties; ontwerpen en ontwikkelen van computers en computerrandapparatuur; computerdiensten te weten het ontwikkelen en verstrekken van software; ter beschikking stellen van software; onderzoek op het gebied van kunstmatige intelligentie; technologisch advies op het gebied van kunstmatige intelligentie; ter beschikking stellen van computerprogramma's met kunstmatige intelligentie op datanetwerken; ontwerp en ontwikkeling van kunstmatige intelligentie software; ontwerp en ontwikkeling van databases; ontwerp en ontwikkeling en onderhoud van databases; testen van software; ontwerp en ontwikkeling van testsoftware; softwareontwikkeling op het gebied van mobiele applicaties; ontwerp en ontwikkeling van gebruikersinterfaces van software; voornoemde diensten tevens via elektronische netwerken, zoals internet, en via mobiele communicatiemiddelen"
+        }
+      ]
+    },
+    "id": "7fa23195-84df-4fd0-9831-433a27abfb53",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "0625"
+      }
+    ],
+    "recordLastUpdated": "20251023",
+    "registrationOfficeCode": "BX",
+    "registrationOfficeName": "Benelux",
+    "representatives": [
+      {
+        "representativeAddress": "Spoorstraat 30 A, 6511 AH Nijmegen",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "MINA IP B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210311",
+        "applicationNumber": "1438023"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310311",
+      "lastPublicationDate": "20210625",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20210625",
+        "registrationNumber": "1438023"
+      }
+    },
+    "version": "20251023020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ENQORE"
+    }
+  },
+  "_uri": "/mark/bx/7fa23195-84df-4fd0-9831-433a27abfb53",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:13.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

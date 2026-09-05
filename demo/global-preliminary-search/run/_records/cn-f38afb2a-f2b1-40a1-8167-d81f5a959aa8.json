@@ -1,0 +1,177 @@
+{
+  "uri": "/mark/cn/f38afb2a-f2b1-40a1-8167-d81f5a959aa8",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "f38afb2a-f2b1-40a1-8167-d81f5a959aa8",
+  "applicationNumber": "3058707",
+  "registrationNumber": "3058707",
+  "applicationDate": "2001-12-31",
+  "registrationDate": "2003-04-28",
+  "expiryDate": "2033-04-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2003-01-28",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "柒牌",
+  "markTransliteration": "SEVEN SEVEN QIPAI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "餐厅;疗养院;美容院;印刷;工业品外观设计;室内装饰设计;计算机编程;摄影;法律服务;服装设计",
+      "translation_language": "en",
+      "translation": "Restaurants; Sanatoriums; Beauty salons; Printing; Industrial design; Interior design; Computer programming; Photography; Legal services; Costume design"
+    }
+  ],
+  "owner": "Fujian Qipai Fashion Technology Co., Ltd",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "福建省晋江市英林镇工业区",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Fujian Qipai Fashion Technology Co., Ltd",
+        "applicantNativeName": "福建柒牌时装科技股份有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Restaurants; Sanatoriums; Beauty salons; Printing; Industrial design; Interior design; Computer programming; Photography; Legal services; Costume design",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "餐厅;疗养院;美容院;印刷;工业品外观设计;室内装饰设计;计算机编程;摄影;法律服务;服装设计"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Providing food, beverage, and accommodation services",
+        "Medical services. Retirement homes",
+        "Services for sanitary and beauty propose",
+        "Legal services",
+        "Picture processing and treating services",
+        "Registered design service",
+        "Design and information service for architecture",
+        "Dress designing service",
+        "Computer programming, and concerned services",
+        "Entertainment and physical exercise services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4201",
+          "subNatGoodsServicesDescription": "Providing food, beverage, and accommodation services"
+        },
+        {
+          "subNatClassNumber": "4203",
+          "subNatGoodsServicesDescription": "Medical services. Retirement homes"
+        },
+        {
+          "subNatClassNumber": "4204",
+          "subNatGoodsServicesDescription": "Services for sanitary and beauty propose"
+        },
+        {
+          "subNatClassNumber": "4207",
+          "subNatGoodsServicesDescription": "Legal services"
+        },
+        {
+          "subNatClassNumber": "4215",
+          "subNatGoodsServicesDescription": "Picture processing and treating services"
+        },
+        {
+          "subNatClassNumber": "4216",
+          "subNatGoodsServicesDescription": "Registered design service"
+        },
+        {
+          "subNatClassNumber": "4217",
+          "subNatGoodsServicesDescription": "Design and information service for architecture"
+        },
+        {
+          "subNatClassNumber": "4218",
+          "subNatGoodsServicesDescription": "Dress designing service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        },
+        {
+          "subNatClassNumber": "4222",
+          "subNatGoodsServicesDescription": "Entertainment and physical exercise services"
+        }
+      ]
+    },
+    "id": "f38afb2a-f2b1-40a1-8167-d81f5a959aa8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "865"
+      }
+    ],
+    "recordLastUpdated": "20251001",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "福建省海峡商标事务所有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20011231",
+        "applicationNumber": "3058707"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330427",
+      "lastPublicationDate": "20030128",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20030428",
+        "registrationNumber": "3058707"
+      },
+      "renewalPublishedDate": "20221206"
+    },
+    "version": "20251001190920",
+    "wordMarkSpecification": {
+      "markTransliteration": "SEVEN SEVEN QIPAI",
+      "markVerbalElementText": "柒牌"
+    }
+  },
+  "_uri": "/mark/cn/f38afb2a-f2b1-40a1-8167-d81f5a959aa8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.563Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

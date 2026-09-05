@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/in/390f6305-7ad4-43dd-ab24-19c9562d9a64",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "390f6305-7ad4-43dd-ab24-19c9562d9a64",
+  "applicationNumber": "4630752",
+  "registrationNumber": null,
+  "applicationDate": "2020-08-28",
+  "registrationDate": null,
+  "expiryDate": "2030-08-28",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ZENQORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software and programs particularly downloadable software; software recorded/written on various media including software installed on mobile devices, software hosted on cloud and server infrastructure which have integrations with third party; mobile applications; gaming programs; recorded programs; recorded operating programs; optical and magnetic data media; usb flash drives; data processing apparatus.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "GIGAFLOW TECHNOLOGIES LLP Limited Liability Partnership(LLP)",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "ANIL KUMAR.H.[2266]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "10 M-227, 3RD FLOOR, HRBR LAYOUT, 1ST BLOCK, BANASWADI VILLAGE, KRISHNARAJAPURA, HOBLI, BANGALORE, KARNATAKA – 560043",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "GIGAFLOW TECHNOLOGIES LLP Limited Liability Partnership(LLP)"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software and programs particularly downloadable software; software recorded/written on various media including software installed on mobile devices, software hosted on cloud and server infrastructure which have integrations with third party; mobile applications; gaming programs; recorded programs; recorded operating programs; optical and magnetic data media; usb flash drives; data processing apparatus."
+        }
+      ]
+    },
+    "id": "390f6305-7ad4-43dd-ab24-19c9562d9a64",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1967"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "ALEXION, 2ND CROSS, 2ND MAIN, HANUMANTHAPURA, TUMKUR - 572103, KARNATAKA",
+        "representativeName": "ANIL KUMAR.H.[2266]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200828",
+        "applicationNumber": "4630752"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300828",
+      "markCurrentStatus": "REGISTERED"
+    },
+    "version": "20250710151420",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ZENQORE"
+    }
+  },
+  "_uri": "/mark/in/390f6305-7ad4-43dd-ab24-19c9562d9a64",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:13.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

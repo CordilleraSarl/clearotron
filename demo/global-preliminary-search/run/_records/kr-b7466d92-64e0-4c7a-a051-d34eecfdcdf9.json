@@ -1,0 +1,123 @@
+{
+  "uri": "/mark/kr/b7466d92-64e0-4c7a-a051-d34eecfdcdf9",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "b7466d92-64e0-4c7a-a051-d34eecfdcdf9",
+  "applicationNumber": "41-1999-0012914",
+  "registrationNumber": null,
+  "applicationDate": "1999-09-02",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "Sori",
+  "markTransliteration": "Sori",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        38
+      ],
+      "language": "ko",
+      "description": "음성전자정보제공업, 전자메일서비스업, 통신업",
+      "translation_language": "en",
+      "translation": "Voice electronic information provision industry, e-mail service industry, telecommunication industry"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "전자상거래업, 컴퓨터음성합성업, 컴퓨터전화통합서비스업, 컴퓨터프로그래밍, 통합메시지시스템개발업",
+      "translation_language": "en",
+      "translation": "E-commerce business, computer voice synthesis business, computer phone integrated service business, computer programming, integrated message system development business"
+    }
+  ],
+  "owner": "FUTURE INTERNET CO.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 서초구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "FUTURE INTERNET CO.",
+        "applicantNativeName": "휴쳐인터넷주식회사"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Voice electronic information provision industry, e-mail service industry, telecommunication industry",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "음성전자정보제공업, 전자메일서비스업, 통신업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "E-commerce business, computer voice synthesis business, computer phone integrated service business, computer programming, integrated message system development business",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "전자상거래업, 컴퓨터음성합성업, 컴퓨터전화통합서비스업, 컴퓨터프로그래밍, 통합메시지시스템개발업"
+        }
+      ]
+    },
+    "id": "b7466d92-64e0-4c7a-a051-d34eecfdcdf9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260417",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19990902",
+        "applicationNumber": "41-1999-0012914"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260417020552",
+    "wordMarkSpecification": {
+      "markTransliteration": "Sori",
+      "markVerbalElementText": "Sori"
+    }
+  },
+  "_uri": "/mark/kr/b7466d92-64e0-4c7a-a051-d34eecfdcdf9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:58.878Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

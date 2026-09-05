@@ -1,0 +1,196 @@
+{
+  "uri": "/mark/wo/66534fd6-42a9-4bec-8c6f-24a781233229",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "66534fd6-42a9-4bec-8c6f-24a781233229",
+  "applicationNumber": "019320110",
+  "registrationNumber": null,
+  "applicationDate": null,
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "NXP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Electronic, electrotechnical and electromagnetic modules; data storage apparatus; data processing equipment; apparatus for recording, transmission or reproduction of sound or images; integrated circuits (ICs), chips (integrated circuits); semiconductors; semiconductor devices; software; hardware; system-on-chip [SoC] devices; printed circuit boards; integrated circuits embedded with software; microprocessors; microcontrollers; application processors; digital signal processors; power management integrated circuits (ICs); LED driver ICs; LCD drivers; battery management ICs, namely battery cell controllers, battery communication ICs, battery charger ICs and battery sensors; sensors, namely motion sensors, accelerometers, pressure sensors, magnetic (switch) sensors, temperature sensors; wireless transmitters and receivers; ethernet switches, ethernet (PHY) transceivers; Internet of Things [IoT] gateways; Internet of Things [IoT] wireless sensors; Internet of Things [IoT] range extenders [antennas]; network processor chips; vehicle network processors; automotive general-purpose microcontrollers (MCUs); software-defined vehicle (SDV) platforms; in-vehicle networking (IVN) systems comprised of computer hardware and recorded software for facilitating electronic data communication transmission used to connect electronic control units in automobiles; audio amplifier ICs; car audio amplifier ICs; audio converter ICs; amplifier modules; wireless audio products; wireless audio chips; power amplifiers; audio-processing digital signal processors (DSPs); rf amplifiers; radio tuners; radio receivers; integrated circuits (ICs) for radio and audio processing; software defined radio processor with integrated audio; digital radio and processing system-on-chip (SoC); transistors; controllers and regulators; voltage regulators; integrated switching regulators; demodulators; analog switch ICs; analog watch motor drivers; multiplexers; digital to analog (DAC) converters; analog to digital (ADC) converters; repeaters; hubs; extenders; signal conditioners; signal amplifiers; transponder ICs; antenna systems; transceivers; data switches; interfaces for computers; graphics processor units (GPUs); central processing units [processors]; USB interfaces, USB multiplexers; computer network bridges; development boards; evaluation boards for use with specific types of microcontroller families; computer hardware modules for use in Internet of Things electronic devices; edge computing hardware; neural processing units (NPUs); computer hardware and integrated circuits, namely, edge AI accelerator chips and semiconductor devices for processing artificial intelligence (AI) applications at the edge; software platforms; software development kits; software for operating and managing integrated circuit components; software for voice and audio processing; software and peripheral devices used for access control and authentication purposes; software for facilitating secure transactions; computer application software for use in implementing the Internet of Things [IoT]; artificial intelligence software; machine learning software; downloadable and recorded software for artificial intelligence, machine learning, deep learning and deep neural networks; edge computing software; computer programs for cloud computing software; cloud computing systems; software for cloud infrastructure; cloud computing platform software; application software for cloud computing services; computer programs for controlling transmission of data to and reading of data from transponder chips; electronic writers and readers for wireless transmission to and from transponder chips; electronic apparatus for writing and reading of wireless transmission to and from transponder chips; data processing machines for fare determination using transponder chips; software solutions for the implementation of smartcards on mobile devices and wearable devices; software solutions for security and risk management in respect of smartcard implementation on mobile devices and wearable devices; software solutions for virtual card storing on mobile devices and wearable devices embedded on a HCE (Host Card Emulation); software solutions for virtual card storing on mobile devices and wearable device embedded on a SE (Secure Element); interface software; blank integrated circuit cards; cards with integrated circuits; smart cards; smart card integrated circuits; smart card interfaces; contactless smart cards; encoded smart cards; dual interface smart cards; dual interface integrated circuits (IC's) that provide a link between contactless cards and contact cards; electronic access cards; electronic card readers; smart card readers; secure access modules; physical access control systems and devices, namely, smart cards, RFID cards, NFC enabled devices, smart card readers, RFID readers, and system control panels; encoded smart cards containing programming used for access control systems; encoded contactless smart cards containing programming used for determining the fare to be paid by passengers who book their trip electronically; encoded contactless smart cards containing programming used for gaining access to certain areas, buildings, premises, and vehicles; encoded contactless smart cards containing programming used for payment; RFID chips and tags; labels, smart cards and tags with integrated RFID chips; NFC tag ICs; blank near field communication (NFC) tags; near field communication (NFC) technology-enabled readers; blank near field communication (NFC) labels; blank near field communication (NFC) stickers; nfc controllers with integrated firmware; NFC wireless charging communication receivers; NFC wireless charging transmitter controllers; NFC wireless charging power receivers; cloud based software solutions for managing digitized credentials onto mobile devices and wearable devices supporting NFC-enabled mobile devices for mobile fare payments; nfc-enabled digital wallets; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; ultra-wideband (UWB) integrated circuit chips; secure terminals for electronic transactions; secure digital (SD) card readers; Secure Digital (SD) memory cards; SIM cards; SIM cards of mobile NFC devices over the air (OTA); electronic wristbands, namely, electronic readers/recorders for authenticating identity, controlling access to functions, managing events, ticketing, promoting brand loyalty, promoting brands, cashless vending, transportation and membership identification; electronic sensors; wearable computers worn on the wrist; wearable digital electronic devices in the form of a wristwatch, wrist band and bangle, namely, a wearable digital electronic device comprised primarily of software and a wrist band mounted touchscreen and also featuring a wrist watch for the wireless receipt, storage and transmission of data and messages, and for keeping track of and managing personal information; wearable activity trackers; wearable computer peripherals; headphones; ear buds; smartphones; wearable telecommunication apparatus; electronic key fobs being remote control apparatus; mobile transit ticketing, keyless entry chips.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Research, design and development services related to electronic, electrotechnical and electromagnetic modules; research, design and development services related to integrated circuits and semiconductors; research, design and development services related to RFID chips, smart cards and NFC (near field communications) apparatus; hardware design services; hardware engineering services; software engineering; design and development of computer hardware and software; software design; software development; custom programming and implementation of software; software as a service [SaaS]; platform as a service (PaaS); infrastructure as a service (IaaS); technical research; engineering testing, authentication and quality control of semiconductors; design and development of automotive electronics and software; design and development of computer hardware and software for edge artificial intelligence (AI) applications; cloud computing; cloud computing services; consultancy in the field of computer hardware and software; advisory, consultancy and information services in relation to all the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20260220",
+          "basicApplicationNumber": "019320110"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "EM"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AE",
+      "AU",
+      "BR",
+      "CA",
+      "CH",
+      "EG",
+      "GB",
+      "ID",
+      "IL",
+      "IN",
+      "JP",
+      "KR",
+      "MA",
+      "MU",
+      "MX",
+      "MY",
+      "NO",
+      "NZ",
+      "PH",
+      "SG",
+      "TH",
+      "TN",
+      "TR",
+      "VN",
+      "UA",
+      "MK",
+      "BA",
+      "RS"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20260220",
+            "basicApplicationNumber": "019320110"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "EM"
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AE",
+      "AU",
+      "BR",
+      "CA",
+      "CH",
+      "EG",
+      "GB",
+      "ID",
+      "IL",
+      "IN",
+      "JP",
+      "KR",
+      "MA",
+      "MU",
+      "MX",
+      "MY",
+      "NO",
+      "NZ",
+      "PH",
+      "SG",
+      "TH",
+      "TN",
+      "TR",
+      "VN",
+      "UA",
+      "MK",
+      "BA",
+      "RS"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electronic, electrotechnical and electromagnetic modules; data storage apparatus; data processing equipment; apparatus for recording, transmission or reproduction of sound or images; integrated circuits (ICs), chips (integrated circuits); semiconductors; semiconductor devices; software; hardware; system-on-chip [SoC] devices; printed circuit boards; integrated circuits embedded with software; microprocessors; microcontrollers; application processors; digital signal processors; power management integrated circuits (ICs); LED driver ICs; LCD drivers; battery management ICs, namely battery cell controllers, battery communication ICs, battery charger ICs and battery sensors; sensors, namely motion sensors, accelerometers, pressure sensors, magnetic (switch) sensors, temperature sensors; wireless transmitters and receivers; ethernet switches, ethernet (PHY) transceivers; Internet of Things [IoT] gateways; Internet of Things [IoT] wireless sensors; Internet of Things [IoT] range extenders [antennas]; network processor chips; vehicle network processors; automotive general-purpose microcontrollers (MCUs); software-defined vehicle (SDV) platforms; in-vehicle networking (IVN) systems comprised of computer hardware and recorded software for facilitating electronic data communication transmission used to connect electronic control units in automobiles; audio amplifier ICs; car audio amplifier ICs; audio converter ICs; amplifier modules; wireless audio products; wireless audio chips; power amplifiers; audio-processing digital signal processors (DSPs); rf amplifiers; radio tuners; radio receivers; integrated circuits (ICs) for radio and audio processing; software defined radio processor with integrated audio; digital radio and processing system-on-chip (SoC); transistors; controllers and regulators; voltage regulators; integrated switching regulators; demodulators; analog switch ICs; analog watch motor drivers; multiplexers; digital to analog (DAC) converters; analog to digital (ADC) converters; repeaters; hubs; extenders; signal conditioners; signal amplifiers; transponder ICs; antenna systems; transceivers; data switches; interfaces for computers; graphics processor units (GPUs); central processing units [processors]; USB interfaces, USB multiplexers; computer network bridges; development boards; evaluation boards for use with specific types of microcontroller families; computer hardware modules for use in Internet of Things electronic devices; edge computing hardware; neural processing units (NPUs); computer hardware and integrated circuits, namely, edge AI accelerator chips and semiconductor devices for processing artificial intelligence (AI) applications at the edge; software platforms; software development kits; software for operating and managing integrated circuit components; software for voice and audio processing; software and peripheral devices used for access control and authentication purposes; software for facilitating secure transactions; computer application software for use in implementing the Internet of Things [IoT]; artificial intelligence software; machine learning software; downloadable and recorded software for artificial intelligence, machine learning, deep learning and deep neural networks; edge computing software; computer programs for cloud computing software; cloud computing systems; software for cloud infrastructure; cloud computing platform software; application software for cloud computing services; computer programs for controlling transmission of data to and reading of data from transponder chips; electronic writers and readers for wireless transmission to and from transponder chips; electronic apparatus for writing and reading of wireless transmission to and from transponder chips; data processing machines for fare determination using transponder chips; software solutions for the implementation of smartcards on mobile devices and wearable devices; software solutions for security and risk management in respect of smartcard implementation on mobile devices and wearable devices; software solutions for virtual card storing on mobile devices and wearable devices embedded on a HCE (Host Card Emulation); software solutions for virtual card storing on mobile devices and wearable device embedded on a SE (Secure Element); interface software; blank integrated circuit cards; cards with integrated circuits; smart cards; smart card integrated circuits; smart card interfaces; contactless smart cards; encoded smart cards; dual interface smart cards; dual interface integrated circuits (IC's) that provide a link between contactless cards and contact cards; electronic access cards; electronic card readers; smart card readers; secure access modules; physical access control systems and devices, namely, smart cards, RFID cards, NFC enabled devices, smart card readers, RFID readers, and system control panels; encoded smart cards containing programming used for access control systems; encoded contactless smart cards containing programming used for determining the fare to be paid by passengers who book their trip electronically; encoded contactless smart cards containing programming used for gaining access to certain areas, buildings, premises, and vehicles; encoded contactless smart cards containing programming used for payment; RFID chips and tags; labels, smart cards and tags with integrated RFID chips; NFC tag ICs; blank near field communication (NFC) tags; near field communication (NFC) technology-enabled readers; blank near field communication (NFC) labels; blank near field communication (NFC) stickers; nfc controllers with integrated firmware; NFC wireless charging communication receivers; NFC wireless charging transmitter controllers; NFC wireless charging power receivers; cloud based software solutions for managing digitized credentials onto mobile devices and wearable devices supporting NFC-enabled mobile devices for mobile fare payments; nfc-enabled digital wallets; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; ultra-wideband (UWB) integrated circuit chips; secure terminals for electronic transactions; secure digital (SD) card readers; Secure Digital (SD) memory cards; SIM cards; SIM cards of mobile NFC devices over the air (OTA); electronic wristbands, namely, electronic readers/recorders for authenticating identity, controlling access to functions, managing events, ticketing, promoting brand loyalty, promoting brands, cashless vending, transportation and membership identification; electronic sensors; wearable computers worn on the wrist; wearable digital electronic devices in the form of a wristwatch, wrist band and bangle, namely, a wearable digital electronic device comprised primarily of software and a wrist band mounted touchscreen and also featuring a wrist watch for the wireless receipt, storage and transmission of data and messages, and for keeping track of and managing personal information; wearable activity trackers; wearable computer peripherals; headphones; ear buds; smartphones; wearable telecommunication apparatus; electronic key fobs being remote control apparatus; mobile transit ticketing, keyless entry chips."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Research, design and development services related to electronic, electrotechnical and electromagnetic modules; research, design and development services related to integrated circuits and semiconductors; research, design and development services related to RFID chips, smart cards and NFC (near field communications) apparatus; hardware design services; hardware engineering services; software engineering; design and development of computer hardware and software; software design; software development; custom programming and implementation of software; software as a service [SaaS]; platform as a service (PaaS); infrastructure as a service (IaaS); technical research; engineering testing, authentication and quality control of semiconductors; design and development of automotive electronics and software; design and development of computer hardware and software for edge artificial intelligence (AI) applications; cloud computing; cloud computing services; consultancy in the field of computer hardware and software; advisory, consultancy and information services in relation to all the aforesaid services."
+        }
+      ]
+    },
+    "id": "66534fd6-42a9-4bec-8c6f-24a781233229",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260806",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationNumber": "019320110"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "PA"
+    },
+    "version": "20260806020004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NXP"
+    }
+  },
+  "_uri": "/mark/wo/66534fd6-42a9-4bec-8c6f-24a781233229",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.460Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

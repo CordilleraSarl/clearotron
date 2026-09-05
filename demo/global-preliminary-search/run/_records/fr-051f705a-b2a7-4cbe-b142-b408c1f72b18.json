@@ -1,0 +1,170 @@
+{
+  "uri": "/mark/fr/051f705a-b2a7-4cbe-b142-b408c1f72b18",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "051f705a-b2a7-4cbe-b142-b408c1f72b18",
+  "applicationNumber": "25 5172832",
+  "registrationNumber": "25 5172832",
+  "applicationDate": "2025-08-16",
+  "registrationDate": null,
+  "expiryDate": "2035-08-16",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-09-05",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "HARAS DE LA VINCORA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    18,
+    25,
+    41,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        18
+      ],
+      "language": "fr",
+      "description": ": Cuir ; peaux d'animaux ; malles et valises ; parapluies et parasols ; cannes ; fouets ; sellerie ; portefeuilles ; porte-monnaie ; porte-cartes de crédit [portefeuilles] ; sacs ; coffrets destinés à contenir des articles de toilette dits «vanity cases» ; colliers pour animaux ; habits pour animaux de compagnie",
+      "translation_language": "en",
+      "translation": "Leather; animal skins; trunks and suitcases; umbrellas and parasols; walking sticks; whips; upholstery; wallets; wallet ; credit card holders [wallets]; bags; boxes intended to contain toiletries called “vanity cases”; animal collars; pet clothes"
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "fr",
+      "description": ": Vêtements ; articles chaussants ; chapellerie ; chemises ; vêtements en cuir ; ceintures (habillement) ; fourrures (vêtements) ; gants (habillement) ; foulards ; cravates ; chaussettes ; chaussons ; chaussures de plage ; chaussures de ski ; chaussures de sport ; sous-vêtements",
+      "translation_language": "en",
+      "translation": "Clothing; footwear; headgear; shirts; leather clothing; belts (clothing); furs (clothing); gloves (clothing); scarves; ties; socks ; slippers; beach shoes; skiing boots ; sport shoes ; underwear"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": ": éducation ; formation ; divertissement ; activités sportives et culturelles ; mise à disposition d'informations en matière de divertissement ; mise à disposition d'informations en matière d'éducation ; reconversion professionnelle ; mise à disposition d'installations de loisirs ; publication de livres ; services de bibliothèques de prêt ; mise à disposition de films, non téléchargeables, par le biais de services de vidéo à la demande ; production de films autres que films publicitaires ; location de décors de spectacles ; services de photographie ; organisation de concours (éducation ou divertissement) ; organisation et conduite de colloques ; organisation et conduite de conférences ; organisation et conduite de congrès ; organisation d'expositions à buts culturels ou éducatifs ; réservation de places de spectacles ; services de jeu proposés en ligne à partir d'un réseau informatique ; services de jeux d'argent ; publication électronique de livres et de périodiques en ligne",
+      "translation_language": "en",
+      "translation": "education; training; entertainment; sporting and cultural activities; provision of entertainment information; provision of educational information; professional retraining; provision of leisure facilities; publication of books; lending library services; provision of films, not downloadable, via video-on-demand services; production of films other than advertising films; rental of stage sets; photography services; organisation of competitions (education or entertainment); organisation and conduct of colloquiums; organisation and conduct of conferences; organisation and conduct of congresses; organisation of exhibitions for cultural or educational purposes; booking of seats for shows; gaming services offered online from a computer network; gambling services; electronic publication of books and periodicals online"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "fr",
+      "description": ": Services d'agriculture, d'aquaculture, d'horticulture et de sylviculture ; services médicaux ; services vétérinaires ; services pour le soin de la peau (soins d'hygiène et de beauté) ; assistance médicale ; chirurgie esthétique ; services hospitaliers ; maisons médicalisées ; services de maisons de convalescence ; services de maisons de repos ; services d'opticiens ; services de médecine alternative ; services de salons de beauté ; services de coiffure ; toilettage d'animaux ; jardinage ; services de jardiniers-paysagistes.",
+      "translation_language": "en",
+      "translation": "Agricultural, aquaculture, horticultural and forestry services; medical services; veterinary services; skin care services (hygiene and beauty care); medical assistance; cosmetic surgery; hospital services; nursing homes; convalescent home services; rest home services; optician services; alternative medicine services; beauty salon services; hairdressing services; animal grooming; gardening; landscape gardening services."
+    }
+  ],
+  "owner": "Amelie Francois",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "36 rue des jacquemarts, 76890 beauval en caux",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "Amelie Francois"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "cmMarkImageEUclassification": [
+      "03.03.01",
+      "09.01.06",
+      "29.02.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Leather; animal skins; trunks and suitcases; umbrellas and parasols; walking sticks; whips; upholstery; wallets; wallet ; credit card holders [wallets]; bags; boxes intended to contain toiletries called “vanity cases”; animal collars; pet clothes",
+          "intClassNumber": "18",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Cuir ; peaux d'animaux ; malles et valises ; parapluies et parasols ; cannes ; fouets ; sellerie ; portefeuilles ; porte-monnaie ; porte-cartes de crédit [portefeuilles] ; sacs ; coffrets destinés à contenir des articles de toilette dits «vanity cases» ; colliers pour animaux ; habits pour animaux de compagnie"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Clothing; footwear; headgear; shirts; leather clothing; belts (clothing); furs (clothing); gloves (clothing); scarves; ties; socks ; slippers; beach shoes; skiing boots ; sport shoes ; underwear",
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Vêtements ; articles chaussants ; chapellerie ; chemises ; vêtements en cuir ; ceintures (habillement) ; fourrures (vêtements) ; gants (habillement) ; foulards ; cravates ; chaussettes ; chaussons ; chaussures de plage ; chaussures de ski ; chaussures de sport ; sous-vêtements"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "education; training; entertainment; sporting and cultural activities; provision of entertainment information; provision of educational information; professional retraining; provision of leisure facilities; publication of books; lending library services; provision of films, not downloadable, via video-on-demand services; production of films other than advertising films; rental of stage sets; photography services; organisation of competitions (education or entertainment); organisation and conduct of colloquiums; organisation and conduct of conferences; organisation and conduct of congresses; organisation of exhibitions for cultural or educational purposes; booking of seats for shows; gaming services offered online from a computer network; gambling services; electronic publication of books and periodicals online",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": éducation ; formation ; divertissement ; activités sportives et culturelles ; mise à disposition d'informations en matière de divertissement ; mise à disposition d'informations en matière d'éducation ; reconversion professionnelle ; mise à disposition d'installations de loisirs ; publication de livres ; services de bibliothèques de prêt ; mise à disposition de films, non téléchargeables, par le biais de services de vidéo à la demande ; production de films autres que films publicitaires ; location de décors de spectacles ; services de photographie ; organisation de concours (éducation ou divertissement) ; organisation et conduite de colloques ; organisation et conduite de conférences ; organisation et conduite de congrès ; organisation d'expositions à buts culturels ou éducatifs ; réservation de places de spectacles ; services de jeu proposés en ligne à partir d'un réseau informatique ; services de jeux d'argent ; publication électronique de livres et de périodiques en ligne"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Agricultural, aquaculture, horticultural and forestry services; medical services; veterinary services; skin care services (hygiene and beauty care); medical assistance; cosmetic surgery; hospital services; nursing homes; convalescent home services; rest home services; optician services; alternative medicine services; beauty salon services; hairdressing services; animal grooming; gardening; landscape gardening services.",
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Services d'agriculture, d'aquaculture, d'horticulture et de sylviculture ; services médicaux ; services vétérinaires ; services pour le soin de la peau (soins d'hygiène et de beauté) ; assistance médicale ; chirurgie esthétique ; services hospitaliers ; maisons médicalisées ; services de maisons de convalescence ; services de maisons de repos ; services d'opticiens ; services de médecine alternative ; services de salons de beauté ; services de coiffure ; toilettage d'animaux ; jardinage ; services de jardiniers-paysagistes."
+        }
+      ]
+    },
+    "id": "051f705a-b2a7-4cbe-b142-b408c1f72b18",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "36"
+      }
+    ],
+    "recordLastUpdated": "20251130",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250816",
+        "applicationNumber": "25 5172832"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350816",
+      "lastPublicationDate": "20250905",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "25 5172832"
+      }
+    },
+    "version": "20251130020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "HARAS DE LA VINCORA"
+    }
+  },
+  "_uri": "/mark/fr/051f705a-b2a7-4cbe-b142-b408c1f72b18",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.820Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

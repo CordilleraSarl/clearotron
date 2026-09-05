@@ -1,0 +1,318 @@
+{
+  "uri": "/mark/us/0d37923d-6a20-4a90-bb2a-56924598ae6a",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "0d37923d-6a20-4a90-bb2a-56924598ae6a",
+  "applicationNumber": "79358708",
+  "registrationNumber": "7333999",
+  "applicationDate": "2022-11-22",
+  "registrationDate": "2024-03-26",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2024-01-09"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ORITAIN VERIFIED PROVEN ORIGIN",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": [
+    "\"VERIFIED PROVEN ORIGIN\""
+  ],
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Scientific research, testing and analysis services relating to the verification of origin of agricultural products, aquaculture products, horticultural products, food and beverage products, fibre and yarn products, textiles and clothing products, pharmaceuticals, nutraceutical and cosmeceutical products, biological and genetic materials, mineral and timber materials",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ORITAIN GLOBAL LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "NZ",
+  "representative": "Sandra M. Koenig",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "167 High Street, NEZE",
+        "applicantAddressCountryCode": "NZ",
+        "applicantAddressCountryName": "New Zealand",
+        "applicantAddressStreet": "167 High Street,",
+        "applicantJurisdictionOfIncorporation": "NEW ZEALAND",
+        "applicantName": "ORITAIN GLOBAL LIMITED",
+        "applicantSecondaryAddressUnit": "Otago Dunedin 9016"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "02.11.08",
+      "24.19.15",
+      "26.01.06"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Scientific research, testing and analysis services relating to the verification of origin of agricultural products, aquaculture products, horticultural products, food and beverage products, fibre and yarn products, textiles and clothing products, pharmaceuticals, nutraceutical and cosmeceutical products, biological and genetic materials, mineral and timber materials"
+        }
+      ]
+    },
+    "id": "0d37923d-6a20-4a90-bb2a-56924598ae6a",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1703963",
+        "markCurrentStatus": "REQUEST FOR EXTENSION OF PROTECTION ESTABLISHED",
+        "markCurrentStatusDate": "20221229",
+        "protectionGrantedDate": "20240629",
+        "publicationDate": "20221229",
+        "registrationDate": "20221122",
+        "renewalDate": "20321122"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "\"VERIFIED PROVEN ORIGIN\""
+    ],
+    "markEvents": [
+      {
+        "date": "20251023",
+        "descriptionText": "NEW REPRESENTATIVE AT IB RECEIVED"
+      },
+      {
+        "date": "20241102",
+        "descriptionText": "FINAL DECISION TRANSACTION PROCESSED BY IB"
+      },
+      {
+        "date": "20241017",
+        "descriptionText": "FINAL DISPOSITION NOTICE SENT TO IB"
+      },
+      {
+        "date": "20241016",
+        "descriptionText": "FINAL DISPOSITION PROCESSED"
+      },
+      {
+        "date": "20240627",
+        "descriptionText": "FINAL DISPOSITION NOTICE CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20240326",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20240326",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20240109",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20240109",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20240108",
+        "descriptionText": "NOTIFICATION PROCESSED BY IB"
+      },
+      {
+        "date": "20231220",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20231220",
+        "descriptionText": "NOTICE OF START OF OPPOSITION PERIOD CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20231220",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION SENT TO IB"
+      },
+      {
+        "date": "20231207",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20231128",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20231128",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20231128",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20231121",
+        "descriptionText": "REFUSAL PROCESSED BY IB"
+      },
+      {
+        "date": "20231029",
+        "descriptionText": "NON-FINAL ACTION MAILED - REFUSAL SENT TO IB"
+      },
+      {
+        "date": "20231028",
+        "descriptionText": "REFUSAL PROCESSED BY MPU"
+      },
+      {
+        "date": "20231025",
+        "descriptionText": "NON-FINAL ACTION (IB REFUSAL) PREPARED FOR REVIEW"
+      },
+      {
+        "date": "20231024",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20230905",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20230103",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      },
+      {
+        "date": "20221230",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20221229",
+        "descriptionText": "SN ASSIGNED FOR SECT 66A APPL FROM IB"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of a fingerprint, the wording \"ORITAIN VERIFIED\" above and \"PROVEN ORIGIN\" below the fingerprint, and a check mark to the right.",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "167 High Street, NEZE",
+        "countryCode": "NZ",
+        "countryName": "New Zealand",
+        "jurisdictionOfIncorporation": "NEW ZEALAND",
+        "name": "ORITAIN GLOBAL LIMITED",
+        "secondaryAddressUnit": "Otago Dunedin 9016",
+        "street": "167 High Street,"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "167 High Street, NEZE",
+        "countryCode": "NZ",
+        "countryName": "New Zealand",
+        "jurisdictionOfIncorporation": "NEW ZEALAND",
+        "name": "ORITAIN GLOBAL LIMITED",
+        "secondaryAddressUnit": "Otago Dunedin 9016",
+        "street": "167 High Street,"
+      },
+      {
+        "address": "167 High Street, NEZE",
+        "countryCode": "NZ",
+        "countryName": "New Zealand",
+        "jurisdictionOfIncorporation": "NEW ZEALAND",
+        "name": "ORITAIN GLOBAL LIMITED",
+        "secondaryAddressUnit": "Otago Dunedin 9016",
+        "street": "167 High Street,"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "167 High Street, NEZE",
+        "countryCode": "NZ",
+        "countryName": "New Zealand",
+        "jurisdictionOfIncorporation": "NEW ZEALAND",
+        "name": "ORITAIN GLOBAL LIMITED",
+        "secondaryAddressUnit": "Otago Dunedin 9016",
+        "street": "167 High Street,"
+      }
+    ],
+    "recordLastUpdated": "20260202",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Cleveland, OH 44115, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "Cleveland, OH 44115",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Sandra M. Koenig LIPPES MATHIAS LLP, 1228 Euclid Avenue, 5th Floor"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Cleveland, OH 44115, UNITED STATES",
+        "representativeAddressLines": [
+          "Cleveland, OH 44115",
+          "UNITED STATES"
+        ],
+        "representativeName": "Sandra M. Koenig"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20221122",
+        "applicationNumber": "79358708"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20240326",
+        "markOfficialStatusEvents": [
+          "Color Drawing Filed",
+          "Section 66(a) (Madrid Protocol) - Filed",
+          "Section 66(a) (Madrid Protocol) - Current",
+          "Notice of First Refusal"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20240109"
+      ],
+      "registration": {
+        "registrationDate": "20240326",
+        "registrationNumber": "7333999"
+      }
+    },
+    "version": "20260202054049",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ORITAIN VERIFIED PROVEN ORIGIN"
+    }
+  },
+  "_uri": "/mark/us/0d37923d-6a20-4a90-bb2a-56924598ae6a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.833Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

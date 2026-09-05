@@ -1,0 +1,157 @@
+{
+  "uri": "/mark/jp/01ef461d-3188-4fe9-ab57-ff9f88206eb8",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "01ef461d-3188-4fe9-ab57-ff9f88206eb8",
+  "applicationNumber": "2010-049289",
+  "registrationNumber": "5449608",
+  "applicationDate": "2010-06-22",
+  "registrationDate": "2011-11-11",
+  "expiryDate": "2021-11-11",
+  "renewalDate": null,
+  "lastPublicationDate": "2011-12-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＸＴＲＩＮＳＩＣ",
+  "markTransliteration": "EKUSUTORINSHIKKU",
+  "markTranslation": "XTRINSIC",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "半導体，集積回路，マイクロプロセッサ，磁気センサー，高周波信号を利用した測定機械器具用センサー，ジャイロセンサー，コンピューター用インターフェースに用いるセンサー，圧力センサー，触覚センサー，静電容量センサー，加速度計，加速度センサー，慣性センサー，近接センサー，センサー機能を発揮するために用いるコンピュータソフトウェア，センサー・コンピュータソフトウェア・アルゴリズム・マイクロプロセッサ・マイクロコントローラ・論理回路・ワイヤレスプロトコルからなる測定機械器具，その他の測定機械器具，電気磁気測定器，電気通信機械器具，電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Sensors used for interfaces for computers, pressure sensors, tactile sensors, capacitance sensors, accelerometers, acceleration sensors, inertia Sensor, Proximity Sensor, Computer Software Used to Exercise Sensor Function, Sensor · Computer Software · Algorithm · Microprocessor · Microcontroller · Logic Circuit · Measurement Machine Instrument made up of Wireless Protocol, Other Measurement Machine Equipment, Electromagnet Measuring Instrument , Telecommunications machine tools, electronic appliances appliances and parts thereof"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "IWASE YOSHIKAZU",
+  "priorities": [
+    {
+      "priorityDate": "20100622"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Sensors used for interfaces for computers, pressure sensors, tactile sensors, capacitance sensors, accelerometers, acceleration sensors, inertia Sensor, Proximity Sensor, Computer Software Used to Exercise Sensor Function, Sensor · Computer Software · Algorithm · Microprocessor · Microcontroller · Logic Circuit · Measurement Machine Instrument made up of Wireless Protocol, Other Measurement Machine Equipment, Electromagnet Measuring Instrument , Telecommunications machine tools, electronic appliances appliances and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "半導体，集積回路，マイクロプロセッサ，磁気センサー，高周波信号を利用した測定機械器具用センサー，ジャイロセンサー，コンピューター用インターフェースに用いるセンサー，圧力センサー，触覚センサー，静電容量センサー，加速度計，加速度センサー，慣性センサー，近接センサー，センサー機能を発揮するために用いるコンピュータソフトウェア，センサー・コンピュータソフトウェア・アルゴリズム・マイクロプロセッサ・マイクロコントローラ・論理回路・ワイヤレスプロトコルからなる測定機械器具，その他の測定機械器具，電気磁気測定器，電気通信機械器具，電子応用機械器具及びその部品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "10C01",
+          "natGoodsServicesDescription": "Measuring or testing machines and instruments"
+        },
+        {
+          "natClassNumber": "11A04",
+          "natGoodsServicesDescription": "Electric or magnetic meters and testers"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Telecommunication devices and apparatus"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        }
+      ]
+    },
+    "id": "01ef461d-3188-4fe9-ab57-ff9f88206eb8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20100622"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "IWASE YOSHIKAZU",
+        "representativeNativeName": "岩瀬　吉和"
+      },
+      {
+        "representativeName": "SHIROYAMA YASUFUMI",
+        "representativeNativeName": "城山　康文"
+      },
+      {
+        "representativeName": "KITAGUCHI TAKAHIRO",
+        "representativeNativeName": "北口　貴大"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20100622",
+        "applicationNumber": "2010-049289"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20211111",
+      "lastPublicationDate": "20111213",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20111111",
+        "registrationNumber": "5449608"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "XTRINSIC",
+      "markTransliteration": "EKUSUTORINSHIKKU",
+      "markVerbalElementText": "ＸＴＲＩＮＳＩＣ"
+    }
+  },
+  "_uri": "/mark/jp/01ef461d-3188-4fe9-ab57-ff9f88206eb8",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.461Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

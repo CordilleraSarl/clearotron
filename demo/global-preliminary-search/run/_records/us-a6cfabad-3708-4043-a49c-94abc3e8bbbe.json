@@ -1,0 +1,580 @@
+{
+  "uri": "/mark/us/a6cfabad-3708-4043-a49c-94abc3e8bbbe",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "a6cfabad-3708-4043-a49c-94abc3e8bbbe",
+  "applicationNumber": "77460048",
+  "registrationNumber": "3796311",
+  "applicationDate": "2008-04-28",
+  "registrationDate": "2010-06-01",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2008-10-07"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2021-01-08",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "QORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 providing an interactive online magazine in the field of video games; providing non-downloadable video games via the Internet",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SONY INTERACTIVE ENTERTAINMENT LLC",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Matthew J. Kuykendall",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20151113",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "2207 BRIDGEPOINTE PARKWAY, SAN MATEO, CALIFORNIA, 94404",
+        "applicantAddressCity": "SAN MATEO",
+        "applicantAddressPostalCode": "94404",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "2207 BRIDGEPOINTE PARKWAY",
+        "applicantJurisdictionOfIncorporation": "CALIFORNIA",
+        "applicantLegalEntity": "LIMITED LIABILITY COMPANY",
+        "applicantName": "SONY INTERACTIVE ENTERTAINMENT LLC"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "2207 BRIDGEPOINTE PARKWAY, SAN MATEO, CALIFORNIA, 94404",
+            "city": "SAN MATEO",
+            "jurisdictionOfIncorporation": "CALIFORNIA",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "SONY INTERACTIVE ENTERTAINMENT LLC",
+            "postalCode": "94404",
+            "stateName": "CALIFORNIA",
+            "street": "2207 BRIDGEPOINTE PARKWAY"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "CALIFORNIA",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "SONY INTERACTIVE ENTERTAINMENT AMERICA LLC"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "2207 BRIDGEPOINTE PARKWAY, SAN MATEO, CA 94404",
+            "addressLines": [
+              "MATTHEW J. KUYKENDALL",
+              "2207 BRIDGEPOINTE PARKWAY",
+              "SAN MATEO, CA 94404"
+            ],
+            "name": "MATTHEW J. KUYKENDALL"
+          }
+        ],
+        "descriptionText": "MERGER EFFECTIVE 04/01/2018",
+        "executedDate": "20180327",
+        "recordedDate": "20180405",
+        "reelFrameNumber": "6320/0393"
+      },
+      {
+        "assignees": [
+          {
+            "address": "2207 BRIDGEPOINTE PARKWAY, SAN MATEO, CALIFORNIA, 94404",
+            "city": "SAN MATEO",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "SONY INTERACTIVE ENTERTAINMENT AMERICA LLC",
+            "postalCode": "94404",
+            "stateName": "CALIFORNIA",
+            "street": "2207 BRIDGEPOINTE PARKWAY"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "SONY COMPUTER ENTERTAINMENT AMERICA LLC"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "2207 BRIDGEPOINTE PARKWAY, SAN MATEO, CA 94025",
+            "addressLines": [
+              "ANTHONY PETERSON",
+              "2207 BRIDGEPOINTE PARKWAY",
+              "SAN MATEO, CA 94025"
+            ],
+            "name": "ANTHONY PETERSON"
+          }
+        ],
+        "descriptionText": "CHANGE OF NAME",
+        "executedDate": "20160401",
+        "recordedDate": "20170724",
+        "reelFrameNumber": "6112/0044"
+      },
+      {
+        "assignees": [
+          {
+            "address": "2207 BRIDGEPOINTE PARKWAY, SAN MATEO, CALIFORNIA, 94404",
+            "city": "SAN MATEO",
+            "jurisdictionOfIncorporation": "CALIFORNIA",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "SONY INTERACTIVE ENTERTAINMENT AMERICA LLC",
+            "postalCode": "94404",
+            "stateName": "CALIFORNIA",
+            "street": "2207 BRIDGEPOINTE PARKWAY"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "SONY INTERACTIVE ENTERTAINMENT AMERICA LLC"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "2207 BRIDGEPOINTE PARKWAY, SAN MATEO, CA 94404",
+            "addressLines": [
+              "ANTHONY PETERSON",
+              "2207 BRIDGEPOINTE PARKWAY",
+              "SAN MATEO, CA 94404"
+            ],
+            "name": "ANTHONY PETERSON"
+          }
+        ],
+        "descriptionText": "ENTITY CONVERSION",
+        "executedDate": "20170112",
+        "recordedDate": "20170724",
+        "reelFrameNumber": "6144/0069"
+      },
+      {
+        "assignees": [
+          {
+            "address": "2207 BRIDGEPOINTE PKWY., SAN MATEO, CALIFORNIA, 94404",
+            "city": "SAN MATEO",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "SONY COMPUTER ENTERTAINMENT AMERICA LLC",
+            "postalCode": "94404",
+            "stateName": "CALIFORNIA",
+            "street": "2207 BRIDGEPOINTE PKWY."
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SONY COMPUTER ENTERTAINMENT AMERICA INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "2207 BRIDGEPOINTE PKWY., SAN MATEO, CA 94404",
+            "addressLines": [
+              "KYLE SAMIA",
+              "2207 BRIDGEPOINTE PKWY.",
+              "SAN MATEO, CA 94404"
+            ],
+            "name": "KYLE SAMIA"
+          }
+        ],
+        "descriptionText": "CORRECTIVE ASSIGNMENT TO CORRECT THE RECEIVING PARTY DATA AND ADDRESS PREVIOUSLY RECORDED AT REEL: 004193 FRAME: 0440. ASSIGNOR(S) HEREBY CONFIRMS THE MERGER.",
+        "executedDate": "20100401",
+        "recordedDate": "20150702",
+        "reelFrameNumber": "5568/0191"
+      },
+      {
+        "assignees": [
+          {
+            "address": "919 E. HILLSDALE BLVD., FOSTER CITY, CALIFORNIA, 94404",
+            "city": "FOSTER CITY",
+            "entities": [
+              {
+                "name": "COMPOSED OF SONY COMPUTER ENTERTAINMENT AMERICA INC. AND GAME ENTERTAINMENT SUBSIDIARY LLC"
+              }
+            ],
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "SONY COMPUTER ENTERTAINMENT AMERICA LLC",
+            "postalCode": "94404",
+            "stateName": "CALIFORNIA",
+            "street": "919 E. HILLSDALE BLVD."
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SONY COMPUTER ENTERTAINMENT AMERICA INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "919 E. HILLSDALE BLVD., FOSTER CITY, CA 94404",
+            "addressLines": [
+              "SONY COMPUTER ENTERTAINMENT AMERICA LLC",
+              "919 E. HILLSDALE BLVD.",
+              "FOSTER CITY, CA 94404"
+            ],
+            "name": "SONY COMPUTER ENTERTAINMENT AMERICA LLC"
+          }
+        ],
+        "descriptionText": "MERGER EFFECTIVE 04012010",
+        "executedDate": "20100401",
+        "recordedDate": "20100427",
+        "reelFrameNumber": "4193/0440"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 providing an interactive online magazine in the field of video games; providing non-downloadable video games via the Internet"
+        }
+      ]
+    },
+    "id": "a6cfabad-3708-4043-a49c-94abc3e8bbbe",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20210108",
+        "descriptionText": "CANCELLED SEC. 8 (10-YR)/EXPIRED SECTION 9"
+      },
+      {
+        "date": "20190601",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20180509",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20170913",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20170802",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20170724",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20170724",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20151113",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20151113",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 15 - E-MAILED"
+      },
+      {
+        "date": "20151110",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20150922",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20150922",
+        "descriptionText": "TEAS SECTION 8 & 15 RECEIVED"
+      },
+      {
+        "date": "20150715",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20150619",
+        "descriptionText": "TEAS CHANGE OF OWNER ADDRESS RECEIVED"
+      },
+      {
+        "date": "20150619",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20100601",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20100506",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20100428",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE MAILED"
+      },
+      {
+        "date": "20100427",
+        "descriptionText": "LAW OFFICE REGISTRATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20100427",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20100414",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20100407",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20090126",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20090126",
+        "descriptionText": "SOU EXTENSION 1 GRANTED"
+      },
+      {
+        "date": "20090111",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20090111",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20090111",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20090111",
+        "descriptionText": "SOU EXTENSION 1 FILED"
+      },
+      {
+        "date": "20081230",
+        "descriptionText": "NOA MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20081007",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20080917",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20080902",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20080902",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20080821",
+        "descriptionText": "EXAMINERS AMENDMENT MAILED"
+      },
+      {
+        "date": "20080821",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20080821",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20080821",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20080807",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "20080807",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20080804",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20080502",
+        "descriptionText": "NOTICE OF PSEUDO MARK MAILED"
+      },
+      {
+        "date": "20080501",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "919 E. Hillsdale Blvd., Foster City, CA, 94404",
+        "city": "Foster City",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Sony Computer Entertainment America Inc.",
+        "postalCode": "94404",
+        "stateName": "CALIFORNIA",
+        "street": "919 E. Hillsdale Blvd."
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "2207 Bridgepoite Pkwy, San Mateo, CA, 94404",
+        "city": "San Mateo",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Sony Computer Entertainment America Inc.",
+        "postalCode": "94404",
+        "stateName": "CALIFORNIA",
+        "street": "2207 Bridgepoite Pkwy"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "919 E. Hillsdale Blvd., Foster City, CA, 94404",
+        "city": "Foster City",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Sony Computer Entertainment America Inc.",
+        "postalCode": "94404",
+        "stateName": "CALIFORNIA",
+        "street": "919 E. Hillsdale Blvd."
+      }
+    ],
+    "postRegistrationOwners": [
+      {
+        "address": "2207 BRIDGEPOINTE PARKWAY, SAN MATEO, CA, 94404",
+        "city": "SAN MATEO",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "SONY INTERACTIVE ENTERTAINMENT LLC",
+        "postalCode": "94404",
+        "stateName": "CALIFORNIA",
+        "street": "2207 BRIDGEPOINTE PARKWAY"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "San Mateo, CA 94404, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "San Mateo, CA 94404",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Matthew J. Kuykendall Sony Interactive Entertainment LLC, 2207 Bridgepointe Parkway"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "San Mateo, CA 94404, UNITED STATES",
+        "representativeAddressLines": [
+          "San Mateo, CA 94404",
+          "UNITED STATES"
+        ],
+        "representativeName": "Matthew J. Kuykendall"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20080428",
+        "applicationNumber": "77460048"
+      },
+      "cancellationDate": "20210108",
+      "cancellationPublicationDate": "20210216",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20080605"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20080605"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20210108",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20081007"
+      ],
+      "registration": {
+        "registrationDate": "20100601",
+        "registrationNumber": "3796311"
+      }
+    },
+    "version": "20260109055446",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "CORE",
+      "markVerbalElementText": "QORE"
+    }
+  },
+  "_uri": "/mark/us/a6cfabad-3708-4043-a49c-94abc3e8bbbe",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:55.423Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

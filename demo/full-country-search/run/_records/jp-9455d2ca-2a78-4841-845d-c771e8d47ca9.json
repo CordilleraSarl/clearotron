@@ -1,0 +1,174 @@
+{
+  "uri": "/mark/jp/9455d2ca-2a78-4841-845d-c771e8d47ca9",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "9455d2ca-2a78-4841-845d-c771e8d47ca9",
+  "applicationNumber": "H03-123192",
+  "registrationNumber": "2591706",
+  "applicationDate": "1991-11-29",
+  "registrationDate": "1993-10-29",
+  "expiryDate": "2003-10-29",
+  "renewalDate": null,
+  "lastPublicationDate": "1993-02-02",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＶＥＮＯＲＵＴＯＮ　ベノルトン",
+  "markTransliteration": "BENORUTON",
+  "markTranslation": "VENORUTON",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    8,
+    9,
+    10,
+    16,
+    17,
+    19,
+    21,
+    29,
+    30
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        10,
+        16,
+        17,
+        19,
+        21,
+        29,
+        30
+      ],
+      "language": null,
+      "description": "化学品、薬剤、医療補助品",
+      "translation_language": "en",
+      "translation": "Chemicals, medicines, medical supplements"
+    }
+  ],
+  "owner": "NOVARTIS CONSUMER HEALTH S.A.",
+  "ownerNative": null,
+  "ownerCountry": "CH",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19911129"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "CH",
+        "applicantAddressCountryName": "Switzerland",
+        "applicantName": "NOVARTIS CONSUMER HEALTH S.A.",
+        "applicantNativeAddress": "スイス国　ニヨン　１２６０　ル―ト　ド　レトラ",
+        "applicantNativeName": "ノバルテイス　コンシューマー　ヘルス　エスアー"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Chemicals, medicines, medical supplements",
+          "intClassNumber": "01,02,03,04,05,08,09,10,16,17,19,21,29,30",
+          "intGoodsServicesDescription": "化学品、薬剤、医療補助品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "01A01"
+        },
+        {
+          "natClassNumber": "01A02"
+        },
+        {
+          "natClassNumber": "01B01"
+        },
+        {
+          "natClassNumber": "01B02"
+        },
+        {
+          "natClassNumber": "01C01"
+        },
+        {
+          "natClassNumber": "01C02"
+        },
+        {
+          "natClassNumber": "01C03"
+        },
+        {
+          "natClassNumber": "01C04"
+        }
+      ]
+    },
+    "id": "9455d2ca-2a78-4841-845d-c771e8d47ca9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19911129"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19911129",
+        "applicationNumber": "H03-123192"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20031029",
+      "lastPublicationDate": "19930202",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19931029",
+        "registrationNumber": "2591706"
+      }
+    },
+    "version": "20240321110851",
+    "wordMarkSpecification": {
+      "markTranslation": "VENORUTON",
+      "markTransliteration": "BENORUTON",
+      "markVerbalElementText": "ＶＥＮＯＲＵＴＯＮ　ベノルトン"
+    }
+  },
+  "_uri": "/mark/jp/9455d2ca-2a78-4841-845d-c771e8d47ca9",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:17.153Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

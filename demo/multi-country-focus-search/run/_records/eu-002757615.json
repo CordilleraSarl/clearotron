@@ -1,0 +1,99 @@
+{
+  "uri": "/mark/eu/002757615",
+  "provider": "euipo",
+  "office": "EU",
+  "id": "002757615",
+  "applicationNumber": "002757615",
+  "registrationNumber": "002757615",
+  "applicationDate": "2002-07-04",
+  "registrationDate": "2003-12-16",
+  "expiryDate": "2032-07-04",
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "statusDate": "2006-12-08",
+  "markText": "La Venaria Reale",
+  "markFeature": "FIGURATIVE",
+  "markKind": "INDIVIDUAL",
+  "markBasis": "EU_TRADEMARK",
+  "niceClasses": [],
+  "owner": "CONSORZIO DELLE RESIDENZE REALI SABAUDE",
+  "ownerCountry": null,
+  "representative": "JACOBACCI & PARTNERS S.P.A.",
+  "goodsAndServices": [
+    {
+      "classNumber": 16,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Paper, cardboard and goods made from these materials, not included in other classes",
+            " prints",
+            " bookbinding material",
+            " photographs",
+            " stationery",
+            " adhesives for stationery or household purposes",
+            " artists' materials",
+            " paint brushes",
+            " typewriters and office requisites (except furniture)",
+            " instructional and teaching material (except apparatus)",
+            " plastic materials for packaging (not included in other classes)",
+            " printers' type",
+            " printing blocks"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 25,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Clothing, shoes, headgear"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 28,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Games and playthings",
+            " gymnastic and sporting articles not included in other classes",
+            " decorations for Christmas trees",
+            " game cards"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 41,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Providing of education",
+            " training",
+            " entertainment",
+            " sporting and recreational activities"
+          ]
+        }
+      ]
+    }
+  ],
+  "oppositions": [],
+  "cancellations": [],
+  "appeals": [],
+  "decisions": [],
+  "_provenance": {
+    "proceedings": "detail record — an empty list means none are recorded on the register"
+  },
+  "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/002757615",
+  "_uri": "/mark/eu/002757615",
+  "_receipt": {
+    "fetched_at": "2026-08-11T07:53:38.617Z",
+    "context": "prelim-tmp0001-venqori-sample-capture-screen-gate-refetch"
+  }
+}

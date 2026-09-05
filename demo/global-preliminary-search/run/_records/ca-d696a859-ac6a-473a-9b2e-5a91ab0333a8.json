@@ -1,0 +1,372 @@
+{
+  "uri": "/mark/ca/d696a859-ac6a-473a-9b2e-5a91ab0333a8",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "d696a859-ac6a-473a-9b2e-5a91ab0333a8",
+  "applicationNumber": "1211278",
+  "registrationNumber": "TMA645499",
+  "applicationDate": "2004-03-19",
+  "registrationDate": "2005-08-09",
+  "expiryDate": null,
+  "renewalDate": "2020-08-09",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2004-12-29"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NATIVE NORTHWEST",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN MARK",
+  "markDisclaimers": [
+    "The right to the exclusive use of the word NATIVE is disclaimed apart from the trademark."
+  ],
+  "niceClasses": [
+    6,
+    9,
+    14,
+    16,
+    18,
+    20,
+    21,
+    24,
+    25,
+    28,
+    35,
+    40,
+    42,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        9,
+        14,
+        16,
+        18,
+        20,
+        21,
+        24,
+        25,
+        28,
+        35,
+        40,
+        42,
+        43
+      ],
+      "language": "en",
+      "description": "(1) Clothing for men, women, children and infants, namely t-shirts, sweat shirts, vests, golf shirts, scarves, night shirts, pajamas, boxer shorts; headgear, namely toques, caps, hats. \n(2) Tote bags, all purpose zippered cases, namely pen and pencil cases, make-up cases, jewellery cases, watch cases; umbrellas. \n(3) Fabrics, namely bed blankets, throw blankets, baby blankets, fleece blankets. \n(4) Etched ceramic and glassware, namely beverage glassware, mugs, steins, plates, cruets, bowls, vases, carafes, candle holders, salt and pepper shakers. \n(5) Insulated beverage containers and thermal cups. \n(6) Housewares, namely coasters not made of paper and not being table linen, trivets, household linen, namely tea towels, aprons, oven mitts, hot pads, pot holders, placemats, napkins. \n(7) Cards, namely gift cards, greeting cards, postcards, picture postcards, note cards; posters, calendars, address books, guest books, journals, note pads and notebooks, art prints, gift wrap, bookmarks, printed publications, namely brochures. \n(8) Computer accessories, namely mouse pads. \n(9) Compact discs containing computer screensaver program. \n(10) Decals, tattoo transfers, stickers, decorative magnets, rubber stamps, pens. \n(11) Watches. \n(12) Lapel pins, pewter figurines. \n(13) Plush toys. \n(14) Display units, racks and stands for merchandising products. \n(15) Jewellery.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6,
+        9,
+        14,
+        16,
+        18,
+        20,
+        21,
+        24,
+        25,
+        28,
+        35,
+        40,
+        42,
+        43
+      ],
+      "language": "en",
+      "description": "(1) Wholesale, retail and online sale of embroidered and silk-screened textiles, souvenirs, corporate promotional goods and gifts, household and clothing accessories, watches and jewellery, luggage, and toys all featuring native artwork. \n(2) Printing services, silkscreen printing and embroidering.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Garfinkel Publications Inc.",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": "OWEN BIRD LAW CORPORATION",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2900-595 Burrard Street, Vancouver, BRITISH COLUMBIA, V7X1J5",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressLines": [
+          "2900-595 Burrard Street",
+          "Vancouver",
+          "BRITISH COLUMBIA"
+        ],
+        "applicantAddressPostalCode": "V7X1J5",
+        "applicantName": "Garfinkel Publications Inc."
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Used in CANADA since at least as early as June 1999 on wares marked (7) and on services (1) (2)",
+        "typeDescription": "First Use"
+      },
+      {
+        "text": "Used in CANADA since at least as early as January 2000 on wares marked (1), (2), (3), (8), (14)",
+        "typeDescription": "First Use"
+      },
+      {
+        "text": "Used in CANADA since at least as early as March 2000 on wares marked (6)",
+        "typeDescription": "First Use"
+      },
+      {
+        "text": "Used in CANADA since at least as early as May 2000 on wares marked (10)",
+        "typeDescription": "First Use"
+      },
+      {
+        "text": "Used in CANADA since at least as early as March 2001 on wares marked (13)",
+        "typeDescription": "First Use"
+      },
+      {
+        "text": "Used in CANADA since at least as early as April 2001 on wares marked (5), (9)",
+        "typeDescription": "First Use"
+      },
+      {
+        "text": "Used in CANADA since at least as early as March 2003 on wares marked (4), (11)",
+        "typeDescription": "First Use"
+      },
+      {
+        "text": "Used in CANADA since at least as early as April 2003 on wares marked (12)",
+        "typeDescription": "First Use"
+      },
+      {
+        "text": "Used in CANADA since at least as early as May 2003 on wares marked (15)",
+        "typeDescription": "First Use"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "06,09,14,16,18,20,21,24,25,28,35,40,42,43",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Clothing for men, women, children and infants, namely t-shirts, sweat shirts, vests, golf shirts, scarves, night shirts, pajamas, boxer shorts; headgear, namely toques, caps, hats. \n(2) Tote bags, all purpose zippered cases, namely pen and pencil cases, make-up cases, jewellery cases, watch cases; umbrellas. \n(3) Fabrics, namely bed blankets, throw blankets, baby blankets, fleece blankets. \n(4) Etched ceramic and glassware, namely beverage glassware, mugs, steins, plates, cruets, bowls, vases, carafes, candle holders, salt and pepper shakers. \n(5) Insulated beverage containers and thermal cups. \n(6) Housewares, namely coasters not made of paper and not being table linen, trivets, household linen, namely tea towels, aprons, oven mitts, hot pads, pot holders, placemats, napkins. \n(7) Cards, namely gift cards, greeting cards, postcards, picture postcards, note cards; posters, calendars, address books, guest books, journals, note pads and notebooks, art prints, gift wrap, bookmarks, printed publications, namely brochures. \n(8) Computer accessories, namely mouse pads. \n(9) Compact discs containing computer screensaver program. \n(10) Decals, tattoo transfers, stickers, decorative magnets, rubber stamps, pens. \n(11) Watches. \n(12) Lapel pins, pewter figurines. \n(13) Plush toys. \n(14) Display units, racks and stands for merchandising products. \n(15) Jewellery."
+        },
+        {
+          "intClassNumber": "06,09,14,16,18,20,21,24,25,28,35,40,42,43",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Wholesale, retail and online sale of embroidered and silk-screened textiles, souvenirs, corporate promotional goods and gifts, household and clothing accessories, watches and jewellery, luggage, and toys all featuring native artwork. \n(2) Printing services, silkscreen printing and embroidering."
+        }
+      ]
+    },
+    "id": "d696a859-ac6a-473a-9b2e-5a91ab0333a8",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markDisclaimers": [
+      "The right to the exclusive use of the word NATIVE is disclaimed apart from the trademark."
+    ],
+    "markEvents": [
+      {
+        "date": "20200809",
+        "descriptionText": "Renewed",
+        "information": "DP:2019/02/07 RD:2019/02/07 RR:Jerome Slone PTO Suite #119, 3450 St-Denis Street, Montreal, Quebec H2X 3L3 Canada",
+        "responseDate": "20300809"
+      },
+      {
+        "date": "20050809",
+        "descriptionText": "Registered",
+        "responseDate": "20200809"
+      },
+      {
+        "date": "20050318",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20050918"
+      },
+      {
+        "date": "20050318",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20050112",
+        "descriptionText": "Rep for Service Name Changed"
+      },
+      {
+        "date": "20050112",
+        "descriptionText": "Agent Name Changed"
+      },
+      {
+        "date": "20041229",
+        "descriptionText": "Advertised",
+        "information": "Vol.51 Issue 2618"
+      },
+      {
+        "date": "20041125",
+        "descriptionText": "Approved"
+      },
+      {
+        "date": "20041006",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20050206"
+      },
+      {
+        "date": "20040916",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20040402",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20040329",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20040319",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "DESIGN MARK",
+    "markImageViennaClassification": [
+      "02.09.14",
+      "02.09.15",
+      "26.01.02",
+      "26.01.03",
+      "26.01.16",
+      "26.04.02",
+      "26.04.05",
+      "26.04.18",
+      "26.04.24"
+    ],
+    "markImagesAvailable": true,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "2900-595 Burrard Street, Vancouver, BRITISH COLUMBIA, V7X1J5",
+        "addressLines": [
+          "2900-595 Burrard Street",
+          "Vancouver",
+          "BRITISH COLUMBIA",
+          "V7X1J5"
+        ],
+        "countryName": "Canada",
+        "name": "Garfinkel Publications Inc.",
+        "postalCode": "V7X1J5"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "2618",
+        "publicationVolume": "51"
+      }
+    ],
+    "recordLastUpdated": "20250624",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "OWEN BIRD LAW CORPORATION",
+          "PO Box 1",
+          "Vancouver Centre II",
+          "2900-733 Seymour Street",
+          "Vancouver,",
+          "BRITISH COLUMBIA V6B0S6"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "OWEN BIRD LAW CORPORATION",
+        "representativeReferenceNumber": "13086/2"
+      }
+    ],
+    "status": {
+      "active": true,
+      "allowanceDate": [
+        "20050318"
+      ],
+      "application": {
+        "applicationDate": "20040319",
+        "applicationNumber": "1211278"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "200305",
+          "firstUsedText": "Used in CANADA since at least as early as June 1999 on wares marked (7) and on services (1) (2)"
+        },
+        {
+          "firstUsedDate": "200305",
+          "firstUsedText": "Used in CANADA since at least as early as January 2000 on wares marked (1), (2), (3), (8), (14)"
+        },
+        {
+          "firstUsedDate": "200305",
+          "firstUsedText": "Used in CANADA since at least as early as March 2000 on wares marked (6)"
+        },
+        {
+          "firstUsedDate": "200305",
+          "firstUsedText": "Used in CANADA since at least as early as May 2000 on wares marked (10)"
+        },
+        {
+          "firstUsedDate": "200305",
+          "firstUsedText": "Used in CANADA since at least as early as March 2001 on wares marked (13)"
+        },
+        {
+          "firstUsedDate": "200305",
+          "firstUsedText": "Used in CANADA since at least as early as April 2001 on wares marked (5), (9)"
+        },
+        {
+          "firstUsedDate": "200305",
+          "firstUsedText": "Used in CANADA since at least as early as March 2003 on wares marked (4), (11)"
+        },
+        {
+          "firstUsedDate": "200305",
+          "firstUsedText": "Used in CANADA since at least as early as April 2003 on wares marked (12)"
+        },
+        {
+          "firstUsedDate": "200305",
+          "firstUsedText": "Used in CANADA since at least as early as May 2003 on wares marked (15)"
+        }
+      ],
+      "formalisationDate": "20040402",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20300809",
+      "publicationDate": [
+        "20041229"
+      ],
+      "registration": {
+        "registrationDate": "20050809",
+        "registrationNumber": "TMA645499"
+      },
+      "renewalDate": "20200809"
+    },
+    "subjectHeadings": [
+      "NATIVE NORTHWEST",
+      "NORTH WEST"
+    ],
+    "version": "20250624150309",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NATIVE NORTHWEST",
+      "markVerbalElementTextFormal": "NATIVE NORTHWEST & DESIGN"
+    }
+  },
+  "_uri": "/mark/ca/d696a859-ac6a-473a-9b2e-5a91ab0333a8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

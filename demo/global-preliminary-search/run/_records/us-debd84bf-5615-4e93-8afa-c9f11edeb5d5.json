@@ -1,0 +1,316 @@
+{
+  "uri": "/mark/us/debd84bf-5615-4e93-8afa-c9f11edeb5d5",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "debd84bf-5615-4e93-8afa-c9f11edeb5d5",
+  "applicationNumber": "98709272",
+  "registrationNumber": null,
+  "applicationDate": "2024-08-21",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-05-20"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "LORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Downloadable series of children's books",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": null,
+      "description": "INT. CL. 16 Printed children's books",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Wyoming Jess Dinosaur Writer, LLC",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "130 Chevy Chase, Thermopolis, WY, 82443, USAM",
+        "applicantAddressCity": "Thermopolis",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "82443",
+        "applicantAddressStateName": "WYOMING",
+        "applicantAddressStreet": "130 Chevy Chase",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "Wyoming Jess Dinosaur Writer, LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Downloadable series of children's books"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsServicesDescription": "INT. CL. 16 Printed children's books"
+        }
+      ]
+    },
+    "id": "debd84bf-5615-4e93-8afa-c9f11edeb5d5",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260714",
+        "descriptionText": "SOU EXTENSION 2 GRANTED"
+      },
+      {
+        "date": "20260714",
+        "descriptionText": "NOTICE OF APPROVAL OF EXTENSION REQUEST E-MAILED"
+      },
+      {
+        "date": "20260713",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20260713",
+        "descriptionText": "SOU EXTENSION 2 FILED"
+      },
+      {
+        "date": "20260114",
+        "descriptionText": "SOU EXTENSION 1 GRANTED"
+      },
+      {
+        "date": "20260114",
+        "descriptionText": "NOTICE OF APPROVAL OF EXTENSION REQUEST E-MAILED"
+      },
+      {
+        "date": "20260113",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20260113",
+        "descriptionText": "SOU EXTENSION 1 FILED"
+      },
+      {
+        "date": "20250715",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20250520",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20250520",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20250514",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20250422",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20250422",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20250421",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20250421",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20250227",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20250227",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20250227",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20250226",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20250117",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20240821",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "130 Chevy Chase, Thermopolis, WY, 82443, USAM",
+        "city": "Thermopolis",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Wyoming Jess Dinosaur Writer, LLC",
+        "postalCode": "82443",
+        "stateName": "WYOMING",
+        "street": "130 Chevy Chase"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "130 Chevy Chase, Thermopolis, WY, 82443, USAM",
+        "city": "Thermopolis",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Wyoming Jess Dinosaur Writer, LLC",
+        "postalCode": "82443",
+        "stateName": "WYOMING",
+        "street": "130 Chevy Chase"
+      },
+      {
+        "address": "130 Chevy Chase, Thermopolis, WY, 82443, USAM",
+        "city": "Thermopolis",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Wyoming Jess Dinosaur Writer, LLC",
+        "postalCode": "82443",
+        "stateName": "WYOMING",
+        "street": "130 Chevy Chase"
+      }
+    ],
+    "recordLastUpdated": "20260716",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Thermopolis, WY 82443, United States",
+        "representativeCorrespondentAddressLines": [
+          "Thermopolis, WY 82443",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Wyoming Jess Dinosaur Writer, LLC, 130 Chevy Chase"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Thermopolis, WY 82443, United States",
+        "representativeAddressLines": [
+          "Thermopolis, WY 82443",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240821",
+        "applicationNumber": "98709272"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "extension": {
+        "approvalDate": [
+          "20260114",
+          "20260714"
+        ]
+      },
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20240726"
+        },
+        {
+          "firstUsedClass": "16",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20240725"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20240726"
+        },
+        {
+          "firstUsedCommerceClass": "16",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20240725"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "SECOND EXTENSION - GRANTED",
+        "markOfficialStatusCode": "731",
+        "markOfficialStatusDate": "20260714",
+        "markOfficialStatusEvents": [
+          "Intent to Use",
+          "FILED AS USE APPLICATION"
+        ]
+      },
+      "markCurrentStatus": "PUBLISHED",
+      "publicationDate": [
+        "20250520"
+      ]
+    },
+    "version": "20260716061205",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LORI"
+    }
+  },
+  "_uri": "/mark/us/debd84bf-5615-4e93-8afa-c9f11edeb5d5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.453Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

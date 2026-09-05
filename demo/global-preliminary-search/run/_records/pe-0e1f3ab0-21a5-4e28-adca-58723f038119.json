@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/pe/0e1f3ab0-21a5-4e28-adca-58723f038119",
+  "provider": "clarivate",
+  "office": "pe",
+  "guid": "0e1f3ab0-21a5-4e28-adca-58723f038119",
+  "applicationNumber": "3194-2026",
+  "registrationNumber": null,
+  "applicationDate": "2026-01-20",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QORI CARNAVAL DE MAGDA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "educación; formación; servicios de entretenimiento; actividades deportivas y culturales; organización, promoción y producción de eventos artísticos, educativos, recreativos, tradicionales y ancestrales; dirección de festivales y celebraciones vinculadas a expresiones culturales andinas; representación y presentación de agrupaciones de danzas folclóricas; prestación de servicios artísticos, espectáculos en vivo, presentaciones musicales y danzas tradicionales.",
+      "translation_language": "en",
+      "translation": "education; training; entertainment services; sports and cultural activities; organization, promotion and production of artistic, educational, recreational, traditional and ancestral events; management of festivals and celebrations linked to Andean cultural expressions; representation and presentation of folk dance groups; provision of artistic services, live shows, musical presentations and traditional dances."
+    }
+  ],
+  "owner": "PUSACCLLA MALDONADO MAGDALENA",
+  "ownerNative": null,
+  "ownerCountry": "PE",
+  "representative": "ALARCON CCAHUAY REYNALDO",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "ICA - ICA - PARCONA",
+        "applicantAddressCountryCode": "PE",
+        "applicantAddressCountryName": "Peru",
+        "applicantName": "PUSACCLLA MALDONADO MAGDALENA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "education; training; entertainment services; sports and cultural activities; organization, promotion and production of artistic, educational, recreational, traditional and ancestral events; management of festivals and celebrations linked to Andean cultural expressions; representation and presentation of folk dance groups; provision of artistic services, live shows, musical presentations and traditional dances.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "educación; formación; servicios de entretenimiento; actividades deportivas y culturales; organización, promoción y producción de eventos artísticos, educativos, recreativos, tradicionales y ancestrales; dirección de festivales y celebraciones vinculadas a expresiones culturales andinas; representación y presentación de agrupaciones de danzas folclóricas; prestación de servicios artísticos, espectáculos en vivo, presentaciones musicales y danzas tradicionales."
+        }
+      ]
+    },
+    "id": "0e1f3ab0-21a5-4e28-adca-58723f038119",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "01.15.15",
+      "21.01.16",
+      "27.05.17"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260204",
+    "registrationOfficeCode": "PE",
+    "registrationOfficeName": "Peru",
+    "representatives": [
+      {
+        "representativeAddress": "ICA - ICA - PARCONA",
+        "representativeAddressCountryCode": "PE",
+        "representativeAddressCountryName": "Peru",
+        "representativeName": "ALARCON CCAHUAY REYNALDO"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260120",
+        "applicationNumber": "3194-2026"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260204020635",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORI CARNAVAL DE MAGDA"
+    }
+  },
+  "_uri": "/mark/pe/0e1f3ab0-21a5-4e28-adca-58723f038119",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.399Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

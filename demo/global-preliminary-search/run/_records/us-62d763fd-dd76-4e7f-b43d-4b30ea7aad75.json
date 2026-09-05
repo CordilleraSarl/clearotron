@@ -1,0 +1,285 @@
+{
+  "uri": "/mark/us/62d763fd-dd76-4e7f-b43d-4b30ea7aad75",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "62d763fd-dd76-4e7f-b43d-4b30ea7aad75",
+  "applicationNumber": "87053176",
+  "registrationNumber": "5118933",
+  "applicationDate": "2016-05-27",
+  "registrationDate": "2017-01-10",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2016-10-25"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2023-07-21",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "GORI",
+  "markTransliteration": null,
+  "markTranslation": "CONNECTION",
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Business development consulting services; Business services, namely, consumer research and consulting related thereto; Business support services, namely, business consulting to freelancers, start-ups, existing businesses and non-profit organizations; Membership club services in the nature of providing discounts to members in the field of young Asian-American professional networks in the US",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Social club services, namely, arranging, organizing, and hosting social events, get-togethers, and parties for club members; Arranging, organizing, conducting, and hosting social entertainment events",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Dongji Moon",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Joseph Juhn",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "4120 76th street #4, Elmhurst, NY, 11373",
+        "applicantAddressCity": "Elmhurst",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "11373",
+        "applicantAddressStateName": "NEW YORK",
+        "applicantAddressStreet": "4120 76th street #4",
+        "applicantJurisdictionOfIncorporation": "REPUBLIC OF KOREA",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Dongji Moon"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Business development consulting services; Business services, namely, consumer research and consulting related thereto; Business support services, namely, business consulting to freelancers, start-ups, existing businesses and non-profit organizations; Membership club services in the nature of providing discounts to members in the field of young Asian-American professional networks in the US"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Social club services, namely, arranging, organizing, and hosting social events, get-togethers, and parties for club members; Arranging, organizing, conducting, and hosting social entertainment events"
+        }
+      ]
+    },
+    "id": "62d763fd-dd76-4e7f-b43d-4b30ea7aad75",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20230721",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20220110",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20170110",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20161025",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20161025",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20161005",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20160912",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20160912",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20160606",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20160531",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "4120 76th street #4, Elmhurst, NY, 11373",
+        "city": "Elmhurst",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "REPUBLIC OF KOREA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Dongji Moon",
+        "postalCode": "11373",
+        "stateName": "NEW YORK",
+        "street": "4120 76th street #4"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "4120 76th street #4, Elmhurst, NY, 11373",
+        "city": "Elmhurst",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "REPUBLIC OF KOREA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Dongji Moon",
+        "postalCode": "11373",
+        "stateName": "NEW YORK",
+        "street": "4120 76th street #4"
+      },
+      {
+        "address": "4120 76th street #4, Elmhurst, NY, 11373",
+        "city": "Elmhurst",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "REPUBLIC OF KOREA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Dongji Moon",
+        "postalCode": "11373",
+        "stateName": "NEW YORK",
+        "street": "4120 76th street #4"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "4120 76th street #4, Elmhurst, NY, 11373",
+        "city": "Elmhurst",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "REPUBLIC OF KOREA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Dongji Moon",
+        "postalCode": "11373",
+        "stateName": "NEW YORK",
+        "street": "4120 76th street #4"
+      }
+    ],
+    "recordLastUpdated": "20260111",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "ASTORIA, NY 11105, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "ASTORIA, NY 11105",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "JOSEPH JUHN GORI, 2232 28TH ST."
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "ASTORIA, NY 11105, UNITED STATES",
+        "representativeAddressLines": [
+          "ASTORIA, NY 11105",
+          "UNITED STATES"
+        ],
+        "representativeName": "Joseph Juhn"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20160527",
+        "applicationNumber": "87053176"
+      },
+      "cancellationDate": "20230721",
+      "cancellationPublicationDate": "20230829",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "35",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20151016"
+        },
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20110311"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "35",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20151016"
+        },
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20110311"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20230721",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20161025"
+      ],
+      "registration": {
+        "registrationDate": "20170110",
+        "registrationNumber": "5118933"
+      }
+    },
+    "version": "20260111051059",
+    "wordMarkSpecification": {
+      "markTranslation": "CONNECTION",
+      "markTranslationDescription": "The English translation of \"GORI\" in the mark is \"connection\".",
+      "markVerbalElementText": "GORI"
+    }
+  },
+  "_uri": "/mark/us/62d763fd-dd76-4e7f-b43d-4b30ea7aad75",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.047Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

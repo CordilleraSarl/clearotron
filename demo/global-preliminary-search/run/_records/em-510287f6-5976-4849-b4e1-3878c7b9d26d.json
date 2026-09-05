@@ -1,0 +1,685 @@
+{
+  "uri": "/mark/em/510287f6-5976-4849-b4e1-3878c7b9d26d",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "510287f6-5976-4849-b4e1-3878c7b9d26d",
+  "applicationNumber": "4849841",
+  "registrationNumber": "4849841",
+  "applicationDate": "2006-01-20",
+  "registrationDate": "2007-02-09",
+  "expiryDate": "2036-01-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2006-09-18",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QOPI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "cs",
+      "description": "Zlepsování kvality, jmenovite hodnocení podniku a vedení pro onkologické praxe pro úcely dokumentace shody s opatreními na kvalitu, zavádení osvedcených postupu a dokumentování zlepsení; zlepsování kvality, jmenovite hodnocení podniku a vedení pro druhé; poskytování informací, poradenství a konzultací v souvislosti se vsemi výse uvedenými sluzbami.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Poskytování zajistení kvality, kontroly kvality a hodnocení kvality; poskytování zajistení kvality, kontroly kvality a hodnocení kvality v oboru onkologické praxe a lécby rakoviny; poskytování informací, poradenství a konzultací v souvislosti se vsemi výse uvedenými sluzbami.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "da",
+      "description": "Kvalitetsforbedring, nemlig vurdering i forbindelse med forretningsledelse vedrørende praksis inden for onkologi til dokumentationsformål i overensstemmelse med kvalitetsmål, implementering af bedste praksis og forbedring af dokumentation; kvalitetsforbedring, nemlig forretningsmæssig vurdering og ledelsesvurdering møntet på andre; information, rådgivning og konsulentbistand vedrørende alle ovennævnte tjenesteydelser.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Kvalitetssikring, kvalitetsprøver og kvalitetsvurdering; kvalitetssikring, kvalitetskontrol og kvalitetsvurdering i forbindelse med praksis onkologiske metoder og kræftbehandling; information, rådgivning og konsulentbistand i forbindelse med alle førnævnte tjenesteydelser.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "Kwaliteitsverbetering, te weten diensten met betrekking tot beoordeling van bedrijven en beheer voor oncologiepraktijken voor het overeenstemmen van documentatie met kwaliteitsmaatstaven, het implementeren van beste handelswijze en het verbeteren van de documentatie; kwaliteitsverbetering, te weten diensten met betrekking tot beoordeling van bedrijven en beheer voor derden; informatie, advisering en raadgeving met betrekking tot alle voornoemde diensten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Kwaliteitsgarantie, kwaliteitscontrole en kwaliteitsbeoordeling; verschaffing van kwaliteitsgarantie, kwaliteitscontrole en kwaliteitsbeoordeling op het gebied van oncologiepraktijken en de behandeling van kanker; verschaffing van informatie, advisering en raadgeving met betrekking tot alle voornoemde diensten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Quality improvement services, namely, business and management assessment services for oncology practices for purposes of documenting concordance with quality measures, implementing best practices, and documenting improvement; quality improvement services, namely business and management assessment services for others; provision of information, advice and consultancy in relation to all of the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Providing quality assurance, quality control and quality assessment services; providing quality assurance, quality control and quality assessment in the field of oncology practices and cancer treatment; provision of information, advice and consultancy services in relation to all the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "et",
+      "description": "Kvaliteedi tõstmise teenused, nimelt äritegevuse ja juhtimise hindamisteenused onkoloogilise praktika osas, dokumenteerimaks kooskõla kvaliteediabinõude, parimate tavade juurutamise ja dokumenteerimise parendamisega; kvaliteedi tõstmise teenused, nimelt äritegevuse ja juhtimise hindamisteenused kolmandatele isikutele; info, nõustamise ja konsultatsiooni pakkumine seoses kõigi eelnimetatud teenustega.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Kvaliteedi tagamise, kvaliteedi kontrolli ja kvaliteedi hindamise teenuste pakkumine; kvaliteedi tagamise, kvaliteedi kontrolli ja kvaliteedi hindamise pakkumine onkoloogilise praktika ning vähiravi valdkonnas; teabe-, nõustamis- ja konsultatsiooniteenuste pakkumine seoses kõigi eelnimetatud teenustega.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fi",
+      "description": "Laadunparantamispalvelut, nimittäin onkologiaan liittyvät liiketoiminnan ja liikkeenjohdon arviointipalvelut, joiden avulla on tarkoitus dokumentoida yhtäpitävyys laadun mittojen kanssa, toteuttaa parhaita käytäntöjä ja dokumentoida parantavat toimet; laadunparantamispalvelut, nimittäin liiketoiminnan ja liikkeenjohdon arviointipalvelut muiden lukuun; kaikkiin edellä mainittuihin palveluihin liittyvän tiedotuksen, neuvonnan ja konsultoinnin tarjoaminen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Laadunvarmistus-, laadunvalvonta-, laadunarviointipalveluiden tarjoaminen; laadunvarmistus-, laadunvalvonta-, laadunarviointipalveluiden tarjoaminen onkologian ja syövän hoidon alalla; kaikkiin edellä mainittuihin palveluihin liittyvien tiedotus-, konsultointi- ja neuvontapalveluiden tarjoaminen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Services d'amélioration de la qualité, à savoir, services d'évaluation commerciale et de la gestion de pratiques oncologiques pour la documentation de la conformité aux mesures de qualité, l'application des meilleures pratiques et la documentation de l'amélioration; services d'amélioration de la qualité, à savoir, services d'évaluation commerciale et de la gestion pour des tiers; services d'informations, de conseils et d'assistance dans tous les domaines précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services de contrôle, d'évaluation et d'assurance de la qualité; Services de contrôle, d'évaluation et d'assurance de la qualité de pratiques oncologiques et de traitements contre le cancer; services d'informations, de conseils et d'assistance dans tous les domaines précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Dienstleistungen zur Qualitätsverbesserung, nämlich Geschäfts- und Managementbewertung für onkologische Verfahren zur Dokumentation der Übereinstimmung mit Qualitätsmaßstäben, zur Durchsetzung von anerkannten fachtechnischen Regeln und zur Dokumentation von Verbesserungen; Dienstleistungen zur Qualitätsverbesserung, nämlich Geschäfts- und Managementbewertung für Dritte; Information und Beratung in Bezug auf alle vorstehend genannten Dienstleistungen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Qualitätssicherung, Qualitätskontrolle und Qualitätsbewertung; Qualitätssicherung, Qualitätskontrolle und Qualitätsbewertung im Bereich onkologische Verfahren und Krebsbehandlung; Information und Beratung in Bezug auf alle vorstehend genannten Dienstleistungen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hu",
+      "description": "Minoségjavító szolgáltatások, azaz üzleti és ügyviteli értékelési szolgáltatások az onkológiai gyakorlatban azzal a céllal, hogy dokumentálják a minoségi intézkedésekkel, legjobb gyakorlattal való egyezoséget, valamint a fejlodést; minoségjavító szolgáltatások, azaz üzleti és ügyviteli értékelési szolgáltatások mások számára; tájékoztatás, tanácsadás és konzultáció az összes fent említett szolgáltatással kapcsolatban.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Minoségbiztosítási, minoségellenorzési és minoségértékelési szolgáltatások; minoségbiztosítás, minoségellenorzés és minoségértékelés az onkológiai gyakorlat és rákkezelés területén; a fent említett összes szolgáltatásokhoz kapcsolódó tájékoztatás, tanácsadás és konzultáció.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "it",
+      "description": "Servizi di miglioramento della qualità, ovvero valutazione aziendale e gestionale per pratiche di oncologia allo scopo di documentarne la concordanza con misure di qualità, implementazione di migliori prassi e miglioramento della documentazione; servizi di miglioramento della qualità, ovvero valutazione aziedale e gestionale per conto terzi; informazioni e consulenza riguardanti tutti i suddetti servizi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Controllo di qualità, valutazione di qualità e garanzia di qualità; garanzia di qualità, controllo qualità e valutazione della qualità in materia di pratiche oncologiche e cura del cancro; informazioni e consulenza relative a tutti i suddetti servizi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lt",
+      "description": "Kokybes gerinimo paslaugos, butent verslo ir vadybos vertinimo paslaugos onkologines praktikos srityje, naudojamos dokumentacijos atitikimo kokybes reikalavimams, geriausios praktikos idiegimo ir dokumentu tobulinimo reikmems; kokybes gerinimo paslaugos, butent verslo ir vadybos vertinimo paslaugos kitiems; informacijos, patarimu ir konsultaciju, susijusiu su visomis anksciau isvardytomis paslaugomis, teikimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Kokybes uztikrinimo, kokybes kontroles ir kokybes ivertinimo paslaugu teikimas; kokybes uztikrinimo, kokybes kontroles ir kokybes ivertinimo paslaugos, teikiamos onkologines praktikos ir vezio gydymo srityje; informacijos, patarimu ir konsultaciju paslaugu teikimas visu anksciau paminetu paslaugu klausimais.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lv",
+      "description": "Kvalitates uzlabosanas pakalpojumi, proti, darijumi un vadibas novertesanas pakalpojumi onkologijas praksem, lai dokumentetu saskanu ar kvalitates merijumiem, labakas prakses istenosanai un dokumentesanas pilnveidosanai; kvalitates uzlabosanas pakalpojumi, proti, uznemejdarbibas un vadibas novertesanas pakalpojumi citiem; informacijas, padomdeveju un konsultaciju pakalpojumu sniegsana, kas saistiti ar visu ieprieksmineto.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Kvalitates kontroles, kvalitates kontroles un kvalitates novertesanas pakalpojumu nodrosinasana; kvalitates garantijas, kvalitates kontrole un kvalitates novertesanas nodrosinasana onkologijas prakses un veza arstesanas jomas; informacijas nodrosinasana, padomdosana un konsultativie pakalpojumi saistiba ar ieprieksminetajiem pakalpojumiem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "mt",
+      "description": "Servizzi ghat-titjib tal-kwalità, jigifieri, servizzi ta' stima ta' negozju u tal-gestjoni ghall-prattiki onkologici ghal skopijiet ta' dokumentazzjoni tal-konkordanza ma' mizuri ta' kwalità, l-implimentazzjoni ta' l-aqwa prattiki, u dokumentazzjoni tat-titjib; servizzi ghat-titjib tal-kwalità, jigifieri servizzi ta' stima ta' negozju u tal-gestjoni ghal terzi persuni; il-provvista ta' informazzjoni, pariri u konsultazzjoni relatati mas-servizzi kollha msemmija qabel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Il-provvista ta' assigurazzjoni tal-kwalità, il-kontroll tal-kwalità u l-istima tal-kwalità; il-provvista ta' l-assigurazzjoni tal-kwalità, il-kontroll tal-kwalità u l-istima tal-kwalità fil-qasam ta' prattiki onkologici u t-trattament tal-kancer; il-provvista ta' servizzi ta' informazzjoni, ta' pariri u ta' konsulenza relatati mas-servizzi kollha msemmija qabel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pl",
+      "description": "Uslugi podnoszenia jakosci, a mianowicie uslugi pomocy w dzialalnosci gospodarczej i zarzadzaniu dla praktyk onkologicznych dla celów dokumentowania zgodnosci z miarami jakosci, wdrazania najlepszych praktyk i dokumentowania postepów; uslugi podnoszenia jakosci, a mianowicie uslugi oceny dzialalnosci gospodarczej i zarzadzania dla osób trzecich; zapewnianie informacji, doradztwa i konsultacji w odniesieniu do wszystkich wyzej wymienionych uslug.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Uslugi zapewniania jakosci, kontroli jakosci i oceny jakosci; zapewnianie jakosci, kontrola jakosci i ocena jakosci w dziedzinie praktyk onkologicznych i leczenia nowotworów; swiadczenie uslug informacyjnych, doradczych i konsultacyjnych w odniesieniu do wszystkich wyzej wymienionych uslug.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pt",
+      "description": "Serviços de melhoria da qualidade, nomeadamente serviços de avaliação de empresas e de gestão em matéria de práticas oncológicas, tendo em vista a documentação da conformidade com as medidas de qualidade, a implementação de melhores práticas e a documentação dos progressos alcançados; serviços de melhoria da qualidade, nomeadamente serviços de avaliação de empresas e de gestão para terceiros; prestação de informações, assessoria e consultadoria relacionadas com todos os serviços atrás referidos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Prestação de serviços de garantia de qualidade, controlo de qualidade e avaliação de qualidade; prestação de serviços de garantia de qualidade, controlo de qualidade e avaliação de qualidade no domínio das práticas oncológicas e do tratamento do cancro; prestação de serviços de informações, assessoria e consultadoria relacionados com todos os serviços atrás referidos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sk",
+      "description": "Sluzby v oblasti zlepsovania kvality, najmä sluzby hodnotenia onkologických postupov za úcelom zistovania súladu s kvalitatívnymi standardmi, implementovania najlepsích postupov a zdokumentovania zlepsení; Sluzby v oblasti zlepsovania kvality, najmä sluzby hodnotenia pre klientov; poskytovanie informácií, poradenstva a konzultácie súvisiace s vyssie uvedenými sluzbami.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Poskytovanie kontroly kvality, testovania kvality a zaistenia kvality; poskytovanie sluzieb kontroly kvality, testovania kvality a zaistenia kvality v oblasti onkologických postupov a liecenia rakoviny; poskytovanie informácií, poradenstva a konzultácie súvisiacich s vyssie uvedenými sluzbami.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sl",
+      "description": "Storitve izboljsanja kakovosti, in sicer storitve ocene poslovanja in upravljanja za onkolosko prakso za namene dokumentiranja skladnosti z ukrepi za kakovost, izvajanja najboljsih praks in dokumentiranja izboljsanja; storitve izboljsanja kakovosti, in sicer storitve ocene poslovanja in upravljanja za druge; nudenje informacij, strokovnega svetovanja in posvetovanja v zvezi z vsemi nastetimi storitvami.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Nudenje storitev zagotavljanja kakovosti, preverjanja kakovosti in ocene kakovosti; nudenje storitev zagotavljanja kakovosti, preverjanja kakovosti in ocene kakovosti na podrocju onkoloskih praks in zdravljanja raka; nudenje informacij, strokovnega svetovanja in posvetovanja v zvezi z nastetimi storitvami.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Servicios de mejora de la calidad, en concreto, servicios de valoración de negocios y gestión para prácticas oncológicas con fines de documentación de concordancias con medidas de calidad, aplicación de buenas prácticas y mejora de la documentación; servicios de mejora de la calidad, en concreto servicios de valoración de negocios y gestión para terceros; facilitación de información, asesoramiento y consultoría en relación con los servicios mencionados.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Facilitación de servicios de aseguramiento de la calidad, control de calidad y valoración de calidad; facilitación de aseguramiento de la calidad, control de calidad y valoración de calidad en materia de prácticas oncológicas y tratamiento del cáncer; prestación de servicios de información, consultoría y asesoramiento en relación con todos los servicios mencionados.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sw",
+      "description": "Kvalitetshöjningstjänster, nämligen tjänster avseende bedömning av affärsverksamhet och ledning av onkologipraktiker för att dokumentera överensstämmelse med kvalitetsmått, införa bästa metoder och dokumentera förbättring; kvalitetshöjningstjänster, nämligen bedömning av affärsverksamhet och ledning för andra; information, rådgivning och konsultation avseende alla nämnda tjänster.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Kvalitetssäkring, kvalitetskontroll och kvalitetsbedömning; kvalitetssäkring, kvalitetskontroll och kvalitetsbedömning inom området för onkologiska metoder och cancerbehandling; information, rådgivning och konsultation avseende alla nämnda tjänster.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "American Society of Clinical Oncology",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "CMS CAMERON MCKENNA NABARRO OLSWANG POSNIAK I BEJM SP.K.",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20050720",
+      "priorityNumber": "78674180"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1900 Duke Street, Suite 200,Alexandria,Virginia, 22314",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "American Society of Clinical Oncology"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Zlepsování kvality, jmenovite hodnocení podniku a vedení pro onkologické praxe pro úcely dokumentace shody s opatreními na kvalitu, zavádení osvedcených postupu a dokumentování zlepsení; zlepsování kvality, jmenovite hodnocení podniku a vedení pro druhé; poskytování informací, poradenství a konzultací v souvislosti se vsemi výse uvedenými sluzbami."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Poskytování zajistení kvality, kontroly kvality a hodnocení kvality; poskytování zajistení kvality, kontroly kvality a hodnocení kvality v oboru onkologické praxe a lécby rakoviny; poskytování informací, poradenství a konzultací v souvislosti se vsemi výse uvedenými sluzbami."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Kvalitetsforbedring, nemlig vurdering i forbindelse med forretningsledelse vedrørende praksis inden for onkologi til dokumentationsformål i overensstemmelse med kvalitetsmål, implementering af bedste praksis og forbedring af dokumentation; kvalitetsforbedring, nemlig forretningsmæssig vurdering og ledelsesvurdering møntet på andre; information, rådgivning og konsulentbistand vedrørende alle ovennævnte tjenesteydelser."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Kvalitetssikring, kvalitetsprøver og kvalitetsvurdering; kvalitetssikring, kvalitetskontrol og kvalitetsvurdering i forbindelse med praksis onkologiske metoder og kræftbehandling; information, rådgivning og konsulentbistand i forbindelse med alle førnævnte tjenesteydelser."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Kwaliteitsverbetering, te weten diensten met betrekking tot beoordeling van bedrijven en beheer voor oncologiepraktijken voor het overeenstemmen van documentatie met kwaliteitsmaatstaven, het implementeren van beste handelswijze en het verbeteren van de documentatie; kwaliteitsverbetering, te weten diensten met betrekking tot beoordeling van bedrijven en beheer voor derden; informatie, advisering en raadgeving met betrekking tot alle voornoemde diensten."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Kwaliteitsgarantie, kwaliteitscontrole en kwaliteitsbeoordeling; verschaffing van kwaliteitsgarantie, kwaliteitscontrole en kwaliteitsbeoordeling op het gebied van oncologiepraktijken en de behandeling van kanker; verschaffing van informatie, advisering en raadgeving met betrekking tot alle voornoemde diensten."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Quality improvement services, namely, business and management assessment services for oncology practices for purposes of documenting concordance with quality measures, implementing best practices, and documenting improvement; quality improvement services, namely business and management assessment services for others; provision of information, advice and consultancy in relation to all of the aforesaid services."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing quality assurance, quality control and quality assessment services; providing quality assurance, quality control and quality assessment in the field of oncology practices and cancer treatment; provision of information, advice and consultancy services in relation to all the aforesaid services."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Kvaliteedi tõstmise teenused, nimelt äritegevuse ja juhtimise hindamisteenused onkoloogilise praktika osas, dokumenteerimaks kooskõla kvaliteediabinõude, parimate tavade juurutamise ja dokumenteerimise parendamisega; kvaliteedi tõstmise teenused, nimelt äritegevuse ja juhtimise hindamisteenused kolmandatele isikutele; info, nõustamise ja konsultatsiooni pakkumine seoses kõigi eelnimetatud teenustega."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Kvaliteedi tagamise, kvaliteedi kontrolli ja kvaliteedi hindamise teenuste pakkumine; kvaliteedi tagamise, kvaliteedi kontrolli ja kvaliteedi hindamise pakkumine onkoloogilise praktika ning vähiravi valdkonnas; teabe-, nõustamis- ja konsultatsiooniteenuste pakkumine seoses kõigi eelnimetatud teenustega."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Laadunparantamispalvelut, nimittäin onkologiaan liittyvät liiketoiminnan ja liikkeenjohdon arviointipalvelut, joiden avulla on tarkoitus dokumentoida yhtäpitävyys laadun mittojen kanssa, toteuttaa parhaita käytäntöjä ja dokumentoida parantavat toimet; laadunparantamispalvelut, nimittäin liiketoiminnan ja liikkeenjohdon arviointipalvelut muiden lukuun; kaikkiin edellä mainittuihin palveluihin liittyvän tiedotuksen, neuvonnan ja konsultoinnin tarjoaminen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Laadunvarmistus-, laadunvalvonta-, laadunarviointipalveluiden tarjoaminen; laadunvarmistus-, laadunvalvonta-, laadunarviointipalveluiden tarjoaminen onkologian ja syövän hoidon alalla; kaikkiin edellä mainittuihin palveluihin liittyvien tiedotus-, konsultointi- ja neuvontapalveluiden tarjoaminen."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services d'amélioration de la qualité, à savoir, services d'évaluation commerciale et de la gestion de pratiques oncologiques pour la documentation de la conformité aux mesures de qualité, l'application des meilleures pratiques et la documentation de l'amélioration; services d'amélioration de la qualité, à savoir, services d'évaluation commerciale et de la gestion pour des tiers; services d'informations, de conseils et d'assistance dans tous les domaines précités."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de contrôle, d'évaluation et d'assurance de la qualité; Services de contrôle, d'évaluation et d'assurance de la qualité de pratiques oncologiques et de traitements contre le cancer; services d'informations, de conseils et d'assistance dans tous les domaines précités."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Dienstleistungen zur Qualitätsverbesserung, nämlich Geschäfts- und Managementbewertung für onkologische Verfahren zur Dokumentation der Übereinstimmung mit Qualitätsmaßstäben, zur Durchsetzung von anerkannten fachtechnischen Regeln und zur Dokumentation von Verbesserungen; Dienstleistungen zur Qualitätsverbesserung, nämlich Geschäfts- und Managementbewertung für Dritte; Information und Beratung in Bezug auf alle vorstehend genannten Dienstleistungen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Qualitätssicherung, Qualitätskontrolle und Qualitätsbewertung; Qualitätssicherung, Qualitätskontrolle und Qualitätsbewertung im Bereich onkologische Verfahren und Krebsbehandlung; Information und Beratung in Bezug auf alle vorstehend genannten Dienstleistungen."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Minoségjavító szolgáltatások, azaz üzleti és ügyviteli értékelési szolgáltatások az onkológiai gyakorlatban azzal a céllal, hogy dokumentálják a minoségi intézkedésekkel, legjobb gyakorlattal való egyezoséget, valamint a fejlodést; minoségjavító szolgáltatások, azaz üzleti és ügyviteli értékelési szolgáltatások mások számára; tájékoztatás, tanácsadás és konzultáció az összes fent említett szolgáltatással kapcsolatban."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Minoségbiztosítási, minoségellenorzési és minoségértékelési szolgáltatások; minoségbiztosítás, minoségellenorzés és minoségértékelés az onkológiai gyakorlat és rákkezelés területén; a fent említett összes szolgáltatásokhoz kapcsolódó tájékoztatás, tanácsadás és konzultáció."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di miglioramento della qualità, ovvero valutazione aziendale e gestionale per pratiche di oncologia allo scopo di documentarne la concordanza con misure di qualità, implementazione di migliori prassi e miglioramento della documentazione; servizi di miglioramento della qualità, ovvero valutazione aziedale e gestionale per conto terzi; informazioni e consulenza riguardanti tutti i suddetti servizi."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Controllo di qualità, valutazione di qualità e garanzia di qualità; garanzia di qualità, controllo qualità e valutazione della qualità in materia di pratiche oncologiche e cura del cancro; informazioni e consulenza relative a tutti i suddetti servizi."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Kokybes gerinimo paslaugos, butent verslo ir vadybos vertinimo paslaugos onkologines praktikos srityje, naudojamos dokumentacijos atitikimo kokybes reikalavimams, geriausios praktikos idiegimo ir dokumentu tobulinimo reikmems; kokybes gerinimo paslaugos, butent verslo ir vadybos vertinimo paslaugos kitiems; informacijos, patarimu ir konsultaciju, susijusiu su visomis anksciau isvardytomis paslaugomis, teikimas."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Kokybes uztikrinimo, kokybes kontroles ir kokybes ivertinimo paslaugu teikimas; kokybes uztikrinimo, kokybes kontroles ir kokybes ivertinimo paslaugos, teikiamos onkologines praktikos ir vezio gydymo srityje; informacijos, patarimu ir konsultaciju paslaugu teikimas visu anksciau paminetu paslaugu klausimais."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Kvalitates uzlabosanas pakalpojumi, proti, darijumi un vadibas novertesanas pakalpojumi onkologijas praksem, lai dokumentetu saskanu ar kvalitates merijumiem, labakas prakses istenosanai un dokumentesanas pilnveidosanai; kvalitates uzlabosanas pakalpojumi, proti, uznemejdarbibas un vadibas novertesanas pakalpojumi citiem; informacijas, padomdeveju un konsultaciju pakalpojumu sniegsana, kas saistiti ar visu ieprieksmineto."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Kvalitates kontroles, kvalitates kontroles un kvalitates novertesanas pakalpojumu nodrosinasana; kvalitates garantijas, kvalitates kontrole un kvalitates novertesanas nodrosinasana onkologijas prakses un veza arstesanas jomas; informacijas nodrosinasana, padomdosana un konsultativie pakalpojumi saistiba ar ieprieksminetajiem pakalpojumiem."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ghat-titjib tal-kwalità, jigifieri, servizzi ta' stima ta' negozju u tal-gestjoni ghall-prattiki onkologici ghal skopijiet ta' dokumentazzjoni tal-konkordanza ma' mizuri ta' kwalità, l-implimentazzjoni ta' l-aqwa prattiki, u dokumentazzjoni tat-titjib; servizzi ghat-titjib tal-kwalità, jigifieri servizzi ta' stima ta' negozju u tal-gestjoni ghal terzi persuni; il-provvista ta' informazzjoni, pariri u konsultazzjoni relatati mas-servizzi kollha msemmija qabel."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Il-provvista ta' assigurazzjoni tal-kwalità, il-kontroll tal-kwalità u l-istima tal-kwalità; il-provvista ta' l-assigurazzjoni tal-kwalità, il-kontroll tal-kwalità u l-istima tal-kwalità fil-qasam ta' prattiki onkologici u t-trattament tal-kancer; il-provvista ta' servizzi ta' informazzjoni, ta' pariri u ta' konsulenza relatati mas-servizzi kollha msemmija qabel."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi podnoszenia jakosci, a mianowicie uslugi pomocy w dzialalnosci gospodarczej i zarzadzaniu dla praktyk onkologicznych dla celów dokumentowania zgodnosci z miarami jakosci, wdrazania najlepszych praktyk i dokumentowania postepów; uslugi podnoszenia jakosci, a mianowicie uslugi oceny dzialalnosci gospodarczej i zarzadzania dla osób trzecich; zapewnianie informacji, doradztwa i konsultacji w odniesieniu do wszystkich wyzej wymienionych uslug."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi zapewniania jakosci, kontroli jakosci i oceny jakosci; zapewnianie jakosci, kontrola jakosci i ocena jakosci w dziedzinie praktyk onkologicznych i leczenia nowotworów; swiadczenie uslug informacyjnych, doradczych i konsultacyjnych w odniesieniu do wszystkich wyzej wymienionych uslug."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de melhoria da qualidade, nomeadamente serviços de avaliação de empresas e de gestão em matéria de práticas oncológicas, tendo em vista a documentação da conformidade com as medidas de qualidade, a implementação de melhores práticas e a documentação dos progressos alcançados; serviços de melhoria da qualidade, nomeadamente serviços de avaliação de empresas e de gestão para terceiros; prestação de informações, assessoria e consultadoria relacionadas com todos os serviços atrás referidos."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Prestação de serviços de garantia de qualidade, controlo de qualidade e avaliação de qualidade; prestação de serviços de garantia de qualidade, controlo de qualidade e avaliação de qualidade no domínio das práticas oncológicas e do tratamento do cancro; prestação de serviços de informações, assessoria e consultadoria relacionados com todos os serviços atrás referidos."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Sluzby v oblasti zlepsovania kvality, najmä sluzby hodnotenia onkologických postupov za úcelom zistovania súladu s kvalitatívnymi standardmi, implementovania najlepsích postupov a zdokumentovania zlepsení; Sluzby v oblasti zlepsovania kvality, najmä sluzby hodnotenia pre klientov; poskytovanie informácií, poradenstva a konzultácie súvisiace s vyssie uvedenými sluzbami."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Poskytovanie kontroly kvality, testovania kvality a zaistenia kvality; poskytovanie sluzieb kontroly kvality, testovania kvality a zaistenia kvality v oblasti onkologických postupov a liecenia rakoviny; poskytovanie informácií, poradenstva a konzultácie súvisiacich s vyssie uvedenými sluzbami."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Storitve izboljsanja kakovosti, in sicer storitve ocene poslovanja in upravljanja za onkolosko prakso za namene dokumentiranja skladnosti z ukrepi za kakovost, izvajanja najboljsih praks in dokumentiranja izboljsanja; storitve izboljsanja kakovosti, in sicer storitve ocene poslovanja in upravljanja za druge; nudenje informacij, strokovnega svetovanja in posvetovanja v zvezi z vsemi nastetimi storitvami."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Nudenje storitev zagotavljanja kakovosti, preverjanja kakovosti in ocene kakovosti; nudenje storitev zagotavljanja kakovosti, preverjanja kakovosti in ocene kakovosti na podrocju onkoloskih praks in zdravljanja raka; nudenje informacij, strokovnega svetovanja in posvetovanja v zvezi z nastetimi storitvami."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de mejora de la calidad, en concreto, servicios de valoración de negocios y gestión para prácticas oncológicas con fines de documentación de concordancias con medidas de calidad, aplicación de buenas prácticas y mejora de la documentación; servicios de mejora de la calidad, en concreto servicios de valoración de negocios y gestión para terceros; facilitación de información, asesoramiento y consultoría en relación con los servicios mencionados."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Facilitación de servicios de aseguramiento de la calidad, control de calidad y valoración de calidad; facilitación de aseguramiento de la calidad, control de calidad y valoración de calidad en materia de prácticas oncológicas y tratamiento del cáncer; prestación de servicios de información, consultoría y asesoramiento en relación con todos los servicios mencionados."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Kvalitetshöjningstjänster, nämligen tjänster avseende bedömning av affärsverksamhet och ledning av onkologipraktiker för att dokumentera överensstämmelse med kvalitetsmått, införa bästa metoder och dokumentera förbättring; kvalitetshöjningstjänster, nämligen bedömning av affärsverksamhet och ledning för andra; information, rådgivning och konsultation avseende alla nämnda tjänster."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Kvalitetssäkring, kvalitetskontroll och kvalitetsbedömning; kvalitetssäkring, kvalitetskontroll och kvalitetsbedömning inom området för onkologiska metoder och cancerbehandling; information, rådgivning och konsultation avseende alla nämnda tjänster."
+        }
+      ]
+    },
+    "id": "510287f6-5976-4849-b4e1-3878c7b9d26d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20050720",
+        "priorityNumber": "78674180"
+      }
+    ],
+    "publications": [
+      {
+        "publicationPage": "01841",
+        "publicationVolume": "38"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Varso Tower Chmielna 69,Warsaw, 00-801",
+        "representativeAddressCountryCode": "PL",
+        "representativeAddressCountryName": "Poland",
+        "representativeName": "CMS CAMERON MCKENNA NABARRO OLSWANG POSNIAK I BEJM SP.K."
+      }
+    ],
+    "secondLanguageCode": "fr",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20060120",
+        "applicationNumber": "4849841"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360120",
+      "lastPublicationDate": "20060918",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20070209",
+        "registrationNumber": "4849841"
+      }
+    },
+    "version": "20260511124739",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOPI"
+    }
+  },
+  "_uri": "/mark/em/510287f6-5976-4849-b4e1-3878c7b9d26d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:04.037Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

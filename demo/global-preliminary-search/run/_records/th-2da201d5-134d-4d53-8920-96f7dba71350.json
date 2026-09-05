@@ -1,0 +1,221 @@
+{
+  "uri": "/mark/th/2da201d5-134d-4d53-8920-96f7dba71350",
+  "provider": "clarivate",
+  "office": "th",
+  "guid": "2da201d5-134d-4d53-8920-96f7dba71350",
+  "applicationNumber": "18523",
+  "registrationNumber": "12127",
+  "applicationDate": "1952-05-29",
+  "registrationDate": "1952-05-29",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "LAVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "th",
+      "description": "ทั้งจำพวก.",
+      "translation_language": "en",
+      "translation": "Both species."
+    }
+  ],
+  "owner": "JUNKER & GEBHARDT A.G.",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "JUNKER & GEBHARDT A.G.",
+        "applicantNativeAddress": "อยู่เลขที่ 195 ไวแชนเกอร์สเตร โคโลญน์ อีเรนเฟลด์ ประเทศเยอรมันนี",
+        "applicantNativeName": "ยุงเกอร์ แอนด์ เกบฮาดท์ เอ. จี."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Both species.",
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "th",
+          "intGoodsServicesDescription": "ทั้งจำพวก."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "48"
+        }
+      ]
+    },
+    "id": "2da201d5-134d-4d53-8920-96f7dba71350",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20241126",
+    "registrationOfficeCode": "TH",
+    "registrationOfficeName": "Thailand",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "แห่งสำนักงานติลลิกีและกิบบินส์ เลขที่ 297 ถนนสุริวงศ์ จังหวัดพระนคร",
+        "representativeNativeName": "นายโรแลนด์ บี. เปเรร่า"
+      },
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "แห่งสำนักงานติลลิกีและกิบบินส์ เลขที่ 297 ถนนสุริวงศ์ จังหวัดพระนคร",
+        "representativeNativeName": "นายอัลเบิร์ต ไลแมน"
+      },
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "แห่งสำนักงานติลลิกีและกิบบินส์ เลขที่ 297 ถนนสุริวงศ์ จังหวัดพระนคร",
+        "representativeNativeName": "ม. จ. วัฒยากร เกษมศรี"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19520529",
+        "applicationNumber": "18523"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "19520529",
+        "registrationNumber": "12127"
+      }
+    },
+    "version": "20241126163504",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LAVENOR"
+    }
+  },
+  "_uri": "/mark/th/2da201d5-134d-4d53-8920-96f7dba71350",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

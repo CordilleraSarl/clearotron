@@ -1,0 +1,103 @@
+{
+  "uri": "/mark/eu/018449633",
+  "provider": "euipo",
+  "office": "EU",
+  "id": "018449633",
+  "applicationNumber": "018449633",
+  "registrationNumber": "018449633",
+  "applicationDate": "2021-04-09",
+  "registrationDate": "2021-08-03",
+  "expiryDate": "2031-04-09",
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "statusDate": "2021-08-04",
+  "markText": "LORI",
+  "markFeature": "FIGURATIVE",
+  "markKind": "INDIVIDUAL",
+  "markBasis": "EU_TRADEMARK",
+  "niceClasses": [],
+  "owner": "Avarno GmbH",
+  "ownerCountry": null,
+  "representative": "Geitz Patentanwälte PartG mbB",
+  "goodsAndServices": [
+    {
+      "classNumber": 9,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Computer software to automate data warehousing",
+            " Software for product development",
+            " Industrial automation software",
+            " Computer software for use in migrating between different computer network operating systems",
+            " Cloud servers"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 37,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Interference suppression services for electrical apparatus",
+            " Interference suppression in electrical apparatus"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 38,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Wireless voice mail services",
+            " Voice over Internet Protocol [VoIP] communication services",
+            " Telephone and mobile telephone services",
+            " Computer communication and Internet access"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 42,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Advisory services in the field of product development and quality improvement of software",
+            " Computer software consultancy",
+            " Computer software consultancy",
+            " Software creation",
+            " Software development",
+            " Custom design of software packages",
+            " Development and maintenance of computer software",
+            " Consultancy relating to software for communication systems",
+            " Maintenance of software for communication systems",
+            " Providing online non-downloadable software for use in communication",
+            " Advisory and consultancy services relating to computer hardware",
+            " Consultancy and advice on computer software and hardware",
+            " Product development",
+            " Hosting services, software as a service, and rental of software",
+            " IT security, protection and restoration"
+          ]
+        }
+      ]
+    }
+  ],
+  "oppositions": [],
+  "cancellations": [],
+  "appeals": [],
+  "decisions": [],
+  "_provenance": {
+    "proceedings": "detail record — an empty list means none are recorded on the register"
+  },
+  "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/018449633",
+  "_uri": "/mark/eu/018449633",
+  "_receipt": {
+    "fetched_at": "2026-08-11T07:53:30.503Z",
+    "context": "prelim-tmp0001-venqori-sample-capture-screen-gate-refetch"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "uri": "/mark/kr/9f67cfd4-d3a8-4369-a04e-b1400f61bc19",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "9f67cfd4-d3a8-4369-a04e-b1400f61bc19",
+  "applicationNumber": "41-2013-0004273",
+  "registrationNumber": "4102785270000",
+  "applicationDate": "2013-02-05",
+  "registrationDate": "2014-01-22",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "EORi",
+  "markTransliteration": "EORI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "공연기획업,공원경영업,놀이공원경영업,댄스지도업,동물공연업,동물원경영업,라이브공연업,레크레이션시설제공업,마술공연업,뮤지컬공연업,쇼제작업,스포츠설비관리업,스포츠시설의 제공 및 운영업,어린이놀이터경영업,오락시설의 제공 및 운영업,운동장 임대업,유원지경영업,인형극공연업,체육관 경영업,체조지도업",
+      "translation_language": "en",
+      "translation": "Performance management, sports management, sports facility management, park management, park management business, amusement park management business, dance instruction business, animal performance business, zoo management business, live performance business, recreational facility business, magic performance business, musical performance business, The provision and operation of children's playgrounds, the provision and operation of entertainment facilities, the rental of playgrounds, the management of amusement parks, the performance of puppet shows, the management of gymnasiums,"
+    }
+  ],
+  "owner": "NHC MEDIA Co., Ltd",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "김종수 (KIM Jong soo)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 금천구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "NHC MEDIA Co., Ltd",
+        "applicantNativeName": "(주)엔에이치씨미디어"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Performance management, sports management, sports facility management, park management, park management business, amusement park management business, dance instruction business, animal performance business, zoo management business, live performance business, recreational facility business, magic performance business, musical performance business, The provision and operation of children's playgrounds, the provision and operation of entertainment facilities, the rental of playgrounds, the management of amusement parks, the performance of puppet shows, the management of gymnasiums,",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "공연기획업,공원경영업,놀이공원경영업,댄스지도업,동물공연업,동물원경영업,라이브공연업,레크레이션시설제공업,마술공연업,뮤지컬공연업,쇼제작업,스포츠설비관리업,스포츠시설의 제공 및 운영업,어린이놀이터경영업,오락시설의 제공 및 운영업,운동장 임대업,유원지경영업,인형극공연업,체육관 경영업,체조지도업"
+        }
+      ]
+    },
+    "id": "9f67cfd4-d3a8-4369-a04e-b1400f61bc19",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "03.01.04",
+      "03.01.16",
+      "05.03.13"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "# Saimdang-ro, Seocho-gu, Seoul, Korea(DANA Intellectual Property Seocho Office)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김종수 (KIM Jong soo)"
+      },
+      {
+        "representativeAddress": "# Saimdang-ro, Seocho-gu, Seoul, Korea(DANA Intellectual Property Seocho Office)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "정창영 (JUNG CHANG YOUNG)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20130205",
+        "applicationNumber": "41-2013-0004273"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20140122",
+        "registrationNumber": "4102785270000"
+      }
+    },
+    "version": "20250625172814",
+    "wordMarkSpecification": {
+      "markTransliteration": "EORI",
+      "markVerbalElementText": "EORi"
+    }
+  },
+  "_uri": "/mark/kr/9f67cfd4-d3a8-4369-a04e-b1400f61bc19",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:13.069Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

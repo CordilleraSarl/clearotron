@@ -1,0 +1,264 @@
+{
+  "uri": "/mark/us/46b849d3-4e30-4be7-8b29-ec20a5db03df",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "46b849d3-4e30-4be7-8b29-ec20a5db03df",
+  "applicationNumber": "77468524",
+  "registrationNumber": "3549959",
+  "applicationDate": "2008-05-07",
+  "registrationDate": "2008-12-23",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2008-10-07"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2015-07-24",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "NORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "STYLIZED LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 steam irons; flat irons; electric irons",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "KABLE ENTERPRISE CO., LTD.",
+  "ownerNative": null,
+  "ownerCountry": "TW",
+  "representative": "Joe M. Muncy",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "7F, No. 166-1, Cheng-Kung Rd., Sec.3, Nei-Hu, Taipei, TAIW",
+        "applicantAddressCity": "Nei-Hu, Taipei",
+        "applicantAddressCountryCode": "TW",
+        "applicantAddressCountryName": "Taiwan",
+        "applicantAddressStreet": "7F, No. 166-1, Cheng-Kung Rd., Sec.3",
+        "applicantJurisdictionOfIncorporation": "TAIWAN",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "KABLE ENTERPRISE CO., LTD."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "30.01.01",
+      "30.01.09",
+      "30.01.14",
+      "30.01.15",
+      "30.01.18",
+      "30.05.03",
+      "30.05.04"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 steam irons; flat irons; electric irons"
+        }
+      ]
+    },
+    "id": "46b849d3-4e30-4be7-8b29-ec20a5db03df",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20150724",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20081223",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20081007",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20080917",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20080904",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20080904",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20080825",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20080821",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20080512",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "STYLIZED LETTERS",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Color is not claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of the stylized word \"NORI\".",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "7F, No. 166-1, Cheng-Kung Rd., Sec.3, Nei-Hu, Taipei, TAIW",
+        "city": "Nei-Hu, Taipei",
+        "countryCode": "TW",
+        "countryName": "Taiwan",
+        "jurisdictionOfIncorporation": "TAIWAN",
+        "legalEntity": "CORPORATION",
+        "name": "KABLE ENTERPRISE CO., LTD.",
+        "street": "7F, No. 166-1, Cheng-Kung Rd., Sec.3"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "7F, No. 166-1, Cheng-Kung Rd., Sec.3, Nei-Hu, Taipei, TAIW",
+        "city": "Nei-Hu, Taipei",
+        "countryCode": "TW",
+        "countryName": "Taiwan",
+        "jurisdictionOfIncorporation": "TAIWAN",
+        "legalEntity": "CORPORATION",
+        "name": "KABLE ENTERPRISE CO., LTD.",
+        "street": "7F, No. 166-1, Cheng-Kung Rd., Sec.3"
+      },
+      {
+        "address": "7F, No. 166-1, Cheng-Kung Rd., Sec.3, Nei-Hu, Taipei, TAIW",
+        "city": "Nei-Hu, Taipei",
+        "countryCode": "TW",
+        "countryName": "Taiwan",
+        "jurisdictionOfIncorporation": "TAIWAN",
+        "legalEntity": "CORPORATION",
+        "name": "KABLE ENTERPRISE CO., LTD.",
+        "street": "7F, No. 166-1, Cheng-Kung Rd., Sec.3"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "7F, No. 166-1, Cheng-Kung Rd., Sec.3, Nei-Hu, Taipei, TAIW",
+        "city": "Nei-Hu, Taipei",
+        "countryCode": "TW",
+        "countryName": "Taiwan",
+        "jurisdictionOfIncorporation": "TAIWAN",
+        "legalEntity": "CORPORATION",
+        "name": "KABLE ENTERPRISE CO., LTD.",
+        "street": "7F, No. 166-1, Cheng-Kung Rd., Sec.3"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "FAIRFAX, VA 22038-1364, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "FAIRFAX, VA 22038-1364",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "JOE M. MUNCY MUNCY, GEISSLER, OLDS & LOWE, PLLC, PO BOX 1364"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "FAIRFAX, VA 22038-1364, UNITED STATES",
+        "representativeAddressLines": [
+          "FAIRFAX, VA 22038-1364",
+          "UNITED STATES"
+        ],
+        "representativeName": "Joe M. Muncy"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20080507",
+        "applicationNumber": "77468524"
+      },
+      "cancellationDate": "20150724",
+      "cancellationPublicationDate": "20150901",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20070801"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20080501"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20150724",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20081007"
+      ],
+      "registration": {
+        "registrationDate": "20081223",
+        "registrationNumber": "3549959"
+      }
+    },
+    "version": "20260109055306",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NORI"
+    }
+  },
+  "_uri": "/mark/us/46b849d3-4e30-4be7-8b29-ec20a5db03df",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.691Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

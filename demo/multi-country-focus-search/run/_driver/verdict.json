@@ -1,0 +1,21 @@
+{
+  "ts": "2026-08-11T09:00:18.585Z",
+  "verdict": "CONDITIONAL",
+  "reasons": [
+    "Narrow the class-9 wording to downloadable water-quality monitoring software rather than filing for computer software at large."
+  ],
+  "kinds": {
+    "legalActions": true
+  },
+  "tier": "Manageable",
+  "badge": "l2",
+  "gaugeIndex": 1,
+  "maxComposite": 0,
+  "band": {
+    "label": "Manageable",
+    "rankFromTop": 4,
+    "scale": 4
+  },
+  "statement": "Manageable — conditional on: A live EU class-9 registration for QORI, the applied-for mark's second element, stands on the register searched.",
+  "stance": "conditional"
+}

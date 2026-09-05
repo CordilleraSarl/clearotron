@@ -1,0 +1,409 @@
+{
+  "uri": "/mark/jp/79e0d55d-c12a-45e4-827e-2d32b6b96ba3",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "79e0d55d-c12a-45e4-827e-2d32b6b96ba3",
+  "applicationNumber": "H11-021996",
+  "registrationNumber": "4394744",
+  "applicationDate": "1999-03-15",
+  "registrationDate": "2000-06-23",
+  "expiryDate": "2010-06-23",
+  "renewalDate": null,
+  "lastPublicationDate": "2000-07-25",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＸＯＲＩ",
+  "markTransliteration": "EKKUSUOOAARUAI EKUSOORI",
+  "markTranslation": "XORI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    25,
+    28,
+    29,
+    33,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "電気通信機械器具，映写フィルム，スライドフィルム，録画済ビデオディスク及びビデオテープ",
+      "translation_language": "en",
+      "translation": "Telecommunications machine tool, projection film, slide film, recorded video disk and video tape"
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": null,
+      "description": "印刷物，遊戯用カード",
+      "translation_language": "en",
+      "translation": "Print, game card"
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": null,
+      "description": "被服，履物",
+      "translation_language": "en",
+      "translation": "Obtained"
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": null,
+      "description": "遊戯用器具，さいころ，すごろく，ダイスカップ，ダイヤモンドゲーム，チェス用具，チェッカー用具，手品用具，ドミノ用具，マージャン用具，ビリヤード用具，おもちゃ，運動用具",
+      "translation_language": "en",
+      "translation": "Play equipment, Dice, Sugoroku, Dice cup, Diamond game, Chess tool, Checker tool, Magic equipment, Domino tool, Mah-jong tool, billiard equipment, toys, exercise equipment"
+    },
+    {
+      "classes": [
+        29
+      ],
+      "language": null,
+      "description": "食肉，食用魚介類（生きているものを除く。），肉製品，加工野菜及び加工果実，卵，乳製品，食用油脂",
+      "translation_language": "en",
+      "translation": "Meat, edible fish and shellfish (except living things), meat products, processed vegetables and processed fruits, eggs, dairy products, edible fats and oils"
+    },
+    {
+      "classes": [
+        33
+      ],
+      "language": null,
+      "description": "日本酒，洋酒，果実酒，中国酒，薬味酒",
+      "translation_language": "en",
+      "translation": "Japanese sake, liquor, fruit wine, Chinese sake, spirit liquor"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "映画・演芸・演劇又は音楽の演奏の興行の企画又は運営，映画の上映・制作又は配給，演芸の上演，演劇の演出又は上演，音楽の演奏，放送番組の制作，運動施設の提供，娯楽施設の提供，書籍の製作，雑誌の製作，教科書の製作，ニューズレターの製作（広告物を除く。）",
+      "translation_language": "en",
+      "translation": "Planning or management of entertainment facilities for movies, entertainment, plays or music performances, screening / production or distribution of movies, performances, performances or performances of theaters, performances of music, production of broadcast programs, provision of exercise facilities, entertainment facilities Provision of books, production of magazines, production of textbooks, production of newsletters (excluding advertisements)."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "宿泊施設の提供，宿泊施設の提供の契約の媒介又は取次ぎ，飲食物の提供",
+      "translation_language": "en",
+      "translation": "Provision of accommodation facilities, mediation or intermediation of contracts for providing accommodation facilities, provision of food and drink"
+    }
+  ],
+  "owner": "PERFECT STRANGER ENTERPRISES PTY LTD.",
+  "ownerNative": null,
+  "ownerCountry": "AU",
+  "representative": "ISHIHARA TAKASHI",
+  "priorities": [
+    {
+      "priorityDate": "19980924"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "SOUTH AUSTRALIA",
+        "applicantAddressCountryCode": "AU",
+        "applicantAddressCountryName": "Australia",
+        "applicantName": "PERFECT STRANGER ENTERPRISES PTY LTD.",
+        "applicantNativeAddress": "オーストラリア，サウスオーストラリア州　５０７４，ニュートン，ゴージ　ロード　１８０",
+        "applicantNativeName": "パーフェクト　ストレンジャー　エンタープライゼス　プロプライエタリー　リミテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Telecommunications machine tool, projection film, slide film, recorded video disk and video tape",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "電気通信機械器具，映写フィルム，スライドフィルム，録画済ビデオディスク及びビデオテープ"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Print, game card",
+          "intClassNumber": "16",
+          "intGoodsServicesDescription": "印刷物，遊戯用カード"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Obtained",
+          "intClassNumber": "25",
+          "intGoodsServicesDescription": "被服，履物"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Play equipment, Dice, Sugoroku, Dice cup, Diamond game, Chess tool, Checker tool, Magic equipment, Domino tool, Mah-jong tool, billiard equipment, toys, exercise equipment",
+          "intClassNumber": "28",
+          "intGoodsServicesDescription": "遊戯用器具，さいころ，すごろく，ダイスカップ，ダイヤモンドゲーム，チェス用具，チェッカー用具，手品用具，ドミノ用具，マージャン用具，ビリヤード用具，おもちゃ，運動用具"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Meat, edible fish and shellfish (except living things), meat products, processed vegetables and processed fruits, eggs, dairy products, edible fats and oils",
+          "intClassNumber": "29",
+          "intGoodsServicesDescription": "食肉，食用魚介類（生きているものを除く。），肉製品，加工野菜及び加工果実，卵，乳製品，食用油脂"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Japanese sake, liquor, fruit wine, Chinese sake, spirit liquor",
+          "intClassNumber": "33",
+          "intGoodsServicesDescription": "日本酒，洋酒，果実酒，中国酒，薬味酒"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Planning or management of entertainment facilities for movies, entertainment, plays or music performances, screening / production or distribution of movies, performances, performances or performances of theaters, performances of music, production of broadcast programs, provision of exercise facilities, entertainment facilities Provision of books, production of magazines, production of textbooks, production of newsletters (excluding advertisements).",
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "映画・演芸・演劇又は音楽の演奏の興行の企画又は運営，映画の上映・制作又は配給，演芸の上演，演劇の演出又は上演，音楽の演奏，放送番組の制作，運動施設の提供，娯楽施設の提供，書籍の製作，雑誌の製作，教科書の製作，ニューズレターの製作（広告物を除く。）"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provision of accommodation facilities, mediation or intermediation of contracts for providing accommodation facilities, provision of food and drink",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "宿泊施設の提供，宿泊施設の提供の契約の媒介又は取次ぎ，飲食物の提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Electrical communication apparatus and instruments"
+        },
+        {
+          "natClassNumber": "24E02"
+        },
+        {
+          "natClassNumber": "26D01",
+          "natGoodsServicesDescription": "Cinematographic films, Slide films, Transparencies, Prerecorded videodiscs or tapes"
+        },
+        {
+          "natClassNumber": "24A01",
+          "natGoodsServicesDescription": "Karuta (Japanese playing cards)"
+        },
+        {
+          "natClassNumber": "24B01",
+          "natGoodsServicesDescription": "Utagaruta card (Japanese playing cards containing verses), Playing cards, Hanafuda cards (Japanese playing cards containing pictures of flowers and animals)"
+        },
+        {
+          "natClassNumber": "26A01",
+          "natGoodsServicesDescription": "Printed matter"
+        },
+        {
+          "natClassNumber": "17A01",
+          "natGoodsServicesDescription": "Non-Japanese style outer wear, Coats"
+        },
+        {
+          "natClassNumber": "17A02",
+          "natGoodsServicesDescription": "Sweaters, Shirts, Nightwear, Underwear, Swimsuits, Bathing caps"
+        },
+        {
+          "natClassNumber": "17A03",
+          "natGoodsServicesDescription": "Japanese style clothing"
+        },
+        {
+          "natClassNumber": "17A04",
+          "natGoodsServicesDescription": "Aprons, Collar protectors, Socks, Stockings, Gaiters, Fur stoles, Shawls, Scarves, Tabi (Japanese socks), Tabi covers, Gloves, Textile baby diapers, Neckties, Neckerchiefs, Mufflers, Ear muffs"
+        },
+        {
+          "natClassNumber": "17A07",
+          "natGoodsServicesDescription": "Hoods, Sugegasa (Japanese sedge hats), Night caps, Helmets, Hats, Caps"
+        },
+        {
+          "natClassNumber": "17A10"
+        },
+        {
+          "natClassNumber": "22A01",
+          "natGoodsServicesDescription": "Shoes, boots other than shoe dowels, shoe pegs, shoe handles, hobnails, metal pieces for protecting soles"
+        },
+        {
+          "natClassNumber": "22A02",
+          "natGoodsServicesDescription": "Shoe dowels, Shoe pegs, Shoe handles, Hobnails, Metal pieces for protecting soles"
+        },
+        {
+          "natClassNumber": "22A03",
+          "natGoodsServicesDescription": "Japanese clogs, Japanese sandals"
+        },
+        {
+          "natClassNumber": "24A01",
+          "natGoodsServicesDescription": "Toys, Dolls"
+        },
+        {
+          "natClassNumber": "24B01",
+          "natGoodsServicesDescription": "Go game equipment (Japanese board game), Shogi game equipment (Japanese chess), Dice, Sugoroku games (Japanese pachisi), Dice cups, Diamond games, Chess games, Checkers, Conjuring apparatus, Dominoes, Mah jong equipment"
+        },
+        {
+          "natClassNumber": "24B02",
+          "natGoodsServicesDescription": "Game machines, Billiard equipment"
+        },
+        {
+          "natClassNumber": "24C01",
+          "natGoodsServicesDescription": "Sporting, gymnastic implements"
+        },
+        {
+          "natClassNumber": "24C03"
+        },
+        {
+          "natClassNumber": "24C04"
+        },
+        {
+          "natClassNumber": "31C01",
+          "natGoodsServicesDescription": "Edible oils and fats"
+        },
+        {
+          "natClassNumber": "31D01",
+          "natGoodsServicesDescription": "Milk products"
+        },
+        {
+          "natClassNumber": "32A01",
+          "natGoodsServicesDescription": "Meats"
+        },
+        {
+          "natClassNumber": "32B01",
+          "natGoodsServicesDescription": "Eggs"
+        },
+        {
+          "natClassNumber": "32C01",
+          "natGoodsServicesDescription": "Not live edible fish, shellfish"
+        },
+        {
+          "natClassNumber": "32F01",
+          "natGoodsServicesDescription": "Meat products, Processed marine products other than dried tuna, scraped kelp, dried laver (seaweed) sheets, dried hijiki (dark brown algae), dried wakame (toasted seaweed)"
+        },
+        {
+          "natClassNumber": "32F04",
+          "natGoodsServicesDescription": "Processed vegetables, Processed fruit"
+        },
+        {
+          "natClassNumber": "28A01",
+          "natGoodsServicesDescription": "Japanese liquors"
+        },
+        {
+          "natClassNumber": "28A02",
+          "natGoodsServicesDescription": "Western liquors, Alcoholic beverages of fruit"
+        },
+        {
+          "natClassNumber": "28A03",
+          "natGoodsServicesDescription": "Chinese liquors"
+        },
+        {
+          "natClassNumber": "28A04",
+          "natGoodsServicesDescription": "Spiced or flavored liquors"
+        },
+        {
+          "natClassNumber": "41D01"
+        },
+        {
+          "natClassNumber": "41E01",
+          "natGoodsServicesDescription": "Planning, management of movies, musical, theatrical performance"
+        },
+        {
+          "natClassNumber": "41E02",
+          "natGoodsServicesDescription": "Production, distribution, presentation of movies"
+        },
+        {
+          "natClassNumber": "41E03",
+          "natGoodsServicesDescription": "Presentation of live show, musical, theatrical performance"
+        },
+        {
+          "natClassNumber": "41E04",
+          "natGoodsServicesDescription": "Production of radio or television programs"
+        },
+        {
+          "natClassNumber": "41J01",
+          "natGoodsServicesDescription": "Providing sports facilities"
+        },
+        {
+          "natClassNumber": "41K01",
+          "natGoodsServicesDescription": "Providing amusement facilities"
+        },
+        {
+          "natClassNumber": "42A01",
+          "natGoodsServicesDescription": "Providing accommodation, lodgings"
+        },
+        {
+          "natClassNumber": "42A02",
+          "natGoodsServicesDescription": "Brokering reservations for accommodation, lodgings"
+        },
+        {
+          "natClassNumber": "42B01",
+          "natGoodsServicesDescription": "Restaurant services"
+        }
+      ]
+    },
+    "id": "79e0d55d-c12a-45e4-827e-2d32b6b96ba3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19980924"
+      }
+    ],
+    "recordLastUpdated": "20240213",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "ISHIHARA TAKASHI",
+        "representativeNativeName": "石原　孝志"
+      },
+      {
+        "representativeName": "ISHIHARA MASANORI",
+        "representativeNativeName": "石原　昌典"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19990315",
+        "applicationNumber": "H11-021996"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20100623",
+      "lastPublicationDate": "20000725",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20000623",
+        "registrationNumber": "4394744"
+      }
+    },
+    "version": "20240213143218",
+    "wordMarkSpecification": {
+      "markTranslation": "XORI",
+      "markTransliteration": "EKKUSUOOAARUAI EKUSOORI",
+      "markVerbalElementText": "ＸＯＲＩ"
+    }
+  },
+  "_uri": "/mark/jp/79e0d55d-c12a-45e4-827e-2d32b6b96ba3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:18.948Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

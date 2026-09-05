@@ -32,6 +32,11 @@ const SGR = Object.freeze({
   warn:  ["\x1b[33m", "\x1b[39m"],  // it worked, and there is something to know
   err:   ["\x1b[31m", "\x1b[39m"],  // a refusal
   head:  ["\x1b[1m\x1b[36m", "\x1b[39m\x1b[22m"], // a section header: where the reader is
+  // The mark's enclosed block — the one thing here that is not a line of meaning. It is the
+  // TERMINAL'S red, not the brand hex: crimson on parchment is what the SVG draws against, and a
+  // hard-coded dark red lands invisible on the dark background most terminals actually have. Bold
+  // separates it from `err`, which is a refusal and must not share a code with decoration.
+  accent: ["\x1b[1m\x1b[31m", "\x1b[39m\x1b[22m"],
 });
 
 /**
@@ -72,18 +77,79 @@ export function styleFor(opts = {}) {
   return Object.freeze(s);
 }
 
+/** The glyphs the mark is drawn with. Block elements, like the frame — one family, one fallback story. */
+export const MARK_GLYPHS = Object.freeze({ bracket: "█", block: "▓" });
+
+/**
+ * One row of the box: content, then padding computed from the content's VISIBLE width.
+ *
+ * The width is passed in rather than measured, because by the time a row reaches here it may already
+ * contain escape codes and `.length` would count them — which pushes the right border out on the
+ * coloured path ONLY, the path a piped test never sees. Every caller below knows its plain width.
+ */
+const row = (text, width, inner) => `│ ${text}${" ".repeat(inner - width + 1)}│`;
+
+/**
+ * A row of the mark, with RUNS of one kind wrapped once rather than each character wrapped alone.
+ *
+ * Same pixels either way; ten times the bytes the other way. This module's whole argument is about
+ * what escape codes do to a file somebody opens later, and a sixteen-column mark that costs ninety-six
+ * escape pairs makes a log or a pasted screenshot unreadable for no gain at all.
+ */
+function paintRow(cells, style) {
+  const paint = { bracket: (t) => style.bold(t), block: (t) => style.accent(t), "": (t) => t };
+  const glyph = { bracket: MARK_GLYPHS.bracket, block: MARK_GLYPHS.block, "": " " };
+  let out = "";
+  for (let i = 0; i < cells.length;) {
+    const kind = cells[i];
+    let j = i;
+    while (j < cells.length && cells[j] === kind) j++;
+    out += paint[kind](glyph[kind].repeat(j - i));
+    i = j;
+  }
+  return out;
+}
+
 /**
  * The entry banner. ONCE, on entry, named — not on every command (the ruling says so, and a banner on
  * every verb is how a product becomes tiresome to use twice).
  *
- * Drawn from the box-drawing set rather than ASCII art: it survives a narrow terminal, it costs one
- * line of code, and it says the thing the ruling actually asks it to say — that somebody put the time
- * in — without spending twelve lines of a first screen on saying it.
+ * The frame is box-drawing rather than ASCII art: it costs one line of code and does not depend on a
+ * font. `mark` puts the product's mark beside the words — pass the grid from `bracketAsciiCells()`,
+ * which is the SVG's own geometry sampled onto characters. It arrives here as KINDS, not glyphs and
+ * not escapes, so the shape stays in `brand.mjs` with the constant it is generated from and the
+ * decision about what a terminal can draw stays here.
+ *
+ * The words sit vertically centred against the mark, and the box is sized from mark + gutter + text.
+ * Sizing it from the title alone is how a mark wider than the title overflows the frame it is in.
  */
-export function banner({ title, subtitle = "", style = styleFor() } = {}) {
-  const line = "─".repeat(Math.max(title.length, subtitle.length) + 2);
-  const out = [`┌${line}┐`, `│ ${style.bold(title)}${" ".repeat(line.length - title.length - 1)}│`];
-  if (subtitle) out.push(`│ ${style.dim(subtitle)}${" ".repeat(line.length - subtitle.length - 1)}│`);
+export function banner({ title, subtitle = "", style = styleFor(), mark = null, gutter = 3, columns = Infinity } = {}) {
+  const text = [
+    { text: style.bold(title), width: title.length },
+    ...(subtitle ? [{ text: style.dim(subtitle), width: subtitle.length }] : []),
+  ];
+  const words = Math.max(...text.map((t) => t.width));
+  // The mark is the first thing to go when it does not fit. A box that wraps is worse than a box with
+  // no logo in it — the owner asked to SEE the mark, and a 65-column frame folded into a 60-column pane
+  // shows him neither the mark nor the sentence. `columns` defaults to Infinity so a caller that has no
+  // terminal to ask (a test, a rendered doc) is never silently degraded on the strength of a missing
+  // number; the ONE caller that reads a real width passes it.
+  let cells = mark ?? [];
+  let markWidth = cells.length ? Math.max(...cells.map((r) => r.length)) : 0;
+  if (markWidth && markWidth + gutter + words + 4 > columns) { cells = []; markWidth = 0; }
+  const pad = markWidth ? markWidth + gutter : 0;
+  const inner = pad + words;
+  const line = "─".repeat(inner + 2);
+
+  const height = Math.max(cells.length, text.length);
+  const top = Math.floor((height - text.length) / 2);
+  const out = [`┌${line}┐`];
+  for (let i = 0; i < height; i++) {
+    const drawn = cells[i] ?? [];
+    const left = markWidth ? paintRow(drawn, style) + " ".repeat(pad - drawn.length) : "";
+    const t = text[i - top];
+    out.push(row(left + (t ? t.text : ""), pad + (t ? t.width : 0), inner));
+  }
   out.push(`└${line}┘`);
   return out.join("\n");
 }

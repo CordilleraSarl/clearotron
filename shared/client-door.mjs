@@ -46,6 +46,64 @@ import { challengeVerdict, blockedByAccessChallenge, challengeNote } from "./mcp
 export const CLIENT_DOOR_UNIT = "clearotron-client-mcp.service";
 
 /**
+ * Where revoked key ids live, and the one place that decides it.
+ *
+ * — bb8's F14. This literal was written out in four places (connect, start
+ * twice, disconnect). `connect` armed the variable AND created the file, with a comment saying exactly
+ * why: a named-but-absent file was the same landmine one step later, because `isRevoked` then failed
+ * OPEN on an unreadable list. It fails CLOSED now, which makes creating the file more load-bearing
+ * rather than less: the absence is no longer a silent hole, it is a refusal. `start` named the same
+ * path and created nothing — so on a
+ * default install the door ran with a denylist that did not exist, every revocation was written to a
+ * file no verifier could read, and a revoked key kept answering 200. The guard existed; one of the two
+ * doors was outside it.
+ */
+export const defaultDenylistPath = (home) => join(home, ".config", "clearotron", "token-denylist");
+
+/**
+ * The denylist path a door should be given — the operator's, if they set one.
+ *
+ *, bb8's sharpening of F14. `defaultDenylistPath` answers "where does it live
+ * when nobody said"; this answers "where does it live", which is the question every caller actually had.
+ * The client door was composed with the default UNCONDITIONALLY while every other child inherited
+ * TRADEMARK_MCP_TOKEN_DENYLIST, so on a box where an operator had placed the list themselves:
+ *
+ *   staff door  → the operator's file        (revocation worked)
+ *   client door → ~/.config/clearotron/…     (revocation silently did nothing)
+ *
+ * and `key issue` printed the operator's file to someone revoking a CLIENT key. Every surface agreed
+ * with itself and two of them were about different files. Account keys live at the client door, so the
+ * half that ignored the operator is the half that mattered.
+ *
+ * The previous fix made the path COMPOSED in one place. That is not the same as RESOLVED to one value,
+ * and the arm that checked the first passed the whole time the second was false.
+ */
+export const denylistPathFor = (env, home) =>
+  String(env?.TRADEMARK_MCP_TOKEN_DENYLIST ?? "").trim() || defaultDenylistPath(home);
+
+/**
+ * Create the denylist if it is absent, so the door is born consulting a file that exists.
+ *
+ * Idempotent and never destructive: an existing list is left exactly as it is. Mode 600 because it
+ * names key ids, and the header says who writes it so the next reader is not guessing.
+ *
+ * Returns what happened, because the caller reports it and "already there" is not the same fact as
+ * "created" — a door that had to create its own denylist on a box that has been running is worth a line.
+ */
+export function ensureDenylistFile(path, io) {
+  if (io.exists(path)) {
+    // PRESENT IS NOT THE SAME AS READABLE, and only one of the two makes revocation work. A list the
+    // door cannot open is the exact state `isRevoked` turns into "not revoked" — the same landmine as an
+    // absent one, wearing a passing existence check. Read it here, where the door is still startable.
+    if (io.read) io.read(path);
+    return { path, created: false };
+  }
+  io.mkdir(io.dirname(path));
+  io.write(path, "# Revoked key ids, one jti per line. Written by `clearotron disconnect`; read on every key check.\n");
+  return { path, created: true };
+}
+
+/**
  * The client door's port — NOT the engine door's.
  *
  * These are two processes on two ports and conflating them is the mistake this whole module exists to
@@ -76,7 +134,7 @@ export const clientDoorAddress = (env = {}) => `http://127.0.0.1:${clientDoorPor
  * the fence off accepts no account key, and the fence on with nothing listening is a setting with no
  * server. Reporting "standing" on half of it would send a reader to paste an address at nothing.
  */
-export function clientDoorState({ env = {}, unitDir, exists, active = null } = {}) {
+export function clientDoorState({ env = {}, unitDir, exists, active = null, listening = null, activeState = null, subState = null } = {}) {
   const fenceOn = String(env.CLIENT_MCP_ACCOUNT_ACCESS ?? "").trim() === "1";
   const unitInstalled = Boolean(exists(join(unitDir, CLIENT_DOOR_UNIT)));
   // `standing` IS UNCHANGED AND STILL MEANS CONFIGURED — a file on disk and a fence flag. Two callers
@@ -94,7 +152,13 @@ export function clientDoorState({ env = {}, unitDir, exists, active = null } = {
   // `active` IS INJECTED AND DEFAULTS TO null, which means NOBODY ASKED. That is a third answer, not a
   // synonym for false: a caller that cannot reach systemd must not be able to report a door as down
   // any more than it can report one as up. Same discipline as the queue-watch arm's unprobed half.
-  return { standing, fenceOn, unitInstalled, active, serving: standing && active === true };
+  return {
+    // — bb8's F11: what is ANSWERING, which the unit file cannot say.
+    // — THE PAIR, NOT ITS BOOLEAN. `active` collapses ActiveState and SubState,
+    // so a crash loop (`activating/auto-restart`) and a unit that was never started (`inactive/dead`)
+    // reduce to the same `false` and printed the same sentence — one is a fault to read the journal for,
+    // the other is a connect that stopped half-way.
+    listening, activeState, subState, standing, fenceOn, unitInstalled, active, serving: standing && active === true };
 }
 
 /**
@@ -144,22 +208,68 @@ export function describeDoorState(door, {
         text: `the client door is HALF configured — ${missing}. Something began setting it up and stopped: `
           + `finish with \`${connectCmd}\`, or close it with \`${closeCmd}\`.` };
     }
+    // A DOOR THAT ANSWERS IS SET UP, WHATEVER THE UNITS SAY ( — bb8's F11).
+    //
+    // `standing` is unit-file + fence, and a FOREGROUND `clearotron start` has neither: it runs the door
+    // as its own child. Measured — the door listening on its port while this sentence said "the client
+    // door is not set up here" and told the reader to run the command they had just run. The unit file
+    // is evidence about the BACKGROUND shape only; the port is evidence about both.
+    if (door.listening === true) {
+      // WHAT A CONNECT PROVES, AND WHAT IT DOES NOT. Something is listening where this environment's
+      // client door would be. That is enough to stop saying "not set up here" — the sentence that told a
+      // reader whose foreground door was up to run the command they had just run — and it is NOT enough
+      // to call it theirs: the product's ports are fixed defaults, so on a shared box the answer may be
+      // another install's door entirely. Caught by 2145's arm on a machine where exactly that was true.
+      return { level: "info",
+        text: `something is listening on the client door's address for this environment — no ${unit} is `
+          + "installed, so either this install is running in the foreground (it stops when that terminal "
+          + `does; \`${startCmd} --background\` installs the unit) or another install holds the port.` };
+    }
     return { level: "info",
       text: `the client door is not set up here — ${missing}. \`${startCmd}\` writes both. Since the `
         + "2026-09-03 ruling an install places them, so on an installed box this means the install did "
         + "not finish" };
   }
   if (door.active === null) {
+    // THE PROBE STILL COUNTS HERE. Not asking systemd is not the same as knowing nothing: if the port
+    // answers, the door is serving whatever systemd would have said.
+    if (door.listening === true) {
+      return { level: "ok",
+        text: `${unit} is installed and account access is enabled, and the client door's port is `
+          + "answering — systemd was not asked, so this is the port's word rather than the unit's" };
+    }
     return { level: "info",
       text: `${unit} is installed and account access is enabled — whether it is RUNNING was not checked, `
         + "so this says the door is set up, not that it answers" };
   }
   if (door.active === false) {
+    // NAME THE STATE, AND NEVER ASSERT AN EMPTY PORT WITHOUT LOOKING (, Hera).
+    //
+    // This said "nothing is listening on the client door" from `active === false` alone, while a probe
+    // of that very port had already been taken and passed in — and read nowhere on this branch. With a
+    // decoy holding the port it printed a falsehood. It also collapsed two different faults into one
+    // sentence: `activating/auto-restart` is a unit failing over and over, and `inactive/dead` is a
+    // connect that stopped half-way. They have different next steps.
+    const looping = door.activeState === "activating" || door.subState === "auto-restart";
+    const stateWords = door.activeState ? ` (${door.activeState}/${door.subState ?? "?"})` : "";
+    if (door.listening === true) {
+      return { level: "problem",
+        text: `${unit}${stateWords} is not running, and something IS listening on the client door's port. `
+          + "That is very likely why it cannot start: the product's ports are fixed defaults, so another "
+          + "install or a stray process holds it, and the unit fails over and over against a port it will "
+          + `never get. Find the holder before re-applying anything — \`${startCmd}\`'s own refusal names `
+          + "the port and the variable, and `ss -ltnp` names the process." };
+    }
+    if (looping) {
+      return { level: "problem",
+        text: `${unit}${stateWords} is CRASH-LOOPING — it starts, fails, and systemd restarts it. Nothing `
+          + `is listening. Its own words are the fastest route: \`journalctl --user -u ${unit} -n 30\`.` };
+    }
     return { level: "problem",
-      text: `${unit} is installed and account access is enabled, but the unit is NOT RUNNING — nothing is `
-        + "listening on the client door. This is what a `connect` that failed part-way leaves behind, and it "
-        + `reads as set up from every angle except this one. \`${closeCmd}\` then \`${connectCmd}\` `
-        + "re-applies it cleanly." };
+      text: `${unit}${stateWords} is installed and account access is enabled, but the unit is NOT RUNNING `
+        + "and nothing is listening on the client door. This is what a `connect` that failed part-way "
+        + `leaves behind, and it reads as set up from every angle except this one. \`${closeCmd}\` then `
+        + `\`${connectCmd}\` re-applies it cleanly.` };
   }
   return { level: "ok", text: `the client door is on and running (${unit}) — \`${closeCmd}\` closes it` };
 }
@@ -371,8 +481,9 @@ export function enablePlan({ env = {}, address, identity, accessFile = null, por
   // start. A variable first written when someone disconnects is one the already-running door never
   // loaded — the door this plan starts must be born knowing where the denylist lives, so a later
   // revocation lands in a file it actually consults. The FILE is ensured too (empty, comment header):
-  // `isRevoked` fails open on an unreadable file by its own stated contract, so a named-but-absent
-  // file is the same landmine one step later.
+  // A named-but-absent file was the same landmine one step later, when `isRevoked` still failed OPEN on
+  // an unreadable list. It fails CLOSED now, so ensuring the file is what stops the
+  // closed contract from refusing every key on a box nobody misconfigured.
   const existing = String(env.TRADEMARK_MCP_TOKEN_DENYLIST ?? "").trim();
   const armedPath = existing || (denylistPath ? String(denylistPath) : null);
   if (!existing && armedPath) settings.TRADEMARK_MCP_TOKEN_DENYLIST = armedPath;

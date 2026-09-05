@@ -1,0 +1,146 @@
+{
+  "uri": "/mark/jp/5f66f1a8-71a0-4741-a482-3fb7d673f4a3",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "5f66f1a8-71a0-4741-a482-3fb7d673f4a3",
+  "applicationNumber": "2022-016351",
+  "registrationNumber": "6608240",
+  "applicationDate": "2022-02-14",
+  "registrationDate": "2022-08-31",
+  "expiryDate": "2032-08-31",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-09-08",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＩＮＶＩＳＡＬＩＧＮ　ＳＭＩＬＥ　ＡＲＣＨＩＴＥＣＴ",
+  "markTransliteration": "INBISARAINSUMAIRUAAKITEKUTO INBIZARAINSUMAIRUAAKITEKUTO",
+  "markTranslation": "INVISALIGN SMILE ARCHITECT",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "オンラインによるダウンロードが不可能な歯科用のコンピュータソフトウェアの提供，歯科治療・歯科設計又は歯科医療用のオンラインによるダウンロードが不可能なソフトウェアの提供，歯科用のウェブベースのソフトウェアアプリケーションの一時的な使用の提供，歯科及び矯正歯科治療の計画立案用のウェブベースのソフトウェアアプリケーションの一時的な使用の提供，コンピュータソフトウェアの設計，注文によるコンピュータソフトウェアの設計，コンピュータソフトウェアの設計・開発・インストール及び保守に関する助言，コンピュータのハードウェア及びソフトウェアの設計，コンピュータのハードウェア及びソフトウェアの設計及び開発，コンピュータソフトウェアの設計・開発・インストール及び保守に関する指導，コンピュータソフトウェアの設計・開発・インストール及び保守，歯科の分野におけるコンピュータソフトウェアの開発，歯科治療の計画立案の目的でコンピュータアプリケーションをホストするための情報管理の分野におけるアプリケーションサービスプロバイダーによるコンピュータソフトウェアの提供，機械・装置若しくは器具（これらの部品を含む。）又はこれらの機械等により構成される設備の設計，電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供",
+      "translation_language": "en",
+      "translation": "Provision of non-online downloadable dental computer software; provision of non-online downloadable software for dental care/design or dental care; temporary use of dental web-based software applications; providing temporary use of web-based software applications for planning dental and orthodontic treatment; computer software design; custom computer software design; advice on computer software design, development, installation and maintenance; Computer hardware and software design, computer hardware and software design and development, computer software design, development, installation and maintenance instruction, computer software design, development, installation and maintenance, computer software in the field of dentistry provision of computer software by application service providers in the field of information management to host computer applications for the purpose of dental treatment planning; Design of equipment composed of, design, creation or maintenance of computer programs, provision of computer programs"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YAMAMOTO HIDESAKU",
+  "priorities": [
+    {
+      "priorityDate": "20210826"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provision of non-online downloadable dental computer software; provision of non-online downloadable software for dental care/design or dental care; temporary use of dental web-based software applications; providing temporary use of web-based software applications for planning dental and orthodontic treatment; computer software design; custom computer software design; advice on computer software design, development, installation and maintenance; Computer hardware and software design, computer hardware and software design and development, computer software design, development, installation and maintenance instruction, computer software design, development, installation and maintenance, computer software in the field of dentistry provision of computer software by application service providers in the field of information management to host computer applications for the purpose of dental treatment planning; Design of equipment composed of, design, creation or maintenance of computer programs, provision of computer programs",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "オンラインによるダウンロードが不可能な歯科用のコンピュータソフトウェアの提供，歯科治療・歯科設計又は歯科医療用のオンラインによるダウンロードが不可能なソフトウェアの提供，歯科用のウェブベースのソフトウェアアプリケーションの一時的な使用の提供，歯科及び矯正歯科治療の計画立案用のウェブベースのソフトウェアアプリケーションの一時的な使用の提供，コンピュータソフトウェアの設計，注文によるコンピュータソフトウェアの設計，コンピュータソフトウェアの設計・開発・インストール及び保守に関する助言，コンピュータのハードウェア及びソフトウェアの設計，コンピュータのハードウェア及びソフトウェアの設計及び開発，コンピュータソフトウェアの設計・開発・インストール及び保守に関する指導，コンピュータソフトウェアの設計・開発・インストール及び保守，歯科の分野におけるコンピュータソフトウェアの開発，歯科治療の計画立案の目的でコンピュータアプリケーションをホストするための情報管理の分野におけるアプリケーションサービスプロバイダーによるコンピュータソフトウェアの提供，機械・装置若しくは器具（これらの部品を含む。）又はこれらの機械等により構成される設備の設計，電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "42N03",
+          "natGoodsServicesDescription": "Designing of machines, apparatus, instruments [including their parts] or systems composed of such machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        }
+      ]
+    },
+    "id": "5f66f1a8-71a0-4741-a482-3fb7d673f4a3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20210826"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220214",
+        "applicationNumber": "2022-016351"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320831",
+      "lastPublicationDate": "20220908",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20220831",
+        "registrationNumber": "6608240"
+      }
+    },
+    "version": "20240320153104",
+    "wordMarkSpecification": {
+      "markTranslation": "INVISALIGN SMILE ARCHITECT",
+      "markTransliteration": "INBISARAINSUMAIRUAAKITEKUTO INBIZARAINSUMAIRUAAKITEKUTO",
+      "markVerbalElementText": "ＩＮＶＩＳＡＬＩＧＮ　ＳＭＩＬＥ　ＡＲＣＨＩＴＥＣＴ"
+    }
+  },
+  "_uri": "/mark/jp/5f66f1a8-71a0-4741-a482-3fb7d673f4a3",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.741Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

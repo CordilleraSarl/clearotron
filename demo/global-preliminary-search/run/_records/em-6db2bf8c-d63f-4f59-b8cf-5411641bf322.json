@@ -1,0 +1,1076 @@
+{
+  "uri": "/mark/em/6db2bf8c-d63f-4f59-b8cf-5411641bf322",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "6db2bf8c-d63f-4f59-b8cf-5411641bf322",
+  "applicationNumber": "17202961",
+  "registrationNumber": "17202961",
+  "applicationDate": "2017-09-13",
+  "registrationDate": "2018-02-15",
+  "expiryDate": "2027-09-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-11-08",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR ONE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    36
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Bankovní karty, debetní karty, kreditní karty, platební karty, sekové karty; Kódované magnetické predplacené karty.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "cs",
+      "description": "Sluzby loajalitních karet/sluzby zákaznikových karet; Sluzby vernostních programu; Vernostní, pobídkové a bonusové programy; Organizování, provozování a kontrola zákaznických vernostních programu a pobídkových programu; Správa zákaznických vernostních, motivacních nebo propagacních programu; Vernostní zákaznické sluzby ke komercním, propagacním a/nebo reklamním úcelum; Podpora prodeje úctu platebních karet prostrednictvím administrativy pobídkových programu odmen, pridelování nákupních bodu, slev, rabatu, nabídek a kuponu s pridanou hodnotou.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "cs",
+      "description": "Sluzby kreditních karet a úverové sluzby; Sluzby v oblasti bankovních karet, debetních karet a elektronických platebních karet; Debetní karty (Sluzby týkající se -), Sluzby týkající se predplacených karet; Elektronické sluzby zamerené na ulozené hodnoty; Sluzby elektronické penezenky (platební sluzby); Zpracování elektronických plateb provádených predplacenými kartami; Automatizované platební sluzby; Zpracování plateb; Správa plateb; Elektronické platební sluzby; Sluzby týkající se dálkových plateb; On-line platební sluzby; Sluzby na elektronický prevod prostredku; Vydávání predplacených platebních karet; Vydávání a odkupování poukazu, kuponu, karet, zetonu a bodu; Poskytování zákaznických pobídek, kreditu, plateb a prevodu ve forme penez, ekonomické hodnoty nebo bodu; Sluzby diskontních karet; Vydávání hodnotových poukázek v souvislosti s vernostními programy pro zákazníky.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Bankkort, hævekort, kreditkort, kontantkort, checkkort; Forudbetalte magnetkort, kodede.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "da",
+      "description": "Affinitetskortservice; Tjenesteydelser i forbindelse med loyalitetsprogrammer; Loyaltitets-, incitaments- og bonusprogrammer; Organisering, drift og overvågning af kundeloyalitetsordninger og bonusprogrammer; Administration af programmer om kundeloyalitet, incitament eller salgsfremmende aktiviteter; Kundeloyalitetsydelser i kommercielt, salgsfremmende og/eller reklamemæssigt øjemed; Salgsfremme i forbindelse med salg af betalingskortskonti gennem administration af bonusordninger, tildeling af point ved køb, rabatter, prisnedslag, tilbud og værdikuponer med merværdi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "da",
+      "description": "Kredit- og kreditkortvirksomhed; Tjenesteydelser i forbindelse med kreditkort, hævekort og elektroniske betalingskort; Kreditkortservice, Virksomhed i forbindelse med forudbetalte kort; Tjenesteydelser i forbindelse med elektroniske punge med forudbetalte værdier; Elektroniske tegnebøger (betalingstjenesteydelser); Behandling af elektroniske betalinger med forudbetalingskort; Automatiske betalingstjenester; Betalingsbehandling; Administration af betalinger; Elektroniske betalingstjenester; Tjenesteydelser inden for fjernbetaling; Onlinebetaling; Tjenesteydelser vedrørende elektronisk overførsel af midler; Udstedelse af forudbetalte betalingskort; Udstedelse og indløsning af værdikuponer, kuponer, kort, mærker og mønter og opsamlede points; Kundetilskyndelses- og bonusordninger, kreditter, betalinger og overførsler i form af penge, økonomiske værdier eller point; Rabatkortvirksomhed; Udstedelse af værdikuponer i forbindelse med kundeloyalitetsordninger.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Bankpasjes, debetkaarten, creditcards, betaalkaarten, chequekaarten; Gecodeerde vooruitbetaalde magneetkaarten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "Klantenkaarten; Klantenbindingsdiensten; Klantenbindings-, aanmoedigings- en bonusprogrammadiensten; Organisatie, exploitatie en toezicht in verband met klantenbindingsacties en aanmoedigingsacties; Beheer van klantenbindings-, aanmoedigings- of reclameacties; Diensten in verband met klantenbinding voor commerciële, promotionele en/of reclamedoeleinden; Promotie van de verkoop van betaalkaartrekeningen door middel van het beheer van stimulerings- en beloningsacties, toekenning van aankooppunten, kortingen, aanbiedingen met toegevoegde waarde en bonnen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "nl",
+      "description": "Krediet- en creditcarddiensten; Diensten inzake bankpassen, debetkaarten en kaarten voor elektronische betalingen; Debitcard diensten, Vooruitbetaalde kaarten; Elektronische portemonnees met een vooraf opgeslagen waarde; Elektronische portefeuilles (betalingsdiensten); Verwerking van elektronische betalingen gedaan met vooraf betaalde kaarten; Diensten op het gebied van geautomatiseerde betalingen; Verwerking van betalingen; Betalingsadministratie; Diensten op het gebied van elektronische betaling; Betalingen op afstand (Diensten op het gebied van -); On-linebetalingen; Diensten op het gebied van elektronische overmaking van fondsen; Uitgifte van vooruitbetaalde betaalkaarten; Uitgifte en inlossing van waardebonnen, bonnen, kaarten, munten en waardepunten; Het aanbieden van klantenaanmoedigingen, kredieten, betalingen en overboekingen in de vorm van geld, economische waarden of punten; Kortingskaarten; Het uitgeven van waardebonnen in verband met loyaliteitsacties voor klanten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Credit cards, debit cards, bank cards, cash cards and cheque cards; encoded magnetic prepaid cards.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Loyalty card services; loyalty scheme services; loyalty, incentive and bonus program services; organization, operation and supervision of customer loyalty schemes and incentive schemes; management of customer loyalty, incentive or promotional schemes; customer loyalty services for commercial, promotional and/or advertising purposes; promoting the sale of payment card accounts through the administration of incentive award programmes, awarding purchase points, discounts, rebates, valued added offers and coupons.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Credit card and credit services; bank card, debit card and electronic payment card services; charge card services, pre-paid card services; stored value electronic purse services; electronic wallet services (payment services); processing electronic payments made through prepaid cards; automated payment services; payment processing; payment administration services; electronic payment services; remote payment services; online payment services; electronic fund transfer services; issuance of prepaid payment cards; issue and redemption of vouchers, coupons, cards, tokens and points; providing customer incentives, credits, payments and transfers in the form of money, economic value or points; discount card services; issuing of tokens of value in relation to customer loyalty schemes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Pangakaardid, deebetkaardid, kreeditkaardid, maksekaardid, tsekikaardid; Elektroonilised ettemaksemagnetkaardid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "et",
+      "description": "Ustavuskaardi teenused; Püsikliendiprogrammid; Lojaalsusprogrammi-, ergutusprogrammi- ja boonusprogrammiteenused; Kliendilojaalsusskeemide ja ergutusskeemide korraldamine, käitamine ja järelevalve; Püsikliendi-, ergutus- või kampaaniaprogrammide juhtimine; Lojaalsusprogrammiteenused äri, müügiedenduse ja/või reklaami eesmärgil; Maksekaardikontode müügiedendus interaktiivsete auhinnaprogrammide, premeerivate ostupunktide, allahindluste, loteriide, allahindlused, loteriid, hinnaalandid, lisandväärtuse pakkumiste ja kupongide haldamise teel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "et",
+      "description": "Krediitkaardi- ja krediiditeenused; Pangakaardi, deebetkaardi ja elektroonilise maksekaardi teenused; Deebetkaarditeenused, Ettemaksekaartide teenused; Hoiustatud väärtuste elektroonilised teenused; Elektroonilise rahakoti teenused (makseteenused); Ettemaksekaartidega sooritatud elektrooniliste maksete töötlemine; Automatiseeritud makseteenused; Maksete teostamine; Maksete haldusteenused; Elektroonilised makseteenused; Kaugmakseteenused; Sidusad makseteenused; Elektroonilised fondid ja siirdeteenused; Ettemakstud maksekaartide väljalase; Maksemärkide, vautserite, kupongide ja punktide väljalastamine ja tagasiostmine; Tarbijaergutiste, krediidi, maksete ja ülekannete pakkumine raha, majandusliku väärtuse või punktide kujul; Allahindluskaartide alased teenused; Rahalise väärtusega zetoonide väljastamine püsikliendiprogrammide jaoks.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Pankkikortit, maksukortit, luottokortit, käteiskortit, sekkikortit; Ennalta maksetut koodatut magneettiset kortit.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fi",
+      "description": "Kanta-asiakaskorttipalvelut; Kanta-asiakasjärjestelmäpalvelut; Kanta-asiakas-, kannuste- ja bonusohjelmapalvelut; Kanta-asiakasohjelmien ja kannustinohjelmien järjestäminen, hoitaminen ja valvonta; Asiakasuskollisuus-, kannustin- ja myynninedistämissuunnitelmien hallinta; Kanta-asiakaspalvelut kaupallisiin, myynninedistämis- ja/tai mainontatarkoituksiin; Maksukorttien myynnin edistäminen kannustinpalkkio-ohjelmien hallinnoinnin, ostopisteiden, alennusten, lisäarvotarjousten ja kuponkien myöntämisen kautta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "fi",
+      "description": "Luotto- ja luottokorttipalvelut; Pankkikortteihin, maksukortteihin ja sähköisiin maksukortteihin liittyvät palvelut; Pankkikorttipalvelut, Ennalta maksettuihin kortteihin liittyvät palvelut; Elektroniset rahakorttipalvelut; Elektroniset lompakkopalvelut (maksupalvelut); Ennakkomaksukorteilla suoritettujen elektronisten maksujen käsittely; Automaattiset maksupalvelut; Maksujen käsittely; Maksujenhallinto; Elektroniset maksupalvelut; Maksujen etäkäsittelypalvelut; Online-maksupalvelut; Elektroniset varojen siirtopalvelut; Etukäteen maksettujen maksukorttien antaminen; Arvosetelien, kuponkien, korttien, rahakkeiden ja pisteiden anto ja lunastus; Kuluttajien kannustinten, luottojen, maksujen ja siirtojen tarjoaminen rahan, taloudellisen arvon tai pisteiden muodossa; Alennuskorttipalvelut; Kanta-asiakasjärjestelmiin liittyvien arvokuponkien antaminen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Cartes bancaires, cartes de débit, cartes de crédit, cartes de retrait de liquidités, cartes de chèques; Cartes magnétiques prépayées encodées.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Services de cartes de fidélisation; Services de programmes de fidélité; Services de programmes de fidélisation, de stimulation et de bonifications; Organisation, exploitation et supervision de programmes de fidélisation et d'incitation de la clientèle; Gestion de fidélisation de clientèle, de primes et de promotions; Services de fidélisation de la clientèle à des fins commerciales, promotionnelles ou publicitaires; Promotion de la vente de comptes-cartes de paiement par le biais de l'administration de programmes de primes de stimulation, la remise de points d'achat, des ristournes, rabais, offres à valeur ajoutée et coupons.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "fr",
+      "description": "Services de crédit et de cartes de crédit; Services de cartes bancaires, de cartes de débit et de cartes de paiement électroniques; Services de carte de débit, Services de cartes à prépaiement; Services porte-monnaie électroniques; Services de porte-monnaie électronique [services de paiement]; Traitement de paiements électroniques effectués par le biais de cartes prépayées; Services de paiement automatisé; Gestion de paiements; Services de gestion des paiements; Services de paiement électronique; Services de paiement à distance; Services de paiement en ligne; Services de transfert électronique de fonds; émission de carte de paiement prépayées; Émission et rachat de bons, coupons, cartes, jetons et points; Fourniture de mesures incitatives, crédits, paiements et transferts pour clients sous forme d'argent, de valeur économique ou de points; Services de cartes de ristourne; Émission de coupons de valeur dans le cadre de programmes de fidélisation de la clientèle.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Bankkarten, Debitkarten, Kreditkarten, Geldkarten, Scheckkarten; Im Voraus bezahlte kodierte Magnetkarten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Ausgabe von Kundenkarten; Dienstleistungen zur Förderung der Kundenbindung [Entwicklung von Bonusprogrammen für Marketingzwecke]; Dienstleistungen in Bezug auf Kundenbindungs-, Anreiz- und Bonusprogramme; Organisation, Betrieb und Überwachung von Kundentreueprogrammen und Anreizprogrammen; Geschäftsführung in Bezug auf Kundentreue-, Prämien- oder Verkaufsförderungsprogrammen; Dienstleistungen im Bereich Kundenbindung für Geschäfts-, Verkaufsförderungs- und/oder Werbezwecke; Verkaufsförderung für Zahlungskartenkonten durch die Verwaltung von Prämienprogrammen, Vergabe von Einkaufspunkten, Preisnachlässen, Rabatten, Mehrwertangeboten und Gutscheinen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "de",
+      "description": "Ausgabe von Kreditkarten und Kreditservice; Dienstleistungen in Bezug auf Bankkarten, Debitkarten und elektronischen Zahlungsverkehr; Ausgabe von Debitkarten, Vorauszahlungskartendienste; Ausgabe von Geldkarten für Kleinbeträge (elektronische Geldbeutel); Finanzdienstleistungen auf dem Gebiet des elektronischen Zahlungsverkehrs; Bearbeitung elektronischer Zahlungen, die mit Prepaid-Karten geleistet wurden; Automatisierte Zahlungsdienste; Zahlungsbearbeitung; Verwaltung des Zahlungsverkehrs; Elektronische Zahlungsdienste; Fernabwicklung von Zahlungen; Online-Zahlungsdienstleistungen; Elektronische Kapitaltransferdienste; Ausgabe von Prepaid-Zahlungskarten; Ausgabe und Einlösung von Gutscheinen, Coupons, Wertmarken und Punkten; Bereitstellung von Verbraucheranreizen, Guthaben, Zahlungen und Übertragungen in Form von Geld, Wirtschaftswerten oder Punkten; Ausgabe von Rabattkarten; Ausgabe von Wertmarken für Kundenbindungsprogramme.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Bankovne kartice, debitne kartice, kreditne kartice, gotovinske kartice, cekovne kartice; Magnetske kodificirane prepaid kartice.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hr",
+      "description": "Izdavanje kartica za kupce; Usluge za programe lojalnosti; Usluge programa vjernosti, motivacije i bonusa; Organiziranje, upravljanje i nadzor programa vjernosti kupaca te poticajnih programa; Upravljanje poticajnim, promotivnim ili programima vjernosti korisnika; Usluge korisnicke vjernosti u komercijalne, promotivne i/ili reklamne svrhe; Promidzba prodaje racuna platnih kartica putem administracije poticajnih nagradnih programa, dodjeljivanja bodova za kupnju, popusta, rabata, ponuda s dodanom vrijednoscu i kupona.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "hr",
+      "description": "Kreditne kartice i kreditne usluge; Usluge u vezi s bankovnim karticama, debitnim karticama i karticama za elektronicko placanje; Usluge u svezi s debitnim karticama, Usluge prepaid kartica (kartice na koje se unaprijed uplacuje odredena svota); Usluge u vezi s pohranjivanjem vrijednosti u elektronickom novcaniku; Usluge elektronickog novcanika [usluge placanja]; Obrada elektronickih placanja putem pretplacenih kartica; Usluge automatiziranog placanja; Obrada placanja; Usluge administracije placanja; Usluge elektronickog placanja; Usluge daljinskog placanja; Usluge placanja putem interneta; Usluge elektronickog prebacivanja sredstava; Izdavanje prepaid platnih kartica; Izdavanje i otkup vaucera, kupona, kartica, bonova i bodova; Pruzanje poticaja za kupce, kredita, placanja i prijenosa u obliku novca, ekonomske vrijednosti ili bodova; Usluge kartica za popust; Izdavanje zetona s vrijednoscu u svezi s programima korisnicke lojalnosti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Bankkártyák, fedezeti kártyák, hitelkártyák, készpénz-kártyák, csekk-kártyák; Elore kifizetett kódolt mágneskártyák.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hu",
+      "description": "Loyalty kártyák szolgáltatások; Vásárlói huségprogramokkal kapcsolatos szolgáltatások; Huségprogramok, ösztönzo és bónusz program szolgáltatások; Vásárlói huségrendszerek és ösztönzorendszerek szervezése, muködtetése és felügyelete; Vevoi lojalitás, ösztönzési vagy promóciós tervek ügyvitele; Vásárlói huségszolgáltatások kereskedelmi-, promóciós- és/vagy reklámcélokra; Fizetokártyás folyószámlák eladásának promóciója a következok révén: ösztönzo jutalomprogramok adminisztrációja, vásárlási pontok, kedvezmények, árengedmények, értéknövelt ajánlatok és kuponok juttatása.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "hu",
+      "description": "Hitelkártyás és hitel-szolgáltatások; Hitelkártyás, betéti kártyás és elektronikus fizetési kártyás szolgáltatások; Debitkártya szolgáltatások, Elo-fizetési kártya szolgáltatások; Elektronikus értékmegorzo szolgáltatások; Elektronikus úton történo tranzakciók (fizetési szolgáltatások); Elore fizetett kártyával történo elektronikus kifizetések feldolgozása; Automata fizetési szolgáltatások; Kifizetések feldolgozása; Fizetési ügyintézés; Elektronikus fizetési szolgáltatások; Távfizetési szolgáltatások; Online kifizetési szolgáltatások; Elektronikus alapátutalási szolgáltatások; Pre-paid (elore fizetett) fizetokártyák kibocsátása; Utalványok, kuponok, kártyák, zsetonok és pontok kiadása és visszaváltása; Ügyfél-ösztönzok, hitelek, fizetések és átutalások biztosítása pénz, gazdasági érték vagy pontok formájában; Diszkontkártya-szolgáltatások; Vásárlói huségakciókhoz kapcsolódó értékzsetonok kiadása.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Carte bancarie, carte d'addebito, carte di credito, carte per acquisti, carte assegni; carte magnetiche prepagate codificate.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "it",
+      "description": "Carte di fedeltà (servizi); Servizi relativi a programmi di fedeltà; Servizi per fidi, incentivi ed indennità; Organizzazione, gestione e supervisione di programmi di fidelizzazione della clientela e di programmi d'incentivazione; Gestione di programmi di fedeltà, incentivi e promozioni per clienti; Servizi di fedeltà della clientela per scopi commerciali, promozionali e/o pubblicitari; Promozione della vendita di conti con carte di pagamento attraverso l'amministrazione di programmi d'incentivazione a premi, conferimento di punti d'acquisto, sconti, riduzioni, offerte a valore aggiunto e tagliandi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "it",
+      "description": "Servizi di credito e di carte di credito; Servizi di carte bancarie, carte di debito e carte di pagamento elettronico; Servizi di carte di debito, Servizi di carte prepagate; Servizi elettronici di valori depositati; Servizi di portafoglio elettronico (servizi di pagamento); Elaborazione di pagamenti elettronici effettuati con carte prepagate; Servizi di pagamento automatizzato; Trattamento di pagamenti; Amministrazione di pagamenti; Servizi di pagamento elettronico; Servizi di pagamento remoto; Pagamento on-line; Servizi di trasferimento elettronico di fondi; Emissione di carte di pagamento prepagate; Emissione e rimborso di buoni, tagliandi, carte, gettoni e punti; Fornitura di incentivi, crediti, pagamenti e trasferimenti per clienti, sotto forma di denaro, valore economico o punti; Servizi di carte di sconto; Emissione di buoni di valore relativamente a programmi di fedeltà del cliente.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Banko korteles, debeto korteles, kredito korteles, grynuju pinigu korteles, cekiu korteles; Is anksto apmoketos koduotosios magnetines korteles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lt",
+      "description": "Nuolatiniu klientu korteliu paslaugos; Lojalumo programu paslaugos; Lojalumo, skatinimo ir premijavimo programu paslaugos; Klientu lojalumo sistemu ir skatinamuju programu organizavimas, vykdymas ir prieziura; Klientu lojalumo, skatinimo ir reklamavimo sistemu vadyba; Klientu lojalumo paslaugos komercijos, skatinimo ir/ar reklamos reikmems; Mokejimo korteliu saskaitu pardavimo skatinimas, administruojant skatinamasias premiju programas, suteikiant taskus uz pirkinius, suteikiant nuolaidas, grazinant permokas, teikiant pridetines vertes pasiulymus ir isduodant kuponus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "lt",
+      "description": "Kreditiniu korteliu ir kreditu paslaugos; Banko korteliu, debeto korteliu ir elektroniniu mokejimo korteliu paslaugos; Debeto korteliu paslaugos, Isankstinio mokejimo korteliu paslaugos; Elektronines pinigu imokejimo paslaugos; Elektroniniu piniginiu paslaugos (mokejimo paslaugos); Elektroniniu mokejimu, atliekamu per isankstinio apmokejimo korteles, apdorojimas; Automatizuotos mokejimo paslaugos; Mokejimu vykdymas; Mokejimo administravimas; Elektroninio mokejimo paslaugos; Nuotolinio mokejimo paslaugos; Apmokejimo internetu paslaugos; Elektroninio piniginiu lesu pervedimo paslaugos; Isankstinio mokejimo korteliu isleidimas; Kvitu, kuponu, korteliu, zetonu ir tasku isleidimas ir ispirkimas; Pirkeju skatinimo, kreditu, apmokejimu ir pervedimu pinigu, ekonomines vertes ar tasku forma teikimas; Nuolaidu korteliu paslaugos; Vertybiniu zetonu, susijusiu su klientu lojalumo programomis, emisija.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Banku kartes, debetkartes, kreditkartes, naudas kartes, ceku kartes; Prieksapmaksas kodetas magnetiskas kartes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lv",
+      "description": "Lojalitates kartes; Lojalitates programmu pakalpojumi; Pakalpojumi lojalitates, motivesanas un bonusu programmu joma; Klientu lojalitates programmu un stimulesanas programmu organizesana, vadisana un uzraudziba; Pirceju lojalitates, motivesanas vai veicinasanas programmu vadiba; Klientu lojalitates pakalpojumi komercialiem, pardosanas veicinasanas un/vai reklamas nolukiem; Maksajumu karsu kontu tirdzniecibas veicinasana, izmantojot veicinasanas balvu programmas, bonusu pirkumu punktus, atlaides, atlaides, pievienotas vertibas piedavajumus un kuponus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "lv",
+      "description": "Kreditkarsu un kredita pakalpojumi; Pakalpojumi saistiba ar bankas kartem, debetkartem un elektroniskam norekinu kartem; Debetkarsu pakalpojumi, Prieksapmaksas karsu pakalpojumi; Elektroniskie naudas noguldijuma pakalpojumi; Elektroniska maka pakalpojumi (maksajumu pakalpojumi); Ar prieksapmaksas kartem veiktu elektronisku maksajumu apstrade; Automatizeto maksajumu pakalpojumi; Maksajumu apstrade; Maksajumu administresana; Elektronisko maksajumu pakalpojumi; Attalo maksajumu pakalpojumi; Maksasanas pakalpojumi tiessaiste; Elektronisko fondu transfertu pakalpojumi; Ieprieks apmaksatu maksajuma karsu izdosana; Maksajuma kvisu, kuponu, karsu, zetonu un punktu izdosana un atmaksasana; Stimulu, kreditu, maksajumu un parvedumu nodrosinasana klientiem naudas, ekonomiskas vertibas vai punktu veida; Atlaizu karsu pakalpojumi; Naudas aizstajeju izlaisana saistiba ar klientu lojalitates programmam.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Kards bankarji, kards tad-debitu, kards tal-kreditu, kards biex jingibdu l-flus, kards tac-cekkijiet; Karti manjetici mhallsa minn qabel kodifikati.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' karti ta' lealtà; Servizzi ta' skemi tal-lealtà; Servizzi ta' programmi ta' lealtà, incentivi u bonus; Organizzazzjoni, operat u supervizjoni ta' skemi ta' lealtà tal-klijenti u skemi ta' incentivi; Il-gestjoni ta' skemi ta' lealtà tal-klijenti, promozzjonali jew ta' incentiv; Servizzi ta' lealtà ghall-klijent ghal skopijiet kummercjali, promozzjonali u/jew ta' reklamar; Promozzjoni tal-bejgh ta' kontijiet ta' kards tal-hlas permezz tal-amministrazzjoni ta' programmi ta' incentivi, ghoti ta' punti tax-xiri, skontijiet, ribassi, offerti bil-valur mizjud u kupuni.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' kards tal-kreditu u tal-kreditu; Servizzi ta' kards bankarji, kards tad-debitu u kards ta' hlas elettronici; Servizzi ta' kards tad-debitu, Servizzi ta' karti tal-hlas bil-quddiem; Servizzi elettronici ta' ammonti depositati; Servizzi b'mezzi ta' hlas elettroniku (servizzi ta' hlas); L-ipprocessar ta' hlas elettroniku maghmul permezz ta' kards b'valur imhallas minn qabel; Servizzi ta' hlas awtomatizzati; L-ipprocessar ta' pagamenti; Servizzi ta' amministrazzjoni ta' hlas; Servizzi ta' hlas b'mezz elettroniku; Servizzi ta' hlas remoti; Servizzi ta' hlas online; Servizzi elettronici ta' trasferiment ta' fondi; Hrug ta' kards tal-hlas imhallsa bil-quddiem; Hrug u tifdija ta' vawcers, kupuni, kards, towkins u punti; Il-provvista ta' incentivi ghall-klijenti, krediti, pagamenti u trasferimenti fil-forma ta' flus, valur ekonomiku jew punti; Servizzi ta' kard ta' skont; Hrug ta' towkins ta' valur relatati ma' skemi ta' lealtà tal-klijenti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Karty bankowe, karty debetowe, karty kredytowe, karty gotówkowe, karty czekowe; Przedplacone kodowane karty magnetyczne.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pl",
+      "description": "Karty stalego klienta; Obsluga programów lojalnosciowych; Uslugi programów lojalnosciowych, motywacyjnych i promocyjnych; Organizacja, prowadzenie i nadzorowanie programów lojalnosciowych dla klientów i programów motywacyjnych; Zarzadzanie programami lojalnosciowymi, motywacyjnymi lub promocyjnymi; Uslugi programów lojalnosciowych dla celów handlowych, promocyjnych i/lub reklamowych; Promowanie sprzedazy kont z karta platnicza poprzez przydzielenie programów premii motywacyjnych, punktów nagradzajacych zakupów, znizek, rabatów, ofert od wartosci dodatniej i kuponów.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "pl",
+      "description": "Uslugi w zakresie kart kredytowych i kredytów; Uslugi swiadczone z zwiazku z kartami bankowymi, kartami debetowymi i kartami do platnosci elektronicznych; Obsluga kart kredytowych, Obsluga kart przedplaconych; Elektroniczne uslugi zwiazane ze zdeponowanymi srodkami pienieznymi; Uslugi portfela elektronicznego (uslugi w zakresie platnosci); Przetwarzanie platnosci elektronicznych dokonywanych przy uzyciu przedplaconych kart; Zautomatyzowane uslugi platnicze; Obsluga platnosci; Uslugi w zakresie administrowania platnosci; Uslugi w zakresie elektronicznych platnosci; Uslugi w zakresie platnosci zdalnych; Uslugi platnicze on-line; Uslugi elektronicznego transferu funduszy; Wydawanie przedplaconych kart platniczych; Wydawanie i splata kuponów, bonów, kart, zetonów i punktów; Zapewnianie klientom zachet, kredytów, platnosci i transferu w formie pienieznej, wartosci ekonomicznej lub punktów; Uslugi w zakresie kart znizkowych; Wydawanie bonów wartosciowych w zwiazku z programami lojalnosciowymi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Cartões bancários, cartões de débito, cartões de crédito, cartões de levantamento de dinheiro, cartões de cheques; Cartões magnéticos pré-pagos codificados.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pt",
+      "description": "Serviços de cartões de fidelidade; Serviços de planos de fidelização; Serviços de programas de fidelização, incentivo e oferta; Organização, execução e supervisão de programas de fidelização de clientes e programas de incentivos; Gestão de programas de fidelidade de clientes, planos de incentivo ou de promoção; Serviços de fidelização de clientes para fins comerciais, promocionais e/ou publicitários; Promoção da venda de contas de cartões de pagamento através da administração de programas de atribuição de incentivos, atribuição de pontos por compras, descontos, sorteios promocionais, reduções de preço (bónus), ofertas de valor acrescentado e cupões.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "pt",
+      "description": "Serviços de crédito e de cartões de crédito; Serviços de cartões de crédito, cartões de débito e cartões de pagamento eletrónicos; Serviços de cartões de débito, Serviços de cartões pré-pagos; Serviços de porta-moedas electrónico de valores depositados; Serviços de carteira eletrónica (serviços de pagamentos); Processamento de pagamentos eletrónicos efectuados com cartões pré-pagos; Serviços de pagamento automático; Processamento de pagamentos; Serviços de gestão de pagamentos; Serviços de pagamento eletrónico; Serviços de processamento remoto de pagamentos; Serviços de pagamento em linha; Serviços de transferência electrónica de fundos; Emissão de cartões de pagamento pré-pagos; Emissão e amortização de vales, cupões, cartões, fichas e pontos; Fornecimento de incentivos ao consumidor, créditos, pagamentos e transferências sob a forma de dinheiro, valor económico ou pontos; Serviços de cartões de desconto; Emissão de títulos de valores relacionados com planos de fidelização de clientes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Carduri bancare, caduri de debit, carduri de credit, carduri de numerar, carduri de cecuri; Carduri magnetice preplatite codificate.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ro",
+      "description": "Servicii de carduri de fidelitate; Servicii de programe de loializare; Servicii de fidelizare, motivare si recompensare; Organizare, utilizare si monitorizare de programe de loialitate pentru clienti si de programe cu stimulente; Gestionare de programe de loializare, de stimulare sau promotionale pentru clienti; Servicii de fidelizare de clienti în scopuri comerciale, promotionale si/sau publicitare; Promovarea vânzarii de conturi pentru cardurile de plata prin administrarea programelor de acordare de stimulente, oferirea de puncte de achizitie, de reduceri, de rabaturi, de oferte cu valoare adaugata si cupoane.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "ro",
+      "description": "Carduri de credit si servicii de credit; Servicii de carduri bancare, carduri de debit si de carduri pentru plati electronice; Servicii referitoare la carduri de debit, Servicii pe baza de card cu plata anticipata; Servicii electronice de depunere de valori; Servicii de portofel electronic (servicii de plati); Procesarea platilor electronice efectuate cu carduri preplatite; Servicii de plata automatizata; Procesarea platilor; Servicii de administrare a platilor; Servicii de plata electronica; Servicii de plata la distanta; Servicii de plata on-line; Servicii de transfer electronic de fonduri; Emitere de carduri de plata preplatite; Emiterea si rascumpararea de cupoane, taloane, carduri, fise si puncte; Furnizarea pentru clienti de stimulente, credite, plati si transferuri sub forma de bani, valoare economica sau puncte; Servicii de carduri de reduceri; Emisiunea de bonuri de valoare privind programele de fidelizare a clientilor.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Bankové karty, debetné karty, kreditné karty, hotovostné karty, sekové karty; Predplatené kódované magnetické karty.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sk",
+      "description": "Vernostné karty; Sluzby vernostných programov; Sluzby vernostných, motivacných a odmenovacích programov; Organizovanie, prevádzkovanie a dozor na zákazníckymi vernostnými programami a motivacnými programami; Riadenie zákazníckych vernostných, motivacných a propagacných programov; Zákaznícke vernostné sluzby na komercné, propagacné a/alebo reklamné úcely; Propagovanie predaja úctov platobných kariet prostredníctvom správy motivacných odmenovacích programov, udelovanie nákupných bodov, zliav, ocenených ponúk a kupónov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "sk",
+      "description": "Sluzby kreditných kariet a úverové sluzby; Sluzby v oblasti bankových kariet, debetných kariet a elektronických platobných kariet; Sluzby debetných kariet, Sluzby predplatených kariet; Elektronické depozitné sluzby; Sluzby elektronickej penazenky (platobné sluzby); Spracovanie elektronických platieb uskutocnených predplatenými kartami; Automatizované platobné sluzby; Spracovanie platieb; Správa platieb; Elektronické platobné sluzby; Sluzby dialkových platieb; Platobné sluzby online; Sluzby elektronického prevodu prosriedkov; Vydávanie predplatených platobných kariet; Vydávanie a preplácanie kupónov, kariet, zetónov a bodov; Poskytovanie zákazníckych motivacných programov, kreditov, platieb a prenosov v podobe penazí, ekonomickej hodnoty alebo bodov; Sluzby diskontných kariet; Vydávanie penazných poukázok v súvislosti so zákazníckymi vernostnými programami.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Bancne kartice, debetne kartice, kreditne kartice, gotovinske kartice, cekovne kartice; Predplacniske kodirane magnetne kartice.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sl",
+      "description": "Storitve kartic zvestobe; Storitve, povezane s shemami zvestobe; Storitve programov zvestobe, spodbujevalnih in nagrajevalnih programov za potrosnike; Organiziranje, izvajanje in nadzor shem zvestobe strank in shem spodbud; Upravljanje s shemami zvestobe strank ter stimulacijskimi ali promocijskimi shemami; Storitve zvestobe strank za komercialne, promocijske in/ali oglasevalne namene; Promocija prodaje racunov placilnih kartic z administracijo spodbudnih nagradnih programov, podeljevanje nagradnih tock ob nakupu, popusti, nagradne igre, znizanja, ponudbe na dodano vrednost in kuponi za uporabo placilnih kartic.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "sl",
+      "description": "Storitve kreditnih kartic in kredita; Storitve bancnih kartic, debetnih kartic in elektronskih placilnih kartic; Storitve debetnih kartic, Storitve v zvezi s predplacilnimi karticami; Elektronske storitve deponiranih sredstev; Storitve elektronske denarnice (storitve placilnega prometa); Obdelava elektronskih placil, izvrsenih s predplacniskimi karticami; Avtomatizirane placilne storitve; Obdelava placil; Vodenje placilnega prometa; Elektronske placilne storitve; Storitve placevanja na daljavo; Spletne storitve placilnega prometa; Storitve elektronskega prenosa denarja; Izdajanje predplacniskih placilnih kartic; Izdajaje in unovcevanje vavcerjev, kuponov, kartic, zetonov in tock; Nudenje spodbud, kreditov, placil in transferjev za stranke, v obliki denarja, ekonomske vrednosti ali tock; Storitve kartic za popuste; Izdajanje vrednostnih zetonov, ki se nanasajo na programe zvestobe strank.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Tarjetas bancarias, tarjetas de débito, tarjetas de crédito, tarjetas de efectivo, tarjetas de cheque; Tarjetas magnéticas prepagadas codificadas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Servicios de tarjetas de fidelización; Servicios de programas de fidelización; Servicios relacionados con programas de bonos, incentivos y fidelización de clientes; Organización, explotación y seguimiento de programas de fidelidad de clientes y programas de incentivos; Gestión de planes de fidelidad de clientes, planes de incentivos o de promoción; Servicios de fidelización de clientes con fines comerciales, promocionales o publicitarios; Promoción de la venta de cuentas de tarjetas de pago a través de la administración de programas de premios de incentivos, concesión de puntos de compra, descuentos, rebajas, ofertas de valor añadido y cupones.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "es",
+      "description": "Servicios de crédito y de tarjetas de crédito; Servicios de tarjetas de banco, tarjetas de débito y tarjetas de pagos electrónicos; Servicios de tarjetas de débito, Servicios de tarjetas de previo pago; Servicios de monedero electrónico de valor acumulado; Servicios de monedero electrónico (servicios de pago); Trámite de pagos electrónicos efectuados con tarjetas de previo pago; Servicios de pago automatizado; Procesamiento de pagos; Administración de pagos; Servicios de pago electrónico; Servicios de pagos a distancia; Servicios de pago en línea; Servicios de transferencia electrónica de fondos; Emisión de tarjetas de pago prepagadas; Emisión y canje de vales, cupones, tarjetas, fichas y puntos; Suministro de incentivos, créditos, pagos y transferencias para clientes en forma de dinero, valor económico o puntos; Servicios de tarjetas de descuento; Emisión de vales en relación con planes de fidelización del cliente.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Bankkort, betalkort, kreditkort, kontantkort, checkkort; Förbetalda kodade magnetiska kort.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sw",
+      "description": "Lojalitetskorttjänster; Tjänster avseende lojalitetsprogram; Lojalitets-, incitaments- och bonusprogramtjänster; Organisering, drift och övervakning av kundlojalitetsprogram och incitamentprogram; Hantering av kundtrofasthet genom stimulerande eller säljfrämjande program; Kundlojalitetstjänster för kommersiella, säljfrämjande och/eller reklammässiga ändamål; Främjande av försäljning av betalkortkonton genom administrering av motivations- och belöningsprogram, utdelning av inköpspoäng, rabatter, värdehöjande erbjudanden och kuponger.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "sw",
+      "description": "Kreditkorts- och kredittjänster; Bankkort, betalkort och elektroniska betalkortstjänster; Betalkortstjänster, Tjänster avseende förbetalda kort; Elektroniska penningtjänster med lagrat värde; Elektroniska plånbokstjänster (betaltjänster); Bearbetning av elektroniska betalningar utförda via förbetalda kort; Automatiska betalningstjänster; Betalningsbehandling; Betalningsadministration; Elektroniska betalningstjänster; Distansbetalningstjänster; Betalning via direktanslutning; Tjänster avseende elektronisk överföring av kapital; Utfärdande av förbetalda betalkort; Utgivning och inlösen av kuponger, kuponger, kort, polletter och poäng; Tillhandahållande av kundincitament, poäng, betalningar och överföringar i form av pengar, ekonomiskt värde eller poäng; Rabattkortstjänster; Utfärdande av värdekuponger i samband kundlojalitetsprogram.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Rank Leisure Holdings Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Potter Clarkson KB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "TOR, Saint-Cloud Way,Maidenhead, Berkshire, SL6 8BN",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Rank Leisure Holdings Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Bankovní karty, debetní karty, kreditní karty, platební karty, sekové karty; Kódované magnetické predplacené karty."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Sluzby loajalitních karet/sluzby zákaznikových karet; Sluzby vernostních programu; Vernostní, pobídkové a bonusové programy; Organizování, provozování a kontrola zákaznických vernostních programu a pobídkových programu; Správa zákaznických vernostních, motivacních nebo propagacních programu; Vernostní zákaznické sluzby ke komercním, propagacním a/nebo reklamním úcelum; Podpora prodeje úctu platebních karet prostrednictvím administrativy pobídkových programu odmen, pridelování nákupních bodu, slev, rabatu, nabídek a kuponu s pridanou hodnotou."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Sluzby kreditních karet a úverové sluzby; Sluzby v oblasti bankovních karet, debetních karet a elektronických platebních karet; Debetní karty (Sluzby týkající se -), Sluzby týkající se predplacených karet; Elektronické sluzby zamerené na ulozené hodnoty; Sluzby elektronické penezenky (platební sluzby); Zpracování elektronických plateb provádených predplacenými kartami; Automatizované platební sluzby; Zpracování plateb; Správa plateb; Elektronické platební sluzby; Sluzby týkající se dálkových plateb; On-line platební sluzby; Sluzby na elektronický prevod prostredku; Vydávání predplacených platebních karet; Vydávání a odkupování poukazu, kuponu, karet, zetonu a bodu; Poskytování zákaznických pobídek, kreditu, plateb a prevodu ve forme penez, ekonomické hodnoty nebo bodu; Sluzby diskontních karet; Vydávání hodnotových poukázek v souvislosti s vernostními programy pro zákazníky."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Bankkort, hævekort, kreditkort, kontantkort, checkkort; Forudbetalte magnetkort, kodede."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Affinitetskortservice; Tjenesteydelser i forbindelse med loyalitetsprogrammer; Loyaltitets-, incitaments- og bonusprogrammer; Organisering, drift og overvågning af kundeloyalitetsordninger og bonusprogrammer; Administration af programmer om kundeloyalitet, incitament eller salgsfremmende aktiviteter; Kundeloyalitetsydelser i kommercielt, salgsfremmende og/eller reklamemæssigt øjemed; Salgsfremme i forbindelse med salg af betalingskortskonti gennem administration af bonusordninger, tildeling af point ved køb, rabatter, prisnedslag, tilbud og værdikuponer med merværdi."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Kredit- og kreditkortvirksomhed; Tjenesteydelser i forbindelse med kreditkort, hævekort og elektroniske betalingskort; Kreditkortservice, Virksomhed i forbindelse med forudbetalte kort; Tjenesteydelser i forbindelse med elektroniske punge med forudbetalte værdier; Elektroniske tegnebøger (betalingstjenesteydelser); Behandling af elektroniske betalinger med forudbetalingskort; Automatiske betalingstjenester; Betalingsbehandling; Administration af betalinger; Elektroniske betalingstjenester; Tjenesteydelser inden for fjernbetaling; Onlinebetaling; Tjenesteydelser vedrørende elektronisk overførsel af midler; Udstedelse af forudbetalte betalingskort; Udstedelse og indløsning af værdikuponer, kuponer, kort, mærker og mønter og opsamlede points; Kundetilskyndelses- og bonusordninger, kreditter, betalinger og overførsler i form af penge, økonomiske værdier eller point; Rabatkortvirksomhed; Udstedelse af værdikuponer i forbindelse med kundeloyalitetsordninger."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Bankpasjes, debetkaarten, creditcards, betaalkaarten, chequekaarten; Gecodeerde vooruitbetaalde magneetkaarten."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Klantenkaarten; Klantenbindingsdiensten; Klantenbindings-, aanmoedigings- en bonusprogrammadiensten; Organisatie, exploitatie en toezicht in verband met klantenbindingsacties en aanmoedigingsacties; Beheer van klantenbindings-, aanmoedigings- of reclameacties; Diensten in verband met klantenbinding voor commerciële, promotionele en/of reclamedoeleinden; Promotie van de verkoop van betaalkaartrekeningen door middel van het beheer van stimulerings- en beloningsacties, toekenning van aankooppunten, kortingen, aanbiedingen met toegevoegde waarde en bonnen."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Krediet- en creditcarddiensten; Diensten inzake bankpassen, debetkaarten en kaarten voor elektronische betalingen; Debitcard diensten, Vooruitbetaalde kaarten; Elektronische portemonnees met een vooraf opgeslagen waarde; Elektronische portefeuilles (betalingsdiensten); Verwerking van elektronische betalingen gedaan met vooraf betaalde kaarten; Diensten op het gebied van geautomatiseerde betalingen; Verwerking van betalingen; Betalingsadministratie; Diensten op het gebied van elektronische betaling; Betalingen op afstand (Diensten op het gebied van -); On-linebetalingen; Diensten op het gebied van elektronische overmaking van fondsen; Uitgifte van vooruitbetaalde betaalkaarten; Uitgifte en inlossing van waardebonnen, bonnen, kaarten, munten en waardepunten; Het aanbieden van klantenaanmoedigingen, kredieten, betalingen en overboekingen in de vorm van geld, economische waarden of punten; Kortingskaarten; Het uitgeven van waardebonnen in verband met loyaliteitsacties voor klanten."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Credit cards, debit cards, bank cards, cash cards and cheque cards; encoded magnetic prepaid cards."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Loyalty card services; loyalty scheme services; loyalty, incentive and bonus program services; organization, operation and supervision of customer loyalty schemes and incentive schemes; management of customer loyalty, incentive or promotional schemes; customer loyalty services for commercial, promotional and/or advertising purposes; promoting the sale of payment card accounts through the administration of incentive award programmes, awarding purchase points, discounts, rebates, valued added offers and coupons."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Credit card and credit services; bank card, debit card and electronic payment card services; charge card services, pre-paid card services; stored value electronic purse services; electronic wallet services (payment services); processing electronic payments made through prepaid cards; automated payment services; payment processing; payment administration services; electronic payment services; remote payment services; online payment services; electronic fund transfer services; issuance of prepaid payment cards; issue and redemption of vouchers, coupons, cards, tokens and points; providing customer incentives, credits, payments and transfers in the form of money, economic value or points; discount card services; issuing of tokens of value in relation to customer loyalty schemes."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Pangakaardid, deebetkaardid, kreeditkaardid, maksekaardid, tsekikaardid; Elektroonilised ettemaksemagnetkaardid."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Ustavuskaardi teenused; Püsikliendiprogrammid; Lojaalsusprogrammi-, ergutusprogrammi- ja boonusprogrammiteenused; Kliendilojaalsusskeemide ja ergutusskeemide korraldamine, käitamine ja järelevalve; Püsikliendi-, ergutus- või kampaaniaprogrammide juhtimine; Lojaalsusprogrammiteenused äri, müügiedenduse ja/või reklaami eesmärgil; Maksekaardikontode müügiedendus interaktiivsete auhinnaprogrammide, premeerivate ostupunktide, allahindluste, loteriide, allahindlused, loteriid, hinnaalandid, lisandväärtuse pakkumiste ja kupongide haldamise teel."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Krediitkaardi- ja krediiditeenused; Pangakaardi, deebetkaardi ja elektroonilise maksekaardi teenused; Deebetkaarditeenused, Ettemaksekaartide teenused; Hoiustatud väärtuste elektroonilised teenused; Elektroonilise rahakoti teenused (makseteenused); Ettemaksekaartidega sooritatud elektrooniliste maksete töötlemine; Automatiseeritud makseteenused; Maksete teostamine; Maksete haldusteenused; Elektroonilised makseteenused; Kaugmakseteenused; Sidusad makseteenused; Elektroonilised fondid ja siirdeteenused; Ettemakstud maksekaartide väljalase; Maksemärkide, vautserite, kupongide ja punktide väljalastamine ja tagasiostmine; Tarbijaergutiste, krediidi, maksete ja ülekannete pakkumine raha, majandusliku väärtuse või punktide kujul; Allahindluskaartide alased teenused; Rahalise väärtusega zetoonide väljastamine püsikliendiprogrammide jaoks."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Pankkikortit, maksukortit, luottokortit, käteiskortit, sekkikortit; Ennalta maksetut koodatut magneettiset kortit."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Kanta-asiakaskorttipalvelut; Kanta-asiakasjärjestelmäpalvelut; Kanta-asiakas-, kannuste- ja bonusohjelmapalvelut; Kanta-asiakasohjelmien ja kannustinohjelmien järjestäminen, hoitaminen ja valvonta; Asiakasuskollisuus-, kannustin- ja myynninedistämissuunnitelmien hallinta; Kanta-asiakaspalvelut kaupallisiin, myynninedistämis- ja/tai mainontatarkoituksiin; Maksukorttien myynnin edistäminen kannustinpalkkio-ohjelmien hallinnoinnin, ostopisteiden, alennusten, lisäarvotarjousten ja kuponkien myöntämisen kautta."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Luotto- ja luottokorttipalvelut; Pankkikortteihin, maksukortteihin ja sähköisiin maksukortteihin liittyvät palvelut; Pankkikorttipalvelut, Ennalta maksettuihin kortteihin liittyvät palvelut; Elektroniset rahakorttipalvelut; Elektroniset lompakkopalvelut (maksupalvelut); Ennakkomaksukorteilla suoritettujen elektronisten maksujen käsittely; Automaattiset maksupalvelut; Maksujen käsittely; Maksujenhallinto; Elektroniset maksupalvelut; Maksujen etäkäsittelypalvelut; Online-maksupalvelut; Elektroniset varojen siirtopalvelut; Etukäteen maksettujen maksukorttien antaminen; Arvosetelien, kuponkien, korttien, rahakkeiden ja pisteiden anto ja lunastus; Kuluttajien kannustinten, luottojen, maksujen ja siirtojen tarjoaminen rahan, taloudellisen arvon tai pisteiden muodossa; Alennuskorttipalvelut; Kanta-asiakasjärjestelmiin liittyvien arvokuponkien antaminen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Cartes bancaires, cartes de débit, cartes de crédit, cartes de retrait de liquidités, cartes de chèques; Cartes magnétiques prépayées encodées."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de cartes de fidélisation; Services de programmes de fidélité; Services de programmes de fidélisation, de stimulation et de bonifications; Organisation, exploitation et supervision de programmes de fidélisation et d'incitation de la clientèle; Gestion de fidélisation de clientèle, de primes et de promotions; Services de fidélisation de la clientèle à des fins commerciales, promotionnelles ou publicitaires; Promotion de la vente de comptes-cartes de paiement par le biais de l'administration de programmes de primes de stimulation, la remise de points d'achat, des ristournes, rabais, offres à valeur ajoutée et coupons."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de crédit et de cartes de crédit; Services de cartes bancaires, de cartes de débit et de cartes de paiement électroniques; Services de carte de débit, Services de cartes à prépaiement; Services porte-monnaie électroniques; Services de porte-monnaie électronique [services de paiement]; Traitement de paiements électroniques effectués par le biais de cartes prépayées; Services de paiement automatisé; Gestion de paiements; Services de gestion des paiements; Services de paiement électronique; Services de paiement à distance; Services de paiement en ligne; Services de transfert électronique de fonds; émission de carte de paiement prépayées; Émission et rachat de bons, coupons, cartes, jetons et points; Fourniture de mesures incitatives, crédits, paiements et transferts pour clients sous forme d'argent, de valeur économique ou de points; Services de cartes de ristourne; Émission de coupons de valeur dans le cadre de programmes de fidélisation de la clientèle."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Bankkarten, Debitkarten, Kreditkarten, Geldkarten, Scheckkarten; Im Voraus bezahlte kodierte Magnetkarten."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Ausgabe von Kundenkarten; Dienstleistungen zur Förderung der Kundenbindung [Entwicklung von Bonusprogrammen für Marketingzwecke]; Dienstleistungen in Bezug auf Kundenbindungs-, Anreiz- und Bonusprogramme; Organisation, Betrieb und Überwachung von Kundentreueprogrammen und Anreizprogrammen; Geschäftsführung in Bezug auf Kundentreue-, Prämien- oder Verkaufsförderungsprogrammen; Dienstleistungen im Bereich Kundenbindung für Geschäfts-, Verkaufsförderungs- und/oder Werbezwecke; Verkaufsförderung für Zahlungskartenkonten durch die Verwaltung von Prämienprogrammen, Vergabe von Einkaufspunkten, Preisnachlässen, Rabatten, Mehrwertangeboten und Gutscheinen."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Ausgabe von Kreditkarten und Kreditservice; Dienstleistungen in Bezug auf Bankkarten, Debitkarten und elektronischen Zahlungsverkehr; Ausgabe von Debitkarten, Vorauszahlungskartendienste; Ausgabe von Geldkarten für Kleinbeträge (elektronische Geldbeutel); Finanzdienstleistungen auf dem Gebiet des elektronischen Zahlungsverkehrs; Bearbeitung elektronischer Zahlungen, die mit Prepaid-Karten geleistet wurden; Automatisierte Zahlungsdienste; Zahlungsbearbeitung; Verwaltung des Zahlungsverkehrs; Elektronische Zahlungsdienste; Fernabwicklung von Zahlungen; Online-Zahlungsdienstleistungen; Elektronische Kapitaltransferdienste; Ausgabe von Prepaid-Zahlungskarten; Ausgabe und Einlösung von Gutscheinen, Coupons, Wertmarken und Punkten; Bereitstellung von Verbraucheranreizen, Guthaben, Zahlungen und Übertragungen in Form von Geld, Wirtschaftswerten oder Punkten; Ausgabe von Rabattkarten; Ausgabe von Wertmarken für Kundenbindungsprogramme."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Bankovne kartice, debitne kartice, kreditne kartice, gotovinske kartice, cekovne kartice; Magnetske kodificirane prepaid kartice."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Izdavanje kartica za kupce; Usluge za programe lojalnosti; Usluge programa vjernosti, motivacije i bonusa; Organiziranje, upravljanje i nadzor programa vjernosti kupaca te poticajnih programa; Upravljanje poticajnim, promotivnim ili programima vjernosti korisnika; Usluge korisnicke vjernosti u komercijalne, promotivne i/ili reklamne svrhe; Promidzba prodaje racuna platnih kartica putem administracije poticajnih nagradnih programa, dodjeljivanja bodova za kupnju, popusta, rabata, ponuda s dodanom vrijednoscu i kupona."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Kreditne kartice i kreditne usluge; Usluge u vezi s bankovnim karticama, debitnim karticama i karticama za elektronicko placanje; Usluge u svezi s debitnim karticama, Usluge prepaid kartica (kartice na koje se unaprijed uplacuje odredena svota); Usluge u vezi s pohranjivanjem vrijednosti u elektronickom novcaniku; Usluge elektronickog novcanika [usluge placanja]; Obrada elektronickih placanja putem pretplacenih kartica; Usluge automatiziranog placanja; Obrada placanja; Usluge administracije placanja; Usluge elektronickog placanja; Usluge daljinskog placanja; Usluge placanja putem interneta; Usluge elektronickog prebacivanja sredstava; Izdavanje prepaid platnih kartica; Izdavanje i otkup vaucera, kupona, kartica, bonova i bodova; Pruzanje poticaja za kupce, kredita, placanja i prijenosa u obliku novca, ekonomske vrijednosti ili bodova; Usluge kartica za popust; Izdavanje zetona s vrijednoscu u svezi s programima korisnicke lojalnosti."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Bankkártyák, fedezeti kártyák, hitelkártyák, készpénz-kártyák, csekk-kártyák; Elore kifizetett kódolt mágneskártyák."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Loyalty kártyák szolgáltatások; Vásárlói huségprogramokkal kapcsolatos szolgáltatások; Huségprogramok, ösztönzo és bónusz program szolgáltatások; Vásárlói huségrendszerek és ösztönzorendszerek szervezése, muködtetése és felügyelete; Vevoi lojalitás, ösztönzési vagy promóciós tervek ügyvitele; Vásárlói huségszolgáltatások kereskedelmi-, promóciós- és/vagy reklámcélokra; Fizetokártyás folyószámlák eladásának promóciója a következok révén: ösztönzo jutalomprogramok adminisztrációja, vásárlási pontok, kedvezmények, árengedmények, értéknövelt ajánlatok és kuponok juttatása."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Hitelkártyás és hitel-szolgáltatások; Hitelkártyás, betéti kártyás és elektronikus fizetési kártyás szolgáltatások; Debitkártya szolgáltatások, Elo-fizetési kártya szolgáltatások; Elektronikus értékmegorzo szolgáltatások; Elektronikus úton történo tranzakciók (fizetési szolgáltatások); Elore fizetett kártyával történo elektronikus kifizetések feldolgozása; Automata fizetési szolgáltatások; Kifizetések feldolgozása; Fizetési ügyintézés; Elektronikus fizetési szolgáltatások; Távfizetési szolgáltatások; Online kifizetési szolgáltatások; Elektronikus alapátutalási szolgáltatások; Pre-paid (elore fizetett) fizetokártyák kibocsátása; Utalványok, kuponok, kártyák, zsetonok és pontok kiadása és visszaváltása; Ügyfél-ösztönzok, hitelek, fizetések és átutalások biztosítása pénz, gazdasági érték vagy pontok formájában; Diszkontkártya-szolgáltatások; Vásárlói huségakciókhoz kapcsolódó értékzsetonok kiadása."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Carte bancarie, carte d'addebito, carte di credito, carte per acquisti, carte assegni; carte magnetiche prepagate codificate."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Carte di fedeltà (servizi); Servizi relativi a programmi di fedeltà; Servizi per fidi, incentivi ed indennità; Organizzazione, gestione e supervisione di programmi di fidelizzazione della clientela e di programmi d'incentivazione; Gestione di programmi di fedeltà, incentivi e promozioni per clienti; Servizi di fedeltà della clientela per scopi commerciali, promozionali e/o pubblicitari; Promozione della vendita di conti con carte di pagamento attraverso l'amministrazione di programmi d'incentivazione a premi, conferimento di punti d'acquisto, sconti, riduzioni, offerte a valore aggiunto e tagliandi."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di credito e di carte di credito; Servizi di carte bancarie, carte di debito e carte di pagamento elettronico; Servizi di carte di debito, Servizi di carte prepagate; Servizi elettronici di valori depositati; Servizi di portafoglio elettronico (servizi di pagamento); Elaborazione di pagamenti elettronici effettuati con carte prepagate; Servizi di pagamento automatizzato; Trattamento di pagamenti; Amministrazione di pagamenti; Servizi di pagamento elettronico; Servizi di pagamento remoto; Pagamento on-line; Servizi di trasferimento elettronico di fondi; Emissione di carte di pagamento prepagate; Emissione e rimborso di buoni, tagliandi, carte, gettoni e punti; Fornitura di incentivi, crediti, pagamenti e trasferimenti per clienti, sotto forma di denaro, valore economico o punti; Servizi di carte di sconto; Emissione di buoni di valore relativamente a programmi di fedeltà del cliente."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Banko korteles, debeto korteles, kredito korteles, grynuju pinigu korteles, cekiu korteles; Is anksto apmoketos koduotosios magnetines korteles."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Nuolatiniu klientu korteliu paslaugos; Lojalumo programu paslaugos; Lojalumo, skatinimo ir premijavimo programu paslaugos; Klientu lojalumo sistemu ir skatinamuju programu organizavimas, vykdymas ir prieziura; Klientu lojalumo, skatinimo ir reklamavimo sistemu vadyba; Klientu lojalumo paslaugos komercijos, skatinimo ir/ar reklamos reikmems; Mokejimo korteliu saskaitu pardavimo skatinimas, administruojant skatinamasias premiju programas, suteikiant taskus uz pirkinius, suteikiant nuolaidas, grazinant permokas, teikiant pridetines vertes pasiulymus ir isduodant kuponus."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Kreditiniu korteliu ir kreditu paslaugos; Banko korteliu, debeto korteliu ir elektroniniu mokejimo korteliu paslaugos; Debeto korteliu paslaugos, Isankstinio mokejimo korteliu paslaugos; Elektronines pinigu imokejimo paslaugos; Elektroniniu piniginiu paslaugos (mokejimo paslaugos); Elektroniniu mokejimu, atliekamu per isankstinio apmokejimo korteles, apdorojimas; Automatizuotos mokejimo paslaugos; Mokejimu vykdymas; Mokejimo administravimas; Elektroninio mokejimo paslaugos; Nuotolinio mokejimo paslaugos; Apmokejimo internetu paslaugos; Elektroninio piniginiu lesu pervedimo paslaugos; Isankstinio mokejimo korteliu isleidimas; Kvitu, kuponu, korteliu, zetonu ir tasku isleidimas ir ispirkimas; Pirkeju skatinimo, kreditu, apmokejimu ir pervedimu pinigu, ekonomines vertes ar tasku forma teikimas; Nuolaidu korteliu paslaugos; Vertybiniu zetonu, susijusiu su klientu lojalumo programomis, emisija."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Banku kartes, debetkartes, kreditkartes, naudas kartes, ceku kartes; Prieksapmaksas kodetas magnetiskas kartes."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Lojalitates kartes; Lojalitates programmu pakalpojumi; Pakalpojumi lojalitates, motivesanas un bonusu programmu joma; Klientu lojalitates programmu un stimulesanas programmu organizesana, vadisana un uzraudziba; Pirceju lojalitates, motivesanas vai veicinasanas programmu vadiba; Klientu lojalitates pakalpojumi komercialiem, pardosanas veicinasanas un/vai reklamas nolukiem; Maksajumu karsu kontu tirdzniecibas veicinasana, izmantojot veicinasanas balvu programmas, bonusu pirkumu punktus, atlaides, atlaides, pievienotas vertibas piedavajumus un kuponus."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Kreditkarsu un kredita pakalpojumi; Pakalpojumi saistiba ar bankas kartem, debetkartem un elektroniskam norekinu kartem; Debetkarsu pakalpojumi, Prieksapmaksas karsu pakalpojumi; Elektroniskie naudas noguldijuma pakalpojumi; Elektroniska maka pakalpojumi (maksajumu pakalpojumi); Ar prieksapmaksas kartem veiktu elektronisku maksajumu apstrade; Automatizeto maksajumu pakalpojumi; Maksajumu apstrade; Maksajumu administresana; Elektronisko maksajumu pakalpojumi; Attalo maksajumu pakalpojumi; Maksasanas pakalpojumi tiessaiste; Elektronisko fondu transfertu pakalpojumi; Ieprieks apmaksatu maksajuma karsu izdosana; Maksajuma kvisu, kuponu, karsu, zetonu un punktu izdosana un atmaksasana; Stimulu, kreditu, maksajumu un parvedumu nodrosinasana klientiem naudas, ekonomiskas vertibas vai punktu veida; Atlaizu karsu pakalpojumi; Naudas aizstajeju izlaisana saistiba ar klientu lojalitates programmam."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Kards bankarji, kards tad-debitu, kards tal-kreditu, kards biex jingibdu l-flus, kards tac-cekkijiet; Karti manjetici mhallsa minn qabel kodifikati."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' karti ta' lealtà; Servizzi ta' skemi tal-lealtà; Servizzi ta' programmi ta' lealtà, incentivi u bonus; Organizzazzjoni, operat u supervizjoni ta' skemi ta' lealtà tal-klijenti u skemi ta' incentivi; Il-gestjoni ta' skemi ta' lealtà tal-klijenti, promozzjonali jew ta' incentiv; Servizzi ta' lealtà ghall-klijent ghal skopijiet kummercjali, promozzjonali u/jew ta' reklamar; Promozzjoni tal-bejgh ta' kontijiet ta' kards tal-hlas permezz tal-amministrazzjoni ta' programmi ta' incentivi, ghoti ta' punti tax-xiri, skontijiet, ribassi, offerti bil-valur mizjud u kupuni."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' kards tal-kreditu u tal-kreditu; Servizzi ta' kards bankarji, kards tad-debitu u kards ta' hlas elettronici; Servizzi ta' kards tad-debitu, Servizzi ta' karti tal-hlas bil-quddiem; Servizzi elettronici ta' ammonti depositati; Servizzi b'mezzi ta' hlas elettroniku (servizzi ta' hlas); L-ipprocessar ta' hlas elettroniku maghmul permezz ta' kards b'valur imhallas minn qabel; Servizzi ta' hlas awtomatizzati; L-ipprocessar ta' pagamenti; Servizzi ta' amministrazzjoni ta' hlas; Servizzi ta' hlas b'mezz elettroniku; Servizzi ta' hlas remoti; Servizzi ta' hlas online; Servizzi elettronici ta' trasferiment ta' fondi; Hrug ta' kards tal-hlas imhallsa bil-quddiem; Hrug u tifdija ta' vawcers, kupuni, kards, towkins u punti; Il-provvista ta' incentivi ghall-klijenti, krediti, pagamenti u trasferimenti fil-forma ta' flus, valur ekonomiku jew punti; Servizzi ta' kard ta' skont; Hrug ta' towkins ta' valur relatati ma' skemi ta' lealtà tal-klijenti."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Karty bankowe, karty debetowe, karty kredytowe, karty gotówkowe, karty czekowe; Przedplacone kodowane karty magnetyczne."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Karty stalego klienta; Obsluga programów lojalnosciowych; Uslugi programów lojalnosciowych, motywacyjnych i promocyjnych; Organizacja, prowadzenie i nadzorowanie programów lojalnosciowych dla klientów i programów motywacyjnych; Zarzadzanie programami lojalnosciowymi, motywacyjnymi lub promocyjnymi; Uslugi programów lojalnosciowych dla celów handlowych, promocyjnych i/lub reklamowych; Promowanie sprzedazy kont z karta platnicza poprzez przydzielenie programów premii motywacyjnych, punktów nagradzajacych zakupów, znizek, rabatów, ofert od wartosci dodatniej i kuponów."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi w zakresie kart kredytowych i kredytów; Uslugi swiadczone z zwiazku z kartami bankowymi, kartami debetowymi i kartami do platnosci elektronicznych; Obsluga kart kredytowych, Obsluga kart przedplaconych; Elektroniczne uslugi zwiazane ze zdeponowanymi srodkami pienieznymi; Uslugi portfela elektronicznego (uslugi w zakresie platnosci); Przetwarzanie platnosci elektronicznych dokonywanych przy uzyciu przedplaconych kart; Zautomatyzowane uslugi platnicze; Obsluga platnosci; Uslugi w zakresie administrowania platnosci; Uslugi w zakresie elektronicznych platnosci; Uslugi w zakresie platnosci zdalnych; Uslugi platnicze on-line; Uslugi elektronicznego transferu funduszy; Wydawanie przedplaconych kart platniczych; Wydawanie i splata kuponów, bonów, kart, zetonów i punktów; Zapewnianie klientom zachet, kredytów, platnosci i transferu w formie pienieznej, wartosci ekonomicznej lub punktów; Uslugi w zakresie kart znizkowych; Wydawanie bonów wartosciowych w zwiazku z programami lojalnosciowymi."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Cartões bancários, cartões de débito, cartões de crédito, cartões de levantamento de dinheiro, cartões de cheques; Cartões magnéticos pré-pagos codificados."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de cartões de fidelidade; Serviços de planos de fidelização; Serviços de programas de fidelização, incentivo e oferta; Organização, execução e supervisão de programas de fidelização de clientes e programas de incentivos; Gestão de programas de fidelidade de clientes, planos de incentivo ou de promoção; Serviços de fidelização de clientes para fins comerciais, promocionais e/ou publicitários; Promoção da venda de contas de cartões de pagamento através da administração de programas de atribuição de incentivos, atribuição de pontos por compras, descontos, sorteios promocionais, reduções de preço (bónus), ofertas de valor acrescentado e cupões."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de crédito e de cartões de crédito; Serviços de cartões de crédito, cartões de débito e cartões de pagamento eletrónicos; Serviços de cartões de débito, Serviços de cartões pré-pagos; Serviços de porta-moedas electrónico de valores depositados; Serviços de carteira eletrónica (serviços de pagamentos); Processamento de pagamentos eletrónicos efectuados com cartões pré-pagos; Serviços de pagamento automático; Processamento de pagamentos; Serviços de gestão de pagamentos; Serviços de pagamento eletrónico; Serviços de processamento remoto de pagamentos; Serviços de pagamento em linha; Serviços de transferência electrónica de fundos; Emissão de cartões de pagamento pré-pagos; Emissão e amortização de vales, cupões, cartões, fichas e pontos; Fornecimento de incentivos ao consumidor, créditos, pagamentos e transferências sob a forma de dinheiro, valor económico ou pontos; Serviços de cartões de desconto; Emissão de títulos de valores relacionados com planos de fidelização de clientes."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Carduri bancare, caduri de debit, carduri de credit, carduri de numerar, carduri de cecuri; Carduri magnetice preplatite codificate."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de carduri de fidelitate; Servicii de programe de loializare; Servicii de fidelizare, motivare si recompensare; Organizare, utilizare si monitorizare de programe de loialitate pentru clienti si de programe cu stimulente; Gestionare de programe de loializare, de stimulare sau promotionale pentru clienti; Servicii de fidelizare de clienti în scopuri comerciale, promotionale si/sau publicitare; Promovarea vânzarii de conturi pentru cardurile de plata prin administrarea programelor de acordare de stimulente, oferirea de puncte de achizitie, de reduceri, de rabaturi, de oferte cu valoare adaugata si cupoane."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Carduri de credit si servicii de credit; Servicii de carduri bancare, carduri de debit si de carduri pentru plati electronice; Servicii referitoare la carduri de debit, Servicii pe baza de card cu plata anticipata; Servicii electronice de depunere de valori; Servicii de portofel electronic (servicii de plati); Procesarea platilor electronice efectuate cu carduri preplatite; Servicii de plata automatizata; Procesarea platilor; Servicii de administrare a platilor; Servicii de plata electronica; Servicii de plata la distanta; Servicii de plata on-line; Servicii de transfer electronic de fonduri; Emitere de carduri de plata preplatite; Emiterea si rascumpararea de cupoane, taloane, carduri, fise si puncte; Furnizarea pentru clienti de stimulente, credite, plati si transferuri sub forma de bani, valoare economica sau puncte; Servicii de carduri de reduceri; Emisiunea de bonuri de valoare privind programele de fidelizare a clientilor."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Bankové karty, debetné karty, kreditné karty, hotovostné karty, sekové karty; Predplatené kódované magnetické karty."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Vernostné karty; Sluzby vernostných programov; Sluzby vernostných, motivacných a odmenovacích programov; Organizovanie, prevádzkovanie a dozor na zákazníckymi vernostnými programami a motivacnými programami; Riadenie zákazníckych vernostných, motivacných a propagacných programov; Zákaznícke vernostné sluzby na komercné, propagacné a/alebo reklamné úcely; Propagovanie predaja úctov platobných kariet prostredníctvom správy motivacných odmenovacích programov, udelovanie nákupných bodov, zliav, ocenených ponúk a kupónov."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Sluzby kreditných kariet a úverové sluzby; Sluzby v oblasti bankových kariet, debetných kariet a elektronických platobných kariet; Sluzby debetných kariet, Sluzby predplatených kariet; Elektronické depozitné sluzby; Sluzby elektronickej penazenky (platobné sluzby); Spracovanie elektronických platieb uskutocnených predplatenými kartami; Automatizované platobné sluzby; Spracovanie platieb; Správa platieb; Elektronické platobné sluzby; Sluzby dialkových platieb; Platobné sluzby online; Sluzby elektronického prevodu prosriedkov; Vydávanie predplatených platobných kariet; Vydávanie a preplácanie kupónov, kariet, zetónov a bodov; Poskytovanie zákazníckych motivacných programov, kreditov, platieb a prenosov v podobe penazí, ekonomickej hodnoty alebo bodov; Sluzby diskontných kariet; Vydávanie penazných poukázok v súvislosti so zákazníckymi vernostnými programami."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Bancne kartice, debetne kartice, kreditne kartice, gotovinske kartice, cekovne kartice; Predplacniske kodirane magnetne kartice."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Storitve kartic zvestobe; Storitve, povezane s shemami zvestobe; Storitve programov zvestobe, spodbujevalnih in nagrajevalnih programov za potrosnike; Organiziranje, izvajanje in nadzor shem zvestobe strank in shem spodbud; Upravljanje s shemami zvestobe strank ter stimulacijskimi ali promocijskimi shemami; Storitve zvestobe strank za komercialne, promocijske in/ali oglasevalne namene; Promocija prodaje racunov placilnih kartic z administracijo spodbudnih nagradnih programov, podeljevanje nagradnih tock ob nakupu, popusti, nagradne igre, znizanja, ponudbe na dodano vrednost in kuponi za uporabo placilnih kartic."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Storitve kreditnih kartic in kredita; Storitve bancnih kartic, debetnih kartic in elektronskih placilnih kartic; Storitve debetnih kartic, Storitve v zvezi s predplacilnimi karticami; Elektronske storitve deponiranih sredstev; Storitve elektronske denarnice (storitve placilnega prometa); Obdelava elektronskih placil, izvrsenih s predplacniskimi karticami; Avtomatizirane placilne storitve; Obdelava placil; Vodenje placilnega prometa; Elektronske placilne storitve; Storitve placevanja na daljavo; Spletne storitve placilnega prometa; Storitve elektronskega prenosa denarja; Izdajanje predplacniskih placilnih kartic; Izdajaje in unovcevanje vavcerjev, kuponov, kartic, zetonov in tock; Nudenje spodbud, kreditov, placil in transferjev za stranke, v obliki denarja, ekonomske vrednosti ali tock; Storitve kartic za popuste; Izdajanje vrednostnih zetonov, ki se nanasajo na programe zvestobe strank."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Tarjetas bancarias, tarjetas de débito, tarjetas de crédito, tarjetas de efectivo, tarjetas de cheque; Tarjetas magnéticas prepagadas codificadas."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de tarjetas de fidelización; Servicios de programas de fidelización; Servicios relacionados con programas de bonos, incentivos y fidelización de clientes; Organización, explotación y seguimiento de programas de fidelidad de clientes y programas de incentivos; Gestión de planes de fidelidad de clientes, planes de incentivos o de promoción; Servicios de fidelización de clientes con fines comerciales, promocionales o publicitarios; Promoción de la venta de cuentas de tarjetas de pago a través de la administración de programas de premios de incentivos, concesión de puntos de compra, descuentos, rebajas, ofertas de valor añadido y cupones."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de crédito y de tarjetas de crédito; Servicios de tarjetas de banco, tarjetas de débito y tarjetas de pagos electrónicos; Servicios de tarjetas de débito, Servicios de tarjetas de previo pago; Servicios de monedero electrónico de valor acumulado; Servicios de monedero electrónico (servicios de pago); Trámite de pagos electrónicos efectuados con tarjetas de previo pago; Servicios de pago automatizado; Procesamiento de pagos; Administración de pagos; Servicios de pago electrónico; Servicios de pagos a distancia; Servicios de pago en línea; Servicios de transferencia electrónica de fondos; Emisión de tarjetas de pago prepagadas; Emisión y canje de vales, cupones, tarjetas, fichas y puntos; Suministro de incentivos, créditos, pagos y transferencias para clientes en forma de dinero, valor económico o puntos; Servicios de tarjetas de descuento; Emisión de vales en relación con planes de fidelización del cliente."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Bankkort, betalkort, kreditkort, kontantkort, checkkort; Förbetalda kodade magnetiska kort."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Lojalitetskorttjänster; Tjänster avseende lojalitetsprogram; Lojalitets-, incitaments- och bonusprogramtjänster; Organisering, drift och övervakning av kundlojalitetsprogram och incitamentprogram; Hantering av kundtrofasthet genom stimulerande eller säljfrämjande program; Kundlojalitetstjänster för kommersiella, säljfrämjande och/eller reklammässiga ändamål; Främjande av försäljning av betalkortkonton genom administrering av motivations- och belöningsprogram, utdelning av inköpspoäng, rabatter, värdehöjande erbjudanden och kuponger."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Kreditkorts- och kredittjänster; Bankkort, betalkort och elektroniska betalkortstjänster; Betalkortstjänster, Tjänster avseende förbetalda kort; Elektroniska penningtjänster med lagrat värde; Elektroniska plånbokstjänster (betaltjänster); Bearbetning av elektroniska betalningar utförda via förbetalda kort; Automatiska betalningstjänster; Betalningsbehandling; Betalningsadministration; Elektroniska betalningstjänster; Distansbetalningstjänster; Betalning via direktanslutning; Tjänster avseende elektronisk överföring av kapital; Utfärdande av förbetalda betalkort; Utgivning och inlösen av kuponger, kuponger, kort, polletter och poäng; Tillhandahållande av kundincitament, poäng, betalningar och överföringar i form av pengar, ekonomiskt värde eller poäng; Rabattkortstjänster; Utfärdande av värdekuponger i samband kundlojalitetsprogram."
+        }
+      ]
+    },
+    "id": "6db2bf8c-d63f-4f59-b8cf-5411641bf322",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "212"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Riddargatan 10,Stockholm, 114 35",
+        "representativeAddressCountryCode": "SE",
+        "representativeAddressCountryName": "Sweden",
+        "representativeName": "Potter Clarkson KB"
+      }
+    ],
+    "secondLanguageCode": "fr",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170913",
+        "applicationNumber": "17202961"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270913",
+      "lastPublicationDate": "20171108",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20180215",
+        "registrationNumber": "17202961"
+      }
+    },
+    "version": "20260511192753",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR ONE"
+    }
+  },
+  "_uri": "/mark/em/6db2bf8c-d63f-4f59-b8cf-5411641bf322",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.821Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

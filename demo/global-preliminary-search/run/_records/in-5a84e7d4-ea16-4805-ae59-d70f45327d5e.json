@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/in/5a84e7d4-ea16-4805-ae59-d70f45327d5e",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "5a84e7d4-ea16-4805-ae59-d70f45327d5e",
+  "applicationNumber": "7390039",
+  "registrationNumber": null,
+  "applicationDate": "2025-12-10",
+  "registrationDate": null,
+  "expiryDate": "2035-12-10",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "LEVENCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Industrial training; Organizing business training; Organizing commercial training; Conducting of workshops [training]; Business training services; Organization and arranging of seminars, conferences, training courses and further training; Arranging of symposiums and workshops [training]; Event management services being organization of cultural events; Organisation of training courses relating to business management; Training services in the field of project management; Training in the field of real estate management; Training of personnel in the areas of recruitment, human resources and business management; Consultancy services relating to the education and training of management and of personnel; Magazine publication; Newsletter publication; Electronic publication; Publication of pamphlets; Publication of prospectuses; Publication of journals; Publication of brochures; Publication of catalogs; Publication of periodicals; Training for handling scientific instruments and apparatus for research in laboratories.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "LEVENCORE ASSET MANAGEMENT AND ASSURANCE SERVICES PRIVATE LIMITED Body Incorporate",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "ADV. SHREY SINGH[45001]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "4TH FLOOR, P NO 1355-H AND 1355-I SY NO 120, NIHARIKA JUBILEE ONE,ROAD NO 1, JUBILEE HILLS, HYDERABAD, TELANGANA- 500033, INDIA",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "LEVENCORE ASSET MANAGEMENT AND ASSURANCE SERVICES PRIVATE LIMITED Body Incorporate"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Industrial training; Organizing business training; Organizing commercial training; Conducting of workshops [training]; Business training services; Organization and arranging of seminars, conferences, training courses and further training; Arranging of symposiums and workshops [training]; Event management services being organization of cultural events; Organisation of training courses relating to business management; Training services in the field of project management; Training in the field of real estate management; Training of personnel in the areas of recruitment, human resources and business management; Consultancy services relating to the education and training of management and of personnel; Magazine publication; Newsletter publication; Electronic publication; Publication of pamphlets; Publication of prospectuses; Publication of journals; Publication of brochures; Publication of catalogs; Publication of periodicals; Training for handling scientific instruments and apparatus for research in laboratories."
+        }
+      ]
+    },
+    "id": "5a84e7d4-ea16-4805-ae59-d70f45327d5e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260122",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "PURVA SUMMIT, 2ND FLOOR, SURVEY NO 8, WHITEFIELDS ROAD, WHITE FIELDS, HITECH CITY, HYDERABAD, TELANGANA, 500 081, INDIA",
+        "representativeName": "ADV. SHREY SINGH[45001]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251210",
+        "applicationNumber": "7390039"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20351210",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20211217"
+        }
+      ],
+      "markCurrentStatus": "FORMALITIES COMPLETED"
+    },
+    "version": "20260122020047",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LEVENCORE"
+    }
+  },
+  "_uri": "/mark/in/5a84e7d4-ea16-4805-ae59-d70f45327d5e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.738Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

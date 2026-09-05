@@ -1,0 +1,158 @@
+{
+  "uri": "/mark/jp/de890fb0-d1de-4796-a1dc-537e5a878c20",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "de890fb0-d1de-4796-a1dc-537e5a878c20",
+  "applicationNumber": "2018-148523",
+  "registrationNumber": "6194469",
+  "applicationDate": "2018-12-03",
+  "registrationDate": "2019-11-01",
+  "expiryDate": "2029-11-01",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-11-26",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Ｑｏｒｅ",
+  "markTransliteration": "KOA KUORE KYUUORE OOAARUII",
+  "markTranslation": "QORE",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "電子計算機のプログラムの設計・作成又は保守，オンラインによるアプリケーションソフトウェアの提供（ＳａａＳ），クラウドコンピューティング，デザインの考案（広告に関するものを除く。），ウェブサイトの作成又は保守，ウェブサーバーの貸与，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，電子計算機用プログラムの提供，電子計算機の貸与，人工知能を活用するための電子計算機用プログラムの提供，人工知能を活用したサービスの開発を可能にするための電子計算機用プログラムの提供",
+      "translation_language": "en",
+      "translation": "Design, creation or maintenance of programs of electronic computers, provision of application software on-line (SaaS), cloud computing, devising of design (excluding advertising), creation or maintenance of website, lending of web server, electronic In order to operate precisely according to the purpose of the computer / automobile and other applications, we introduce and explain the performance and operation method etc. of machines requiring highly specialized knowledge, technology or experience, provide programs for computers, Provision of a program for computer for lending of computer, provision of computer program for utilizing artificial intelligence, development of service utilizing artificial intelligence"
+    }
+  ],
+  "owner": "K.K. QUANTUMCORE",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "MIYAZAKI MASAFUMI",
+  "priorities": [
+    {
+      "priorityDate": "20181203"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "SHINAGAWA TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "K.K. QUANTUMCORE",
+        "applicantNativeAddress": "東京都品川区",
+        "applicantNativeName": "株式会社ＱｕａｎｔｕｍＣｏｒｅ"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Design, creation or maintenance of programs of electronic computers, provision of application software on-line (SaaS), cloud computing, devising of design (excluding advertising), creation or maintenance of website, lending of web server, electronic In order to operate precisely according to the purpose of the computer / automobile and other applications, we introduce and explain the performance and operation method etc. of machines requiring highly specialized knowledge, technology or experience, provide programs for computers, Provision of a program for computer for lending of computer, provision of computer program for utilizing artificial intelligence, development of service utilizing artificial intelligence",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "電子計算機のプログラムの設計・作成又は保守，オンラインによるアプリケーションソフトウェアの提供（ＳａａＳ），クラウドコンピューティング，デザインの考案（広告に関するものを除く。），ウェブサイトの作成又は保守，ウェブサーバーの貸与，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，電子計算機用プログラムの提供，電子計算機の貸与，人工知能を活用するための電子計算機用プログラムの提供，人工知能を活用したサービスの開発を可能にするための電子計算機用プログラムの提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "42P01",
+          "natGoodsServicesDescription": "Design services"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42P03",
+          "natGoodsServicesDescription": "Technological advice relating to computers, automobiles and industrial machines"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        }
+      ]
+    },
+    "id": "de890fb0-d1de-4796-a1dc-537e5a878c20",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20181203"
+      }
+    ],
+    "recordLastUpdated": "20241011",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "MIYAZAKI MASAFUMI",
+        "representativeNativeName": "宮崎　超史"
+      },
+      {
+        "representativeName": "TSUJIMOTO YORIKO",
+        "representativeNativeName": "辻本　依子"
+      },
+      {
+        "representativeName": "TSUCHINO FUMITAKA",
+        "representativeNativeName": "土野　史隆"
+      },
+      {
+        "representativeName": "Toreru Inc.",
+        "representativeNativeName": "弁理士法人Ｔｏｒｅｒｕ"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20181203",
+        "applicationNumber": "2018-148523"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20291101",
+      "lastPublicationDate": "20191126",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20191101",
+        "registrationNumber": "6194469"
+      }
+    },
+    "version": "20241011082639",
+    "wordMarkSpecification": {
+      "markTranslation": "QORE",
+      "markTransliteration": "KOA KUORE KYUUORE OOAARUII",
+      "markVerbalElementText": "Ｑｏｒｅ"
+    }
+  },
+  "_uri": "/mark/jp/de890fb0-d1de-4796-a1dc-537e5a878c20",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:55.424Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -581,10 +581,11 @@ test("#958: no outcome at all reads as nothing-ran, never as no-objection", () =
 test("#958: a quoted transient axis outcome does NOT reach the lane through the text path", () => {
   // The property that replaces an over-tight first cut of this test. That cut asserted the reason
   // carried no transient token at all — which withheld the provider's verbatim error from the terminal
-  // diagnosis and was caught by pipeline.mock.test.mjs:1646 `repair-first A1: a 414-shaped dispatch failure is terminal`
-  // (the teal-causeway 414). CITED BY TEST NAME as well as line: this citation drifted onto a blank
-  // line when the file above it grew, and a number with a name beside it is the only kind can
-  // re-check. The quote stays;
+  // diagnosis and was caught by the repair-first arm that holds a 414-shaped dispatch failure terminal.
+  // CITED BY THE ARM'S NAME, NOT ITS LINE, and the reason is the same one that made the name necessary
+  // in the first place: the line half of this citation had already drifted onto a blank line once when
+  // the file above it grew. A name survives the file moving, and it survives the file not being here.
+  // The quote stays;
   // what must hold is that quoting it cannot route the park to weather.
   const { rows, failClass } = fanInMissingEvidence(["primary-sweep:exact:q#1"], {
     ownError: new Map(), axisOutcome: new Map([["primary-sweep", AXIS_THREW]]),

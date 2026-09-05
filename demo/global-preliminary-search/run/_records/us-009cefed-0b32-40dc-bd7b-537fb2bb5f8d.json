@@ -1,0 +1,480 @@
+{
+  "uri": "/mark/us/009cefed-0b32-40dc-bd7b-537fb2bb5f8d",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "009cefed-0b32-40dc-bd7b-537fb2bb5f8d",
+  "applicationNumber": "87823449",
+  "registrationNumber": "5610330",
+  "applicationDate": "2018-03-07",
+  "registrationDate": "2018-11-20",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2018-09-04"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2020-01-11",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "QUORI",
+  "markTransliteration": null,
+  "markTranslation": "THE",
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Cases for mobile phones; Data processing equipment, namely, couplers; Earphones; Electrical plugs and sockets; Power adapters; Protective films adapted for smartphones; Rechargeable batteries; Smartphone mounts; USB cables; Virtual reality headsets",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "GUANGZHOU XINHAOTIAN TECHNOLOGY COMPANY LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Rm49 / Rm606 No.418 ShaTai South Road, Guangzhou City, 510000, CHIN",
+        "applicantAddressCity": "Guangzhou City",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantAddressPostalCode": "510000",
+        "applicantAddressStreet": "Rm49 / Rm606 No.418 ShaTai South Road",
+        "applicantJurisdictionOfIncorporation": "CHINA",
+        "applicantLegalEntity": "limited company (ltd.)",
+        "applicantName": "GUANGZHOU XINHAOTIAN TECHNOLOGY COMPANY LIMITED",
+        "applicantSecondaryAddressUnit": "Tianhe District"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Cases for mobile phones; Data processing equipment, namely, couplers; Earphones; Electrical plugs and sockets; Power adapters; Protective films adapted for smartphones; Rechargeable batteries; Smartphone mounts; USB cables; Virtual reality headsets"
+        }
+      ]
+    },
+    "id": "009cefed-0b32-40dc-bd7b-537fb2bb5f8d",
+    "ipRightKind": "tmk",
+    "litigationInformation": {
+      "proceedings": [
+        {
+          "decision": {
+            "code": "9",
+            "date": "20200111",
+            "text": "TERMINATED"
+          },
+          "decisionBoard": "Trademark Trial and Appeal Board (TTAB)",
+          "filingDate": "20190807",
+          "identifier": "92071935",
+          "interlocutoryAttorneyName": "ANDREW P BAXLEY",
+          "kind": "Cancellation",
+          "kindCode": "CAN",
+          "litigationParties": [
+            {
+              "kind": "Defendant",
+              "kindCode": "D",
+              "name": "GUANGZHOU XINHAOTIAN TECHNOLOGY COMPANY LTD.",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "87823449",
+                  "markVerbalElementText": "QUORI",
+                  "registrationNumber": "5610330"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "GUANGZHOU CITY",
+                  "addressCountryCode": "CHIN",
+                  "addressPostalCode": "510000",
+                  "addressStreet": "RM49/ RM 606 NO 418 SHATAI SOUTH RD, TIANHE DISTRICT",
+                  "companyName": "GUANGZHOU XINHAOTIAN TECHNOLOGY COMPANY LTD",
+                  "kind": "Correspondent",
+                  "kindCode": "C"
+                }
+              ]
+            },
+            {
+              "kind": "Plaintiff",
+              "kindCode": "P",
+              "name": "QUOORI, INC.",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "88196578",
+                  "markVerbalElementText": "QUOORI",
+                  "registrationNumber": "0000000"
+                },
+                {
+                  "applicationNumber": "88271661",
+                  "markVerbalElementText": "QUOORI",
+                  "registrationNumber": "0000000"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "LOS ANGELES",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "90067-3206",
+                  "addressState": "CA",
+                  "addressStreet": "2049 CENTURY PARK EAST STE 32ND FL",
+                  "companyName": "MCDERMOTT WILL & EMERY LLP",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "ELLIE HOURIZADEH"
+                }
+              ]
+            }
+          ],
+          "proceedingEvents": [
+            {
+              "code": "T",
+              "eventDate": "20200111",
+              "text": "#9 998"
+            },
+            {
+              "code": "N",
+              "eventDate": "20200111",
+              "text": "#8 DISPOSED OF BEFORE READY FOR FINAL DECSN"
+            },
+            {
+              "code": "T",
+              "eventDate": "20191126",
+              "text": "#7 BOARD'S DECISION: GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20191017",
+              "text": "#6 NOTICE OF DEFAULT"
+            },
+            {
+              "code": "W",
+              "eventDate": "20190924",
+              "text": "#5 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20190918",
+              "text": "#4 P'S MOT FOR EXTEN. OF TIME W/ CONSENT"
+            },
+            {
+              "code": "T",
+              "eventDate": "20190807",
+              "text": "#3 PENDING, INSTITUTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20190807",
+              "responseDate": "20190916",
+              "text": "#2 NOTICE AND TRIAL DATES SENT:  ANSWER DUE:"
+            },
+            {
+              "code": "N",
+              "eventDate": "20190807",
+              "text": "#1 FILED AND FEE"
+            }
+          ]
+        }
+      ]
+    },
+    "markEvents": [
+      {
+        "date": "20200111",
+        "descriptionText": "CANCELLATION TERMINATED NO. 999999"
+      },
+      {
+        "date": "20200111",
+        "descriptionText": "CANCELLED SECTION 18-TOTAL"
+      },
+      {
+        "date": "20191126",
+        "descriptionText": "CANCELLATION GRANTED NO. 999999"
+      },
+      {
+        "date": "20190807",
+        "descriptionText": "CANCELLATION INSTITUTED NO. 999999"
+      },
+      {
+        "date": "20190427",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20181120",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20180904",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20180904",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20180815",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20180729",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20180716",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20180716",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20180716",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20180620",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20180620",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20180620",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20180619",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20180313",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20180310",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Rm49 / Rm606 No.418 ShaTai South Road, Guangzhou City, 510000, CHIN",
+        "city": "Guangzhou City",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "limited company (ltd.)",
+        "name": "GUANGZHOU XINHAOTIAN TECHNOLOGY COMPANY LIMITED",
+        "postalCode": "510000",
+        "secondaryAddressUnit": "Tianhe District",
+        "street": "Rm49 / Rm606 No.418 ShaTai South Road"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "Rm49 / Rm606 No.418 ShaTai South Road, Guangzhou City, 510000, CHIN",
+        "city": "Guangzhou City",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "limited company (ltd.)",
+        "name": "GUANGZHOU XINHAOTIAN TECHNOLOGY COMPANY LIMITED",
+        "postalCode": "510000",
+        "secondaryAddressUnit": "Tianhe District",
+        "street": "Rm49 / Rm606 No.418 ShaTai South Road"
+      },
+      {
+        "address": "Rm49 / Rm606 No.418 ShaTai South Road, Guangzhou City, 510000, CHIN",
+        "city": "Guangzhou City",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "limited company (ltd.)",
+        "name": "GUANGZHOU XINHAOTIAN TECHNOLOGY COMPANY LIMITED",
+        "postalCode": "510000",
+        "secondaryAddressUnit": "Tianhe District",
+        "street": "Rm49 / Rm606 No.418 ShaTai South Road"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Rm49 / Rm606 No.418 ShaTai South Road, Guangzhou City, 510000, CHIN",
+        "city": "Guangzhou City",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "limited company (ltd.)",
+        "name": "GUANGZHOU XINHAOTIAN TECHNOLOGY COMPANY LIMITED",
+        "postalCode": "510000",
+        "secondaryAddressUnit": "Tianhe District",
+        "street": "Rm49 / Rm606 No.418 ShaTai South Road"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "88271661",
+            "markCurrentStatus": "Published",
+            "markVerbalElementText": "QUOORI",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88271661",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "QUOORI",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88196578",
+            "markCurrentStatus": "Published",
+            "markVerbalElementText": "QUOORI",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88196578",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "QUOORI",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88271661",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "QUOORI",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88196578",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "QUOORI",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88271661",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "QUOORI",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88196578",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "QUOORI",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "88271661",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "QUOORI",
+            "refusalStatus": "Refused"
+          }
+        ],
+        "refusalStatus": "Cited"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "TIANHE DISTRICT, GUANGZHOU CITY, 510000, CHINA",
+        "representativeCorrespondentAddressLines": [
+          "TIANHE DISTRICT",
+          "GUANGZHOU CITY, 510000",
+          "CHINA"
+        ],
+        "representativeCorrespondentName": "GUANGZHOU XINHAOTIAN TECHNOLOGY COMPANY LTD, RM49/ RM 606 NO 418 SHATAI SOUTH RD"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "TIANHE DISTRICT, GUANGZHOU CITY, 510000, CHINA",
+        "representativeAddressLines": [
+          "TIANHE DISTRICT",
+          "GUANGZHOU CITY, 510000",
+          "CHINA"
+        ]
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20180307",
+        "applicationNumber": "87823449"
+      },
+      "cancellationDate": "20200111",
+      "cancellationPublicationDate": "20200218",
+      "cancellationSection": "18",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20161220"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20170103"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED -SECTION 18",
+        "markOfficialStatusCode": "713",
+        "markOfficialStatusDate": "20200111",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20180904"
+      ],
+      "registration": {
+        "registrationDate": "20181120",
+        "registrationNumber": "5610330"
+      }
+    },
+    "version": "20260113071507",
+    "wordMarkSpecification": {
+      "markTranslation": "THE",
+      "markTranslationDescription": "The English translation of \"QUORI\" in the mark is \"the\".",
+      "markVerbalElementText": "QUORI"
+    }
+  },
+  "_uri": "/mark/us/009cefed-0b32-40dc-bd7b-537fb2bb5f8d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:25.705Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

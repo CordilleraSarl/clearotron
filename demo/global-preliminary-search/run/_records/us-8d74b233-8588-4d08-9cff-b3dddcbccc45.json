@@ -1,0 +1,266 @@
+{
+  "uri": "/mark/us/8d74b233-8588-4d08-9cff-b3dddcbccc45",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "8d74b233-8588-4d08-9cff-b3dddcbccc45",
+  "applicationNumber": "99282935",
+  "registrationNumber": null,
+  "applicationDate": "2025-07-14",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2026-01-06"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QORI BY FRIENDS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Design and development of computer software for database management, file organization, file hosting, web development, performing market data analysis, conducting research, generating reports, document sharing, document storage, data engineering and governance, audio transcription, increasing work flow productivity and efficiency, facilitating team member collaboration, and risk analysis and management; Providing temporary use of on-line non-downloadable software and applications for database management, file organization, file hosting, web development, performing market data analysis, conducting research, generating reports, document sharing, document storage, data engineering and governance, audio transcription, increasing work flow productivity and efficiency, facilitating team member collaboration, and risk analysis and management in the field of digital product development; Software as a service (SAAS) services featuring software using artificial intelligence (AI) for database management, file organization, file hosting, web development, performing market data analysis, conducting research, generating reports, document sharing, document storage, data engineering and governance, audio transcription, increasing work flow productivity and efficiency, facilitating team member collaboration, and risk analysis and management in the field of digital product development; Design and development of on-line computer software system",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Friends From The City LLC",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "Daliah Saper",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "225 E Grand Ave., STE 213, Chicago, IL, 60611, USAM",
+        "applicantAddressCity": "Chicago",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "60611",
+        "applicantAddressStateName": "ILLINOIS",
+        "applicantAddressStreet": "225 E Grand Ave., STE 213",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "Friends From The City LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Design and development of computer software for database management, file organization, file hosting, web development, performing market data analysis, conducting research, generating reports, document sharing, document storage, data engineering and governance, audio transcription, increasing work flow productivity and efficiency, facilitating team member collaboration, and risk analysis and management; Providing temporary use of on-line non-downloadable software and applications for database management, file organization, file hosting, web development, performing market data analysis, conducting research, generating reports, document sharing, document storage, data engineering and governance, audio transcription, increasing work flow productivity and efficiency, facilitating team member collaboration, and risk analysis and management in the field of digital product development; Software as a service (SAAS) services featuring software using artificial intelligence (AI) for database management, file organization, file hosting, web development, performing market data analysis, conducting research, generating reports, document sharing, document storage, data engineering and governance, audio transcription, increasing work flow productivity and efficiency, facilitating team member collaboration, and risk analysis and management in the field of digital product development; Design and development of on-line computer software system"
+        }
+      ]
+    },
+    "id": "8d74b233-8588-4d08-9cff-b3dddcbccc45",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260728",
+        "descriptionText": "NOTICE OF APPROVAL OF EXTENSION REQUEST E-MAILED"
+      },
+      {
+        "date": "20260727",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20260727",
+        "descriptionText": "SOU EXTENSION 1 FILED"
+      },
+      {
+        "date": "20260727",
+        "descriptionText": "SOU EXTENSION 1 GRANTED"
+      },
+      {
+        "date": "20260303",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20260106",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20260106",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20251231",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20251209",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20251208",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20251208",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20251208",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20251203",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20251203",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20251203",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20251202",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20251118",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20250714",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20250714",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "225 E Grand Ave., STE 213, Chicago, IL, 60611, USAM",
+        "city": "Chicago",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Friends From The City LLC",
+        "postalCode": "60611",
+        "stateName": "ILLINOIS",
+        "street": "225 E Grand Ave., STE 213"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "225 E Grand Ave., STE 213, Chicago, IL, 60611, USAM",
+        "city": "Chicago",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Friends From The City LLC",
+        "postalCode": "60611",
+        "stateName": "ILLINOIS",
+        "street": "225 E Grand Ave., STE 213"
+      },
+      {
+        "address": "225 E Grand Ave., STE 213, Chicago, IL, 60611, USAM",
+        "city": "Chicago",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Friends From The City LLC",
+        "postalCode": "60611",
+        "stateName": "ILLINOIS",
+        "street": "225 E Grand Ave., STE 213"
+      }
+    ],
+    "recordLastUpdated": "20260729",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Chicago, IL 60654, United States",
+        "representativeCorrespondentAddressLines": [
+          "Chicago, IL 60654",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Daliah Saper Saper Law Offices, LLC, 505 N La Salle Dr #350"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Chicago, IL 60654, United States",
+        "representativeAddressLines": [
+          "Chicago, IL 60654",
+          "United States"
+        ],
+        "representativeName": "Daliah Saper"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250714",
+        "applicationNumber": "99282935"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "extension": {
+        "approvalDate": [
+          "20260727"
+        ]
+      },
+      "ipOffice": {
+        "markOfficialStatus": "FIRST EXTENSION - GRANTED",
+        "markOfficialStatusCode": "730",
+        "markOfficialStatusDate": "20260727",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PUBLISHED",
+      "publicationDate": [
+        "20260106"
+      ]
+    },
+    "version": "20260729121259",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORI BY FRIENDS"
+    }
+  },
+  "_uri": "/mark/us/8d74b233-8588-4d08-9cff-b3dddcbccc45",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.393Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

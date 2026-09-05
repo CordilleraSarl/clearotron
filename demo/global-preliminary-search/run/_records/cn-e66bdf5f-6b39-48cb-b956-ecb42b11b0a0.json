@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/cn/e66bdf5f-6b39-48cb-b956-ecb42b11b0a0",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "e66bdf5f-6b39-48cb-b956-ecb42b11b0a0",
+  "applicationNumber": "40432456A",
+  "registrationNumber": "40432456A",
+  "applicationDate": "2019-08-19",
+  "registrationDate": "2020-08-14",
+  "expiryDate": "2030-08-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-05-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QOI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "电池,眼镜,手机,导航仪器,电开关,复印机(照相、静电、热)",
+      "translation_language": "en",
+      "translation": "Batteries, glasses, mobile phones, navigation instruments, electric switches, copiers (photographs, static electricity, heat)"
+    }
+  ],
+  "owner": "Li Jinbiao",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "福建省晋江市东石镇湖头村龟湖北区57号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Li Jinbiao",
+        "applicantNativeName": "李金表"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Batteries, glasses, mobile phones, navigation instruments, electric switches, copiers (photographs, static electricity, heat)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "电池,眼镜,手机,导航仪器,电开关,复印机(照相、静电、热)"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Machines used in office (except for typewriters, duplicators and printers)",
+        "Equipments used in communication and navigation",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Glasses and those accessories",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0903",
+          "subNatGoodsServicesDescription": "Machines used in office (except for typewriters, duplicators and printers)"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "e66bdf5f-6b39-48cb-b956-ecb42b11b0a0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1695"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "厦门唯邦知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190819",
+        "applicationNumber": "40432456A"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300813",
+      "lastPublicationDate": "20200513",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20200814",
+        "registrationNumber": "40432456A"
+      }
+    },
+    "version": "20251004012506",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOI"
+    }
+  },
+  "_uri": "/mark/cn/e66bdf5f-6b39-48cb-b956-ecb42b11b0a0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:01.420Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

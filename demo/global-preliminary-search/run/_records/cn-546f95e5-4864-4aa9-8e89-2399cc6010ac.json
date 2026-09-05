@@ -1,0 +1,115 @@
+{
+  "uri": "/mark/cn/546f95e5-4864-4aa9-8e89-2399cc6010ac",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "546f95e5-4864-4aa9-8e89-2399cc6010ac",
+  "applicationNumber": "71853153",
+  "registrationNumber": null,
+  "applicationDate": "2023-05-26",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "柒",
+  "markTransliteration": "SEVEN QI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "组织彩票发行;组织抽奖",
+      "translation_language": "en",
+      "translation": "Organizing lottery issuance; organizing lottery"
+    }
+  ],
+  "owner": "China Sports Lottery Technology Development Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市北京经济技术开发区科创十四街99号6幢五层",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "China Sports Lottery Technology Development Co., Ltd.",
+        "applicantNativeName": "中体彩科技发展有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Organizing lottery issuance; organizing lottery",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "组织彩票发行;组织抽奖"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Other service included in this class"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4107",
+          "subNatGoodsServicesDescription": "Other service included in this class"
+        }
+      ]
+    },
+    "id": "546f95e5-4864-4aa9-8e89-2399cc6010ac",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230526",
+        "applicationNumber": "71853153"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251005043957",
+    "wordMarkSpecification": {
+      "markTransliteration": "SEVEN QI",
+      "markVerbalElementText": "柒"
+    }
+  },
+  "_uri": "/mark/cn/546f95e5-4864-4aa9-8e89-2399cc6010ac",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.563Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

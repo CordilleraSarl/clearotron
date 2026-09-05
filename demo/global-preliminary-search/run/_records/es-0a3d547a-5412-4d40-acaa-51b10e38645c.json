@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/es/0a3d547a-5412-4d40-acaa-51b10e38645c",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "0a3d547a-5412-4d40-acaa-51b10e38645c",
+  "applicationNumber": "3030707 M4",
+  "registrationNumber": "3030707 M4",
+  "applicationDate": "2012-05-09",
+  "registrationDate": "2012-09-04",
+  "expiryDate": "2032-05-08",
+  "renewalDate": "2022-09-29",
+  "lastPublicationDate": "2012-05-29",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JOSG JOVEN ORQUESTA SINFONICA DE GRANADA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios musicales de una orquesta sinfonica. Servicios de formacion musical.",
+      "translation_language": "en",
+      "translation": "MUSIC SERVICES OF A SYMPHONY ORCHESTRA. MUSICAL TRAINING SERVICES."
+    }
+  ],
+  "owner": "JOSG JOVEN ORQUESTA SINFONICA DE GRANADA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "JOSG JOVEN ORQUESTA SINFONICA DE GRANADA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "cmMarkImageEUclassification": [
+      "25.05.25",
+      "26.04.02",
+      "26.04.12",
+      "26.04.22",
+      "29.02.00",
+      "37.02.15",
+      "37.02.19"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "MUSIC SERVICES OF A SYMPHONY ORCHESTRA. MUSICAL TRAINING SERVICES.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios musicales de una orquesta sinfonica. Servicios de formacion musical."
+        }
+      ]
+    },
+    "id": "0a3d547a-5412-4d40-acaa-51b10e38645c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "NEGRO/ OCRE"
+      }
+    ],
+    "markImageViennaClassification": [
+      "26.04.18",
+      "27.05.10"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "3691"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20120509",
+        "applicationNumber": "3030707 M4"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320508",
+      "lastPublicationDate": "20120529",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20120904",
+        "registrationNumber": "3030707 M4"
+      },
+      "renewalDate": "20220929",
+      "renewalPublishedDate": "20221006"
+    },
+    "version": "20260427162509",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOSG JOVEN ORQUESTA SINFONICA DE GRANADA"
+    }
+  },
+  "_uri": "/mark/es/0a3d547a-5412-4d40-acaa-51b10e38645c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

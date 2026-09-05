@@ -1,0 +1,377 @@
+{
+  "uri": "/mark/us/1b716be0-2b3e-442b-91c5-044cb1ed1c6d",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "1b716be0-2b3e-442b-91c5-044cb1ed1c6d",
+  "applicationNumber": "90397105",
+  "registrationNumber": null,
+  "applicationDate": "2020-12-20",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2022-09-13"
+  ],
+  "abandonmentDate": "2024-02-09",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "HEAVEN OR HELL",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Downloadable music files; Musical sound recordings; Sound recordings featuring music; Audio books in the nature of novels; Downloadable musical sound recordings; Downloadable non-fiction books on a variety of topics",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": null,
+      "description": "INT. CL. 16 Non-fiction books on a variety of topics; Novels; Printed novels in the field of nonfiction and fiction; Series of fiction works, namely, novels and books",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Wright, Jerome",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Krystle I. Myers",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "3019 Montebello Terrace, Baltimore, MD, 21214",
+        "applicantAddressCity": "Baltimore",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "21214",
+        "applicantAddressStateName": "MARYLAND",
+        "applicantAddressStreet": "3019 Montebello Terrace",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Wright, Jerome"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Downloadable music files; Musical sound recordings; Sound recordings featuring music; Audio books in the nature of novels; Downloadable musical sound recordings; Downloadable non-fiction books on a variety of topics"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsServicesDescription": "INT. CL. 16 Non-fiction books on a variety of topics; Novels; Printed novels in the field of nonfiction and fiction; Series of fiction works, namely, novels and books"
+        }
+      ]
+    },
+    "id": "1b716be0-2b3e-442b-91c5-044cb1ed1c6d",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20240311",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20240311",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20231108",
+        "descriptionText": "SU - NON-FINAL ACTION - WRITTEN"
+      },
+      {
+        "date": "20231108",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20231108",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20231107",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20230530",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20230508",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20230508",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20221108",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20220913",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20220913",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20220824",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20220806",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20220803",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20220803",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20220803",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20220803",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20220203",
+        "descriptionText": "FINAL REFUSAL  WRITTEN"
+      },
+      {
+        "date": "20220203",
+        "descriptionText": "NOTIFICATION OF FINAL REFUSAL EMAILED"
+      },
+      {
+        "date": "20220203",
+        "descriptionText": "FINAL REFUSAL E-MAILED"
+      },
+      {
+        "date": "20220125",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20211220",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20211219",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20211219",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20210622",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20210622",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20210622",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20210615",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20210304",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20201223",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "3019 Montebello Terrace, Baltimore, MD, 21214",
+        "city": "Baltimore",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Wright, Jerome",
+        "postalCode": "21214",
+        "stateName": "MARYLAND",
+        "street": "3019 Montebello Terrace"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "3019 Montebello Terrace, Baltimore, MD, 21214",
+        "city": "Baltimore",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Wright, Jerome",
+        "postalCode": "21214",
+        "stateName": "MARYLAND",
+        "street": "3019 Montebello Terrace"
+      },
+      {
+        "address": "3019 Montebello Terrace, Baltimore, MD, 21214",
+        "city": "Baltimore",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Wright, Jerome",
+        "postalCode": "21214",
+        "stateName": "MARYLAND",
+        "street": "3019 Montebello Terrace"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "76694944",
+            "markCurrentStatus": "Renewed",
+            "markVerbalElementText": "HEAVEN & HELL",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "76694944",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "HEAVEN & HELL",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "76694944",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "HEAVEN & HELL",
+            "refusalStatus": "Cited"
+          }
+        ],
+        "refusalStatus": "Refused"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "MIDDLE RIVER, MD 21220, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "MIDDLE RIVER, MD 21220",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Krystle I. Myers Eleven Law Firm, 6419 TOTTERIDGE STREET"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "MIDDLE RIVER, MD 21220, UNITED STATES",
+        "representativeAddressLines": [
+          "MIDDLE RIVER, MD 21220",
+          "UNITED STATES"
+        ],
+        "representativeName": "Krystle I. Myers"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20240209",
+      "active": false,
+      "application": {
+        "applicationDate": "20201220",
+        "applicationNumber": "90397105"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "extension": {
+        "approvalDate": [
+          "20230602"
+        ]
+      },
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20201002"
+        },
+        {
+          "firstUsedClass": "16",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20201002"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20230501"
+        },
+        {
+          "firstUsedCommerceClass": "16",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20230501"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20240311",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED",
+      "publicationDate": [
+        "20220913"
+      ]
+    },
+    "version": "20260113074357",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "HEAVEN OR HELL"
+    }
+  },
+  "_uri": "/mark/us/1b716be0-2b3e-442b-91c5-044cb1ed1c6d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

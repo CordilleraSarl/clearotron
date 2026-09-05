@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/ke/b7314d40-3336-4033-85ae-9e32880ba945",
+  "provider": "clarivate",
+  "office": "ke",
+  "guid": "b7314d40-3336-4033-85ae-9e32880ba945",
+  "applicationNumber": "110284",
+  "registrationNumber": null,
+  "applicationDate": "2019-12-04",
+  "registrationDate": null,
+  "expiryDate": "2029-12-04",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "LORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    36,
+    39
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software; downloadable computer software; downloadable software and mobile applications, online computer software; online software and mobile applications; including but not limited to software and mobile applications used to connect clients with drivers for the purpose of transporting cargo; ancillary and supplementary goods to the aforegoing, included in the class.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Financial affairs; monetary affairs; financial transfers and transactions; payment services; electronic wallet services; including but not limited to the financing of fuel and other consumable purchases.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": "en",
+      "description": "Transport services; logistical services; including but not limited to the arrangement of cargo transport services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "LORI SYSTEMS CORP.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "ORANGE STREET WILMINGTON DELAWARE COUNTY OF NEW CASTLE",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "LORI SYSTEMS CORP."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software; downloadable computer software; downloadable software and mobile applications, online computer software; online software and mobile applications; including but not limited to software and mobile applications used to connect clients with drivers for the purpose of transporting cargo; ancillary and supplementary goods to the aforegoing, included in the class."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Financial affairs; monetary affairs; financial transfers and transactions; payment services; electronic wallet services; including but not limited to the financing of fuel and other consumable purchases."
+        },
+        {
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Transport services; logistical services; including but not limited to the arrangement of cargo transport services"
+        }
+      ]
+    },
+    "id": "b7314d40-3336-4033-85ae-9e32880ba945",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "KE",
+    "registrationOfficeName": "Kenya",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20191204",
+        "applicationNumber": "110284"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20291204",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20240320103745",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LORI"
+    }
+  },
+  "_uri": "/mark/ke/b7314d40-3336-4033-85ae-9e32880ba945",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.454Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

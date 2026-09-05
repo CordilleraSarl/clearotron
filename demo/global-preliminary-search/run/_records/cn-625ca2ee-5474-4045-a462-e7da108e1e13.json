@@ -1,0 +1,155 @@
+{
+  "uri": "/mark/cn/625ca2ee-5474-4045-a462-e7da108e1e13",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "625ca2ee-5474-4045-a462-e7da108e1e13",
+  "applicationNumber": "26736810",
+  "registrationNumber": "26736810",
+  "applicationDate": "2017-09-30",
+  "registrationDate": "2018-09-14",
+  "expiryDate": "2028-09-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-06-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QUORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "车载电话支架,手机套,智能手机屏幕专用保护膜,移动电话用耳机,USB线,电插头,插头、插座和其他接触器（电连接）,USB充电器,移动电源（可充电电池）,连接器（数据处理设备）",
+      "translation_language": "en",
+      "translation": "Car phone holder, mobile phone case, protective film for smartphone screen, earphone for mobile phone, USB cable, electric plug, plug, socket and other contactors (electric connection), USB charger, mobile power supply (rechargeable battery) Connector (data processing equipment)"
+    }
+  ],
+  "owner": "Guangzhou Xin Hao dian Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省广州市天河区天河直街30号A座3401（不可作厂房使用）",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Guangzhou Xin Hao dian Technology Co., Ltd.",
+        "applicantNativeName": "广州市鑫浩钿科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Car phone holder, mobile phone case, protective film for smartphone screen, earphone for mobile phone, USB cable, electric plug, plug, socket and other contactors (electric connection), USB charger, mobile power supply (rechargeable battery) Connector (data processing equipment)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "车载电话支架,手机套,智能手机屏幕专用保护膜,移动电话用耳机,USB线,电插头,插头、插座和其他接触器（电连接）,USB充电器,移动电源（可充电电池）,连接器（数据处理设备）"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Cables",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0912",
+          "subNatGoodsServicesDescription": "Cables"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "625ca2ee-5474-4045-a462-e7da108e1e13",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1603"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京集佳知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170930",
+        "applicationNumber": "26736810"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280913",
+      "lastPublicationDate": "20180613",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180914",
+        "registrationNumber": "26736810"
+      }
+    },
+    "version": "20251002233327",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QUORI"
+    }
+  },
+  "_uri": "/mark/cn/625ca2ee-5474-4045-a462-e7da108e1e13",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:25.705Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

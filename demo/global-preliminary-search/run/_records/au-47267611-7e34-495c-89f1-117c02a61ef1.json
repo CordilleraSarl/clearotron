@@ -1,0 +1,115 @@
+{
+  "uri": "/mark/au/47267611-7e34-495c-89f1-117c02a61ef1",
+  "provider": "clarivate",
+  "office": "au",
+  "guid": "47267611-7e34-495c-89f1-117c02a61ef1",
+  "applicationNumber": "1138545",
+  "registrationNumber": "1138545",
+  "applicationDate": "2006-10-03",
+  "registrationDate": "2006-10-03",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2008-05-22",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "QORD",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer accessories, word processors, DVD players, video disc players, video discs, video tape recorders, video tape players, video cameras, televisions, projection televisions, radios, transceivers, tape recorders, tape players, head phones, car stereos, stereo appliances (such as tape players, tape recorders, tuners, amplifiers, record players, cartridges, speakers), audio cassette tapes, video cassette tapes, earphones, microphones, microphone mixers, graphic equalizers, audio speakers, high end audio speakers, high powered amplifiers, micro hifi, mini hifi",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Z & Y Nominees Pty Ltd",
+  "ownerNative": null,
+  "ownerCountry": "AU",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "3/16 Larnaca Court TEMPLESTOWE 3106, VIC",
+        "applicantAddressCountryCode": "AU",
+        "applicantAddressCountryName": "Australia",
+        "applicantName": "Z & Y Nominees Pty Ltd"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer accessories, word processors, DVD players, video disc players, video discs, video tape recorders, video tape players, video cameras, televisions, projection televisions, radios, transceivers, tape recorders, tape players, head phones, car stereos, stereo appliances (such as tape players, tape recorders, tuners, amplifiers, record players, cartridges, speakers), audio cassette tapes, video cassette tapes, earphones, microphones, microphone mixers, graphic equalizers, audio speakers, high end audio speakers, high powered amplifiers, micro hifi, mini hifi"
+        }
+      ]
+    },
+    "id": "47267611-7e34-495c-89f1-117c02a61ef1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "AU",
+    "registrationOfficeName": "Australia",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "3/16 Larnaca Court TEMPLESTOWE 3106 VIC",
+        "representativeCorrespondentAddressCountryCode": "AU",
+        "representativeCorrespondentAddressCountryName": "Australia",
+        "representativeCorrespondentName": "Z & Y Nominees Pty Ltd"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20061003",
+        "applicationNumber": "1138545"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20080522",
+      "markCurrentStatus": "REMOVED: NON-USE",
+      "registration": {
+        "registrationDate": "20061003",
+        "registrationNumber": "1138545"
+      }
+    },
+    "version": "20250625151234",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORD"
+    }
+  },
+  "_uri": "/mark/au/47267611-7e34-495c-89f1-117c02a61ef1",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:20.369Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

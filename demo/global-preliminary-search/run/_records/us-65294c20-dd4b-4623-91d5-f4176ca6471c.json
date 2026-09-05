@@ -1,0 +1,226 @@
+{
+  "uri": "/mark/us/65294c20-dd4b-4623-91d5-f4176ca6471c",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "65294c20-dd4b-4623-91d5-f4176ca6471c",
+  "applicationNumber": "87415491",
+  "registrationNumber": null,
+  "applicationDate": "2017-04-18",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2018-08-03",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "VALUE DRIVEN ORTHOPEDIC INNOVATION",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 engineering design services in the field of medical devices, namely orthopedic implants and therapeutic delivery devices",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Sites Medical, LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Jeremy N. Gayed",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "5865 E. STATE RD. 14, COLUMBIA CITY, IN, 46725",
+        "applicantAddressCity": "COLUMBIA CITY",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "46725",
+        "applicantAddressStateName": "INDIANA",
+        "applicantAddressStreet": "5865 E. STATE RD. 14",
+        "applicantJurisdictionOfIncorporation": "INDIANA",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "Sites Medical, LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 engineering design services in the field of medical devices, namely orthopedic implants and therapeutic delivery devices"
+        }
+      ]
+    },
+    "id": "65294c20-dd4b-4623-91d5-f4176ca6471c",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20181016",
+        "descriptionText": "TEAS WITHDRAWAL OF ATTORNEY RECEIVED-FIRM RETAINS"
+      },
+      {
+        "date": "20180913",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20180913",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20180202",
+        "descriptionText": "FINAL REFUSAL E-MAILED"
+      },
+      {
+        "date": "20180202",
+        "descriptionText": "NOTIFICATION OF FINAL REFUSAL EMAILED"
+      },
+      {
+        "date": "20180202",
+        "descriptionText": "FINAL REFUSAL  WRITTEN"
+      },
+      {
+        "date": "20180116",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20180115",
+        "descriptionText": "TEAS VOLUNTARY AMENDMENT RECEIVED"
+      },
+      {
+        "date": "20180115",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20180115",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20170714",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20170714",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20170714",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20170712",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20170424",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "5865 E. STATE RD. 14, COLUMBIA CITY, IN, 46725",
+        "city": "COLUMBIA CITY",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "INDIANA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Sites Medical, LLC",
+        "postalCode": "46725",
+        "stateName": "INDIANA",
+        "street": "5865 E. STATE RD. 14"
+      },
+      {
+        "address": "5865 E. STATE RD. 14, COLUMBIA CITY, IN, 46725",
+        "city": "COLUMBIA CITY",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "INDIANA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Sites Medical, LLC",
+        "postalCode": "46725",
+        "stateName": "INDIANA",
+        "street": "5865 E. STATE RD. 14"
+      }
+    ],
+    "recordLastUpdated": "20260111",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "FORT WAYNE, IN 46802, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "FORT WAYNE, IN 46802",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "JEREMY N. GAYED BARRETT MCNAGNY LLP, 215 E. BERRY ST."
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "FORT WAYNE, IN 46802, UNITED STATES",
+        "representativeAddressLines": [
+          "FORT WAYNE, IN 46802",
+          "UNITED STATES"
+        ],
+        "representativeName": "Jeremy N. Gayed"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20180803",
+      "active": false,
+      "application": {
+        "applicationDate": "20170418",
+        "applicationNumber": "87415491"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20180913",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260111081036",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VALUE DRIVEN ORTHOPEDIC INNOVATION"
+    }
+  },
+  "_uri": "/mark/us/65294c20-dd4b-4623-91d5-f4176ca6471c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

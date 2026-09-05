@@ -1,0 +1,123 @@
+{
+  "uri": "/mark/in/62467858-5098-4e57-aeec-0ad23f8f3a74",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "62467858-5098-4e57-aeec-0ad23f8f3a74",
+  "applicationNumber": "5715481",
+  "registrationNumber": "3272344",
+  "applicationDate": "2022-12-09",
+  "registrationDate": "2023-09-15",
+  "expiryDate": "2032-12-09",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Savenorme",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Closed circuit television systems (CCTV); biometric scanners; Biometric access control systems; Biometric fingerprint readers; Electronic access control systems for doors in combination with a video camera; Electronic security systems for home network; Video door telephone apparatus; Fire alarm systems; Telephones incorporating intercommunication systems; Public address systems.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SIDDHARTH DESHPANDE TRADING AS M/S. SAVENORME TECHNOLOGIES Single Firm",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "AM LEGAL ASSOCIATES[27439]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "001 Building Srushti Society, Parvati Nagar, Sinhgad Road, Pune, Maharashtra, India - 411030",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "SIDDHARTH DESHPANDE TRADING AS M/S. SAVENORME TECHNOLOGIES Single Firm"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Closed circuit television systems (CCTV); biometric scanners; Biometric access control systems; Biometric fingerprint readers; Electronic access control systems for doors in combination with a video camera; Electronic security systems for home network; Video door telephone apparatus; Fire alarm systems; Telephones incorporating intercommunication systems; Public address systems."
+        }
+      ]
+    },
+    "id": "62467858-5098-4e57-aeec-0ad23f8f3a74",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2101"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "#5, 3rd Floor, DSK Kartik Building, Apex Coloney, Shantisheela Society, Law College Road Erandwane, Pune 411004 M.S. India",
+        "representativeName": "AM LEGAL ASSOCIATES[27439]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20221209",
+        "applicationNumber": "5715481"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321209",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20150829"
+        }
+      ],
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20230915",
+        "registrationNumber": "3272344"
+      }
+    },
+    "version": "20250710162328",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Savenorme"
+    }
+  },
+  "_uri": "/mark/in/62467858-5098-4e57-aeec-0ad23f8f3a74",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.828Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

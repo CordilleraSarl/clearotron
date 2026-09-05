@@ -1,0 +1,202 @@
+{
+  "uri": "/mark/ve/c4ca64c7-906f-4b0f-9848-f6b066413eaa",
+  "provider": "clarivate",
+  "office": "ve",
+  "guid": "c4ca64c7-906f-4b0f-9848-f6b066413eaa",
+  "applicationNumber": "1978-004855",
+  "registrationNumber": "D016010",
+  "applicationDate": "1978-01-01",
+  "registrationDate": "1981-04-06",
+  "expiryDate": "2016-04-06",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENCOR - VENEZOLANA DE COBERTURAS C. A.",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "en",
+      "description": "No goods available",
+      "translation_language": "en",
+      "translation": "No goods available"
+    }
+  ],
+  "owner": "VENCOR - VENEZOLANA DE COBERTURAS C. A.",
+  "ownerNative": null,
+  "ownerCountry": "VE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "MARIARA, EDO. CARABOBO",
+        "applicantAddressCountryCode": "VE",
+        "applicantAddressCountryName": "Venezuela",
+        "applicantName": "VENCOR - VENEZOLANA DE COBERTURAS C. A."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "No goods available",
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "No goods available"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "46"
+        }
+      ]
+    },
+    "id": "c4ca64c7-906f-4b0f-9848-f6b066413eaa",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "VE",
+    "registrationOfficeName": "Venezuela",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19780101",
+        "applicationNumber": "1978-004855"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20160406",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19810406",
+        "registrationNumber": "D016010"
+      }
+    },
+    "version": "20250630154429",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENCOR - VENEZOLANA DE COBERTURAS C. A."
+    }
+  },
+  "_uri": "/mark/ve/c4ca64c7-906f-4b0f-9848-f6b066413eaa",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.743Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

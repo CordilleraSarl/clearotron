@@ -1,0 +1,286 @@
+{
+  "uri": "/mark/us/556349cc-259b-4dc5-8ee1-039b37125d80",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "556349cc-259b-4dc5-8ee1-039b37125d80",
+  "applicationNumber": "86382218",
+  "registrationNumber": null,
+  "applicationDate": "2014-09-01",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2015-01-20"
+  ],
+  "abandonmentDate": "2016-04-18",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Computer game programs; Electronic game programs; Game software; Interactive video game programs; Video game software",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Dustin Stringer",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Ryan P. Morrison",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Apt 207, Minot, ND, 58703",
+        "applicantAddressCity": "Minot",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "58703",
+        "applicantAddressStateName": "NORTH DAKOTA",
+        "applicantAddressStreet": "Apt 207",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Dustin Stringer",
+        "applicantSecondaryAddressUnit": "3705 2nd St NE"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Computer game programs; Electronic game programs; Game software; Interactive video game programs; Video game software"
+        }
+      ]
+    },
+    "id": "556349cc-259b-4dc5-8ee1-039b37125d80",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20190123",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20190123",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20180709",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20161011",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20160822",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20160418",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20160418",
+        "descriptionText": "ABANDONMENT - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20151111",
+        "descriptionText": "NOTICE OF APPROVAL OF EXTENSION REQUEST E-MAILED"
+      },
+      {
+        "date": "20151110",
+        "descriptionText": "SOU EXTENSION 1 GRANTED"
+      },
+      {
+        "date": "20151108",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20151013",
+        "descriptionText": "SOU EXTENSION RECEIVED WITH TEAS PETITION"
+      },
+      {
+        "date": "20151013",
+        "descriptionText": "NOTICE OF REVIVAL - E-MAILED"
+      },
+      {
+        "date": "20151013",
+        "descriptionText": "PETITION TO REVIVE-GRANTED"
+      },
+      {
+        "date": "20151013",
+        "descriptionText": "TEAS PETITION TO REVIVE RECEIVED"
+      },
+      {
+        "date": "20150917",
+        "descriptionText": "SOU EXTENSION 1 FILED"
+      },
+      {
+        "date": "20150317",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20150120",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20150120",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20141231",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20141213",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20141213",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20141117",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20140911",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20140904",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Apt 207, Minot, ND, 58703",
+        "city": "Minot",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Dustin Stringer",
+        "postalCode": "58703",
+        "secondaryAddressUnit": "3705 2nd St NE",
+        "stateName": "NORTH DAKOTA",
+        "street": "Apt 207"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Apt 207, Minot, ND, 58703",
+        "city": "Minot",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Dustin Stringer",
+        "postalCode": "58703",
+        "secondaryAddressUnit": "3705 2nd St NE",
+        "stateName": "NORTH DAKOTA",
+        "street": "Apt 207"
+      },
+      {
+        "address": "Apt 207, Minot, ND, 58703",
+        "city": "Minot",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Dustin Stringer",
+        "postalCode": "58703",
+        "secondaryAddressUnit": "3705 2nd St NE",
+        "stateName": "NORTH DAKOTA",
+        "street": "Apt 207"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Los Angeles, CA 90067, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "Los Angeles, CA 90067",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Ryan P. Morrison Morrison Rothman LLP, 1801 Century Park East - 25th Floor"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Los Angeles, CA 90067, UNITED STATES",
+        "representativeAddressLines": [
+          "Los Angeles, CA 90067",
+          "UNITED STATES"
+        ],
+        "representativeName": "Ryan P. Morrison"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20160418",
+      "active": false,
+      "application": {
+        "applicationDate": "20140901",
+        "applicationNumber": "86382218"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-NO STATEMENT OF USE FILED",
+        "markOfficialStatusCode": "606",
+        "markOfficialStatusDate": "20160418",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED",
+      "publicationDate": [
+        "20150120"
+      ],
+      "revivalDate": "20151013"
+    },
+    "version": "20260110204123",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/us/556349cc-259b-4dc5-8ee1-039b37125d80",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.179Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

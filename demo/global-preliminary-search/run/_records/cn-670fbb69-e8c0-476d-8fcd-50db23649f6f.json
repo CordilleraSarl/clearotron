@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/cn/670fbb69-e8c0-476d-8fcd-50db23649f6f",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "670fbb69-e8c0-476d-8fcd-50db23649f6f",
+  "applicationNumber": "5253967",
+  "registrationNumber": "5253967",
+  "applicationDate": "2006-03-31",
+  "registrationDate": "2009-04-28",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2009-01-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2024-01-27",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "YORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "示波器;稳压电源;测量仪器;频率计;功率计;电气测量用稳压器;精密测量仪器;计量仪表;内燃机仪表;高频仪器",
+      "translation_language": "en",
+      "translation": "Oscilloscopes; Stabilized power supplies; Measuring instruments; Frequency meters; Power meters; Voltage stabilizers for electrical measurements; Precision measuring instruments; Measuring instruments; Internal combustion engine instruments; High-frequency instruments"
+    }
+  ],
+  "owner": "Ikuo Lee",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "安徽省铜陵市铜官山区普济圩一分场机务队散户2号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Ikuo Lee",
+        "applicantNativeName": "李郁夫"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Oscilloscopes; Stabilized power supplies; Measuring instruments; Frequency meters; Power meters; Voltage stabilizers for electrical measurements; Precision measuring instruments; Measuring instruments; Internal combustion engine instruments; High-frequency instruments",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "示波器;稳压电源;测量仪器;频率计;功率计;电气测量用稳压器;精密测量仪器;计量仪表;内燃机仪表;高频仪器"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        }
+      ]
+    },
+    "id": "670fbb69-e8c0-476d-8fcd-50db23649f6f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1153"
+      }
+    ],
+    "recordLastUpdated": "20251001",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "温州百富勤商标事务所有限公司"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20060331",
+        "applicationNumber": "5253967"
+      },
+      "cancellationDate": "20240127",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20090127",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20090428",
+        "registrationNumber": "5253967"
+      }
+    },
+    "version": "20251001203020",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "YORI"
+    }
+  },
+  "_uri": "/mark/cn/670fbb69-e8c0-476d-8fcd-50db23649f6f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:45.803Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

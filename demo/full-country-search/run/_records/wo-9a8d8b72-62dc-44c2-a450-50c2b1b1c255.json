@@ -1,0 +1,278 @@
+{
+  "uri": "/mark/wo/9a8d8b72-62dc-44c2-a450-50c2b1b1c255",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "9a8d8b72-62dc-44c2-a450-50c2b1b1c255",
+  "applicationNumber": null,
+  "registrationNumber": "1397847",
+  "applicationDate": null,
+  "registrationDate": "2018-01-15",
+  "expiryDate": "2028-01-15",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-04-19",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Qore Tech",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    14,
+    36,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        14
+      ],
+      "language": "en",
+      "description": "Precious metals and their alloys; jewelry, precious and semi-precious stones; timepieces and chronometric instruments.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Insurance services; financial affairs; monetary affairs; real estate affairs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Scientific and technological services as well as research and design services relating thereto; industrial analysis and research services; design and development of computers and software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        14
+      ],
+      "language": "fr",
+      "description": "Métaux précieux et leurs alliages; joaillerie, bijouterie, pierres précieuses et semi-précieuses; horlogerie et instruments chronométriques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "fr",
+      "description": "Services d'assurances; affaires financières; affaires monétaires; affaires immobilières.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services scientifiques et technologiques ainsi que services de recherches et de conception y relatifs; services d'analyses et de recherches industrielles; conception et développement d'ordinateurs et de logiciels.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        14
+      ],
+      "language": "es",
+      "description": "Metales preciosos y sus aleaciones; artículos de joyería, bisutería, piedras preciosas y semipreciosas; artículos de relojería e instrumentos cronométricos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "es",
+      "description": "Servicios de seguros; operaciones financieras; operaciones monetarias; negocios inmobiliarios.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios científicos y tecnológicos, así como servicios de investigación y diseño conexos; servicios de análisis e investigación industriales; diseño y desarrollo de equipos informáticos y de software.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "QORE Switzerland SA",
+  "ownerNative": null,
+  "ownerCountry": "CH",
+  "representative": "Maître Malek Adjadj, Étude Fontanet et Associés",
+  "priorities": [
+    {
+      "priorityCountryCode": "CH",
+      "priorityCountryName": "Switzerland",
+      "priorityDate": "20170919",
+      "priorityNumber": "711920"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicRegistrationApplicationOfficeCode": "CH",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20170919",
+          "basicRegistrationNumber": "711920"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "CN",
+      "JP",
+      "US",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Route de Frontenex 42, c/o Dominique Lecocq, avocat, lecocqassociate, avocats CH-1207 Genève",
+        "applicantAddressCountryCode": "CH",
+        "applicantAddressCountryName": "Switzerland",
+        "applicantName": "QORE Switzerland SA"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "basicRegistrationApplications": [
+      {
+        "basicRegistrationApplicationOfficeCode": "CH",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20170919",
+            "basicRegistrationNumber": "711920"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "CN",
+      "JP",
+      "US",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "14",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Precious metals and their alloys; jewelry, precious and semi-precious stones; timepieces and chronometric instruments."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Insurance services; financial affairs; monetary affairs; real estate affairs."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific and technological services as well as research and design services relating thereto; industrial analysis and research services; design and development of computers and software."
+        },
+        {
+          "intClassNumber": "14",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Métaux précieux et leurs alliages; joaillerie, bijouterie, pierres précieuses et semi-précieuses; horlogerie et instruments chronométriques."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services d'assurances; affaires financières; affaires monétaires; affaires immobilières."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services scientifiques et technologiques ainsi que services de recherches et de conception y relatifs; services d'analyses et de recherches industrielles; conception et développement d'ordinateurs et de logiciels."
+        },
+        {
+          "intClassNumber": "14",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Metales preciosos y sus aleaciones; artículos de joyería, bisutería, piedras preciosas y semipreciosas; artículos de relojería e instrumentos cronométricos."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de seguros; operaciones financieras; operaciones monetarias; negocios inmobiliarios."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios científicos y tecnológicos, así como servicios de investigación y diseño conexos; servicios de análisis e investigación industriales; diseño y desarrollo de equipos informáticos y de software."
+        }
+      ]
+    },
+    "id": "9a8d8b72-62dc-44c2-a450-50c2b1b1c255",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "CH",
+        "priorityCountryName": "Switzerland",
+        "priorityDate": "20170919",
+        "priorityNumber": "711920"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "14"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "Grand-Rue 25, Case Postale 3200 CH-1211 Genève 3",
+        "representativeAddressCountryCode": "CH",
+        "representativeAddressCountryName": "Switzerland",
+        "representativeName": "Maître Malek Adjadj, Étude Fontanet et Associés"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280115",
+      "lastPublicationDate": "20180419",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180115",
+        "registrationNumber": "1397847"
+      }
+    },
+    "version": "20250620184724",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Qore Tech"
+    }
+  },
+  "_uri": "/mark/wo/9a8d8b72-62dc-44c2-a450-50c2b1b1c255",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.707Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

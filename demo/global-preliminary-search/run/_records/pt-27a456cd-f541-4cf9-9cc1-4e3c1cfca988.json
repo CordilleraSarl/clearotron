@@ -1,0 +1,111 @@
+{
+  "uri": "/mark/pt/27a456cd-f541-4cf9-9cc1-4e3c1cfca988",
+  "provider": "clarivate",
+  "office": "pt",
+  "guid": "27a456cd-f541-4cf9-9cc1-4e3c1cfca988",
+  "applicationNumber": "772077 MNA",
+  "registrationNumber": null,
+  "applicationDate": "2026-06-30",
+  "registrationDate": null,
+  "expiryDate": "2036-06-30",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-07-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VENORA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "software como serviço [saas]; plataformas de inteligência artificial sob a forma de software como serviço [saas].",
+      "translation_language": "en",
+      "translation": "software as a service [saas]; artificial intelligence platforms in the form of software as a service [saas]."
+    }
+  ],
+  "owner": "Arsénio Ricardo Da Silva Ferraz",
+  "ownerNative": null,
+  "ownerCountry": "PT",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "- Portugal",
+        "applicantAddressCountryCode": "PT",
+        "applicantAddressCountryName": "Portugal",
+        "applicantName": "Arsénio Ricardo Da Silva Ferraz"
+      }
+    ],
+    "applicationLanguageCode": "po",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "software as a service [saas]; artificial intelligence platforms in the form of software as a service [saas].",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "software como serviço [saas]; plataformas de inteligência artificial sob a forma de software como serviço [saas]."
+        }
+      ]
+    },
+    "id": "27a456cd-f541-4cf9-9cc1-4e3c1cfca988",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "138/2026"
+      }
+    ],
+    "recordLastUpdated": "20260729",
+    "registrationOfficeCode": "PT",
+    "registrationOfficeName": "Portugal",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260630",
+        "applicationNumber": "772077 MNA"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360630",
+      "lastPublicationDate": "20260720",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260729020028",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENORA"
+    }
+  },
+  "_uri": "/mark/pt/27a456cd-f541-4cf9-9cc1-4e3c1cfca988",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

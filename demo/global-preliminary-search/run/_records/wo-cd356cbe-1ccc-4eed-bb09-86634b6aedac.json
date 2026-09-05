@@ -1,0 +1,235 @@
+{
+  "uri": "/mark/wo/cd356cbe-1ccc-4eed-bb09-86634b6aedac",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "cd356cbe-1ccc-4eed-bb09-86634b6aedac",
+  "applicationNumber": null,
+  "registrationNumber": "1625918",
+  "applicationDate": null,
+  "registrationDate": "2021-09-06",
+  "expiryDate": "2031-09-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-11-11",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ProvenCore",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Information processing equipment; computer programs (downloadable software); computer peripheral devices; computer memory devices; computers including personal computers and micro-computers; process calculators; microprocessor devices and microprocessor systems; software; computers, micro-computers, computer terminals; information or data input, storage and processing equipment; media for recording and reproducing sounds, images, signals and data; computer hardware and firmware for computers, connected objects and for the Internet of Things; computer platforms in the form of recorded or downloadable software; operating system software for computers, embedded systems, connected objects and for the Internet of Things; operating systems for computers, connected objects and for the Internet of Things; security software for computers, connected objects and for the Internet of Things; firewall software for computers, connected objects and for the Internet of Things.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Programming services (computer services); design, maintenance and updating of software; design, installation, testing and maintenance of software and information security services relating to commercial interaction via a global computer network; technical project studies in the field of computer hardware and software; advice relating to computers; computer system analysis services; rental of computers and software; duplication of computer programs; scientific and industrial research services; design and development of operating system software for computers, embedded systems, connected objects and for the Internet of Things; computer security services for connected objects and for the Internet of Things; data security services [firewalls] for connected objects and for the Internet of Things; design of software, firmware, hardware and computer systems for connected objects and for the Internet of Things.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Équipement pour le traitement de l'information; programmes d'ordinateurs (logiciels téléchargeables); périphériques d'ordinateurs; mémoires pour ordinateurs; ordinateurs y compris ordinateurs personnels et micro-ordinateurs; calculateurs de processus; dispositifs à microprocesseurs et systèmes à microprocesseurs; logiciels; ordinateurs, micro-ordinateurs, terminaux informatiques; équipements de saisie, de stockage, de traitement des informations ou données; supports pour l'enregistrement et la reproduction des sons, images, signaux et données; matériel informatique et micrologiciels pour ordinateurs, objets connectés et pour l'Internet des Objets; plateformes informatiques sous forme de logiciels enregistrés ou téléchargeables; logiciels de systèmes d'exploitation pour ordinateurs, systèmes embarqués, objets connectés et pour l'Internet des Objets; systèmes d'exploitation pour ordinateurs, objets connectés et pour l'Internet des Objets; logiciels de sécurité pour ordinateurs, objets connectés et pour l'Internet des Objets; logiciels pare-feu pour ordinateurs, objets connectés et pour l'Internet des Objets.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services de programmation (services informatiques); conception, maintenance et mise à jour de logiciels; conception, installation, test et entretien de logiciels et services de sécurité des informations en matière d'interaction commerciale à travers un réseau informatique mondial; études de projets techniques dans le domaine du matériel informatique et des logiciels; conseils en matière d'ordinateurs; services d'analyse de systèmes informatiques; location d'ordinateurs et de logiciels; duplication de programmes informatiques; services de recherches scientifiques et industrielles; conception et développement de logiciels de système d'exploitation pour ordinateurs, systèmes embarqués, objets connectés et pour l'Internet des Objets; services de sécurité informatique pour objets connectés et pour l'Internet des Objets; services de sécurité de données [firewalls] pour objets connectés et pour l'Internet des Objets; conception de logiciels, micrologiciels, matériel informatique et systèmes informatiques pour objets connectés et pour l'Internet des Objets.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Equipos de procesamiento de datos; programas informáticos (software descargable); periféricos informáticos; memorias de ordenador; ordenadores, incluidos ordenadores personales y microordenadores; calculadores de procesos; dispositivos de microprocesadores y sistemas de microprocesadores; software; ordenadores, microordenadores, terminales informáticos; equipos de introducción, almacenamiento y procesamiento de información o datos; soportes para la grabación y reproducción de sonidos, imágenes, señales y datos; hardware y firmware para ordenadores, objetos conectados y para el Internet de las cosas; plataformas informáticas en forma de software grabado o descargable; software de sistemas operativos para ordenadores, sistemas integrados, Objetos conectados y para el Internet de las cosas; sistemas operativos para ordenadores, objetos conectados y para el Internet de las cosas; software de seguridad para ordenadores, objetos conectados y para el Internet de las cosas; software cortafuegos para ordenadores, objetos conectados y para el Internet de las cosas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios de programación (servicios informáticos); diseño, mantenimiento y actualización de software; diseño, instalación, prueba y mantenimiento de software y servicios seguridad de la información en materia de interacción comercial mediante una red informática mundial; estudio de proyectos técnicos relacionados con equipos informáticos y software; asesoramiento sobre ordenadores; servicios de análisis de sistemas informáticos; alquiler de ordenadores y software; duplicación de programas informáticos; servicios de investigación científica e industrial; diseño y desarrollo de software de sistemas operativos para ordenadores, sistemas integrados, Objetos conectados y para el Internet de las cosas; servicios de seguridad informática para objetos conectados y para el Internet de las cosas; servicios de seguridad de datos [cortafuegos] para objetos conectados y para el Internet de las cosas; diseño de software, firmware, hardware y sistemas informáticos para objetos conectados y para el Internet de las cosas.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "PROVENRUN",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "NOVAGRAAF FRANCE",
+  "priorities": [
+    {
+      "priorityCountryCode": "FR",
+      "priorityCountryName": "France",
+      "priorityDate": "20210312",
+      "priorityNumber": "4743137"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20210312",
+          "basicApplicationNumber": "4743137"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "FR"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "GB",
+      "JP",
+      "US",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "77 avenue Niel F-75017 Paris",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "PROVENRUN"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20210312",
+            "basicApplicationNumber": "4743137"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "FR"
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "GB",
+      "JP",
+      "US",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Information processing equipment; computer programs (downloadable software); computer peripheral devices; computer memory devices; computers including personal computers and micro-computers; process calculators; microprocessor devices and microprocessor systems; software; computers, micro-computers, computer terminals; information or data input, storage and processing equipment; media for recording and reproducing sounds, images, signals and data; computer hardware and firmware for computers, connected objects and for the Internet of Things; computer platforms in the form of recorded or downloadable software; operating system software for computers, embedded systems, connected objects and for the Internet of Things; operating systems for computers, connected objects and for the Internet of Things; security software for computers, connected objects and for the Internet of Things; firewall software for computers, connected objects and for the Internet of Things."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Programming services (computer services); design, maintenance and updating of software; design, installation, testing and maintenance of software and information security services relating to commercial interaction via a global computer network; technical project studies in the field of computer hardware and software; advice relating to computers; computer system analysis services; rental of computers and software; duplication of computer programs; scientific and industrial research services; design and development of operating system software for computers, embedded systems, connected objects and for the Internet of Things; computer security services for connected objects and for the Internet of Things; data security services [firewalls] for connected objects and for the Internet of Things; design of software, firmware, hardware and computer systems for connected objects and for the Internet of Things."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Équipement pour le traitement de l'information; programmes d'ordinateurs (logiciels téléchargeables); périphériques d'ordinateurs; mémoires pour ordinateurs; ordinateurs y compris ordinateurs personnels et micro-ordinateurs; calculateurs de processus; dispositifs à microprocesseurs et systèmes à microprocesseurs; logiciels; ordinateurs, micro-ordinateurs, terminaux informatiques; équipements de saisie, de stockage, de traitement des informations ou données; supports pour l'enregistrement et la reproduction des sons, images, signaux et données; matériel informatique et micrologiciels pour ordinateurs, objets connectés et pour l'Internet des Objets; plateformes informatiques sous forme de logiciels enregistrés ou téléchargeables; logiciels de systèmes d'exploitation pour ordinateurs, systèmes embarqués, objets connectés et pour l'Internet des Objets; systèmes d'exploitation pour ordinateurs, objets connectés et pour l'Internet des Objets; logiciels de sécurité pour ordinateurs, objets connectés et pour l'Internet des Objets; logiciels pare-feu pour ordinateurs, objets connectés et pour l'Internet des Objets."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de programmation (services informatiques); conception, maintenance et mise à jour de logiciels; conception, installation, test et entretien de logiciels et services de sécurité des informations en matière d'interaction commerciale à travers un réseau informatique mondial; études de projets techniques dans le domaine du matériel informatique et des logiciels; conseils en matière d'ordinateurs; services d'analyse de systèmes informatiques; location d'ordinateurs et de logiciels; duplication de programmes informatiques; services de recherches scientifiques et industrielles; conception et développement de logiciels de système d'exploitation pour ordinateurs, systèmes embarqués, objets connectés et pour l'Internet des Objets; services de sécurité informatique pour objets connectés et pour l'Internet des Objets; services de sécurité de données [firewalls] pour objets connectés et pour l'Internet des Objets; conception de logiciels, micrologiciels, matériel informatique et systèmes informatiques pour objets connectés et pour l'Internet des Objets."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Equipos de procesamiento de datos; programas informáticos (software descargable); periféricos informáticos; memorias de ordenador; ordenadores, incluidos ordenadores personales y microordenadores; calculadores de procesos; dispositivos de microprocesadores y sistemas de microprocesadores; software; ordenadores, microordenadores, terminales informáticos; equipos de introducción, almacenamiento y procesamiento de información o datos; soportes para la grabación y reproducción de sonidos, imágenes, señales y datos; hardware y firmware para ordenadores, objetos conectados y para el Internet de las cosas; plataformas informáticas en forma de software grabado o descargable; software de sistemas operativos para ordenadores, sistemas integrados, Objetos conectados y para el Internet de las cosas; sistemas operativos para ordenadores, objetos conectados y para el Internet de las cosas; software de seguridad para ordenadores, objetos conectados y para el Internet de las cosas; software cortafuegos para ordenadores, objetos conectados y para el Internet de las cosas."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de programación (servicios informáticos); diseño, mantenimiento y actualización de software; diseño, instalación, prueba y mantenimiento de software y servicios seguridad de la información en materia de interacción comercial mediante una red informática mundial; estudio de proyectos técnicos relacionados con equipos informáticos y software; asesoramiento sobre ordenadores; servicios de análisis de sistemas informáticos; alquiler de ordenadores y software; duplicación de programas informáticos; servicios de investigación científica e industrial; diseño y desarrollo de software de sistemas operativos para ordenadores, sistemas integrados, Objetos conectados y para el Internet de las cosas; servicios de seguridad informática para objetos conectados y para el Internet de las cosas; servicios de seguridad de datos [cortafuegos] para objetos conectados y para el Internet de las cosas; diseño de software, firmware, hardware y sistemas informáticos para objetos conectados y para el Internet de las cosas."
+        }
+      ]
+    },
+    "id": "cd356cbe-1ccc-4eed-bb09-86634b6aedac",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "FR",
+        "priorityCountryName": "France",
+        "priorityDate": "20210312",
+        "priorityNumber": "4743137"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "43"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "2 rue Sarah Bernhardt, CS 90017 F-92665 Asnières-sur-Seine Cedex",
+        "representativeAddressCountryCode": "FR",
+        "representativeAddressCountryName": "France",
+        "representativeName": "NOVAGRAAF FRANCE"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310906",
+      "lastPublicationDate": "20211111",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20210906",
+        "registrationNumber": "1625918"
+      }
+    },
+    "version": "20250620193622",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ProvenCore"
+    }
+  },
+  "_uri": "/mark/wo/cd356cbe-1ccc-4eed-bb09-86634b6aedac",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.730Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

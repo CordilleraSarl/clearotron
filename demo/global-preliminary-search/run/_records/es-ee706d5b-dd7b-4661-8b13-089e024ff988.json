@@ -1,0 +1,179 @@
+{
+  "uri": "/mark/es/ee706d5b-dd7b-4661-8b13-089e024ff988",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "ee706d5b-dd7b-4661-8b13-089e024ff988",
+  "applicationNumber": "4376735 M4",
+  "registrationNumber": null,
+  "applicationDate": "2026-04-27",
+  "registrationDate": null,
+  "expiryDate": "2036-04-26",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-06-19",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QORI PARFUMS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    3,
+    7,
+    9,
+    21
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1
+      ],
+      "language": "es",
+      "description": "Alcohol para su uso en la fabricacion de perfumes; productos quimicos para preparar perfumes; sustancias quimicas para su uso en la fabricacion de perfumes",
+      "translation_language": "en",
+      "translation": "ALCOHOL FOR USE IN THE MANUFACTURE OF PERFUMES; CHEMICALS FOR PREPARING PERFUMES; CHEMICAL SUBSTANCES FOR USE IN THE MANUFACTURE OF PERFUMES"
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "es",
+      "description": "Aceites esenciales como perfumes para lavar la ropa; aceites naturales para perfumes; difusores de perfumes de ambiente con varillas; perfumes; perfumes, aguas de tocador; perfumes liquidos; perfumes para automoviles; perfumes para cartones; perfumes para ceramica; perfumes para habitaciones en forma de pulverizador; perfumes para uso industrial; perfumes solidos; perfumes y fragancias de uso personal",
+      "translation_language": "en",
+      "translation": "ESSENTIAL OILS AS LAUNDRY PERFUMES; NATURAL OILS FOR PERFUMES; REED DIFFUSERS; PERFUMES; PERFUMES, EAU DE TOILETRIES; LIQUID PERFUMES; CAR PERFUMES; CARDBOARD PERFUMES; CERAMICS PERFUMES; ROOM SPRAY PERFUMES; PERFUMES FOR INDUSTRIAL USE; SOLID PERFUMES; PERFUMES AND FRAGRANCES FOR PERSONAL USE"
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "es",
+      "description": "Accesorios de aspiradoras para difundir perfumes y desinfectantes; accesorios de aspiradores para difundir perfumes y desinfectantes; aspiradores (accesorios de -) para difundir perfumes y desinfectantes",
+      "translation_language": "en",
+      "translation": "VACUUM ACCESSORIES TO SPREAD PERFUMES AND DISINFECTANTS; VACUUM ACCESSORIES TO SPREAD PERFUMES AND DISINFECTANTS; VACUUM CLEANERS (ACCESSORIES OF -) TO SPREAD PERFUMES AND DISINFECTANTS"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Aparatos de medida para dispensar perfumes en cantidades medidas",
+      "translation_language": "en",
+      "translation": "MEASURING DEVICES FOR DISPENSING PERFUMES IN MEASURED QUANTITIES"
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "es",
+      "description": "Atomizadores de perfumes vacios; perfumes (quemadores de -) [pebeteros]; quemadores de perfumes [pebeteros]; vaporizadores para perfumes [vacios]; vaporizadores para perfumes [vendidos vacios]",
+      "translation_language": "en",
+      "translation": "EMPTY PERFUME ATOMIZERS; PERFUME (INFONTS) [INFONTS]; PERFUME BURNERS [INFONTS]; PERFUME VAPORIZERS [EMPTY]; PERFUME VAPORIZERS [SOLD EMPTY]"
+    }
+  ],
+  "owner": "QORI PARFUMS SL",
+  "ownerNative": null,
+  "ownerCountry": "ES",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CAMINO DE LAS LIEBRES 3, 28109 ALCOBENDAS MADRID",
+        "applicantAddressCountryCode": "ES",
+        "applicantAddressCountryName": "Spain",
+        "applicantName": "QORI PARFUMS SL"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "ALCOHOL FOR USE IN THE MANUFACTURE OF PERFUMES; CHEMICALS FOR PREPARING PERFUMES; CHEMICAL SUBSTANCES FOR USE IN THE MANUFACTURE OF PERFUMES",
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Alcohol para su uso en la fabricacion de perfumes; productos quimicos para preparar perfumes; sustancias quimicas para su uso en la fabricacion de perfumes"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "ESSENTIAL OILS AS LAUNDRY PERFUMES; NATURAL OILS FOR PERFUMES; REED DIFFUSERS; PERFUMES; PERFUMES, EAU DE TOILETRIES; LIQUID PERFUMES; CAR PERFUMES; CARDBOARD PERFUMES; CERAMICS PERFUMES; ROOM SPRAY PERFUMES; PERFUMES FOR INDUSTRIAL USE; SOLID PERFUMES; PERFUMES AND FRAGRANCES FOR PERSONAL USE",
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aceites esenciales como perfumes para lavar la ropa; aceites naturales para perfumes; difusores de perfumes de ambiente con varillas; perfumes; perfumes, aguas de tocador; perfumes liquidos; perfumes para automoviles; perfumes para cartones; perfumes para ceramica; perfumes para habitaciones en forma de pulverizador; perfumes para uso industrial; perfumes solidos; perfumes y fragancias de uso personal"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "VACUUM ACCESSORIES TO SPREAD PERFUMES AND DISINFECTANTS; VACUUM ACCESSORIES TO SPREAD PERFUMES AND DISINFECTANTS; VACUUM CLEANERS (ACCESSORIES OF -) TO SPREAD PERFUMES AND DISINFECTANTS",
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Accesorios de aspiradoras para difundir perfumes y desinfectantes; accesorios de aspiradores para difundir perfumes y desinfectantes; aspiradores (accesorios de -) para difundir perfumes y desinfectantes"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "MEASURING DEVICES FOR DISPENSING PERFUMES IN MEASURED QUANTITIES",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aparatos de medida para dispensar perfumes en cantidades medidas"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "EMPTY PERFUME ATOMIZERS; PERFUME (INFONTS) [INFONTS]; PERFUME BURNERS [INFONTS]; PERFUME VAPORIZERS [EMPTY]; PERFUME VAPORIZERS [SOLD EMPTY]",
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Atomizadores de perfumes vacios; perfumes (quemadores de -) [pebeteros]; quemadores de perfumes [pebeteros]; vaporizadores para perfumes [vacios]; vaporizadores para perfumes [vendidos vacios]"
+        }
+      ]
+    },
+    "id": "ee706d5b-dd7b-4661-8b13-089e024ff988",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "7176"
+      }
+    ],
+    "recordLastUpdated": "20260624",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260427",
+        "applicationNumber": "4376735 M4"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360426",
+      "lastPublicationDate": "20260619",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260624020015",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORI PARFUMS"
+    }
+  },
+  "_uri": "/mark/es/ee706d5b-dd7b-4661-8b13-089e024ff988",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.393Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

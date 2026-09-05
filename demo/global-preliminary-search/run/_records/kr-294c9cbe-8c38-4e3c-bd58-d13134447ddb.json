@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/kr/294c9cbe-8c38-4e3c-bd58-d13134447ddb",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "294c9cbe-8c38-4e3c-bd58-d13134447ddb",
+  "applicationNumber": "40-1989-0001657",
+  "registrationNumber": "4001976440000",
+  "applicationDate": "1989-01-25",
+  "registrationDate": "1990-08-02",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "소리",
+  "markTransliteration": "sound",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    2,
+    8,
+    9,
+    16
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        2,
+        8,
+        9,
+        16
+      ],
+      "language": "ko",
+      "description": "노트북,명함꽃이,바인더,봉투,사진첩,새창으로 열림,수첩,스케치북,장부,카아드,편지지",
+      "translation_language": "en",
+      "translation": "Notebook, business card flower, binder, envelope, photo album, new window, notebook, sketchbook, book, card, stationery"
+    }
+  ],
+  "owner": "KIM,SUNG-SOO",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "김기종 (KIM, Ki Jong)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울시영등포구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "KIM,SUNG-SOO",
+        "applicantNativeName": "김성수"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Notebook, business card flower, binder, envelope, photo album, new window, notebook, sketchbook, book, card, stationery",
+          "intClassNumber": "02,08,09,16",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "노트북,명함꽃이,바인더,봉투,사진첩,새창으로 열림,수첩,스케치북,장부,카아드,편지지"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "022"
+        }
+      ]
+    },
+    "id": "294c9cbe-8c38-4e3c-bd58-d13134447ddb",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260120",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Yuwha Bldg., , Banpo-Dong, Seocho-gu, Seoul KOREA",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김기종 (KIM, Ki Jong)"
+      },
+      {
+        "representativeName": "최재철 (CHOI, Jae Chul)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19890125",
+        "applicationNumber": "40-1989-0001657"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19900802",
+        "registrationNumber": "4001976440000"
+      }
+    },
+    "version": "20260120020456",
+    "wordMarkSpecification": {
+      "markTransliteration": "sound",
+      "markVerbalElementText": "소리"
+    }
+  },
+  "_uri": "/mark/kr/294c9cbe-8c38-4e3c-bd58-d13134447ddb",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:58.878Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

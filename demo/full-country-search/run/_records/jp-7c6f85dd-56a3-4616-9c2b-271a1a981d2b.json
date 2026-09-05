@@ -1,0 +1,154 @@
+{
+  "uri": "/mark/jp/7c6f85dd-56a3-4616-9c2b-271a1a981d2b",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "7c6f85dd-56a3-4616-9c2b-271a1a981d2b",
+  "applicationNumber": "2019-133495",
+  "registrationNumber": "6242820",
+  "applicationDate": "2018-12-03",
+  "registrationDate": "2020-04-06",
+  "expiryDate": "2030-04-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-04-28",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Ｑｏｒｅ",
+  "markTransliteration": "KOA KUORE KYUUORE OOAARUII",
+  "markTranslation": "QORE",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "コンピュータソフトウェア用アプリケーション（電気通信回線を通じてダウンロードにより販売されるもの），人工知能を活用するための電子計算機用プログラム，人工知能を活用したサービスの開発を可能にするための電子計算機用プログラム，電気通信機械器具，電子応用機械器具及びその部品，電子計算機用プログラム",
+      "translation_language": "en",
+      "translation": "Applications for computer software (sold by download through telecommunications lines), computer programs for utilizing artificial intelligence, computer programs for enabling the development of services utilizing artificial intelligence, telecommunications Machines and appliances, electronic appliances and their parts, computer programs"
+    }
+  ],
+  "owner": "K.K. QUANTUMCORE",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "MIYAZAKI MASAFUMI",
+  "priorities": [
+    {
+      "priorityDate": "20181203"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "SHINAGAWA TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "K.K. QUANTUMCORE",
+        "applicantNativeAddress": "東京都品川区",
+        "applicantNativeName": "株式会社ＱｕａｎｔｕｍＣｏｒｅ"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Applications for computer software (sold by download through telecommunications lines), computer programs for utilizing artificial intelligence, computer programs for enabling the development of services utilizing artificial intelligence, telecommunications Machines and appliances, electronic appliances and their parts, computer programs",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "コンピュータソフトウェア用アプリケーション（電気通信回線を通じてダウンロードにより販売されるもの），人工知能を活用するための電子計算機用プログラム，人工知能を活用したサービスの開発を可能にするための電子計算機用プログラム，電気通信機械器具，電子応用機械器具及びその部品，電子計算機用プログラム"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Telecommunication machines and apparatus; Personal digital assistants"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door closing control systems; Electron microscopes"
+        }
+      ]
+    },
+    "id": "7c6f85dd-56a3-4616-9c2b-271a1a981d2b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20181203"
+      }
+    ],
+    "recordLastUpdated": "20241011",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "MIYAZAKI MASAFUMI",
+        "representativeNativeName": "宮崎　超史"
+      },
+      {
+        "representativeName": "TSUJIMOTO YORIKO",
+        "representativeNativeName": "辻本　依子"
+      },
+      {
+        "representativeName": "TSUCHINO FUMITAKA",
+        "representativeNativeName": "土野　史隆"
+      },
+      {
+        "representativeName": "Toreru Inc.",
+        "representativeNativeName": "弁理士法人Ｔｏｒｅｒｕ"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20181203",
+        "applicationNumber": "2019-133495"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300406",
+      "lastPublicationDate": "20200428",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20200406",
+        "registrationNumber": "6242820"
+      }
+    },
+    "version": "20241011082639",
+    "wordMarkSpecification": {
+      "markTranslation": "QORE",
+      "markTransliteration": "KOA KUORE KYUUORE OOAARUII",
+      "markVerbalElementText": "Ｑｏｒｅ"
+    }
+  },
+  "_uri": "/mark/jp/7c6f85dd-56a3-4616-9c2b-271a1a981d2b",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.708Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

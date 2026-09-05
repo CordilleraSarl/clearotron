@@ -37,7 +37,25 @@ const b64u = (buf) => Buffer.from(buf).toString("base64url");
 export function isRevoked(jti, { denylistPath = process.env.TRADEMARK_MCP_TOKEN_DENYLIST } = {}) {
   if (!jti || !denylistPath) return false;
   let text;
-  try { text = readFileSync(denylistPath, "utf8"); } catch { return false; }
+  try { text = readFileSync(denylistPath, "utf8"); }
+  catch (e) {
+    // FAIL CLOSED ( — bb8's F14; overwatch ruling, recorded on 1889 for the owner's
+    // review with the reversal path, which is this function).
+    //
+    // This returned false — "not revoked" — on any unreadable list, and that is how a revoked key kept
+    // answering 200 on a default install: the door was pointed at a file nothing created, so every check
+    // silently passed. An absence is a finding, never a pass, and here the absence is of the very
+    // evidence that would deny the request.
+    //
+    // The cost is now a VISIBLE outage that names its own cause, rather than an invisible hole. `start`
+    // creates this file before any door starts, so reaching this branch means someone removed or
+    // unreadable-ified it while the door was running — rare, and worth stopping for.
+    const err = new Error(`revocation could not be checked: the denylist at ${denylistPath} is unreadable `
+      + `(${e.code ?? e.message}). Refusing the token rather than assuming it was never revoked.`);
+    err.code = "REVOCATION_UNCHECKABLE";
+    err.denylistPath = denylistPath;
+    throw err;
+  }
   return text.split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#")).includes(jti);
 }
 

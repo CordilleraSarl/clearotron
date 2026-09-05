@@ -1,0 +1,153 @@
+{
+  "uri": "/mark/fr/ffbfcdf5-f706-4a62-864e-13ccb20a0849",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "ffbfcdf5-f706-4a62-864e-13ccb20a0849",
+  "applicationNumber": "06 3447008",
+  "registrationNumber": "06 3447008",
+  "applicationDate": "2006-08-24",
+  "registrationDate": null,
+  "expiryDate": "2026-08-23",
+  "renewalDate": "2016-03-14",
+  "lastPublicationDate": "2007-05-18",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    9,
+    11
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7
+      ],
+      "language": "fr",
+      "description": ": Appareils et installations de production d'énergie. Renouvelable à savoir installations éoliennes, convertisseurs d'énergie éolienne, moulins à vents, tours (parties de machines) pour installations d'énergie éolienne, rotors (parties de machines) pour installation d'énergie éolienne.",
+      "translation_language": "en",
+      "translation": "Apparatus and installations for the production of energy. Renewable, namely wind power installations, wind power converters, windmills, towers (parts of machines) for wind power installations, rotors (parts of machines) for wind power installations."
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": ": Installations, appareils et instruments électriques de production d'énergie, pièces des articles précités, à savoir générateurs, circuits électriques, modulateurs de fréquence, instruments de mesurage, de signalisation et de contrôle. Équipement pour le traitement de l'information et les ordinateurs, en particulier de contrôle et de commande d'installations d'énergie éolienne ; piles solaires ; collecteurs solaires ; cellules photovoltaïques ; panneaux solaires.",
+      "translation_language": "en",
+      "translation": "Installations, apparatus and instruments electric power generators, parts for the aforesaid goods, namely generators, electrical circuits, frequency modulators, measuring, signaling and control instruments. Equipment for data processing and computers, in particular for controlling and controlling wind energy installations; solar cells; solar collectors; photovoltaic cells; solar panels."
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "fr",
+      "description": ": Système électrique fonctionnant à l'énergie solaire, à savoir : appareils d'éclairage, de chauffage, de production de vapeur, de réfrigération, de séchage, de ventilation, de distribution d'eau et installations sanitaires fonctionnant à l'énergie solaire. Appareils ou installations de climatisation fonctionnant à l'énergie solaire appareils d'éclairage pour véhicules fonctionnant à l'énergie solaire installations de chauffage ou de climatisation pour véhicule fonctionnant à l'énergie solaire appareils et machines pour la purification de l'air ou de l'eau fonctionnant à l'énergie solaire, chauffe-eau solaire.",
+      "translation_language": "en",
+      "translation": "Electrical system operating on solar energy, namely: lighting, heating, steam production, refrigeration, drying, ventilation, water supply and sanitary installations operating on solar energy. Apparatus or installations for air conditioning powered by solar energy lighting apparatus for vehicles powered by solar energy heating or air conditioning installations for vehicles powered by solar energy apparatus and machines for purifying air or water powered water, solar water heater."
+    }
+  ],
+  "owner": "VENTURI, Société Anonyme Monégasque",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Mme angelier myriam",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "VENTURI, Société Anonyme Monégasque"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Apparatus and installations for the production of energy. Renewable, namely wind power installations, wind power converters, windmills, towers (parts of machines) for wind power installations, rotors (parts of machines) for wind power installations.",
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Appareils et installations de production d'énergie. Renouvelable à savoir installations éoliennes, convertisseurs d'énergie éolienne, moulins à vents, tours (parties de machines) pour installations d'énergie éolienne, rotors (parties de machines) pour installation d'énergie éolienne."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Installations, apparatus and instruments electric power generators, parts for the aforesaid goods, namely generators, electrical circuits, frequency modulators, measuring, signaling and control instruments. Equipment for data processing and computers, in particular for controlling and controlling wind energy installations; solar cells; solar collectors; photovoltaic cells; solar panels.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Installations, appareils et instruments électriques de production d'énergie, pièces des articles précités, à savoir générateurs, circuits électriques, modulateurs de fréquence, instruments de mesurage, de signalisation et de contrôle. Équipement pour le traitement de l'information et les ordinateurs, en particulier de contrôle et de commande d'installations d'énergie éolienne ; piles solaires ; collecteurs solaires ; cellules photovoltaïques ; panneaux solaires."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electrical system operating on solar energy, namely: lighting, heating, steam production, refrigeration, drying, ventilation, water supply and sanitary installations operating on solar energy. Apparatus or installations for air conditioning powered by solar energy lighting apparatus for vehicles powered by solar energy heating or air conditioning installations for vehicles powered by solar energy apparatus and machines for purifying air or water powered water, solar water heater.",
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Système électrique fonctionnant à l'énergie solaire, à savoir : appareils d'éclairage, de chauffage, de production de vapeur, de réfrigération, de séchage, de ventilation, de distribution d'eau et installations sanitaires fonctionnant à l'énergie solaire. Appareils ou installations de climatisation fonctionnant à l'énergie solaire appareils d'éclairage pour véhicules fonctionnant à l'énergie solaire installations de chauffage ou de climatisation pour véhicule fonctionnant à l'énergie solaire appareils et machines pour la purification de l'air ou de l'eau fonctionnant à l'énergie solaire, chauffe-eau solaire."
+        }
+      ]
+    },
+    "id": "ffbfcdf5-f706-4a62-864e-13ccb20a0849",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00041",
+        "publicationVolume": "20"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeName": "Mme angelier myriam"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20060824",
+        "applicationNumber": "06 3447008"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20260823",
+      "lastPublicationDate": "20070518",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "06 3447008"
+      },
+      "renewalDate": "20160314",
+      "renewalPublishedDate": "20160701"
+    },
+    "version": "20250426151541",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/fr/ffbfcdf5-f706-4a62-864e-13ccb20a0849",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.178Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

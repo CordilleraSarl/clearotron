@@ -1,0 +1,155 @@
+{
+  "uri": "/mark/cn/3b9e2f63-9feb-4b10-ada0-f9a8c19b6a68",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "3b9e2f63-9feb-4b10-ada0-f9a8c19b6a68",
+  "applicationNumber": "13896013",
+  "registrationNumber": "13896013",
+  "applicationDate": "2014-01-10",
+  "registrationDate": "2015-04-21",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2015-01-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2026-06-13",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "VENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "计算机外围设备;考勤机;网络通讯设备;电话机套;内部通讯装置;电话用成套免提工具;扩音器;电源材料(电线、电缆);电池充电器;电池",
+      "translation_language": "en",
+      "translation": "Computer peripherals; time and attendance machines; network communication equipment; telephone sets; internal communication devices; hands-free telephone sets; loudspeakers; power supply materials (wires, cables); battery chargers; batteries"
+    }
+  ],
+  "owner": "Shenzhen Meiyuanke Electronic Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市福田区梅林街道梅华路梅林多丽工业区1栋1楼1109",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Meiyuanke Electronic Technology Co., Ltd.",
+        "applicantNativeName": "深圳市美源科电子科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer peripherals; time and attendance machines; network communication equipment; telephone sets; internal communication devices; hands-free telephone sets; loudspeakers; power supply materials (wires, cables); battery chargers; batteries",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计算机外围设备;考勤机;网络通讯设备;电话机套;内部通讯装置;电话用成套免提工具;扩音器;电源材料(电线、电缆);电池充电器;电池"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Machines used in office (except for typewriters, duplicators and printers)",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Cables",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0903",
+          "subNatGoodsServicesDescription": "Machines used in office (except for typewriters, duplicators and printers)"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0912",
+          "subNatGoodsServicesDescription": "Cables"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "3b9e2f63-9feb-4b10-ada0-f9a8c19b6a68",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1440"
+      }
+    ],
+    "recordLastUpdated": "20260802",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市海睿杰知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20140110",
+        "applicationNumber": "13896013"
+      },
+      "cancellationDate": "20260613",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20150120",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20150421",
+        "registrationNumber": "13896013"
+      }
+    },
+    "version": "20260802020220",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENOR"
+    }
+  },
+  "_uri": "/mark/cn/3b9e2f63-9feb-4b10-ada0-f9a8c19b6a68",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

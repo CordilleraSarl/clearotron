@@ -1,0 +1,358 @@
+{
+  "uri": "/mark/fr/97442c97-4037-4cfa-b963-1bb191901692",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "97442c97-4037-4cfa-b963-1bb191901692",
+  "applicationNumber": "22 4873138",
+  "registrationNumber": "22 4873138",
+  "applicationDate": "2022-05-30",
+  "registrationDate": null,
+  "expiryDate": "2032-05-30",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-06-24",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIJE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    4,
+    6,
+    8,
+    11,
+    14,
+    16,
+    18,
+    19,
+    20,
+    21,
+    25,
+    28,
+    37,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        4
+      ],
+      "language": "fr",
+      "description": ": bougies pour l'éclairage ",
+      "translation_language": "en",
+      "translation": "candles for lighting"
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "fr",
+      "description": ": Métaux communs et leurs alliages; matériaux de construction métalliques; constructions transportables métalliques; panneaux acoustiques métalliques; matériaux métalliques pour les voies ferrées; câbles et fils métalliques non électriques; quincaillerie métallique; tuyaux métalliques; minerais; constructions métalliques; échafaudages métalliques; boîtes en métaux communs; récipients d'emballage en métal; objets d'art en métaux communs; statues en métaux communs; figurines en métaux communs; plaques d'immatriculation métalliques ",
+      "translation_language": "en",
+      "translation": "Base metals and their alloys; metal building materials; transportable buildings of metal; metallic acoustic panels; materials of metal for railway tracks; non-electric cables and wires of metal; metal hardware; metal pipes; ores; metal constructions; metal scaffolding; common metal boxes; packaging containers of metal; base metal works of art; base metal statues; base metal figurines; metal license plates"
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "fr",
+      "description": ": Outils et instruments à main entraînés manuellement; coutellerie; fourchettes; cuillers; rasoirs ",
+      "translation_language": "en",
+      "translation": "Hand tools and instruments, hand-operated; cutlery; forks; spoons; razors"
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "fr",
+      "description": ": Appareils d'éclairage ",
+      "translation_language": "en",
+      "translation": "Lighting devices"
+    },
+    {
+      "classes": [
+        14
+      ],
+      "language": "fr",
+      "description": ": Joaillerie; bijouterie; pierres précieuses; métaux précieux et leurs alliages; objets d'art en métaux précieux; coffrets à bijoux; boîtes en métaux précieux; bracelets de montres; chaînes de montres; porte-clefs (anneaux brisés avec breloque ou colifichet); statues en métaux précieux; figurines (statuettes) en métaux précieux; étuis pour l'horlogerie; écrins pour l'horlogerie; médailles ",
+      "translation_language": "en",
+      "translation": "Jewelry; jewelry store; precious stones; precious metals and their alloys; precious metal works of art; jewelry boxes; precious metal boxes; watch straps; watch chains; keyrings (split rings with charm or trinket); precious metal statues; figurines (statuettes) of precious metal; cases for watches; boxes for watches; medals"
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "fr",
+      "description": ": Produits de l'imprimerie; articles pour reliures; photographies; articles de papeterie; articles de bureau (à l'exception des meubles); papier; carton; boîtes en papier ou en carton; affiches; albums; cartes; livres; journaux; prospectus; brochures; calendriers; instruments d'écriture; objets d'art gravés; objets d'art lithographiés; tableaux (peintures) encadrés ou non; dessins; instruments de dessin; mouchoirs de poche en papier; serviettes de toilette en papier; linge de table en papier; papier hygiénique; sacs (enveloppes, pochettes) en papier ou en matières plastiques pour l'emballage; sacs à ordures en papier ou en matières plastiques ",
+      "translation_language": "en",
+      "translation": "Printed matter; bookbinding materials; photographs; stationery; office requisites (except furniture); paper; cardboard; paper or cardboard boxes; posters; scrapbooks; maps; books; newspapers; prospectus; pamphlets; calendars; writing implements; engraved works of art; lithographed works of art; pictures (paintings) framed or not; drawings; drawing instruments; paper pocket tissues; paper towels; paper table linen; toilet paper; bags (envelopes, pouches) of paper or plastic for packaging; paper or plastic garbage bags"
+    },
+    {
+      "classes": [
+        18
+      ],
+      "language": "fr",
+      "description": ": Cuir; peaux d'animaux; malles et valises; parapluies et parasols; cannes; fouets; sellerie; portefeuilles; porte-monnaie; porte-cartes de crédit [portefeuilles]; sacs; coffrets destinés à contenir des articles de toilette dits «vanity cases»; colliers pour animaux; habits pour animaux de compagnie ",
+      "translation_language": "en",
+      "translation": "Leather; animal skins; trunks and suitcases; umbrellas and parasols; canes; whips; saddlery; wallets; wallet; credit card holders [wallets]; bags; boxes intended to contain toiletries called “vanity cases”; animal collars; pet clothes"
+    },
+    {
+      "classes": [
+        19
+      ],
+      "language": "fr",
+      "description": ": Matériaux de construction non métalliques; tuyaux rigides non métalliques pour la construction; asphalte, poix et bitume; constructions transportables non métalliques; constructions non métalliques; panneaux acoustiques non métalliques; échafaudages non métalliques; verre de construction; verre isolant (construction); béton; ciment; objets d'art en pierre, en béton ou en marbre; statues en pierre, en béton ou en marbre; figurines (statuettes) en pierre, en béton ou en marbre; vitraux; bois de construction; bois façonnés ",
+      "translation_language": "en",
+      "translation": "Non-metallic building materials; non-metallic rigid pipes for building; asphalt, pitch and bitumen; non-metallic transportable buildings; non-metallic buildings; non-metallic acoustic panels; non-metallic scaffolding; building glass; insulating glass (building); concrete; cement; works of art in stone, concrete or marble; stone, concrete or marble statues; figurines (statuettes) of stone, concrete or marble; stained glass; construction wood; shaped woods"
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "fr",
+      "description": ": Meubles; glaces (miroirs); cadres (encadrements); objets d'art en bois, cire, plâtre ou en matières plastiques; cintres pour vêtements; commodes; coussins; étagères; récipients d'emballage en matières plastiques; fauteuils; sièges; literie à l'exception du linge de lit; vaisseliers; boîtes en bois ou en matières plastiques ",
+      "translation_language": "en",
+      "translation": "Furniture; mirrors (mirrors); picture frames (frames); works of art in wood, wax, plaster or plastics; hangers for clothes; dressers; cushions; shelves; plastic packaging containers; armchairs; seats; bedding except bed linen; dressers; wooden or plastic boxes"
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "fr",
+      "description": ": Ustensiles de ménage; ustensiles de cuisine; récipients à usage ménager; récipients pour la cuisine; peignes; éponges; brosses (à l'exception des pinceaux); matériaux pour la brosserie; instruments de nettoyage actionnés manuellement; verre brut ou mi-ouvré à l'exception du verre de construction; porcelaines; faïence; bouteilles; objets d'art en porcelaine, en céramique, en faïence ou en verre; statues en porcelaine, en céramique, en faïence ou en verre; figurines (statuettes) en porcelaine, en céramique, en faïence ou en verre; ustensiles de toilette; nécessaires de toilette; poubelles; verres (récipients); vaisselle ",
+      "translation_language": "en",
+      "translation": "Household utensils; cooking tools; household containers; kitchen containers; combs; sponges; brushes (except paintbrushes); brush-making materials; hand-operated cleaning instruments; unworked or semi-worked glass with the exception of building glass; porcelain; earthenware; bottles; porcelain, ceramic, earthenware or glass works of art; porcelain, ceramic, earthenware or glass statues; figurines (statuettes) of porcelain, ceramic, earthenware or glass; toilet utensils; toiletry cases; trash cans; glasses (containers); dishes"
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "fr",
+      "description": ": Vêtements; articles chaussants; chapellerie; chemises; vêtements en cuir; ceintures (habillement); fourrures (vêtements); gants (habillement); foulards; cravates; bonneterie; chaussettes; chaussons; chaussures de plage; chaussures de sport; sous-vêtements ",
+      "translation_language": "en",
+      "translation": "Clothing; footwear; headgear; shirts; leather clothing; belts (clothing); furs (clothing); gloves (clothing); scarves; ties; hosiery; socks; slippers; beach shoes; sport shoes; underwear"
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "fr",
+      "description": ": Jeux; jouets; jouets pour animaux de compagnie; tapis d'éveil; décorations de fête et arbres de Noël artificiels; balles et ballons de jeux; tables de billard; queues de billard; billes de billard; jeux de cartes; jeux de table; trottinettes [jouets]; planches à voile; planches pour le surf; raquettes; maquettes [jouets]; figurines [jouets]; robots en tant que jouets ",
+      "translation_language": "en",
+      "translation": "Games; toys; pet toys; playmat; festive decorations and artificial Christmas trees; balls and balls for games; pool tables; billiard cues; billiard balls; card games; board games; scooters [toys]; windsurfing; boards for surfing; rackets; models [toys]; figurines [toys]; robots as toys"
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "fr",
+      "description": ": rénovation de vêtements; entretien, nettoyage et réparation du cuir; entretien, nettoyage et réparation des fourrures; travaux de cordonnerie; installation, entretien et réparation d'appareils de bureau; installation, entretien et réparation de machines; installation, entretien et réparation de matériel informatique; entretien et réparation d'instruments d'horlogeries et chronométriques; restauration de mobilier ",
+      "translation_language": "en",
+      "translation": "clothing renovation; leather care, cleaning and repair; maintenance, cleaning and repair of furs; shoe repair; installation, maintenance and repair of office machines; installation, maintenance and repair of machines; installation, maintenance and repair of computer hardware; maintenance and repair of horological and chronometric instruments; furniture restoration"
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "fr",
+      "description": ": confection de vêtements; services d'imprimerie; mise à disposition d'informations en matière de traitement de matériaux; soudure; polissage (abrasion); rabotage de matériaux; raffinage; meulage; galvanisation; services de dorure; étamage; services de teinturerie; retouche de vêtements; traitement de tissus; sérigraphie; soufflage (verrerie); traitement des déchets (transformation); tri de déchets et de matières premières de récupération (transformation); recyclage d'ordures et de déchets ",
+      "translation_language": "en",
+      "translation": "making clothes; printing services; provision of information relating to the treatment of materials; welding; polishing (abrasion); planing of materials; refining; grinding; galvanizing; gilding services; tinning; dry cleaning services; alteration of clothes; fabric treatment; screen printing; blowing (glassware); waste treatment (transformation); sorting of waste and recovered raw materials (transformation); garbage and waste recycling"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": ": Evaluations techniques concernant la conception (travaux d'ingénieurs); recherches techniques; recherche et développement de nouveaux produits pour des tiers; décoration intérieure; services de conception d'art graphique; stylisme (esthétique industrielle); stockage électronique de données.",
+      "translation_language": "en",
+      "translation": "Technical assessments concerning design (engineering work); technical research; research and development of new products for others; interior decoration; graphic art design services; styling (industrial aesthetics); electronic data storage."
+    }
+  ],
+  "owner": "WASTE GENERATION Société par actions simplifiée à associé unique",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "TOUATI LA MOTTE ROUGE, Monsieur Henri de la Motte Rouge",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "31 Avenue Fernand Fenzy, 92160 ANTONY",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "WASTE GENERATION Société par actions simplifiée à associé unique"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "candles for lighting",
+          "intClassNumber": "04",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": bougies pour l'éclairage "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Base metals and their alloys; metal building materials; transportable buildings of metal; metallic acoustic panels; materials of metal for railway tracks; non-electric cables and wires of metal; metal hardware; metal pipes; ores; metal constructions; metal scaffolding; common metal boxes; packaging containers of metal; base metal works of art; base metal statues; base metal figurines; metal license plates",
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Métaux communs et leurs alliages; matériaux de construction métalliques; constructions transportables métalliques; panneaux acoustiques métalliques; matériaux métalliques pour les voies ferrées; câbles et fils métalliques non électriques; quincaillerie métallique; tuyaux métalliques; minerais; constructions métalliques; échafaudages métalliques; boîtes en métaux communs; récipients d'emballage en métal; objets d'art en métaux communs; statues en métaux communs; figurines en métaux communs; plaques d'immatriculation métalliques "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Hand tools and instruments, hand-operated; cutlery; forks; spoons; razors",
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Outils et instruments à main entraînés manuellement; coutellerie; fourchettes; cuillers; rasoirs "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Lighting devices",
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Appareils d'éclairage "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Jewelry; jewelry store; precious stones; precious metals and their alloys; precious metal works of art; jewelry boxes; precious metal boxes; watch straps; watch chains; keyrings (split rings with charm or trinket); precious metal statues; figurines (statuettes) of precious metal; cases for watches; boxes for watches; medals",
+          "intClassNumber": "14",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Joaillerie; bijouterie; pierres précieuses; métaux précieux et leurs alliages; objets d'art en métaux précieux; coffrets à bijoux; boîtes en métaux précieux; bracelets de montres; chaînes de montres; porte-clefs (anneaux brisés avec breloque ou colifichet); statues en métaux précieux; figurines (statuettes) en métaux précieux; étuis pour l'horlogerie; écrins pour l'horlogerie; médailles "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Printed matter; bookbinding materials; photographs; stationery; office requisites (except furniture); paper; cardboard; paper or cardboard boxes; posters; scrapbooks; maps; books; newspapers; prospectus; pamphlets; calendars; writing implements; engraved works of art; lithographed works of art; pictures (paintings) framed or not; drawings; drawing instruments; paper pocket tissues; paper towels; paper table linen; toilet paper; bags (envelopes, pouches) of paper or plastic for packaging; paper or plastic garbage bags",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Produits de l'imprimerie; articles pour reliures; photographies; articles de papeterie; articles de bureau (à l'exception des meubles); papier; carton; boîtes en papier ou en carton; affiches; albums; cartes; livres; journaux; prospectus; brochures; calendriers; instruments d'écriture; objets d'art gravés; objets d'art lithographiés; tableaux (peintures) encadrés ou non; dessins; instruments de dessin; mouchoirs de poche en papier; serviettes de toilette en papier; linge de table en papier; papier hygiénique; sacs (enveloppes, pochettes) en papier ou en matières plastiques pour l'emballage; sacs à ordures en papier ou en matières plastiques "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Leather; animal skins; trunks and suitcases; umbrellas and parasols; canes; whips; saddlery; wallets; wallet; credit card holders [wallets]; bags; boxes intended to contain toiletries called “vanity cases”; animal collars; pet clothes",
+          "intClassNumber": "18",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Cuir; peaux d'animaux; malles et valises; parapluies et parasols; cannes; fouets; sellerie; portefeuilles; porte-monnaie; porte-cartes de crédit [portefeuilles]; sacs; coffrets destinés à contenir des articles de toilette dits «vanity cases»; colliers pour animaux; habits pour animaux de compagnie "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Non-metallic building materials; non-metallic rigid pipes for building; asphalt, pitch and bitumen; non-metallic transportable buildings; non-metallic buildings; non-metallic acoustic panels; non-metallic scaffolding; building glass; insulating glass (building); concrete; cement; works of art in stone, concrete or marble; stone, concrete or marble statues; figurines (statuettes) of stone, concrete or marble; stained glass; construction wood; shaped woods",
+          "intClassNumber": "19",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Matériaux de construction non métalliques; tuyaux rigides non métalliques pour la construction; asphalte, poix et bitume; constructions transportables non métalliques; constructions non métalliques; panneaux acoustiques non métalliques; échafaudages non métalliques; verre de construction; verre isolant (construction); béton; ciment; objets d'art en pierre, en béton ou en marbre; statues en pierre, en béton ou en marbre; figurines (statuettes) en pierre, en béton ou en marbre; vitraux; bois de construction; bois façonnés "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Furniture; mirrors (mirrors); picture frames (frames); works of art in wood, wax, plaster or plastics; hangers for clothes; dressers; cushions; shelves; plastic packaging containers; armchairs; seats; bedding except bed linen; dressers; wooden or plastic boxes",
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Meubles; glaces (miroirs); cadres (encadrements); objets d'art en bois, cire, plâtre ou en matières plastiques; cintres pour vêtements; commodes; coussins; étagères; récipients d'emballage en matières plastiques; fauteuils; sièges; literie à l'exception du linge de lit; vaisseliers; boîtes en bois ou en matières plastiques "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Household utensils; cooking tools; household containers; kitchen containers; combs; sponges; brushes (except paintbrushes); brush-making materials; hand-operated cleaning instruments; unworked or semi-worked glass with the exception of building glass; porcelain; earthenware; bottles; porcelain, ceramic, earthenware or glass works of art; porcelain, ceramic, earthenware or glass statues; figurines (statuettes) of porcelain, ceramic, earthenware or glass; toilet utensils; toiletry cases; trash cans; glasses (containers); dishes",
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Ustensiles de ménage; ustensiles de cuisine; récipients à usage ménager; récipients pour la cuisine; peignes; éponges; brosses (à l'exception des pinceaux); matériaux pour la brosserie; instruments de nettoyage actionnés manuellement; verre brut ou mi-ouvré à l'exception du verre de construction; porcelaines; faïence; bouteilles; objets d'art en porcelaine, en céramique, en faïence ou en verre; statues en porcelaine, en céramique, en faïence ou en verre; figurines (statuettes) en porcelaine, en céramique, en faïence ou en verre; ustensiles de toilette; nécessaires de toilette; poubelles; verres (récipients); vaisselle "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Clothing; footwear; headgear; shirts; leather clothing; belts (clothing); furs (clothing); gloves (clothing); scarves; ties; hosiery; socks; slippers; beach shoes; sport shoes; underwear",
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Vêtements; articles chaussants; chapellerie; chemises; vêtements en cuir; ceintures (habillement); fourrures (vêtements); gants (habillement); foulards; cravates; bonneterie; chaussettes; chaussons; chaussures de plage; chaussures de sport; sous-vêtements "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Games; toys; pet toys; playmat; festive decorations and artificial Christmas trees; balls and balls for games; pool tables; billiard cues; billiard balls; card games; board games; scooters [toys]; windsurfing; boards for surfing; rackets; models [toys]; figurines [toys]; robots as toys",
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Jeux; jouets; jouets pour animaux de compagnie; tapis d'éveil; décorations de fête et arbres de Noël artificiels; balles et ballons de jeux; tables de billard; queues de billard; billes de billard; jeux de cartes; jeux de table; trottinettes [jouets]; planches à voile; planches pour le surf; raquettes; maquettes [jouets]; figurines [jouets]; robots en tant que jouets "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "clothing renovation; leather care, cleaning and repair; maintenance, cleaning and repair of furs; shoe repair; installation, maintenance and repair of office machines; installation, maintenance and repair of machines; installation, maintenance and repair of computer hardware; maintenance and repair of horological and chronometric instruments; furniture restoration",
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": rénovation de vêtements; entretien, nettoyage et réparation du cuir; entretien, nettoyage et réparation des fourrures; travaux de cordonnerie; installation, entretien et réparation d'appareils de bureau; installation, entretien et réparation de machines; installation, entretien et réparation de matériel informatique; entretien et réparation d'instruments d'horlogeries et chronométriques; restauration de mobilier "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "making clothes; printing services; provision of information relating to the treatment of materials; welding; polishing (abrasion); planing of materials; refining; grinding; galvanizing; gilding services; tinning; dry cleaning services; alteration of clothes; fabric treatment; screen printing; blowing (glassware); waste treatment (transformation); sorting of waste and recovered raw materials (transformation); garbage and waste recycling",
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": confection de vêtements; services d'imprimerie; mise à disposition d'informations en matière de traitement de matériaux; soudure; polissage (abrasion); rabotage de matériaux; raffinage; meulage; galvanisation; services de dorure; étamage; services de teinturerie; retouche de vêtements; traitement de tissus; sérigraphie; soufflage (verrerie); traitement des déchets (transformation); tri de déchets et de matières premières de récupération (transformation); recyclage d'ordures et de déchets "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Technical assessments concerning design (engineering work); technical research; research and development of new products for others; interior decoration; graphic art design services; styling (industrial aesthetics); electronic data storage.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Evaluations techniques concernant la conception (travaux d'ingénieurs); recherches techniques; recherche et développement de nouveaux produits pour des tiers; décoration intérieure; services de conception d'art graphique; stylisme (esthétique industrielle); stockage électronique de données."
+        }
+      ]
+    },
+    "id": "97442c97-4037-4cfa-b963-1bb191901692",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00243",
+        "publicationVolume": "25"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeName": "TOUATI LA MOTTE ROUGE, Monsieur Henri de la Motte Rouge"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220530",
+        "applicationNumber": "22 4873138"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320530",
+      "lastPublicationDate": "20220624",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "22 4873138"
+      }
+    },
+    "version": "20250426165015",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIJE"
+    }
+  },
+  "_uri": "/mark/fr/97442c97-4037-4cfa-b963-1bb191901692",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.399Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

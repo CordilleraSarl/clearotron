@@ -1,0 +1,148 @@
+{
+  "uri": "/mark/gb/ba861e5a-34ef-4e5f-8ee8-f489b77ef4fa",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "ba861e5a-34ef-4e5f-8ee8-f489b77ef4fa",
+  "applicationNumber": "3625820",
+  "registrationNumber": "3625820",
+  "applicationDate": "2021-04-13",
+  "registrationDate": "2021-09-24",
+  "expiryDate": "2031-04-13",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "INSIGHT DRIVEN ORGANISATION",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Outsourcing services in the field of business analytics; Advertising;Business research;Business research consulting;Public relations;Public relations services;Business information;Commercial information and advice for consumers in the choice of products and services;Providing commercial information to consumers;Marketing;Marketing consultancy;Data management;Data processing;Collection of data;Data processing management;Data management services;Business data analysis.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Computer software consultancy;Information technology [IT] consultancy;Scientific research;Technological consultancy;Technological research;Technological services;Telecommunications technology consultancy;Professional consultancy relating to technology;Certification [quality control];Certification of educational services;Testing services for the certification of quality or standards;Testing, analysis and evaluation of the goods and services of others for the purpose of certification.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "en",
+      "description": "Intellectual property consultation;Intellectual property services;Legal research;Advisory services relating to the preparation of standards;Reviewing standards and practices to assure compliance with laws and regulations.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Vivology Ltd",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "60 Quarrendon Street, LONDON sw6 3su",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Vivology Ltd"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "55.00.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Outsourcing services in the field of business analytics; Advertising;Business research;Business research consulting;Public relations;Public relations services;Business information;Commercial information and advice for consumers in the choice of products and services;Providing commercial information to consumers;Marketing;Marketing consultancy;Data management;Data processing;Collection of data;Data processing management;Data management services;Business data analysis."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software consultancy;Information technology [IT] consultancy;Scientific research;Technological consultancy;Technological research;Technological services;Telecommunications technology consultancy;Professional consultancy relating to technology;Certification [quality control];Certification of educational services;Testing services for the certification of quality or standards;Testing, analysis and evaluation of the goods and services of others for the purpose of certification."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Intellectual property consultation;Intellectual property services;Legal research;Advisory services relating to the preparation of standards;Reviewing standards and practices to assure compliance with laws and regulations."
+        }
+      ]
+    },
+    "id": "ba861e5a-34ef-4e5f-8ee8-f489b77ef4fa",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.08.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2021/024"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210413",
+        "applicationNumber": "3625820"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310413",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20210924",
+        "registrationNumber": "3625820"
+      }
+    },
+    "version": "20250627221300",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "INSIGHT DRIVEN ORGANISATION"
+    }
+  },
+  "_uri": "/mark/gb/ba861e5a-34ef-4e5f-8ee8-f489b77ef4fa",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.814Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

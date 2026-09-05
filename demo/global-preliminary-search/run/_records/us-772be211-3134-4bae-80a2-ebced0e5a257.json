@@ -1,0 +1,362 @@
+{
+  "uri": "/mark/us/772be211-3134-4bae-80a2-ebced0e5a257",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "772be211-3134-4bae-80a2-ebced0e5a257",
+  "applicationNumber": "85730131",
+  "registrationNumber": null,
+  "applicationDate": "2012-09-16",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2013-06-18"
+  ],
+  "abandonmentDate": "2014-09-19",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "GOD GIVEN GORGEOUS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Computer application software for mobile phones, portable media players, and handheld computers, namely, downloadable software for accessing, viewing, interacting with and downloading content and information from websites",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Playboy Enterprises International, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Mark Harrison",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "P.O. Box 16373, Beverly Hills, CA, 90209",
+        "applicantAddressCity": "Beverly Hills",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "90209",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "P.O. Box 16373",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Playboy Enterprises International, Inc."
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "P.O. BOX 16373, BEVERLY HILLS, CALIFORNIA, 90209",
+            "city": "BEVERLY HILLS",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "PLAYBOY ENTERPRISES, INC.",
+            "postalCode": "90209",
+            "stateName": "CALIFORNIA",
+            "street": "P.O. BOX 16373"
+          },
+          {
+            "address": "PO BOX 16373, BEVERLY HILLS, CALIFORNIA, 90209",
+            "city": "BEVERLY HILLS",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "PLAYBOY ENTERPRISES INTERNATIONAL, INC.",
+            "postalCode": "90209",
+            "stateName": "CALIFORNIA",
+            "street": "PO BOX 16373"
+          },
+          {
+            "address": "PO BOX 16373, BEVERLY HILLS, CALIFORNIA, 90209",
+            "city": "BEVERLY HILLS",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "PLAYBOY.COM INC.",
+            "postalCode": "90209",
+            "stateName": "CALIFORNIA",
+            "street": "PO BOX 16373"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "JEFFERIES FINANCE LLC",
+            "previousName": "FORMERLY JEFFERIES GROUP LLC AND JEFFERIES GROUP, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "PO BOX 130688, DALLAS, TEXAS 75313-0688",
+            "addressLines": [
+              "AKIN GUMP STRAUSS HAUER & FELD LLP",
+              "PO BOX 130688",
+              "DALLAS, TEXAS 75313-0688"
+            ],
+            "name": "AKIN GUMP STRAUSS HAUER & FELD LLP"
+          }
+        ],
+        "descriptionText": "RELEASE OF SECURITY INTEREST",
+        "executedDate": "20140624",
+        "recordedDate": "20140625",
+        "reelFrameNumber": "5314/0533"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Computer application software for mobile phones, portable media players, and handheld computers, namely, downloadable software for accessing, viewing, interacting with and downloading content and information from websites"
+        }
+      ]
+    },
+    "id": "772be211-3134-4bae-80a2-ebced0e5a257",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20141015",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20141015",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20140709",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20140318",
+        "descriptionText": "SU - NON-FINAL ACTION - WRITTEN"
+      },
+      {
+        "date": "20140318",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20140318",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20140317",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20140312",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20140211",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20140211",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20130813",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20130618",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20130618",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20130529",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20130516",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20130513",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20130502",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20130429",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20130429",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20130429",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20121029",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20121029",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20121029",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20121024",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20120920",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20120919",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "P.O. Box 16373, Beverly Hills, CA, 90209",
+        "city": "Beverly Hills",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Playboy Enterprises International, Inc.",
+        "postalCode": "90209",
+        "stateName": "CALIFORNIA",
+        "street": "P.O. Box 16373"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "P.O. Box 16373, Beverly Hills, CA, 90209",
+        "city": "Beverly Hills",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Playboy Enterprises International, Inc.",
+        "postalCode": "90209",
+        "stateName": "CALIFORNIA",
+        "street": "P.O. Box 16373"
+      },
+      {
+        "address": "P.O. Box 16373, Beverly Hills, CA, 90209",
+        "city": "Beverly Hills",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Playboy Enterprises International, Inc.",
+        "postalCode": "90209",
+        "stateName": "CALIFORNIA",
+        "street": "P.O. Box 16373"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "WASHINGTON, DC 20043-4385, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "WASHINGTON, DC 20043-4385",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "MARK HARRISON VENABLE LLP, PO BOX 34385"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "WASHINGTON, DC 20043-4385, UNITED STATES",
+        "representativeAddressLines": [
+          "WASHINGTON, DC 20043-4385",
+          "UNITED STATES"
+        ],
+        "representativeName": "Mark Harrison"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20140919",
+      "active": false,
+      "application": {
+        "applicationDate": "20120916",
+        "applicationNumber": "85730131"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20120801"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20120801"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20141015",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED",
+      "publicationDate": [
+        "20130618"
+      ]
+    },
+    "version": "20260110144315",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GOD GIVEN GORGEOUS"
+    }
+  },
+  "_uri": "/mark/us/772be211-3134-4bae-80a2-ebced0e5a257",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:51.306Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

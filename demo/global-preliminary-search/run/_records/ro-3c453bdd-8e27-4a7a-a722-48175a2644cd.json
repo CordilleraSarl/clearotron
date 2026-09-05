@@ -1,0 +1,167 @@
+{
+  "uri": "/mark/ro/3c453bdd-8e27-4a7a-a722-48175a2644cd",
+  "provider": "clarivate",
+  "office": "ro",
+  "guid": "3c453bdd-8e27-4a7a-a722-48175a2644cd",
+  "applicationNumber": "M 2026 02779",
+  "registrationNumber": null,
+  "applicationDate": "2026-03-24",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "Evenora",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Software descărcabil; aplicații software pentru dispozitive mobile descarcabile; software pentru gestionarea și organizarea evenimentelor; software pentru facilitarea rezervărilor și tranzacțiilor prin intermediul unei platforme online.",
+      "translation_language": "en",
+      "translation": "downloadable software; software applications for downloadable mobile devices; event management and organization software; software for facilitating bookings and transactions through an online platform."
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ro",
+      "description": "Servicii de operare a unei platforme online de tip marketplace; servicii de intermediere comercială între furnizori și clienți prin intermediul unei platforme online; servicii de prezentare a produselor și serviciilor terților pe o platformă online; servicii de publicitate și promovare pentru furnizori de servicii pentru evenimente; servicii de administrare a unei platforme online pentru listarea, rezervarea și compararea serviciilor pentru evenimente; facilitarea tranzacțiilor comerciale între utilizatori și furnizori prin intermediul unei platforme online.",
+      "translation_language": "en",
+      "translation": "Operating services of an online marketplace platform; commercial intermediation services between suppliers and customers through an online platform; presentation services of products and services of third parties on an online platform; advertising and promotion services for event service providers; services for managing an online platform for listing, booking and comparing event services; facilitating commercial transactions between users and suppliers through an online platform."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Furnizarea de software ca serviciu (saas); servicii de găzduire a platformelor online; dezvoltare și mentenanță de software; servicii de proiectare și dezvoltare de aplicații informatice.",
+      "translation_language": "en",
+      "translation": "Furnizarea de software ca serviciu (saas); online platform hosting services; software development and maintenance; computer application design and development services."
+    }
+  ],
+  "owner": "BOOKVENT S.R.L.",
+  "ownerNative": null,
+  "ownerCountry": "RO",
+  "representative": "MARCA INREGISTRATA SRL",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Str Lupeni nr.25b, Constructia C1, camera 1, judetul Tulcea, Tulcea",
+        "applicantAddressCountryCode": "RO",
+        "applicantAddressCountryName": "Romania",
+        "applicantName": "BOOKVENT S.R.L."
+      }
+    ],
+    "applicationLanguageCode": "ro",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "downloadable software; software applications for downloadable mobile devices; event management and organization software; software for facilitating bookings and transactions through an online platform.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Software descărcabil; aplicații software pentru dispozitive mobile descarcabile; software pentru gestionarea și organizarea evenimentelor; software pentru facilitarea rezervărilor și tranzacțiilor prin intermediul unei platforme online."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Operating services of an online marketplace platform; commercial intermediation services between suppliers and customers through an online platform; presentation services of products and services of third parties on an online platform; advertising and promotion services for event service providers; services for managing an online platform for listing, booking and comparing event services; facilitating commercial transactions between users and suppliers through an online platform.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de operare a unei platforme online de tip marketplace; servicii de intermediere comercială între furnizori și clienți prin intermediul unei platforme online; servicii de prezentare a produselor și serviciilor terților pe o platformă online; servicii de publicitate și promovare pentru furnizori de servicii pentru evenimente; servicii de administrare a unei platforme online pentru listarea, rezervarea și compararea serviciilor pentru evenimente; facilitarea tranzacțiilor comerciale între utilizatori și furnizori prin intermediul unei platforme online."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Furnizarea de software ca serviciu (saas); online platform hosting services; software development and maintenance; computer application design and development services.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Furnizarea de software ca serviciu (saas); servicii de găzduire a platformelor online; dezvoltare și mentenanță de software; servicii de proiectare și dezvoltare de aplicații informatice."
+        }
+      ]
+    },
+    "id": "3c453bdd-8e27-4a7a-a722-48175a2644cd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "albastru,alb"
+      }
+    ],
+    "markImageViennaClassification": [
+      "24.17.20",
+      "26.01.01",
+      "26.04.04",
+      "26.04.05",
+      "27.05.01",
+      "27.05.17",
+      "29.01.04",
+      "29.01.06"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260407",
+    "registrationOfficeCode": "RO",
+    "registrationOfficeName": "Romania",
+    "representatives": [
+      {
+        "representativeAddress": "Str. Grivita nr.37E, judetul Ilfov, OTOPENI",
+        "representativeAddressCountryCode": "RO",
+        "representativeAddressCountryName": "Romania",
+        "representativeName": "MARCA INREGISTRATA SRL"
+      },
+      {
+        "representativeAddress": "STR. GRIVITA NR.37E, JUDETUL ILFOV, OTOPENI, 075100",
+        "representativeAddressCountryCode": "RO",
+        "representativeAddressCountryName": "Romania",
+        "representativeName": "MARCA INREGISTRATA SRL"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260324",
+        "applicationNumber": "M 2026 02779"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260407020102",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Evenora"
+    }
+  },
+  "_uri": "/mark/ro/3c453bdd-8e27-4a7a-a722-48175a2644cd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.831Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

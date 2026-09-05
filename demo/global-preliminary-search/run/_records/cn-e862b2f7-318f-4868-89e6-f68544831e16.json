@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/cn/e862b2f7-318f-4868-89e6-f68544831e16",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "e862b2f7-318f-4868-89e6-f68544831e16",
+  "applicationNumber": "63492328",
+  "registrationNumber": "63492328",
+  "applicationDate": "2022-03-23",
+  "registrationDate": "2022-11-28",
+  "expiryDate": "2032-11-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-08-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "成套电气校验装置;工业遥控操作用电气设备;遥控装置;印刷电路板",
+      "translation_language": "en",
+      "translation": "Complete sets of electrical calibration devices; electrical equipment for industrial remote control operations; remote control devices; printed circuit boards"
+    }
+  ],
+  "owner": "Xiamen Lori Intelligent Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "福建省厦门市集美区孙坂南路57号厂房五楼之九",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Xiamen Lori Intelligent Technology Co., Ltd.",
+        "applicantNativeName": "厦门洛瑞智能科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Complete sets of electrical calibration devices; electrical equipment for industrial remote control operations; remote control devices; printed circuit boards",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "成套电气校验装置;工业遥控操作用电气设备;遥控装置;印刷电路板"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Electrical controlling apparatus and equipments"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0914",
+          "subNatGoodsServicesDescription": "Electrical controlling apparatus and equipments"
+        }
+      ]
+    },
+    "id": "e862b2f7-318f-4868-89e6-f68544831e16",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1805"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "知域互联科技有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220323",
+        "applicationNumber": "63492328"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321127",
+      "lastPublicationDate": "20220827",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20221128",
+        "registrationNumber": "63492328"
+      }
+    },
+    "version": "20251004202150",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LORI"
+    }
+  },
+  "_uri": "/mark/cn/e862b2f7-318f-4868-89e6-f68544831e16",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.455Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,229 @@
+{
+  "uri": "/mark/cz/b5a1390a-0781-4e0b-ba69-d013fcea6c5c",
+  "provider": "clarivate",
+  "office": "cz",
+  "guid": "b5a1390a-0781-4e0b-ba69-d013fcea6c5c",
+  "applicationNumber": "604486",
+  "registrationNumber": "414500",
+  "applicationDate": "2025-09-22",
+  "registrationDate": "2026-05-13",
+  "expiryDate": "2035-09-22",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QPAG Q TECHNOLOGY-DRIVEN QUALITY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    9,
+    35,
+    37,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7
+      ],
+      "language": "cs",
+      "description": "automatizované výrobní linky a montážní zařízení, manipulační zařízení, manipulační zařízení a robotická ramena pro průmyslovou automatizaci",
+      "translation_language": "en",
+      "translation": "Automated production lines and mounting equipment, handling equipment, handling equipment and robotic arms for industrial automation"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "stroje pro měření a kontrolu kvality výrobků, stroje pro testování materiálů a součástí, měřicí přístroje a senzory, automatická kontrolní a testovací zařízení, kamerové a optické systémy pro vizuální inspekci výroby a montáže výrobků, zařízení pro detekci vad a úniku, software pro průmyslovou automatizaci a řízení strojů, software pro strojové vidění, umělou inteligenci a strojové učení, počítačové programy a aplikace pro sběr, analýzu a vyhodnocování dat",
+      "translation_language": "en",
+      "translation": "Machines for measurement and control of product quality, material testing machines and components, measuring instruments and sensors, automatic control and test devices, camera and optical systems for visual inspection and product assembly, defect and leakage detection devices, software for industrial automation and machine control, machine vision, artificial intelligence and machine learning, computer program Analysis and evaluation of data"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "cs",
+      "description": "služby v oblasti zprostředkování práce a náboru zaměstnanců, poradenská činnost v oblasti lidských zdrojů a náboru, maloobchodní a velkoobchodní služby v oblasti měřidel, měřicí a testovací techniky, služby personálních agentur a agentur práce",
+      "translation_language": "en",
+      "translation": "Services in the field of mediation of work and recruitment, consulting activities in the field of human resources and recruitment, retail and wholesale services in measuring, measuring and testing techniques, personnel services and labor agencies"
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "cs",
+      "description": "instalace, údržba a opravy měřicích a testovacích zařízení, montáž a servis automatizačních a robotických systémů, údržba a opravy strojů pro kontrolu kvality",
+      "translation_language": "en",
+      "translation": "Installation, maintenance and repair of measuring and test equipment, installation and service of automation and robotic systems, maintenance and repair of machines to check quality"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "cs",
+      "description": "školení a vzdělávací služby v oblasti měření a kalibrace, vzdělávání a školení v oblasti průmyslové automatizace a robotiky, školení obsluhy měřicích a testovacích zařízení, workshopy a semináře v oblasti kontroly kvality a výrobních procesů",
+      "translation_language": "en",
+      "translation": "Training and educational services in the field of measurement and calibration, education and training in industrial automation and robotics, training of measuring and testing facilities, workshops and seminars in quality and manufacturing processes"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "technické poradenství v oblasti servisu a údržby měřicí techniky, kalibrační a laboratorní služby, kontrola jakosti výrobků a materiálů, testování a certifikace výrobků, vývoj softwaru pro průmyslovou automatizaci a kontrolu kvality, poradenství v oblasti automatizace a digitalizace procesů, výzkum a vývoj v oblasti strojového vidění, umělé inteligence a robotické automatizace, technické studie proveditelnosti a technologické poradenství.",
+      "translation_language": "en",
+      "translation": "Technical consulting in the field of service and maintenance of measuring equipment, calibration and laboratory services, quality control of products and materials, testing and certification of products, software development for industrial automation and quality control, automation and digitization of processes, research and development in the field of machine vision, artificial intelligence and robotic automation, technical feasibility and technological studies."
+    }
+  ],
+  "owner": "QPAG sro",
+  "ownerNative": null,
+  "ownerCountry": "CZ",
+  "representative": "PatentEnter s.r.o.",
+  "priorities": [
+    {
+      "priorityCountryCode": "CZ",
+      "priorityCountryName": "Czech Republic",
+      "priorityDate": "20250922"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Brno, Brněnské Ivanovice, Czech Republic",
+        "applicantAddressCountryCode": "CZ",
+        "applicantAddressCountryName": "Czech Republic",
+        "applicantName": "QPAG sro"
+      }
+    ],
+    "applicationLanguageCode": "cs",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Automated production lines and mounting equipment, handling equipment, handling equipment and robotic arms for industrial automation",
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "automatizované výrobní linky a montážní zařízení, manipulační zařízení, manipulační zařízení a robotická ramena pro průmyslovou automatizaci"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Machines for measurement and control of product quality, material testing machines and components, measuring instruments and sensors, automatic control and test devices, camera and optical systems for visual inspection and product assembly, defect and leakage detection devices, software for industrial automation and machine control, machine vision, artificial intelligence and machine learning, computer program Analysis and evaluation of data",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "stroje pro měření a kontrolu kvality výrobků, stroje pro testování materiálů a součástí, měřicí přístroje a senzory, automatická kontrolní a testovací zařízení, kamerové a optické systémy pro vizuální inspekci výroby a montáže výrobků, zařízení pro detekci vad a úniku, software pro průmyslovou automatizaci a řízení strojů, software pro strojové vidění, umělou inteligenci a strojové učení, počítačové programy a aplikace pro sběr, analýzu a vyhodnocování dat"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Services in the field of mediation of work and recruitment, consulting activities in the field of human resources and recruitment, retail and wholesale services in measuring, measuring and testing techniques, personnel services and labor agencies",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "služby v oblasti zprostředkování práce a náboru zaměstnanců, poradenská činnost v oblasti lidských zdrojů a náboru, maloobchodní a velkoobchodní služby v oblasti měřidel, měřicí a testovací techniky, služby personálních agentur a agentur práce"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Installation, maintenance and repair of measuring and test equipment, installation and service of automation and robotic systems, maintenance and repair of machines to check quality",
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "instalace, údržba a opravy měřicích a testovacích zařízení, montáž a servis automatizačních a robotických systémů, údržba a opravy strojů pro kontrolu kvality"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Training and educational services in the field of measurement and calibration, education and training in industrial automation and robotics, training of measuring and testing facilities, workshops and seminars in quality and manufacturing processes",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "školení a vzdělávací služby v oblasti měření a kalibrace, vzdělávání a školení v oblasti průmyslové automatizace a robotiky, školení obsluhy měřicích a testovacích zařízení, workshopy a semináře v oblasti kontroly kvality a výrobních procesů"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Technical consulting in the field of service and maintenance of measuring equipment, calibration and laboratory services, quality control of products and materials, testing and certification of products, software development for industrial automation and quality control, automation and digitization of processes, research and development in the field of machine vision, artificial intelligence and robotic automation, technical feasibility and technological studies.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "technické poradenství v oblasti servisu a údržby měřicí techniky, kalibrační a laboratorní služby, kontrola jakosti výrobků a materiálů, testování a certifikace výrobků, vývoj softwaru pro průmyslovou automatizaci a kontrolu kvality, poradenství v oblasti automatizace a digitalizace procesů, výzkum a vývoj v oblasti strojového vidění, umělé inteligence a robotické automatizace, technické studie proveditelnosti a technologické poradenství."
+        }
+      ]
+    },
+    "id": "b5a1390a-0781-4e0b-ba69-d013fcea6c5c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      }
+    ],
+    "markImageViennaClassification": [
+      "26.04.18",
+      "27.05.04",
+      "27.05.10",
+      "27.05.11",
+      "27.05.21",
+      "29.01.01",
+      "29.01.04"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "CZ",
+        "priorityCountryName": "Czech Republic",
+        "priorityDate": "20250922"
+      }
+    ],
+    "recordLastUpdated": "20260610",
+    "registrationOfficeCode": "CZ",
+    "registrationOfficeName": "Czech Republic",
+    "representatives": [
+      {
+        "representativeAddress": "Brno, Černá Pole",
+        "representativeAddressCountryCode": "CZ",
+        "representativeAddressCountryName": "Czech Republic",
+        "representativeName": "PatentEnter s.r.o."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250922",
+        "applicationNumber": "604486"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350922",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20260513",
+        "registrationNumber": "414500"
+      }
+    },
+    "version": "20260610020102",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QPAG Q TECHNOLOGY-DRIVEN QUALITY"
+    }
+  },
+  "_uri": "/mark/cz/b5a1390a-0781-4e0b-ba69-d013fcea6c5c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.566Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

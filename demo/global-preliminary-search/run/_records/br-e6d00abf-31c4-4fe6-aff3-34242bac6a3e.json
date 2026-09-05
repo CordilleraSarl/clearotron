@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/br/e6d00abf-31c4-4fe6-aff3-34242bac6a3e",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "e6d00abf-31c4-4fe6-aff3-34242bac6a3e",
+  "applicationNumber": "816454744",
+  "registrationNumber": null,
+  "applicationDate": "1991-10-17",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "GORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    3,
+    5,
+    9,
+    10,
+    18,
+    21,
+    22,
+    25,
+    26,
+    28
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        3,
+        5,
+        9,
+        10,
+        18,
+        21,
+        22,
+        25,
+        26,
+        28
+      ],
+      "language": "pt",
+      "description": "Preparados para lavanderia, produtos e instrumentos de limpeza, exceto os de uso pessoal e industrial.",
+      "translation_language": "en",
+      "translation": "Prepared for laundry, cleaning products and instruments, except those for personal and industrial use."
+    }
+  ],
+  "owner": "GORI ALL - WOOD INTERNATIONAL AS.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "No agent available",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "GORI ALL - WOOD INTERNATIONAL AS."
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Prepared for laundry, cleaning products and instruments, except those for personal and industrial use.",
+          "intClassNumber": "01,03,05,09,10,18,21,22,25,26,28",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Preparados para lavanderia, produtos e instrumentos de limpeza, exceto os de uso pessoal e industrial."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "03.10"
+        }
+      ]
+    },
+    "id": "e6d00abf-31c4-4fe6-aff3-34242bac6a3e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "No agent available"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19911017",
+        "applicationNumber": "816454744"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20250630192905",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GORI"
+    }
+  },
+  "_uri": "/mark/br/e6d00abf-31c4-4fe6-aff3-34242bac6a3e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.048Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

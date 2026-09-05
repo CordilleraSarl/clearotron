@@ -38,7 +38,7 @@
 //
 // A BOUNDARY THIS TEST DELIBERATELY DOES NOT POLICE, pinned below so nobody "fixes" it with a host regex:
 // the model's own PROSE can carry a register URL (`- Source: [EUIPO · 018575624](https://euipo.europa.eu/…)`
-// is in examples/sample-run's report.md today). A prose link is markdown the synthesis wrote; NOTHING in the
+// is in demo's report.md today). A prose link is markdown the synthesis wrote; NOTHING in the
 // data distinguishes a prose register citation from any other prose link, so constraining it would mean
 // pattern-matching the URL — which is the one move the issue rules out. It is asserted to survive verbatim.
 import { test } from "node:test";

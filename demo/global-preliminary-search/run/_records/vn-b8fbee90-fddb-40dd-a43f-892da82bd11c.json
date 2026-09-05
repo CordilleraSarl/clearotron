@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/vn/b8fbee90-fddb-40dd-a43f-892da82bd11c",
+  "provider": "clarivate",
+  "office": "vn",
+  "guid": "b8fbee90-fddb-40dd-a43f-892da82bd11c",
+  "applicationNumber": "4202504957",
+  "registrationNumber": null,
+  "applicationDate": "2025-02-13",
+  "registrationDate": null,
+  "expiryDate": "2035-02-13",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "nori",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "vi",
+      "description": "Giám định hàng hóa; giám định phương tiện vận tải, giám định thương mại, giám định tổn thất.",
+      "translation_language": "en",
+      "translation": "Cargo inspection; vehicle inspection, commercial inspection, loss inspection."
+    }
+  ],
+  "owner": "CÔNG TY CỔ PHẦN GIÁM ĐỊNH PHƯƠNG BẮC",
+  "ownerNative": null,
+  "ownerCountry": "VN",
+  "representative": "SETHACO IP CO.,LTD",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2.5-2.6-2.7-2.8 Phan Xích Long, phường 3, quận Bình Thạnh, thành phố Hồ Chí Minh",
+        "applicantAddressCountryCode": "VN",
+        "applicantAddressCountryName": "Vietnam",
+        "applicantName": "CÔNG TY CỔ PHẦN GIÁM ĐỊNH PHƯƠNG BẮC"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Cargo inspection; vehicle inspection, commercial inspection, loss inspection.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "vi",
+          "intGoodsServicesDescription": "Giám định hàng hóa; giám định phương tiện vận tải, giám định thương mại, giám định tổn thất."
+        }
+      ]
+    },
+    "id": "b8fbee90-fddb-40dd-a43f-892da82bd11c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "25.05.02",
+      "26.01.04",
+      "26.04.02",
+      "26.04.18"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250820",
+    "registrationOfficeCode": "VN",
+    "registrationOfficeName": "Vietnam",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "VN",
+        "representativeAddressCountryName": "Vietnam",
+        "representativeName": "SETHACO IP CO.,LTD"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250213",
+        "applicationNumber": "4202504957"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20350213",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20250820051204",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "nori"
+    }
+  },
+  "_uri": "/mark/vn/b8fbee90-fddb-40dd-a43f-892da82bd11c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.692Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

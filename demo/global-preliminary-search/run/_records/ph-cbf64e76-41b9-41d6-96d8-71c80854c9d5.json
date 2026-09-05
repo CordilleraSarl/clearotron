@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/ph/cbf64e76-41b9-41d6-96d8-71c80854c9d5",
+  "provider": "clarivate",
+  "office": "ph",
+  "guid": "cbf64e76-41b9-41d6-96d8-71c80854c9d5",
+  "applicationNumber": "4202400516924",
+  "registrationNumber": "PH/4/2024/00516924",
+  "applicationDate": "2024-06-19",
+  "registrationDate": "2025-02-03",
+  "expiryDate": "2035-02-03",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Q. U. E. E. N. NEPHRITIRI MISSION DRIVEN QUEENPRENEURS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    3,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        3
+      ],
+      "language": "en",
+      "description": "Foot scrub; foot cream; anti - aging toner; soap; cream; gluta soap; kojic soap; sunscreen cream.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Workshops and seminars: providing certification for participants who complete empowerment seminars or workshop; conducting workshops and seminars: organizing and providing workshops and seminars on personal empowerment, motivation, and self - improvement.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Tejano, Nephritiri",
+  "ownerNative": null,
+  "ownerCountry": "PH",
+  "representative": "Valerio, Niel",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2B, Palmdale Heights, Sandoval Avenue, Brgy. Pinagbuhatan, Metro Manila",
+        "applicantAddressCountryCode": "PH",
+        "applicantAddressCountryName": "Philippines",
+        "applicantName": "Tejano, Nephritiri"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Foot scrub; foot cream; anti - aging toner; soap; cream; gluta soap; kojic soap; sunscreen cream."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Workshops and seminars: providing certification for participants who complete empowerment seminars or workshop; conducting workshops and seminars: organizing and providing workshops and seminars on personal empowerment, motivation, and self - improvement."
+        }
+      ]
+    },
+    "id": "cbf64e76-41b9-41d6-96d8-71c80854c9d5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "02.09.01",
+      "24.09.01",
+      "27.05.07",
+      "29.01.12"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251112",
+    "registrationOfficeCode": "PH",
+    "registrationOfficeName": "Philippines",
+    "representatives": [
+      {
+        "representativeAddress": "Carigma St. Guitnang Bayan 2, Rizal",
+        "representativeAddressCountryCode": "PH",
+        "representativeAddressCountryName": "Philippines",
+        "representativeName": "Valerio, Niel"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240619",
+        "applicationNumber": "4202400516924"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350203",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20250203",
+        "registrationNumber": "PH/4/2024/00516924"
+      }
+    },
+    "version": "20251112153946",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Q. U. E. E. N. NEPHRITIRI MISSION DRIVEN QUEENPRENEURS"
+    }
+  },
+  "_uri": "/mark/ph/cbf64e76-41b9-41d6-96d8-71c80854c9d5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.567Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

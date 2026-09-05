@@ -1,0 +1,187 @@
+{
+  "uri": "/mark/jp/0fb531d7-17c9-4523-a5b0-b6d8ad600833",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "0fb531d7-17c9-4523-a5b0-b6d8ad600833",
+  "applicationNumber": "2024-056240",
+  "registrationNumber": "6878357",
+  "applicationDate": "2024-05-27",
+  "registrationDate": "2024-12-19",
+  "expiryDate": "2034-12-19",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-12-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ｑｏｒｋ",
+  "markTransliteration": "KOORUKU KORUKU KUORUKU",
+  "markTranslation": "QORK",
+  "markFeature": "DESIGN AND COLOR",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "電子計算機のプログラムの設計・作成又は保守，電気通信技術の分野に関する研究，コンピュータシステムの設計，技術的課題の研究，コンピュータシステムの分析，電子データの保存用記憶領域の貸与，電子計算機の貸与，オンラインによるアプリケーションソフトウェアの提供（ＳａａＳ），情報技術（ＩＴ）に関する助言（ソフトウェアプログラムのトラブルシューティング），ウェブサーバーの貸与，デザインの考案，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，データセキュリティに関する助言，ウェブサイトの作成又は保守，電子計算機用プログラムの提供",
+      "translation_language": "en",
+      "translation": "Design, creation, or maintenance of electronic computer programs, research in the field of telecommunications technology, computer system design, research on technical issues, analysis of computer systems, lending of storage space for storing electronic data, lending of electronic computers, To provide online application software (SaaS), advise on information technology (IT) (troubleshooting software programs), lend web servers, come up with designs, and provide accurate operation of computers, automobiles, and other devices depending on their use. Introducing and explaining the performance and operating methods of machines that require highly specialized knowledge, skills, or experience, providing advice on data security, creating or maintaining websites, and providing computer programs."
+    }
+  ],
+  "owner": "KK Quest Research",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "Toreru Inc.",
+  "priorities": [
+    {
+      "priorityDate": "20240527"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "MINATO-KU TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "KK Quest Research",
+        "applicantNativeAddress": "東京都港区",
+        "applicantNativeName": "株式会社Ｑｕｅｓｔ　Ｒｅｓｅａｒｃｈ"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Design, creation, or maintenance of electronic computer programs, research in the field of telecommunications technology, computer system design, research on technical issues, analysis of computer systems, lending of storage space for storing electronic data, lending of electronic computers, To provide online application software (SaaS), advise on information technology (IT) (troubleshooting software programs), lend web servers, come up with designs, and provide accurate operation of computers, automobiles, and other devices depending on their use. Introducing and explaining the performance and operating methods of machines that require highly specialized knowledge, skills, or experience, providing advice on data security, creating or maintaining websites, and providing computer programs.",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "電子計算機のプログラムの設計・作成又は保守，電気通信技術の分野に関する研究，コンピュータシステムの設計，技術的課題の研究，コンピュータシステムの分析，電子データの保存用記憶領域の貸与，電子計算機の貸与，オンラインによるアプリケーションソフトウェアの提供（ＳａａＳ），情報技術（ＩＴ）に関する助言（ソフトウェアプログラムのトラブルシューティング），ウェブサーバーの貸与，デザインの考案，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，データセキュリティに関する助言，ウェブサイトの作成又は保守，電子計算機用プログラムの提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "42P01",
+          "natGoodsServicesDescription": "Design services"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42P03",
+          "natGoodsServicesDescription": "Technological advice relating to computers, automobiles and industrial machines"
+        },
+        {
+          "natClassNumber": "42Q01",
+          "natGoodsServicesDescription": "Testing, inspection or research of pharmaceuticals, cosmetics or foodstuffs"
+        },
+        {
+          "natClassNumber": "42Q02",
+          "natGoodsServicesDescription": "Research on building construction or city planning; Testing or research on prevention of pollution; Testing or research on electricity; Testing or research on civil engineering"
+        },
+        {
+          "natClassNumber": "42Q03",
+          "natGoodsServicesDescription": "Testing, inspection or research on agriculture, livestock breeding or fisheries"
+        },
+        {
+          "natClassNumber": "42Q99",
+          "natGoodsServicesDescription": "Testing or research on machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        }
+      ]
+    },
+    "id": "0fb531d7-17c9-4523-a5b0-b6d8ad600833",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN AND COLOR",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "COLOUR CLAIMED"
+      }
+    ],
+    "markImageViennaClassification": [
+      "26.01.01.00",
+      "26.01.03.00",
+      "26.02.03.91",
+      "26.04.02.00",
+      "26.04.05.00",
+      "26.07.05.01",
+      "26.07.25.00",
+      "26.11.01.00",
+      "26.11.06.00",
+      "26.11.08.00",
+      "26.11.10.00",
+      "29.01.04.02",
+      "29.01.08.01",
+      "29.01.08.02",
+      "29.01.11.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20240527"
+      }
+    ],
+    "recordLastUpdated": "20250117",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "Toreru Inc.",
+        "representativeNativeName": "弁理士法人Ｔｏｒｅｒｕ"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240527",
+        "applicationNumber": "2024-056240"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20341219",
+      "lastPublicationDate": "20241227",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20241219",
+        "registrationNumber": "6878357"
+      }
+    },
+    "version": "20250117083940",
+    "wordMarkSpecification": {
+      "markTranslation": "QORK",
+      "markTransliteration": "KOORUKU KORUKU KUORUKU",
+      "markVerbalElementText": "ｑｏｒｋ"
+    }
+  },
+  "_uri": "/mark/jp/0fb531d7-17c9-4523-a5b0-b6d8ad600833",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:15.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

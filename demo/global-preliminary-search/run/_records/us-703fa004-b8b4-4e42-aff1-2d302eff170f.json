@@ -1,0 +1,453 @@
+{
+  "uri": "/mark/us/703fa004-b8b4-4e42-aff1-2d302eff170f",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "703fa004-b8b4-4e42-aff1-2d302eff170f",
+  "applicationNumber": "78886041",
+  "registrationNumber": "3247006",
+  "applicationDate": "2006-05-17",
+  "registrationDate": "2007-05-29",
+  "expiryDate": null,
+  "renewalDate": "2017-05-29",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2007-03-13"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7
+      ],
+      "language": null,
+      "description": "INT. CL. 7 power-operated assembly line automation equipment, namely machines to move, assemble, test, inspect, and fasten automotive, defense and industrial parts",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": "INT. CL. 40 custom manufacture of power-operated assembly line automation equipment",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 custom design of power-operated assembly line automation equipment",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Fori Automation, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "Kevin M. Dunn",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20170329",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "13231 - 23 Mile Road, Shelby Township, MI, 48315-3271, USAM",
+        "applicantAddressCity": "Shelby Township",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "48315-3271",
+        "applicantAddressStateName": "MICHIGAN",
+        "applicantAddressStreet": "13231 - 23 Mile Road",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Fori Automation, Inc."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "07",
+          "intGoodsServicesDescription": "INT. CL. 7 power-operated assembly line automation equipment, namely machines to move, assemble, test, inspect, and fasten automotive, defense and industrial parts"
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsServicesDescription": "INT. CL. 40 custom manufacture of power-operated assembly line automation equipment"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 custom design of power-operated assembly line automation equipment"
+        }
+      ]
+    },
+    "id": "703fa004-b8b4-4e42-aff1-2d302eff170f",
+    "internationalMarkKeys": [
+      {
+        "applicationDate": "20060602",
+        "internationalRegistrationNumber": "0904887",
+        "markCurrentStatus": "APPLICATION FOR IR REGISTERED BY IB",
+        "markCurrentStatusDate": "20061207",
+        "markEvents": [
+          {
+            "date": "20160701",
+            "descriptionText": "SUBSEQUENT DESIGNATION PROCESSED BY IB"
+          },
+          {
+            "date": "20150518",
+            "descriptionText": "SUBSEQUENT DESIGNATION SENT TO IB"
+          },
+          {
+            "date": "20150518",
+            "descriptionText": "SUBSEQUENT DESIGNATION RECEIVED"
+          },
+          {
+            "date": "20080626",
+            "descriptionText": "PARTIAL CEASING OF EFFECT PROCESSED BY IB"
+          },
+          {
+            "date": "20071023",
+            "descriptionText": "PARTIAL CEASING OF EFFECT NOTICE SENT TO IB"
+          },
+          {
+            "date": "20071023",
+            "descriptionText": "CEASING OF EFFECT PROCESSED"
+          },
+          {
+            "date": "20070905",
+            "descriptionText": "PARTIAL CEASING OF EFFECT TO BE PROCESSED"
+          },
+          {
+            "date": "20061207",
+            "descriptionText": "APPLICATION FOR IR REGISTERED BY IB"
+          },
+          {
+            "date": "20061002",
+            "descriptionText": "IRREGULARITY NOTICE RECEIVED FROM IB"
+          },
+          {
+            "date": "20060629",
+            "descriptionText": "IRREGULARITY NOTICE RECEIVED FROM IB (RESPONSE REQUIRED)"
+          },
+          {
+            "date": "20060602",
+            "descriptionText": "IR CERTIFIED AND SENT TO IB"
+          },
+          {
+            "date": "20060602",
+            "descriptionText": "NEW APPLICATION FOR IR RECEIVED"
+          },
+          {
+            "date": "20060602",
+            "descriptionText": "AUTOMATICALLY CERTIFIED"
+          }
+        ],
+        "registrationDate": "20060602",
+        "renewalDate": "20360602",
+        "usptoReferenceNumber": "A0004877"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260529",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20250331",
+        "descriptionText": "TEAS CHANGE OF OWNER ADDRESS RECEIVED"
+      },
+      {
+        "date": "20250331",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20250331",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20250331",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20250331",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20170329",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20170329",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20170329",
+        "descriptionText": "REGISTERED AND RENEWED (FIRST RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20170329",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 9 - E-MAILED"
+      },
+      {
+        "date": "20170131",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20160529",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20120616",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20120616",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20120616",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 15 - E-MAILED"
+      },
+      {
+        "date": "20120611",
+        "descriptionText": "TEAS SECTION 8 & 15 RECEIVED"
+      },
+      {
+        "date": "20070529",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20070313",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20070221",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20070125",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20070123",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20070119",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20070119",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20070119",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20061219",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20061024",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20061024",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20061019",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20060523",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "50955 Wing Dr., Shelby Township, MI, 48315, USAM",
+        "city": "Shelby Township",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Fori Automation, Inc.",
+        "postalCode": "48315",
+        "stateName": "MICHIGAN",
+        "street": "50955 Wing Dr."
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "13231 - 23 Mile Road, Shelby Township, MI, 48315-3271, USAM",
+        "city": "Shelby Township",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Fori Automation, Inc.",
+        "postalCode": "48315-3271",
+        "stateName": "MICHIGAN",
+        "street": "13231 - 23 Mile Road"
+      },
+      {
+        "address": "13231 - 23 Mile Road, Shelby Township, MI, 48315-3271, USAM",
+        "city": "Shelby Township",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Fori Automation, Inc.",
+        "postalCode": "48315-3271",
+        "stateName": "MICHIGAN",
+        "street": "13231 - 23 Mile Road"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "50955 Wing Dr., Shelby Township, MI, 48315, USAM",
+        "city": "Shelby Township",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Fori Automation, Inc.",
+        "postalCode": "48315",
+        "stateName": "MICHIGAN",
+        "street": "50955 Wing Dr."
+      }
+    ],
+    "recordLastUpdated": "20260602",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "IP Legal Department, Cleveland, OH 44117, United States",
+        "representativeCorrespondentAddressLines": [
+          "IP Legal Department",
+          "Cleveland, OH 44117",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Kevin M. Dunn The Lincoln Electric Company, 22801 Saint Clair Avenue"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "IP Legal Department, Cleveland, OH 44117, United States",
+        "representativeAddressLines": [
+          "IP Legal Department",
+          "Cleveland, OH 44117",
+          "United States"
+        ],
+        "representativeName": "Kevin M. Dunn"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20060517",
+        "applicationNumber": "78886041"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "07",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "1984"
+        },
+        {
+          "firstUsedClass": "40",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "1984"
+        },
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "1984"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "07",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "1984"
+        },
+        {
+          "firstUsedCommerceClass": "40",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "1984"
+        },
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "1984"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED AND RENEWED",
+        "markOfficialStatusCode": "800",
+        "markOfficialStatusDate": "20170329",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20070313"
+      ],
+      "registration": {
+        "registrationDate": "20070529",
+        "registrationNumber": "3247006"
+      },
+      "renewalDate": "20170529"
+    },
+    "version": "20260602093112",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FORI"
+    }
+  },
+  "_uri": "/mark/us/703fa004-b8b4-4e42-aff1-2d302eff170f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:53.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

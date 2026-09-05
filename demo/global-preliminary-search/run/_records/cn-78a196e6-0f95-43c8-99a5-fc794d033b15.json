@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/cn/78a196e6-0f95-43c8-99a5-fc794d033b15",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "78a196e6-0f95-43c8-99a5-fc794d033b15",
+  "applicationNumber": "55340372",
+  "registrationNumber": "55340372",
+  "applicationDate": "2021-04-19",
+  "registrationDate": "2022-01-21",
+  "expiryDate": "2032-01-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-10-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "眼镜,眼镜片,眼镜架,眼镜框,隐形眼镜,眼镜盒,太阳镜,擦眼镜布",
+      "translation_language": "en",
+      "translation": "glasses, spectacle lenses, glasses frames, glasses frames, contact lenses, glasses cases, sunglasses, cleaning cloth"
+    }
+  ],
+  "owner": "Hai Bangni Optical Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "上海市奉贤区金汇镇东星路10号1-162",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Hai Bangni Optical Co., Ltd.",
+        "applicantNativeName": "上海邦尼光学眼镜有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "glasses, spectacle lenses, glasses frames, glasses frames, contact lenses, glasses cases, sunglasses, cleaning cloth",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "眼镜,眼镜片,眼镜架,眼镜框,隐形眼镜,眼镜盒,太阳镜,擦眼镜布"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Glasses and those accessories"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        }
+      ]
+    },
+    "id": "78a196e6-0f95-43c8-99a5-fc794d033b15",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1764"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "丹阳市启名商标代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210419",
+        "applicationNumber": "55340372"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320120",
+      "lastPublicationDate": "20211020",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220121",
+        "registrationNumber": "55340372"
+      }
+    },
+    "version": "20251004122949",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/cn/78a196e6-0f95-43c8-99a5-fc794d033b15",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.178Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

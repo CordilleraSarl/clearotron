@@ -1,0 +1,111 @@
+{
+  "uri": "/mark/gb/81880075-00a5-4e41-8d4e-68c9d302a823",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "81880075-00a5-4e41-8d4e-68c9d302a823",
+  "applicationNumber": "4433810",
+  "registrationNumber": null,
+  "applicationDate": "2026-08-21",
+  "registrationDate": null,
+  "expiryDate": "2036-08-21",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "AVENQIX",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Tablet computer;Notebook computers;Laptops [computers];Thermal copiers;Smart watches;CDplayers;Microphones;Headphones;Loudspeakers;Computer mouses;Projection screens;TVmonitors;Mileage recorders for vehicles;Set-top boxes;MP4 players;Multimedia projectors;LCDprojectors;Self-acting focussing projectors;Humanoid robots with artificial intelligence;Computermemory devices;Covers for tablet computers;GPS navigation device;Computer monitors;Solid-statedrive [SSD].",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "shenzhenshiqixuandianzishangwuyouxiangongsi",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "Peng Xiao Pan",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Unit 2, Apartment 906A, 478 Guiyue Road, Zhangge Community, Fucheng Subdistrict, Longhua District, Shenzhen 518000",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "shenzhenshiqixuandianzishangwuyouxiangongsi"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Tablet computer;Notebook computers;Laptops [computers];Thermal copiers;Smart watches;CDplayers;Microphones;Headphones;Loudspeakers;Computer mouses;Projection screens;TVmonitors;Mileage recorders for vehicles;Set-top boxes;MP4 players;Multimedia projectors;LCDprojectors;Self-acting focussing projectors;Humanoid robots with artificial intelligence;Computermemory devices;Covers for tablet computers;GPS navigation device;Computer monitors;Solid-statedrive [SSD]."
+        }
+      ]
+    },
+    "id": "81880075-00a5-4e41-8d4e-68c9d302a823",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260827",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "7 Amyand Park Road, Twickenham TW1 3HB, Greater London",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Peng Xiao Pan"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260821",
+        "applicationNumber": "4433810"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360821",
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260827020004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENQIX"
+    }
+  },
+  "_uri": "/mark/gb/81880075-00a5-4e41-8d4e-68c9d302a823",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.566Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

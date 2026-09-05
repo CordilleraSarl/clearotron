@@ -1,0 +1,227 @@
+{
+  "uri": "/mark/us/0c44e9ff-03d5-49bd-930a-011fe084a505",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "0c44e9ff-03d5-49bd-930a-011fe084a505",
+  "applicationNumber": "99409555",
+  "registrationNumber": null,
+  "applicationDate": "2025-09-24",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2025-09-24",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "NORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Downloadable computer software and mobile applications for family organization, namely, for managing shared calendars, tasks, chores, meal planning, shopping lists, and household communication, integrating artificial intelligence assistants for voice and text interaction; Touch-enabled electronic display devices for family organization, namely, for managing shared calendars, tasks, chores, meal planning, shopping lists, and household communication, integrating artificial intelligence assistants for voice and text interaction",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Retail store services featuring touch-enabled electronic display devices and downloadable computer software for family organization, namely, for managing shared calendars, tasks, chores, meal planning, shopping lists, and household communication, integrating artificial intelligence assistants for voice and text interaction",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Providing temporary use of online non-downloadable chatbot software using artificial intelligence (AI) for family organization, namely, for managing shared calendars, tasks, chores, meal planning, shopping lists, and household communication",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Domus Next Inc.",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "WENZHU YU",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "651 N. Broad St., Suite 308, Middletown, DE, 19709, USAM",
+        "applicantAddressCity": "Middletown",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "19709",
+        "applicantAddressStateName": "DELAWARE",
+        "applicantAddressStreet": "651 N. Broad St., Suite 308",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Domus Next Inc."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Downloadable computer software and mobile applications for family organization, namely, for managing shared calendars, tasks, chores, meal planning, shopping lists, and household communication, integrating artificial intelligence assistants for voice and text interaction; Touch-enabled electronic display devices for family organization, namely, for managing shared calendars, tasks, chores, meal planning, shopping lists, and household communication, integrating artificial intelligence assistants for voice and text interaction"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Retail store services featuring touch-enabled electronic display devices and downloadable computer software for family organization, namely, for managing shared calendars, tasks, chores, meal planning, shopping lists, and household communication, integrating artificial intelligence assistants for voice and text interaction"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Providing temporary use of online non-downloadable chatbot software using artificial intelligence (AI) for family organization, namely, for managing shared calendars, tasks, chores, meal planning, shopping lists, and household communication"
+        }
+      ]
+    },
+    "id": "0c44e9ff-03d5-49bd-930a-011fe084a505",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20250925",
+        "descriptionText": "ABANDONMENT - EXPRESS MAILED"
+      },
+      {
+        "date": "20250925",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - EXPRESS ABANDONMENT"
+      },
+      {
+        "date": "20250924",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20250924",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      },
+      {
+        "date": "20250924",
+        "descriptionText": "TEAS VOLUNTARY AMENDMENT RECEIVED"
+      },
+      {
+        "date": "20250924",
+        "descriptionText": "TEAS AMENDMENT ENTERED BEFORE ATTORNEY ASSIGNED"
+      },
+      {
+        "date": "20250924",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20250924",
+        "descriptionText": "TEAS EXPRESS ABANDONMENT RECEIVED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "651 N. Broad St., Suite 308, Middletown, DE, 19709, USAM",
+        "city": "Middletown",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Domus Next Inc.",
+        "postalCode": "19709",
+        "stateName": "DELAWARE",
+        "street": "651 N. Broad St., Suite 308"
+      },
+      {
+        "address": "651 N. Broad St., Suite 308, Middletown, DE, 19709, USAM",
+        "city": "Middletown",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Domus Next Inc.",
+        "postalCode": "19709",
+        "stateName": "DELAWARE",
+        "street": "651 N. Broad St., Suite 308"
+      }
+    ],
+    "recordLastUpdated": "20260407",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Beijing, 100600, CHINA",
+        "representativeCorrespondentAddressLines": [
+          "Beijing, 100600",
+          "CHINA"
+        ],
+        "representativeCorrespondentName": "WENZHU YU ANJIE BROAD LAW FIRM, No. 19 Dongfangdonglu, Chaoyang District"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Beijing, 100600, CHINA",
+        "representativeAddressLines": [
+          "Beijing, 100600",
+          "CHINA"
+        ],
+        "representativeName": "WENZHU YU"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20250924",
+      "active": false,
+      "application": {
+        "applicationDate": "20250924",
+        "applicationNumber": "99409555"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-EXPRESS",
+        "markOfficialStatusCode": "601",
+        "markOfficialStatusDate": "20250925",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260407094914",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NORI"
+    }
+  },
+  "_uri": "/mark/us/0c44e9ff-03d5-49bd-930a-011fe084a505",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.691Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

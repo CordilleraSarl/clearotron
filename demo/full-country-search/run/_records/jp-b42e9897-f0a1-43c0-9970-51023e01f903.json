@@ -1,0 +1,178 @@
+{
+  "uri": "/mark/jp/b42e9897-f0a1-43c0-9970-51023e01f903",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "b42e9897-f0a1-43c0-9970-51023e01f903",
+  "applicationNumber": "2018-047596",
+  "registrationNumber": "6122546",
+  "applicationDate": "2018-04-13",
+  "registrationDate": "2019-02-15",
+  "expiryDate": "2029-02-15",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-03-12",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＩＮＶＩＳＡＬＩＧＮ",
+  "markTransliteration": "INBISARAIN INBIZARAIN",
+  "markTranslation": "INVISALIGN",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": "受託による歯列矯正器具の製造，医療用機械器具の組立・製造又は加工，義肢又は義歯の加工（「医療材料の加工」を含む。）",
+      "translation_language": "en",
+      "translation": "Production of orthodontic appliances by consignment, assembly / manufacture or processing of medical machinery and equipment, processing of artificial limbs or dentures (including \"processing of medical materials\")"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "歯科研究，他人のためのコンピュータハードウェア及びソフトウェアシステムの選択・実装及び使用に関する助言，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，アプリケーションサービスプロバイダーによる歯列矯正／歯科治療用ソフトウェアの提供，オンラインによるダウンロード不可能な歯列矯正／歯科治療用ソフトウェアの一時的な使用の提供，コンピュータによるデータの情報処理，電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供",
+      "translation_language": "en",
+      "translation": "Advice on dental research, computer hardware and software systems for others, advice on selection and implementation of software systems, precise operation according to electronic computers / automobiles and other uses thereof, highly specialized knowledge / technology or experience Request for explanation and explanation of machine performance and operation method, application of orthodontic / dental treatment software by application service provider, temporary use of online downloadable orthodontic / dental treatment software , Information processing of data by computer, design / creation or maintenance of computer program, provision of computer program"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YAMAMOTO HIDESAKU",
+  "priorities": [
+    {
+      "priorityDate": "20180413"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Production of orthodontic appliances by consignment, assembly / manufacture or processing of medical machinery and equipment, processing of artificial limbs or dentures (including \"processing of medical materials\")",
+          "intClassNumber": "40",
+          "intGoodsServicesDescription": "受託による歯列矯正器具の製造，医療用機械器具の組立・製造又は加工，義肢又は義歯の加工（「医療材料の加工」を含む。）"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advice on dental research, computer hardware and software systems for others, advice on selection and implementation of software systems, precise operation according to electronic computers / automobiles and other uses thereof, highly specialized knowledge / technology or experience Request for explanation and explanation of machine performance and operation method, application of orthodontic / dental treatment software by application service provider, temporary use of online downloadable orthodontic / dental treatment software , Information processing of data by computer, design / creation or maintenance of computer program, provision of computer program",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "歯科研究，他人のためのコンピュータハードウェア及びソフトウェアシステムの選択・実装及び使用に関する助言，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，アプリケーションサービスプロバイダーによる歯列矯正／歯科治療用ソフトウェアの提供，オンラインによるダウンロード不可能な歯列矯正／歯科治療用ソフトウェアの一時的な使用の提供，コンピュータによるデータの情報処理，電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "40C10",
+          "natGoodsServicesDescription": "Processing of artificial limbs or artificial teeth, including processing of medical materials"
+        },
+        {
+          "natClassNumber": "40H99",
+          "natGoodsServicesDescription": "Other processing that do not correspond to any of the listed similar group code(s) for the processing"
+        },
+        {
+          "natClassNumber": "42N03",
+          "natGoodsServicesDescription": "Designing of machines, apparatus, instruments [including their parts] or systems composed of such machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42P03",
+          "natGoodsServicesDescription": "Technological advice relating to computers, automobiles and industrial machines"
+        },
+        {
+          "natClassNumber": "42Q01",
+          "natGoodsServicesDescription": "Testing, inspection or research of pharmaceuticals, cosmetics or foodstuffs"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        }
+      ]
+    },
+    "id": "b42e9897-f0a1-43c0-9970-51023e01f903",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20180413"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180413",
+        "applicationNumber": "2018-047596"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290215",
+      "lastPublicationDate": "20190312",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20190215",
+        "registrationNumber": "6122546"
+      }
+    },
+    "version": "20240320153104",
+    "wordMarkSpecification": {
+      "markTranslation": "INVISALIGN",
+      "markTransliteration": "INBISARAIN INBIZARAIN",
+      "markVerbalElementText": "ＩＮＶＩＳＡＬＩＧＮ"
+    }
+  },
+  "_uri": "/mark/jp/b42e9897-f0a1-43c0-9970-51023e01f903",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.741Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

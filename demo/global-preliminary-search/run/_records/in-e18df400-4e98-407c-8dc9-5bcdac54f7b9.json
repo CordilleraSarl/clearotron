@@ -1,0 +1,109 @@
+{
+  "uri": "/mark/in/e18df400-4e98-407c-8dc9-5bcdac54f7b9",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "e18df400-4e98-407c-8dc9-5bcdac54f7b9",
+  "applicationNumber": "7319792",
+  "registrationNumber": null,
+  "applicationDate": "2025-11-03",
+  "registrationDate": null,
+  "expiryDate": "2035-11-03",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "AVENORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Event management, entertainment services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "AFSHABANU SHAMSUDIN SHAIKH Single Firm",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "LAW PROTECTOR[14326]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "H. No. 2819/A,Rameshwar Nagar,Opposite Divine Mercy Church , Hunchanatti, Belagavi, Karnataka - 590014.",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "AFSHABANU SHAMSUDIN SHAIKH Single Firm"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Event management, entertainment services."
+        }
+      ]
+    },
+    "id": "e18df400-4e98-407c-8dc9-5bcdac54f7b9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251114",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "Dhumal Nivas, Behind Kamla Nehru Hospital, Near Barane School, 104, Mangalwar peth, Pune - 411 011",
+        "representativeName": "LAW PROTECTOR[14326]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251103",
+        "applicationNumber": "7319792"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20351103",
+      "markCurrentStatus": "FORMALITIES COMPLETED"
+    },
+    "version": "20251114020100",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENORE"
+    }
+  },
+  "_uri": "/mark/in/e18df400-4e98-407c-8dc9-5bcdac54f7b9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.828Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

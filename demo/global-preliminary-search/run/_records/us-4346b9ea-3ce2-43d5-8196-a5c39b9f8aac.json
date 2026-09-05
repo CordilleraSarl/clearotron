@@ -1,0 +1,456 @@
+{
+  "uri": "/mark/us/4346b9ea-3ce2-43d5-8196-a5c39b9f8aac",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "4346b9ea-3ce2-43d5-8196-a5c39b9f8aac",
+  "applicationNumber": "88171479",
+  "registrationNumber": "5935175",
+  "applicationDate": "2018-10-26",
+  "registrationDate": "2019-12-17",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2019-10-01"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2026-07-03",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "LORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Technical and customer support services for mobile phones, smartphones, tablets, mobile computing and communication devices, namely, help desk services and troubleshooting in the nature of diagnosing software and hardware problems; remote protection services for mobile phones, smartphones, tablets and mobile computing and communication devices, namely, deletion of data, data back-up and data restoration in the nature of electronic data storage and recovery of electronic data; technical and customer support services, namely, troubleshooting in the nature of diagnosing problems in computer hardware and software in mobile phones, smartphones, tablets, mobile computing and communication devices; repair of software in mobile phones, smartphones, tablets, mobile computing and communication devices; software as a service (SAAS) services featuring software for diagnosing technical problems in mobile phones, smartphones, tablets, mobile computing and communication devices; Non-downloadable computer software applications for the purchase of subscription insurance and extended warranties for mobile phones, smartphones, mobile computing and communication devices, tablets, computers and consumer electronic device replacement, repair and maintenance; Maintenance and repair of computer software; Online non-downloadable computer software applications for the provision of insurance services, namely, underwriting extended warranty contracts in the field of mobile phones, smartphones, mobile computing and communication devices, tablets, computers and consumer electronics",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ASSURANT, INC.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Cami Boyd",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "28 LIBERTY STREET, NEW YORK, NEW YORK, 10005",
+        "applicantAddressCity": "NEW YORK",
+        "applicantAddressPostalCode": "10005",
+        "applicantAddressStateName": "NEW YORK",
+        "applicantAddressStreet": "28 LIBERTY STREET",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "ASSURANT, INC."
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "28 LIBERTY STREET, NEW YORK, NEW YORK, 10005",
+            "city": "NEW YORK",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "ASSURANT, INC.",
+            "postalCode": "10005",
+            "stateName": "NEW YORK",
+            "street": "28 LIBERTY STREET"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "LORICA, LLC"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "ALSTON & BIRD LLP, 101 SOUTH TRYON STREET, SUITE 4000, CHARLOTTE, NC 28280-4000",
+            "addressLines": [
+              "MICHELE M. GLESSNER",
+              "ALSTON & BIRD LLP",
+              "101 SOUTH TRYON STREET, SUITE 4000",
+              "CHARLOTTE, NC 28280-4000"
+            ],
+            "name": "MICHELE M. GLESSNER"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20210830",
+        "recordedDate": "20210920",
+        "reelFrameNumber": "7425/0434"
+      },
+      {
+        "assignees": [
+          {
+            "address": "8600 W. BRYN MAWR AVE., STE. 440N, CHICAGO, ILLINOIS, 60631",
+            "city": "CHICAGO",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "LORICA, LLC",
+            "postalCode": "60631",
+            "stateName": "ILLINOIS",
+            "street": "8600 W. BRYN MAWR AVE., STE. 440N"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "HYLA, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "10000 N. CENTRAL EXPWY, SUITE 1000, DALLAS, TX 75231",
+            "addressLines": [
+              "CAMI BOYD",
+              "10000 N. CENTRAL EXPWY, SUITE 1000",
+              "DALLAS, TX 75231"
+            ],
+            "name": "CAMI BOYD"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20190628",
+        "recordedDate": "20191223",
+        "reelFrameNumber": "6824/0532"
+      },
+      {
+        "assignees": [
+          {
+            "address": "55 ALMADEN BOULEVARD, SAN JOSE, CALIFORNIA, 95113",
+            "city": "SAN JOSE",
+            "jurisdictionOfIncorporation": "ARIZONA",
+            "legalEntity": "CORPORATION",
+            "name": "WESTERN ALLIANCE BANK",
+            "postalCode": "95113",
+            "secondaryAddressUnit": "SUITE 100",
+            "stateName": "CALIFORNIA",
+            "street": "55 ALMADEN BOULEVARD"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "FLIPSWAP SERVICES, LLC"
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "HYLA, INC.",
+            "previousName": "FORMERLY ERECYCLING GROUP, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "ERV, LLC"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "C/O COOLEY LLP, 4401 EASTGATE MALL, SAN DIEGO, CA 92121",
+            "addressLines": [
+              "DEREK MONTEBLANCO",
+              "C/O COOLEY LLP",
+              "4401 EASTGATE MALL",
+              "SAN DIEGO, CA 92121"
+            ],
+            "name": "DEREK MONTEBLANCO"
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "20191211",
+        "recordedDate": "20191220",
+        "reelFrameNumber": "6823/0765"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Technical and customer support services for mobile phones, smartphones, tablets, mobile computing and communication devices, namely, help desk services and troubleshooting in the nature of diagnosing software and hardware problems; remote protection services for mobile phones, smartphones, tablets and mobile computing and communication devices, namely, deletion of data, data back-up and data restoration in the nature of electronic data storage and recovery of electronic data; technical and customer support services, namely, troubleshooting in the nature of diagnosing problems in computer hardware and software in mobile phones, smartphones, tablets, mobile computing and communication devices; repair of software in mobile phones, smartphones, tablets, mobile computing and communication devices; software as a service (SAAS) services featuring software for diagnosing technical problems in mobile phones, smartphones, tablets, mobile computing and communication devices; Non-downloadable computer software applications for the purchase of subscription insurance and extended warranties for mobile phones, smartphones, mobile computing and communication devices, tablets, computers and consumer electronic device replacement, repair and maintenance; Maintenance and repair of computer software; Online non-downloadable computer software applications for the provision of insurance services, namely, underwriting extended warranty contracts in the field of mobile phones, smartphones, mobile computing and communication devices, tablets, computers and consumer electronics"
+        }
+      ]
+    },
+    "id": "4346b9ea-3ce2-43d5-8196-a5c39b9f8aac",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260703",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20241217",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20210922",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20200108",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20191217",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20191001",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20191001",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20190911",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20190827",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF AMENDMENT TO ALLEGE USE E-MAILED"
+      },
+      {
+        "date": "20190826",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20190826",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20190826",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20190826",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20190826",
+        "descriptionText": "USE AMENDMENT ACCEPTED"
+      },
+      {
+        "date": "20190826",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20190715",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20190715",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20190715",
+        "descriptionText": "AMENDMENT TO USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20190710",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20190709",
+        "descriptionText": "TEAS AMENDMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20190709",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20190709",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20190208",
+        "descriptionText": "PRIORITY ACTION WRITTEN"
+      },
+      {
+        "date": "20190208",
+        "descriptionText": "PRIORITY ACTION E-MAILED"
+      },
+      {
+        "date": "20190208",
+        "descriptionText": "NOTIFICATION OF PRIORITY ACTION E-MAILED"
+      },
+      {
+        "date": "20190202",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20181110",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20181030",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Park West 1 & 2, 1507 LBJ Fwy, Ste. 500, Farmers Branch, TN, 75234, USAM",
+        "city": "Farmers Branch",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Hyla, Inc.",
+        "postalCode": "75234",
+        "stateName": "TENNESSEE",
+        "street": "Park West 1 & 2, 1507 LBJ Fwy, Ste. 500"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "Park West 1 & 2, 1507 LBJ Fwy, Ste. 500, Farmers Branch, TN, 75234, USAM",
+        "city": "Farmers Branch",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Hyla, Inc.",
+        "postalCode": "75234",
+        "stateName": "TENNESSEE",
+        "street": "Park West 1 & 2, 1507 LBJ Fwy, Ste. 500"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Park West 1 & 2, 1507 LBJ Fwy, Ste. 500, Farmers Branch, TN, 75234, USAM",
+        "city": "Farmers Branch",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Hyla, Inc.",
+        "postalCode": "75234",
+        "stateName": "TENNESSEE",
+        "street": "Park West 1 & 2, 1507 LBJ Fwy, Ste. 500"
+      }
+    ],
+    "postRegistrationOwners": [
+      {
+        "address": "28 LIBERTY STREET, NEW YORK, NY, 10005, USAM",
+        "city": "NEW YORK",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "ASSURANT, INC.",
+        "postalCode": "10005",
+        "stateName": "NEW YORK",
+        "street": "28 LIBERTY STREET"
+      }
+    ],
+    "recordLastUpdated": "20260729",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "DALLAS, TX 75231, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "DALLAS, TX 75231",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "CAMI BOYD MUSGROVE LAW FIRM, P.C., 10,000 N. CENTRAL EXPRESSWAY, STE. 1000"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "DALLAS, TX 75231, UNITED STATES",
+        "representativeAddressLines": [
+          "DALLAS, TX 75231",
+          "UNITED STATES"
+        ],
+        "representativeName": "Cami Boyd"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20181026",
+        "applicationNumber": "88171479"
+      },
+      "cancellationDate": "20260703",
+      "cancellationPublicationDate": "20260727",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20190124"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20190124"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20260703",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20191001"
+      ],
+      "registration": {
+        "registrationDate": "20191217",
+        "registrationNumber": "5935175"
+      }
+    },
+    "version": "20260729121333",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LORI"
+    }
+  },
+  "_uri": "/mark/us/4346b9ea-3ce2-43d5-8196-a5c39b9f8aac",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.453Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

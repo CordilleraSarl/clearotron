@@ -1,0 +1,238 @@
+{
+  "uri": "/mark/us/5d0f90cc-939d-42d1-b686-ddd5c6edf540",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "5d0f90cc-939d-42d1-b686-ddd5c6edf540",
+  "applicationNumber": "87127790",
+  "registrationNumber": null,
+  "applicationDate": "2016-08-04",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2016-12-27"
+  ],
+  "abandonmentDate": "2017-09-25",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "LEAVE NORMAL BEHIND",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    25,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        25
+      ],
+      "language": null,
+      "description": "INT. CL. 25 Hats; T-shirts",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Arranging and conducting special events for social entertainment purposes",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Fajardo, Rob",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6 Victoria Lane, Ringwood, NJ, 07456",
+        "applicantAddressCity": "Ringwood",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "07456",
+        "applicantAddressStateName": "NEW JERSEY",
+        "applicantAddressStreet": "6 Victoria Lane",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Fajardo, Rob"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "25",
+          "intGoodsServicesDescription": "INT. CL. 25 Hats; T-shirts"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Arranging and conducting special events for social entertainment purposes"
+        }
+      ]
+    },
+    "id": "5d0f90cc-939d-42d1-b686-ddd5c6edf540",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20170925",
+        "descriptionText": "ABANDONMENT - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20170925",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20170221",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20161227",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20161227",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20161207",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20161114",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20161114",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20160809",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20160808",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "6 Victoria Lane, Ringwood, NJ, 07456",
+        "city": "Ringwood",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Fajardo, Rob",
+        "postalCode": "07456",
+        "stateName": "NEW JERSEY",
+        "street": "6 Victoria Lane"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "6 Victoria Lane, Ringwood, NJ, 07456",
+        "city": "Ringwood",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Fajardo, Rob",
+        "postalCode": "07456",
+        "stateName": "NEW JERSEY",
+        "street": "6 Victoria Lane"
+      },
+      {
+        "address": "6 Victoria Lane, Ringwood, NJ, 07456",
+        "city": "Ringwood",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Fajardo, Rob",
+        "postalCode": "07456",
+        "stateName": "NEW JERSEY",
+        "street": "6 Victoria Lane"
+      }
+    ],
+    "recordLastUpdated": "20260111",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "RINGWOOD, NJ 07456, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "RINGWOOD, NJ 07456",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "FAJARDO, ROB, 6 VICTORIA LANE"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "RINGWOOD, NJ 07456, UNITED STATES",
+        "representativeAddressLines": [
+          "RINGWOOD, NJ 07456",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20170925",
+      "active": false,
+      "application": {
+        "applicationDate": "20160804",
+        "applicationNumber": "87127790"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-NO STATEMENT OF USE FILED",
+        "markOfficialStatusCode": "606",
+        "markOfficialStatusDate": "20170925",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED",
+      "publicationDate": [
+        "20161227"
+      ]
+    },
+    "version": "20260111054145",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LEAVE NORMAL BEHIND"
+    }
+  },
+  "_uri": "/mark/us/5d0f90cc-939d-42d1-b686-ddd5c6edf540",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

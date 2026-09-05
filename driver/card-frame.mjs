@@ -32,7 +32,7 @@
 //
 // So the rule below is NOT derived from the dictation's wording. It is derived from the delivered
 // artifact and pinned to it: report-card-frame.test.mjs composes a head for every card in
-// examples/sample-run and asserts byte-equality against report.md's own `## ` lines — seven specimens
+// demo and asserts byte-equality against report.md's own `## ` lines — seven specimens
 // including the common-law one that breaks the obvious rule. If a future edit makes the composer and
 // the delivered corpus disagree, that test fails with both strings side by side.
 //

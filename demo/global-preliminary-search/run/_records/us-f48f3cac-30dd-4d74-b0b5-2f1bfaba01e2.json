@@ -1,0 +1,288 @@
+{
+  "uri": "/mark/us/f48f3cac-30dd-4d74-b0b5-2f1bfaba01e2",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "f48f3cac-30dd-4d74-b0b5-2f1bfaba01e2",
+  "applicationNumber": "79336455",
+  "registrationNumber": null,
+  "applicationDate": "2021-10-14",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2023-02-17",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "WOVEN CORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    12,
+    39,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Simulators for the steering and control of vehicles; telecommunication machines and apparatus; radio communication machines and apparatus; portable radio communication machines and apparatus; vehicular radio communication machines and apparatus; radio machines and apparatus; navigation apparatus for vehicles [on-board computers]; parts and accessories for telecommunication machines and apparatus; personal digital assistants; electronic machines, apparatus and their parts; computers and their peripherals; computer programs; computer programs for operating control of autonomous cars; computer programs for autonomous cars; computer operating programs, recorded; computer operating programs, recorded in computers installed with automobiles; computer software, recorded; computer software, recorded in computers installed with automobiles; computer software applications, downloadable; computer hardware; computer hardware installed with automobiles; dashboard cameras; motion sensors; motion recognizing sensors; wireless warning devices by detecting abnormal signals from various sensors and giving warnings; sensors for speed measurements; navigational instruments; navigation map information receiving apparatus; computer programs for map information; computer database programs for creating and developing map information; computers and computer programs for providing map information; computer software for map information; simulators for autonomous cars; computer programs for simulators of autonomous cars; computer programs for controlling movement for autonomous cars in resource-saving environmentally conscious city (Smart City); computer programs for managing operation and operational status for commercial facilities in resource-saving environmentally conscious city (Smart City); computer programs for supplying and managing electricity, gas, water and other lifeline energy in resource-saving environmentally conscious city (Smart City); computer programs for simulating movement for autonomous cars in resource-saving environmentally conscious city (Smart City); computer programs for simulating management, operation and operational status for commercial facilities in resource-saving environmentally conscious city (Smart City); computer programs for simulating supplement and management electricity, gas, water and other lifeline energy in resource-saving environmentally conscious city (Smart City)",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": null,
+      "description": "INT. CL. 12 Automobiles; autonomous automobiles; trucks; autonomous trucks; automobiles and their parts and fittings; unmanned aerial vehicles (UAVs); autonomous buses; buses and their parts and fittings; trucks and their parts and fittings; autonomous cars",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": null,
+      "description": "INT. CL. 39 Providing road and traffic information; providing traffic information via the Internet or other communication network; GPS car navigation services; providing location information of vehicles on maps; providing information relating to operation control and grasping moving condition of vehicles; providing and managing information relating to vehicular traffic flow; providing information relating to traffic congestion prediction; providing information relating to traffic and traffic congestion; traffic information",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Computer software design, computer programming, or maintenance of computer software; computer software design, computer programming, or maintenance of computer software used for autonomous cars; providing computer programs for traffic control of autonomous cars via the Internet; providing computer programs for autonomous cars via the Internet; off-site data backup; development of computer platforms; updating of computer software; technological advice relating to computers, automobiles and industrial machines; providing computer programs on data networks; cloud computing; computer software and hardware testing services; calibration of computer software; rental of computers; testing, research, design and development in the field of autonomous driving technology, autonomous cars and computer software for autonomous cars and consultancy relating thereto; providing search engines for the Internet; providing search engines used for exploring map information; design, development and maintenance of computer database programs for creating and developing map information; mapping services; map designing; scientific and technological research and development relating to autonomous driving technology and autonomous cars; development and providing of software for autonomous cars; development and providing of simulators for autonomous cars and software for simulator of autonomous cars; providing computer programs for controlling movement for autonomous cars in resource-saving environmentally conscious city (Smart City); providing computer programs for managing operation and operational status for commercial facilities in resource-saving environmentally conscious city (Smart City); providing computer programs for supplying and managing electricity, gas, water and other lifeline energy in resource-saving environmentally conscious city (Smart City); providing computer programs for simulating movement for autonomous cars in resource-saving environmentally conscious city (Smart City); providing computer programs for simulating management, operation and operational status for commercial facilities in resource-saving environmentally conscious city (Smart City); providing computer programs for simulating supplement and management electricity, gas, water and other lifeline energy in resource-saving environmentally conscious city (Smart City)",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Woven Planet Holdings, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "3-2-1 Nihonbashi-Muromachi, JAPA",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantAddressStreet": "3-2-1 Nihonbashi-Muromachi,",
+        "applicantJurisdictionOfIncorporation": "JAPAN",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Woven Planet Holdings, Inc.",
+        "applicantSecondaryAddressUnit": "Chuo-ku Tokyo 103-0022"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Simulators for the steering and control of vehicles; telecommunication machines and apparatus; radio communication machines and apparatus; portable radio communication machines and apparatus; vehicular radio communication machines and apparatus; radio machines and apparatus; navigation apparatus for vehicles [on-board computers]; parts and accessories for telecommunication machines and apparatus; personal digital assistants; electronic machines, apparatus and their parts; computers and their peripherals; computer programs; computer programs for operating control of autonomous cars; computer programs for autonomous cars; computer operating programs, recorded; computer operating programs, recorded in computers installed with automobiles; computer software, recorded; computer software, recorded in computers installed with automobiles; computer software applications, downloadable; computer hardware; computer hardware installed with automobiles; dashboard cameras; motion sensors; motion recognizing sensors; wireless warning devices by detecting abnormal signals from various sensors and giving warnings; sensors for speed measurements; navigational instruments; navigation map information receiving apparatus; computer programs for map information; computer database programs for creating and developing map information; computers and computer programs for providing map information; computer software for map information; simulators for autonomous cars; computer programs for simulators of autonomous cars; computer programs for controlling movement for autonomous cars in resource-saving environmentally conscious city (Smart City); computer programs for managing operation and operational status for commercial facilities in resource-saving environmentally conscious city (Smart City); computer programs for supplying and managing electricity, gas, water and other lifeline energy in resource-saving environmentally conscious city (Smart City); computer programs for simulating movement for autonomous cars in resource-saving environmentally conscious city (Smart City); computer programs for simulating management, operation and operational status for commercial facilities in resource-saving environmentally conscious city (Smart City); computer programs for simulating supplement and management electricity, gas, water and other lifeline energy in resource-saving environmentally conscious city (Smart City)"
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsServicesDescription": "INT. CL. 12 Automobiles; autonomous automobiles; trucks; autonomous trucks; automobiles and their parts and fittings; unmanned aerial vehicles (UAVs); autonomous buses; buses and their parts and fittings; trucks and their parts and fittings; autonomous cars"
+        },
+        {
+          "intClassNumber": "39",
+          "intGoodsServicesDescription": "INT. CL. 39 Providing road and traffic information; providing traffic information via the Internet or other communication network; GPS car navigation services; providing location information of vehicles on maps; providing information relating to operation control and grasping moving condition of vehicles; providing and managing information relating to vehicular traffic flow; providing information relating to traffic congestion prediction; providing information relating to traffic and traffic congestion; traffic information"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Computer software design, computer programming, or maintenance of computer software; computer software design, computer programming, or maintenance of computer software used for autonomous cars; providing computer programs for traffic control of autonomous cars via the Internet; providing computer programs for autonomous cars via the Internet; off-site data backup; development of computer platforms; updating of computer software; technological advice relating to computers, automobiles and industrial machines; providing computer programs on data networks; cloud computing; computer software and hardware testing services; calibration of computer software; rental of computers; testing, research, design and development in the field of autonomous driving technology, autonomous cars and computer software for autonomous cars and consultancy relating thereto; providing search engines for the Internet; providing search engines used for exploring map information; design, development and maintenance of computer database programs for creating and developing map information; mapping services; map designing; scientific and technological research and development relating to autonomous driving technology and autonomous cars; development and providing of software for autonomous cars; development and providing of simulators for autonomous cars and software for simulator of autonomous cars; providing computer programs for controlling movement for autonomous cars in resource-saving environmentally conscious city (Smart City); providing computer programs for managing operation and operational status for commercial facilities in resource-saving environmentally conscious city (Smart City); providing computer programs for supplying and managing electricity, gas, water and other lifeline energy in resource-saving environmentally conscious city (Smart City); providing computer programs for simulating movement for autonomous cars in resource-saving environmentally conscious city (Smart City); providing computer programs for simulating management, operation and operational status for commercial facilities in resource-saving environmentally conscious city (Smart City); providing computer programs for simulating supplement and management electricity, gas, water and other lifeline energy in resource-saving environmentally conscious city (Smart City)"
+        }
+      ]
+    },
+    "id": "f48f3cac-30dd-4d74-b0b5-2f1bfaba01e2",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1651651",
+        "markCurrentStatus": "REQUEST FOR EXTENSION OF PROTECTION ESTABLISHED",
+        "markCurrentStatusDate": "20220324",
+        "protectionGrantedDate": "20230924",
+        "publicationDate": "20220324",
+        "registrationDate": "20211014",
+        "renewalDate": "20311014"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20240318",
+        "descriptionText": "FINAL DECISION TRANSACTION PROCESSED BY IB"
+      },
+      {
+        "date": "20240228",
+        "descriptionText": "FINAL DISPOSITION NOTICE CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20240228",
+        "descriptionText": "FINAL DISPOSITION NOTICE SENT TO IB"
+      },
+      {
+        "date": "20230916",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION -  PROCESSED BY IB"
+      },
+      {
+        "date": "20230830",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION SENT TO IB"
+      },
+      {
+        "date": "20230830",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20230301",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20230228",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20230228",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20220906",
+        "descriptionText": "REFUSAL PROCESSED BY IB"
+      },
+      {
+        "date": "20220816",
+        "descriptionText": "NON-FINAL ACTION MAILED - REFUSAL SENT TO IB"
+      },
+      {
+        "date": "20220816",
+        "descriptionText": "REFUSAL PROCESSED BY MPU"
+      },
+      {
+        "date": "20220802",
+        "descriptionText": "NON-FINAL ACTION (IB REFUSAL) PREPARED FOR REVIEW"
+      },
+      {
+        "date": "20220801",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20220720",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20220329",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      },
+      {
+        "date": "20220325",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20220324",
+        "descriptionText": "SN ASSIGNED FOR SECT 66A APPL FROM IB"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "3-2-1 Nihonbashi-Muromachi, JAPA",
+        "countryCode": "JP",
+        "countryName": "Japan",
+        "jurisdictionOfIncorporation": "JAPAN",
+        "legalEntity": "CORPORATION",
+        "name": "Woven Planet Holdings, Inc.",
+        "secondaryAddressUnit": "Chuo-ku Tokyo 103-0022",
+        "street": "3-2-1 Nihonbashi-Muromachi,"
+      },
+      {
+        "address": "3-2-1 Nihonbashi-Muromachi, JAPA",
+        "countryCode": "JP",
+        "countryName": "Japan",
+        "jurisdictionOfIncorporation": "JAPAN",
+        "legalEntity": "CORPORATION",
+        "name": "Woven Planet Holdings, Inc.",
+        "secondaryAddressUnit": "Chuo-ku Tokyo 103-0022",
+        "street": "3-2-1 Nihonbashi-Muromachi,"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Marunouchi Estate Bldg.,, Aichi 460-0002,, JAPAN",
+        "representativeCorrespondentAddressLines": [
+          "Marunouchi Estate Bldg.,",
+          "Aichi 460-0002,",
+          "JAPAN"
+        ],
+        "representativeCorrespondentName": "NAKAMURA Tomohiro, c/o KONISHI & NAKAMURA,"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Marunouchi Estate Bldg.,, Aichi 460-0002,, JAPAN",
+        "representativeAddressLines": [
+          "Marunouchi Estate Bldg.,",
+          "Aichi 460-0002,",
+          "JAPAN"
+        ]
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20230217",
+      "active": false,
+      "application": {
+        "applicationDate": "20211014",
+        "applicationNumber": "79336455"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20230228",
+        "markOfficialStatusEvents": [
+          "Section 66(a) (Madrid Protocol) - Filed",
+          "Section 66(a) (Madrid Protocol) - Current",
+          "Notice of First Refusal"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260110054043",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "WOVEN CORE"
+    }
+  },
+  "_uri": "/mark/us/f48f3cac-30dd-4d74-b0b5-2f1bfaba01e2",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.729Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

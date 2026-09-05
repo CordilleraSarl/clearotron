@@ -1,0 +1,212 @@
+{
+  "uri": "/mark/jp/3d823570-5e47-4606-b0fd-6f57f9b90709",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "3d823570-5e47-4606-b0fd-6f57f9b90709",
+  "applicationNumber": "2010-085601",
+  "registrationNumber": "5440705",
+  "applicationDate": "2010-11-02",
+  "registrationDate": "2011-09-22",
+  "expiryDate": "2031-09-22",
+  "renewalDate": null,
+  "lastPublicationDate": "2011-10-25",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＳＭＡＲＴＦＯＲＣＥ",
+  "markTransliteration": "SUMAATOFOOSU",
+  "markTranslation": "SMARTFORCE",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    10,
+    40,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        10
+      ],
+      "language": null,
+      "description": "歯列矯正機械器具，その他の歯科用機械器具，その他の医療用機械器具",
+      "translation_language": "en",
+      "translation": "Orthodontic appliances, other dental machinery and equipment, other medical machinery tools"
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": "歯列矯正機械器具の特別注文による製造，医療用機械器具の組み立て・製造・加工",
+      "translation_language": "en",
+      "translation": "Special order manufacturing of orthodontic appliances, assembly / manufacture / processing of medical equipment for medical use"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "歯科用の矯正器具の設計，歯科用の矯正器具の研究開発",
+      "translation_language": "en",
+      "translation": "Design of orthodontic appliances for dentistry, Research and development of orthodontic appliances for dental use"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": null,
+      "description": "歯科医業に関するコンサルティング，歯周病治療，矯正歯科医業，小児歯科医業，その他の歯科医業，医業，患者の歯列矯正治療計画を作成・提示する医業",
+      "translation_language": "en",
+      "translation": "Consulting on dentistry, periodontal disease treatment, orthodontic medicine, pediatric dentistry, other dentistry, medicine, making and presenting an orthodontic treatment plan of a patient"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YASUMURA TAKAAKI",
+  "priorities": [
+    {
+      "priorityDate": "20100519"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Orthodontic appliances, other dental machinery and equipment, other medical machinery tools",
+          "intClassNumber": "10",
+          "intGoodsServicesDescription": "歯列矯正機械器具，その他の歯科用機械器具，その他の医療用機械器具"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Special order manufacturing of orthodontic appliances, assembly / manufacture / processing of medical equipment for medical use",
+          "intClassNumber": "40",
+          "intGoodsServicesDescription": "歯列矯正機械器具の特別注文による製造，医療用機械器具の組み立て・製造・加工"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Design of orthodontic appliances for dentistry, Research and development of orthodontic appliances for dental use",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "歯科用の矯正器具の設計，歯科用の矯正器具の研究開発"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Consulting on dentistry, periodontal disease treatment, orthodontic medicine, pediatric dentistry, other dentistry, medicine, making and presenting an orthodontic treatment plan of a patient",
+          "intClassNumber": "44",
+          "intGoodsServicesDescription": "歯科医業に関するコンサルティング，歯周病治療，矯正歯科医業，小児歯科医業，その他の歯科医業，医業，患者の歯列矯正治療計画を作成・提示する医業"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "10D01",
+          "natGoodsServicesDescription": "Medical machines and apparatus"
+        },
+        {
+          "natClassNumber": "10D02"
+        },
+        {
+          "natClassNumber": "40C10",
+          "natGoodsServicesDescription": "Processing of artificial limbs or artificial teeth (including processing of medical materials)"
+        },
+        {
+          "natClassNumber": "40H99"
+        },
+        {
+          "natClassNumber": "42N03",
+          "natGoodsServicesDescription": "Designing of machines, apparatus, instruments [including their parts] or systems composed of such machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42Q99",
+          "natGoodsServicesDescription": "Testing or research on machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42V02",
+          "natGoodsServicesDescription": "Medical services, Providing medical information, Physical examination, Dentistry, Preparation and dispensing of medications"
+        }
+      ]
+    },
+    "id": "3d823570-5e47-4606-b0fd-6f57f9b90709",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20100519"
+      }
+    ],
+    "recordLastUpdated": "20250711",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YASUMURA TAKAAKI",
+        "representativeNativeName": "安村　高明"
+      },
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20101102",
+        "applicationNumber": "2010-085601"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310922",
+      "lastPublicationDate": "20111025",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20110922",
+        "registrationNumber": "5440705"
+      }
+    },
+    "version": "20250711084322",
+    "wordMarkSpecification": {
+      "markTranslation": "SMARTFORCE",
+      "markTransliteration": "SUMAATOFOOSU",
+      "markVerbalElementText": "ＳＭＡＲＴＦＯＲＣＥ"
+    }
+  },
+  "_uri": "/mark/jp/3d823570-5e47-4606-b0fd-6f57f9b90709",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.741Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

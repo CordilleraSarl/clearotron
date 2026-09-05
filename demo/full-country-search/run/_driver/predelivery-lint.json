@@ -1,0 +1,616 @@
+{
+  "ts": "2026-09-03T18:06:16.713Z",
+  "checks": [
+    {
+      "id": "registry-arithmetic",
+      "family": "registry",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "registry-record-match",
+      "family": "registry",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "registry-record-coverage",
+      "family": "registry",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "finding-provenance",
+      "family": "registry",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "reference-integrity",
+      "family": "reference",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "actions-reachability",
+      "family": "actions",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "action-fits-bound-line",
+      "family": "actions",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "self-comparison",
+      "family": "reference",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "reference-integrity:email",
+      "family": "reference",
+      "surface": "email",
+      "pass": false,
+      "detail": "the action items in this email mention YIWU TENGDING UMBRELLA without explaining who or what they are — open the full report for their identities before acting on those items (a summary-drafting gap, not a gap in the search)",
+      "structural": true
+    },
+    {
+      "id": "record-verification-claim",
+      "family": "registry",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "competitor-claim-verification",
+      "family": "registry",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "dead-record-link",
+      "family": "coverage",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "dead-record-link:narrative",
+      "family": "coverage",
+      "surface": "narrative",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "permission-prose",
+      "family": "coverage",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "permission-prose:narrative",
+      "family": "coverage",
+      "surface": "narrative",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "party-fact-sourcing",
+      "family": "party-fact",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "party-fact-sourcing",
+      "family": "party-fact",
+      "surface": "narrative",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "permission-prose:findings",
+      "family": "coverage",
+      "surface": "findings",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "names-cell-populated",
+      "family": "template",
+      "surface": "email",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "assessment-row:venqori",
+      "family": "template",
+      "surface": "email",
+      "pass": true,
+      "detail": "searched name \"venqori\" has no per-name assessment row in the summary table"
+    },
+    {
+      "id": "rating-position:venqori",
+      "family": "template",
+      "surface": "email",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "senior-right-coverage",
+      "family": "registry",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "mark-assessment-present",
+      "family": "mark-assessment",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "manageable-category",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "legal-practical-split",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "one-clause-net",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "net-conclusion-form",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "off-field-ground",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "off-field-goods-distance",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "four-answers-present",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "findings-schema-current",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "four-answers-ordinals",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "four-answers-rights-vs-findings",
+      "family": "content-model",
+      "surface": "report",
+      "pass": false,
+      "detail": "four_answers.third_party_rights reads \"weak\", but this run rated 1 finding(s) ADVERSARIAL (ordinal 1) — the hero answer contradicts the cards under it; either the answer is wrong or those dispositions are",
+      "structural": true
+    },
+    {
+      "id": "four-answers-objection-vs-verdict",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "four-answers-registrability-obstacles",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "placements-empty",
+      "family": "content-model",
+      "surface": "placement",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "placement-rows-without-uri",
+      "family": "content-model",
+      "surface": "placement",
+      "pass": false,
+      "detail": "12 of 50 placement row(s) name no record URI. This is expected for a common-law candidate (records: [] by contract) and is NOT a defect — it is a COVERAGE BOUNDARY: every URI-keyed carry gate in this driver is silent about these rows rather than clearing them, so a clean result from those gates says nothing about this 12. placement-carry's own join is what covers them; read its classes before treating any of this as carried."
+    },
+    {
+      "id": "record-carry-unreasoned",
+      "family": "content-model",
+      "surface": "register-digest",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "record-carry-upstream-absent",
+      "family": "content-model",
+      "surface": "register-digest",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "counting-consistency",
+      "family": "counting",
+      "surface": "all",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "scope-numbers-in-prose",
+      "family": "counting",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "counting-vs-findings",
+      "family": "counting",
+      "surface": "all",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "overall-tier",
+      "family": "client",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "verdict-actions-coherence",
+      "family": "verdict",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "verdict-actions-stale",
+      "family": "verdict",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "statement-tier",
+      "family": "verdict",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "statement-unconditional",
+      "family": "verdict",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "statement-stance",
+      "family": "verdict",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "statement-conditional-form",
+      "family": "verdict",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "conditional-text-coherence",
+      "family": "verdict",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "prescription-prose",
+      "family": "voice",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "prescription-prose",
+      "family": "voice",
+      "surface": "content-model",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "only-you-register",
+      "family": "verdict",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "actions-register-present",
+      "family": "verdict",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "wipo-designation-language",
+      "family": "registry",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "failures": [
+    "reference-integrity:email",
+    "four-answers-rights-vs-findings",
+    "placement-rows-without-uri"
+  ],
+  "staleStages": [],
+  "staleRepaired": [],
+  "initialFailures": [
+    "reference-integrity:email",
+    "four-answers-rights-vs-findings",
+    "placement-rows-without-uri"
+  ],
+  "repaired": [],
+  "registryCorrections": [],
+  "artifactSet": {
+    "surfaces": [
+      {
+        "name": "report.md",
+        "sha": "90534dbc0423",
+        "size": 11545
+      }
+    ],
+    "recordUris": [
+      "/mark/jp/6f667110-34f1-4d2b-8739-5144c361a5ba",
+      "/mark/jp/a8135cdc-c6e2-477b-a68c-edb77e6778da",
+      "/mark/jp/3c910bba-6f97-4d99-be5e-a98c5f89f57d",
+      "/mark/jp/548532d1-355c-4e41-8399-8884512b114a",
+      "/mark/jp/2670082c-90f5-4661-88aa-338c854aa5aa",
+      "/mark/jp/802346ea-c16a-4940-89f2-c785a6f54f12",
+      "/mark/jp/2c8fac74-0573-409d-a570-dd4f8bc34391",
+      "/mark/jp/cb2b59bc-8df9-4850-ad32-b267def84a88",
+      "/mark/jp/53139b89-43d4-4a5c-b928-65bc2d82f17e",
+      "/mark/jp/a2c8a15d-30f6-451f-a10d-e43e702ba9e3",
+      "/mark/jp/ad7e5e5a-6c7b-49ae-9fdb-39b6e2e9e8dc",
+      "/mark/jp/4899a2fe-c820-4126-bc52-fb3e97c34e19",
+      "/mark/jp/7248ae75-dcfe-4af0-b131-fd51448a27f9",
+      "/mark/jp/05e04cba-10e6-4bd4-8b2b-3a04dbe4f3e5",
+      "/mark/jp/9ba3c6ed-b59d-4e4b-84ca-4244cb5238cc",
+      "/mark/jp/cfcbe723-7812-4ba2-8a9e-fe7d23d56466",
+      "/mark/jp/e4707df0-96b3-41f1-a3c8-e334b34ce3b4",
+      "/mark/jp/2da4a69b-b2c6-4c08-8807-0bf8856cbdad",
+      "/mark/jp/7d8d9402-f7a9-4a6e-9afe-3020e247e1e6",
+      "/mark/jp/f9da3aa3-9355-4e42-ac42-aa198ba402de",
+      "/mark/jp/28327d76-9e59-41a3-b51f-23764ba17519",
+      "/mark/jp/a8f8eae5-bd25-41f2-8cd0-1d38b62cf20b",
+      "/mark/jp/2dbe0c59-681d-4d6b-9285-33b4bb05c477",
+      "/mark/jp/74de6410-fe59-49a4-b578-ae39b290bd5e",
+      "/mark/jp/ce0a58ec-2cc3-43fe-9e59-ffd2addb0aad",
+      "/mark/jp/aa5f9173-9262-47ee-97c2-c1b7aede1e48",
+      "/mark/jp/1e5fa6ff-3fd8-41e9-b0fc-52657ded8233",
+      "/mark/jp/11afa4a4-71d2-461b-aeac-c563214b6152",
+      "/mark/jp/b6d7c3c2-4234-4051-b521-62022ff61f3f",
+      "/mark/jp/9f16d0d1-4a70-4ce9-ae95-8588def2f337",
+      "/mark/jp/043170c8-80ad-491d-a66b-dcede08c7c2e",
+      "/mark/jp/25d24ec1-8041-4be8-bda1-5e46251e0670",
+      "/mark/jp/1489c445-a777-4507-81a5-2490983cbd08",
+      "/mark/jp/434b34f8-a3dc-4b22-a728-e2bf76982f19",
+      "/mark/jp/66677d57-8b61-468f-8485-a277c157e83b",
+      "/mark/jp/4d71035f-b041-4758-bd6e-7e80eb8e06ff",
+      "/mark/jp/13057eeb-d9a3-4cb7-b935-afbb7e8ea8ae",
+      "/mark/jp/eba3300d-17f2-4d22-88af-092555fefa59",
+      "/mark/jp/d48ab637-4675-4a4e-9731-24cb72d12f03",
+      "/mark/jp/2d04bedc-fdb6-4ed0-8f25-4aac37e48277",
+      "/mark/jp/5f66f1a8-71a0-4741-a482-3fb7d673f4a3",
+      "/mark/jp/4e887c63-c7bd-40bf-9588-d4a27ee1cf7f",
+      "/mark/jp/7a2c769a-c37b-47f4-884e-64967c1cd1b9",
+      "/mark/jp/95c59119-1752-4b73-97ee-25b2cb5b19f9",
+      "/mark/jp/8a01adb5-756b-49ce-af1c-a95453a2ddac",
+      "/mark/jp/2a8fdaa3-717a-4e0f-851b-92c637f415db",
+      "/mark/jp/d7b1a148-2f89-4334-be0a-d271369ab062",
+      "/mark/jp/870bb21a-7f07-4dbc-b90e-cccaf857ba6d",
+      "/mark/jp/ce694bc1-b210-4814-ae4a-b9c49269c467",
+      "/mark/jp/885968c6-cf26-489c-9bc3-110d1d79baa2",
+      "/mark/jp/5843d97e-e016-4962-a4c6-d82654e351be",
+      "/mark/jp/5d4bb68b-b47c-4302-bf2a-f50ecfc2e925",
+      "/mark/jp/5bd53446-476f-4ce5-8ebd-1ef26c62f18d",
+      "/mark/jp/cac05847-ef46-41d3-9e69-1ad522a02346",
+      "/mark/jp/efdfce28-c625-4549-a3e8-e10619d9d86c",
+      "/mark/jp/69883b4e-a294-4325-9b7f-04b894c94615",
+      "/mark/jp/69591bcd-a268-479d-a29d-c33babdedfe3",
+      "/mark/jp/53ab65e0-0304-49ac-aba9-ab04efbb2c95",
+      "/mark/jp/9b595bce-ead9-4d53-9a06-65aae393eb65",
+      "/mark/jp/f1ff507c-2f93-489e-b301-756113038196",
+      "/mark/jp/59e6a10c-e21c-4556-b10d-df2488f58c97",
+      "/mark/jp/01ef461d-3188-4fe9-ab57-ff9f88206eb8",
+      "/mark/jp/10ede8f0-e389-48bb-b603-257063dd1f92",
+      "/mark/jp/6554e181-36cd-49ee-8415-49d71bf2d7ac",
+      "/mark/jp/44675146-09e8-42f9-a181-c2340ae18c64",
+      "/mark/jp/494f1681-f547-4d76-a618-3a2212956fd5",
+      "/mark/jp/bb31005c-de89-4427-9e3b-eb870618399d",
+      "/mark/jp/310027f2-0562-46fe-abea-385f068a8150",
+      "/mark/jp/fac95fc4-e52d-4dfc-a3f5-bc64013d53c4",
+      "/mark/jp/59ac3954-d540-4a8d-bbd9-0f1b13411740",
+      "/mark/jp/d78b733e-3efa-41ab-b5bf-e3e5c9337a7c",
+      "/mark/jp/a69d8d0f-6fb5-48fd-835d-4bf5366b7693",
+      "/mark/jp/66c3f979-818d-4a4e-97fa-36bb9582283e",
+      "/mark/jp/9829f7f3-080a-491c-87e3-f3f650858123",
+      "/mark/jp/b42e9897-f0a1-43c0-9970-51023e01f903",
+      "/mark/jp/6e22f6c9-843b-4305-8ed0-c1438ac223df",
+      "/mark/jp/09fc1fcf-91b6-4d05-813f-8244677e2819",
+      "/mark/jp/1fad93af-5770-402c-9b14-795de6fcd85e",
+      "/mark/jp/c7b0af78-e420-4463-b0cf-c465ba3ec161",
+      "/mark/jp/c39e487b-9964-4642-8ee8-2f00b1d56a13",
+      "/mark/jp/df77147c-e030-46d4-b971-fa8143fcde7e",
+      "/mark/jp/8e110f0f-8d3b-4b54-b62f-c5f9534ec917",
+      "/mark/jp/c671f0da-7ff0-4e08-bcf2-00ff36338ec3",
+      "/mark/jp/65773d88-d090-4b7e-a732-72f94ff0449e",
+      "/mark/jp/8c4eb0e3-5842-46ce-86f0-93b23f06d323",
+      "/mark/jp/84d208be-9afa-4d84-8551-c620dfd4c6f7",
+      "/mark/jp/996e5f0b-3f01-488e-8691-fe478cecef26",
+      "/mark/jp/d28a65d1-ba44-47fb-a055-69faee28b55a",
+      "/mark/jp/21471daa-2d81-4a3d-b506-fc84b7b6e68e",
+      "/mark/jp/bc944f50-918c-4ff2-bf12-65a07f375d10",
+      "/mark/jp/9656ebff-2a51-4e2b-939b-b576ffa61504",
+      "/mark/jp/fb137cfb-9171-4e2d-9da3-1d9790f494dd",
+      "/mark/jp/d123bf18-05c5-43b9-9e09-c24e8fa1080e",
+      "/mark/jp/3cb8cbf6-3890-48b5-bf6d-e00ecf0eedb9",
+      "/mark/jp/208359fd-c9bf-4bfd-99d6-4adb5526bd39",
+      "/mark/jp/ea837fbd-7df4-4a0f-8c52-6804af1bb972",
+      "/mark/jp/6a0d267c-bc3f-4921-9d79-c8ac3fa6cdb1",
+      "/mark/jp/f95ebaa5-e21f-4743-bb2e-52ed9d6a77c5",
+      "/mark/jp/ff272f1f-c31a-4451-b9be-95065a6a075f",
+      "/mark/jp/3163bdee-1bd3-4ca0-9919-3a56191a1baf",
+      "/mark/jp/3d823570-5e47-4606-b0fd-6f57f9b90709",
+      "/mark/jp/87139bde-10d2-4686-931a-f674ac68e2b3",
+      "/mark/jp/b3cf12b9-efb3-42ef-a35a-831fb6b58c1b",
+      "/mark/jp/4b36fa60-67cd-4e1f-9907-ec1ad2dc12b9",
+      "/mark/jp/e913712a-5335-43ec-9313-c45a1c1f881e",
+      "/mark/jp/c2340c2b-2961-425c-8272-72506796c0ef",
+      "/mark/jp/5f6ba9c4-8809-4d06-9619-0a38cfd6c70b",
+      "/mark/jp/7c6f85dd-56a3-4616-9c2b-271a1a981d2b",
+      "/mark/jp/de890fb0-d1de-4796-a1dc-537e5a878c20",
+      "/mark/jp/eb1e2bb7-fae6-4289-9ce8-e1d7ae170a4c",
+      "/mark/jp/c6283eb6-2a34-465d-a8cc-2d039fd66ad2",
+      "/mark/jp/51bdaa06-0bc5-4a08-9937-1fdb39c5cba0",
+      "/mark/jp/e0258cc9-6bfa-4faf-924b-946fc7301ae0",
+      "/mark/jp/807dd969-2c13-4dc5-82f1-c7743c1f168c",
+      "/mark/jp/8d579b81-862f-41be-b95f-2004cf0c0bfb",
+      "/mark/jp/bcbe299c-96ab-4171-b5b6-18a585fb50f4",
+      "/mark/jp/42437705-f599-465e-935c-1b318129a7e0",
+      "/mark/jp/77fda70b-052f-410c-9022-d55c037c9596",
+      "/mark/jp/44a56d0a-98b6-4d2d-b52b-4119957ab186",
+      "/mark/jp/825db6c5-4e1f-470b-b988-b6e40b3628ee",
+      "/mark/jp/61c4b1f4-f258-43ed-945e-65d5348e934f",
+      "/mark/jp/fbff9222-bf88-481b-973a-1945dcf63721",
+      "/mark/jp/9455d2ca-2a78-4841-845d-c771e8d47ca9",
+      "/mark/jp/a322319e-de04-4e63-9716-986910e2d2a4",
+      "/mark/jp/1cc4c1ff-0b47-407b-acc2-476b0155c101",
+      "/mark/jp/ad0da8e0-6176-4f84-951a-20dcf3141fdd",
+      "/mark/jp/81d9c343-8265-433d-96e0-7834fc085821",
+      "/mark/jp/d0abc6ba-dcba-460a-ac2d-921b07e80769",
+      "/mark/jp/63e3a2c7-5f8e-4173-89bc-b733a3d28220",
+      "/mark/jp/fee53e92-ca19-4b0a-8c09-f6b11b1941b4",
+      "/mark/jp/cf217573-66e3-4a37-8ee4-5915d8cbc2a1",
+      "/mark/jp/0f6112d6-0351-419a-946c-44d24b6006e8",
+      "/mark/jp/960a3a6c-1935-4c41-ae7f-04d76f1643a1",
+      "/mark/jp/4c1ea7f5-08b5-48e9-b284-09e0592c14ea",
+      "/mark/jp/6c2bb6a2-0172-4ee5-84f9-b63fc05f2748",
+      "/mark/jp/96263b8c-3d9d-44da-9e15-971fb8621b5d",
+      "/mark/jp/0fb531d7-17c9-4523-a5b0-b6d8ad600833",
+      "/mark/jp/2960befb-19ea-436c-a0e0-e96f1260c2d7",
+      "/mark/jp/0bf56d74-eba2-4485-89ca-a65342f22709",
+      "/mark/jp/a56b02ae-d1ae-4f6f-9d68-3188b9ebfe70",
+      "/mark/jp/b95f7e30-ec53-4ffe-be46-f3b869b8ad0b",
+      "/mark/wo/1fed5a1c-5da5-414a-b08c-141e10e9e7be",
+      "/mark/wo/1650862e-e9e7-4b5a-b674-2f778bbe5309",
+      "/mark/wo/981a36e8-50f9-438e-b3ac-a53435e26aa9",
+      "/mark/wo/8e75ea72-85d5-4eea-98ed-b5efef0af11b",
+      "/mark/wo/fba839fa-fa7b-45db-8549-eac0cccf7006",
+      "/mark/wo/afa7473d-541f-4ad3-9faf-12f8474d8932",
+      "/mark/wo/0926e81f-d7aa-455f-8d19-bd475b7f9fde",
+      "/mark/wo/76ee79b5-6def-4aee-8d02-da2188e311eb",
+      "/mark/wo/50b99314-3610-4e36-a324-90b612258346",
+      "/mark/wo/3f9df363-675f-41a4-b53d-825acedc39e4",
+      "/mark/wo/ad8d219d-59fe-4dc6-b2dd-c762f21945fd",
+      "/mark/wo/a2a14d34-c544-4a7d-aff4-7eb24cb43b63",
+      "/mark/wo/1d1f9125-db8d-4a11-8046-e253f39c5713",
+      "/mark/wo/d9ab8197-13e8-4571-8895-c3fe5fd1528f",
+      "/mark/wo/c3289ec4-f43f-44e8-ade2-e3c6e0f5285c",
+      "/mark/wo/9a8d8b72-62dc-44c2-a450-50c2b1b1c255",
+      "/mark/wo/ba5a9e02-7ea9-43d6-bf5f-9589c90d7e7b",
+      "/mark/wo/7cb7eca7-3fde-4081-be65-99c38b1262a1",
+      "/mark/wo/656f2bae-09a8-4c61-b072-baf465322697",
+      "/mark/wo/e33a8a31-e152-494b-8972-b08a9b910736",
+      "/mark/wo/b46175f2-f0c1-47f3-93f9-7236da089f7f",
+      "/mark/wo/bf3788e9-f7d2-457f-b9a2-76f23fe2e2e7",
+      "/mark/wo/0c8b7e4c-2eae-44f5-9dfb-6e94e3eda350",
+      "/mark/wo/ec6d33e5-7fd7-4a2a-a519-2531cd1c6bb0",
+      "/mark/wo/1e1087e3-7974-460c-82a9-a5eef5dd134a",
+      "/mark/wo/2ad449e9-6557-4415-985a-4f72c4aa3050",
+      "/mark/wo/a4be0a40-addb-4e27-8b3a-5f721f035054",
+      "/mark/wo/ed8a4a38-7728-477f-bce8-6d7f986e5722",
+      "/mark/wo/66534fd6-42a9-4bec-8c6f-24a781233229",
+      "/mark/wo/1d0d4c19-390a-4154-b94b-0998d84d0d2d",
+      "/mark/wo/1d387105-548d-4994-b3b0-0768bc5c1d2e",
+      "/mark/wo/1e2e8684-4c6e-41fd-b126-1b258a0e3c6c",
+      "/mark/wo/fd240bf3-faf4-4ab6-8fe1-9aacc73efdd2",
+      "/mark/wo/d20f2df9-9dbb-4051-be5a-297714def013",
+      "/mark/wo/4fbade87-bce8-4279-99f9-b2573acb1651",
+      "/mark/wo/ca25fcd0-d687-457a-82a6-c9711b0f3aa1",
+      "/mark/wo/ff309d0f-4eaf-4987-a6b4-87b7b6a3b00e",
+      "/mark/wo/e4a93bc7-6f55-457f-859b-c0105d31f884",
+      "/mark/wo/14985976-465a-46c5-b42c-3a8a527f468b",
+      "/mark/wo/2e00aa14-212a-43a5-bfa3-30877e220136",
+      "/mark/wo/39adb0a2-5031-43f2-8f7d-d75f9f94d73a",
+      "/mark/wo/4979fa0f-650d-46e9-a7dd-3117dca8cd47",
+      "/mark/wo/d7566e54-ddc6-42fb-a378-7c569a4eca00",
+      "/mark/wo/b68dc4cd-c269-4eeb-be70-90f008f91720",
+      "/mark/wo/ad5cff00-2ad3-4025-b0ef-3fc930e6760e",
+      "/mark/wo/e0008bbc-472e-4408-8770-c589da8e9be1",
+      "/mark/wo/cff01368-dd68-49cb-bdab-ba8d31b4a906",
+      "/mark/wo/1506b4c6-f5ca-4177-8e71-7b817eb86c41",
+      "/mark/wo/cd356cbe-1ccc-4eed-bb09-86634b6aedac",
+      "/mark/wo/5b0e8613-2aa0-4b90-b1b3-aff58947e2ee",
+      "/mark/wo/dd5ed074-3357-48d0-941e-4e184855f981",
+      "/mark/wo/8301923e-eae0-4c38-b38b-82e8240a434e"
+    ],
+    "recordSources": {
+      "fromRunDir": 193,
+      "fromLedgerThisSession": 193
+    },
+    "recordFetchFailures": [],
+    "skippedStages": []
+  }
+}

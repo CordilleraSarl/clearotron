@@ -1,0 +1,153 @@
+{
+  "uri": "/mark/jp/9656ebff-2a51-4e2b-939b-b576ffa61504",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "9656ebff-2a51-4e2b-939b-b576ffa61504",
+  "applicationNumber": "2011-054661",
+  "registrationNumber": "5535724",
+  "applicationDate": "2011-08-02",
+  "registrationDate": "2012-11-16",
+  "expiryDate": "2032-11-16",
+  "renewalDate": null,
+  "lastPublicationDate": "2012-12-18",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "コアアイキュ－コンバ－ジ　ＱＯＲＩＱ　ＱＯＮＶＥＲＧＥ",
+  "markTransliteration": "KOAAIKYUUKONBAAJI KORIKU",
+  "markTranslation": "QORIQ QONVERGE",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "半導体，集積回路，マイクロプロセッサ，コンピュータソフトウェアを記録可能なマイクロプロセッサ，マルチコアプロセッサ，特定用途向け集積回路，シグナルプロセッサ，デジタルシグナルプロセッサ，ベクトルプロセッサ，通信機器用プロセッサ，特定用途向けアクセラレータ，通信機器に組み込まれた無線通信管理用プロセッサ，ベースステーション機能を搭載した半導体チップ，無線ベースステーション機能を搭載した半導体チップ，システムに必要な各種機能を搭載した半導体チップ（システムオンチップ），その他の電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "A semiconductor, an integrated circuit, a microprocessor, a microprocessor capable of recording computer software, a multi-core processor, an application specific integrated circuit, a signal processor, a digital signal processor, a vector processor, a processor for a communication device, an application accelerator, a communication device A semiconductor chip equipped with a base station function, a semiconductor chip equipped with a wireless base station function, a semiconductor chip (system on chip) equipped with various functions necessary for the system, and other electronic applied appliances And its parts"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "NAGAOKA AI",
+  "priorities": [
+    {
+      "priorityDate": "20110802"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "A semiconductor, an integrated circuit, a microprocessor, a microprocessor capable of recording computer software, a multi-core processor, an application specific integrated circuit, a signal processor, a digital signal processor, a vector processor, a processor for a communication device, an application accelerator, a communication device A semiconductor chip equipped with a base station function, a semiconductor chip equipped with a wireless base station function, a semiconductor chip (system on chip) equipped with various functions necessary for the system, and other electronic applied appliances And its parts",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "半導体，集積回路，マイクロプロセッサ，コンピュータソフトウェアを記録可能なマイクロプロセッサ，マルチコアプロセッサ，特定用途向け集積回路，シグナルプロセッサ，デジタルシグナルプロセッサ，ベクトルプロセッサ，通信機器用プロセッサ，特定用途向けアクセラレータ，通信機器に組み込まれた無線通信管理用プロセッサ，ベースステーション機能を搭載した半導体チップ，無線ベースステーション機能を搭載した半導体チップ，システムに必要な各種機能を搭載した半導体チップ（システムオンチップ），その他の電子応用機械器具及びその部品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Telecommunication devices and apparatus"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        }
+      ]
+    },
+    "id": "9656ebff-2a51-4e2b-939b-b576ffa61504",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20110802"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "NAGAOKA AI",
+        "representativeNativeName": "永岡　愛"
+      },
+      {
+        "representativeName": "IWASE YOSHIKAZU",
+        "representativeNativeName": "岩瀬　吉和"
+      },
+      {
+        "representativeName": "SHIROYAMA YASUFUMI",
+        "representativeNativeName": "城山　康文"
+      },
+      {
+        "representativeName": "KITAGUCHI TAKAHIRO",
+        "representativeNativeName": "北口　貴大"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20110802",
+        "applicationNumber": "2011-054661"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321116",
+      "lastPublicationDate": "20121218",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20121116",
+        "registrationNumber": "5535724"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "QORIQ QONVERGE",
+      "markTransliteration": "KOAAIKYUUKONBAAJI KORIKU",
+      "markVerbalElementText": "コアアイキュ－コンバ－ジ　ＱＯＲＩＱ　ＱＯＮＶＥＲＧＥ"
+    }
+  },
+  "_uri": "/mark/jp/9656ebff-2a51-4e2b-939b-b576ffa61504",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.396Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

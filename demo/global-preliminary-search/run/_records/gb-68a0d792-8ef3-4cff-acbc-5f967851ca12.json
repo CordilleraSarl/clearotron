@@ -1,0 +1,185 @@
+{
+  "uri": "/mark/gb/68a0d792-8ef3-4cff-acbc-5f967851ca12",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "68a0d792-8ef3-4cff-acbc-5f967851ca12",
+  "applicationNumber": "2583442",
+  "registrationNumber": "2583442",
+  "applicationDate": "2011-06-03",
+  "registrationDate": "2011-09-09",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "Qore",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    38,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software; electronic publications downloadable from the Internet and other on-line databases; pre-recorded magnetic, optical and digital media.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Advertising; public relations; marketing; market research; media research; business management; business administration; business consultancy; business operating services; business information services; business appraisal services, business enquiries; business investigation services; data management and data cleansing services; data verification and validation services relating to business information, customer mailing lists, customer e-mail addresses and customer telephone numbers; design and preparation of distribution lists for marketing and advertising campaigns; writing and advertising of publicity text and materials; advice and information on the foregoing.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "en",
+      "description": "Telecommunications services; communication services for the provision of interactive voice recognition services; broadcast and distribution of text, multimedia and voice messages; broadcast and distribution of text, multi-media and voice messages via wired and wireless networks; provision of e-mail services, distribution of e-mail messages.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Entertainment; sporting and cultural activities; education; conference and event management; television entertainment; production of radio and television programmes; musical entertainment; film production; composition of music; provision of advice and information relating to all of the foregoing services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Design; graphic design; artwork design and production; website creation and design; computer programming; provision of advice and information on the foregoing.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Voxeo Europe Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Dummett Copp LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Floor 6, Quadrant House, 4 Thomas More Square, London E1W 1YW",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Voxeo Europe Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "37.01.17"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software; electronic publications downloadable from the Internet and other on-line databases; pre-recorded magnetic, optical and digital media."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Advertising; public relations; marketing; market research; media research; business management; business administration; business consultancy; business operating services; business information services; business appraisal services, business enquiries; business investigation services; data management and data cleansing services; data verification and validation services relating to business information, customer mailing lists, customer e-mail addresses and customer telephone numbers; design and preparation of distribution lists for marketing and advertising campaigns; writing and advertising of publicity text and materials; advice and information on the foregoing."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Telecommunications services; communication services for the provision of interactive voice recognition services; broadcast and distribution of text, multimedia and voice messages; broadcast and distribution of text, multi-media and voice messages via wired and wireless networks; provision of e-mail services, distribution of e-mail messages."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Entertainment; sporting and cultural activities; education; conference and event management; television entertainment; production of radio and television programmes; musical entertainment; film production; composition of music; provision of advice and information relating to all of the foregoing services."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Design; graphic design; artwork design and production; website creation and design; computer programming; provision of advice and information on the foregoing."
+        }
+      ]
+    },
+    "id": "68a0d792-8ef3-4cff-acbc-5f967851ca12",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.08.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "6894"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "25 The Square, Martlesham Heath, Ipswich, Suffolk IP5 3SL",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Dummett Copp LLP"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20110603",
+        "applicationNumber": "2583442"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ARCHIVED",
+      "registration": {
+        "registrationDate": "20110909",
+        "registrationNumber": "2583442"
+      }
+    },
+    "version": "20250627192617",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Qore"
+    }
+  },
+  "_uri": "/mark/gb/68a0d792-8ef3-4cff-acbc-5f967851ca12",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:55.423Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

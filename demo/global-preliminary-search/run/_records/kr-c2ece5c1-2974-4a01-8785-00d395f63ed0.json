@@ -1,0 +1,136 @@
+{
+  "uri": "/mark/kr/c2ece5c1-2974-4a01-8785-00d395f63ed0",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "c2ece5c1-2974-4a01-8785-00d395f63ed0",
+  "applicationNumber": "40-1982-0000355",
+  "registrationNumber": "4000878640000",
+  "applicationDate": "1982-01-15",
+  "registrationDate": "1983-01-21",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "SORI 소리",
+  "markTransliteration": "SORI sound",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    7,
+    9,
+    11,
+    12,
+    13,
+    19,
+    20,
+    22,
+    28
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        7,
+        9,
+        11,
+        12,
+        13,
+        19,
+        20,
+        22,
+        28
+      ],
+      "language": "ko",
+      "description": "자동차용에어혼",
+      "translation_language": "en",
+      "translation": "Automotive Air Horn"
+    }
+  ],
+  "owner": "Park Jo",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울시성동구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Park Jo",
+        "applicantNativeName": "박조"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Automotive Air Horn",
+          "intClassNumber": "06,07,09,11,12,13,19,20,22,28",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "자동차용에어혼"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "037"
+        }
+      ]
+    },
+    "id": "c2ece5c1-2974-4a01-8785-00d395f63ed0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.01.19"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19820115",
+        "applicationNumber": "40-1982-0000355"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19830121",
+        "registrationNumber": "4000878640000"
+      }
+    },
+    "version": "20250625193300",
+    "wordMarkSpecification": {
+      "markTransliteration": "SORI sound",
+      "markVerbalElementText": "SORI 소리"
+    }
+  },
+  "_uri": "/mark/kr/c2ece5c1-2974-4a01-8785-00d395f63ed0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:58.878Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

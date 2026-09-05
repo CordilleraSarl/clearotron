@@ -1,0 +1,157 @@
+{
+  "uri": "/mark/gb/1b49e4ca-07b1-4982-b929-949b6c308e79",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "1b49e4ca-07b1-4982-b929-949b6c308e79",
+  "applicationNumber": "4246095",
+  "registrationNumber": "4246095",
+  "applicationDate": "2025-08-07",
+  "registrationDate": "2025-10-24",
+  "expiryDate": "2035-08-07",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "qoro",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Mobile application software;Communication, networking and social networking software;Community software;Internet messaging software;Media streaming software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Online community management services;Business networking services;Organization of events, exhibitions, fairs and shows for commercial, promotional and advertising purposes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Software as a service [SaaS].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "en",
+      "description": "Online social networking services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "QORO LTD",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "128 City Road, London EC1V 2NX",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "QORO LTD"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Mobile application software;Communication, networking and social networking software;Community software;Internet messaging software;Media streaming software."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Online community management services;Business networking services;Organization of events, exhibitions, fairs and shows for commercial, promotional and advertising purposes."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software as a service [SaaS]."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Online social networking services."
+        }
+      ]
+    },
+    "id": "1b49e4ca-07b1-4982-b929-949b6c308e79",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2025/033"
+      }
+    ],
+    "recordLastUpdated": "20251031",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250807",
+        "applicationNumber": "4246095"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350807",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20251024",
+        "registrationNumber": "4246095"
+      }
+    },
+    "version": "20251031020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "qoro"
+    }
+  },
+  "_uri": "/mark/gb/1b49e4ca-07b1-4982-b929-949b6c308e79",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:17.666Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

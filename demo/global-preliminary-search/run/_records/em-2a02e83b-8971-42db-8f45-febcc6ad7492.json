@@ -1,0 +1,2284 @@
+{
+  "uri": "/mark/em/2a02e83b-8971-42db-8f45-febcc6ad7492",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "2a02e83b-8971-42db-8f45-febcc6ad7492",
+  "applicationNumber": "8862261",
+  "registrationNumber": "8862261",
+  "applicationDate": "2010-02-05",
+  "registrationDate": "2010-07-27",
+  "expiryDate": "2030-02-05",
+  "renewalDate": null,
+  "lastPublicationDate": "2010-04-12",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR CONTRACTS.COM",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    17,
+    20,
+    24,
+    26,
+    37,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        17
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "cs",
+      "description": "Lepicí materiály ve forme fólií; lepicí fólie; bezpecnostní závesy z azbestu; plasty; Guma; kourové opony.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "cs",
+      "description": "Rolety; clony ve forme zaluzií; predmety k zavesování zaluzií; svorky pro upínání rolet; armatury pro zaluzie; drzáky na ruzné predmety pro pouzití na zabezpecovacích roletách; zarízení na ovládání zaluzií/rolet; Plastové príslusenství pro zaluzie/rolety; kladky pro zaluzie; kolejnice pro zaluzie; vodítka pro zaluzie; tyce pro zaluzie; zaluziové listy; predmety k zavesení záclon; svorky k upevnení záclon; montázní cásti k záclonám; drzáky pro pouzití pri zajistení záclon; ovládací zarízení k záclonám; plastové príslusenství k záclonám; kladky k záclonám; konzole na záclony a závesy; vodítka na záclony; tyce záclonové; záclony; svorky k uchycení zadních záclon; hácky na záclony; tyce záclonové; krouzky na záclony; predmety k zavesení závesu; svorky k upevnení závesu; kování pro závesy; drzáky pro pouzití pri zajistení závesu; zarízení na ovládání závesu; plastové príslusenství pro závesy; kladky pro závesy; kolejnice pro závesy; vodítka pro závesy; konzole pro závesy; sverací zarízení k drzení zadních závesu; hácky na závesy; tyce na závesy; krouzky na závesy; zelezárské zbozí k závesum; cásti, soucásti a príslusenství pro výse uvedené, zarazené do trídy 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "cs",
+      "description": "Záclony; textilní rolety; záclony; potahy; na principu osnovy tkané textilní síte na proud vzduchu, vyrobené z nylonu a polyesteru; cásti, soucásti a príslusenství pro výse uvedené, zarazené do trídy 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "cs",
+      "description": "Karabinky.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "cs",
+      "description": "Cistení, instalace, údrzba a opravy zaluzií, záclon, zásten, závesu, závesu, sítí a fólií; konzultacní, poradenské a informacní sluzby vztahující se k výse uvedenému.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "cs",
+      "description": "Zakázková výroba zaluzií, záclon, zásten, závesu, závesu, sítí a fólií; osetrování materiálu pro zaluzie, záclony, zásteny, závesy, závesy, síte a folie; konzultacní, poradenské a informacní sluzby vztahující se k výse uvedenému.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Návrhy zaluzií, záclon, zásten, závesu, závesu, sítí a folií; informacní, konzultacní a poradenské sluzby týkající se výse uvedeného.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "da",
+      "description": "Klæbende materialer i form af film; klæbefilm; forhæng (sikkerheds-) af asbest; plast; Gummi; røggardiner.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "da",
+      "description": "Persienner; skærme i form af persienner; artikler til hængegardiner; klemmer til fastgørelse af persienner; beslag til persienner; holdere til anvendelse ved sikring af persienner; betjeningsudstyr til persienner; beslag af plastic til persienner; ruller til persienner; skinner til persienner; løbespor til persienner; stænger til persienner; lameller til persienner; artikler til hængegardiner; klemmer til fastgørelse af gardiner; tilbehør til gardiner; holdere til sikring af gardiner; betjeningsudstyr til gardiner; plastictilbehør til gardiner; ruller til gardiner; gardinskinner; løbebaner til gardiner; gardinstænger; gardiner; holdere til opbinding af gardiner; gardinkroge; gardinstænger; gardinringe; artikler til forhæng; klemmer til fastgørelse af forhæng; beslag til forhæng; holdere til sikring af forhæng; betjeningsudstyr til forhæng; plastictilbehør til forhæng; ruller til forhæng; skinner til forhæng; løbespor til forhæng; stænger til forhæng; holdere til opbinding af forhæng; kroge til forhæng; stave til forhæng; ringe til forhæng; gardinbeslag og stænger; dele og tilbehør til førnævnte, indeholdt i klasse 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "da",
+      "description": "Gardiner; stofrullegardiner; gardiner; lagener; trikotstrikket tekstilsprængnet fremstillet af nylon og polyester; dele og tilbehør til førnævnte, indeholdt i klasse 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "da",
+      "description": "Karabinhager.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "da",
+      "description": "rengøring, installation, vedligeholdelse og reparation af persienner, gardiner, skærme, overdækninger, forhæng, net og film; konsulentvirksomhed, rådgivning og information vedrørende alt det førnævnte.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "da",
+      "description": "specialfremstilling af persienner, gardiner, skærme, afdækninger, forhæng, net og film; behandling af materialer til persienner, gardiner, skærme, afdækninger, forhæng, net og film; konsulent-, rådgivnings- og informationsvirksomhed vedrørende ovennævnte.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "design af persienner, gardiner, skærme, afdækninger, forhæng, net og film; informations-, konsulent- og rådgivningsvirksomhed vedrørende ovennævnte.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "nl",
+      "description": "Klevende materialen in de vorm van films; kleeffolie; gordijnen (veiligheids-) van asbest; plastic; Rubber; rookwerende gordijnen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "nl",
+      "description": "Zonneschermen; schermen in de vorm van zonneschermen; artikelen voor het ophangen van jaloezieën; klemmen voor het bevestigen van zonneschermen; accessoires voor jaloezieën; houders voor gebruik bij het bevestigen van zonwering; bedieningsinrichtingen voor blinden; plastic accessoires voor zonneblinden; katrollen voor jaloezieën; rails voor jaloezieën; sporen voor jaloezieën; stangen voor jaloezieën; lamellen voor rolgordijnen; artikelen voor het ophangen van gordijnen; bevestigingsklemmen voor gordijnen; tentaccessoires; houders voor het bevestigen van gordijnen; bedieningsinrichtingen voor gordijnen; plastic accessoires voor gordijnen; katrollen voor gordijnen; gordijnrails; sporen voor gordijnen; roeden voor gordijnen; gordijnen; omsluitingen voor het vasthouden van gordijnen; gordijnhaken; gordijnroeden; gordijnringen; artikelen voor het ophangen van gordijnen; bevestigingsklemmen voor gordijnen; accessoires voor gordijnen; houders voor het vastmaken van gordijnen; bedieningsinrichtingen voor gordijnen; plastic accessoires voor gordijnen; katrollen voor gordijnen; rails voor gordijnen; sporen voor gordijnen; roeden voor gordijnen; omsluitingen voor het vasthouden van gordijnen; haken voor gordijnen; stokken voor gordijnen; ringen voor gordijnen; uitrustingen voor gordijnen; onderdelen, hulpstukken en accessoires voor het voornoemde, voor zover begrepen in klasse 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "nl",
+      "description": "Gordijnen; zonneschermen van textiel; gordijnen; draperieën; explosienetten van nylon en polyester gemaakt van kettinggebreid textiel; onderdelen, hulpstukken en accessoires voor het voornoemde, voor zover begrepen in klasse 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "nl",
+      "description": "Drukhaken.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "nl",
+      "description": "Reiniging, installatie, onderhoud en reparatie van jaloezieën, gordijnen, schermen, draperieën, netten en folie; raadgeving, advisering en informatie met betrekking tot het voornoemde.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "nl",
+      "description": "Klantspecifieke fabricage van jaloezieën, gordijnen, schermen, draperieën, netten en folie; behandeling van materialen voor jaloezieën, gordijnen, schermen, draperieën, netten en folie; consultancy-, advies- en informatiediensten met betrekking tot het voornoemde.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Ontwerp van jaloezieën, gordijnen, schermen, draperieën, netten en folie; diensten op het gebied van informatie, consultancy en advisering met betrekking tot het voornoemde.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "en",
+      "description": "Adhesive materials in the form of films; adhesive films; safety curtains of asbestos, plastics or rubber; smoke curtains.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "en",
+      "description": "Blinds; screens in the nature of blinds; articles for hanging blinds; clamps for fixing blinds; fittings for blinds; holders for use in securing blinds; operating devices for blinds; plastic hardware for blinds; pulleys for blinds; rails for blinds; tracks for blinds; rods for blinds; slats for blinds; articles for hanging curtains; clamps for fixing curtains; fittings for curtains; holders for use in securing curtains; operating devices for curtains; plastic hardware for curtains; pulleys for curtains; rails for curtains; tracks for curtains; rods for curtains; curtains; embraces for holding back curtains; curtain hooks; poles for curtains; rings for curtains; articles for hanging drapery; clamps for fixing drapery; fittings for drapery; holders for use in securing drapery; operating devices for drapery; plastic hardware for drapery; pulleys for drapery; rails for drapery; tracks for drapery; rods for drapery; embraces for holding back drapery; drapery hooks; poles for drapery; rings for drapery; drapery hardware; parts, fittings and accessories for the aforesaid included in Class 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "en",
+      "description": "Curtains; blinds of textile; drapes; drapery; warp knitted textile blast nets made from nylon and polyester; parts, fittings and accessories for the aforesaid included in Class 24.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "en",
+      "description": "Snap hooks.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Cleaning, installation, maintenance and repair of blinds, curtains, screens, drapes, drapery, nets and film; consultancy, advisory and information services relating to the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "en",
+      "description": "Custom manufacture of blinds, curtains, screens, drapes, drapery, nets and film; treatment of materials for blinds, curtains, screens, drapes, drapery, nets and film; consultancy, advisory and information services relating to the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Design of blinds, curtains, screens, drapes, drapery, nets and film; consultancy, advisory and information services relating to the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "et",
+      "description": "Kleepuvad materjalid kilede kujul; kleepuvad kiled; asbestist turvakardinad; plastikud; Kautsuk; suitsusuunamiskardinad.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "et",
+      "description": "Rulood; sirmid ruloode kujul; ruloode riputamise vahendid; ruloode kinnitusklambrid; ruloode kinnitusvahendid; ruloode turvahoidikud; ruloode juhtimisseadmed; plastseadmestik ruloode jaoks; ruloode kerimisvahendid; ruloode siinid; ruloode kanalid; ruloode varvad; rulooliistud; kardinate riputamise vahendid; klambrid kardinate kinnitamiseks; kardinakinnitusvahendid; hoidikud kardinate kindlustamisel kasutamiseks; kardinate liigutamise vahendid; plasttarvikud kardinate juurde; kardinatõmmikud; kardinasiinid; kardinasiinid; kardinapuud; kardinad; paelad kardinate tagasihoidmiseks; kardinahaagid, kardinakonksud; kardinapuud; kardinarõngad; eesriiete riputamise vahendid; klambrid eesriiete kinnitamiseks; eesriiete kinnitusvahendid; hoidikud eesriiete turvaliseks kinnitamiseks; eesriiete juhtimisvahendid; plasttarvikud eesriiete juurde; eesriiete tõmmikud; eesriiete siinid; eesriiete siinid; eesriiete vardad; paelad eesriiete tagasihoidmiseks; eesriiete konksud; eesriidepuud; eesriiderõngad; eesriiete tarvikud; kõigi eespool nimetatud toodete osad, tarvikud ja lisatarbed, mis kuuluvad klassi 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "et",
+      "description": "Kardinad; tekstiilist rulood; kardinad; draperii; lõimelõngaga kootud tekstiilmaterjalist võrgud, mis on valmistatud nailonist või polüestrist; kõigi eespool nimetatud toodete osad, tarvikud ja lisatarbed, mis kuuluvad klassi 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "et",
+      "description": "Klõpshaagid (kasukahaagid).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "et",
+      "description": "Ruloode, kardinate, varieesriiete, drapeeringute, eesriiete, võrkude ja kilede puhastamine, paigaldamine, hooldamine ja parandamine; info-, konsultatsiooni- ja nõustamisteenused eelnimetatu osas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "et",
+      "description": "Ruloode, kardinate, varieesriiete, drapeeringute, eesriiete, võrkude ja kilede valmistamine eritellimusel; materjalide töötlemine ruloode, kardinate, varieesriiete, drapeeringute, eesriiete, võrkude ja kilede tarbeks; nõustamine ja konsulteerimine seoses kõigi eelmainitud teenustega.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Ruloode, kardinate, varieesriiete, drapeeringute, eesriiete, võrkude ja kilede disainimine; info- ja nõustamisteenused ning konsultatsioonid eelmainitute kohta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "fi",
+      "description": "Liima-aineet kalvojen muodossa; liimapintaiset kalvot; (turva)verhot asbestista; muovit; Kumi; savuverhot.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "fi",
+      "description": "Kaihtimet; suojat kaihtimien muodossa; tarvikkeet verhojen ripustamiseen; tukiraudat kaihtimien kiinnittämiseen; kaihdinten tarvikkeet; kaihtimien kiinnityksessä käytettävät telineet; kaihdinten käyttölaitteet; muoviset kiinnitysosat kaihtimia varten; kaihdinten hihnapyörät; kaihdinten kiskot; kaihdinten urakiskot; kaihdinten tangot; kaihdinten säleet; tarvikkeet verhojen ripustamiseen; puristimet verhojen kiinnitykseen; verhotarvikkeet; telineet verhojen kiinnittämiseen; verhojen käyttölaitteet; muoviset kiinnitysosat verhoja varten; verhojen hihnapyörät; verhokiskot; verhojen urakiskot; verhotangot; verhot; pidikkeet verhojen kokoamiseen; verhokoukut; verhotangot; verhorenkaat; tarvikkeet verhojen ripustamiseen; puristimet verhojen kiinnitykseen; verhojen kiinnittimet; pidikkeet käytettäväksi verhojen pysymisen varmistamisessa; verhojen käyttölaitteet; muoviset kiinnitysosat verhoja varten; hihnapyörät verhoja varten; kiskot verhoja varten; urakiskot verhoja varten; verhojen tankot; pidikkeet verhojen kokoamiseen; verhokoukut; verhotangot; verhojen renkaat; metallitaravat; edellä mainittujen osat, tarvikkeet ja varusteet luokassa 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "fi",
+      "description": "Verhot; kangaskaihtimet; verhot; kankaat; nailonista ja polyesteristä valmistetut loimineulosverkot; edellä mainittujen osat, tarvikkeet ja varusteet luokassa 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "fi",
+      "description": "Jousihaat.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "fi",
+      "description": "Kaihdinten, verhojen, suojien, kankaiden, verhokankaiden, verkkojen ja kalvojen puhdistus, asennus, huolto ja korjaus; edellä mainittuun liittyvät konsultointi-, neuvonta- ja tiedotuspalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "fi",
+      "description": "Kaihdinten, verhojen, suojien, kankaiden, verhokankaiden, verkkojen ja kalvojen asiakaskohtainen valmistus; kaihdinten, verhojen, suojien, kankaiden, verhokankaiden, verkkojen ja kalvojen materiaalien käsittely; edellä mainittuihin palveluihin liittyvät konsultointi-, neuvonta- ja tiedotuspalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Kaihdinten, verhojen, suojien, kankaiden, verhokankaiden, verkkojen ja kalvojen suunnittelu; edellä mainittuun liittyvät tiedotus-, konsultointi- ja neuvontapalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "fr",
+      "description": "Matières adhésives sous forme de films; films adhésifs; rideaux de sécurité en amiante; plastiques; Caoutchouc; rideaux pare-fumée.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "fr",
+      "description": "Stores; écrans sous forme de stores; articles pour suspendre des stores; attaches pour la fixation de stores; accessoires pour stores; supports pour la fixation de stores; dispositifs de contrôle de stores; quincaillerie en plastique pour stores; poulies pour stores; rails pour stores; guides pour stores; tringles pour stores; lames pour persiennes; articles pour suspendre des rideaux; brides pour la fixation de rideaux; accessoires pour rideaux; supports de fixation pour rideaux; dispositifs d'entraînement pour rideaux; quincaillerie en matières plastiques pour rideaux; poulies pour rideaux; rails pour rideaux; guides pour rideaux; tringles de rideaux; rideaux; embrasses pour maintenir les rideaux; crochets de rideaux; tringles de rideaux; anneaux de rideaux; articles pour suspendre des draperies; brides pour la fixation de draperies; accessoires pour draperies; supports destinés à la fixation de draperies; dispositifs d'entraînement de draperies; quincaillerie en matières plastiques pour draperies; poulies pour draperies; rails pour draperies; guides pour draperies; tringles pour draperies; embrasses pour maintenir des draperies; crochets pour draperies; tringles pour draperies; galets pour draperies; matériel pour tentures; pièces, éléments constitutifs et accessoires des produits précités compris dans la classe 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "fr",
+      "description": "Rideaux; stores en matières textiles; rideaux; draperie; filets en matières textiles tricotées, fabriqués en nylon et polyester; pièces, éléments constitutifs et accessoires des produits précités compris dans la classe 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "fr",
+      "description": "Mousquetons.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "fr",
+      "description": "Nettoyage, installation, entretien et réparation de stores, rideaux, paravents, tentures, draperies, filets et films; services de conseils, d'assistance et d'information dans tous les domaines précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "fr",
+      "description": "Fabrication sur commande de stores, rideaux, paravents, tentures, draperies, filets et films; traitement de matériaux pour stores, rideaux, paravents, tentures, draperies, filets et films; services de consultation, de conseils et d'information dans les domaines précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Conception de stores, rideaux, paravents, tentures, draperies, filets et films; services d'information, de conseils et d'assistance concernant les services précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "de",
+      "description": "Klebematerialien in Form von Folien; Klebefolien; Vorhänge (Sicherheits-) aus Asbest; Kunststoffe; Kautschuk; Rauchvorhänge.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "de",
+      "description": "Jalousien; Sonnenjalousien (Jalousetten); Artikel zum Aufhängen von Rollos/Jalousien; Halterungen zum Anbringen von Jalousien; Bestandteile für Jalousien; Halter zum Sichern von Jalousien; Betätigungseinrichtungen für Jalousien; Kleinteile aus Kunststoff für Jalousien; Rollen für Rollos/Jalousien; Schienen für Rollos/Jalousien; Führungen für Rollos/Jalousien; Stäbe für Rollos/Jalousien; Lamellen für Jalousien; Artikel zum Aufhängen von Vorhängen; Klammern zur Befestigung von Gardinen; Gardinenzubehör; Halter zur Befestigung von Gardinen; Betätigungseinrichtungen für Gardinen; Kleinteile aus Kunststoff für Gardinen; Rollen für Gardinen; Vorhangschienen; Gardinenführungen; Gardinenstangen; Vorhänge; Raffrosetten zum Zurückhalten von Gardinen; Gardinenhaken; Vorhangstangen; Vorhangringe; Artikel zum Aufhängen von Vorhängen; Klammern zur Befestigung von Vorhängen; Beschläge für Vorhänge; Halterungen zur Sicherung von Vorhängen; Betätigungseinrichtungen für Vorhänge; Kleinteile aus Kunststoff für Vorhänge; Rollen für Vorhänge; Schienen für Vorhänge; Führungen für Vorhänge; Vorhangstangen; Raffrosetten zum Zurückhalten von Vorhängen; Vorhanghaken; Vorhangstangen; Vorhangringe; Kleineisenwaren für Textilien; Teile, Bestandteile und Zubehör für die vorstehend genannten Waren, soweit sie in Klasse 20 enthalten sind.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "de",
+      "description": "Vorhänge; Rollos aus textilem Material; Vorhänge; Stoffbehänge; Explosionsschutznetze aus textiler Kettwirkware aus Nylon und Polyester; Teile, Bestandteile und Zubehör für die vorstehend genannten Waren, soweit sie in Klasse 20 enthalten sind.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "de",
+      "description": "Schnapphaken.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "de",
+      "description": "Reinigung, Installation, Wartung und Reparatur von Rollos/Jalousien, Gardinen, Sonnen- und Sichtschutz, Vorhängen, Vorhangstoffen, Netzen und Folien; Beratung und Informationen in Bezug auf alles vorstehend Genannte.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "de",
+      "description": "Kundenspezifische Anfertigung von Rollos/Jalousien, Gardinen, Sonnen- und Sichtschutz, Vorhängen, Vorhangstoffen, Netzen und Folien; Materialbearbeitung für Rollos/Jalousien, Gardinen, Sonnen- und Sichtschutz, Vorhänge, Vorhangstoffe, Netze und Folien; Beratung und Information in Bezug auf alles vorstehend Genannte.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Design von Rollos/Jalousien, Gardinen, Sonnen- und Sichtschutz, Vorhängen, Vorhangstoffen, Netzen und Folien; Information und Beratung in Bezug auf alles vorstehend Genannte.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "hu",
+      "description": "Ragasztóanyagok fóliák formájában; ragasztófóliák; függönyök (biztonsági) azbesztbol; muanyagok; Radírok; füstfüggönyök.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "hu",
+      "description": "Rolók, zsalugáterek; árnyékolók rolók formájában; függönyök akasztásához használt cikkek; redonycsipeszek; függönytartozékok; rolók rögzítésére használt tartók; kezeloeszközök rolókhoz; muanyag alkatrészek redonyökhöz; függönygörgok; függönysínek; függönypályák; függönyrudak; redonylécek; cikkek függönyök felakasztásához; függönyök rögzítésére szolgáló kapcsok; függönyszerelvények; függönyök megóvásához használatos tartók; kezeloeszközök függönyökhöz; muanyag cikkek függönyökhöz; függönygörgok; függönysínek; függönypályák; függönyrudak; függönyök; függönyelkötok függönyökhöz; függönyakasztók; karnisok; függönykarikák; drapériák felakasztására szolgáló cikkek; drapériák rögzítésére szolgáló kapcsok; drapériák tartozékai; drapériák rögzítésére használt tartók; kezeloeszközök drapériákhoz; muanyag cikkek drapériákhoz; drapériagörgok; drapériasínek; drapériapályák; drapériarudak; drapériaelkötok; drapériakampók; drapériarudak; drapériagyuruk; drapériákhoz való cikkek; a fentiekhez való alkatrészek, szerelvények és kiegészítok, amelyek a 20 osztályba tartoznak.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "hu",
+      "description": "Függönyök; árnyékolók (textil ~); függönyök; ágynemufélék; nejlonból és poliészterbol készült lánchurkolt fújt textilhálók; a fentiekhez való alkatrészek, szerelvények és kiegészítok, amelyek a 20 osztályba tartoznak.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "hu",
+      "description": "Pillanatkapcsok.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "hu",
+      "description": "Redonyök, függönyök, válaszfalak, sötétítofüggönyök, drapériák, hálók és hártyák tisztítása, felszerelése, karbantartása és javítása; a fentebb említettekkel kapcsolatos konzultációs, tanácsadási és információs szolgáltatások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "hu",
+      "description": "Redonyök, függönyök, válaszfalak, sötétítofüggönyök, drapériák, hálók és hártyák igény szerinti gyártása; Redony-, függöny-, válaszfal-, sötétítofüggöny-, drapéria-, háló- és hártyaanyagok kezelése; az összes fentemlítettekkel kapcsolatos tanácsadási, információs és konzultációs szolgáltatások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Redonyök, függönyök, válaszfalak, sötétítofüggönyök, drapériák, hálók és hártyák tervezése; fentiekkel kapcsolatos tájékoztató és tanácsadó szolgáltatás.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "it",
+      "description": "Materiali adesivi in forma di pellicole; pellicole adesive; tende di sicurezza in amianto; prodotti in materie plastiche; Caucciù; tende parafumo.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "it",
+      "description": "Veneziane; paraventi sotto forma di tendine; articoli per appendere tendine; morsetti per il fissaggio di avvolgibili; accessori per tendine; dispositivi di contenimento di avvolgibili; dispositivi per l'azionamento di tendine; strutture in plastica per tende; pulegge per tendine; rotaie per tendine; binari per tendine; bacchette per tendine; alette per persiane; articoli per appendere tende; morsetti per fissaggio di tende; accessori per tende; dispositivi di fissaggio per tende; dispositivi di azionamento per tende; strutture in plastica per tende; pulegge per tende; rotaie per tende; binari per tende; bacchette per tende; tende; accessori per tenere legate tende; ganci di tende; aste per tende; anelli per tende; articoli per appendere tendaggi; morsetti per fissaggio di tendaggi; accessori per tendaggi; supporti per fissaggio di tendaggi; dispositivi di azionamento per tendaggi; strutture in plastica per tendaggi; pulegge per tendaggi; rotaie per tendaggi; binari per tendaggi; bacchette per tendaggi; accessori per tenere legati tendaggi; ganci per tendaggi; aste per tendaggi; anelli per tendaggi; articoli in metallo per tendaggi; parti, componenti ed accessori per i suddetti articoli compresi nella classe 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "it",
+      "description": "Tende; tendine in materie tessili; tende; tendaggi; reti antiesplosione con maglia a catenella a base di nylon e poliestere; parti, componenti ed accessori per i suddetti articoli compresi nella classe 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "it",
+      "description": "Ganci a molla.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "it",
+      "description": "Pulizia, installazione, manutenzione e riparazione di tendine, tende, schermi, tendaggi, reti e pellicole; consulenza e informazioni relative a tutti i suddetti servizi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "it",
+      "description": "Fabbricazione su ordinazione di tendine, tende, schermi, tendaggi, reti e pellicole; trattamento di materiali per tendine, tende, schermi, tendaggi, reti e pellicole; informazioni e consulenza relative ai suddetti servizi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Progettazione di tendine, tende, schermi, tendaggi, reti e pellicole; servizi di informazione e di consulenza relativi ai suddetti servizi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "lt",
+      "description": "Lipnios medziagos pleveliu pavidalu; lipnios juosteles; asbesto uzdangos (apsaugines --- ); plastikai; Trintukai; uzuolaidos nuo dumu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "lt",
+      "description": "Uzuolaidos; zaliuziu formos sirmos; reikmenys uzuolaidoms kabinti; kabes uzuolaidoms tvirtinti; uzuolaidu montavimo detales; laikikliai, skirti naudoti uzuolaidoms tvirtinti; zaliuziu valdymo prietaisai; plastikine technine iranga uzuolaidoms; pakeliamu uzuolaidu suktuvai; pakeliamu uzuolaidu begeliai; pakeliamu uzuolaidu takeliai; pakeliamu uzuolaidu strypai; zaliuziu skersjuostes; reikmenys uzuolaidoms kabinti; uzuolaidu tvirtinimo spaustukai; uzuolaidu tvirtinimo detales; laikikliai, skirti naudoti uzuolaidoms tvirtinti; uzuolaidu valdymo prietaisai; plastikine uzuolaidu iranga; uzuolaidu suktuvai; kreipiamosios (uzuolaidu --- ); uzuolaidu begeliai; uzuolaidu karnizai; uzuolaidos; uzuolaidu risimo priemones; uzuolaidu kabliukai; karnizai (uzuolaidu --- ); uzuolaidu ziedai; drapiruociu kabinimo reikmenys; drapiruociu tvirtinimo spaustukai; drapiruociu tvirtinimo detales; laikikliai, skirti naudoti tvirtinant drapiruotes; drapiruociu valdymo prietaisai; plastikine drapiruociu iranga; drapiruociu suktuvai; drapiruociu begeliai; drapiruociu takeliai; drapiruociu strypai; drapiruociu risimo priemones; drapiruociu kabliai; drapiruociu stulpai; drapiruociu ziedai; drapiruociu iranga; pirmiau nurodytu prekiu dalys, tvirtinimo elementai ir priedai, priskirti 20 klasei.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "lt",
+      "description": "Uzuolaidos; tekstilines uzuolaidos; uzuolaidos; gelumbiniai audiniai; ant apmatu mezgamos tekstiles tinklai is nailono ir poliesterio; pirmiau nurodytu prekiu dalys, tvirtinimo elementai ir priedai, priskirti 20 klasei.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "lt",
+      "description": "Spraustukai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "lt",
+      "description": "Pakeliamu uzuolaidu, uzuolaidu, pertvaru, drapiruociu, tinklu ir pleveliu valymas, irengimas, technine prieziura ir taisymas; konsultacines, patarimu teikimo ir informacines paslaugos, susijusios su pirmiau minetomis paslaugomis.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "lt",
+      "description": "Pakeliamu uzuolaidu, uzuolaidu, pertvaru, drapiruociu, tinklu ir pleveliu gamyba pagal uzsakyma; pakeliamu uzuolaidu, uzuolaidu, pertvaru, drapiruociu, tinklu ir pleveliu medziagu apdorojimas; patarimu, informavimo ir konsultavimo paslaugos, susijusios su tuo, kas buvo pamineta anksciau.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "pakeliamu uzuolaidu, uzuolaidu, pertvaru, drapiruociu, tinklu ir pleveliu modeliavimas; informacijos, konsultaciju ir patarimu paslaugos, susijusios su anksciau nurodytomis paslaugomis.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "lv",
+      "description": "Limejosi materiali pleves veida; lipigas pleves; (drosibas) priekskari, kas izgatavoti no azbesta; plastmasas; Dzesgumijas; dumu aizkari.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "lv",
+      "description": "Zaluzijas; ekrani zaluziju veida; izstradajumi zaluziju piekarsanai; skavas zaluziju nostiprinasanai; zaluziju stiprinajumi; turetaji izmantosanai zaluziju nostiprinasana; zaluziju vadibas ierices; plastic hardware for blinds; zaluziju trisi; zaluziju sliedes; zaluziju celini; zaluziju stieni; noseglistes; izstradajumi aizkaru piekarsanai; skavas aizkaru nostiprinasanai; aizkaru stiprinajumi; turetaji izmantosanai aizkaru nostiprinasana; aizkaru vadibas ierices; plastmasas aparatura aizkariem; aizkaru trisi; aizkaru sliedes; aizkaru celini; aizkaru stieni; aizkari; aizkaru sasaistes to noturesanai; aizkaru aki; aizkaru stieni; aizkaru rinki; izstradajumi draperiju piekarsanai; skavas draperiju nostiprinasanai; draperiju stiprinajumi; turetaji, ko izmantot draperiju nostiprinasanai; draperiju vadibas ierices; plastmasas aparatura draperijam; draperiju trisi; draperiju sliedes; draperiju celini; draperiju stieni; draperiju sasaistes to noturesanai; draperiju aki; draperiju kartis; draperiju rinki; draperiju aparatura; ieprieks mineto precu dalas, stiprinajumi un piederumi, ietverti 20 klase.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "lv",
+      "description": "Aizkari; auduma aizlaidnes; aizkari; vadmala; auklu tekstilizstradajumu tikli, razoti no neilona un poliestera; ieprieks mineto precu dalas, stiprinajumi un piederumi, ietverti 20 klase.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "lv",
+      "description": "Spiedaki.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "lv",
+      "description": "Zaluziju, aizkaru, aizslietnu, draperiju, tiklu un plevju tirisana, uzstadisana, apkope un labosana; konsultaciju, ieteikumu un informacijas pakalpojumi saistiba ar ieprieks mineto.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "lv",
+      "description": "Zaluziju, aizkaru, aizslietnu, draperiju, tiklu un plevju razosana pec pasutijuma; materialu apstrade zaluzijam, aizkariem, aizslietniem, draperijam, tikliem un plevem; padomdeveju, informacijas un konsultaciju pakalpojumi saistiba ar visu ieprieksmineto.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Zaluziju, aizkaru, aizslietnu, draperiju, tiklu un plevju projektesana; informacijas, konsultaciju un padomu sniegsana saistiba ar ieprieks mineto.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "mt",
+      "description": "Materjali li jwahhlu fil-forma ta' films; films adezivi; purtieri (tas-sigurtà) maghmula mill-asbestos; plastik; Gomom ghat-tahsir; purtieri tad-duhhan.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "mt",
+      "description": "Blinds; paraventi li jikkonsistu minn blajnds; oggetti ghad-dendil ta' blajnds; klamps ghat-twahhil tal-blajnds; accessorji ghal blajnds; howlders ghall-uzu fit-twahhil tal-blajnds; it-thaddim ta' ingenji ghall-blajnds; hardwer tal-plastik ghall-blinds; taljoli ghal blajnds; vireg ghal blajnds; trekks ghal blajnds; vireg ghal blajnds; paletti ghal purtieri li jingibdu; oggetti ghad-dendil ta' purtieri; klampi ghat-twahhil ta' purtieri; accessorji ghall-purtieri; howlders ghall-uzu fit-twahhl tal-purtieri; strumenti operattivi ghal purtieri; hardwer tal-plastik ghal purtieri; taljoli ghal purtieri; sopraporta tal-purtieri; trekks ghal purtieri; vireg ghal purtieri; purtieri; taghmir li jzomm lura l-purtieri; gancijiet tal-purtieri; vireg tal-purtieri; holoq tal-purtieri; oggetti ghad-dendil tad-drapperija; klampi ghat-twahhil tad-drapperija; accessorji ghad-drapperija; kontenituri ghall-uzu fit-twahhil tad-drapperija; strumenti operattivi ghad-drapperija; hardwer tal-plastik ghad-drapperija; taljoli ghad-drapperija; vireg ghad-drapperija; trekks ghad-drapperija; vireg tad-drapperija; taghmir li jzomm lura d-drapperija; gancijiet tad-drapperija; arbli ghad-drapperija; holoq ghad-drapperija; hardwer ghad-drapperija; partijiet u accessorji ghall-oggetti msemmija inkluzi fil-Klassi 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "mt",
+      "description": "Purtieri; lqugh ghad-dawl tad-drapp; purtieri; taghmir jiddendel mal-hajt; blast nets tad-drapp mehjut mibrum maghmula minn najlon u poljester; partijiet u accessorji ghall-oggetti msemmija inkluzi fil-Klassi 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "mt",
+      "description": "Snap hooks.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "mt",
+      "description": "Tindif, installazzjoni, manutenzjoni u tiswija ta' blajnds, purtieri, paraventi, drappijiet, drapperija, xbieki u films; servizzi ta' konsulenza, pariri u informazzjoni relatati mal-oggetti msemmija.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "mt",
+      "description": "Manifattura skont l-ordni ta' blajnds, purtieri, paraventi, purtieri, drapperija, xbieki u films,; trattament ta' materjali ghal blajnds, purtieri, paraventi, purtieri, drapperija, xbieki u films; servizzi ta' pariri, informazzjoni u konsulenza relatati ma' dak kollu hawn fuq imsemmi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Disinn ta' blajnds, purtieri, paraventi, purtieri, drapperija, xbieki u films; servizzi ta' informazzjoni, pariri u konsulenza dwar l-hawn fuq imsemmi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "pl",
+      "description": "Materialy klejace w formie folii; folie przylepne; kurtyny (bezpieczenstwa) z azbestu; tworzywa sztuczne; kauczuk; zaslony dymne.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "pl",
+      "description": "Rolety; zaslony w postaci zaluzji; artykuly do wieszania rolet; zaciski do mocowania rolet; elementy do rolet; uchwyty do uzycia przytwierdzania zaluzji; urzadzenia do obslugi zaluzji; osprzet z tworzyw sztucznych do rolet; kólka do rolet; szyny do rolet; prowadnice do rolet; prety do rolet; listwy do zaluzji; artykuly do wieszania zaslon; klamry do mocowania zaslon; elementy do zaslon; uchwyty do uzytku przy mocowaniu zaslon; urzadzenia do obslugi zaslon; sprzet z tworzyw sztucznych do zaslon; kólka do zaslon; zaslon (szyny do -); prowadnice do zaslon; karnisze do zaslon; zaslony; uchwyty do przytrzymywania zaslon; zaslon (haki do -); zaslon (karnisze do -); zaslon (kólka do -); artykuly do wieszania towarów tekstylnych; klamry do wieszania towarów tekstylnych; elementy do towarów tekstylnych; uchwyty do uzytku w umocowywaniu towarów tekstylnych; urzadzenia do obslugi towarów tekstylnych; sprzet z tworzyw sztucznych do towarów tekstylnych; kólka do towarów tekstylnych; szyny do towarów tekstylnych; prowadnice do towarów tekstylnych; karnisze do towarów tekstylnych; uchwyty do przytrzymywania towarów tekstylnych; haki do towarów tekstylnych; drazki do towarów tekstylnych; kólka do towarów terstylnych; sprzet do towarów tekstylnych; czesci, elementy i akcesoria do wszystkich wyzej wymienionych ujete w Klasie 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "pl",
+      "description": "Zaslony; rolety tekstylne; zaslony; wyroby welniane; osnowowe dziane tekstylne sieci przeciwrozpryskowe z nylonu i poliestru; czesci, elementy i akcesoria do wszystkich wyzej wymienionych ujete w Klasie 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "pl",
+      "description": "Agrafki.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "pl",
+      "description": "Czyszczenie, montaz, konserwacja i naprawa rolet, zaslon, ekranów, zaslon, towarów tekstylnych, sieci i folii; uslugi konsultacyjne, doradcze i informacyjne dotyczace uprzednio wymienionych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "pl",
+      "description": "Produkcja na indywidualne zamówienie rolet, zaslon, ekranów, zaslon, towarów tekstylnych, sieci i folii; obróbka materialów przeznaczonych na rolety, zaslony, ekrany, zaslony, towary tekstylne, sieci i folie; uslugi doradcze, informacyjne i konsultacyjne, dotyczace wszystkich wyzej wymienionych [uslug].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Projektowanie rolet, zaslon, ekranów, zaslon, towarów tekstylnych, sieci i filmów; uslugi informacyjne, konsultacyjne i doradcze, dotyczace uprzednio wymienionych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "pt",
+      "description": "Materiais adesivos sob a forma de películas; películas adesivas; cortinas (de segurança) em amianto; plásticos; Borracha; cortinas de protecção contra o fumo.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "pt",
+      "description": "Persianas; biombos sob a forma de estores; artigos para suspender estores; grampos para fixação de estores; acessórios para estores; suportes destinados à sustentação de estores; dispositivos de operar estores; roletes em matérias plásticas para estores; roldanas para estores; guias para estores; calhas para estores; varões para estores; lamelas para persianas; artigos para suspender cortinados; molas e grampos para fixação de cortinados; acessórios para cortinados; suportes para cortinados; dispositivos de operar para cortinados; ferragens em matérias plásticas para cortinados; roldanas para cortinados; calhas para cortinados; calhas para cortinados; varões para cortinados; cortinas; presilhas para cortinados; camarões para cortinados; varões para cortinados; anéis de cortinados; artigos para suspender cortinas; molas e grampos de fixação para cortinas; acessórios para cortinas; suportes para utilização na fixação de cortinas; dispositivos de operar para cortinas; ferragens em matérias plásticas para cortinas; roldanas para cortinas; guias para cortinas; calhas para cortinas; varões para cortinas; presilhas para cortinas; ganchos para cortinas; postes para cortinas; argolas para cortinas; ferragens para cortinas; peças, componentes e acessórios para os atrás referidos, incluídos na classe 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "pt",
+      "description": "Cortinas; estores em matérias têxteis; cortinas; lençóis; redes para-vento em malha de teia feitas de nylon e poliéster; peças, componentes e acessórios para os atrás referidos, incluídos na classe 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "pt",
+      "description": "Ganchos de pressão.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "pt",
+      "description": "limpeza, instalação, manutenção e reparação de estores, cortinados, biombos, cortinados, cortinas, redes e películas; serviços de assessoria, consultadoria e informações relacionados com todos os serviços atrás referidos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "pt",
+      "description": "fabrico personalizado de estores, cortinados, biombos, cortinados, cortinas, redes e películas; tratamento de materiais para estores, cortinados, biombos, cortinados, cortinas, redes e películas; serviços de consultadoria, assessoria e informações relacionados com os serviços atrás referidos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "concepção de estores, cortinados, biombos, cortinados, cortinas, redes e películas; serviços de informação, consultadoria e assessoria relacionados com os serviços atrás referidos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "ro",
+      "description": "Materiale adezive sub forma de pelicule; folii autocolante; perdele de siguranta din azbest; materiale plastice; Cauciuc; cortine antifum.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "ro",
+      "description": "Storuri; panouri sub forma de jaluzele; articole pentru agatarea jaluzelelor; cleme pentru fixarea jaluzelelor; accesorii pentru jaluzele; suporturi pentru fixarea jaluzelelor; dispozitive de actionare a jaluzelelor; echipamente din plastic pentru jaluzele; scripeti pentru jaluzele; sine pentru jaluzele; sine de jaluzele; role de jaluzele; jaluzele verticale; articole pentru agatarea draperiilor; cleme pentru fixarea perdelelor; accesorii pentru perdele; suporturi pentru utilizarea in fixarea draperiilor; dispozitive de actionare a perdelelor; articole din plastic pentru perdele; scripeti pentru perdele; sine pentru perdele; sine pentru perdele; bare pentru perdele; draperii; snururi pentru prinderea perdelelor; cârlige pentru perdele; bare pentru perdele; inele pentru perdele; articole pentru agatarea draperiilor; cleme pentru fixarea draperiilor; accesorii pentru draperii; suporturi pentru fixarea draperiilor; dispozitive de actionare pentru draperii; articole din plastic pentru draperii; scripeti pentru draperii; sine pentru draperii; sine pentru draperii; bare de draperii; snururi pentru prinderea draperiilor; cârlige pentru draperii; bare pentru draperii; inele pentru draperii; accesorii de draperii; parti componente, piese si accesorii pentru cele mentionate anterior, în masura în care sunt incluse în Clasa 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "ro",
+      "description": "Draperii; storuri din materiale textile; draperii; draperie; plase din material textil urzit, realizate din nailon si poliester; parti componente, piese si accesorii pentru cele mentionate anterior, în masura în care sunt incluse în Clasa 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "ro",
+      "description": "Carabine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "ro",
+      "description": "Curatare, montare, întretinere si reparatie de jaluzele, perdele, ecrane, draperii, cortine, plase si filme; servicii de consultanta, consiliere si informare cu privire la cele mentionate anterior.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "ro",
+      "description": "Fabricare la comanda de jaluzele, perdele, ecrane, draperii, cortine, plase si filme; tratare de materiale pentru jaluzele, perdele, ecrane, draperii, cortine, plase si filme; servicii de consiliere, consultanta si informatii referitoare la toate serviciile de mai sus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Concepere de jaluzele, perdele, ecrane, draperii, cortine, plase si filme; servicii de informatii, consultanta si consiliere în domeniul celor mentionate anterior.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "sk",
+      "description": "Lepiace materiály v podobe fólií; lepiace fólie; závesy (bezpecnostné) z azbestu; plastické hmoty; Gumy na gumovanie; dymové steny.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "sk",
+      "description": "Zalúzie a rolety; steny v podobe zalúzií; výrobky na vesanie zalúzií; svorky na upevnovanie zalúzií; súciastky pre zalúzie; drziaky na zabezpecovanie zalúzií; prevádzkové zariadenia pre zalúzie; plastové vybavenie pre rolety; kladky pre zalúzie; kolaje pre zalúzie; kolaje pre zalúzie; tyce pre zalúzie; listy pre zalúzie; výrobky na vesanie závesov; svorky na upevnovanie závesov; súciastky pre závesy; puzdra na zabezpecovanie závesov; prevádzkové zariadenia pre závesy; plastové zeleziarske výrobky pre závesy; kladky pre závesy; záclonové kolajnice; trate pre závesy; tyce pre závesy; závesy; výrobky na uväzovanie záclon; záclonové hácky; záclonové tyce; záclonové krúzky; výrobky na vesanie závesov; svorky na pripevnovanie závesov; súciastky pre závesy; drziaky na zabezpecovanie závesov; prevádzkové zariadenia pre závesy; plastové montázne prvky pre závesy; kladky pre závesy; kolaje pre závesy; kolaje pre závesy; tyce pre závesy; výrobky na uväzovanie závesov; háciky pre závesy; tyce pre závesy; krúzky pre závesy; zeleziarske výrobky pre závesy; casti, súciastky a príslusenstvo pre vsetky vyssie uvedené výrobky, zaradené do triedy 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "sk",
+      "description": "Závesy; látkové rolety; závesy; dekoracné látky; osnovne tkané textilné siete z nylonu a polyesteru; casti, súciastky a príslusenstvo pre vsetky vyssie uvedené výrobky, zaradené do triedy 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "sk",
+      "description": "Patentky.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "sk",
+      "description": "Cistenie, montáz, údrzba a oprava zalúzií, závesov, prepáziek, sietí a filmov; konzultacné, poradenské a informacné sluzby v oblasti vyssie uvedených sluzieb.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "sk",
+      "description": "Zákazková výroba zalúzií, závesov, prepáziek, sietí a filmov; úprava materiálov pre zalúzie, závesy, prepázky, siete a filmy; poradenské, informacné a konzultacné sluzby vztahujúce sa ku vsetkému hore uvedenému.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Navrhovanie zalúzií, závesov, prepáziek, sietí a filmov; informacné, konzultacné a poradenské sluzby týkajúce sa vyssie uvedeného.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "sl",
+      "description": "Lepilni materiali v obliki folij; samolepilne folije; zavese (zascitne) iz azbesta; umetne snovi; Kavcuk; dimne zavese.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "sl",
+      "description": "Zaluzije; zasloni v obliki sencil; predmeti za obesanje zastorov; priponke za pritrjevanje zaluzij; pribor za zastore; drzala za zascito zaluzij; naprave za odpiranje za zavese; plasticna oprema za sencila; skripci za zastore; tirnice za zastore; tiri za zastore; drogovi za zastore; letvice za sencila; predmeti za obesanje zaves; priponke za pritrjevanje zaves; oprema za zavese; drzala za uporabo pri zavarovanju zaves; naprave za upravljanje zaves; plasticni deli za zavese; skripci za zavese; karnise za zavese; vodila za zavese; drogovi (palice) za zavese; zavese; objemke za spenjanje zaves; kaveljcki za zavese; drogovi za zavese; obrocki za zavese; predmeti za obesanje zaves; priponke za pritrjevanje zaves; pribor za zavese; drzala za pritrditev zaves; naprave za upravljanje zaves; plasticni deli za zavese; skripci za zavese; tirnice za zavese; vodila za zavese; drogovi za zavese; trakovi za spenjanje zaves; kljuke za zavese; palice za zavese; obrocki za zavese; pribor za zavese; deli, oprema in dodatki za vse nasteto blago, ki jih obsega razred 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "sl",
+      "description": "Zavese; volnene tkanine; zavese; draperija; tkane tekstilne mreze iz najlona in poliestra; deli, oprema in dodatki za vse nasteto blago, ki jih obsega razred 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "sl",
+      "description": "Pritiskaci.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "sl",
+      "description": "Ciscenje, montaza, vzdrzevanje in popravilo sencil, zaves, zaslonov, zaves, zaves, mreze in filmov; posvetovalne, strokovno svetovalne in informacijske storitve v zvezi z nastetim.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "sl",
+      "description": "Izdelava sencil, zaves, zaslonov, zaves, zastorov, mrez in filmov po narocilu; obdelava materialov za sencila, zavese, zaslone, zastore, zavese, zastore, mreze in filme; svetovanje in informacije v zvezi z vsem zgoraj omenjenim.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Oblikovanje sencil, zaves, zaslonov, zaves, zastorov, mrez in filmov; informacijske, posvetovalne in svetovalne storitve v zvezi z omenjenim.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "es",
+      "description": "Materiales adhesivos en forma de películas; películas adhesivas; pantallas (de seguridad) de amianto; plásticos; Caucho; cortinas de humo.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "es",
+      "description": "Persianas; pantallas del tipo de persiana; artículos para colgar persianas; abrazaderas para fijar persianas; accesorios para persianas; soportes para su uso en la fijación de persianas; dispositivos para manejar persianas; artículos de plástico para persianas; poleas para persianas; raíles para persianas; carriles para persianas; varillas para persianas; lamas de persiana; artículos para colgar cortinas; abrazaderas para fijar cortinas; accesorios para cortinas; soportes para asegurar cortinas; dispositivos operativos para cortinas; artículos de plástico para cortinas; poleas para cortinas; raíles para cortinas; carriles para cortinas; varillas para cortinas; cortinas; alzapaños de cortina para sujetarlas; ganchos para cortinas; postes para cortinas; anillas de cortinas; artículos para colgar cortinajes; abrazaderas para fijar cortinajes; accesorios para cortinajes; soportes para uso en la fijación de cortinajes; dispositivos para manejar cortinajes; artículos de plástico para cortinajes; poleas para cortinajes; raíles para cortinajes; carriles para cortinajes; varrillas para cortinajes; alzapaños de cortinajes para sujetarlos; ganchos para cortinajes; barras para cortinajes; anillas para cortinajes; equipo para pañería; partes, piezas y accesorios para los productos mencionados comprendidos en la clase 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "es",
+      "description": "Cortinas; persianas de materias textiles; cortinas; colgaduras; redes de viento de textiles tejidos de urdimbre hechas de nylon y poliéster; partes, piezas y accesorios para los productos mencionados comprendidos en la clase 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "es",
+      "description": "Ganchos de presión.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "es",
+      "description": "Limpieza, instalación, mantenimiento y reparación de persianas, cortinas, pantallas, pañería, cortinajes, redes y películas; servicios de consultas, asesoramiento e información en relación con todo lo mencionado.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "es",
+      "description": "Fabricacion a medida de persianas, cortinas, pantallas, pañería, cortinajes, redes y películas; tratamiento de materiales para persianas, cortinas, pantallas, pañería, cortinajes, redes y películas; servicios de información y asesoría en relación con todo lo anteriormente mencionado.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Diseño de persianas, cortinas, pantallas, pañería, cortinajes, redes y películas; servicios de información, consultoría y asesoría relacionados con los servicios mencionados.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "sw",
+      "description": "Vidhäftande material i form av filmer; vidhäftande filmer; förhängen (säkerhets-) av asbest; plaster; Gummi; rökgardiner.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "sw",
+      "description": "Rullgardiner och persienner; skärmar i form av gardiner; artiklar för upphängning av rullgardiner; klämmor för fastsättning av rullgardiner; beslag för rullgardiner; hållare för säkring av rullgardiner; styranordningar för gardiner; plastbeslag för rullgardiner; trissor för rullgardiner; skenor för rullgardiner; spår för rullgardiner; stavar för rullgardiner; lameller till persienner; artiklar för upphängning av gardiner; klämmor för fastsättning av gardiner; gardintillbehör; hållare för fastsättning av gardinstänger; manövreringsanordningar för gardiner; plastbeslag för gardiner; trissor för gardiner; gardinskenor; spår för gardiner; gardinstänger; gardiner; gardinomfattningar för att hålla tillbaka gardiner; gardinkrokar; gardinstänger; gardinringar; artiklar för upphängning av draperier; klämmor för fastsättning av draperier; beslag för draperier; hållare för säkring av draperier; styranordningar för draperier; plastbeslag för draperier; trissor för draperier; skenor för draperier; spår för draperier; draperistänger; omfattningar för att hålla tillbaka draperier; draperikrokar; draperistänger; ringar för draperier; draperijärnvaror; delar, komponenter och tillbehör för allt det nämnda, ingående i klass 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "sw",
+      "description": "Gardiner; rullgardiner av textil; gardiner; draperier; varpstickade textilsprängningsnät gjorda av nylon och polyester; delar, komponenter och tillbehör för allt det nämnda, ingående i klass 20.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "sw",
+      "description": "Tryckhakar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "sw",
+      "description": "Rengöring, installation, underhåll och reparation av rullgardiner, gardiner, skärmar, förhängen, draperier, nät och film; rådgivning, konsulttjänster och information avseende det nämnda.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "sw",
+      "description": "Specialtillverkning av rullgardiner, gardiner, skärmar, förhängen, draperier, nät och film; behandling av material för rullgardiner, gardiner, skärmar, förhängen, draperier, nät och film; konsulttjänster, rådgivning och information i samband med nämnda tjänster.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Design av rullgardiner, gardiner, skärmar, förhängen, draperier, nät och film; information, konsulttjänster och rådgivning med avseende på ovannämnda tjänster.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Grosvenor Contracts (London) Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Stobbs Ireland Limited",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Unit 23-24 Old Jamaica Road Business Estate, Old Jamaica Road,London, SE16 4TE",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Grosvenor Contracts (London) Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "25.05.01",
+      "26.04.02",
+      "26.04.12",
+      "26.04.22"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Lepicí materiály ve forme fólií; lepicí fólie; bezpecnostní závesy z azbestu; plasty; Guma; kourové opony."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Rolety; clony ve forme zaluzií; predmety k zavesování zaluzií; svorky pro upínání rolet; armatury pro zaluzie; drzáky na ruzné predmety pro pouzití na zabezpecovacích roletách; zarízení na ovládání zaluzií/rolet; Plastové príslusenství pro zaluzie/rolety; kladky pro zaluzie; kolejnice pro zaluzie; vodítka pro zaluzie; tyce pro zaluzie; zaluziové listy; predmety k zavesení záclon; svorky k upevnení záclon; montázní cásti k záclonám; drzáky pro pouzití pri zajistení záclon; ovládací zarízení k záclonám; plastové príslusenství k záclonám; kladky k záclonám; konzole na záclony a závesy; vodítka na záclony; tyce záclonové; záclony; svorky k uchycení zadních záclon; hácky na záclony; tyce záclonové; krouzky na záclony; predmety k zavesení závesu; svorky k upevnení závesu; kování pro závesy; drzáky pro pouzití pri zajistení závesu; zarízení na ovládání závesu; plastové príslusenství pro závesy; kladky pro závesy; kolejnice pro závesy; vodítka pro závesy; konzole pro závesy; sverací zarízení k drzení zadních závesu; hácky na závesy; tyce na závesy; krouzky na závesy; zelezárské zbozí k závesum; cásti, soucásti a príslusenství pro výse uvedené, zarazené do trídy 20."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Záclony; textilní rolety; záclony; potahy; na principu osnovy tkané textilní síte na proud vzduchu, vyrobené z nylonu a polyesteru; cásti, soucásti a príslusenství pro výse uvedené, zarazené do trídy 20."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Karabinky."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Cistení, instalace, údrzba a opravy zaluzií, záclon, zásten, závesu, závesu, sítí a fólií; konzultacní, poradenské a informacní sluzby vztahující se k výse uvedenému."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Zakázková výroba zaluzií, záclon, zásten, závesu, závesu, sítí a fólií; osetrování materiálu pro zaluzie, záclony, zásteny, závesy, závesy, síte a folie; konzultacní, poradenské a informacní sluzby vztahující se k výse uvedenému."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Návrhy zaluzií, záclon, zásten, závesu, závesu, sítí a folií; informacní, konzultacní a poradenské sluzby týkající se výse uvedeného."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Klæbende materialer i form af film; klæbefilm; forhæng (sikkerheds-) af asbest; plast; Gummi; røggardiner."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Persienner; skærme i form af persienner; artikler til hængegardiner; klemmer til fastgørelse af persienner; beslag til persienner; holdere til anvendelse ved sikring af persienner; betjeningsudstyr til persienner; beslag af plastic til persienner; ruller til persienner; skinner til persienner; løbespor til persienner; stænger til persienner; lameller til persienner; artikler til hængegardiner; klemmer til fastgørelse af gardiner; tilbehør til gardiner; holdere til sikring af gardiner; betjeningsudstyr til gardiner; plastictilbehør til gardiner; ruller til gardiner; gardinskinner; løbebaner til gardiner; gardinstænger; gardiner; holdere til opbinding af gardiner; gardinkroge; gardinstænger; gardinringe; artikler til forhæng; klemmer til fastgørelse af forhæng; beslag til forhæng; holdere til sikring af forhæng; betjeningsudstyr til forhæng; plastictilbehør til forhæng; ruller til forhæng; skinner til forhæng; løbespor til forhæng; stænger til forhæng; holdere til opbinding af forhæng; kroge til forhæng; stave til forhæng; ringe til forhæng; gardinbeslag og stænger; dele og tilbehør til førnævnte, indeholdt i klasse 20."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Gardiner; stofrullegardiner; gardiner; lagener; trikotstrikket tekstilsprængnet fremstillet af nylon og polyester; dele og tilbehør til førnævnte, indeholdt i klasse 20."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Karabinhager."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "rengøring, installation, vedligeholdelse og reparation af persienner, gardiner, skærme, overdækninger, forhæng, net og film; konsulentvirksomhed, rådgivning og information vedrørende alt det førnævnte."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "specialfremstilling af persienner, gardiner, skærme, afdækninger, forhæng, net og film; behandling af materialer til persienner, gardiner, skærme, afdækninger, forhæng, net og film; konsulent-, rådgivnings- og informationsvirksomhed vedrørende ovennævnte."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "design af persienner, gardiner, skærme, afdækninger, forhæng, net og film; informations-, konsulent- og rådgivningsvirksomhed vedrørende ovennævnte."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Klevende materialen in de vorm van films; kleeffolie; gordijnen (veiligheids-) van asbest; plastic; Rubber; rookwerende gordijnen."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Zonneschermen; schermen in de vorm van zonneschermen; artikelen voor het ophangen van jaloezieën; klemmen voor het bevestigen van zonneschermen; accessoires voor jaloezieën; houders voor gebruik bij het bevestigen van zonwering; bedieningsinrichtingen voor blinden; plastic accessoires voor zonneblinden; katrollen voor jaloezieën; rails voor jaloezieën; sporen voor jaloezieën; stangen voor jaloezieën; lamellen voor rolgordijnen; artikelen voor het ophangen van gordijnen; bevestigingsklemmen voor gordijnen; tentaccessoires; houders voor het bevestigen van gordijnen; bedieningsinrichtingen voor gordijnen; plastic accessoires voor gordijnen; katrollen voor gordijnen; gordijnrails; sporen voor gordijnen; roeden voor gordijnen; gordijnen; omsluitingen voor het vasthouden van gordijnen; gordijnhaken; gordijnroeden; gordijnringen; artikelen voor het ophangen van gordijnen; bevestigingsklemmen voor gordijnen; accessoires voor gordijnen; houders voor het vastmaken van gordijnen; bedieningsinrichtingen voor gordijnen; plastic accessoires voor gordijnen; katrollen voor gordijnen; rails voor gordijnen; sporen voor gordijnen; roeden voor gordijnen; omsluitingen voor het vasthouden van gordijnen; haken voor gordijnen; stokken voor gordijnen; ringen voor gordijnen; uitrustingen voor gordijnen; onderdelen, hulpstukken en accessoires voor het voornoemde, voor zover begrepen in klasse 20."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Gordijnen; zonneschermen van textiel; gordijnen; draperieën; explosienetten van nylon en polyester gemaakt van kettinggebreid textiel; onderdelen, hulpstukken en accessoires voor het voornoemde, voor zover begrepen in klasse 20."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Drukhaken."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Reiniging, installatie, onderhoud en reparatie van jaloezieën, gordijnen, schermen, draperieën, netten en folie; raadgeving, advisering en informatie met betrekking tot het voornoemde."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Klantspecifieke fabricage van jaloezieën, gordijnen, schermen, draperieën, netten en folie; behandeling van materialen voor jaloezieën, gordijnen, schermen, draperieën, netten en folie; consultancy-, advies- en informatiediensten met betrekking tot het voornoemde."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Ontwerp van jaloezieën, gordijnen, schermen, draperieën, netten en folie; diensten op het gebied van informatie, consultancy en advisering met betrekking tot het voornoemde."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Adhesive materials in the form of films; adhesive films; safety curtains of asbestos, plastics or rubber; smoke curtains."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Blinds; screens in the nature of blinds; articles for hanging blinds; clamps for fixing blinds; fittings for blinds; holders for use in securing blinds; operating devices for blinds; plastic hardware for blinds; pulleys for blinds; rails for blinds; tracks for blinds; rods for blinds; slats for blinds; articles for hanging curtains; clamps for fixing curtains; fittings for curtains; holders for use in securing curtains; operating devices for curtains; plastic hardware for curtains; pulleys for curtains; rails for curtains; tracks for curtains; rods for curtains; curtains; embraces for holding back curtains; curtain hooks; poles for curtains; rings for curtains; articles for hanging drapery; clamps for fixing drapery; fittings for drapery; holders for use in securing drapery; operating devices for drapery; plastic hardware for drapery; pulleys for drapery; rails for drapery; tracks for drapery; rods for drapery; embraces for holding back drapery; drapery hooks; poles for drapery; rings for drapery; drapery hardware; parts, fittings and accessories for the aforesaid included in Class 20."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Curtains; blinds of textile; drapes; drapery; warp knitted textile blast nets made from nylon and polyester; parts, fittings and accessories for the aforesaid included in Class 24."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Snap hooks."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Cleaning, installation, maintenance and repair of blinds, curtains, screens, drapes, drapery, nets and film; consultancy, advisory and information services relating to the aforesaid."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Custom manufacture of blinds, curtains, screens, drapes, drapery, nets and film; treatment of materials for blinds, curtains, screens, drapes, drapery, nets and film; consultancy, advisory and information services relating to the aforesaid."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Design of blinds, curtains, screens, drapes, drapery, nets and film; consultancy, advisory and information services relating to the aforesaid."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Kleepuvad materjalid kilede kujul; kleepuvad kiled; asbestist turvakardinad; plastikud; Kautsuk; suitsusuunamiskardinad."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Rulood; sirmid ruloode kujul; ruloode riputamise vahendid; ruloode kinnitusklambrid; ruloode kinnitusvahendid; ruloode turvahoidikud; ruloode juhtimisseadmed; plastseadmestik ruloode jaoks; ruloode kerimisvahendid; ruloode siinid; ruloode kanalid; ruloode varvad; rulooliistud; kardinate riputamise vahendid; klambrid kardinate kinnitamiseks; kardinakinnitusvahendid; hoidikud kardinate kindlustamisel kasutamiseks; kardinate liigutamise vahendid; plasttarvikud kardinate juurde; kardinatõmmikud; kardinasiinid; kardinasiinid; kardinapuud; kardinad; paelad kardinate tagasihoidmiseks; kardinahaagid, kardinakonksud; kardinapuud; kardinarõngad; eesriiete riputamise vahendid; klambrid eesriiete kinnitamiseks; eesriiete kinnitusvahendid; hoidikud eesriiete turvaliseks kinnitamiseks; eesriiete juhtimisvahendid; plasttarvikud eesriiete juurde; eesriiete tõmmikud; eesriiete siinid; eesriiete siinid; eesriiete vardad; paelad eesriiete tagasihoidmiseks; eesriiete konksud; eesriidepuud; eesriiderõngad; eesriiete tarvikud; kõigi eespool nimetatud toodete osad, tarvikud ja lisatarbed, mis kuuluvad klassi 20."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Kardinad; tekstiilist rulood; kardinad; draperii; lõimelõngaga kootud tekstiilmaterjalist võrgud, mis on valmistatud nailonist või polüestrist; kõigi eespool nimetatud toodete osad, tarvikud ja lisatarbed, mis kuuluvad klassi 20."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Klõpshaagid (kasukahaagid)."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Ruloode, kardinate, varieesriiete, drapeeringute, eesriiete, võrkude ja kilede puhastamine, paigaldamine, hooldamine ja parandamine; info-, konsultatsiooni- ja nõustamisteenused eelnimetatu osas."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Ruloode, kardinate, varieesriiete, drapeeringute, eesriiete, võrkude ja kilede valmistamine eritellimusel; materjalide töötlemine ruloode, kardinate, varieesriiete, drapeeringute, eesriiete, võrkude ja kilede tarbeks; nõustamine ja konsulteerimine seoses kõigi eelmainitud teenustega."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Ruloode, kardinate, varieesriiete, drapeeringute, eesriiete, võrkude ja kilede disainimine; info- ja nõustamisteenused ning konsultatsioonid eelmainitute kohta."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Liima-aineet kalvojen muodossa; liimapintaiset kalvot; (turva)verhot asbestista; muovit; Kumi; savuverhot."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Kaihtimet; suojat kaihtimien muodossa; tarvikkeet verhojen ripustamiseen; tukiraudat kaihtimien kiinnittämiseen; kaihdinten tarvikkeet; kaihtimien kiinnityksessä käytettävät telineet; kaihdinten käyttölaitteet; muoviset kiinnitysosat kaihtimia varten; kaihdinten hihnapyörät; kaihdinten kiskot; kaihdinten urakiskot; kaihdinten tangot; kaihdinten säleet; tarvikkeet verhojen ripustamiseen; puristimet verhojen kiinnitykseen; verhotarvikkeet; telineet verhojen kiinnittämiseen; verhojen käyttölaitteet; muoviset kiinnitysosat verhoja varten; verhojen hihnapyörät; verhokiskot; verhojen urakiskot; verhotangot; verhot; pidikkeet verhojen kokoamiseen; verhokoukut; verhotangot; verhorenkaat; tarvikkeet verhojen ripustamiseen; puristimet verhojen kiinnitykseen; verhojen kiinnittimet; pidikkeet käytettäväksi verhojen pysymisen varmistamisessa; verhojen käyttölaitteet; muoviset kiinnitysosat verhoja varten; hihnapyörät verhoja varten; kiskot verhoja varten; urakiskot verhoja varten; verhojen tankot; pidikkeet verhojen kokoamiseen; verhokoukut; verhotangot; verhojen renkaat; metallitaravat; edellä mainittujen osat, tarvikkeet ja varusteet luokassa 20."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Verhot; kangaskaihtimet; verhot; kankaat; nailonista ja polyesteristä valmistetut loimineulosverkot; edellä mainittujen osat, tarvikkeet ja varusteet luokassa 20."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Jousihaat."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Kaihdinten, verhojen, suojien, kankaiden, verhokankaiden, verkkojen ja kalvojen puhdistus, asennus, huolto ja korjaus; edellä mainittuun liittyvät konsultointi-, neuvonta- ja tiedotuspalvelut."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Kaihdinten, verhojen, suojien, kankaiden, verhokankaiden, verkkojen ja kalvojen asiakaskohtainen valmistus; kaihdinten, verhojen, suojien, kankaiden, verhokankaiden, verkkojen ja kalvojen materiaalien käsittely; edellä mainittuihin palveluihin liittyvät konsultointi-, neuvonta- ja tiedotuspalvelut."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Kaihdinten, verhojen, suojien, kankaiden, verhokankaiden, verkkojen ja kalvojen suunnittelu; edellä mainittuun liittyvät tiedotus-, konsultointi- ja neuvontapalvelut."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Matières adhésives sous forme de films; films adhésifs; rideaux de sécurité en amiante; plastiques; Caoutchouc; rideaux pare-fumée."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Stores; écrans sous forme de stores; articles pour suspendre des stores; attaches pour la fixation de stores; accessoires pour stores; supports pour la fixation de stores; dispositifs de contrôle de stores; quincaillerie en plastique pour stores; poulies pour stores; rails pour stores; guides pour stores; tringles pour stores; lames pour persiennes; articles pour suspendre des rideaux; brides pour la fixation de rideaux; accessoires pour rideaux; supports de fixation pour rideaux; dispositifs d'entraînement pour rideaux; quincaillerie en matières plastiques pour rideaux; poulies pour rideaux; rails pour rideaux; guides pour rideaux; tringles de rideaux; rideaux; embrasses pour maintenir les rideaux; crochets de rideaux; tringles de rideaux; anneaux de rideaux; articles pour suspendre des draperies; brides pour la fixation de draperies; accessoires pour draperies; supports destinés à la fixation de draperies; dispositifs d'entraînement de draperies; quincaillerie en matières plastiques pour draperies; poulies pour draperies; rails pour draperies; guides pour draperies; tringles pour draperies; embrasses pour maintenir des draperies; crochets pour draperies; tringles pour draperies; galets pour draperies; matériel pour tentures; pièces, éléments constitutifs et accessoires des produits précités compris dans la classe 20."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Rideaux; stores en matières textiles; rideaux; draperie; filets en matières textiles tricotées, fabriqués en nylon et polyester; pièces, éléments constitutifs et accessoires des produits précités compris dans la classe 20."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Mousquetons."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Nettoyage, installation, entretien et réparation de stores, rideaux, paravents, tentures, draperies, filets et films; services de conseils, d'assistance et d'information dans tous les domaines précités."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Fabrication sur commande de stores, rideaux, paravents, tentures, draperies, filets et films; traitement de matériaux pour stores, rideaux, paravents, tentures, draperies, filets et films; services de consultation, de conseils et d'information dans les domaines précités."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Conception de stores, rideaux, paravents, tentures, draperies, filets et films; services d'information, de conseils et d'assistance concernant les services précités."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Klebematerialien in Form von Folien; Klebefolien; Vorhänge (Sicherheits-) aus Asbest; Kunststoffe; Kautschuk; Rauchvorhänge."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Jalousien; Sonnenjalousien (Jalousetten); Artikel zum Aufhängen von Rollos/Jalousien; Halterungen zum Anbringen von Jalousien; Bestandteile für Jalousien; Halter zum Sichern von Jalousien; Betätigungseinrichtungen für Jalousien; Kleinteile aus Kunststoff für Jalousien; Rollen für Rollos/Jalousien; Schienen für Rollos/Jalousien; Führungen für Rollos/Jalousien; Stäbe für Rollos/Jalousien; Lamellen für Jalousien; Artikel zum Aufhängen von Vorhängen; Klammern zur Befestigung von Gardinen; Gardinenzubehör; Halter zur Befestigung von Gardinen; Betätigungseinrichtungen für Gardinen; Kleinteile aus Kunststoff für Gardinen; Rollen für Gardinen; Vorhangschienen; Gardinenführungen; Gardinenstangen; Vorhänge; Raffrosetten zum Zurückhalten von Gardinen; Gardinenhaken; Vorhangstangen; Vorhangringe; Artikel zum Aufhängen von Vorhängen; Klammern zur Befestigung von Vorhängen; Beschläge für Vorhänge; Halterungen zur Sicherung von Vorhängen; Betätigungseinrichtungen für Vorhänge; Kleinteile aus Kunststoff für Vorhänge; Rollen für Vorhänge; Schienen für Vorhänge; Führungen für Vorhänge; Vorhangstangen; Raffrosetten zum Zurückhalten von Vorhängen; Vorhanghaken; Vorhangstangen; Vorhangringe; Kleineisenwaren für Textilien; Teile, Bestandteile und Zubehör für die vorstehend genannten Waren, soweit sie in Klasse 20 enthalten sind."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Vorhänge; Rollos aus textilem Material; Vorhänge; Stoffbehänge; Explosionsschutznetze aus textiler Kettwirkware aus Nylon und Polyester; Teile, Bestandteile und Zubehör für die vorstehend genannten Waren, soweit sie in Klasse 20 enthalten sind."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Schnapphaken."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Reinigung, Installation, Wartung und Reparatur von Rollos/Jalousien, Gardinen, Sonnen- und Sichtschutz, Vorhängen, Vorhangstoffen, Netzen und Folien; Beratung und Informationen in Bezug auf alles vorstehend Genannte."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Kundenspezifische Anfertigung von Rollos/Jalousien, Gardinen, Sonnen- und Sichtschutz, Vorhängen, Vorhangstoffen, Netzen und Folien; Materialbearbeitung für Rollos/Jalousien, Gardinen, Sonnen- und Sichtschutz, Vorhänge, Vorhangstoffe, Netze und Folien; Beratung und Information in Bezug auf alles vorstehend Genannte."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Design von Rollos/Jalousien, Gardinen, Sonnen- und Sichtschutz, Vorhängen, Vorhangstoffen, Netzen und Folien; Information und Beratung in Bezug auf alles vorstehend Genannte."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Ragasztóanyagok fóliák formájában; ragasztófóliák; függönyök (biztonsági) azbesztbol; muanyagok; Radírok; füstfüggönyök."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Rolók, zsalugáterek; árnyékolók rolók formájában; függönyök akasztásához használt cikkek; redonycsipeszek; függönytartozékok; rolók rögzítésére használt tartók; kezeloeszközök rolókhoz; muanyag alkatrészek redonyökhöz; függönygörgok; függönysínek; függönypályák; függönyrudak; redonylécek; cikkek függönyök felakasztásához; függönyök rögzítésére szolgáló kapcsok; függönyszerelvények; függönyök megóvásához használatos tartók; kezeloeszközök függönyökhöz; muanyag cikkek függönyökhöz; függönygörgok; függönysínek; függönypályák; függönyrudak; függönyök; függönyelkötok függönyökhöz; függönyakasztók; karnisok; függönykarikák; drapériák felakasztására szolgáló cikkek; drapériák rögzítésére szolgáló kapcsok; drapériák tartozékai; drapériák rögzítésére használt tartók; kezeloeszközök drapériákhoz; muanyag cikkek drapériákhoz; drapériagörgok; drapériasínek; drapériapályák; drapériarudak; drapériaelkötok; drapériakampók; drapériarudak; drapériagyuruk; drapériákhoz való cikkek; a fentiekhez való alkatrészek, szerelvények és kiegészítok, amelyek a 20 osztályba tartoznak."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Függönyök; árnyékolók (textil ~); függönyök; ágynemufélék; nejlonból és poliészterbol készült lánchurkolt fújt textilhálók; a fentiekhez való alkatrészek, szerelvények és kiegészítok, amelyek a 20 osztályba tartoznak."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Pillanatkapcsok."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Redonyök, függönyök, válaszfalak, sötétítofüggönyök, drapériák, hálók és hártyák tisztítása, felszerelése, karbantartása és javítása; a fentebb említettekkel kapcsolatos konzultációs, tanácsadási és információs szolgáltatások."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Redonyök, függönyök, válaszfalak, sötétítofüggönyök, drapériák, hálók és hártyák igény szerinti gyártása; Redony-, függöny-, válaszfal-, sötétítofüggöny-, drapéria-, háló- és hártyaanyagok kezelése; az összes fentemlítettekkel kapcsolatos tanácsadási, információs és konzultációs szolgáltatások."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Redonyök, függönyök, válaszfalak, sötétítofüggönyök, drapériák, hálók és hártyák tervezése; fentiekkel kapcsolatos tájékoztató és tanácsadó szolgáltatás."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Materiali adesivi in forma di pellicole; pellicole adesive; tende di sicurezza in amianto; prodotti in materie plastiche; Caucciù; tende parafumo."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Veneziane; paraventi sotto forma di tendine; articoli per appendere tendine; morsetti per il fissaggio di avvolgibili; accessori per tendine; dispositivi di contenimento di avvolgibili; dispositivi per l'azionamento di tendine; strutture in plastica per tende; pulegge per tendine; rotaie per tendine; binari per tendine; bacchette per tendine; alette per persiane; articoli per appendere tende; morsetti per fissaggio di tende; accessori per tende; dispositivi di fissaggio per tende; dispositivi di azionamento per tende; strutture in plastica per tende; pulegge per tende; rotaie per tende; binari per tende; bacchette per tende; tende; accessori per tenere legate tende; ganci di tende; aste per tende; anelli per tende; articoli per appendere tendaggi; morsetti per fissaggio di tendaggi; accessori per tendaggi; supporti per fissaggio di tendaggi; dispositivi di azionamento per tendaggi; strutture in plastica per tendaggi; pulegge per tendaggi; rotaie per tendaggi; binari per tendaggi; bacchette per tendaggi; accessori per tenere legati tendaggi; ganci per tendaggi; aste per tendaggi; anelli per tendaggi; articoli in metallo per tendaggi; parti, componenti ed accessori per i suddetti articoli compresi nella classe 20."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Tende; tendine in materie tessili; tende; tendaggi; reti antiesplosione con maglia a catenella a base di nylon e poliestere; parti, componenti ed accessori per i suddetti articoli compresi nella classe 20."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Ganci a molla."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Pulizia, installazione, manutenzione e riparazione di tendine, tende, schermi, tendaggi, reti e pellicole; consulenza e informazioni relative a tutti i suddetti servizi."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Fabbricazione su ordinazione di tendine, tende, schermi, tendaggi, reti e pellicole; trattamento di materiali per tendine, tende, schermi, tendaggi, reti e pellicole; informazioni e consulenza relative ai suddetti servizi."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Progettazione di tendine, tende, schermi, tendaggi, reti e pellicole; servizi di informazione e di consulenza relativi ai suddetti servizi."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Lipnios medziagos pleveliu pavidalu; lipnios juosteles; asbesto uzdangos (apsaugines --- ); plastikai; Trintukai; uzuolaidos nuo dumu."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Uzuolaidos; zaliuziu formos sirmos; reikmenys uzuolaidoms kabinti; kabes uzuolaidoms tvirtinti; uzuolaidu montavimo detales; laikikliai, skirti naudoti uzuolaidoms tvirtinti; zaliuziu valdymo prietaisai; plastikine technine iranga uzuolaidoms; pakeliamu uzuolaidu suktuvai; pakeliamu uzuolaidu begeliai; pakeliamu uzuolaidu takeliai; pakeliamu uzuolaidu strypai; zaliuziu skersjuostes; reikmenys uzuolaidoms kabinti; uzuolaidu tvirtinimo spaustukai; uzuolaidu tvirtinimo detales; laikikliai, skirti naudoti uzuolaidoms tvirtinti; uzuolaidu valdymo prietaisai; plastikine uzuolaidu iranga; uzuolaidu suktuvai; kreipiamosios (uzuolaidu --- ); uzuolaidu begeliai; uzuolaidu karnizai; uzuolaidos; uzuolaidu risimo priemones; uzuolaidu kabliukai; karnizai (uzuolaidu --- ); uzuolaidu ziedai; drapiruociu kabinimo reikmenys; drapiruociu tvirtinimo spaustukai; drapiruociu tvirtinimo detales; laikikliai, skirti naudoti tvirtinant drapiruotes; drapiruociu valdymo prietaisai; plastikine drapiruociu iranga; drapiruociu suktuvai; drapiruociu begeliai; drapiruociu takeliai; drapiruociu strypai; drapiruociu risimo priemones; drapiruociu kabliai; drapiruociu stulpai; drapiruociu ziedai; drapiruociu iranga; pirmiau nurodytu prekiu dalys, tvirtinimo elementai ir priedai, priskirti 20 klasei."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Uzuolaidos; tekstilines uzuolaidos; uzuolaidos; gelumbiniai audiniai; ant apmatu mezgamos tekstiles tinklai is nailono ir poliesterio; pirmiau nurodytu prekiu dalys, tvirtinimo elementai ir priedai, priskirti 20 klasei."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Spraustukai."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Pakeliamu uzuolaidu, uzuolaidu, pertvaru, drapiruociu, tinklu ir pleveliu valymas, irengimas, technine prieziura ir taisymas; konsultacines, patarimu teikimo ir informacines paslaugos, susijusios su pirmiau minetomis paslaugomis."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Pakeliamu uzuolaidu, uzuolaidu, pertvaru, drapiruociu, tinklu ir pleveliu gamyba pagal uzsakyma; pakeliamu uzuolaidu, uzuolaidu, pertvaru, drapiruociu, tinklu ir pleveliu medziagu apdorojimas; patarimu, informavimo ir konsultavimo paslaugos, susijusios su tuo, kas buvo pamineta anksciau."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "pakeliamu uzuolaidu, uzuolaidu, pertvaru, drapiruociu, tinklu ir pleveliu modeliavimas; informacijos, konsultaciju ir patarimu paslaugos, susijusios su anksciau nurodytomis paslaugomis."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Limejosi materiali pleves veida; lipigas pleves; (drosibas) priekskari, kas izgatavoti no azbesta; plastmasas; Dzesgumijas; dumu aizkari."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Zaluzijas; ekrani zaluziju veida; izstradajumi zaluziju piekarsanai; skavas zaluziju nostiprinasanai; zaluziju stiprinajumi; turetaji izmantosanai zaluziju nostiprinasana; zaluziju vadibas ierices; plastic hardware for blinds; zaluziju trisi; zaluziju sliedes; zaluziju celini; zaluziju stieni; noseglistes; izstradajumi aizkaru piekarsanai; skavas aizkaru nostiprinasanai; aizkaru stiprinajumi; turetaji izmantosanai aizkaru nostiprinasana; aizkaru vadibas ierices; plastmasas aparatura aizkariem; aizkaru trisi; aizkaru sliedes; aizkaru celini; aizkaru stieni; aizkari; aizkaru sasaistes to noturesanai; aizkaru aki; aizkaru stieni; aizkaru rinki; izstradajumi draperiju piekarsanai; skavas draperiju nostiprinasanai; draperiju stiprinajumi; turetaji, ko izmantot draperiju nostiprinasanai; draperiju vadibas ierices; plastmasas aparatura draperijam; draperiju trisi; draperiju sliedes; draperiju celini; draperiju stieni; draperiju sasaistes to noturesanai; draperiju aki; draperiju kartis; draperiju rinki; draperiju aparatura; ieprieks mineto precu dalas, stiprinajumi un piederumi, ietverti 20 klase."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Aizkari; auduma aizlaidnes; aizkari; vadmala; auklu tekstilizstradajumu tikli, razoti no neilona un poliestera; ieprieks mineto precu dalas, stiprinajumi un piederumi, ietverti 20 klase."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Spiedaki."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Zaluziju, aizkaru, aizslietnu, draperiju, tiklu un plevju tirisana, uzstadisana, apkope un labosana; konsultaciju, ieteikumu un informacijas pakalpojumi saistiba ar ieprieks mineto."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Zaluziju, aizkaru, aizslietnu, draperiju, tiklu un plevju razosana pec pasutijuma; materialu apstrade zaluzijam, aizkariem, aizslietniem, draperijam, tikliem un plevem; padomdeveju, informacijas un konsultaciju pakalpojumi saistiba ar visu ieprieksmineto."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Zaluziju, aizkaru, aizslietnu, draperiju, tiklu un plevju projektesana; informacijas, konsultaciju un padomu sniegsana saistiba ar ieprieks mineto."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Materjali li jwahhlu fil-forma ta' films; films adezivi; purtieri (tas-sigurtà) maghmula mill-asbestos; plastik; Gomom ghat-tahsir; purtieri tad-duhhan."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Blinds; paraventi li jikkonsistu minn blajnds; oggetti ghad-dendil ta' blajnds; klamps ghat-twahhil tal-blajnds; accessorji ghal blajnds; howlders ghall-uzu fit-twahhil tal-blajnds; it-thaddim ta' ingenji ghall-blajnds; hardwer tal-plastik ghall-blinds; taljoli ghal blajnds; vireg ghal blajnds; trekks ghal blajnds; vireg ghal blajnds; paletti ghal purtieri li jingibdu; oggetti ghad-dendil ta' purtieri; klampi ghat-twahhil ta' purtieri; accessorji ghall-purtieri; howlders ghall-uzu fit-twahhl tal-purtieri; strumenti operattivi ghal purtieri; hardwer tal-plastik ghal purtieri; taljoli ghal purtieri; sopraporta tal-purtieri; trekks ghal purtieri; vireg ghal purtieri; purtieri; taghmir li jzomm lura l-purtieri; gancijiet tal-purtieri; vireg tal-purtieri; holoq tal-purtieri; oggetti ghad-dendil tad-drapperija; klampi ghat-twahhil tad-drapperija; accessorji ghad-drapperija; kontenituri ghall-uzu fit-twahhil tad-drapperija; strumenti operattivi ghad-drapperija; hardwer tal-plastik ghad-drapperija; taljoli ghad-drapperija; vireg ghad-drapperija; trekks ghad-drapperija; vireg tad-drapperija; taghmir li jzomm lura d-drapperija; gancijiet tad-drapperija; arbli ghad-drapperija; holoq ghad-drapperija; hardwer ghad-drapperija; partijiet u accessorji ghall-oggetti msemmija inkluzi fil-Klassi 20."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Purtieri; lqugh ghad-dawl tad-drapp; purtieri; taghmir jiddendel mal-hajt; blast nets tad-drapp mehjut mibrum maghmula minn najlon u poljester; partijiet u accessorji ghall-oggetti msemmija inkluzi fil-Klassi 20."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Snap hooks."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Tindif, installazzjoni, manutenzjoni u tiswija ta' blajnds, purtieri, paraventi, drappijiet, drapperija, xbieki u films; servizzi ta' konsulenza, pariri u informazzjoni relatati mal-oggetti msemmija."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Manifattura skont l-ordni ta' blajnds, purtieri, paraventi, purtieri, drapperija, xbieki u films,; trattament ta' materjali ghal blajnds, purtieri, paraventi, purtieri, drapperija, xbieki u films; servizzi ta' pariri, informazzjoni u konsulenza relatati ma' dak kollu hawn fuq imsemmi."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Disinn ta' blajnds, purtieri, paraventi, purtieri, drapperija, xbieki u films; servizzi ta' informazzjoni, pariri u konsulenza dwar l-hawn fuq imsemmi."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Materialy klejace w formie folii; folie przylepne; kurtyny (bezpieczenstwa) z azbestu; tworzywa sztuczne; kauczuk; zaslony dymne."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Rolety; zaslony w postaci zaluzji; artykuly do wieszania rolet; zaciski do mocowania rolet; elementy do rolet; uchwyty do uzycia przytwierdzania zaluzji; urzadzenia do obslugi zaluzji; osprzet z tworzyw sztucznych do rolet; kólka do rolet; szyny do rolet; prowadnice do rolet; prety do rolet; listwy do zaluzji; artykuly do wieszania zaslon; klamry do mocowania zaslon; elementy do zaslon; uchwyty do uzytku przy mocowaniu zaslon; urzadzenia do obslugi zaslon; sprzet z tworzyw sztucznych do zaslon; kólka do zaslon; zaslon (szyny do -); prowadnice do zaslon; karnisze do zaslon; zaslony; uchwyty do przytrzymywania zaslon; zaslon (haki do -); zaslon (karnisze do -); zaslon (kólka do -); artykuly do wieszania towarów tekstylnych; klamry do wieszania towarów tekstylnych; elementy do towarów tekstylnych; uchwyty do uzytku w umocowywaniu towarów tekstylnych; urzadzenia do obslugi towarów tekstylnych; sprzet z tworzyw sztucznych do towarów tekstylnych; kólka do towarów tekstylnych; szyny do towarów tekstylnych; prowadnice do towarów tekstylnych; karnisze do towarów tekstylnych; uchwyty do przytrzymywania towarów tekstylnych; haki do towarów tekstylnych; drazki do towarów tekstylnych; kólka do towarów terstylnych; sprzet do towarów tekstylnych; czesci, elementy i akcesoria do wszystkich wyzej wymienionych ujete w Klasie 20."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Zaslony; rolety tekstylne; zaslony; wyroby welniane; osnowowe dziane tekstylne sieci przeciwrozpryskowe z nylonu i poliestru; czesci, elementy i akcesoria do wszystkich wyzej wymienionych ujete w Klasie 20."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Agrafki."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Czyszczenie, montaz, konserwacja i naprawa rolet, zaslon, ekranów, zaslon, towarów tekstylnych, sieci i folii; uslugi konsultacyjne, doradcze i informacyjne dotyczace uprzednio wymienionych."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Produkcja na indywidualne zamówienie rolet, zaslon, ekranów, zaslon, towarów tekstylnych, sieci i folii; obróbka materialów przeznaczonych na rolety, zaslony, ekrany, zaslony, towary tekstylne, sieci i folie; uslugi doradcze, informacyjne i konsultacyjne, dotyczace wszystkich wyzej wymienionych [uslug]."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Projektowanie rolet, zaslon, ekranów, zaslon, towarów tekstylnych, sieci i filmów; uslugi informacyjne, konsultacyjne i doradcze, dotyczace uprzednio wymienionych."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Materiais adesivos sob a forma de películas; películas adesivas; cortinas (de segurança) em amianto; plásticos; Borracha; cortinas de protecção contra o fumo."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Persianas; biombos sob a forma de estores; artigos para suspender estores; grampos para fixação de estores; acessórios para estores; suportes destinados à sustentação de estores; dispositivos de operar estores; roletes em matérias plásticas para estores; roldanas para estores; guias para estores; calhas para estores; varões para estores; lamelas para persianas; artigos para suspender cortinados; molas e grampos para fixação de cortinados; acessórios para cortinados; suportes para cortinados; dispositivos de operar para cortinados; ferragens em matérias plásticas para cortinados; roldanas para cortinados; calhas para cortinados; calhas para cortinados; varões para cortinados; cortinas; presilhas para cortinados; camarões para cortinados; varões para cortinados; anéis de cortinados; artigos para suspender cortinas; molas e grampos de fixação para cortinas; acessórios para cortinas; suportes para utilização na fixação de cortinas; dispositivos de operar para cortinas; ferragens em matérias plásticas para cortinas; roldanas para cortinas; guias para cortinas; calhas para cortinas; varões para cortinas; presilhas para cortinas; ganchos para cortinas; postes para cortinas; argolas para cortinas; ferragens para cortinas; peças, componentes e acessórios para os atrás referidos, incluídos na classe 20."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Cortinas; estores em matérias têxteis; cortinas; lençóis; redes para-vento em malha de teia feitas de nylon e poliéster; peças, componentes e acessórios para os atrás referidos, incluídos na classe 20."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Ganchos de pressão."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "limpeza, instalação, manutenção e reparação de estores, cortinados, biombos, cortinados, cortinas, redes e películas; serviços de assessoria, consultadoria e informações relacionados com todos os serviços atrás referidos."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "fabrico personalizado de estores, cortinados, biombos, cortinados, cortinas, redes e películas; tratamento de materiais para estores, cortinados, biombos, cortinados, cortinas, redes e películas; serviços de consultadoria, assessoria e informações relacionados com os serviços atrás referidos."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "concepção de estores, cortinados, biombos, cortinados, cortinas, redes e películas; serviços de informação, consultadoria e assessoria relacionados com os serviços atrás referidos."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Materiale adezive sub forma de pelicule; folii autocolante; perdele de siguranta din azbest; materiale plastice; Cauciuc; cortine antifum."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Storuri; panouri sub forma de jaluzele; articole pentru agatarea jaluzelelor; cleme pentru fixarea jaluzelelor; accesorii pentru jaluzele; suporturi pentru fixarea jaluzelelor; dispozitive de actionare a jaluzelelor; echipamente din plastic pentru jaluzele; scripeti pentru jaluzele; sine pentru jaluzele; sine de jaluzele; role de jaluzele; jaluzele verticale; articole pentru agatarea draperiilor; cleme pentru fixarea perdelelor; accesorii pentru perdele; suporturi pentru utilizarea in fixarea draperiilor; dispozitive de actionare a perdelelor; articole din plastic pentru perdele; scripeti pentru perdele; sine pentru perdele; sine pentru perdele; bare pentru perdele; draperii; snururi pentru prinderea perdelelor; cârlige pentru perdele; bare pentru perdele; inele pentru perdele; articole pentru agatarea draperiilor; cleme pentru fixarea draperiilor; accesorii pentru draperii; suporturi pentru fixarea draperiilor; dispozitive de actionare pentru draperii; articole din plastic pentru draperii; scripeti pentru draperii; sine pentru draperii; sine pentru draperii; bare de draperii; snururi pentru prinderea draperiilor; cârlige pentru draperii; bare pentru draperii; inele pentru draperii; accesorii de draperii; parti componente, piese si accesorii pentru cele mentionate anterior, în masura în care sunt incluse în Clasa 20."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Draperii; storuri din materiale textile; draperii; draperie; plase din material textil urzit, realizate din nailon si poliester; parti componente, piese si accesorii pentru cele mentionate anterior, în masura în care sunt incluse în Clasa 20."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Carabine."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Curatare, montare, întretinere si reparatie de jaluzele, perdele, ecrane, draperii, cortine, plase si filme; servicii de consultanta, consiliere si informare cu privire la cele mentionate anterior."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Fabricare la comanda de jaluzele, perdele, ecrane, draperii, cortine, plase si filme; tratare de materiale pentru jaluzele, perdele, ecrane, draperii, cortine, plase si filme; servicii de consiliere, consultanta si informatii referitoare la toate serviciile de mai sus."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Concepere de jaluzele, perdele, ecrane, draperii, cortine, plase si filme; servicii de informatii, consultanta si consiliere în domeniul celor mentionate anterior."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Lepiace materiály v podobe fólií; lepiace fólie; závesy (bezpecnostné) z azbestu; plastické hmoty; Gumy na gumovanie; dymové steny."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Zalúzie a rolety; steny v podobe zalúzií; výrobky na vesanie zalúzií; svorky na upevnovanie zalúzií; súciastky pre zalúzie; drziaky na zabezpecovanie zalúzií; prevádzkové zariadenia pre zalúzie; plastové vybavenie pre rolety; kladky pre zalúzie; kolaje pre zalúzie; kolaje pre zalúzie; tyce pre zalúzie; listy pre zalúzie; výrobky na vesanie závesov; svorky na upevnovanie závesov; súciastky pre závesy; puzdra na zabezpecovanie závesov; prevádzkové zariadenia pre závesy; plastové zeleziarske výrobky pre závesy; kladky pre závesy; záclonové kolajnice; trate pre závesy; tyce pre závesy; závesy; výrobky na uväzovanie záclon; záclonové hácky; záclonové tyce; záclonové krúzky; výrobky na vesanie závesov; svorky na pripevnovanie závesov; súciastky pre závesy; drziaky na zabezpecovanie závesov; prevádzkové zariadenia pre závesy; plastové montázne prvky pre závesy; kladky pre závesy; kolaje pre závesy; kolaje pre závesy; tyce pre závesy; výrobky na uväzovanie závesov; háciky pre závesy; tyce pre závesy; krúzky pre závesy; zeleziarske výrobky pre závesy; casti, súciastky a príslusenstvo pre vsetky vyssie uvedené výrobky, zaradené do triedy 20."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Závesy; látkové rolety; závesy; dekoracné látky; osnovne tkané textilné siete z nylonu a polyesteru; casti, súciastky a príslusenstvo pre vsetky vyssie uvedené výrobky, zaradené do triedy 20."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Patentky."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Cistenie, montáz, údrzba a oprava zalúzií, závesov, prepáziek, sietí a filmov; konzultacné, poradenské a informacné sluzby v oblasti vyssie uvedených sluzieb."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Zákazková výroba zalúzií, závesov, prepáziek, sietí a filmov; úprava materiálov pre zalúzie, závesy, prepázky, siete a filmy; poradenské, informacné a konzultacné sluzby vztahujúce sa ku vsetkému hore uvedenému."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Navrhovanie zalúzií, závesov, prepáziek, sietí a filmov; informacné, konzultacné a poradenské sluzby týkajúce sa vyssie uvedeného."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Lepilni materiali v obliki folij; samolepilne folije; zavese (zascitne) iz azbesta; umetne snovi; Kavcuk; dimne zavese."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Zaluzije; zasloni v obliki sencil; predmeti za obesanje zastorov; priponke za pritrjevanje zaluzij; pribor za zastore; drzala za zascito zaluzij; naprave za odpiranje za zavese; plasticna oprema za sencila; skripci za zastore; tirnice za zastore; tiri za zastore; drogovi za zastore; letvice za sencila; predmeti za obesanje zaves; priponke za pritrjevanje zaves; oprema za zavese; drzala za uporabo pri zavarovanju zaves; naprave za upravljanje zaves; plasticni deli za zavese; skripci za zavese; karnise za zavese; vodila za zavese; drogovi (palice) za zavese; zavese; objemke za spenjanje zaves; kaveljcki za zavese; drogovi za zavese; obrocki za zavese; predmeti za obesanje zaves; priponke za pritrjevanje zaves; pribor za zavese; drzala za pritrditev zaves; naprave za upravljanje zaves; plasticni deli za zavese; skripci za zavese; tirnice za zavese; vodila za zavese; drogovi za zavese; trakovi za spenjanje zaves; kljuke za zavese; palice za zavese; obrocki za zavese; pribor za zavese; deli, oprema in dodatki za vse nasteto blago, ki jih obsega razred 20."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Zavese; volnene tkanine; zavese; draperija; tkane tekstilne mreze iz najlona in poliestra; deli, oprema in dodatki za vse nasteto blago, ki jih obsega razred 20."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Pritiskaci."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Ciscenje, montaza, vzdrzevanje in popravilo sencil, zaves, zaslonov, zaves, zaves, mreze in filmov; posvetovalne, strokovno svetovalne in informacijske storitve v zvezi z nastetim."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Izdelava sencil, zaves, zaslonov, zaves, zastorov, mrez in filmov po narocilu; obdelava materialov za sencila, zavese, zaslone, zastore, zavese, zastore, mreze in filme; svetovanje in informacije v zvezi z vsem zgoraj omenjenim."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Oblikovanje sencil, zaves, zaslonov, zaves, zastorov, mrez in filmov; informacijske, posvetovalne in svetovalne storitve v zvezi z omenjenim."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Materiales adhesivos en forma de películas; películas adhesivas; pantallas (de seguridad) de amianto; plásticos; Caucho; cortinas de humo."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Persianas; pantallas del tipo de persiana; artículos para colgar persianas; abrazaderas para fijar persianas; accesorios para persianas; soportes para su uso en la fijación de persianas; dispositivos para manejar persianas; artículos de plástico para persianas; poleas para persianas; raíles para persianas; carriles para persianas; varillas para persianas; lamas de persiana; artículos para colgar cortinas; abrazaderas para fijar cortinas; accesorios para cortinas; soportes para asegurar cortinas; dispositivos operativos para cortinas; artículos de plástico para cortinas; poleas para cortinas; raíles para cortinas; carriles para cortinas; varillas para cortinas; cortinas; alzapaños de cortina para sujetarlas; ganchos para cortinas; postes para cortinas; anillas de cortinas; artículos para colgar cortinajes; abrazaderas para fijar cortinajes; accesorios para cortinajes; soportes para uso en la fijación de cortinajes; dispositivos para manejar cortinajes; artículos de plástico para cortinajes; poleas para cortinajes; raíles para cortinajes; carriles para cortinajes; varrillas para cortinajes; alzapaños de cortinajes para sujetarlos; ganchos para cortinajes; barras para cortinajes; anillas para cortinajes; equipo para pañería; partes, piezas y accesorios para los productos mencionados comprendidos en la clase 20."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Cortinas; persianas de materias textiles; cortinas; colgaduras; redes de viento de textiles tejidos de urdimbre hechas de nylon y poliéster; partes, piezas y accesorios para los productos mencionados comprendidos en la clase 20."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Ganchos de presión."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Limpieza, instalación, mantenimiento y reparación de persianas, cortinas, pantallas, pañería, cortinajes, redes y películas; servicios de consultas, asesoramiento e información en relación con todo lo mencionado."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Fabricacion a medida de persianas, cortinas, pantallas, pañería, cortinajes, redes y películas; tratamiento de materiales para persianas, cortinas, pantallas, pañería, cortinajes, redes y películas; servicios de información y asesoría en relación con todo lo anteriormente mencionado."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Diseño de persianas, cortinas, pantallas, pañería, cortinajes, redes y películas; servicios de información, consultoría y asesoría relacionados con los servicios mencionados."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Vidhäftande material i form av filmer; vidhäftande filmer; förhängen (säkerhets-) av asbest; plaster; Gummi; rökgardiner."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Rullgardiner och persienner; skärmar i form av gardiner; artiklar för upphängning av rullgardiner; klämmor för fastsättning av rullgardiner; beslag för rullgardiner; hållare för säkring av rullgardiner; styranordningar för gardiner; plastbeslag för rullgardiner; trissor för rullgardiner; skenor för rullgardiner; spår för rullgardiner; stavar för rullgardiner; lameller till persienner; artiklar för upphängning av gardiner; klämmor för fastsättning av gardiner; gardintillbehör; hållare för fastsättning av gardinstänger; manövreringsanordningar för gardiner; plastbeslag för gardiner; trissor för gardiner; gardinskenor; spår för gardiner; gardinstänger; gardiner; gardinomfattningar för att hålla tillbaka gardiner; gardinkrokar; gardinstänger; gardinringar; artiklar för upphängning av draperier; klämmor för fastsättning av draperier; beslag för draperier; hållare för säkring av draperier; styranordningar för draperier; plastbeslag för draperier; trissor för draperier; skenor för draperier; spår för draperier; draperistänger; omfattningar för att hålla tillbaka draperier; draperikrokar; draperistänger; ringar för draperier; draperijärnvaror; delar, komponenter och tillbehör för allt det nämnda, ingående i klass 20."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Gardiner; rullgardiner av textil; gardiner; draperier; varpstickade textilsprängningsnät gjorda av nylon och polyester; delar, komponenter och tillbehör för allt det nämnda, ingående i klass 20."
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Tryckhakar."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Rengöring, installation, underhåll och reparation av rullgardiner, gardiner, skärmar, förhängen, draperier, nät och film; rådgivning, konsulttjänster och information avseende det nämnda."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Specialtillverkning av rullgardiner, gardiner, skärmar, förhängen, draperier, nät och film; behandling av material för rullgardiner, gardiner, skärmar, förhängen, draperier, nät och film; konsulttjänster, rådgivning och information i samband med nämnda tjänster."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Design av rullgardiner, gardiner, skärmar, förhängen, draperier, nät och film; information, konsulttjänster och rådgivning med avseende på ovannämnda tjänster."
+        }
+      ]
+    },
+    "id": "2a02e83b-8971-42db-8f45-febcc6ad7492",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.02",
+      "26.04.05",
+      "26.04.22",
+      "26.04.24",
+      "26.04.98"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "01859",
+        "publicationVolume": "65"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Suite 308, The Merrion Buildings, 18-20 Merrion Street Upper,Dublin 2, D02 XH98",
+        "representativeAddressCountryCode": "IE",
+        "representativeAddressCountryName": "Ireland",
+        "representativeName": "Stobbs Ireland Limited"
+      }
+    ],
+    "secondLanguageCode": "it",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20100205",
+        "applicationNumber": "8862261"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300205",
+      "lastPublicationDate": "20100412",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20100727",
+        "registrationNumber": "8862261"
+      }
+    },
+    "version": "20260511144305",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR CONTRACTS.COM"
+    }
+  },
+  "_uri": "/mark/em/2a02e83b-8971-42db-8f45-febcc6ad7492",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.822Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

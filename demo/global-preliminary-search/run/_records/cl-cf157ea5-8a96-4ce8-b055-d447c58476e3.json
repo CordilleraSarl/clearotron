@@ -1,0 +1,108 @@
+{
+  "uri": "/mark/cl/cf157ea5-8a96-4ce8-b055-d447c58476e3",
+  "provider": "clarivate",
+  "office": "cl",
+  "guid": "cf157ea5-8a96-4ce8-b055-d447c58476e3",
+  "applicationNumber": "2081516",
+  "registrationNumber": "233627",
+  "applicationDate": null,
+  "registrationDate": "1980-12-18",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "VENORUTON P4",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "No goods available",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SIMPSON LIBERONA JORGE DANIEL.",
+  "ownerNative": null,
+  "ownerCountry": "CL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "CL",
+        "applicantAddressCountryName": "Chile",
+        "applicantName": "SIMPSON LIBERONA JORGE DANIEL."
+      },
+      {
+        "applicantAddressCountryCode": "CL",
+        "applicantAddressCountryName": "Chile",
+        "applicantName": "SIMPSON LIBERONA LUIS ENRIQUE."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "No goods available"
+        }
+      ]
+    },
+    "id": "cf157ea5-8a96-4ce8-b055-d447c58476e3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260615",
+    "registrationOfficeCode": "CL",
+    "registrationOfficeName": "Chile",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationNumber": "2081516"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "19801218",
+        "registrationNumber": "233627"
+      }
+    },
+    "version": "20260615171924",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENORUTON P4"
+    }
+  },
+  "_uri": "/mark/cl/cf157ea5-8a96-4ce8-b055-d447c58476e3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.811Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

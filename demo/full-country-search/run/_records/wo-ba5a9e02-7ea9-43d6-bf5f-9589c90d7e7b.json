@@ -1,0 +1,200 @@
+{
+  "uri": "/mark/wo/ba5a9e02-7ea9-43d6-bf5f-9589c90d7e7b",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "ba5a9e02-7ea9-43d6-bf5f-9589c90d7e7b",
+  "applicationNumber": null,
+  "registrationNumber": "1017732",
+  "applicationDate": null,
+  "registrationDate": "2009-10-06",
+  "expiryDate": "2029-10-06",
+  "renewalDate": "2019-10-06",
+  "lastPublicationDate": "2020-03-05",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ICODE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Integrated circuits; RFID chips and tags; receivers and transmitters for use with RFID chips and tags; NFC (near field communications) apparatus, instruments and equipment; parts and fittings for all the aforesaid goods.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Circuits intégrés; étiquettes et puces d'identification par radiofréquence; récepteurs et émetteurs conçus pour être utilisés avec des étiquettes et puces d'identification par radiofréquence; appareils, instruments et équipements de communication en champ proche; parties et garnitures pour tous les produits précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Circuitos integrados; chips y etiquetas de identificación por radiofrecuencia (RFID); receptores y transmisores para chips y etiquetas de identificación por radiofrecuencia (RFID); aparatos, instrumentos y equipos de comunicación en campo cercano (NFC); partes y guarniciones para todos los productos antes mencionados.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "EM",
+      "priorityCountryName": "EU trade marks",
+      "priorityDate": "20090417",
+      "priorityNumber": "008223802"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20090417",
+          "basicApplicationNumber": "008223802"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "EM"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CH",
+      "CN",
+      "JP",
+      "KR",
+      "SG",
+      "US"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20090417",
+            "basicApplicationNumber": "008223802"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "EM"
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CH",
+      "CN",
+      "JP",
+      "KR",
+      "SG",
+      "US"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Integrated circuits; RFID chips and tags; receivers and transmitters for use with RFID chips and tags; NFC (near field communications) apparatus, instruments and equipment; parts and fittings for all the aforesaid goods."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Circuits intégrés; étiquettes et puces d'identification par radiofréquence; récepteurs et émetteurs conçus pour être utilisés avec des étiquettes et puces d'identification par radiofréquence; appareils, instruments et équipements de communication en champ proche; parties et garnitures pour tous les produits précités."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Circuitos integrados; chips y etiquetas de identificación por radiofrecuencia (RFID); receptores y transmisores para chips y etiquetas de identificación por radiofrecuencia (RFID); aparatos, instrumentos y equipos de comunicación en campo cercano (NFC); partes y guarniciones para todos los productos antes mencionados."
+        }
+      ]
+    },
+    "id": "ba5a9e02-7ea9-43d6-bf5f-9589c90d7e7b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "EM",
+        "priorityCountryName": "EU trade marks",
+        "priorityDate": "20090417",
+        "priorityNumber": "008223802"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "08"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices, Anna van Buerenplein 21A NL-2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20291006",
+      "lastPublicationDate": "20200305",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20091006",
+        "registrationNumber": "1017732"
+      },
+      "renewalDate": "20191006",
+      "renewalPublishedDate": "20200305"
+    },
+    "version": "20250620165536",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ICODE"
+    }
+  },
+  "_uri": "/mark/wo/ba5a9e02-7ea9-43d6-bf5f-9589c90d7e7b",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.459Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

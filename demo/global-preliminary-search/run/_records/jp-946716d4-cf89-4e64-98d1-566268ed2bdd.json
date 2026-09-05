@@ -1,0 +1,223 @@
+{
+  "uri": "/mark/jp/946716d4-cf89-4e64-98d1-566268ed2bdd",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "946716d4-cf89-4e64-98d1-566268ed2bdd",
+  "applicationNumber": "H03-096529",
+  "registrationNumber": "2637196",
+  "applicationDate": "1991-09-18",
+  "registrationDate": "1994-03-31",
+  "expiryDate": "2014-03-31",
+  "renewalDate": null,
+  "lastPublicationDate": "1993-05-14",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＱＲＩ",
+  "markTransliteration": "KYUUAARUAI",
+  "markTranslation": "QRI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    9,
+    16,
+    19,
+    20
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6
+      ],
+      "language": null,
+      "description": "金属製彫刻",
+      "translation_language": "en",
+      "translation": "Metal sculpture"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "映写フィルム，スライドフィルム，スライドフィルム用マウント，録画済みビデオディスク及びビデオテープ",
+      "translation_language": "en",
+      "translation": "Movie film, slide film, mount for slide film, recorded video disk and video tape"
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": null,
+      "description": "印刷物，書画，写真，写真立て",
+      "translation_language": "en",
+      "translation": "Print, document, photo, photo stand"
+    },
+    {
+      "classes": [
+        19
+      ],
+      "language": null,
+      "description": "石製彫刻，コンクリート製彫刻，大理石製彫刻",
+      "translation_language": "en",
+      "translation": "Stone sculpture, concrete sculpture, marble sculpture"
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": null,
+      "description": "額縁，石こう製彫刻，プラスチック製彫刻，木製彫刻",
+      "translation_language": "en",
+      "translation": "Frame, gypsum sculpture, plastic sculpture, wooden sculpture"
+    }
+  ],
+  "owner": "QUICK CORP.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19910918"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CHIYODA TOKYO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "QUICK CORP.",
+        "applicantNativeAddress": "東京都千代田区大手町１丁目６番１号",
+        "applicantNativeName": "株式会社ＱＵＩＣＫ"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Metal sculpture",
+          "intClassNumber": "06",
+          "intGoodsServicesDescription": "金属製彫刻"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Movie film, slide film, mount for slide film, recorded video disk and video tape",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "映写フィルム，スライドフィルム，スライドフィルム用マウント，録画済みビデオディスク及びビデオテープ"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Print, document, photo, photo stand",
+          "intClassNumber": "16",
+          "intGoodsServicesDescription": "印刷物，書画，写真，写真立て"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Stone sculpture, concrete sculpture, marble sculpture",
+          "intClassNumber": "19",
+          "intGoodsServicesDescription": "石製彫刻，コンクリート製彫刻，大理石製彫刻"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Frame, gypsum sculpture, plastic sculpture, wooden sculpture",
+          "intClassNumber": "20",
+          "intGoodsServicesDescription": "額縁，石こう製彫刻，プラスチック製彫刻，木製彫刻"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "26C01",
+          "natGoodsServicesDescription": "Metal sculptures"
+        },
+        {
+          "natClassNumber": "24E02"
+        },
+        {
+          "natClassNumber": "26D01",
+          "natGoodsServicesDescription": "Cinematographic films, Slide films, Transparencies, Prerecorded videodiscs or tapes, Electronic Publishments"
+        },
+        {
+          "natClassNumber": "26A01",
+          "natGoodsServicesDescription": "Printed matter"
+        },
+        {
+          "natClassNumber": "26B01",
+          "natGoodsServicesDescription": "Calligraphy, Paintings"
+        },
+        {
+          "natClassNumber": "26D01",
+          "natGoodsServicesDescription": "Photographs, Photograph stands"
+        },
+        {
+          "natClassNumber": "26C01",
+          "natGoodsServicesDescription": "Stone sculptures, Concrete sculptures, Marble sculptures"
+        },
+        {
+          "natClassNumber": "26B01",
+          "natGoodsServicesDescription": "Picture frames"
+        },
+        {
+          "natClassNumber": "26C01",
+          "natGoodsServicesDescription": "Plaster sculptures, Plastic sculptures, Wooden sculptures"
+        }
+      ]
+    },
+    "id": "946716d4-cf89-4e64-98d1-566268ed2bdd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19910918"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19910918",
+        "applicationNumber": "H03-096529"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20140331",
+      "lastPublicationDate": "19930514",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19940331",
+        "registrationNumber": "2637196"
+      }
+    },
+    "version": "20240320160304",
+    "wordMarkSpecification": {
+      "markTranslation": "QRI",
+      "markTransliteration": "KYUUAARUAI",
+      "markVerbalElementText": "ＱＲＩ"
+    }
+  },
+  "_uri": "/mark/jp/946716d4-cf89-4e64-98d1-566268ed2bdd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:49.202Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,1068 @@
+{
+  "uri": "/mark/em/b00a844e-7ac5-4af8-966f-0fa86d64d484",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "b00a844e-7ac5-4af8-966f-0fa86d64d484",
+  "applicationNumber": "19248944",
+  "registrationNumber": "19248944",
+  "applicationDate": "2025-09-18",
+  "registrationDate": "2026-01-15",
+  "expiryDate": "2035-09-18",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-10-07",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENQUITY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "cs",
+      "description": "Pomoc v obchodní a podnikatelské cinnosti, management a administrativní sluzby; Pomoc a poradenství v oblasti obchodního managementu; Rízení lidských zdroju a náborové sluzby; Poradenské sluzby a sluzby v oblasti obchodního managementu; Konzultanti pro nábor zamestnancu v oboru financních sluzeb; Sluzby poskytované majitelem licence, zejména asistence pri provozu nebo rízení prumyslových nebo obchodních podniku.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "cs",
+      "description": "Poskytování bezpecnostních schránek; Financní sluzby správy investic; Financní a penezní sluzby; Investicní sluzby; Rízení investicních fondu; Financní informace, údaje, poradenské a konzultacní sluzby; Správa financních zálezitostí; Sluzby v oblasti financního poradenství a rízení; Poskytování obchodních financí; Sluzby financních analýz v oblasti investic; Konzultacní sluzby týkající se financních investicí; Získávání financních prostredku a financní sponzorování; Financní sluzby pro firmy; Financní odhady; Financní poradenství; Penzijní fondy.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "cs",
+      "description": "Zverejnování, oznamování a psaní textu; Sluzby v oblasti vzdelávání, zábavy a sportu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "da",
+      "description": "Bistand ved forretningsudførelse, -ledelse og -administration; Assistance og rådgivning vedrørende virksomhedsledelse; HR-management og rekruttering; Forretningsledelse og -rådgivning; Rekrutteringsrådgivere inden for området for finansielle tjenesteydelser; Tjenesteydelser ydet af en franchisegiver, nemlig bistand ved drift eller ledelse af industrielle eller kommercielle virksomheder.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "da",
+      "description": "Opbevaring i depot af værdipapirer og -genstande; Forvaltning af finansielle investeringer; Finansiel og valutarisk virksomhed; Investeringsvirksomhed; Forvaltning af investeringsfonde; Finansiel information, data, rådgivnings- og vejledningstjenesteydelser; Forvaltning af finansielle anliggender; Rådgivning vedrørende finansiel styring; Tilvejebringelse af forretningsmæssig finansiering; Tjenester vedrørende finansiel analyse i forbindelse med investeringer; Investeringsrådgivning; Fundraising og finansiel sponsorering; Tjenesteydelser inden for finansiering til virksomheder; Tjenesteydelser vedrørende finansiel vurdering; Finansiel rådgivning; Pensionsfondstjenester.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "da",
+      "description": "Publicering, journalistvirksomhed og tekstforfatning; Uddannelsesvirksomhed, underholdningsvirksomhed og sportsydelser.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "Commercieel-zakelijke assistentie, commercieel-zakelijk beheer en administratieve diensten; Assistentie en advisering inzake commercieel management; Human resources management en personeelswerving; Commercieel-zakelijke bedrijfsvoering en consultancy; Werving van adviseurs op het gebied van financiële diensten; Hulp bij de exploitatie of het beheer van industriële of commerciële ondernemingen (Diensten geleverd door een franchisegever, te weten -).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "nl",
+      "description": "Bewaarneming in kluizen; Beheer van vermogens en investeringen; Financiële en monetaire diensten; Beleggingsdiensten; Beheer van beleggingsfondsen; Financiële informatie, data, advisering en consultancy; Beheer van financiële zaken; Financiële advisering en beheer van vermogens; Financiën op het gebied van handel; Financiële analyse met betrekking tot investeringen; Investeringsadvies; Fondsenwerving en financiële sponsoring; Financiële diensten voor bedrijven; Diensten op het gebied van financiële taxaties; Financieel advies; Diensten van een voorzorgsfonds.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Publiceren, rapporteren en schrijven van teksten; Diensten op het gebied van opvoeding, ontspanning en sport.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Business assistance, management and administrative services; Assistance and advice regarding business management; Human resources management and recruitment services; Business management and consultancy services; Recruitment consultants in the financial services field; Services rendered by a franchisor, namely, assistance in the running or management of industrial or commercial enterprises.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Safe deposit services; Financial investment management services; Financial and monetary services; Investment services; Investment fund management; Financial information, data, advice and consultancy services; Administration of financial affairs; Financial advisory and management services; Provision of commercial finance; Financial analysis services relating to investments; Investment consultancy; Fundraising and financial sponsorship; Financing services for companies; Valuation services; Financial advice; Provident fund services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Publishing, reporting, and writing of texts; Education, entertainment and sport services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "et",
+      "description": "Ärijuhtimisteenused ja ärialane abi; Abi ja nõustamine juhtimisküsimustes; Inimressursside juhtimine ja tööjõuvärbamise teenused; Ärijuhtimis- ja -konsultatsiooniteenused; Värbamiskonsultandi teenused finantsvaldkonnas; Frantsiisiteenused, nimelt tööstus- või kaubandusettevõtete juhtimisabi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "et",
+      "description": "Seifihoiustamine; Finantsinvesteeringute juhtimine; Finants- ja rahandusteenused; Investeerimisteenused; Investeerimisfondide haldamine; Finantsinformatsiooni-, -andmete-, -nõuande- ja -konsultatsiooniteenused; Rahaliste tehingute korraldamine; Finantsilise nõustamise ja juhtimise teenused; Kaubanduse finantseerimine; Investeeringute finantsanalüüsi teenused; Investeerimisalased konsultatsiooniteenused; Korjandused ja finantssponsorlus; Ettevõtete finantseerimise teenused; Finantsilise hindamise teenused; Finantsnõustamine; Kindlustusfondide teenused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "et",
+      "description": "Kirjastamine, reporteriteenused ja tekstide kirjutamine; Haridus-, meelelahutus- ja sporditeenused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fi",
+      "description": "Yritystoiminnan avustamis-, liikkeenjohto- ja hallintopalvelut; Yritysjohdon neuvonta ja tuki; Henkilöstöhallinto ja rekrytointipalvelut; Liikkeenjohto- ja yrityskonsultointipalvelut; Rekrytointikonsulttipalvelut rahoituspalvelujen alalla; Toimiluvan myöntäjän tarjoamat palvelut, nimittäin avustaminen teollisuus- tai liikeyrityksen hoidossa tai johdossa.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "fi",
+      "description": "Tallelokeropalvelut; Rahataloudelliset sijoitusten hoitopalvelut; Rahatalous- ja rahapalvelut; Sijoituspalvelut; Sijoitusrahastot; Rahatalouteen liittyvät tieto-, neuvonta- ja konsultointipalvelut; Rahatalousasioiden hallinta; Rahatalouteen liittyvät neuvonta- ja hallintapalvelut; Kaupallisen rahoituksen tarjoaminen; Sijoituksiin liittyvät rahoitusanalyysipalvelut; Sijoituskonsultointi; Varainkeruu ja taloudellinen sponsorointi; Yritysrahoitus; Rahataloudelliset arviointipalvelut; Rahatalouteen liittyvän neuvonnan tarjoaminen; Huoltorahastopalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fi",
+      "description": "Tekstien julkaisu, raportointi ja kirjoittaminen; Koulutus-, ajanviete- ja urheilupalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Services d'aide et de gestion des affaires et services administratifs; Assistance et conseil en matière de gestion commerciale; Services de gestion des ressources humaines et recrutement de personnel; Services de conseillers et gestion d'affaires commerciales; Consultants en recrutement dans le domaine des services financiers; Services fournis par un franchiseur à savoir assistance commerciale en exploitation ou en gestion d'entreprises industrielles ou commerciales.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "fr",
+      "description": "Services de dépôt en coffres-forts; Services de gestion des investissements financiers; Services financiers et monétaires; Services d'investissement; Gestion de fonds de placement; Services d'informations, de données, de conseils et de consultations relatifs à la finance; Administration des affaires financières; Services de gestion et de conseils financiers; Services de financements commerciaux; Services d'analyses financières en matière de placement; Services de conseillers en placements; Collecte de fonds et parrainage financier; Financement d'entreprises; Services d'évaluation financière; Prestation de conseils en finances; Services de caisses de prévoyance.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Édition, établissement de rapports et rédaction de textes; Services d'éducation, de divertissement et de sport.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Hilfe in Geschäftsangelegenheiten, Geschäftsführung und administrative Dienstleistungen; Beratung und Hilfe bei der Geschäftsführung; Personalmanagement und Personalrekrutierung; Geschäftsführung und Unternehmensberatungsdienste; Beratungsdienstleistungen bei der Personalanwerbung im Bereich Finanzdienstleistungen; Dienstleistungen eines Franchisegebers, nämlich Hilfe bei der Führung oder Verwaltung gewerblicher oder kommerzieller Unternehmen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "de",
+      "description": "Depotverwahrungsdienste; Dienstleistungen der Finanzanlageverwaltung; Finanzdienstleistungen und Geldgeschäfte; Investmentdienstleistungen; Dienstleistungen der Investmentfondsverwaltung; Finanzauskunfts- und -beratungsdienste sowie Bereitstellen von Finanzdaten; Finanzverwaltungsdienste; Beratungsdienste zur Finanzverwaltung; Dienstleistungen der Unternehmensfinanzierung; Finanzanalysedienstleistungen bezüglich Investitionen; Dienstleistungen der Investmentberatung; Fundraising und finanzielles Sponsoring; Finanzierungsdienstleistungen für Unternehmen; Finanzielle Begutachtungsdienste; Finanzielle Beratungsdienste; Dienstleistungen zur finanziellen Vorsorge.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Verlagsdienstleistungen und Berichterstattung sowie Verfassen von Texten; Bildung, Erziehung, Unterhaltung und sportliche Aktivitäten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hr",
+      "description": "Usluge poslovne pomoci, upravljanja i administracije; Podrska i savjetovanje u vezi poslovnog upravljanja; Usluge upravljanja ljudskim resursima i zaposljavanja; Usluge poslovnog upravljanja i konzultacija; Zaposljavanje konzultanata na polju financijskih usluga; Usluge davatelja fransize, odnosno pomoc u pokretanju ili vodenju industrijskih ili komercijalnih poduzeca.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "hr",
+      "description": "Usluge cuvanja u sefu; Usluge upravljanja financijskim ulaganjima; Financijske i novcane usluge; Usluge ulaganja; Upravljanje ulagackim fondovima; Usluge pruzanja financijskih informacija, podataka i savjeta; Administracija financijskih poslova; Usluge financijskog savjetovanja i upravljanja; Pruzanje komercijalnih financiranja; Usluge financijske analize koje se odnose na investicije; Konzultantske usluge povezane s investicijama; Prikupljanje financijskih sredstava i financijsko pokroviteljstvo; Usluge korporativnog financiranja; Usluge financijske procjene; Financijsko savjetovanje; Usluge fondova zbrinjavanja.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hr",
+      "description": "Objavljivanje, izvjestavanje i pisanje tekstova; Obrazovne, zabavne i sportske usluge.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hu",
+      "description": "Üzleti segítségnyújtás, menedzseri és adminisztratív szolgáltatások; Üzleti menedzsmenttel kapcsolatos segítségnyújtás és tanácsadás; Emberi eroforrás menedzsment és munkaero-toborzási szolgáltatások; Üzletvezetési és konzultációs szolgáltatások; Toborzási tanácsadás pénzügyi szolgáltatások területén; Franchise-adók által nyújtott szolgáltatások, nevezetesen segítségnyújtás ipari vagy kereskedelmi vállalatok muködtetésében vagy ügyvitelében.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "hu",
+      "description": "Széfszolgáltatások; Pénzügyi befektetés-kezelési szolgáltatások; Pénzügyi és monetáris szolgáltatások; Befektetési szolgáltatások; Befektetési alapok kezelése; Pénzügyi információs szolgáltatások, adatszolgáltatás és tanácsadás; Pénzügyek igazgatása; Pénzügyi tanácsadási és menedzsment szolgáltatások; Kereskedelmi finanszírozás; Befektetésekkel kapcsolatos pénzügyi elemzések; Befektetési konzultáció; Adománygyujtés és pénzügyi szponzorálás; Vállalati finanszírozás; Pénzügyi becslési szolgáltatások; Pénzügyi tanácsok; Gondoskodási alap szolgáltatások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hu",
+      "description": "Kiadói és híradói, beszámolói szolgáltatások, illetve szövegek írása; Oktatási, szórakoztatási és sportszolgáltatások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "it",
+      "description": "Assistenza negli affari, servizi gestionali ed amministrativi; Assistenza e consulenza per la gestione aziendale; Servizi di gestione di risorse umane e di reclutamento; Servizi di gestione aziendale e consulenza; Reclutamento di consulenti nel settore finanziario; Servizi resi da un affiliante, ovvero assistenza nella conduzione o gestione di imprese industriali o commerciali.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "it",
+      "description": "Servizi di deposito in cassette di sicurezza; Servizi di gestione finanziaria di investimenti; Servizi finanziari e monetari; Servizi in materia di investimenti; Gestione di fondi di investimento; Informazione finanziaria, fornitura di dati, servizi di consulenza; Amministrazione di affari finanziari; Servizi di consulenza in gestione finanziaria; Fornitura di finanziamenti per il commercio; Servizi di analisi finanziaria in materia di investimenti; Consulenza in materia di investimenti; Raccolta di fondi e sponsorizzazione finanziaria; Servizi di finanziamento per società; Servizi di stime finanziarie; Consulenza finanziaria; Servizi di fondo di previdenza.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "Pubblicazione, comunicazione e redazione di testi; Servizi relativi a educazione, divertimento e sport.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lt",
+      "description": "Verslo pagalba, vadyba ir administravimas; Pagalba ir patarimai, susije su verslo vadyba; Zmogiskuju istekliu vadybos ir personalo komplektavimo paslaugos; Verslo vadybos ir konsultavimo paslaugos; Finansiniu paslaugu srities konsultantu idarbinimas; Fransizes teikejo paslaugos, butent pagalba pramones ar prekybos imoniu veiklos ar vadybos srityje.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "lt",
+      "description": "Saugojimas seifuose; Finansu investavimo vadybos paslaugos; Finansines ir pinigines paslaugos; Investavimo paslaugos; Investiciniu fondu valdymas; Finansine informacija, duomenys, patarimai ir konsultacijos; Finansiniu reikalu administravimas; Finansiniu patarimu ir vadybos paslaugos; Komercinio finansavimo teikimas; Investiciju finansines analizes paslaugos; Konsultacijos investiciju klausimais; Lesu rinkimas ir finansine parama; Bendroviu finansavimo paslaugos; Finansinio ivertinimo paslaugos; Finansiniai patarimai; Pensiju fondu paslaugos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lt",
+      "description": "Tekstu leidyba, reportazu rengimas ir tekstu rasymas; Svietimo, pramogu ir sporto paslaugos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lv",
+      "description": "Atbalsta sniegsana un administrativie pakalpojumi uznemumu parvaldiba; Konsultaciju un atbalsta sniegsana darijumu vadisana; Cilvekresursu vadibas un personala atlases pakalpojumi; Uznemejdarbibas parvaldibas un konsultaciju sniegsana; Personala atlases konsultantu pakalpojumi finansu joma; Fransizes deveja atbalsta sniegsana rupniecibas un komercialu uznemumu parvaldiba.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "lv",
+      "description": "Seifu pakalpojumi; Finansu investiciju parvaldisanas pakalpojumi; Finansu un monetarie pakalpojumi; Investiciju pakalpojumi; Investiciju fondu vadisana; Finansu informacijas, datu, padomu un konsultaciju sniegsana; Finansu lietu parvaldiba; Konsultaciju pakalpojumi finansu un vadibas jautajumos; Finansu nodrosinasana komercdarbibai; Finansu analize saistiba ar ieguldijumiem; Konsultacijas saistiba ar investicijam; Lidzeklu vaksana un finansiala sponsoresana; Korporativa finansesana; Uznemumu vertibas noteiksanas pakalpojumi; Padomu sniegsana finansu joma; Noguldijumu fondu pakalpojumi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lv",
+      "description": "Tekstu rakstisana, publicesana un reportazu sagatavosana; Izglitibas, izklaides un sporta pakalpojumi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' assistenza, gestjoni u amministrazzjoni fin-negozju; Pariri u ghajnuna dwar il-gestjoni tan-negozju; Servizzi ta' gestjoni u reklutagg ta' rizorsi umani; Servizzi ta' konsulenza dwar gestjoni ghan-negozji; Konsulenti tar-reklutagg fil-qasam tas-servizzi finanzjarji; Servizzi moghtija minn koncessur, jigifieri assistenza fl-operazzjoni jew fil-gestjoni ta' intraprizi industrijali jew kummercjali.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' depozitu ta' sigurtà; Servizzi ta' gestjoni ta' investiment finanzjarju; Servizzi finanzjarji u monetarji; Servizzi ta' nvestiment; Gestjoni ta' fondi ta' investiment; Informazzjoni finanzjarja, dejta, servizzi ta' pariri u konsultazzjoni; Amministrazzjoni ta' affarijiet finanzjarji; Servizzi ta' pariri u gestjoni finanzjarja; Provvista ta' finanzjament kummercjali; Servizzi ta' analizi finanzjarja relatati mal-investimenti; Konsulenza dwar investimenti; Gbir ta' fondi u sponsorizzazzjoni finanzjarja; Servizzi ta' finanzjament ta' kumpaniji; Servizzi ta' stima finanzjarja; Parir finanzjarju; Servizzi ta' fondi providenti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "mt",
+      "description": "Il-pubblikazzjoni, ir-rapportagg u l-kitba ta' testi; Servizzi ta' edukazzjoni, ta' divertiment u ta' sports.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pl",
+      "description": "Pomoc w prowadzeniu dzialalnosci gospodarczej, zarzadzanie i administrowanie dzialalnoscia gospodarcza; Doradztwo i pomoc w zakresie zarzadzania dzialalnoscia gospodarcza; Zarzadzanie zasobami ludzkimi i uslugi rekrutacji personelu; Uslugi doradcze w zakresie dzialalnosci gospodarczej i uslugi zarzadzania dzialalnoscia gospodarcza; Konsultacje dotyczace zatrudnienia w dziedzinie uslug finansowych; Uslugi swiadczone przez franczyzodawce, mianowicie pomoc w prowadzeniu przedsiebiorstw przemyslowych lub handlowych lub w zarzadzaniu nimi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "pl",
+      "description": "Uslugi depozytów sejfowych; Uslugi w zakresie zarzadzania inwestycjami finansowymi; Uslugi finansowe i monetarne; Uslugi inwestycyjne; Zarzadzanie funduszami inwestycyjnymi; Informacja finansowa, uslugi doradcze i konsultingowe w zakresie finansów; Administrowanie finansami; Finansowe uslugi doradcze i dotyczace zarzadzania; Zapewnianie finansowania handlu; Uslugi analiz finansowych zwiazane z inwestycjami; Uslugi konsultacyjne dotyczace inwestycji; Gromadzenie funduszy i sponsorowanie finansowe; Usluga zapewniania finansów dla przedsiebiorstw; Uslugi w zakresie wycen; Doradztwo finansowe; Uslugi funduszy zapomogowych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pl",
+      "description": "Publikowanie, sprawozdawczosc i pisanie tekstów; Uslugi edukacyjne, rozrywkowe i sportowe.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pt",
+      "description": "Serviços de assistência, gestão e administração de negócios; Assistência e aconselhamento em relação a gestão empresarial; Serviços de gestão de recursos humanos e recrutamento; Serviços de gestão de negócios e de consultadoria; Consultadoria em matéria de recrutamento na área dos serviços financeiros; Serviços prestados por um franchisador, nomeadamente assistência na gestão ou administração de empresas industriais ou comerciais.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "pt",
+      "description": "Serviços de depósitos em cofres-fortes; Serviços de gestão de investimentos financeiros; Serviços financeiros e monetários; Serviços de investimento; Gestão de fundos de investimento; Serviços de informação, dados, aconselhamento e consultoria financeiros; Administração de negócios financeiros; Serviços de assessoria em matéria de gestão financeira; Concessão de financiamento comercial; Serviços de análises financeiras em matéria de investimento; Consultoria de investimentos; Angariação de fundos e patrocínio financeiro; Serviços de financiamento de sociedades; Serviços de avaliações financeiras; Consultadoria financeira; Serviços de fundo de previdência.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Publicação, relato e redação de textos; Serviços de educação, entretenimento e desporto.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ro",
+      "description": "Asistenta în afaceri, management si servicii administrative; Asistenta si consultanta privind managementul afacerilor; Administrarea resurselor umane si servicii de recrutare; Servicii de consultanta si de management al afacerilor; Consiliere pe probleme de recrutare în domeniul serviciilor financiare; Servicii oferite de un francizor, respectiv asistenta în conducerea sau administrarea întreprinderilor industriale sau comerciale.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "ro",
+      "description": "Servicii de depunere în casete valorice; Servicii de management de investitii financiare; Servicii financiare si monetare; Servicii de investitii; Gestiunea fondurilor de investitii; Servicii de informare, consiliere si consultanta financiara; Administrarea afacerilor financiare; Servicii de consiliere si management financiar; Acordare de finantare în domeniul comercial; Servicii de analiza financiara privind investitiile; Consultanta în materie de investitii; Strângere de fonduri si sponsorizare financiara; Servicii de finantare pentru societati; Servicii de evaluare; Consiliere financiara; Servicii în domeniul fondurilor de pensii facultative.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ro",
+      "description": "Editare, întocmire de rapoarte si redactare de texte; Servicii educative, de divertisment si sportive.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sk",
+      "description": "Pomoc pri podnikaní, riadenie podniku a obchodná správa; Poradenstvo a pomoc pri riadení obchodnej cinnosti; Riadenie ludských zdrojov a nábor zamestnancov; Poradenské sluzby a sluzby v oblasti podnikatelského manazmentu; Náboroví konzultanti v oblasti financných sluzieb; Sluzby poskytované franchisormi, najmä pomoc pri prevádzke alebo riadení priemyselných alebo obchodných podnikov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "sk",
+      "description": "Úschovné sluzby, úschova v bezpecnostných schránkach; Sluzby týkajúce sa riadenia financného investovania; Financné a penazné sluzby; Investicné sluzby; Správa investicných fondov; Financné informácie, údaje, financné poradenstvo a konzultácie; Správa financných zálezitostí; Sluzby v oblasti financného poradenstva a manazmentu; Poskytovanie financií pre obchodovanie; Financné analytické sluzby v oblasti investícií; Poradenské sluzby v oblasti financného investovania; Získavanie financných prostriedkov a financné sponzorstvo; Financné sluzieb pre spolocnosti; Financné odhadovanie; Odborné financné poradenstvo; Konzervatívne fondy (sluzby).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sk",
+      "description": "Uverejnovanie, oznamovanie a písanie textov; Sluzby v oblasti vzdelávania, zábavy a sportu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sl",
+      "description": "Poslovna asistenca, poslovno vodenje in administrativne storitve; Pomoc in svetovanje pri poslovnem upravljanju; Storitve kadrovanja in zaposlovanja; Storitve poslovnega vodenja in svetovanja; Svetovalci za zaposlovanje na podrocju financnih storitev; Storitve, ki jih izvaja fransizodajalec, in sicer pomoc pri vodenju ali upravljanju industrijskih ali komercialnih podjetij.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "sl",
+      "description": "Hramba v sefih; Storitve upravljanja financnih investicij; Financne in denarne storitve; Investicijske storitve; Upravljanje investicijskih skladov; Informacijske, podatkovne, svetovalne in posvetovalne storitve s podrocja financ; Administracija financnih zadev; Storitve financnega svetovanja in upravljanja; Nudenje trgovinskega financiranja; Storitve financnih analiz v zvezi z nalozbami; Investicijsko svetovanje; Zbiranje sredstev in financno sponzoriranje; Financne storitve za podjetja; Storitve financnih cenitev; Financno posvetovanje; Storitve skladov za socialno pomoc.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sl",
+      "description": "Objava, priprava porocil in pisanje besedil; Izobrazevalne, razvedrilne in sportne storitve.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Servicios de asistencia, dirección y administración de negocios; Asistencia y asesoría en gestión empresarial; Agencias de empleo y gestión de recursos humanos; Servicios de consultoría de gestión empresarial; Consultas de contratación en el ámbito de los servicios financieros; Servicios prestados por un franquiciador, en concreto asistencia en el funcionamiento o gestión de empresas industriales o comerciales.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "es",
+      "description": "Servicios de depósitos en cajas de seguridad; Servicios de gestión de inversiones financieras; Servicios financieros y monetarios; Servicios de inversión; Gestión de fondos de inversión; Consultoría, asesoramiento e información en materia financiera; Administración de negocios financieros; Servicios de asesoramiento y gestión financieros; Suministro de finanzas comerciales; Análisis financieros sobre inversiones; Consultoría en inversiones; Recaudación de fondos y patrocinio financiero; Servicios de financiación corporativa; Servicios de valoración; Asesoramiento financiero; Servicios de fondos de previsión.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Publicación, edición de reportajes y redacción de textos; Servicios de educación, entretenimiento y de actividades deportivas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sw",
+      "description": "Företagsassistans, -ledning och -administration; Assistans och rådgivning vid företagsledning; Personalresurshantering (HR-tjänster) och rekryteringstjänster; Företagsledning och konsultationer därtill; Rekryteringskonsultation inom området för finansiella tjänster; Tjänster utförda av en franchisegivare, nämligen assistans med skötsel eller ledning av industriella eller kommersiella företag.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "sw",
+      "description": "Säkerhetsförvaring; Finans- och investeringsförvaltning; Finansiella- och monetära tjänster; Investeringstjänster; Fondinvesteringsförvaltning; Finansiell information, data, rådgivning och konsultation; Förvaltning av finansiella affärer; Rådgivningstjänster avseende finansiell förvaltning; Upplåtande av kommersiell finansiering; Tjänster avseende finansiella analyser av investeringar; Investeringskonsultationer; Penninginsamling och finansiell sponsring; Finansieringstjänster för företag; Värderingstjänster; Finansiell rådgivning; Understödsfondstjänster.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sw",
+      "description": "Publicering, rapportering och författande av texter; Tjänster avseende utbildning, underhållning och sport.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Peter Gries",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "August-Horch-Straße 23,Polch, 56751",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Peter Gries"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Pomoc v obchodní a podnikatelské cinnosti, management a administrativní sluzby; Pomoc a poradenství v oblasti obchodního managementu; Rízení lidských zdroju a náborové sluzby; Poradenské sluzby a sluzby v oblasti obchodního managementu; Konzultanti pro nábor zamestnancu v oboru financních sluzeb; Sluzby poskytované majitelem licence, zejména asistence pri provozu nebo rízení prumyslových nebo obchodních podniku."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Poskytování bezpecnostních schránek; Financní sluzby správy investic; Financní a penezní sluzby; Investicní sluzby; Rízení investicních fondu; Financní informace, údaje, poradenské a konzultacní sluzby; Správa financních zálezitostí; Sluzby v oblasti financního poradenství a rízení; Poskytování obchodních financí; Sluzby financních analýz v oblasti investic; Konzultacní sluzby týkající se financních investicí; Získávání financních prostredku a financní sponzorování; Financní sluzby pro firmy; Financní odhady; Financní poradenství; Penzijní fondy."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Zverejnování, oznamování a psaní textu; Sluzby v oblasti vzdelávání, zábavy a sportu."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Bistand ved forretningsudførelse, -ledelse og -administration; Assistance og rådgivning vedrørende virksomhedsledelse; HR-management og rekruttering; Forretningsledelse og -rådgivning; Rekrutteringsrådgivere inden for området for finansielle tjenesteydelser; Tjenesteydelser ydet af en franchisegiver, nemlig bistand ved drift eller ledelse af industrielle eller kommercielle virksomheder."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Opbevaring i depot af værdipapirer og -genstande; Forvaltning af finansielle investeringer; Finansiel og valutarisk virksomhed; Investeringsvirksomhed; Forvaltning af investeringsfonde; Finansiel information, data, rådgivnings- og vejledningstjenesteydelser; Forvaltning af finansielle anliggender; Rådgivning vedrørende finansiel styring; Tilvejebringelse af forretningsmæssig finansiering; Tjenester vedrørende finansiel analyse i forbindelse med investeringer; Investeringsrådgivning; Fundraising og finansiel sponsorering; Tjenesteydelser inden for finansiering til virksomheder; Tjenesteydelser vedrørende finansiel vurdering; Finansiel rådgivning; Pensionsfondstjenester."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Publicering, journalistvirksomhed og tekstforfatning; Uddannelsesvirksomhed, underholdningsvirksomhed og sportsydelser."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Commercieel-zakelijke assistentie, commercieel-zakelijk beheer en administratieve diensten; Assistentie en advisering inzake commercieel management; Human resources management en personeelswerving; Commercieel-zakelijke bedrijfsvoering en consultancy; Werving van adviseurs op het gebied van financiële diensten; Hulp bij de exploitatie of het beheer van industriële of commerciële ondernemingen (Diensten geleverd door een franchisegever, te weten -)."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Bewaarneming in kluizen; Beheer van vermogens en investeringen; Financiële en monetaire diensten; Beleggingsdiensten; Beheer van beleggingsfondsen; Financiële informatie, data, advisering en consultancy; Beheer van financiële zaken; Financiële advisering en beheer van vermogens; Financiën op het gebied van handel; Financiële analyse met betrekking tot investeringen; Investeringsadvies; Fondsenwerving en financiële sponsoring; Financiële diensten voor bedrijven; Diensten op het gebied van financiële taxaties; Financieel advies; Diensten van een voorzorgsfonds."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Publiceren, rapporteren en schrijven van teksten; Diensten op het gebied van opvoeding, ontspanning en sport."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Business assistance, management and administrative services; Assistance and advice regarding business management; Human resources management and recruitment services; Business management and consultancy services; Recruitment consultants in the financial services field; Services rendered by a franchisor, namely, assistance in the running or management of industrial or commercial enterprises."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Safe deposit services; Financial investment management services; Financial and monetary services; Investment services; Investment fund management; Financial information, data, advice and consultancy services; Administration of financial affairs; Financial advisory and management services; Provision of commercial finance; Financial analysis services relating to investments; Investment consultancy; Fundraising and financial sponsorship; Financing services for companies; Valuation services; Financial advice; Provident fund services."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Publishing, reporting, and writing of texts; Education, entertainment and sport services."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Ärijuhtimisteenused ja ärialane abi; Abi ja nõustamine juhtimisküsimustes; Inimressursside juhtimine ja tööjõuvärbamise teenused; Ärijuhtimis- ja -konsultatsiooniteenused; Värbamiskonsultandi teenused finantsvaldkonnas; Frantsiisiteenused, nimelt tööstus- või kaubandusettevõtete juhtimisabi."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Seifihoiustamine; Finantsinvesteeringute juhtimine; Finants- ja rahandusteenused; Investeerimisteenused; Investeerimisfondide haldamine; Finantsinformatsiooni-, -andmete-, -nõuande- ja -konsultatsiooniteenused; Rahaliste tehingute korraldamine; Finantsilise nõustamise ja juhtimise teenused; Kaubanduse finantseerimine; Investeeringute finantsanalüüsi teenused; Investeerimisalased konsultatsiooniteenused; Korjandused ja finantssponsorlus; Ettevõtete finantseerimise teenused; Finantsilise hindamise teenused; Finantsnõustamine; Kindlustusfondide teenused."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Kirjastamine, reporteriteenused ja tekstide kirjutamine; Haridus-, meelelahutus- ja sporditeenused."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Yritystoiminnan avustamis-, liikkeenjohto- ja hallintopalvelut; Yritysjohdon neuvonta ja tuki; Henkilöstöhallinto ja rekrytointipalvelut; Liikkeenjohto- ja yrityskonsultointipalvelut; Rekrytointikonsulttipalvelut rahoituspalvelujen alalla; Toimiluvan myöntäjän tarjoamat palvelut, nimittäin avustaminen teollisuus- tai liikeyrityksen hoidossa tai johdossa."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tallelokeropalvelut; Rahataloudelliset sijoitusten hoitopalvelut; Rahatalous- ja rahapalvelut; Sijoituspalvelut; Sijoitusrahastot; Rahatalouteen liittyvät tieto-, neuvonta- ja konsultointipalvelut; Rahatalousasioiden hallinta; Rahatalouteen liittyvät neuvonta- ja hallintapalvelut; Kaupallisen rahoituksen tarjoaminen; Sijoituksiin liittyvät rahoitusanalyysipalvelut; Sijoituskonsultointi; Varainkeruu ja taloudellinen sponsorointi; Yritysrahoitus; Rahataloudelliset arviointipalvelut; Rahatalouteen liittyvän neuvonnan tarjoaminen; Huoltorahastopalvelut."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tekstien julkaisu, raportointi ja kirjoittaminen; Koulutus-, ajanviete- ja urheilupalvelut."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services d'aide et de gestion des affaires et services administratifs; Assistance et conseil en matière de gestion commerciale; Services de gestion des ressources humaines et recrutement de personnel; Services de conseillers et gestion d'affaires commerciales; Consultants en recrutement dans le domaine des services financiers; Services fournis par un franchiseur à savoir assistance commerciale en exploitation ou en gestion d'entreprises industrielles ou commerciales."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de dépôt en coffres-forts; Services de gestion des investissements financiers; Services financiers et monétaires; Services d'investissement; Gestion de fonds de placement; Services d'informations, de données, de conseils et de consultations relatifs à la finance; Administration des affaires financières; Services de gestion et de conseils financiers; Services de financements commerciaux; Services d'analyses financières en matière de placement; Services de conseillers en placements; Collecte de fonds et parrainage financier; Financement d'entreprises; Services d'évaluation financière; Prestation de conseils en finances; Services de caisses de prévoyance."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Édition, établissement de rapports et rédaction de textes; Services d'éducation, de divertissement et de sport."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Hilfe in Geschäftsangelegenheiten, Geschäftsführung und administrative Dienstleistungen; Beratung und Hilfe bei der Geschäftsführung; Personalmanagement und Personalrekrutierung; Geschäftsführung und Unternehmensberatungsdienste; Beratungsdienstleistungen bei der Personalanwerbung im Bereich Finanzdienstleistungen; Dienstleistungen eines Franchisegebers, nämlich Hilfe bei der Führung oder Verwaltung gewerblicher oder kommerzieller Unternehmen."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Depotverwahrungsdienste; Dienstleistungen der Finanzanlageverwaltung; Finanzdienstleistungen und Geldgeschäfte; Investmentdienstleistungen; Dienstleistungen der Investmentfondsverwaltung; Finanzauskunfts- und -beratungsdienste sowie Bereitstellen von Finanzdaten; Finanzverwaltungsdienste; Beratungsdienste zur Finanzverwaltung; Dienstleistungen der Unternehmensfinanzierung; Finanzanalysedienstleistungen bezüglich Investitionen; Dienstleistungen der Investmentberatung; Fundraising und finanzielles Sponsoring; Finanzierungsdienstleistungen für Unternehmen; Finanzielle Begutachtungsdienste; Finanzielle Beratungsdienste; Dienstleistungen zur finanziellen Vorsorge."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Verlagsdienstleistungen und Berichterstattung sowie Verfassen von Texten; Bildung, Erziehung, Unterhaltung und sportliche Aktivitäten."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Usluge poslovne pomoci, upravljanja i administracije; Podrska i savjetovanje u vezi poslovnog upravljanja; Usluge upravljanja ljudskim resursima i zaposljavanja; Usluge poslovnog upravljanja i konzultacija; Zaposljavanje konzultanata na polju financijskih usluga; Usluge davatelja fransize, odnosno pomoc u pokretanju ili vodenju industrijskih ili komercijalnih poduzeca."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Usluge cuvanja u sefu; Usluge upravljanja financijskim ulaganjima; Financijske i novcane usluge; Usluge ulaganja; Upravljanje ulagackim fondovima; Usluge pruzanja financijskih informacija, podataka i savjeta; Administracija financijskih poslova; Usluge financijskog savjetovanja i upravljanja; Pruzanje komercijalnih financiranja; Usluge financijske analize koje se odnose na investicije; Konzultantske usluge povezane s investicijama; Prikupljanje financijskih sredstava i financijsko pokroviteljstvo; Usluge korporativnog financiranja; Usluge financijske procjene; Financijsko savjetovanje; Usluge fondova zbrinjavanja."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Objavljivanje, izvjestavanje i pisanje tekstova; Obrazovne, zabavne i sportske usluge."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Üzleti segítségnyújtás, menedzseri és adminisztratív szolgáltatások; Üzleti menedzsmenttel kapcsolatos segítségnyújtás és tanácsadás; Emberi eroforrás menedzsment és munkaero-toborzási szolgáltatások; Üzletvezetési és konzultációs szolgáltatások; Toborzási tanácsadás pénzügyi szolgáltatások területén; Franchise-adók által nyújtott szolgáltatások, nevezetesen segítségnyújtás ipari vagy kereskedelmi vállalatok muködtetésében vagy ügyvitelében."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Széfszolgáltatások; Pénzügyi befektetés-kezelési szolgáltatások; Pénzügyi és monetáris szolgáltatások; Befektetési szolgáltatások; Befektetési alapok kezelése; Pénzügyi információs szolgáltatások, adatszolgáltatás és tanácsadás; Pénzügyek igazgatása; Pénzügyi tanácsadási és menedzsment szolgáltatások; Kereskedelmi finanszírozás; Befektetésekkel kapcsolatos pénzügyi elemzések; Befektetési konzultáció; Adománygyujtés és pénzügyi szponzorálás; Vállalati finanszírozás; Pénzügyi becslési szolgáltatások; Pénzügyi tanácsok; Gondoskodási alap szolgáltatások."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Kiadói és híradói, beszámolói szolgáltatások, illetve szövegek írása; Oktatási, szórakoztatási és sportszolgáltatások."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Assistenza negli affari, servizi gestionali ed amministrativi; Assistenza e consulenza per la gestione aziendale; Servizi di gestione di risorse umane e di reclutamento; Servizi di gestione aziendale e consulenza; Reclutamento di consulenti nel settore finanziario; Servizi resi da un affiliante, ovvero assistenza nella conduzione o gestione di imprese industriali o commerciali."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di deposito in cassette di sicurezza; Servizi di gestione finanziaria di investimenti; Servizi finanziari e monetari; Servizi in materia di investimenti; Gestione di fondi di investimento; Informazione finanziaria, fornitura di dati, servizi di consulenza; Amministrazione di affari finanziari; Servizi di consulenza in gestione finanziaria; Fornitura di finanziamenti per il commercio; Servizi di analisi finanziaria in materia di investimenti; Consulenza in materia di investimenti; Raccolta di fondi e sponsorizzazione finanziaria; Servizi di finanziamento per società; Servizi di stime finanziarie; Consulenza finanziaria; Servizi di fondo di previdenza."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Pubblicazione, comunicazione e redazione di testi; Servizi relativi a educazione, divertimento e sport."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Verslo pagalba, vadyba ir administravimas; Pagalba ir patarimai, susije su verslo vadyba; Zmogiskuju istekliu vadybos ir personalo komplektavimo paslaugos; Verslo vadybos ir konsultavimo paslaugos; Finansiniu paslaugu srities konsultantu idarbinimas; Fransizes teikejo paslaugos, butent pagalba pramones ar prekybos imoniu veiklos ar vadybos srityje."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Saugojimas seifuose; Finansu investavimo vadybos paslaugos; Finansines ir pinigines paslaugos; Investavimo paslaugos; Investiciniu fondu valdymas; Finansine informacija, duomenys, patarimai ir konsultacijos; Finansiniu reikalu administravimas; Finansiniu patarimu ir vadybos paslaugos; Komercinio finansavimo teikimas; Investiciju finansines analizes paslaugos; Konsultacijos investiciju klausimais; Lesu rinkimas ir finansine parama; Bendroviu finansavimo paslaugos; Finansinio ivertinimo paslaugos; Finansiniai patarimai; Pensiju fondu paslaugos."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Tekstu leidyba, reportazu rengimas ir tekstu rasymas; Svietimo, pramogu ir sporto paslaugos."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Atbalsta sniegsana un administrativie pakalpojumi uznemumu parvaldiba; Konsultaciju un atbalsta sniegsana darijumu vadisana; Cilvekresursu vadibas un personala atlases pakalpojumi; Uznemejdarbibas parvaldibas un konsultaciju sniegsana; Personala atlases konsultantu pakalpojumi finansu joma; Fransizes deveja atbalsta sniegsana rupniecibas un komercialu uznemumu parvaldiba."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Seifu pakalpojumi; Finansu investiciju parvaldisanas pakalpojumi; Finansu un monetarie pakalpojumi; Investiciju pakalpojumi; Investiciju fondu vadisana; Finansu informacijas, datu, padomu un konsultaciju sniegsana; Finansu lietu parvaldiba; Konsultaciju pakalpojumi finansu un vadibas jautajumos; Finansu nodrosinasana komercdarbibai; Finansu analize saistiba ar ieguldijumiem; Konsultacijas saistiba ar investicijam; Lidzeklu vaksana un finansiala sponsoresana; Korporativa finansesana; Uznemumu vertibas noteiksanas pakalpojumi; Padomu sniegsana finansu joma; Noguldijumu fondu pakalpojumi."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Tekstu rakstisana, publicesana un reportazu sagatavosana; Izglitibas, izklaides un sporta pakalpojumi."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' assistenza, gestjoni u amministrazzjoni fin-negozju; Pariri u ghajnuna dwar il-gestjoni tan-negozju; Servizzi ta' gestjoni u reklutagg ta' rizorsi umani; Servizzi ta' konsulenza dwar gestjoni ghan-negozji; Konsulenti tar-reklutagg fil-qasam tas-servizzi finanzjarji; Servizzi moghtija minn koncessur, jigifieri assistenza fl-operazzjoni jew fil-gestjoni ta' intraprizi industrijali jew kummercjali."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' depozitu ta' sigurtà; Servizzi ta' gestjoni ta' investiment finanzjarju; Servizzi finanzjarji u monetarji; Servizzi ta' nvestiment; Gestjoni ta' fondi ta' investiment; Informazzjoni finanzjarja, dejta, servizzi ta' pariri u konsultazzjoni; Amministrazzjoni ta' affarijiet finanzjarji; Servizzi ta' pariri u gestjoni finanzjarja; Provvista ta' finanzjament kummercjali; Servizzi ta' analizi finanzjarja relatati mal-investimenti; Konsulenza dwar investimenti; Gbir ta' fondi u sponsorizzazzjoni finanzjarja; Servizzi ta' finanzjament ta' kumpaniji; Servizzi ta' stima finanzjarja; Parir finanzjarju; Servizzi ta' fondi providenti."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Il-pubblikazzjoni, ir-rapportagg u l-kitba ta' testi; Servizzi ta' edukazzjoni, ta' divertiment u ta' sports."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Pomoc w prowadzeniu dzialalnosci gospodarczej, zarzadzanie i administrowanie dzialalnoscia gospodarcza; Doradztwo i pomoc w zakresie zarzadzania dzialalnoscia gospodarcza; Zarzadzanie zasobami ludzkimi i uslugi rekrutacji personelu; Uslugi doradcze w zakresie dzialalnosci gospodarczej i uslugi zarzadzania dzialalnoscia gospodarcza; Konsultacje dotyczace zatrudnienia w dziedzinie uslug finansowych; Uslugi swiadczone przez franczyzodawce, mianowicie pomoc w prowadzeniu przedsiebiorstw przemyslowych lub handlowych lub w zarzadzaniu nimi."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi depozytów sejfowych; Uslugi w zakresie zarzadzania inwestycjami finansowymi; Uslugi finansowe i monetarne; Uslugi inwestycyjne; Zarzadzanie funduszami inwestycyjnymi; Informacja finansowa, uslugi doradcze i konsultingowe w zakresie finansów; Administrowanie finansami; Finansowe uslugi doradcze i dotyczace zarzadzania; Zapewnianie finansowania handlu; Uslugi analiz finansowych zwiazane z inwestycjami; Uslugi konsultacyjne dotyczace inwestycji; Gromadzenie funduszy i sponsorowanie finansowe; Usluga zapewniania finansów dla przedsiebiorstw; Uslugi w zakresie wycen; Doradztwo finansowe; Uslugi funduszy zapomogowych."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Publikowanie, sprawozdawczosc i pisanie tekstów; Uslugi edukacyjne, rozrywkowe i sportowe."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de assistência, gestão e administração de negócios; Assistência e aconselhamento em relação a gestão empresarial; Serviços de gestão de recursos humanos e recrutamento; Serviços de gestão de negócios e de consultadoria; Consultadoria em matéria de recrutamento na área dos serviços financeiros; Serviços prestados por um franchisador, nomeadamente assistência na gestão ou administração de empresas industriais ou comerciais."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de depósitos em cofres-fortes; Serviços de gestão de investimentos financeiros; Serviços financeiros e monetários; Serviços de investimento; Gestão de fundos de investimento; Serviços de informação, dados, aconselhamento e consultoria financeiros; Administração de negócios financeiros; Serviços de assessoria em matéria de gestão financeira; Concessão de financiamento comercial; Serviços de análises financeiras em matéria de investimento; Consultoria de investimentos; Angariação de fundos e patrocínio financeiro; Serviços de financiamento de sociedades; Serviços de avaliações financeiras; Consultadoria financeira; Serviços de fundo de previdência."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Publicação, relato e redação de textos; Serviços de educação, entretenimento e desporto."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Asistenta în afaceri, management si servicii administrative; Asistenta si consultanta privind managementul afacerilor; Administrarea resurselor umane si servicii de recrutare; Servicii de consultanta si de management al afacerilor; Consiliere pe probleme de recrutare în domeniul serviciilor financiare; Servicii oferite de un francizor, respectiv asistenta în conducerea sau administrarea întreprinderilor industriale sau comerciale."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de depunere în casete valorice; Servicii de management de investitii financiare; Servicii financiare si monetare; Servicii de investitii; Gestiunea fondurilor de investitii; Servicii de informare, consiliere si consultanta financiara; Administrarea afacerilor financiare; Servicii de consiliere si management financiar; Acordare de finantare în domeniul comercial; Servicii de analiza financiara privind investitiile; Consultanta în materie de investitii; Strângere de fonduri si sponsorizare financiara; Servicii de finantare pentru societati; Servicii de evaluare; Consiliere financiara; Servicii în domeniul fondurilor de pensii facultative."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Editare, întocmire de rapoarte si redactare de texte; Servicii educative, de divertisment si sportive."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Pomoc pri podnikaní, riadenie podniku a obchodná správa; Poradenstvo a pomoc pri riadení obchodnej cinnosti; Riadenie ludských zdrojov a nábor zamestnancov; Poradenské sluzby a sluzby v oblasti podnikatelského manazmentu; Náboroví konzultanti v oblasti financných sluzieb; Sluzby poskytované franchisormi, najmä pomoc pri prevádzke alebo riadení priemyselných alebo obchodných podnikov."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Úschovné sluzby, úschova v bezpecnostných schránkach; Sluzby týkajúce sa riadenia financného investovania; Financné a penazné sluzby; Investicné sluzby; Správa investicných fondov; Financné informácie, údaje, financné poradenstvo a konzultácie; Správa financných zálezitostí; Sluzby v oblasti financného poradenstva a manazmentu; Poskytovanie financií pre obchodovanie; Financné analytické sluzby v oblasti investícií; Poradenské sluzby v oblasti financného investovania; Získavanie financných prostriedkov a financné sponzorstvo; Financné sluzieb pre spolocnosti; Financné odhadovanie; Odborné financné poradenstvo; Konzervatívne fondy (sluzby)."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Uverejnovanie, oznamovanie a písanie textov; Sluzby v oblasti vzdelávania, zábavy a sportu."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Poslovna asistenca, poslovno vodenje in administrativne storitve; Pomoc in svetovanje pri poslovnem upravljanju; Storitve kadrovanja in zaposlovanja; Storitve poslovnega vodenja in svetovanja; Svetovalci za zaposlovanje na podrocju financnih storitev; Storitve, ki jih izvaja fransizodajalec, in sicer pomoc pri vodenju ali upravljanju industrijskih ali komercialnih podjetij."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Hramba v sefih; Storitve upravljanja financnih investicij; Financne in denarne storitve; Investicijske storitve; Upravljanje investicijskih skladov; Informacijske, podatkovne, svetovalne in posvetovalne storitve s podrocja financ; Administracija financnih zadev; Storitve financnega svetovanja in upravljanja; Nudenje trgovinskega financiranja; Storitve financnih analiz v zvezi z nalozbami; Investicijsko svetovanje; Zbiranje sredstev in financno sponzoriranje; Financne storitve za podjetja; Storitve financnih cenitev; Financno posvetovanje; Storitve skladov za socialno pomoc."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Objava, priprava porocil in pisanje besedil; Izobrazevalne, razvedrilne in sportne storitve."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de asistencia, dirección y administración de negocios; Asistencia y asesoría en gestión empresarial; Agencias de empleo y gestión de recursos humanos; Servicios de consultoría de gestión empresarial; Consultas de contratación en el ámbito de los servicios financieros; Servicios prestados por un franquiciador, en concreto asistencia en el funcionamiento o gestión de empresas industriales o comerciales."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de depósitos en cajas de seguridad; Servicios de gestión de inversiones financieras; Servicios financieros y monetarios; Servicios de inversión; Gestión de fondos de inversión; Consultoría, asesoramiento e información en materia financiera; Administración de negocios financieros; Servicios de asesoramiento y gestión financieros; Suministro de finanzas comerciales; Análisis financieros sobre inversiones; Consultoría en inversiones; Recaudación de fondos y patrocinio financiero; Servicios de financiación corporativa; Servicios de valoración; Asesoramiento financiero; Servicios de fondos de previsión."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Publicación, edición de reportajes y redacción de textos; Servicios de educación, entretenimiento y de actividades deportivas."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Företagsassistans, -ledning och -administration; Assistans och rådgivning vid företagsledning; Personalresurshantering (HR-tjänster) och rekryteringstjänster; Företagsledning och konsultationer därtill; Rekryteringskonsultation inom området för finansiella tjänster; Tjänster utförda av en franchisegivare, nämligen assistans med skötsel eller ledning av industriella eller kommersiella företag."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Säkerhetsförvaring; Finans- och investeringsförvaltning; Finansiella- och monetära tjänster; Investeringstjänster; Fondinvesteringsförvaltning; Finansiell information, data, rådgivning och konsultation; Förvaltning av finansiella affärer; Rådgivningstjänster avseende finansiell förvaltning; Upplåtande av kommersiell finansiering; Tjänster avseende finansiella analyser av investeringar; Investeringskonsultationer; Penninginsamling och finansiell sponsring; Finansieringstjänster för företag; Värderingstjänster; Finansiell rådgivning; Understödsfondstjänster."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Publicering, rapportering och författande av texter; Tjänster avseende utbildning, underhållning och sport."
+        }
+      ]
+    },
+    "id": "b00a844e-7ac5-4af8-966f-0fa86d64d484",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "188"
+      }
+    ],
+    "recordLastUpdated": "20260512",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250918",
+        "applicationNumber": "19248944"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350918",
+      "lastPublicationDate": "20251007",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260115",
+        "registrationNumber": "19248944"
+      }
+    },
+    "version": "20260512020508",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENQUITY"
+    }
+  },
+  "_uri": "/mark/em/b00a844e-7ac5-4af8-966f-0fa86d64d484",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.561Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

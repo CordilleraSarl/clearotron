@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/gb/e0fbde90-93fe-4d6f-8aea-009e07e6577e",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "e0fbde90-93fe-4d6f-8aea-009e07e6577e",
+  "applicationNumber": "3844241",
+  "registrationNumber": "3844241",
+  "applicationDate": "2022-10-31",
+  "registrationDate": "2023-01-20",
+  "expiryDate": "2032-10-31",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Platform as a service (PAAS) featuring computer software platforms for use in the field of securities and trading securities, for financial services, for cash management, for financial transaction cost analysis, for data management and reporting in connection with regulatory compliance, and for data management in connection with the lending of cash or securities against collateral from one party to another.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "State Street Bank and Trust Company",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Stobbs",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20221025",
+      "priorityNumber": "97646208"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "One Lincoln Street, Boston 02111",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "State Street Bank and Trust Company"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Platform as a service (PAAS) featuring computer software platforms for use in the field of securities and trading securities, for financial services, for cash management, for financial transaction cost analysis, for data management and reporting in connection with regulatory compliance, and for data management in connection with the lending of cash or securities against collateral from one party to another."
+        }
+      ]
+    },
+    "id": "e0fbde90-93fe-4d6f-8aea-009e07e6577e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20221025",
+        "priorityNumber": "97646208"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "2022/045"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Building 1000, Cambridge Research Park, Cambridge CB25 9PD",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Stobbs"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20221031",
+        "applicationNumber": "3844241"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321031",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20230120",
+        "registrationNumber": "3844241"
+      }
+    },
+    "version": "20250627222425",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/gb/e0fbde90-93fe-4d6f-8aea-009e07e6577e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.180Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "uri": "/mark/cn/11028376-0b1c-46fa-ab3b-695649d62ff8",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "11028376-0b1c-46fa-ab3b-695649d62ff8",
+  "applicationNumber": "91009425",
+  "registrationNumber": null,
+  "applicationDate": "2026-04-07",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2026-07-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "七仙女",
+  "markTransliteration": "FAIRYSEVEN QI XIAN NU",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "防弹衣;防火手套;防事故用绝缘手套;防事故用手套;工业用防X光手套;化学防护服;耐火手套;耐酸手套;耐酸衣、裙;潜水员手套",
+      "translation_language": "en",
+      "translation": "Bulletproof vests; fireproof gloves; insulated gloves for accident prevention; gloves for accident prevention; industrial X-ray protective gloves; chemical protective clothing; fire-resistant gloves; acid-resistant gloves; acid-resistant clothing and skirts; diver gloves"
+    }
+  ],
+  "owner": "Handan City Star Yudie Labor Insurance Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "河北省邯郸市磁县光禄镇溢泉村",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Handan City Star Yudie Labor Insurance Co., Ltd.",
+        "applicantNativeName": "邯郸市玉蝶之星劳保制品有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Bulletproof vests; fireproof gloves; insulated gloves for accident prevention; gloves for accident prevention; industrial X-ray protective gloves; chemical protective clothing; fire-resistant gloves; acid-resistant gloves; acid-resistant clothing and skirts; diver gloves",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "防弹衣;防火手套;防事故用绝缘手套;防事故用手套;工业用防X光手套;化学防护服;耐火手套;耐酸手套;耐酸衣、裙;潜水员手套"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Life-saving instruments"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0919",
+          "subNatGoodsServicesDescription": "Life-saving instruments"
+        }
+      ]
+    },
+    "id": "11028376-0b1c-46fa-ab3b-695649d62ff8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1990"
+      }
+    ],
+    "recordLastUpdated": "20260726",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260407",
+        "applicationNumber": "91009425"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "lastPublicationDate": "20260706",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260726020310",
+    "wordMarkSpecification": {
+      "markTransliteration": "FAIRYSEVEN QI XIAN NU",
+      "markVerbalElementText": "七仙女"
+    }
+  },
+  "_uri": "/mark/cn/11028376-0b1c-46fa-ab3b-695649d62ff8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.563Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

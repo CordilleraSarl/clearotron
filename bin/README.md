@@ -19,7 +19,7 @@ and is what you want when you are working in this tree.
 | `uspto-sync.mjs` | `clearotron sync` | `npm run sync:uspto` | Not billed, but 41.5 GB of download and about nine hours of indexing. |
 | `signa-sync.mjs` | — | `node bin/signa-sync.mjs` | One vendor read (`GET /v1/offices`, paged). Needs `SIGNA_API_KEY`. |
 
-`example.mjs` replays `examples/sample-run` through the ordinary publisher into `~/trademark-demo/pool` and
+`example.mjs` replays `demo` through the ordinary publisher into `~/trademark-demo/pool` and
 serves it on `127.0.0.1:18900`. Every path the demo pool could collide with is checked by realpath and by
 containment before anything is written, because a demo runs on deployed machines too.
 

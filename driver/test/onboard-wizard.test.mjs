@@ -11,11 +11,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, writeFileSync, readdirSync, existsSync, statSync, rmSync, readFileSync, symlinkSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readdirSync, existsSync, statSync, rmSync, readFileSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { wrapProse, proseWidth, composeEnvBody } from "../../bin/onboard.mjs";
+import { preflightSkillsStore } from "../skills-store-provenance.mjs";
+import { RESEARCH_PROVIDERS, SERP_PROVIDERS } from "../driver.config.mjs";
 import { resolveEngineBin, readEnvFile, preflightCandidate, PROVIDERS, engineOptions,
   usptoSyncPlan, usptoConsentPrompt, isExplicitYes, backgroundSyncSpec,
   offerUsptoSync, deploymentCurrency } from "../../bin/onboard.mjs";
@@ -1068,4 +1071,186 @@ test("#1912 the pinned answer is SAID in the output, not applied silently", () =
     + "the reader must see the assumption, not infer it from a silence");
   assert.doesNotMatch(r.out, /commit\(s\) behind/,
     "and it must not also print the count it was told not to compute");
+});
+
+// ── 2175 F16/F17/F19 · THE PROMPT SURFACE ───────────────────────────────────────────────────────────
+//
+// Owner, having completed setup by pressing Enter through it: "I just kept pressing enter ... We need
+// consistent install guidance and MUCH SIMPLER prose for what each means and defaults. Same text
+// wrapping issues throughout — I can't tell if I should be reading something somewhere or not."
+
+test("2175-F17 explanatory prose wraps INSIDE its width, at every width a terminal might be", () => {
+  const text = "When a run finishes, whoever ordered it gets a notification. This is the web address "
+    + "the link in it points to. No default — it is your public hostname, and only you know it.";
+  // A CLASS, NOT ONE MEMBER. The defect was that prose was broken at ONE width and handed to terminals
+  // of every other width, so an arm pinned to a single width would reproduce the original mistake.
+  for (const width of [30, 46, 58, 72, 94]) {
+    const lines = wrapProse(text, width);
+    assert.ok(lines.length > 0, `width ${width} produced nothing`);
+    for (const l of lines)
+      assert.ok(l.length <= width,
+        `width ${width}: "${l}" is ${l.length} — a line over its width is what wrapped to column 0 and `
+        + "lost the indent that was carrying the structure");
+    assert.equal(lines.join(" ").split(/\s+/).join(" "), text.split(/\s+/).join(" "),
+      `width ${width}: wrapping must not drop or duplicate a word`);
+  }
+});
+
+test("2175-F17 the width is clamped, so neither a huge window nor a tiny one breaks the measure", () => {
+  assert.ok(proseWidth(400) <= 96, "a very wide window must not produce an unreadable measure");
+  assert.ok(proseWidth(20) >= 38, "a very narrow one must degrade rather than break every word");
+  assert.equal(proseWidth(undefined), proseWidth(80), "an unknown column count falls back to 80");
+});
+
+test("2175-F16 every credential the wizard asks for names a URL a reader can open", () => {
+  const URL_RE = /https?:\/\/[^\s)]+/;
+  // THE REGISTERS, through their signup arrays. Signa is the one the product RECOMMENDS and it said
+  // "the vendor's site" without naming it, which is the finding.
+  const withSignup = PROVIDERS.filter((p) => p.signup?.length);
+  assert.ok(withSignup.length >= 2, `only ${withSignup.length} provider(s) carry a signup array — this scan would be free`);
+  for (const p of withSignup)
+    assert.match(p.signup.join(" "), URL_RE,
+      `${p.id}'s signup steps name no URL. "The vendor's site" is not an address, and the reader being `
+      + "asked for a key is the one person who cannot be sent to a search engine");
+
+  // THE SEARCH CREDENTIALS, through the driver's own tables — the same rows the wizard prints from, so
+  // this cannot pass while the wizard shows something else.
+  const adapters = [...Object.values(RESEARCH_PROVIDERS), ...Object.values(SERP_PROVIDERS)];
+  assert.ok(adapters.length >= 2, `only ${adapters.length} adapter(s) found — this scan would be free`);
+  for (const a of adapters) {
+    assert.ok(a.obtain, `${a.credEnv} has no "where to get one" line at all`);
+    assert.match(a.obtain, URL_RE,
+      `${a.credEnv} names a domain but no URL. A click-path through somebody else's UI is an assertion `
+      + "about a site we do not control, and it goes stale with no way to notice");
+  }
+});
+
+test("2175-F20 no prompt offers to add something 'later', because nothing chases it", () => {
+  const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
+  assert.doesNotMatch(src, /Enter to add it later/,
+    "'later' reads as a deferral the product will chase; nothing does. The bracket says [Enter to skip] "
+    + "and the consequence is stated where the reader is standing");
+});
+
+test("2175-F20 every prompt in the setup sequence states what Enter does", () => {
+  // THE FINDING WAS THE CLASS, NOT ANY ONE PROMPT. Four consecutive prompts, each defensible alone,
+  // taught the reader that the amount of prose bears no relation to how much the answer matters — so
+  // the rational move was to stop reading, which is what happened. An arm pinned to the one prompt he
+  // named would let the next one drift the same way.
+  const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
+  const headings = [
+    "Where this install keeps its data",
+    "The link in delivery notifications",
+    "The address clients' assistants reach this install at",
+    "Where this install keeps its own configuration",
+  ];
+  const lines = src.split("\n");
+  for (const h of headings) {
+    const at = lines.findIndex((l) => l.includes(h));
+    assert.ok(at >= 0, `the prompt "${h}" is gone — if it was renamed, rename it here too`);
+    // The consequence must arrive with the question, not a paragraph away: a reader deciding whether to
+    // press Enter is looking at the prompt, not scrolling back.
+    // The window runs from the heading to the prompt call it belongs to — the text the reader actually
+    // has in front of them — rather than a fixed line count, which counts comments the reader never sees
+    // and was why the first version of this arm failed on a tree that satisfies the criterion.
+    const end = lines.findIndex((l, i) => i > at && /await askValue\(/.test(l));
+    assert.ok(end > at, `no askValue follows "${h}" — the heading is not a prompt any more`);
+    const window = lines.slice(at, end + 1).filter((l) => !/^\s*\/\//.test(l)).join(" ");
+    assert.match(window, /Enter accepts|Skip it|Enter to skip/,
+      `"${h}" never says what pressing Enter does. A prompt that offers a default and does not say what `
+      + "accepting it means is asking the reader to make a decision without telling them they made one");
+  }
+});
+
+test("2175-F21 setup says it finished, and says what state it left the box in", () => {
+  const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
+  assert.match(src, /Setup finished\./,
+    "the wizard handed the reader a next command and never said it had finished — a reader who has "
+    + "skipped answers, which the header invites, cannot otherwise tell what they ended up with");
+  assert.match(src, /What this box has now:/, "and the state has to be stated, not implied by silence");
+
+  // EVERY SKIPPABLE ANSWER APPEARS. A summary that lists only what was SET tells a reader nothing about
+  // what they skipped, which is the half they cannot reconstruct.
+  for (const k of ["CLEAROTRON_DATABASE", "PERPLEXITY_API_KEY", "CLEAROTRON_REPORTS_DIR",
+                   "CLEAROTRON_CUSTOMERS_DIR", "CLEAROTRON_REPORTS_URL", "CLEAROTRON_CLIENT_MCP_URL"]) {
+    const at = src.indexOf("What this box has now:");
+    assert.ok(src.slice(at, at + 1600).includes(k),
+      `${k} is skippable and does not appear in the closing summary — the answers a reader skipped are `
+      + "exactly the ones they cannot reconstruct");
+  }
+});
+
+test("2175-F12 setup keeps the keys it does not manage, so start's secrets survive an install", () => {
+  // THE SEQUENCE THAT BROKE IT: start writes its secrets, then install runs. The wizard composed the
+  // file from its own answers and renamed over the target, so start's three values were gone; the next
+  // start re-minted PORTAL_SECRET to a different value and signed every logged-in user out with no
+  // error anywhere. A .env.bak was taken, which is not the same as not losing them: a backup is a thing
+  // a reader has to know to look for, and the failure gives them no reason to look.
+  const existing = {
+    PORTAL_SECRET: "from-start-do-not-lose",
+    PORTAL_LOCAL_USER: "someone@localhost",
+    TRADEMARK_MCP_TOKEN_SECRET: "also-from-start",
+    CLEAROTRON_DATABASE: "an-old-answer",
+  };
+  const candidate = { CLEAROTRON_DATABASE: "signa", SIGNA_API_KEY: "k" };
+  const body = composeEnvBody(candidate, existing);
+  const parsed = Object.fromEntries(body.split("\n")
+    .filter((l) => l && !l.startsWith("#")).map((l) => [l.slice(0, l.indexOf("=")), l.slice(l.indexOf("=") + 1)]));
+
+  // EVERY key start writes, not one of them: an arm that checked PORTAL_SECRET alone would pass a fix
+  // that carried one value and dropped the other two, which is the shape of the original defect.
+  for (const k of ["PORTAL_SECRET", "PORTAL_LOCAL_USER", "TRADEMARK_MCP_TOKEN_SECRET"])
+    assert.equal(parsed[k], existing[k], `${k} did not survive — this is the sign-everyone-out defect`);
+
+  assert.equal(parsed.CLEAROTRON_DATABASE, "signa",
+    "and setup's own answer must win over the file: the reader just typed it, so this run is the newer "
+    + "statement of it");
+  assert.equal(parsed.SIGNA_API_KEY, "k", "a key setup collected is written");
+});
+
+test("2175-F12 a first install writes no carry section and needs no existing file", () => {
+  const body = composeEnvBody({ CLEAROTRON_DATABASE: "free-tier" }, {});
+  assert.doesNotMatch(body, /Kept from the existing file/,
+    "a fresh box has nothing to carry, and a header explaining a section that is not there is noise");
+  assert.match(body, /CLEAROTRON_DATABASE=free-tier/);
+});
+
+// ── 2191 F25 · THE STORE THE WIZARD WROTE COULD NOT BE IDENTIFIED ───────────────────────────────────
+//
+// Setup pointed CLEAROTRON_INSTRUCTIONS_DIR at `<cfg>/skills` and created it empty. `clearotron start`
+// then makes `<cfg>` a git repository for saved searches, so the doctrine store sits inside a checkout
+// that tracks no file under it — which the run preflight classifies as `blocked`. Every run on every
+// install where the wizard had been run carried "doctrine store COULD NOT BE IDENTIFIED".
+//
+// Driven through the PRODUCT'S OWN classifier, not a re-description of it: the question is what a run
+// would decide, and a second copy of that rule here could agree with itself while disagreeing with the
+// door.
+
+test("2191-F25 the shape setup used to write is genuinely blocked — the hazard is real, not assumed", () => {
+  const dir = mkdtempSync(join(tmpdir(), "f25-arm-"));
+  execFileSync("git", ["init", "-q", "-b", "main", dir]);
+  writeFileSync(join(dir, "README.md"), "x\n");
+  execFileSync("git", ["-C", dir, "add", "README.md"]);
+  execFileSync("git", ["-C", dir, "-c", "user.email=a@b", "-c", "user.name=t", "commit", "-qm", "init"]);
+  mkdirSync(join(dir, "skills"), { recursive: true });   // exactly what setup created: empty, untracked
+  try {
+    const r = preflightSkillsStore({ CLEAROTRON_INSTRUCTIONS_DIR: join(dir, "skills") });
+    assert.equal(r.result.outcome, "blocked",
+      "if this ever passes, the classifier changed and this whole finding needs re-measuring rather than "
+      + "the fix quietly becoming unnecessary");
+    assert.match(r.line, /COULD NOT BE IDENTIFIED/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("2191-F25 unset is the supported mode and it passes, which is why setup no longer writes it", () => {
+  assert.equal(preflightSkillsStore({}).result.outcome, "pass",
+    "leaving it unset must be a pass, or removing it from the wizard trades one blocked run for another");
+  const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
+  assert.doesNotMatch(src, /candidate\["CLEAROTRON_INSTRUCTIONS_DIR"\]\s*=/,
+    "setup must not write a doctrine store it has just made unidentifiable");
+  // AND THE READER IS TOLD, because silence here means files they drop in later are ignored with no
+  // sign — which would be this defect traded for a quieter one.
+  assert.match(src, /CLEAROTRON_INSTRUCTIONS_DIR stays unset/,
+    "the closing note must say the name is unset and what to do when they do want an overlay");
+  assert.match(src, /COMMIT it/, "including that an uncommitted store is the state that cannot be identified");
 });

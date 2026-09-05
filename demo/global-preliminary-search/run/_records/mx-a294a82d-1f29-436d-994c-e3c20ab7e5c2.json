@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/mx/a294a82d-1f29-436d-994c-e3c20ab7e5c2",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "a294a82d-1f29-436d-994c-e3c20ab7e5c2",
+  "applicationNumber": "2637994",
+  "registrationNumber": "2491651",
+  "applicationDate": "2021-10-28",
+  "registrationDate": "2023-01-04",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "V VENCORT",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios cientificos y tecnologicos; diseño y desarrollo de equipos informaticos y de software",
+      "translation_language": "en",
+      "translation": "SCIENTIFIC AND TECHNOLOGICAL SERVICES; DESIGN AND DEVELOPMENT OF COMPUTER EQUIPMENT AND SOFTWARE"
+    }
+  ],
+  "owner": "CAROLINA VARGAS GONZALEZ",
+  "ownerNative": null,
+  "ownerCountry": "MX",
+  "representative": "CAROLINA VARGAS GONZALEZ",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "BLVD. DE LA JUVENTUD NUM. EXT. 308-A, DEL MAESTRO, DURANGO, DURANGO 34240",
+        "applicantAddressCountryCode": "MX",
+        "applicantAddressCountryName": "Mexico",
+        "applicantName": "CAROLINA VARGAS GONZALEZ"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SCIENTIFIC AND TECHNOLOGICAL SERVICES; DESIGN AND DEVELOPMENT OF COMPUTER EQUIPMENT AND SOFTWARE",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios cientificos y tecnologicos; diseño y desarrollo de equipos informaticos y de software"
+        }
+      ]
+    },
+    "id": "a294a82d-1f29-436d-994c-e3c20ab7e5c2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.21"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "0117R1",
+        "publicationYear": "2023"
+      }
+    ],
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "BLVD. DE LA JUVENTUD NUM. EXT. 308-A, DEL MAESTRO, DURANGO, DURANGO 34240, MEXICO"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "BLVD. DE LA JUVENTUD NUM. EXT. 308-A, DEL MAESTRO, DURANGO, DURANGO 34240, MEXICO",
+        "representativeName": "CAROLINA VARGAS GONZALEZ"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20211028",
+        "applicationNumber": "2637994"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20230104",
+        "registrationNumber": "2491651"
+      }
+    },
+    "version": "20250704190905",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "V VENCORT"
+    }
+  },
+  "_uri": "/mark/mx/a294a82d-1f29-436d-994c-e3c20ab7e5c2",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.745Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

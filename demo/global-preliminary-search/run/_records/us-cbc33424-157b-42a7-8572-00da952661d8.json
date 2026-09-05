@@ -1,0 +1,287 @@
+{
+  "uri": "/mark/us/cbc33424-157b-42a7-8572-00da952661d8",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "cbc33424-157b-42a7-8572-00da952661d8",
+  "applicationNumber": "98774906",
+  "registrationNumber": "7856291",
+  "applicationDate": "2024-09-27",
+  "registrationDate": "2025-07-08",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-05-20"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "CONJUNTO BRIO NORTEÑO",
+  "markTransliteration": null,
+  "markTranslation": "VERVE NORTHERN GROUP",
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": [
+    "\"CONJUNTO\" and \"NORTEÑO\""
+  ],
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Entertainment services in the nature of live musical performances",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Eberardo Rosales",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "13349 Cantara St., Panorama City, CA, 91402",
+        "applicantAddressCity": "Panorama City",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "91402",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "13349 Cantara St.",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Eberardo Rosales"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Entertainment services in the nature of live musical performances"
+        }
+      ]
+    },
+    "id": "cbc33424-157b-42a7-8572-00da952661d8",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "\"CONJUNTO\" and \"NORTEÑO\""
+    ],
+    "markEvents": [
+      {
+        "date": "20250708",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20250708",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20250520",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20250520",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20250514",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20250421",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20250411",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20250411",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20250411",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20250411",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20250411",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20250411",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20250403",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20250402",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20240927",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20240927",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "13349 Cantara St., Panorama City, CA, 91402",
+        "city": "Panorama City",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Eberardo Rosales",
+        "postalCode": "91402",
+        "stateName": "CALIFORNIA",
+        "street": "13349 Cantara St."
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "13349 Cantara St., Panorama City, CA, 91402",
+        "city": "Panorama City",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Eberardo Rosales",
+        "postalCode": "91402",
+        "stateName": "CALIFORNIA",
+        "street": "13349 Cantara St."
+      },
+      {
+        "address": "13349 Cantara St., Panorama City, CA, 91402",
+        "city": "Panorama City",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Eberardo Rosales",
+        "postalCode": "91402",
+        "stateName": "CALIFORNIA",
+        "street": "13349 Cantara St."
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "13349 Cantara St., Panorama City, CA, 91402",
+        "city": "Panorama City",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Eberardo Rosales",
+        "postalCode": "91402",
+        "stateName": "CALIFORNIA",
+        "street": "13349 Cantara St."
+      }
+    ],
+    "recordLastUpdated": "20260129",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Panorama City, CA 91402, United States",
+        "representativeCorrespondentAddressLines": [
+          "Panorama City, CA 91402",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Eberardo Rosales, 13349 Cantara St."
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Panorama City, CA 91402, United States",
+        "representativeAddressLines": [
+          "Panorama City, CA 91402",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240927",
+        "applicationNumber": "98774906"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20100301"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20100301"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20250708",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20250520"
+      ],
+      "registration": {
+        "registrationDate": "20250708",
+        "registrationNumber": "7856291"
+      }
+    },
+    "version": "20260129063302",
+    "wordMarkSpecification": {
+      "markTranslation": "VERVE NORTHERN GROUP",
+      "markTranslationDescription": "The English translation of the wording \"CONJUNTO BRIO NORTEÑO\" in the mark is \"VERVE NORTHERN GROUP\".",
+      "markVerbalElementCrossReferences": "CONJUNTO BRIO NORTENO",
+      "markVerbalElementText": "CONJUNTO BRIO NORTEÑO"
+    }
+  },
+  "_uri": "/mark/us/cbc33424-157b-42a7-8572-00da952661d8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "uri": "/mark/jp/825db6c5-4e1f-470b-b988-b6e40b3628ee",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "825db6c5-4e1f-470b-b988-b6e40b3628ee",
+  "applicationNumber": "2005-004538",
+  "registrationNumber": "4921588",
+  "applicationDate": "2005-01-21",
+  "registrationDate": "2006-01-13",
+  "expiryDate": "2036-01-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2006-02-14",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＣＬＩＮＣＨＥＣＫ",
+  "markTransliteration": "KURINCHEKKU",
+  "markTranslation": "CLINCHECK",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "歯の移動及び治療計画案を描写するために使用されるデジタル画像処理用コンピュータソフトウェア，その他のコンピュータソフトウェア",
+      "translation_language": "en",
+      "translation": "Computer software for digital image processing used to describe tooth movement and treatment plan draft, other computer software"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YASUMURA TAKAAKI",
+  "priorities": [
+    {
+      "priorityDate": "20050121"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software for digital image processing used to describe tooth movement and treatment plan draft, other computer software",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "歯の移動及び治療計画案を描写するために使用されるデジタル画像処理用コンピュータソフトウェア，その他のコンピュータソフトウェア"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, instruments and parts"
+        }
+      ]
+    },
+    "id": "825db6c5-4e1f-470b-b988-b6e40b3628ee",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20050121"
+      }
+    ],
+    "recordLastUpdated": "20260130",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YASUMURA TAKAAKI",
+        "representativeNativeName": "安村　高明"
+      },
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20050121",
+        "applicationNumber": "2005-004538"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360113",
+      "lastPublicationDate": "20060214",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20060113",
+        "registrationNumber": "4921588"
+      }
+    },
+    "version": "20260130081607",
+    "wordMarkSpecification": {
+      "markTranslation": "CLINCHECK",
+      "markTransliteration": "KURINCHEKKU",
+      "markVerbalElementText": "ＣＬＩＮＣＨＥＣＫ"
+    }
+  },
+  "_uri": "/mark/jp/825db6c5-4e1f-470b-b988-b6e40b3628ee",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.739Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

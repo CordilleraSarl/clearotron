@@ -1,0 +1,382 @@
+{
+  "uri": "/mark/us/37f1101d-7fc1-44f5-a38b-14ac879425c1",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "37f1101d-7fc1-44f5-a38b-14ac879425c1",
+  "applicationNumber": "79105408",
+  "registrationNumber": "4219994",
+  "applicationDate": "2011-04-08",
+  "registrationDate": "2012-10-09",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2012-07-24"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2022-09-13",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "SEVENORIENTS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "STYLIZED LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 video disks featuring music, musical sounds, motion pictures, photographs for media and cultural purposes; optical disks featuring music, musical sounds, motion pictures, photographs for media and cultural purposes; videotapes featuring music, musical sounds, motion pictures, photographs for media and cultural purposes; audio compact disks featuring music and musical sounds for media and cultural purposes; video compact disks featuring music, musical sounds, motion pictures, photographs for media and cultural purposes; CD-ROMs featuring music, musical sounds, motion pictures, photographs for media and cultural purposes; exposed cinematographic films",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Film production and videotape film production; information concerning entertainment, rental of cinematographic films, videotape editing, organization of exhibitions for cultural or educational purposes; organization and holding of colloquiums, conferences, congresses, seminars, symposiums in the fields of media and culture; publishing of books",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SEVENORIENTS",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "58, avenue de Wagram, F-75017 PARIS, FRAN",
+        "applicantAddressCity": "F-75017 PARIS",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantAddressStreet": "58, avenue de Wagram",
+        "applicantJurisdictionOfIncorporation": "FRANCE",
+        "applicantLegalEntity": "Société à responsabilité limitée",
+        "applicantName": "SEVENORIENTS"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "26.03.01",
+      "26.03.35",
+      "27.03.01",
+      "30.01.15",
+      "30.05.01",
+      "30.05.04",
+      "30.05.08"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 video disks featuring music, musical sounds, motion pictures, photographs for media and cultural purposes; optical disks featuring music, musical sounds, motion pictures, photographs for media and cultural purposes; videotapes featuring music, musical sounds, motion pictures, photographs for media and cultural purposes; audio compact disks featuring music and musical sounds for media and cultural purposes; video compact disks featuring music, musical sounds, motion pictures, photographs for media and cultural purposes; CD-ROMs featuring music, musical sounds, motion pictures, photographs for media and cultural purposes; exposed cinematographic films"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Film production and videotape film production; information concerning entertainment, rental of cinematographic films, videotape editing, organization of exhibitions for cultural or educational purposes; organization and holding of colloquiums, conferences, congresses, seminars, symposiums in the fields of media and culture; publishing of books"
+        }
+      ]
+    },
+    "id": "37f1101d-7fc1-44f5-a38b-14ac879425c1",
+    "internationalMarkKeys": [
+      {
+        "expiryDate": "20220913",
+        "internationalRegistrationNumber": "0788708",
+        "markCurrentStatus": "DEATH OF IR",
+        "markCurrentStatusDate": "20220913",
+        "protectionGrantedDate": "20130601",
+        "publicationDate": "20111208",
+        "registrationDate": "20020913",
+        "renewalDate": "20220913"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20230411",
+        "descriptionText": "DEATH OF INTERNATIONAL REGISTRATION"
+      },
+      {
+        "date": "20230411",
+        "descriptionText": "NOTIFICATION OF EFFECT OF CANCELLATION OF INTL REG MAILED"
+      },
+      {
+        "date": "20200228",
+        "descriptionText": "TOTAL INVALIDATION PROCESSED BY THE IB"
+      },
+      {
+        "date": "20200131",
+        "descriptionText": "TOTAL INVALIDATION OF REG EXT PROTECTION SENT TO IB"
+      },
+      {
+        "date": "20200131",
+        "descriptionText": "INVALIDATION PROCESSED"
+      },
+      {
+        "date": "20200110",
+        "descriptionText": "TOTAL INVALIDATION OF REG EXT PROTECTION CREATED"
+      },
+      {
+        "date": "20190510",
+        "descriptionText": "CANCELLED SECTION 71"
+      },
+      {
+        "date": "20170223",
+        "descriptionText": "NEW REPRESENTATIVE AT IB RECEIVED"
+      },
+      {
+        "date": "20161216",
+        "descriptionText": "NEW REPRESENTATIVE AT IB RECEIVED"
+      },
+      {
+        "date": "20150423",
+        "descriptionText": "NEW REPRESENTATIVE AT IB RECEIVED"
+      },
+      {
+        "date": "20130618",
+        "descriptionText": "FINAL DECISION TRANSACTION PROCESSED BY IB"
+      },
+      {
+        "date": "20130529",
+        "descriptionText": "FINAL DISPOSITION NOTICE SENT TO IB"
+      },
+      {
+        "date": "20130529",
+        "descriptionText": "FINAL DISPOSITION PROCESSED"
+      },
+      {
+        "date": "20130109",
+        "descriptionText": "FINAL DISPOSITION NOTICE CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20121122",
+        "descriptionText": "INTERNATIONAL REGISTRATION RENEWED"
+      },
+      {
+        "date": "20121009",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20120922",
+        "descriptionText": "NOTIFICATION PROCESSED BY IB"
+      },
+      {
+        "date": "20120724",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20120704",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20120704",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION SENT TO IB"
+      },
+      {
+        "date": "20120704",
+        "descriptionText": "NOTICE OF START OF OPPOSITION PERIOD CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20120619",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20120618",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20120530",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20120524",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20120524",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20120524",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20111230",
+        "descriptionText": "REFUSAL PROCESSED BY IB"
+      },
+      {
+        "date": "20111214",
+        "descriptionText": "NON-FINAL ACTION MAILED - REFUSAL SENT TO IB"
+      },
+      {
+        "date": "20111214",
+        "descriptionText": "REFUSAL PROCESSED BY MPU"
+      },
+      {
+        "date": "20111213",
+        "descriptionText": "NON-FINAL ACTION (IB REFUSAL) PREPARED FOR REVIEW"
+      },
+      {
+        "date": "20111212",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20111210",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      },
+      {
+        "date": "20111206",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20111206",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20111205",
+        "descriptionText": "LIMITATION FROM ORIGINAL APPLICATION ENTERED"
+      },
+      {
+        "date": "20111202",
+        "descriptionText": "SN ASSIGNED FOR SECT 66A SUBSEQ DESIG FROM IB"
+      }
+    ],
+    "markFeature": "STYLIZED LETTERS",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Color is not claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "58, avenue de Wagram, F-75017 PARIS, FRAN",
+        "city": "F-75017 PARIS",
+        "countryCode": "FR",
+        "countryName": "France",
+        "jurisdictionOfIncorporation": "FRANCE",
+        "legalEntity": "Société à responsabilité limitée",
+        "name": "SEVENORIENTS",
+        "street": "58, avenue de Wagram"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "58, avenue de Wagram, F-75017 PARIS, FRAN",
+        "city": "F-75017 PARIS",
+        "countryCode": "FR",
+        "countryName": "France",
+        "jurisdictionOfIncorporation": "FRANCE",
+        "legalEntity": "Société à responsabilité limitée",
+        "name": "SEVENORIENTS",
+        "street": "58, avenue de Wagram"
+      },
+      {
+        "address": "58, avenue de Wagram, F-75017 PARIS, FRAN",
+        "city": "F-75017 PARIS",
+        "countryCode": "FR",
+        "countryName": "France",
+        "jurisdictionOfIncorporation": "FRANCE",
+        "legalEntity": "Société à responsabilité limitée",
+        "name": "SEVENORIENTS",
+        "street": "58, avenue de Wagram"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "58, avenue de Wagram, F-75017 PARIS, FRAN",
+        "city": "F-75017 PARIS",
+        "countryCode": "FR",
+        "countryName": "France",
+        "jurisdictionOfIncorporation": "FRANCE",
+        "legalEntity": "Société à responsabilité limitée",
+        "name": "SEVENORIENTS",
+        "street": "58, avenue de Wagram"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "F-75009 PARIS,, FRANCE",
+        "representativeCorrespondentAddressLines": [
+          "F-75009 PARIS,",
+          "FRANCE"
+        ],
+        "representativeCorrespondentName": "CABINET WAGRET, 19 rue de Milan"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "F-75009 PARIS,, FRANCE",
+        "representativeAddressLines": [
+          "F-75009 PARIS,",
+          "FRANCE"
+        ]
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20110408",
+        "applicationNumber": "79105408"
+      },
+      "cancellationDate": "20220913",
+      "cancellationSection": "71",
+      "cmNormalisedStatus": "CANCELLED",
+      "ipOffice": {
+        "markOfficialStatus": "IR CANCELLED - US REGISTRATION CANCELLED",
+        "markOfficialStatusCode": "404",
+        "markOfficialStatusDate": "20220913",
+        "markOfficialStatusEvents": [
+          "Section 66(a) (Madrid Protocol) - Filed",
+          "Section 66(a) (Madrid Protocol) - Current",
+          "Notice of First Refusal"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20120724"
+      ],
+      "registration": {
+        "registrationDate": "20121009",
+        "registrationNumber": "4219994"
+      }
+    },
+    "version": "20260110044929",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "SEVEN ORIENTS, 7 ORIENTS",
+      "markVerbalElementText": "SEVENORIENTS"
+    }
+  },
+  "_uri": "/mark/us/37f1101d-7fc1-44f5-a38b-14ac879425c1",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

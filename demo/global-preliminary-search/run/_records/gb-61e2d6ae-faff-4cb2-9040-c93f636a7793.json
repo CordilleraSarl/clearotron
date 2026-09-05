@@ -1,0 +1,160 @@
+{
+  "uri": "/mark/gb/61e2d6ae-faff-4cb2-9040-c93f636a7793",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "61e2d6ae-faff-4cb2-9040-c93f636a7793",
+  "applicationNumber": "UK00918042338",
+  "registrationNumber": "UK00918042338",
+  "applicationDate": "2019-03-28",
+  "registrationDate": "2020-10-27",
+  "expiryDate": "2029-03-28",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QUORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software and apps; non-printed publications; recordings; computer software and apps relating to business, industry, construction, mining, personnel, human resources, information technology, business risk, financial risk, human rights, crime, fraud and fraud; all the aforesaid being for use in risk management and security.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Providing business information, intelligence, databases, research, analysis, consulting, advice and assistance, in the fields of personnel, human resources, business risk; compilation and provision of databases for use by businesses; providing information, intelligence, research, analysis, consulting, advice and assistance relating to the aforesaid; all the aforesaid relating to risk management and security.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Providing business information, intelligence, databases, research, analysis, consulting, advice and assistance in the fields of information technology; computing services; software services; software development and creation services; SaaS; PaaS; IT services; database design services; software maintenance and upgrading; including all of the aforesaid in the fields of business, finance, personnel, human resources, information technology, business risk, financial risk, crime, fraud, and security; computer and information technology security services; software creation; advisory services in the field of product development and quality improvement of software; providing information, intelligence, research, analysis, consulting, advice and assistance in relation to the aforesaid; all the aforesaid relating to risk management and security.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "en",
+      "description": "Providing business information, intelligence, databases, research, analysis, consulting, advice and assistance in the fields of human rights, crime, fraud, and security; security consultancy; crime and fraud detection and prevention services; investigation services; legal services; regulatory services; providing information, intelligence, research, analysis, consulting, advice and assistance in relation to the aforesaid; all the aforesaid being for use in relation to risk management and security.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Quori Pte. Ltd",
+  "ownerNative": null,
+  "ownerCountry": "SG",
+  "representative": "Beck Greener LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "68 Circular Road, #02-01, 049422",
+        "applicantAddressCountryCode": "SG",
+        "applicantAddressCountryName": "Singapore",
+        "applicantName": "Quori Pte. Ltd"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software and apps; non-printed publications; recordings; computer software and apps relating to business, industry, construction, mining, personnel, human resources, information technology, business risk, financial risk, human rights, crime, fraud and fraud; all the aforesaid being for use in risk management and security."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing business information, intelligence, databases, research, analysis, consulting, advice and assistance, in the fields of personnel, human resources, business risk; compilation and provision of databases for use by businesses; providing information, intelligence, research, analysis, consulting, advice and assistance relating to the aforesaid; all the aforesaid relating to risk management and security."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing business information, intelligence, databases, research, analysis, consulting, advice and assistance in the fields of information technology; computing services; software services; software development and creation services; SaaS; PaaS; IT services; database design services; software maintenance and upgrading; including all of the aforesaid in the fields of business, finance, personnel, human resources, information technology, business risk, financial risk, crime, fraud, and security; computer and information technology security services; software creation; advisory services in the field of product development and quality improvement of software; providing information, intelligence, research, analysis, consulting, advice and assistance in relation to the aforesaid; all the aforesaid relating to risk management and security."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing business information, intelligence, databases, research, analysis, consulting, advice and assistance in the fields of human rights, crime, fraud, and security; security consultancy; crime and fraud detection and prevention services; investigation services; legal services; regulatory services; providing information, intelligence, research, analysis, consulting, advice and assistance in relation to the aforesaid; all the aforesaid being for use in relation to risk management and security."
+        }
+      ]
+    },
+    "id": "61e2d6ae-faff-4cb2-9040-c93f636a7793",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Fulwood House, 12 Fulwood Place, London WC1V 6HR",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Beck Greener LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190328",
+        "applicationNumber": "UK00918042338"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290328",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20201027",
+        "registrationNumber": "UK00918042338"
+      }
+    },
+    "version": "20250627215715",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QUORI"
+    }
+  },
+  "_uri": "/mark/gb/61e2d6ae-faff-4cb2-9040-c93f636a7793",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:25.704Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

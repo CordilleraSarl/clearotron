@@ -1,0 +1,170 @@
+{
+  "uri": "/mark/kr/e1d59ceb-c8ef-4b72-a8c6-8a3734d0b78d",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "e1d59ceb-c8ef-4b72-a8c6-8a3734d0b78d",
+  "applicationNumber": "42-2020-0000090",
+  "registrationNumber": "4200079050000",
+  "applicationDate": "2020-02-20",
+  "registrationDate": "2020-06-04",
+  "expiryDate": "2030-06-04",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-06-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "KORI 코리",
+  "markTransliteration": "KORI Corey",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "ko",
+      "description": "시 행정의 종합기획 및 조정 업무; 시정홍보 등 공보행정에 관한 사항; 주민생활지원서비스 종합계획 수립 · 조정에 관한 업무; 사회복지에 관한 사항; 관광행정의 종합기획 및 조정에 관한 사항; 체육진흥 및 지원에 관한 사항; 환경보전 종합계획 수립 추진 업무; 주민등록 및 주민관리 전산/가족관계등록 업무에 관한 사항; 지방세 부과 · 조정에 관한 사항; 국 · 도비 · 시 일반회계 및 특별회계 출납과 결산 업무(상수도 · 하수 특별회계 제외); 재난상황종합관리 및 재해대책본부 운영 업무; 해양수산행정의 종합기획 · 조정; 자동차관리사업 등록 및 관리에 관한 사항; 도시계획시설 계획수립 및 추진에 관한 사항; 주택행정 및 종합기획 · 조정; 군도 · 어촌도로 기본계획/정비계획/사업계획 수립 및 시행 업무; 산림녹지행정의 종합계획 수립 업무; 국가우주항공산업단지 종합계획 수립 및 지원 업무; 산업단지 · 농공단지조성 및 종합계획 수립 업무; 국민 건강 증진에 관한 사항",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "en",
+      "description": null,
+      "translation_language": "en",
+      "translation": "Comprehensive planning and coordination of city administration; Public affairs administration, such as public relations and public relations; Work on establishing and coordinating a comprehensive plan for resident living support services; Social welfare matters; Matters concerning comprehensive planning and coordination of tourism administration; Sports promotion and support; The implementation of a comprehensive environmental conservation plan; Matters concerning resident registration and resident management computer/family relationship registration; Matters concerning the imposition and adjustment of local taxes; National, Dobi, and City general and special accounts deposit and settlement business (except water and sewage special accounting); Disaster Management Comprehensive Management and Disaster Response Headquarters Operations; Comprehensive planning and coordination of marine fisheries administration; Matters concerning registration and management of automobile management business; Matters concerning the planning and promotion of urban planning facilities; Housing administration and comprehensive planning and coordination; Establishment and implementation of basic plans/repair plans/business plans for archipelago and fishing villages; Establishing a comprehensive plan for forest green administration; Establishing and supporting a comprehensive plan for the National Space Aviation Industry Complex; Industrial complex and agricultural complex development and comprehensive planning work; Matters concerning the promotion of national health"
+    }
+  ],
+  "owner": "SACHEON CITY",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "안철흥 (AN CHUL HEUNG)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경상남도 사천시",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "SACHEON CITY",
+        "applicantNativeName": "사천시"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "시 행정의 종합기획 및 조정 업무; 시정홍보 등 공보행정에 관한 사항; 주민생활지원서비스 종합계획 수립 · 조정에 관한 업무; 사회복지에 관한 사항; 관광행정의 종합기획 및 조정에 관한 사항; 체육진흥 및 지원에 관한 사항; 환경보전 종합계획 수립 추진 업무; 주민등록 및 주민관리 전산/가족관계등록 업무에 관한 사항; 지방세 부과 · 조정에 관한 사항; 국 · 도비 · 시 일반회계 및 특별회계 출납과 결산 업무(상수도 · 하수 특별회계 제외); 재난상황종합관리 및 재해대책본부 운영 업무; 해양수산행정의 종합기획 · 조정; 자동차관리사업 등록 및 관리에 관한 사항; 도시계획시설 계획수립 및 추진에 관한 사항; 주택행정 및 종합기획 · 조정; 군도 · 어촌도로 기본계획/정비계획/사업계획 수립 및 시행 업무; 산림녹지행정의 종합계획 수립 업무; 국가우주항공산업단지 종합계획 수립 및 지원 업무; 산업단지 · 농공단지조성 및 종합계획 수립 업무; 국민 건강 증진에 관한 사항"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Comprehensive planning and coordination of city administration; Public affairs administration, such as public relations and public relations; Work on establishing and coordinating a comprehensive plan for resident living support services; Social welfare matters; Matters concerning comprehensive planning and coordination of tourism administration; Sports promotion and support; The implementation of a comprehensive environmental conservation plan; Matters concerning resident registration and resident management computer/family relationship registration; Matters concerning the imposition and adjustment of local taxes; National, Dobi, and City general and special accounts deposit and settlement business (except water and sewage special accounting); Disaster Management Comprehensive Management and Disaster Response Headquarters Operations; Comprehensive planning and coordination of marine fisheries administration; Matters concerning registration and management of automobile management business; Matters concerning the planning and promotion of urban planning facilities; Housing administration and comprehensive planning and coordination; Establishment and implementation of basic plans/repair plans/business plans for archipelago and fishing villages; Establishing a comprehensive plan for forest green administration; Establishing and supporting a comprehensive plan for the National Space Aviation Industry Complex; Industrial complex and agricultural complex development and comprehensive planning work; Matters concerning the promotion of national health",
+          "intClassNumber": "35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "en"
+        }
+      ]
+    },
+    "id": "e1d59ceb-c8ef-4b72-a8c6-8a3734d0b78d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "03.02.01",
+      "03.02.25",
+      "06.03.02",
+      "10.03.04",
+      "21.03.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Bridge Well Building , Floor , Hyoryeong-ro -gil, Seocho-gu, Seoul(Honesty & Passion International Patent & Law Office)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "안철흥 (AN CHUL HEUNG)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200220",
+        "applicationNumber": "42-2020-0000090"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300604",
+      "lastPublicationDate": "20200610",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20200604",
+        "registrationNumber": "4200079050000"
+      }
+    },
+    "version": "20250625203520",
+    "wordMarkSpecification": {
+      "markTransliteration": "KORI Corey",
+      "markVerbalElementText": "KORI 코리"
+    }
+  },
+  "_uri": "/mark/kr/e1d59ceb-c8ef-4b72-a8c6-8a3734d0b78d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.793Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

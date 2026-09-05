@@ -55,7 +55,7 @@ export const DEAD_NAME_RE = /lorestar|lore_(pool|url|flags)|prelim_lore|lorectl|
  */
 export const EXEMPTIONS = [
   {
-    file: "examples/sample-run/run/common-law-grid.json",
+    file: "demo/multi-country-focus-search/run/common-law-grid.json",
     why: "captured third-party search results. The hit is a Collins English Dictionary definition of "
       + "hunting — \"the art, sport, lore, or practice of hunting\" — inside a snippet the common-law "
       + "sweep fetched and the driver saved VERBATIM. Editing it would corrupt a machine receipt to "

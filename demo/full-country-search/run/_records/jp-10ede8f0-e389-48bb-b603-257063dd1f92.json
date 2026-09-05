@@ -1,0 +1,226 @@
+{
+  "uri": "/mark/jp/10ede8f0-e389-48bb-b603-257063dd1f92",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "10ede8f0-e389-48bb-b603-257063dd1f92",
+  "applicationNumber": "2017-045638",
+  "registrationNumber": "6019661",
+  "applicationDate": "2017-04-05",
+  "registrationDate": "2018-02-16",
+  "expiryDate": "2028-02-16",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-03-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＭＡＤＥ　ＴＯ　ＭＯＶＥ",
+  "markTransliteration": "MEEDOTUMUUBU",
+  "markTranslation": "MADE TO MOVE",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    41,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "コンピュータソフトウェア（歯及び顎の移動及び治療計画案の描写用のデジタル画像ソフトウェア），歯及び顎の３次元デジタルモデルの作成用のコンピュータソフトウェア，持ち運び可能な及び手持ち式電子機器用のコンピュータアプリケーションソフトウェア（歯科／歯列矯正治療用のコンピュータソフトウェア），個別にカスタマイズされた歯列矯正治療方針の作成用のコンピュータソフトウェア，歯列矯正治療方針案及びこれに関する患者データの提供・追跡及び修正用のコンピュータソフトウェア，個々の歯の状態の評価用及び歯列矯正治療の計画立案用の歯科専門家向けコンピュータソフトウェア，電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Computer software (digital image software for depiction of dental and jaw movements and treatment plan drafts), computer software for creating three-dimensional digital models of teeth and jaws, computer application software for portable and handheld electronic devices Computer software for dentistry / orthodontic treatment), computer software for preparing individually customized orthodontic treatment policy, proposed orthodontic treatment policy and computer software for providing / tracking and correcting patient data related thereto , Computer software for dental professionals for the evaluation of the condition of individual teeth and planning of orthodontic treatment, electronic appliances appliances and parts thereof"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": null,
+      "description": "歯列矯正及び不正咬合治療用の歯列矯正器具，歯科又は歯列矯正用機器・歯周治療用機器・小児歯科用機器・歯科補綴用機器及び歯内治療用機器の部品及び附属品，医療用機械器具",
+      "translation_language": "en",
+      "translation": "Orthodontic appliances for orthodontic and malocclusion treatments, dentistry or orthodontic appliances · equipment for periodontal treatment · equipment for pediatric dentistry · parts and accessories for dental prosthesis equipment and endodontic treatment equipment, medical Machine tools for"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "歯科及び歯列矯正の分野における訓練，技芸・スポーツ又は知識の教授",
+      "translation_language": "en",
+      "translation": "Training in the field of dentistry and orthodontics, professor of arts and sports or knowledge"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "アプリケーションサービスプロバイダーによる歯列矯正又は歯科治療用コンピュータソフトウェアの提供，オンラインによるダウンロードが不可能な歯列矯正又は歯科治療用コンピュータソフトウェアの一時的な使用の提供，電子計算機用プログラムの提供",
+      "translation_language": "en",
+      "translation": "Provision of orthodontic or dental treatment computer software by an application service provider, provision of temporary use of orthodontic or dental treatment computer software incapable of online downloading, provision of programs for electronic computers"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": null,
+      "description": "歯科医療及び矯正歯科医療，医療情報の提供，歯科医療及び矯正歯科医療に関する助言，歯科医療及び矯正歯科医療に関する情報の提供",
+      "translation_language": "en",
+      "translation": "Provide information on dental care and orthodontic care, provision of medical information, advice on dentistry and orthodontic treatment, dental care and orthodontic medical care"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YAMAMOTO HIDESAKU",
+  "priorities": [
+    {
+      "priorityDate": "20161028"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software (digital image software for depiction of dental and jaw movements and treatment plan drafts), computer software for creating three-dimensional digital models of teeth and jaws, computer application software for portable and handheld electronic devices Computer software for dentistry / orthodontic treatment), computer software for preparing individually customized orthodontic treatment policy, proposed orthodontic treatment policy and computer software for providing / tracking and correcting patient data related thereto , Computer software for dental professionals for the evaluation of the condition of individual teeth and planning of orthodontic treatment, electronic appliances appliances and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "コンピュータソフトウェア（歯及び顎の移動及び治療計画案の描写用のデジタル画像ソフトウェア），歯及び顎の３次元デジタルモデルの作成用のコンピュータソフトウェア，持ち運び可能な及び手持ち式電子機器用のコンピュータアプリケーションソフトウェア（歯科／歯列矯正治療用のコンピュータソフトウェア），個別にカスタマイズされた歯列矯正治療方針の作成用のコンピュータソフトウェア，歯列矯正治療方針案及びこれに関する患者データの提供・追跡及び修正用のコンピュータソフトウェア，個々の歯の状態の評価用及び歯列矯正治療の計画立案用の歯科専門家向けコンピュータソフトウェア，電子応用機械器具及びその部品"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Orthodontic appliances for orthodontic and malocclusion treatments, dentistry or orthodontic appliances · equipment for periodontal treatment · equipment for pediatric dentistry · parts and accessories for dental prosthesis equipment and endodontic treatment equipment, medical Machine tools for",
+          "intClassNumber": "10",
+          "intGoodsServicesDescription": "歯列矯正及び不正咬合治療用の歯列矯正器具，歯科又は歯列矯正用機器・歯周治療用機器・小児歯科用機器・歯科補綴用機器及び歯内治療用機器の部品及び附属品，医療用機械器具"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Training in the field of dentistry and orthodontics, professor of arts and sports or knowledge",
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "歯科及び歯列矯正の分野における訓練，技芸・スポーツ又は知識の教授"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provision of orthodontic or dental treatment computer software by an application service provider, provision of temporary use of orthodontic or dental treatment computer software incapable of online downloading, provision of programs for electronic computers",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "アプリケーションサービスプロバイダーによる歯列矯正又は歯科治療用コンピュータソフトウェアの提供，オンラインによるダウンロードが不可能な歯列矯正又は歯科治療用コンピュータソフトウェアの一時的な使用の提供，電子計算機用プログラムの提供"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provide information on dental care and orthodontic care, provision of medical information, advice on dentistry and orthodontic treatment, dental care and orthodontic medical care",
+          "intClassNumber": "44",
+          "intGoodsServicesDescription": "歯科医療及び矯正歯科医療，医療情報の提供，歯科医療及び矯正歯科医療に関する助言，歯科医療及び矯正歯科医療に関する情報の提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants in the shape of a watch; Smartphones; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door closing control systems; Electron microscopes"
+        },
+        {
+          "natClassNumber": "10D01",
+          "natGoodsServicesDescription": "Medical apparatus and instruments, other than walking aids, and crutches"
+        },
+        {
+          "natClassNumber": "10D02",
+          "natGoodsServicesDescription": "Walking aids for medical purposes; Crutches"
+        },
+        {
+          "natClassNumber": "41A01",
+          "natGoodsServicesDescription": "Educational and instruction services relating to arts, crafts, sports or general knowledge"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        },
+        {
+          "natClassNumber": "42V02",
+          "natGoodsServicesDescription": "Medical practice; Providing medical information; Physical examination; Dentistry services; Preparation and dispensing of medications"
+        }
+      ]
+    },
+    "id": "10ede8f0-e389-48bb-b603-257063dd1f92",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20161028"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170405",
+        "applicationNumber": "2017-045638"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280216",
+      "lastPublicationDate": "20180313",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20180216",
+        "registrationNumber": "6019661"
+      }
+    },
+    "version": "20240320153104",
+    "wordMarkSpecification": {
+      "markTranslation": "MADE TO MOVE",
+      "markTransliteration": "MEEDOTUMUUBU",
+      "markVerbalElementText": "ＭＡＤＥ　ＴＯ　ＭＯＶＥ"
+    }
+  },
+  "_uri": "/mark/jp/10ede8f0-e389-48bb-b603-257063dd1f92",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.739Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

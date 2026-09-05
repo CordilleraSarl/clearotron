@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/cn/91f082c3-0c52-4880-a89e-fbbcc6bc2e0a",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "91f082c3-0c52-4880-a89e-fbbcc6bc2e0a",
+  "applicationNumber": "60482189",
+  "registrationNumber": "60482189",
+  "applicationDate": "2021-11-11",
+  "registrationDate": "2022-07-21",
+  "expiryDate": "2032-07-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-04-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SEVEN OR NINE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "平面美术设计",
+      "translation_language": "en",
+      "translation": "graphic art design"
+    }
+  ],
+  "owner": "Shenzhen Yuexing Hot Road Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市宝安区新安街道兴东社区宝城创业路北侧建设工业园J栋一层至七层104",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Yuexing Hot Road Technology Co., Ltd.",
+        "applicantNativeName": "深圳市悦行热路科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "graphic art design",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "平面美术设计"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Other services included in this class"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4227",
+          "subNatGoodsServicesDescription": "Other services included in this class"
+        }
+      ]
+    },
+    "id": "91f082c3-0c52-4880-a89e-fbbcc6bc2e0a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1788"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳蓝邦知识产权有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20211111",
+        "applicationNumber": "60482189"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320720",
+      "lastPublicationDate": "20220420",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220721",
+        "registrationNumber": "60482189"
+      }
+    },
+    "version": "20251004172857",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEVEN OR NINE"
+    }
+  },
+  "_uri": "/mark/cn/91f082c3-0c52-4880-a89e-fbbcc6bc2e0a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

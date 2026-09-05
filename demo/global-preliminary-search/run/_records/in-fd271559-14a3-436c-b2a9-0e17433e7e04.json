@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/in/fd271559-14a3-436c-b2a9-0e17433e7e04",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "fd271559-14a3-436c-b2a9-0e17433e7e04",
+  "applicationNumber": "5065345",
+  "registrationNumber": "2945955",
+  "applicationDate": "2021-07-29",
+  "registrationDate": "2022-03-23",
+  "expiryDate": "2031-07-29",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORG",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Computer software consultancy,Computer software design,Computer software design, development and programming services,Computer software development services,Computer software development",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "MEGHA SHYAM BIRUDAVOLU Single Firm",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "GIGI JOSEPH K J[33159]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "71, Second Main, Sadanand Nagar, Bangalore 560038",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "MEGHA SHYAM BIRUDAVOLU Single Firm"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software consultancy,Computer software design,Computer software design, development and programming services,Computer software development services,Computer software development"
+        }
+      ]
+    },
+    "id": "fd271559-14a3-436c-b2a9-0e17433e7e04",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2022"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "48, Opp. Kendriya Sadan,100 Ft Road, Koramangala,Bangalore-560034.",
+        "representativeName": "GIGI JOSEPH K J[33159]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210729",
+        "applicationNumber": "5065345"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310729",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20220323",
+        "registrationNumber": "2945955"
+      }
+    },
+    "version": "20250710154115",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORG"
+    }
+  },
+  "_uri": "/mark/in/fd271559-14a3-436c-b2a9-0e17433e7e04",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:08.869Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

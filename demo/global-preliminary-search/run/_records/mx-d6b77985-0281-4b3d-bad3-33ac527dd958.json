@@ -1,0 +1,123 @@
+{
+  "uri": "/mark/mx/d6b77985-0281-4b3d-bad3-33ac527dd958",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "d6b77985-0281-4b3d-bad3-33ac527dd958",
+  "applicationNumber": "3331553",
+  "registrationNumber": "2898756",
+  "applicationDate": "2025-03-04",
+  "registrationDate": "2025-07-24",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "PORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Publicación en línea de libros; publicaciones electrónicas en línea no descargables; suministro de entretenimiento a través de una página web; servicios de entretenimiento con la participación de personajes ficticios; servicios de entretenimiento prestados por personajes ficticios.",
+      "translation_language": "en",
+      "translation": "ONLINE PUBLICATION OF BOOKS; NON-DOWNLOADABLE ONLINE ELECTRONIC PUBLICATIONS; PROVISION OF ENTERTAINMENT VIA A WEBSITE; ENTERTAINMENT SERVICES FEATURING FICTITIOUS CHARACTERS; ENTERTAINMENT SERVICES PROVIDED BY FICTITIOUS CHARACTERS."
+    }
+  ],
+  "owner": "ROBERTO MANUEL LOPEZ NAVARRO",
+  "ownerNative": null,
+  "ownerCountry": "MX",
+  "representative": "SONIA XIMENA RAMIREZ MARQUEZ",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "ROBERTO MANUEL NUM. EXT. 4, A HERRADURA SECCIÓN 2, HUIXQUILUCAN, ESTADO DE MÉXICO 52784",
+        "applicantAddressCountryCode": "MX",
+        "applicantAddressCountryName": "Mexico",
+        "applicantName": "ROBERTO MANUEL LOPEZ NAVARRO"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "ONLINE PUBLICATION OF BOOKS; NON-DOWNLOADABLE ONLINE ELECTRONIC PUBLICATIONS; PROVISION OF ENTERTAINMENT VIA A WEBSITE; ENTERTAINMENT SERVICES FEATURING FICTITIOUS CHARACTERS; ENTERTAINMENT SERVICES PROVIDED BY FICTITIOUS CHARACTERS.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Publicación en línea de libros; publicaciones electrónicas en línea no descargables; suministro de entretenimiento a través de una página web; servicios de entretenimiento con la participación de personajes ficticios; servicios de entretenimiento prestados por personajes ficticios."
+        }
+      ]
+    },
+    "id": "d6b77985-0281-4b3d-bad3-33ac527dd958",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "55.00.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "0804R1",
+        "publicationYear": "2025"
+      }
+    ],
+    "recordLastUpdated": "20250813",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "representatives": [
+      {
+        "representativeAddress": "HACIENDA DE MIMIAHUAPAN NUM. EXT. 133, HACIENDA DE ECHEGARAY, NAUCALPAN DE JUAREZ, ESTADO DE MEXICO 53300, MEXICO",
+        "representativeName": "SONIA XIMENA RAMIREZ MARQUEZ"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250304",
+        "applicationNumber": "3331553"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20250724",
+        "registrationNumber": "2898756"
+      }
+    },
+    "version": "20250813020024",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "PORI"
+    }
+  },
+  "_uri": "/mark/mx/d6b77985-0281-4b3d-bad3-33ac527dd958",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:33.543Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

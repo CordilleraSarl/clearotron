@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/kr/a499fe2f-4914-42d2-99b2-0a48a31378bd",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "a499fe2f-4914-42d2-99b2-0a48a31378bd",
+  "applicationNumber": "40-1998-0005268",
+  "registrationNumber": null,
+  "applicationDate": "1998-02-26",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "코리",
+  "markTransliteration": "Corey",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    9,
+    10,
+    14,
+    16,
+    17,
+    21,
+    24,
+    25,
+    26,
+    31
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        9,
+        10,
+        14,
+        16,
+        17,
+        21,
+        24,
+        25,
+        26,
+        31
+      ],
+      "language": "ko",
+      "description": "모자, 목걸이, 반바지, 배지, 손수건, 수건, 스웨터, 스포츠셔츠, 아동복, 양말, 유니폼(운동용), 유아복, 자켓, 잠바, 잠옷, 티셔츠, 혁대",
+      "translation_language": "en",
+      "translation": "Hats, necklaces, shorts, badges, handkerchiefs, towels, sweaters, sports shirts, children's clothes, socks, uniforms (for sports), children's clothes, jackets, jumpers, pajamas, T-shirts, belts."
+    }
+  ],
+  "owner": "HS Ad Inc. CO.,LTD.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "김재만 (Kim Jae Man)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 마포구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "HS Ad Inc. CO.,LTD.",
+        "applicantNativeName": "주식회사 에이치에스애드"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Hats, necklaces, shorts, badges, handkerchiefs, towels, sweaters, sports shirts, children's clothes, socks, uniforms (for sports), children's clothes, jackets, jumpers, pajamas, T-shirts, belts.",
+          "intClassNumber": "06,09,10,14,16,17,21,24,25,26,31",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "모자, 목걸이, 반바지, 배지, 손수건, 수건, 스웨터, 스포츠셔츠, 아동복, 양말, 유니폼(운동용), 유아복, 자켓, 잠바, 잠옷, 티셔츠, 혁대"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "045"
+        }
+      ]
+    },
+    "id": "a499fe2f-4914-42d2-99b2-0a48a31378bd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260818",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 서초구 강남대로 산학협동재단빌딩 **층(서초동)(팬코리아특허법인)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김재만 (Kim Jae Man)"
+      },
+      {
+        "representativeAddress": "서울특별시 강남구 테헤란로**길 ** ,**층 (역삼동, 쁠랑빌딩)(뮤추얼특허법인)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김원근 (KIM WON KEUN)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19980226",
+        "applicationNumber": "40-1998-0005268"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260818020438",
+    "wordMarkSpecification": {
+      "markTransliteration": "Corey",
+      "markVerbalElementText": "코리"
+    }
+  },
+  "_uri": "/mark/kr/a499fe2f-4914-42d2-99b2-0a48a31378bd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.793Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

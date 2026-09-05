@@ -1,0 +1,146 @@
+{
+  "uri": "/mark/jp/fb137cfb-9171-4e2d-9da3-1d9790f494dd",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "fb137cfb-9171-4e2d-9da3-1d9790f494dd",
+  "applicationNumber": "2018-032676",
+  "registrationNumber": "6100240",
+  "applicationDate": "2018-03-20",
+  "registrationDate": "2018-11-22",
+  "expiryDate": "2028-11-22",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-12-18",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＩＮＶＩＳＡ",
+  "markTransliteration": "INBIZA",
+  "markTranslation": "INVISA",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "コンピュータソフトウェア（歯及び顎の移動及び治療計画案の描写用のデジタル画像ソフトウェア），歯及び顎の３次元デジタルモデルの作成用のコンピュータソフトウェア，持ち運び可能な及び手持ち式電子機器用のコンピュータアプリケーションソフトウェア（歯科／歯列矯正治療用のソフトウェア），個別にカスタマイズされた歯列矯正治療方針の作成用のコンピュータソフトウェア，歯列矯正治療方針案及びこれに関する患者データの提供・追跡及び修正用のコンピュータソフトウェア，個々の歯の状態の評価用及び歯列矯正治療の計画立案用の歯科専門家向けコンピュータソフトウェア，レーザー光スキャナー・光学式スキャナー・コンピュータスクリーン及びこれらと共に使用するためのコンピュータソフトウェア，コンピュータ，コンピュータソフトウェア，データ処理装置，電子応用機械器具及びその部品，測定機械器具",
+      "translation_language": "en",
+      "translation": "Computer software (digital image software for depiction of dental and jaw movements and treatment plan drafts), computer software for creating three-dimensional digital models of teeth and jaws, computer application software for portable and handheld electronic devices Computer software for dental / orthodontic treatment), computer software for preparing individually customized orthodontic treatment policy, proposed orthodontic treatment policy and computer data for providing / tracking and correcting patient data related thereto, Computer software for dental professionals for the evaluation of the condition of individual teeth and planning of orthodontic treatment, laser light scanner · optical scanner · computer screen and computer software for use with them, computer , Computer software, data processing apparatus, electronic applied machinery and its parts, measurement machinery"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YAMAMOTO HIDESAKU",
+  "priorities": [
+    {
+      "priorityDate": "20180320"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software (digital image software for depiction of dental and jaw movements and treatment plan drafts), computer software for creating three-dimensional digital models of teeth and jaws, computer application software for portable and handheld electronic devices Computer software for dental / orthodontic treatment), computer software for preparing individually customized orthodontic treatment policy, proposed orthodontic treatment policy and computer data for providing / tracking and correcting patient data related thereto, Computer software for dental professionals for the evaluation of the condition of individual teeth and planning of orthodontic treatment, laser light scanner · optical scanner · computer screen and computer software for use with them, computer , Computer software, data processing apparatus, electronic applied machinery and its parts, measurement machinery",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "コンピュータソフトウェア（歯及び顎の移動及び治療計画案の描写用のデジタル画像ソフトウェア），歯及び顎の３次元デジタルモデルの作成用のコンピュータソフトウェア，持ち運び可能な及び手持ち式電子機器用のコンピュータアプリケーションソフトウェア（歯科／歯列矯正治療用のソフトウェア），個別にカスタマイズされた歯列矯正治療方針の作成用のコンピュータソフトウェア，歯列矯正治療方針案及びこれに関する患者データの提供・追跡及び修正用のコンピュータソフトウェア，個々の歯の状態の評価用及び歯列矯正治療の計画立案用の歯科専門家向けコンピュータソフトウェア，レーザー光スキャナー・光学式スキャナー・コンピュータスクリーン及びこれらと共に使用するためのコンピュータソフトウェア，コンピュータ，コンピュータソフトウェア，データ処理装置，電子応用機械器具及びその部品，測定機械器具"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "10C01",
+          "natGoodsServicesDescription": "Measuring or testing machines and instruments"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants in the shape of a watch; Smartphones; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door closing control systems; Electron microscopes"
+        }
+      ]
+    },
+    "id": "fb137cfb-9171-4e2d-9da3-1d9790f494dd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20180320"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180320",
+        "applicationNumber": "2018-032676"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20281122",
+      "lastPublicationDate": "20181218",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20181122",
+        "registrationNumber": "6100240"
+      }
+    },
+    "version": "20240320153104",
+    "wordMarkSpecification": {
+      "markTranslation": "INVISA",
+      "markTransliteration": "INBIZA",
+      "markVerbalElementText": "ＩＮＶＩＳＡ"
+    }
+  },
+  "_uri": "/mark/jp/fb137cfb-9171-4e2d-9da3-1d9790f494dd",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.739Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

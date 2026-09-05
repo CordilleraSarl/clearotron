@@ -1,0 +1,1049 @@
+{
+  "uri": "/mark/em/a1858458-6b0d-401a-879b-e1bcb67554fd",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "a1858458-6b0d-401a-879b-e1bcb67554fd",
+  "applicationNumber": "9877648",
+  "registrationNumber": "9877648",
+  "applicationDate": "2011-04-07",
+  "registrationDate": "2011-09-01",
+  "expiryDate": "2031-04-07",
+  "renewalDate": null,
+  "lastPublicationDate": "2011-05-25",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "vancore",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    16,
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        16
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "cs",
+      "description": "Papír, lepenka (karton) a zbozí z techto materiálu, nezarazené do jiných tríd; Tiskárenské výrobky; Potreby pro knizní vazby; Fotografie; Papírenské zbozí; Lepidla pro papírenství nebo domácnost; Materiál pro umelce; Stetce; Psací stroje a kancelárské potreby (vyjímaje nábytek); Ucební a vyucovací pomucky s výjimkou prístroju; Plastické obaly (nezarazené do jiných tríd); Tiskarské typy; Stocky.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "cs",
+      "description": "Propagacní cinnost, reklama; Pomoc pri rízení obchodní cinnosti; Obchodní administrativa; Kancelárské práce, zejména vytvárení analýz nákladu a cen, informace v obchodních zálezitostech, poradenství v oboru zahranicního obchodu, poradenství pri organizování a rízení podniku, poradenství v otázkách pomoci pri rízení obchodní cinnosti, nákup pro tretí strany [nákup zbozí a sluzeb pro jiné podniky], provozne-ekonomické poradenství, provozne-ekonomické a organizacní poradenství, pruzkum trhu, realizace premistování provozu, vývoj reklamních a marketingových konceptu, jakoz i reklama a marketing pro nemovitosti (facility management), setrení v obchodních zálezitostech, tvorba statistik, tvorba provozne-ekonomických posudku, tvorba obchodních posudku, tvorba hospodárských prognóz, poskytování informací v obchodních a podnikatelských zálezitostech, poskytování ekonomických informací, pomoc pri rízení obchodní cinnosti pro tretí strany, obchodní pátrání, pomoc pri rízení prumyslových nebo obchodních podniku, informace v obchodních zálezitostech, marketing [pruzkum odbytu], marketing také v digitálních sítích, pruzkum trhu, pruzkum verejného mínení, vyhledávání v pocítacových datových souborech [pro tretí strany], reserse v obchodních zálezitostech, pobrezní nákup sluzeb, organizacní poradenství v obchodních zálezitostech, poradenství v oboru personálního rízení, plánování reklamních opatrení, plánování a kontrola podnikového rozvoje z organizacního hlediska, plánování [pomoc] pro pomoc pri rízení obchodní cinnosti, ocenování nepokáceného dreva, podnikové poradenství, obchodní administrativa, podpora prodeje [propagace prodeje] [pro tretí strany], zprostredkování obchodních a hospodárských kontaktu, také prostrednictvím internetu, zprostredkování hospodárského know-how (fransízing), prezentace zbozí a sluzeb, ocenování v obchodních zálezitostech.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "cs",
+      "description": "Výchova; Výchova; Zábava; Sportovní a kulturní aktivity; Zejména poradenství v oboru vzdelávání a dalsího vzdelávání, poskytování elektronických publikací [nikoliv ke stazení], pomoc pri výberu povolání, provozování klubu [zábava, pobavení nebo vyucování], koucování, praktické cvicení (demonstrace), zkousení, prezkousení, dálkové kurzy, dálkové studium, vydávání textu [s výjimkou reklamních textu], vydávání nakladatelských a tiskárenských výrobku v elektronické forme, také na internetu, vydávání casopisu a knih v elektronické forme, také na internetu, vydávání elektronických knih online a periodických publikací, organizování a vedení kulturních a/nebo sportovních akcí, organizování a porádání konferencí, organizace a porádání kongresu, organizování a porádání sympozií, personální vývoj prostrednictvím vzdelávání a dalsího vzdelávání, porádání a vedení semináru, porádání a vedení pracovních setkání [vzdelávání], porádání a vedení kolokvií, porádání výstav pro kulturní nebo vyucovací úcely, organizování plesu, porádání loterií, porádání soutezí [výchova a vzdelávání].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "da",
+      "description": "Papir, pap, varer heraf og ikke indeholdt i andre klasser; Tryksager; Bogbinderiartikler; Fotografier; Papirhandlervarer; Klæbemidler til papirvarer og til husholdningsbrug; Artikler til brug for kunstnere; Pensler; Skrivemaskiner og kontorartikler (dog ikke møbler); Instruktions- og undervisningsmateriale (dog ikke apparater); Plasticmateriale til emballeringsbrug (ikke indeholdt i andre klasser); Tryktyper; Klichéer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "da",
+      "description": "Annonce- og reklamevirksomhed; Bistand ved forretningsledelse; Bistand ved forretningsadministration; Bistand ved varetagelse af kontoropgaver, særlig udarbejdelse af costbenefitanalyser, indhentning af forretningsoplysninger, udenrigsøkonomisk rådgivning, rådgivning vedrørende organisation og ledelse af virksomheder, rådgivning vedrørende forretningsledelse, tjenesteydelser for tredjemand i forbindelse med anskaffelse (køb af varer og tjenesteydelser for andre virksomheder), professionel rådgivning vedrørende forretningsvirksomhed, driftsøkonomisk og organisatorisk rådgivning, erhvervsmæssig søgning, omlægning af forretningsvirksomhed, udvikling af brugskoncepter for ejendomme i driftsøkonomisk henseende (styring af faciliteter), udvikling af reklame- og marketingkoncepter samt reklame og marketing i forbindelse med fast ejendom (styring af faciliteter), forretningsundersøgelser, udarbejdelse af statistikker, udarbejdelse af driftsøkonomiske rapporter, udarbejdelse af forretningsmæssige skøn, økonomiske prognoser, oplysninger i handels- og forretningsanliggender, levering af erhvervsinformation, forretningsledelse for tredjemand, oplysninger i erhvervsanliggender, bistand i forbindelse med ledelse af erhvervs- og handelsvirksomheder, information vedrørende forretningsvirksomhed, marketing (marketingundersøgelser), markedsføring, også på digitale netværk, markedsundersøgelser, opinionsundersøgelser, efterforskning i computerfiler (for tredjemand), forretningsundersøgelser, offshoreoutsourcing, rådgivning vedrørende forretningsorganisation, bistand i forbindelse med personaleledelse, planlægning af reklametiltag, planlægning og overvågning af virksomhedsudvikling i organisatorisk henseende, planlægning (bistand) i forbindelse med forretningsledelse, vurdering af tømmer på roden, forretningsrådgivning, forretningsadministration, salgsfremmende foranstaltninger (for tredjemand), formidling af handels- og erhvervskontakter også via internettet, formidling af økonomisk knowhow (franchisevirksomhed), præsentation af varer og tjenesteydelser, vurderinger i forretningsanliggender.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "da",
+      "description": "Uddannelsesvirksomhed; Uddannelsesvirksomhed; Underholdningsvirksomhed; Sportsarrangementer og kulturelle arrangementer; Især rådgivning om uddannelse og rådgivning vedrørende efteruddannelse, udbydelse af elektroniske publikationer [ikke til download], erhvervsrådgivning, klubvirksomhed [underholdningsvirksomhed eller undervisning], træning, demonstrationsundervisning med praktiske øvelser, gennemførelse af pædagogiske eksamener, korrespondancekurser, korrespondanceundervisning, udgivelse af tekster [undtagen reklametekster], udgivelse af forlags- og tryksager i elektronisk form også på internettet, udgivelse af tidsskrifter og bøger i elektronisk form også på internettet, onlineudgivelse af elektroniske bøger og tidsskrifter, organisering og ledelse af kulturelle arrangementer og/eller sportsarrangementer, organisering og arrangering af konferencer, organisering og arrangering af kongresser, organisering og arrangering af symposier, personaleudvikling via uddannelse og efteruddannelse, arrangering og ledelse af seminarer, arrangering og ledelse af workshopper [undervisningsvirksomhed], arrangering og ledelse af kollokvier, arrangering af udstillinger med kulturelle eller uddannelsesmæssige formål, arrangering af baller, arrangering af lotterier, arrangering af konkurrencer [uddannelsesvirksomhed og underholdningsvirksomhed].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "nl",
+      "description": "Papier, karton en hieruit vervaardigde producten voorzover niet begrepen in andere klassen; Drukwerken; Boekbinderswaren; Foto's; Schrijfbehoeften; Kleefstoffen voor kantoorgebruik of voor de huishouding; Materiaal voor kunstenaars; Penselen; Schrijfmachines en kantoorartikelen (uitgezonderd meubelen); Leermiddelen en onderwijsmateriaal (uitgezonderd toestellen); Plastic materialen voor verpakking, voor zover niet begrepen in andere klassen; Drukletters; Clichés.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "Reclame; Beheer van commerciële zaken; Zakelijke administratie; Administratieve diensten, met name kostprijsanalyses, zakelijke informatie, advisering op het gebied van economische betrekkingen met het buitenland, advisering bij de organisatie en leiding van ondernemingen, advisering voor bedrijfsleiding, adviseringsdiensten op het gebied van bedrijfsleiding, bezorgdiensten voor derden (aankoop van goederen en diensten voor andere ondernemingen), bedrijfseconomische advisering, advisering op bedrijfseconomisch en organisatorisch gebied, business scouting, herhuisvesting van bedrijven, ontwikkeling van gebruiksconcepten voor onroerende goederen in bedrijfseconomisch opzicht (faciliteitenbeheer), ontwikkeling van reclame- en marketingconcepten alsmede reclame en marketing voor onroerende goederen (faciliteitenbeheer), zakelijk onderzoek, het opstellen van statistieken, bedrijfseconomische expertises, zakelijke expertises, economische prognoses, verstrekken van inlichtingen in handels- en zakelijke aangelegenheden, verstrekking van inlichtingen op economisch gebied, bedrijfsleiding voor derden, verzamelen van zakelijke inlichtingen, hulp bij de leiding van industriële of handelsbedrijven, zakelijke informatie, marketing (marktonderzoek), marketing ook in digitale netwerken, marktonderzoek, opiniepeiling, onderzoek in computerbestanden (voor derden), zakelijk onderzoek, offshore-outsourcing, advisering voor bedrijfsorganisatie, advisering met betrekking tot personeel, planning van reclamemaatregelen, planning van en toezicht op bedrijfsontwikkelingen in organisatorisch opzicht, planning (hulp) bij de bedrijfsleiding, schatting van hout op stam, advisering inzake bedrijfsvoering, zakelijke administratie, verkooppromotie (sales promotion) (voor derden), bemiddeling bij handels- en economische contacten, ook via het internet, het verschaffen van economische kennis (franchising), presentatie van goederen en diensten, waardebepaling in zakelijke aangelegenheden.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Opvoeding; Opleiding; Ontspanning; Sportieve en culturele activiteiten; Met name advisering op het gebied van opleiding en advisering met betrekking tot bijscholing, het ter beschikking stellen van elektronische publicaties (niet downloadbaar), loopbaanadvisering, exploitatie van een club (ontspanning of onderwijs), coaching, aanschouwelijk onderwijs, diensten met betrekking tot het uitvoeren van pedagogische examens, schriftelijke cursussen, schriftelijk onderwijs, uitgave van teksten (uitgezonderd reclameteksten), uitgave van uitgeverijproducten en drukwerken in elektronische vorm, ook op internet, uitgave van week- of maandbladen en boeken in elektronische vorm, ook op internet, onlinepublicatie van elektronische boeken en tijdschriften, het organiseren en houden van culturele en/of sportieve evenementen, het organiseren en houden van conferenties, het organiseren en houden van congressen, het organiseren en houden van symposia, personeelsontwikkeling door opleiding en bijscholing, het organiseren en houden van seminars, het organiseren en houden van workshops (opleiding), het organiseren en leiden van colloquia, organisatie van tentoonstellingen voor culturele of educatieve doeleinden, organisatie van bals, organisatie van loterijen, organisatie van wedstrijden (opvoeding en ontspanning).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Paper, cardboard and goods made from these materials, not included in other classes; Printed matter; Book binding material; Photographs; Stationery; Adhesives for stationery or household purposes; Artists' materials; Paint brushes; Typewriters and office requisites (except furniture); Instructional and teaching material (except apparatus); Plastic materials for packaging (not included in other classes); Printers' type; Printing blocks.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Advertising; Business management; Business administration; Office functions, in particular cost price analysis, business inquiries, foreign trade consultancy, business management and organisation consultancy, business management consultancy, procurement services, for others (acquisition of goods and services for other companies), professional business consultancy, professional business and organisational consultancy, business scouting, relocation services for businesses, development of marketing and advertising concepts, and real estate advertising and marketing services (facility management), business investigations, statistics, providing of professional business expertise, efficiency experts, economic forecasting, business information, economic information, business management for others, business observations, commercial or industrial management assistance, information services relating to business, marketing (marketing research), marketing, including on digital networks, conducting market research, opinion polling, research in computer data files (for others), business inquiries, offshore outsourcing, business organisation consultancy, personnel management consultancy, planning of advertising initiatives, planning and monitoring of business developments with regard to organisational matters, business management assistance, evaluation of standing timber, business advisory services, business administration, sales promotion (for others), organising commercial and business contacts, including via the Internet, providing commercial know-how (franchising), presentation of goods and services, business appraisals.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education; Providing of training; Entertainment; Sporting and cultural activities; In particular training consultancy and further training consultancy, providing electronic publications (not downloadable), vocation tuition, club services (entertainment or instruction), coaching, practical training demonstrations, conducting of educational examinations, correspondence courses, distance learning, publishing of texts (other than publicity texts), publication of printed matter in electronic form, including on the Internet, publication of magazines and books in electronic form, including on the Internet, online publication of electronic books and periodicals, arranging and conducting of cultural and/or sporting events, arranging and conducting of conferences, arranging and conducting of congresses, arranging and conducting of symposiums, personnel development through training and further training, arranging and conducting of seminars, arranging and conducting of workshops (training), arranging and conducting of colloquiums, organisation of exhibitions for cultural or educational purposes, organisation of balls, conducting lotteries, organisation of competitions (education and entertainment).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "et",
+      "description": "Paber, papp (kartong) ja nendest materjalidest tooted, mis ei kuulu teistesse klassidesse; Trükised; Köitematerjal; Fotod; Kirjatarbed; Majapidamis- ja kantseleiliimid; Kunstnikutarbed; Pintslid; Kirjutusmasinad ja kantseleitarbed (va mööbel); Õppematerjalid ja näitvahendid (va aparaadid); Plastikust pakkematerjalid (väljaspool teisi kaubaklasse); Trükitüübid; Kliseed.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "et",
+      "description": "Reklaam; Ärijuhtimine; Ärikorraldus; Bürootööd, eelkõige omahinnaanalüüside koostamine, äriteave, väliskaubandusalane nõustamine, ettevõtete töö korraldamise ja juhtimise nõustamine, ärijuhimise nõustamine, hanketeenused (kaupade ja teenuste soetamine teistele ettevõtetele), ärialane ja organisatoorne nõustamine, ärialased uurimused, äritegevuse siirdeteenused, reklaami- ja turunduskontseptide arendamine ning kinnisvarareklaam ja -turundus (rajatisehaldus), ärialased uuringud, statistikate koostamine, ärialased eksperthinnangud, tõhususe (saavutusvõime, teovõime) ekspertiisid, majandusprognoosid, kaubandus- ja äriteave, majandusteave, ärijuhtimine teenusena, äriklientide võitmine, abi tööstus- või kaubandusettevõtete juhtimisel, äriteave, turundus (müügiuuringud), turundus, ka digitaalvõrkudes, turu-uuringud, rahvastikuküsitlused, järelepärimine arvutiandmebaasides (kolmandatele isikutele), ärialased päringud, ettevõtte põhitegevust toetavate teenuste sisseostmine, äritegevuse korraldamise nõustamine, personalijuhtimise nõustamine, reklaamimeetmete kavandamine, ettevõtte arengu korralduslik kavandamine ja järelevalve, äritegevuse juhtimise kavandamine (abi), kasvava metsa hindamine, äriline nõustamine, äriline juhtimine, müügiedendus teenusena, kaubandus- ja majanduskontaktide vahendamine, ka Interneti teel, majandusliku oskusteabe vahendamine (frantsiisiteenused), kauba- ja teenuseesitlused, äritegevuse hindamine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "et",
+      "description": "Kasvatus; Väljaõpe; Meelelahutus; Spordi- ja kultuurialane tegevus; Eelkõige väljaõppe- ja täiendõppenõustamine, elektrooniliste publikatsioonide pakkumine (muud kui allalaaditavad), kutsenõustamine, klubiteenused (meelelahutus või õpetamine), treenimine, praktilise treeningu demonstratsioontunnid, eksamineerimine, kaugõppekursused, kaugõpe, tekstide (va reklaamtekstid) väljaandmine, kirjastus- ja trükitoodete väljaandmine elektroonilisel kujul, ka Internetis, ajakirjade ja raamatute väljaandmine elektroonilisel kujul, ka Internetis, elektrooniliste raamatute ja ajakirjade sidusväljaanded, kultuuri- ja/või spordiürituste organiseerimine ja läbiviimine, konverentside organiseerimine ja korraldamine, kongresside organiseerimine ja korraldamine, sümpoosionide organiseerimine ja korraldamine, personali arendamine välja- ja täiendõppe teel, seminaride korraldamine ja läbiviimine, õpikodade korraldamine ja läbiviimine (väljaõpe), kollokviumide korraldamine ja juhatamine, näituste korraldamine kultuuri- või õppeotstarbel, ballide korraldamine, loteriide korraldamine, võistluste korraldamine (haridus ja meelelahutus).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "fi",
+      "description": "Paperi, pahvi ja niistä tehdyt tavarat, jotka eivät sisälly muihin luokkiin; Painotuotteet; Kirjansidonta-aineet; Valokuvat; Paperitavarat ja kirjoitustarvikkeet; Paperi- ja kotitalousliimat; Taiteilijantarvikkeet; Siveltimet; Kirjoituskoneet ja toimistotarvikkeet (paitsi huonekalut); Neuvonta- ja opetusvälineet (paitsi laitteet); Muoviset pakkaustarvikkeet (jotka eivät sisälly muihin luokkiin); Painokirjasimet; Painolaatat.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fi",
+      "description": "Mainonta; Liikkeenjohto; Yrityshallinto; Toimistotehtävät, erityisesti kustannus-hinta-analyysien laatiminen, liiketoimintaa koskevat kyselyt, ulkomaankauppaa koskeva neuvonta, yritysten organisaatioon ja johtamiseen liittyvä neuvonta, liikkeenjohtamiseen liittyvä neuvonta, liikkeenjohtamiseen liittyvät neuvontapalvelut, hankintapalvelut kolmansien osapuolten lukuun (tavaroiden ja palvelujen hankinta toisille yrityksille), liiketaloudellinen neuvonta, liiketaloudellinen ja organisatorinen neuvonta, liiketoimintaan liittyvät tiedustelupalvelut, liiketoimintojen uudelleensijoitusten toteutus, kiinteistöjen liiketaloudellisten hyödyntämissuunnitelmien kehittäminen (tilojen hallinta), mainonta- ja markkinointikonseptien kehittäminen sekä kiinteistöjen mainonta ja markkinointi (tilojen hallinta), liiketoimintaa koskevat selvitykset, tilastojen laatiminen, yritystaloudellisten asiantuntijalausuntojen laatiminen, yritystoimintaa koskevien asiantuntijalausuntojen laatiminen, talousennusteiden laatiminen, kauppaa ja liiketoimintaa koskevien tietojen antaminen, taloutta koskevien tietojen antaminen, liikkeenjohto kolmansille osapuolille, asiakkuuksien hankinta liiketoiminnan alalla, yritysten tai liiketoiminnan johtamista koskeva avustaminen, tiedotus liiketoimintaa koskevissa asioissa, markkinointi (myyntitutkimus), markkinointi, myös digitaalisissa verkoissa, markkinatutkimukset, mielipidekyselyt, tietokoneen tiedostojen tutkiminen (muiden lukuun), tutkimus liiketoimintaa koskevissa asioissa, alihankinta kaukomaista, liiketoimintaa koskeva organisatorinen neuvonta, henkilöstöhallintoa koskeva neuvonta, mainostoimien suunnittelu, yrityksen kehityksen suunnittelu valvonta organisatorissa kysymyksissä, liikkeenjohdon suunnitelmat (avustaminen), pystypuiden arvioiminen, yritysneuvonta, yrityshallinto, myynninedistäminen (markkinointi) (muiden lukuun), kauppa- ja liiketoimintakohtaktien välittäminen, myös Internetin kautta, talouteen liittyvän taitotiedon välittäminen (franchising-toiminta), tavaroita ja palveluja koskevat esittelyt, liikeasioihin liittyvät arvonmääritykset.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fi",
+      "description": "Kasvatus; Koulutuksen järjestäminen; Ajanviete; Urheilu- ja kulttuuritoiminnat; Erityisesti koulutusta ja jatkokoulutusta koskeva neuvonta, elektronisten julkaisujen tarjoaminen (muiden kuin ladattavien), ammatinvalinnanohjaus, kerhotoiminta (ajanvietteen tai opetuksen alalla), valmennus, esittelyopetus käytännön harjoituksissa, pedagogisten kokeiden toteutus, etäkurssit, etäopetus, tekstien julkaiseminen (paitsi mainostekstien), kustantamo- ja painotuotteiden julkaiseminen sähköisessä muodossa, myös Internetissä, kausijulkaisujen ja kirjojen julkaiseminen elektronisessa muodossa, myös Internetissä, elektronisten kirjojen ja kausijulkaisujen julkaiseminen online-periaatteella, tilaisuuksien organisointi ja toteutus kulttuurin ja/tai urheilun alalla, konferenssien organisointi ja järjestäminen, kongressien organisointi ja järjestäminen, symposiumien organisointi ja järjestäminen, henkilöstön kehitys koulutuksen ja jatkokoulutuksen avulla, seminaarien järjestäminen ja toteutus, työpajojen järjestäminen ja toteutus (koulutus), kollokvioiden järjestäminen ja johtaminen, näyttelyiden järjestäminen kulttuuri- tai opetustarkoituksiin, juhlien järjestäminen, arpajaisten järjestäminen, kilpailujen järjestäminen (koulutus ja ajanviete).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "fr",
+      "description": "Papier, carton et produits en ces matières, non compris dans d'autres classes; Produits de l'imprimerie; Articles pour reliures; Photographies; Papeterie; Adhésifs (matières collantes) pour la papeterie ou le ménage; Matériel pour les artistes; Pinceaux; Machines à écrire et articles de bureau (à l'exception des meubles); Matériel d'instruction ou d'enseignement (à l'exception des appareils); Matières plastiques pour l'emballage (non comprises dans d'autres classes); Caractères d'imprimerie; Clichés.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Publicité; Gestion des affaires commerciales; Administration commerciale; Travaux de bureau, en particulier analyses du prix de revient, renseignements pour affaires, conseils commerciaux, conseils en matière d'organisation et de gestion d'entreprises, consultation pour la direction des affaires commerciales, conseils en gestion d'entreprise, acquisition pour le compte de tiers [acquisition de produits et services pour d'autres entreprises], conseils commerciaux professionnels, d'affaires professionnelles et conseils organisationnels, recherches d'affaires, services de relogement pour entreprises, développement de concepts d'utilisation pour biens immobiliers du point de vue économique (gestion d'infrastructures), développement de concepts publicitaires et de marketing, concepts de marketing et services de marketing en matières immobilières (gestion d'infrastructures), enquêtes commerciales, etablissement de statistiques, expertises dans le domaine des affaires commerciales, expertises d'entreprises, prévisions économiques, fourniture de renseignements commerciaux, informations économiques, gestion des affaires commerciales pour le compte de tiers, recherche de clients, aide à la direction de sociétés industrielles et commerciales, services d'informations commerciales, marketing [études marketing], marketing, également sur des réseaux numériques, études da marché, sondages d'opinion, recherche dans des fichiers informatiques [pour des tiers], services de recherche pour affaires, sous-traitance offshore, conseils en organisation des affaires, consultations sur les questions de personnel, services de planification publicitaire, planification et surveillance d'entreprises d'un point de vue organisationnel, services de planification en matière de gestion des affaires commerciales [aide] , estimation de bois sur pied, consultations professionnelles d´affaires, administration commerciale, promotion [services de promotion des ventes] [pour des tiers], courtage de contacts commerciaux et économiques, également par Internet, courtage de savoir-faire économique (franchisage), présentations de marchandises et services, estimation en matière commerciale.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Education; Education; Divertissement; Activités sportives et culturelles; En particulier conseils en matière de formation et conseils en matière de formation continue, mise à disposition de publications électroniques [non téléchargeables], orientation professionnelle, exploitation d'un club [divertissement ou enseignement], formation, formation pratique (démonstration), services de réalisation d'examens pédagogiques, enseignement par correspondance, enseignement par correspondance, édition de textes [à l'exception des textes publicitaires], publication de produits de l'édition et de l'imprimerie sous forme électronique, également sur l'internet, publication de magazines et livres sous forme électronique, également sur l'internet, publication en ligne de livres électroniques et périodiques, organisation et tenue de manifestations culturelles et/ou sportives, organisation et tenue de conférences, organisation et tenue de congrès, organisation et tenue de symposiums, développement de personnel par formation et formation continue, organisation et tenue de séminaires, organisation et tenue d'ateliers [formation], organisation et tenue de colloques, organisation d'expositions à but culturel ou éducatif, organisation de bals, organisation de loteries, organisation de concours [éducation et divertissement].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "de",
+      "description": "Papier, Pappe (Karton) und Waren aus diesen Materialien, so weit sie nicht in anderen Klassen enthalten sind; Druckereierzeugnisse; Buchbinderartikel; Fotografien; Schreibwaren; Klebstoffe für Papier- und Schreibwaren oder für Haushaltszwecke; Künstlerbedarfsartikel; Pinsel; Schreibmaschinen und Büroartikel (ausgenommen Möbel); Lehr- und Unterrichtsmittel (ausgenommen Apparate); Verpackungsmaterial aus Kunststoff, so weit es nicht in anderen Klassen enthalten ist; Drucklettern; Druckstöcke.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Werbung; Geschäftsführung; Unternehmensverwaltung; Büroarbeiten, insbesondere Aufstellung von Kosten-Preis-Analysen, Auskünfte in Geschäftsangelegenheiten, Außenwirtschaftsberatung, Beratung bei der Organisation und Führung von Unternehmen, Beratung in Fragen der Geschäftsführung, Beratungsdienste in Fragen der Geschäftsführung, Beschaffungsdienstleistungen für Dritte [Erwerb von Waren und Dienstleistungen für andere Unternehmen], betriebswirtschaftliche Beratung, betriebswirtschaftliche und organisatorische Beratung, Business Scouting, Durchführung von Unternehmensverlagerungen, Entwicklung von Nutzungskonzepten für Immobilien in betriebswirtschaftlicher Hinsicht (Facility management), Entwicklung von Werbe- und Marketingkonzepten sowie Werbung und Marketing für Immobilien (Facility management), Ermittlungen in Geschäftsangelegenheiten, Erstellen von Statistiken, Erstellung von betriebswirtschaftlichen Gutachten, Erstellung von Geschäftsgutachten, Erstellung von Wirtschaftsprognosen, Erteilung von Auskünften in Handels- und Geschäftsangelegenheiten, Erteilung von Wirtschaftsauskünften, Geschäftsführung für Dritte, Geschäftskundschaftungen, Hilfe bei der Führung von gewerblichen oder Handelsbetrieben, Informationen in Geschäftsangelegenheiten, Marketing [Absatzforschung], Marketing auch in digitalen Netzen, Marktforschung, Meinungsforschung, Nachforschung in Computerdateien [für Dritte], Nachforschungen in Geschäftsangelegenheiten, Offshore-Outsourcing, Organisationsberatung in Geschäftsangelegenheiten, Personalmanagementberatung, Planung von Werbemaßnahmen, Planung und Überwachung von Unternehmensentwicklungen in organisatorischer Hinsicht, Planungen [Hilfe] bei der Geschäftsführung, Schätzung von ungeschlagenem Holz, Unternehmensberatung, Unternehmensverwaltung, Verkaufsförderung [Sales promotion] [für Dritte], Vermittlung von Handels- und Wirtschaftskontakten, auch über das Internet, Vermittlung von wirtschaftlichem Know-How (Franchising), Waren- und Dienstleistungspräsentationen, Wertermittlungen in Geschäftsangelegenheiten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Erziehung; Ausbildung; Unterhaltung; sportliche und kulturelle Aktivitäten; insbesondere Ausbildungsberatung und Fortbildungsberatung, Bereitstellen von elektronischen Publikationen [nicht herunterladbar], Berufsberatung, Betrieb eines Clubs [Unterhaltung oder Unterricht], Coaching, Demonstrationsunterricht in praktischen Übungen, Durchführung von pädagogischen Prüfungen, Fernkurse, Fernunterricht, Herausgabe von Texten [ausgenommen Werbetexte], Herausgabe von Verlags- und Druckereierzeugnissen in elektronischer Form, auch im Internet, Herausgabe von Zeitschriften und Büchern in elektronischer Form, auch im Internet, Online Publikation von elektronischen Büchern und Zeitschriften, Organisation und Durchführung von kulturellen und/oder sportlichen Veranstaltungen, Organisation und Veranstaltung von Konferenzen, Organisation und Veranstaltung von Kongressen, Organisation und Veranstaltung von Symposien, Personalentwicklung durch Aus- und Fortbildung, Veranstaltung und Durchführung von Seminaren, Veranstaltung und Durchführung von Workshops [Ausbildung], Veranstaltung und Leitung von Kolloquien, Veranstaltung von Ausstellungen für kulturelle oder Unterrichtszwecke, Veranstaltung von Bällen, Veranstaltung von Lotterien, Veranstaltung von Wettbewerben [Erziehung und Unterhaltung].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "hu",
+      "description": "Papír, karton és ezen anyagokból készült termékek, amelyek nem tartoznak más osztályokba; Nyomdaipari termékek; Könyvkötészeti anyagok; Fényképek; Papíripari cikkek; Papíripari vagy háztartási ragasztóanyagok; Anyagok muvészek részére; Ecsetek; Írógépek és irodai cikkek (bútorok kivételével); Tanítási és oktatási anyagok (készülékek kivételével); Muanyag csomagolóanyagok (más osztályban nem szereplo); Nyomdabetuk; Klisék.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hu",
+      "description": "Reklámozás; Kereskedelmi ügyletek; Kereskedelmi adminisztráció; Irodai munkák, különösen költség-ár elemzések készítése, felvilágosítás üzleti ügyekben, külkereskedelmi tanácsadás, vállalatok szervezésénél és vezetésénél nyújtott tanácsadás, üzletvezetési tanácsadás, üzletvezetési tanácsadói szolgáltatás, beszerzési szolgáltatások mások számára [termékek és szolgáltatások megvásárlása más vállalatok számára], vállalatgazdasági tanácsadás, vállalatgazdasági és szervezési tanácsadás, business scouting, vállalatok áthelyezésének lebonyolítása, ingatlanhasznosítási koncepciók fejlesztése vállalatgazdasági szempontból (lehetoség menedzsment), reklám- és marketingkoncepciók kidolgozása, valamint reklámozás és marketing ingatlanok számára (lehetoség menedzsment), üzleti vizsgálatok, statisztikák összeállítása, vállalatgazdasági szakvélemények készítése, szakvéleményadás gazdasági ügyekben, gazdasági elorejelzések készítése, felvilágosítás nyújtása kereskedelmi és üzleti ügyekben, gazdasági információk nyújtása, üzletvezetés mások számára, gazdasági hírek szerzése, segítségnyújtás ipari vagy kereskedelmi vállalatok irányításában, üzleti információk, marketing [eladási kutatás], marketing digitális hálózatokban is, piackutatás, közvélemény-kutatás, keresések számítógépes fájlokban [mások számára], üzleti tájékoztatások, offshore-outsourcing, üzletszervezési tanácsadás, személyzetmenedzsment tanácsadás, reklámozással kapcsolatos intézkedések tervezése, vállalati fejlesztések tervezése és felügyelete, szervezési tekintetben, üzletvezetési [segítségnyújtás] tervezés, lábon álló fa értékbecslése, vállalati tanácsadás, vállalatigazgatás, eladástámogatás [sales promotion] [mások számára], kereskedelmi és gazdasági kapcsoltok közvetítése, az interneten is, gazdasági know-how közvetítése (franchise szolgáltatások), termékek és szolgáltatások bemutatása, üzleti értékbecslések.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hu",
+      "description": "Nevelés; Nevelés; Szórakoztatás; Sport- és kulturális tevékenységek; Különösen szakképzési tanácsadás és továbbképzési tanácsadás, elektronikus publikációk rendelkezésre bocsátása [nem letöltheto], pályaválasztási tanácsadás, klubok üzemeltetése [szórakoztatás vagy oktatás], képzés, gyakorlati bemutató oktatás, oktatási vizsgáztatás, levelezo tanfolyamok, távoktatás, szövegek kiadása [kivéve a reklámszövegeket], kiadói és nyomdaipari termékek kiadása elektronikus formában, az interneten is, folyóiratok és könyvek kiadása elektronikus formában, az interneten is, elektronikus könyvek és folyóiratok online publikálása, kulturális és/vagy sportrendezvények szervezése és lebonyolítása, konferenciák szervezése és rendezése, kongresszusok szervezése @©s rendezése, szimpóziumok szervezése és rendezése, személyzet fejlesztése szak- és továbbképzés által, szemináriumok rendezése és tartása, workshopok [szakképzés] rendezése és tartása, kollokviumok rendezése és vezetése, kulturális vagy oktatási célú kiállítások rendezése, bálok rendezése, sosjátékok rendezése, versenyek rendezése [oktatás és szórakoztatás].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "it",
+      "description": "Carta, cartone e prodotti in questi materiali, non compresi in altre classi; Stampati; Articoli per legatoria; Fotografie; Cartoleria; Adesivi (materie collanti) per la cartoleria o per uso domestico; Materiale per artisti; Pennelli; Macchine da scrivere e articoli per ufficio (esclusi i mobili); Materiale per l'istruzione o l'insegnamento (tranne gli apparecchi); Materie plastiche per l'imballaggio (non comprese in altre classi); Caratteri tipografici; Clichés.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "it",
+      "description": "Gestione di affari commerciali; Amministrazione commerciale; Lavori di ufficio; Lavori d'ufficio, in particolare compilazione d'analisi sul rapporto costo-prezzo, informazioni su questioni commerciali, consulenza riguardante l'economia estera, consulenza organizzativa e gestione d'affari commerciali, consulenza per la direzione degli affari, servizi di consulenza per la direzione degli affari, acquisizioni per conto terzi [acquisto di prodotti e servizi per altre imprese], consulenza economico-aziendale, consulenza gestionale e consulenza organizzativa, business scouting, servizi di trasferimento per imprese, sviluppo di programmi pubblicitari e di marketing, nonché marketing e pubblicità per immobili (amministrazione d'infrastrutture), indagini commerciali, stesura di statistiche, stesura di perizie in materia d'economia aziendale, perizie in materia d'affari, previsioni economiche, fornitura d'informazioni su affari e questioni commerciali, informazioni economiche, gestione d'affari commerciali per conto terzi, sondaggi clientela commerciali, assistenza nella gestione d'aziende industriali e commerciali, informazioni commerciali, marketing [ricerche di mercato], marketing anche su reti digitali, servizi di ricerche di mercato, sondaggio d'opinione, ricerca in file informatici [per terzi], indagini d'affari, offshore outsourcing, consulenza per l'organizzazione degli affari, consulenza relativa alla gestione delle risorse umane, progettazione d'iniziative pubblicitarie, progettazione e monitoraggio di sviluppi aziendali dal punto di vista organizzativo, pianificazione nella gestione degli affari [assistenza], stima di legname non abbattuto, consulenza aziendale, amministrazione commerciale, promozioni [promozione delle vendite] [per terzi], fornitura di contatti economici e commerciali, anche via Internet, fornitura di know-how economico (franchising), presentazioni di prodotti e servizi, valutazioni in materia d'affari.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "Educazione; Formazione; Attività sportive e culturali; Servizi scientifici e tecnologici e servizi di ricerca e progettazione ad essi relativi; In particolare consulenza in materia di formazione e aggiornamento, fornitura di pubblicazioni elettroniche [non scaricabili], orientamento vocazionale, servizi di club [divertimento o istruzione], coaching, esercitazione pratica (dimostrazione), realizzazione d'esami di profitto, corsi per corrispondenza, corsi per corrispondenza, pubblicazione di testi [eccetto quelli pubblicitari], pubblicazione di prodotti editoriali e tipografici in formato elettronico, anche in Internet, pubblicazione di riviste e libri in formato elettronico, anche in Internet, pubblicazione on-line di libri elettronici e riviste, organizzazione e realizzazione di manifestazioni culturali e/o sportive, organizzazione ed allestimento di conferenze, organizzazione ed allestimento di congressi, organizzazione ed allestimento di simposi, sviluppo del personale mediante attività di formazione e aggiornamento professionale, organizzazione e realizzazione di seminari, organizzazione e realizzazione di laboratori [formazione], organizzazione e direzione di convegni, organizzazione d'esposizioni per scopi culturali o scopi educativi, organizzazione di balli, organizzazione di lotterie, organizzazione di concorsi [istruzione e divertimento].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "lt",
+      "description": "Popierius, kartonas ir prekes is siu medziagu, jei jos nera itrauktos i kitas klases; Spaudiniai; Irisimo medziagos; Fotonuotraukos; Rastines reikmenys; Rastines ir buitines lipniosios medziagos; Dailininku reikmenys; Teptukai; Rasomosios masineles ir biuro reikmenys (isskyrus baldus); Mokomoji medziaga ir vaizdines priemones (isskyrus aparatura); Plastikines medziagos, skirtos ipakavimui (nepriskirtos kitoms klasems); Sriftai; Klises.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lt",
+      "description": "Reklama; Verslo vadyba; Verslo tvarkyba; Istaigu veikla, ypac islaidu ir kainos analiziu rengimas, informacijos teikimas verslo klausimais, konsultacijos uzsienio prekybos klausimais, konsultacijos imoniu strukturos ir vadovavimo imonems klausimais, konsultacijos verslo vadybos klausimais, konsultacines paslaugos, susijusios su verslo vadyba, isigijimo paslaugos tretiesiems asmenims (prekiu ir paslaugu isigijimas kitoms imonems), konsultacijos mikroekonomikos klausimais, konsultacijos imones ekonomikos ir organizaciniais klausimais, verslo zvalgyba, verslo perkelimas i kita vieta, nekilnojamojo turto naudojimo koncepciju tobulinimas mikroekonomikos aspektu (irenginiu valdymas), reklamos ir rinkodaros koncepciju kurimas bei nekilnojamojo turto reklama ir rinkodara (irenginiu valdymas), verslo tyrimai, statistiku rengimas, mikroekonominiu ekspertiziu rengimas, verslo ekspertiziu rengimas, ekonominiu prognoziu rengimas, informacijos prekybos ir verslo klausimais teikimas, informacijos ekonomikos klausimais teikimas, verslo vadyba tretiesiems asmenims, verslo paieska, pagalba vadovaujant verslo ar prekybinems imonems, informacija verslo klausimais, rinkodara (pardavimo tyrimai), rinkodara taip pat skaitmeniniuose tinkluose, rinkos tyrimai, viesosios nuomones apklausos, paieska kompiuteriu rinkmenose (tretiesiems asmenims), paieska verslo klausimais, neapmokestinamosios uzsakomosios paslaugos, konsultacijos verslo organizavimo klausimais, konsultacijos personalo vadybos klausimais, reklaminiu priemoniu planavimas, imoniu pletros planavimas ir prieziura organizaciniu aspektu, verslo vadybos planavimas (pagalba), misko vertinimas, verslo konsultacijos, verslo vadyba, pardavimo skatinimas (pardavimo skatinimas) (tretiesiems asmenims), tarpininkavimas uzmezgant prekybinius ir ekonominius kontaktus, taip pat internetu, ekonominiu ziniu teikimas (fransizes paslaugos), prekiu ir paslaugu pristatymas, verslo vertinimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lt",
+      "description": "Mokymai; Mokymas; Pramogos; Sportine ir kulturine veikla; Ypac konsultacijos mokymo ir kvalifikacijos kelimo klausimais, elektroniniu publikaciju (neparsisiusdinamu) teikimas, konsultacijos profesiniais klausimais, klubu veikla (pramogos arba mokymas), papildomas mokymas, praktines pratybos, pedagoginiu egzaminu vedimas, nuotoliniai kursai, nuotolinis mokymas, tekstu leidyba (isskyrus reklaminius tekstus), elektroniniu leidiniu ir spaudiniu leidyba, taip pat internete, elektroniniu periodiniu leidiniu ir knygu leidyba, taip pat internete, prijungtinis elektroniniu knygu ir periodiniu leidiniu publikavimas, kulturos ir/ar sporto renginiu organizavimas ir vedimas, konferenciju organizavimas ir rengimas, kongresu organizavimas ir rengimas, simpoziumu organizavimas ir rengimas, personalo pletra mokymo ir kvalifikacijos kelimo pagalba, seminaru rengimas ir vedimas, praktiniu seminaru rengimas ir vedimas (mokymas), kolokviumu rengimas ir vedimas, parodu rengimas kulturos ar mokymo reikmems, pobuviu rengimas, loteriju rengimas, konkursu rengimas (svietimas ir mokymas).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "lv",
+      "description": "Papirs, pape (kartons) un preces, kas izgatavotas no siem materialiem, ja tas nav ieklautas citas klases; Iespiedprodukcija; Gramatu iesiesanas materiali; Fotografijas; Rakstamlietas; Limvielas kancelejas vai majturibas vajadzibam; Materiali maksliniekiem; Otas; Rakstammasinas un kancelejas preces (iznemot mebeles); Macibu un uzskates lidzekli (iznemot aparaturu); Plastmasas materiali iesainosanas vajadzibam (nav ietverti citas klases); Iespiedburti; Klisejas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lv",
+      "description": "Reklama; Darijumu vadisana; Uznemumu parvaldisana; Biroja darbi, jo ipasi izmaksu un cenu analizu veiksana, uzzinas darijumu jautajumos, arejas ekonomikas konsultacijas, uznemumu organizesanas un vadisanas konsultacijas, uznemejdarbibas vadibas konsultacijas, uznemejdarbibas vadibas konsultaciju pakalpojumi, sagades pakalpojumi tresajam personam [precu un pakalpojumu iegade citiem uznemumiem], profesionalas uznemejdarbibas konsultacijas, uznemejdarbibas un organizatoriskas konsultacijas, darijumu izlukosana, uznemumu parvietosana, nekustama ipasuma reklamas un tirgzinibas koncepciju izstrade (Facility management), izzinas darijumu jautajumos, statistikas izveidosana, profesionalas uznemejdarbibas ekspertize, uznemumu ekspertize, ekonomisko prognozu veiksana, uzzinu sniegsana tirdzniecibas un darijumu jautajumos, ekonomisko uzzinu sniegsana, uznemumu vadisana tresajam personam, darijumu izpete, palidziba rupniecibas vai tirdzniecibas uznemumu vadisana, uznemejdarbibas informacija, tirgziniba [noieta petijumi], tirgziniba ari digitalajos tiklos, tirgus izpete, sabiedriskas domas aptauja, datoru datnu izpete [tresajam personam], uznemejdarbibas izpete, arzonas ligumdarbu piesaistisana, organizaciju konsultesana uznemejdarbibas jautajumos, personala vadibas konsultacijas, reklamas pasakumu planosana, uznemumu attistibas planosana un noverosana, raugoties no organizatoriska viedokla, uznemumu vadibas planosana [palidziba], nenocirsto koku novertesana, uznemejdarbibas konsultacijas, uznemumu parvaldisana, pardosanas sekmesana [sales promotion] [tresajam personam], tirdzniecibas un darijumu kontaktu starpnieciba, ari interneta, saimnieciskas kompetences starpnieciba (fransizes pakalpojumi), precu un pakalpojumu prezentacijas, vertibas noteiksana darijumu jautajumos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lv",
+      "description": "Izglitiba; Audzinasana; Izpriecas; Sporta un kulturas pasakumi; Jo ipasi izglitibas konsultacijas un talakizglitibas konsultacijas, elektronisku publikaciju nodrosinasana [nav lejupieladejamas], profesionalas orientacijas konsultacijas, kluba pakalpojumi [izklaide vai macibas], apmaciba, praktiskas apmacibas, izmantojot demonstracijas, izglitibas parbauzu veiksana, neklatienes kursi, neklatienes kursi, tekstu izdosana [iznemot reklamas tekstus], izdevniecibu izstradajumu izdosana elektroniska veida, zurnalu un gramatu izdosana elektroniska veida, ari interneta, elektronisko gramatu un zurnalu publicesana tiessaiste, kulturas un/vai sporta pasakumu organizesana un vadisana, konferencu organizesana un rikosana, kongresu organizesana un rikosana, simpoziju organizesana un rikosana, personala attistisanas pasakumi, izmantojot apmacibas un talakizglitibu, seminaru organizesana un rikosana, darbseminaru [izglitiba] organizesana un rikosana, kolokviju rikosana un vadisana, ballu rikosana, loteriju rikosana, sacensibu rikosana [izglitiba un izklaide].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "mt",
+      "description": "Karti, kartuncin (kartun) u prodotti maghmula minn dan il-materjal, mhux inkluzi fi klassijiet ohra; Materjal stampat; Materjal ghall-legatura tal-kotba; Ritratti; Kartoleriji; Sustanza li twahhal ghall-uzu ta' kartolerija u tad-dar; Materjali ta' l-artisti; Pniezel taz-zebgha; Tajprajters u oggetti necessarji ghall-ufficcju (minbarra ghamara); Materjal istruttiv u ghat-taghlim (minbarra apparat); Materjali tal-plastik ghall-ippakjar (mhux inkluz fi klassijiet ohra); Tipa tal-printer; Incizjonijiet ta' l-istampar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "mt",
+      "description": "Reklamar; Il-gestjoni ta' negozju; L-amministrazzjoni ta' negozju; Funzjonijiet ta' l-ufficcju, specjalment thejjija ta' analizi dwar spejjez u prezzijiet, informazzjoni dwar negozju, servizzi ta' konsulenza dwar kummerc barrani, konsulenza fl-organizzazzjoni u l-gestjoni ta' intraprizi, konsulenza dwar il-gestjoni ta' negozji, konsulenza dwar mistoqsijiet relatati mal-gestjoni ta' negozji, servizzi ta' xiri ghal terzi persuni [akkwist ta' prodotti u servizzi ghal intraprizi ohra], konsulenza ekonomika, konsulenza ekonomika u organizzattiva, scouting ta' negozji, tmexxija ta' rilokazzjonijiet ta' intraprizi, zvilupp ta' kuncetti dwar l-uzu ta' proprjetà immobbli f'sens ekonomiku (gestjoni tal-facilitajiet), zvilupp ta' kuncetti dwar reklamar u marketing kif ukoll reklamar u marketing ta' propjetà immobbli (gestjoni tal-facilitajiet), investigazzjonijiet dwar in-negozju, thejjija ta' statistici, thejjija ta' rapporti ekonomici, thejjija ta' rapporti kummercjali, thejjija ta' tbassir ekonomiku, tqassim ta' informazzjoni dwar in-negozju, tqassim ta' informazzjoni dwar l-ekonomija, gestjoni tan-negozju ghal terzi persuni, tiftix ta' klijenti ghal negozji, assistenza fil-gestjoni ta' intraprizi industrijali u kummercjali, informazzjoni dwar in-negozju, marketing [ricerka dwar il-bejgh], marketing anke fuq netwerks digitali, ricerka tas-suq, sondaggi dwar opinjonijiet, ricerka f'fajls tal-kompjuter [ghal terzi persuni], ricerka dwar in-negozju, outsourcing barra l-pajjiz, konsulenza dwar l-organizzazzjoni ta' negozju, konsulenza dwar il-gestjoni tal-personal, ippjanar ta' kampanji pubblicitarji, ippjanar u sorveljanza ta' zviluppi ta' intraprizi f'sens organizzattiv, ippjanar [assistenza] fil-gestjoni ta' negozji, stimi ta' injam mhux maqtugh, konsulenza manigerjali, amministrazzjoni ta' intraprizi, promozzjoni tal-bejgh [ghal terzi persuni], medjazzjoni ta' kuntatti fil-qasam kummercjali u ekonomiku, anke fuq l-internet, provvista ta' know-how ekonomiku (franchising), prezentazzjoni ta' prodotti u servizzi, evalwazzjonijiet ta' negozji.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "mt",
+      "description": "Tahrig; Provvediment ta' tahrig; Divertiment; Attivitajiet kulturali u sportivi; Specjalment konsulenza dwar tahrig u dwar tahrig avvanzat, provvista ta' pubblikazzjonijiet elettronici [li ma jistghux jitnizzlu], konsulenza dwar karrieri, servizzi ta' klabb [divertiment jew taghlim], ikkowcjar, tahrig prattiku permezz ta' dimostrazzjonijiet, tmexxija ta' ezamijiet pedagogici, korsijiet bil-korrispondenza, taghlim mill-boghod, pubblikazzjoni ta' testi [bl-eccezzjoni ta' testi pubblicitarji], hrug ta' materjal stampat fil-forma elettronika anke fuq l-internet, hrug ta' pubblikazzjonijiet perjodici u kotba fil-forma elettronika, anke fuq l-internet, pubblikazzjoni onlajn ta' kotba u pubblikazzjonijiet perjodici elettronici, organizzazzjoni u tmexxija ta' attvitajiet kulturali u/jew sportivi, organizzazzjoni u tmexxija ta' konferenzi, organizzazzjoni u tmexxija ta' kungressi, organizzazzjoni u tmexxija ta' simpozji, zvilupp tal-personal permezz ta' tahrig u tahrig avvanzat, arrangament u tmexxija ta' seminars, arrangament u tmexxija ta' workshops [tahrig], organizzazzjoni u tmexxija ta' konferenzi akkademici, organizzazzjoni u tmexxija ta' wirjiet ghal skopijiet kulturali jew tat-taghlim, organizzazzjoni ta' ballijiet, organizzazzjoni ta' lotteriji, organizzazzjoni ta' kompetizzjonijiet [edukazzjoni u divertiment].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "pl",
+      "description": "Papier, tektura (karton) oraz przedmioty z tych materialów, o ile nie sa zawarte w innych klasach; Druki; Materialy introligatorskie; Materialy fotograficzne; Materialy pismienne; Kleje do materialów pismiennych lub do celów domowych; Materialy przeznaczone dla artystów; Pedzle malarskie; Maszyny do pisania i sprzet biurowy (z wyjatkiem mebli); Materialy szkoleniowe i instruktazowe (z wyjatkiem aparatów); Materialy z tworzyw sztucznych do pakowania (nie zawarte w innych klasach); Czcionki drukarskie; Matryce.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pl",
+      "description": "Reklama; Zarzadzanie w dzialalnosci handlowej; Administrowanie dzialalnosci handlowej; Prace biurowe, zwlaszcza zestawianie analiz kosztów i cen, informacje w sprawach gospodarczych, doradztwo odnosnie do stosunków gospodarczych z zagranica, doradztwo przy organizacji i prowadzeniu przedsiebiorstw, doradztwo w zakresie prowadzenia dzialalnosci gospodarczej, uslugi doradztwa w zakresie prowadzenia dzialalnosci gospodarczej, uslugi zaopatrzenia swiadczone dla osób trzecich [nabywanie towarów i uslug dla innych przedsiebiorstw], doradztwo ekonomiczne, doradztwo ekonomiczne i organizacyjne, business scouting, przeprowadzanie przenoszenia przedsiebiorstwa, opracowywanie koncepcji reklamowych i marketingowych oraz reklama i marketing nieruchomosci (zarzadzanie nieruchomosciami (facility management)), ustalenia w sprawach dzialalnosci gospodarczej, tworzenie statystyk, sporzadzanie ekspertyz ekonomicznych, sporzadzanie ekspertyz odnosnie do dzialalnosci gospodarczych, sporzadzanie prognoz ekonomicznych, udzielanie informacji w sprawach handlowych i gospodarczych, udzielanie informacji gospodarczych, prowadzenie dzialalnosci gospodarczej dla osób trzecich, pozyskiwanie klientów przedsiebiorstw, pomoc przy prowadzeniu zakladów przemyslowych lub handlowych, informacje w sprawach gospodarczych, marketing [badanie zbytu], marketing takze w sieciach cyfrowych, badania rynku, badania opinii publicznej, poszukiwania w plikach komputerowych [dla osób trzecich], poszukiwania w sprawach gospodarczych, offshore-outsourcing, doradztwo organizacyjne w sprawach gospodarczych, doradztwo w zakresie zarzadzania kadrami, planowanie srodków reklamowych, planowanie i nadzorowanie rozwojów przedsiebiorstw pod wzgledem organizacyjnym, planowania [pomoc]w prowadzeniu dzialalnosci gospodarczej, wycena drzew na pniu, doradztwo dla przedsiebiorstw, administrowanie przedsiebiorstwami, promocja sprzedazy [sales promotion] [dla osób trzecich], posredniczenie w kontaktach handlowych i gospodarczych, równiez przez internet, przekazywanie gospodarczego know-how (franchising), prezentacje towarów i uslug, ustalanie wartosci w sprawach gospodarczych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pl",
+      "description": "Nauczanie; Nauczanie; Rozrywka; Dzialalnosc sportowa i kulturalna; Zwlaszcza doradztwo odnosnie do ksztalcenia i doszkalania, udostepnianie elektronicznych publikacji [nie do pobrania], doradztwo zawodowe, prowadzenie klubu [rozrywki lub dydaktycznego], szkolenia, lekcje pokazowe w cwiczeniach praktycznych, przeprowadzanie sprawdzianów pedagogicznych, kursy korespondencyjne, nauczanie korespondencyjne, wydawanie tekstów [za wyjatkiem tekstów reklamowych], wydawanie produktów wydawnictw i drukarni w postaci elektronicznej, takze w internecie, wydawanie czasopism i ksiazek w postaci elektronicznej, takze w internecie, publikacja online elektronicznych ksiazek i czasopism, organizowanie i przeprowadzanie imprez kulturalnych i/lub sportowych, organizacja i organizowanie konferencji, organizacja i organizowanie kongresów, organizacja i organizowanie sympozjów, rozwijanie umiejetnosci i wiedzy personelu poprzez ksztalcenie i doszkalanie, organizowanie i prowadzenie seminariów, organizowanie i prowadzenie warsztatów [szkolenia], organizowanie i prowadzenie kolokwiów, organizowanie wystaw w celach kulturalnych lub dydaktycznych, organizowanie balów, organizowanie loterii, organizowanie konkursów [edukacja i rozrywka].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "pt",
+      "description": "Papel, cartão e produtos nestas matérias, não compreendidos noutras classes; Produtos de impressão; Artigos para encadernação; Fotografias; Papelaria; Adesivos (matérias colantes), para papelaria ou para uso doméstico; Material para artistas; Pincéis; Máquinas de escrever e artigos de escritório (com excepção dos móveis); Material de instrução ou de ensino (com excepção dos aparelhos); Matérias plásticas para a embalagem (não incluídas noutras classes); Caracteres de imprensa; Clichés (esteriótipos).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pt",
+      "description": "Publicidade; Gestão dos negócios comerciais; Administração comercial; Trabalhos de escritório, em especial elaboração de análises da relação preços custo/preço, informações de negócios, consultadoria em matéria de Comércio Externo, consultadoria na área da organização e gestão de empresas, consultadoria em matéria de gestão, serviços de assessoria para a direcção de negócios, serviços de aprovisionamento por conta de outrem (aquisição de mercadorias e serviços para outras empresas), consultadoria em matéria de gestão de empresas, consultadoria de gestão e organizacional, \"business scouting\", realização de deslocalizações de empresas, desenvolvimento de estratégias de publicidade e marketing, bem como publicidade e marketing para imóveis (gestão de instalações), investigações para negócios, elaboração de estatísticas, elaboração de pareceres no domínio da gestão empresarial, elaboração de pareceres comerciais, previsões económicas, prestação de informações comerciais e de negócios, prestação de informações de carácter económico, gestão de negócios por conta de outrem, informações comerciais, apoio na gestão de empresas industriais ou comerciais, informações de negócios, marketing (pesquisas de mercado), marketing também em redes digitais, estudos de mercado, sondagens de opinião, investigações em ficheiros informáticos [para terceiros], pesquisas comerciais, \"off-shore outsourcing\", consultadoria organizacional em matéria de negócios, consultadoria em matéria de gestão de recursos humanos, planeamento de acções publicitárias, planeamento e monitorização de desenvolvimentos empresariais em matéira de organização, planeamento [assistência] na gestão de negócios, cubicagem da madeira (avaliação da madeira), consultadoria empresarial, administração comercial, promoção de vendas (sales promotion por conta de outrem), mediação de contactos comerciais e económicos, também através da Internet, transmissão de know-how comercial (franchising), apresentação de produtos e serviços, avaliação de negócios comerciais.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Educação; Formação; Divertimento; Actividades desportivas e culturais; Em especial consultadoria em matéria de formação inicial e contínua, fornecimento de publicações electrónicas (não descarregáveis), orientação profissional, exploração de clubes [divertimento ou ensino], treino, formação prática (demonstração), realização de provas pedagógicas, cursos por correspondência, ensino à distância, publicação de textos (excepto textos publicitários), publicação de produtos editoriais e de impressão em formato electrónico, também na Internet, publicação de revistas e livros em formato electrónico, também na Internet, publicação de revistas e livros electrónicos em linha, organização e realização de eventos culturais e/ou desportivos, organização e realização de conferências, organização e realização de congressos, organização e realização de simpósios, desenvolvimento de pessoal no âmbito de acções de formação profissional inicial e contínua, organização e realização de seminários, organização e realização de workshops (formação), organização e direcção de colóquios, organização de exposições com fins culturais ou educativos, organização de bailes, organização de lotarias, organização de concursos (educação e divertimento).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "ro",
+      "description": "Hartie, carton gros (carton) si articole din aceste materiale, daca nu sunt incluse in alte clase; Produse de imprimerie; Articole pentru legatorie; Fotografii; Papetarie; Adezivi (materiale colante) pentru papetarie sau menaj; Materiale pentru artisti; Pensule; Masini de scris si articole de birou (cu exceptia mobilelor); Materiale de instruire sau invatamânt (cu exceptia aparatelor); Materiale plastice pentru ambalare (care nu sunt incluse in alte clase); Caractere tipografice; Clisee.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ro",
+      "description": "Publicitate; Gestiunea afacerilor comerciale; Administratie comerciala; Lucrari de birou, in special intocmirea de analize de costuri si pret, informatii in domeniul afacerilor, consultanta in gestiune externa, consultanta in organizarea si conducerea de intreprinderi, consultanta in gestionarea afacerilor, servicii de consultanta pentru conducerea afacerilor, servicii de achizitie pentru terti [achizitia de bunuri si servicii pentru alte intreprinderi], consultanta profesionala despre afaceri, consultanta in materie de afaceri si organizatorica, servicii de investigatii in materie de afaceri, servicii de reinstalare pentru intreprinderi, dezvoltarea de concepte de utilizare pentru bunuri imobiliare cu privire la afaceri (gestiune de facilitati), dezvoltare de concepte de publicitate si de marketing si publicitate si marketing pentru imobiliare (management de facilitati), determinare de oportunitati de afaceri, intocmire de statistici, expertize in domeniul afacerilor comerciale, expertize in materie de afaceri, previziuni economice, furnizarea de informatii in materie de comert si afaceri, furnizarea de informatii economice, managementul afacerilor pentru terti, investigatii in materie de afaceri, asistenta in conducerea de intreprinderi industriale si comerciale, informatii in materie de afaceri, servicii de marketing [cercetare in domeniul vanzarilor], marketing si in retele digitale, servicii de studii de piata, sondaj de opinie, cautare in fisiere computerizate [pentru terti], solicitari de informatii in domeniul afacerilor, externalizare in alte tari, consultanta in organizarea de afaceri, consultanta pentru probleme de personal, planificarea de masuri publicitare, planificare si supraveghere a dezvoltarii intreprinderilor din punct de vedere organizatoric, planificari [asistenta] in conducerea de afaceri , estimare in domeniul silvic, servicii de consultanta in afaceri, administrarea afacerilor, servicii de promovare de vanzari [promovare de vanzari] [pentru terti], intermediere de contacte comerciale si economice, si prin Internet, intermediere de know-how economic (francizare), prezentare de produse si servicii, estimare in afaceri comerciale.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ro",
+      "description": "Educatie; Instruire; Divertisment; Activitati sportive si culturale; In special consultanta in materie de instruire si perfectionare, furnizare de publicatii electronice [care nu pot fi descarcate], orientare profesionala, exploatarea unui club [divertisment sau educatie], asistenta profesionala, demonstratii de exercitii practice, realizarea de probe pedagogice, cursuri prin corespondenta, invatamant la distanta, publicare de texte [cu exceptia textelor publicitare], publicarea de produse editoriale si de imprimerie in format electronic, si pe Internet, publicarea de periodice si carti in format electronic, si pe internet, publicare online de carti si periodice electronice, organizare si realizare de evenimente culturale si/sau sportive, organizare si realizare de conferinte, organizarea si realizarea de congrese, organizarea si realizarea de simpozioane, dezvoltare de personal prin instruire si perfectionare, servicii de organizare si realizare de seminarii, servicii de organizare si realizare de ateliere [instruire], servicii de organizare si conducere de colocvii, organizarea de expozitii cu scop cultural sau educational, organizarea de baluri, organizare de loterii, organizarea de concursuri [educatie si divertisment].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "sk",
+      "description": "Papier, kartón, (lepenka) a tovar z týchto materiálov, pokial nie sú zahrnuté v ostatných triedach; Tlacoviny; Knihárske výrobky; Fotografie; Papiernický tovar a písacie potreby; Lepidlá na papier a na pouzitie v domácnosti; Potreby pre umelcov; Maliarske stetce; Písacie stroje a kancelárske potreby okrem nábytku; Vzdelávacie a ucebné potreby, okrem prístrojov; Plastické materiály na balenie (nezahrnuté v iných triedach); Tlaciarenské písmo; Stocky.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sk",
+      "description": "Reklamná cinnost; Obchodný manazment, obchodná správa; Obchodná administratíva; Kancelárske práce, predovsetkým zostavovanie analýz nákladov-cien, informácie v obchodných zálezitostiach, poradenstvo pri organizácii a vedení spolocností, poradenstvo v otázkach vedenia obchodu, poradenské sluzby v otázkach vedenia obchodu, zabezpecovacie sluzby pre tretie subjekty [nákup tovaru a sluzieb pre iné podniky], podnikové hospodárske poradenstvo, podnikové hospodárske a organizacné poradenstvo, Business Scouting, premiestnovanie prevádzok a podnikov (sluzby týkajúce sa -), vývoj uzívatelských konceptov pre nehnutelnosti z prevádzkovo-hospodárskeho hladiska (facility Management), vývoj reklamných a marketingových konceptov a marketing pre nehnutelnosti (facility Management), zistovanie v obchodných zálezitostiach, tvorba statistík, tvorba podnikových hospodárskych posudkov, tvorba obchodných posudkov, tvorba hospodárskych prognóz, poskytovanie informácií v obchodných a ponikových zálezitostiach, poskytovanie hospodárskych informácií, vedenie obchodu pre tretie subjekty, obchodná klientela, pomoc pri vedení priemyselných alebo obchodných podnikov, informácie v obchodných zálezitostiach, marketing [prieskum odbytu], marketing, aj v digitálnych sietiach, prieskum trhu, prieskum verejnej mienky, dodatocný prieskum v pocítacových súboroch [pre tretie subjekty], dodatocný prieskum v obchodných zálezitostiach, Offshore-Outsourcing, organizacné poradenstvo pri obchodných zálezitostiach, poradenstvo v oblasti personálneho manazmentu, plánovanie reklamných opatrení, plánovanie a kontrola podnikového vývoja z organizacného hladiska, plánovanie pri vedení obchodu [pomoc], ocenovanie nevyrúbaného dreva, podnikové poradenstvo, správa podnikov, podpora predaja [sales promotion] [pre tretie subjekty], sprostredkovanie obchodných a hospodárskych kontaktov, aj cez internet, sprostredkovanie hospodárskeho know-how (franchising), prezentácie tovarov a sluzieb, ocenovanie podnikov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sk",
+      "description": "Výchova; Zabezpecovanie výcvikov, kurzov a skolení; Zábava; Sportová a kultúrna cinnost; Predovsetkým poradenstvo v oblasti vzdelávania a poradenstvo v oblasti dalsieho vzdelávania, poskytovanie elektronických publikácií [nie stiahnutelné], poradenstvo v oblasti povolania, prevádzkovanie klubov [zábava alebo vyucovanie], coaching, praktický výcvik [ukázky], realizácia pedagogických skúsok, dialkové kurzy, dialková výucba, vydávanie textov [okrem reklamných textov], vydávanie nakladatelských a tlaciarenských výrobkov v elektronickej forme, aj na internete, vydávanie casopisov a kníh v elektronickej forme, aj na internete, on line publikácie elektronických kníh a casopisov, organizácia a realizácia kultúrnych a/alebo sportových podujatí, organizácia a usporadúvanie konferencií, organizácia a usporadúvanie kongresov, organizácia a usporadúvanie sympózií, osobnostný vývoj prostredníctvom vzdelávania a dalsieho vzdelávania, usporadúvanie a vedenie seminárov, usporadúvanie a realizácia pracovaných dielní (workshop) [vzdelávanie], usporadúvanie a vedenie kolokvií, usporadúvanie výstav pre kultúrne alebo vyucovacie úcely, usporadúvanie plesov, usporadúvanie lotérií, usporadúvanie sútazí [výchova a zábava].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "sl",
+      "description": "Papir, lepenka (karton) in izdelki iz teh materialov, ki niso vkljuceni v druge razrede; Tiskarski izdelki; Knjigoveski material; Fotografije; Pisarniski material; Lepila za pisarniski material ali za gospodinjstvo; Potrebscine za umetnike; Copici; Pisalni stroji in pisarniski pribor (razen pohistva); Material za ucenje ali poucevanje (razen aparatov); Plasticni materiali za paketiranje (ne iz drugih razredov); Tiskarske crke; Kliseji.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sl",
+      "description": "Oglasna dejavnost; Vodenje komercialnih poslov; Poslovna administracija; Pisarniski posli, zlasti izdelava stroskovno cenovnih analiz, poizvedbe v poslovnih zadevah, svetovanje v zvezi z zunanjim gospodarstvom, svetovanje pri organizaciji in vodenju podjetij, svetovanje v vprasanjih vodenja komercialnih poslov, svetovalne storitve v vprasanjih vodenja komercialnih poslov, nabavne storitve za tretje osebe [nakup izdelkov in storitev za druga podjetja], strokovno poslovno svetovanje, strokovno poslovno in organizacijsko svetovanje, poslovno ogledovanje, izvajanje selitev podjetja, razvoj oglasnih in trznih konceptov, kot tudi oglasna dejavnost in trzenje z nepremicninami (upravljanje nepremicnin), poizvedbe v poslovnih zadevah, izdelava statistik, izdelava strokovno poslovnih strokovnih mnenj, izdelava poslovnih strokovnih mnenj, izdelava ekonomskih prognoz, dajanje informacij v trgovskih in poslovnih zadevah, dajanje poslovnih informacij, vodenje komercialnih poslov za tretje osebe, poslovni odjemalci, pomoc pri vodenju gospodarskih in trgovskih podjetij, informacije v poslovnih zadevah, trzenje [raziskave prodaje], trzenje tudi v digitalnih mrezah, trzne raziskave, javnomnenjske raziskave, poizvedovanje v podatkovnih datotekah [za tretje osebe], poizvedbe v poslovnih zadevah, zunanji izvajalci, organizacijsko svetovanje v poslovnih zadevah, svetovanje pri kadrovanju, nacrtovanje oglasnih ukrepov, nacrtovanje in nadzor razvoja podjetja v organizacijskem pogledu, nacrtovanja [pomoc] pri vodenju komercialnih poslov, ocenjevanje lesa (stojeca debla), poslovno svetovanje, poslovna administracija, promocijske storitve [promocija prodaje] [za tretje osebe], posredovanje trgovskih in gospodarskih stikov, tudi preko interneta, posredovanje gospodarskega strokovnega znanja (fransizne storitve), predstavitve izdelkov in storitev, cenitve v poslovnih zadevah.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sl",
+      "description": "Vzgoja; Pouk; Razvedrilo; Sportne in kulturne dejavnosti; Zlasti izobrazevalno svetovanje in svetovanje pri izpopolnjevanju, nudenje elektronskih publikacij [nenalozljivih], poklicno svetovanje, dejavnost kluba [razvedrilo ali pouk], usposabljanje, demonstracijski pouk v prakticnih vajah, izvajanje pedagoskih testov, dopisno izobrazevanje, dopisno izobrazevanje, publikacija besedil [razen oglasna besedila], izdajanje zalozniskih in tiskarskih izdelkov v elektronski obliki, tudi na internetu, izdajanje revij in knjig v elektronski obliki, tudi na internetu, online publikacija elektronskih knjig in revij, organizacija in izvajanje kulturnih in/ali sportnih prireditev, organizacija in prirejanje konferenc, organizacija in prirejanje kongresov, organizacija in prirejanje simpozijev, kadrovski razvoj s pomocjo izobrazevanja in izpopolnjevanja, prirejanje in izvajanje seminarjev, prirejanje in izvajanje delavnic [izobrazevanje], prirejanje in vodenje kolokvijev, prirejanje razstav za kulturne ali ucne namene, prirejanje plesov, prirejanje loterij, prirejanje tekmovanj [vzgoja in razvedrilo].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "es",
+      "description": "Papel, cartón y artículos de estas materias, no comprendidos en otras clases; Productos de imprenta; Material de encuadernación; Fotografías; Artículos de papelería; Adhesivos (pegamentos) de papelería o para uso doméstico; Material para artistas; Pinceles; Máquinas de escribir y artículos de oficina (excepto muebles); Material de instrucción o material didáctico (excepto aparatos); Materias plásticas para embalaje (no comprendidas en otras clases); Caracteres de imprenta; Clichés de imprenta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Publicidad; Gestión de negocios comerciales; Administración comercial; Trabajos de oficina, en particular listados de análisis de precios de coste, informes de negocios, asesoramiento sobre comercio exterior, servicios de consultoría en materia de organización y dirección de empresas, servicios de asesores para la dirección de empresas, servicios de asesoramiento para la dirección de empresas, servicios de aprovisionamiento para terceros [adquisición de mercancías y servicios para otras empresas], consultoría profesional de empresas, servicios de consultoría en materia de economía y consultoría de organización, Business Scouting, servicios de realojamiento para empresas, desarrollo de conceptos de aprovechamiento para inmuebles desde el punto de vista empresarial (gestión de instalaciones), desarrollo de conceptos publicitarios y de marketing así como publicidad y marketing para inmuebles (gestión de instalaciones), investigaciones de negocios, elaboración de estadísticas, elaboración de dictámenes económico-comerciales, de peritajes en negocios, previsiones económicas, comunicación de información en asuntos comerciales y de negocios, facilitación de información económica, dirección de negocios para terceros, adquisición de clientes comerciales, ayuda para la dirección de empresas industriales o comerciales, informaciones en negocios, mercadotecnia [investigación de mercados], marketing, incluso en redes digitales, de estudios de mercados, sondeos de opinión, investigaciones en archivos informáticos [todos para terceros], investigaciones sobre negocios, externalización extraterritorial, servicios de asesores para la organización de negocios, asesoramiento sobre la administración de personal, servicios de planificación publicitaria, planificación y control de de desarrollos empresariales desde el punto de vista organizacional, planificación de gestión empresarial [ayudas] , tasación de madera sin talar, servicios de asesoramiento de negocios comerciales, administración comercial, promoción [promoción de ventas] [todos para terceros], mediación de contactos comerciales y económicos, también vía Internet, mediación de know-how económico (franquicias), presentación de productos y servicios, valoraciones en negocios comerciales.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Educación; Formación; Servicios de entretenimiento; Actividades deportivas y culturales; En particular asesoramiento sobre formación y formación permanente, facilitación de publicaciones electrónicas [no descargables], orientación profesional, explotación de un club [esparcimiento o servicios de enseñanza], entrenamiento, servicios de formación práctica (demostración), servicios de realización de exámenes pedagógicos, cursos a distancia, enseñanza por correspondencia, publicación de textos [excepto textos publicitarios], publicación de productos editoriales y material impreso en formato electrónico, también en Internet, edición de revistas y libros en formato electrónico, también en Internet, publicación en línea de libros electrónicos y revistas, organización y realización de eventos culturales y/o deportivos, organización y dirección de conferencias, organización y dirección de congresos, organización y realización de simposios, dearrollo de personal a través de formación y capacitación, organización y dirección de seminarios, organización y realización de talleres [formación], organización y dirección de coloquios, organización de exposiciones para fines culturales o fines educativos, organización de bailes, organización de loterías, organización de concursos [educación y esparcimiento].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "sw",
+      "description": "Papper, kartong samt produkter därav, ej ingående i andra klasser; Trycksaker; Bokbinderimaterial; Fotografier; Pappersvaror (skriv- och kontorsmaterial); Klister och lim för pappersvaror och hushållsändamål; Konstnärsmaterial; Målarpenslar; Skrivmaskiner och kontorsförnödenheter (ej möbler); Instruktions- och undervisningsmaterial (ej apparater); Plastmaterial för emballering (ej ingående i andra klasser); Trycktyper; Klichéer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sw",
+      "description": "Annons- och reklamverksamhet; Företagsledning; Företagsadministration; Kontorstjänster, speciellt utförande av kostnads-prisanalyser, affärsstudier, extern ekonomisk konsultation, organisationskonsulttjänster och ledning av företag, rådgivningstjänster för företagsledning, rådgivning avseende företagsledning, anskaffningstjänster för tredje part [förvärv av varor och tjänster för andra företag], professionell företagskonsultation, professionell och organisatorisk rådgivning, Business Scouting, omlokaliseringstjänster avseende företag, utveckling av användningskoncept för fastigheter ur företagsekonomisk synvinkel (skötsel av anläggningar), utveckling av reklam- och marknadsföringskoncept och marknadsföring för fastigheter (skötsel av anläggningar), företagsutredningar, statistik, sakkunniga utlåtanden inom det företagsekonomiska området, rationaliseringsexpertis, ekonomisk prognostisering, leverans av information i handels- och affärsangelägenheter, delgivning av ekonomisk information, företagsledning för andra, affärsundersökningar, hjälp vid ledning av industri- eller handelsföretag, företagsinformation, marknadsföring [marknadsundersökningar], marknadsföring även på digitala nät, marknadsundersökningar, opinionsundersökningar, sökning i datafiler [för andra], företagsundersökningar, interkontinental utlokalisering, organisationsrådgivning i affärsfrågor, konsultationer avseende personaladministration, annons- och reklamplaneringstjänster, planering och övervakning av företagsutvecklingar i organisatoriskt hänseende, planering vid företagsledning [hjälp], värdering av skog på rot, företagskonsultation, företagsadministration, sales promotiontjänster [säljfrämjande verksamhet] [för andra], förmedling av handels- och ekonomiska kontakter, även via Internet, förmedling av ekonomisk sakkunskap (franchising), varu- och tjänstepresentationer, värdering i affärsfrågor.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sw",
+      "description": "Uppfostran; Anordnande av handledning/instruktion; Underhållning; Sport- och idrottsaktiviteter, kulturverksamhet; Speciellt utbildningsrådgivning och fortbildningsrådgivning, tillhandahållande av elektroniska publikationer [ej nedladdningsbara], yrkesrådgivning, klubbverksamhet [underhållning eller undervisning], handledning, praktisk utbildning (instruktionstjänster), utbildningsexamination, korrespondenskurser, distansundervisning, utgivning av texter [ej reklamtexter], utgivning av förlagsprodukter och trycksaker i elektronisk form, även på Internet, utgivning av tidskrifter och böcker i elektronisk form, även på Internet, direktansluten publicering av elektroniska böcker och tidskrifter, organisation och genomförande av kulturella evenemang och/eller sportevenemang, organisation och anordnande av konferenser, organisation och anordnande av kongresser, organisation och anordnande av symposier, personalutveckling genom ut- och fortbildning, anordnande och anordnande av seminarier, anordnande och genomförande av arbetsgrupper [anordnande av handledning/instruktion], anordnande och genomförande av kollokvier, anordnande av utställningar för kulturella ändamål eller utbildningsändamål, anordnande av baler, anordnande av lotterier, anordnande av tävlingar [undervisning/utbildning och underhållning].",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Reinhard Vanhöfen",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "PJM PALASCHINSKI JACOBI MÖBIUS + PARTNER",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Kalbacher Hauptstrasse 37,Frankfurt am Main, 60437",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Reinhard Vanhöfen"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "cmMarkImageEUclassification": [
+      "26.03.01",
+      "26.03.12",
+      "26.11.07",
+      "26.11.13"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Papír, lepenka (karton) a zbozí z techto materiálu, nezarazené do jiných tríd; Tiskárenské výrobky; Potreby pro knizní vazby; Fotografie; Papírenské zbozí; Lepidla pro papírenství nebo domácnost; Materiál pro umelce; Stetce; Psací stroje a kancelárské potreby (vyjímaje nábytek); Ucební a vyucovací pomucky s výjimkou prístroju; Plastické obaly (nezarazené do jiných tríd); Tiskarské typy; Stocky."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Propagacní cinnost, reklama; Pomoc pri rízení obchodní cinnosti; Obchodní administrativa; Kancelárské práce, zejména vytvárení analýz nákladu a cen, informace v obchodních zálezitostech, poradenství v oboru zahranicního obchodu, poradenství pri organizování a rízení podniku, poradenství v otázkách pomoci pri rízení obchodní cinnosti, nákup pro tretí strany [nákup zbozí a sluzeb pro jiné podniky], provozne-ekonomické poradenství, provozne-ekonomické a organizacní poradenství, pruzkum trhu, realizace premistování provozu, vývoj reklamních a marketingových konceptu, jakoz i reklama a marketing pro nemovitosti (facility management), setrení v obchodních zálezitostech, tvorba statistik, tvorba provozne-ekonomických posudku, tvorba obchodních posudku, tvorba hospodárských prognóz, poskytování informací v obchodních a podnikatelských zálezitostech, poskytování ekonomických informací, pomoc pri rízení obchodní cinnosti pro tretí strany, obchodní pátrání, pomoc pri rízení prumyslových nebo obchodních podniku, informace v obchodních zálezitostech, marketing [pruzkum odbytu], marketing také v digitálních sítích, pruzkum trhu, pruzkum verejného mínení, vyhledávání v pocítacových datových souborech [pro tretí strany], reserse v obchodních zálezitostech, pobrezní nákup sluzeb, organizacní poradenství v obchodních zálezitostech, poradenství v oboru personálního rízení, plánování reklamních opatrení, plánování a kontrola podnikového rozvoje z organizacního hlediska, plánování [pomoc] pro pomoc pri rízení obchodní cinnosti, ocenování nepokáceného dreva, podnikové poradenství, obchodní administrativa, podpora prodeje [propagace prodeje] [pro tretí strany], zprostredkování obchodních a hospodárských kontaktu, také prostrednictvím internetu, zprostredkování hospodárského know-how (fransízing), prezentace zbozí a sluzeb, ocenování v obchodních zálezitostech."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Výchova; Výchova; Zábava; Sportovní a kulturní aktivity; Zejména poradenství v oboru vzdelávání a dalsího vzdelávání, poskytování elektronických publikací [nikoliv ke stazení], pomoc pri výberu povolání, provozování klubu [zábava, pobavení nebo vyucování], koucování, praktické cvicení (demonstrace), zkousení, prezkousení, dálkové kurzy, dálkové studium, vydávání textu [s výjimkou reklamních textu], vydávání nakladatelských a tiskárenských výrobku v elektronické forme, také na internetu, vydávání casopisu a knih v elektronické forme, také na internetu, vydávání elektronických knih online a periodických publikací, organizování a vedení kulturních a/nebo sportovních akcí, organizování a porádání konferencí, organizace a porádání kongresu, organizování a porádání sympozií, personální vývoj prostrednictvím vzdelávání a dalsího vzdelávání, porádání a vedení semináru, porádání a vedení pracovních setkání [vzdelávání], porádání a vedení kolokvií, porádání výstav pro kulturní nebo vyucovací úcely, organizování plesu, porádání loterií, porádání soutezí [výchova a vzdelávání]."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Papir, pap, varer heraf og ikke indeholdt i andre klasser; Tryksager; Bogbinderiartikler; Fotografier; Papirhandlervarer; Klæbemidler til papirvarer og til husholdningsbrug; Artikler til brug for kunstnere; Pensler; Skrivemaskiner og kontorartikler (dog ikke møbler); Instruktions- og undervisningsmateriale (dog ikke apparater); Plasticmateriale til emballeringsbrug (ikke indeholdt i andre klasser); Tryktyper; Klichéer."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Annonce- og reklamevirksomhed; Bistand ved forretningsledelse; Bistand ved forretningsadministration; Bistand ved varetagelse af kontoropgaver, særlig udarbejdelse af costbenefitanalyser, indhentning af forretningsoplysninger, udenrigsøkonomisk rådgivning, rådgivning vedrørende organisation og ledelse af virksomheder, rådgivning vedrørende forretningsledelse, tjenesteydelser for tredjemand i forbindelse med anskaffelse (køb af varer og tjenesteydelser for andre virksomheder), professionel rådgivning vedrørende forretningsvirksomhed, driftsøkonomisk og organisatorisk rådgivning, erhvervsmæssig søgning, omlægning af forretningsvirksomhed, udvikling af brugskoncepter for ejendomme i driftsøkonomisk henseende (styring af faciliteter), udvikling af reklame- og marketingkoncepter samt reklame og marketing i forbindelse med fast ejendom (styring af faciliteter), forretningsundersøgelser, udarbejdelse af statistikker, udarbejdelse af driftsøkonomiske rapporter, udarbejdelse af forretningsmæssige skøn, økonomiske prognoser, oplysninger i handels- og forretningsanliggender, levering af erhvervsinformation, forretningsledelse for tredjemand, oplysninger i erhvervsanliggender, bistand i forbindelse med ledelse af erhvervs- og handelsvirksomheder, information vedrørende forretningsvirksomhed, marketing (marketingundersøgelser), markedsføring, også på digitale netværk, markedsundersøgelser, opinionsundersøgelser, efterforskning i computerfiler (for tredjemand), forretningsundersøgelser, offshoreoutsourcing, rådgivning vedrørende forretningsorganisation, bistand i forbindelse med personaleledelse, planlægning af reklametiltag, planlægning og overvågning af virksomhedsudvikling i organisatorisk henseende, planlægning (bistand) i forbindelse med forretningsledelse, vurdering af tømmer på roden, forretningsrådgivning, forretningsadministration, salgsfremmende foranstaltninger (for tredjemand), formidling af handels- og erhvervskontakter også via internettet, formidling af økonomisk knowhow (franchisevirksomhed), præsentation af varer og tjenesteydelser, vurderinger i forretningsanliggender."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Uddannelsesvirksomhed; Uddannelsesvirksomhed; Underholdningsvirksomhed; Sportsarrangementer og kulturelle arrangementer; Især rådgivning om uddannelse og rådgivning vedrørende efteruddannelse, udbydelse af elektroniske publikationer [ikke til download], erhvervsrådgivning, klubvirksomhed [underholdningsvirksomhed eller undervisning], træning, demonstrationsundervisning med praktiske øvelser, gennemførelse af pædagogiske eksamener, korrespondancekurser, korrespondanceundervisning, udgivelse af tekster [undtagen reklametekster], udgivelse af forlags- og tryksager i elektronisk form også på internettet, udgivelse af tidsskrifter og bøger i elektronisk form også på internettet, onlineudgivelse af elektroniske bøger og tidsskrifter, organisering og ledelse af kulturelle arrangementer og/eller sportsarrangementer, organisering og arrangering af konferencer, organisering og arrangering af kongresser, organisering og arrangering af symposier, personaleudvikling via uddannelse og efteruddannelse, arrangering og ledelse af seminarer, arrangering og ledelse af workshopper [undervisningsvirksomhed], arrangering og ledelse af kollokvier, arrangering af udstillinger med kulturelle eller uddannelsesmæssige formål, arrangering af baller, arrangering af lotterier, arrangering af konkurrencer [uddannelsesvirksomhed og underholdningsvirksomhed]."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Papier, karton en hieruit vervaardigde producten voorzover niet begrepen in andere klassen; Drukwerken; Boekbinderswaren; Foto's; Schrijfbehoeften; Kleefstoffen voor kantoorgebruik of voor de huishouding; Materiaal voor kunstenaars; Penselen; Schrijfmachines en kantoorartikelen (uitgezonderd meubelen); Leermiddelen en onderwijsmateriaal (uitgezonderd toestellen); Plastic materialen voor verpakking, voor zover niet begrepen in andere klassen; Drukletters; Clichés."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Reclame; Beheer van commerciële zaken; Zakelijke administratie; Administratieve diensten, met name kostprijsanalyses, zakelijke informatie, advisering op het gebied van economische betrekkingen met het buitenland, advisering bij de organisatie en leiding van ondernemingen, advisering voor bedrijfsleiding, adviseringsdiensten op het gebied van bedrijfsleiding, bezorgdiensten voor derden (aankoop van goederen en diensten voor andere ondernemingen), bedrijfseconomische advisering, advisering op bedrijfseconomisch en organisatorisch gebied, business scouting, herhuisvesting van bedrijven, ontwikkeling van gebruiksconcepten voor onroerende goederen in bedrijfseconomisch opzicht (faciliteitenbeheer), ontwikkeling van reclame- en marketingconcepten alsmede reclame en marketing voor onroerende goederen (faciliteitenbeheer), zakelijk onderzoek, het opstellen van statistieken, bedrijfseconomische expertises, zakelijke expertises, economische prognoses, verstrekken van inlichtingen in handels- en zakelijke aangelegenheden, verstrekking van inlichtingen op economisch gebied, bedrijfsleiding voor derden, verzamelen van zakelijke inlichtingen, hulp bij de leiding van industriële of handelsbedrijven, zakelijke informatie, marketing (marktonderzoek), marketing ook in digitale netwerken, marktonderzoek, opiniepeiling, onderzoek in computerbestanden (voor derden), zakelijk onderzoek, offshore-outsourcing, advisering voor bedrijfsorganisatie, advisering met betrekking tot personeel, planning van reclamemaatregelen, planning van en toezicht op bedrijfsontwikkelingen in organisatorisch opzicht, planning (hulp) bij de bedrijfsleiding, schatting van hout op stam, advisering inzake bedrijfsvoering, zakelijke administratie, verkooppromotie (sales promotion) (voor derden), bemiddeling bij handels- en economische contacten, ook via het internet, het verschaffen van economische kennis (franchising), presentatie van goederen en diensten, waardebepaling in zakelijke aangelegenheden."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Opvoeding; Opleiding; Ontspanning; Sportieve en culturele activiteiten; Met name advisering op het gebied van opleiding en advisering met betrekking tot bijscholing, het ter beschikking stellen van elektronische publicaties (niet downloadbaar), loopbaanadvisering, exploitatie van een club (ontspanning of onderwijs), coaching, aanschouwelijk onderwijs, diensten met betrekking tot het uitvoeren van pedagogische examens, schriftelijke cursussen, schriftelijk onderwijs, uitgave van teksten (uitgezonderd reclameteksten), uitgave van uitgeverijproducten en drukwerken in elektronische vorm, ook op internet, uitgave van week- of maandbladen en boeken in elektronische vorm, ook op internet, onlinepublicatie van elektronische boeken en tijdschriften, het organiseren en houden van culturele en/of sportieve evenementen, het organiseren en houden van conferenties, het organiseren en houden van congressen, het organiseren en houden van symposia, personeelsontwikkeling door opleiding en bijscholing, het organiseren en houden van seminars, het organiseren en houden van workshops (opleiding), het organiseren en leiden van colloquia, organisatie van tentoonstellingen voor culturele of educatieve doeleinden, organisatie van bals, organisatie van loterijen, organisatie van wedstrijden (opvoeding en ontspanning)."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Paper, cardboard and goods made from these materials, not included in other classes; Printed matter; Book binding material; Photographs; Stationery; Adhesives for stationery or household purposes; Artists' materials; Paint brushes; Typewriters and office requisites (except furniture); Instructional and teaching material (except apparatus); Plastic materials for packaging (not included in other classes); Printers' type; Printing blocks."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Advertising; Business management; Business administration; Office functions, in particular cost price analysis, business inquiries, foreign trade consultancy, business management and organisation consultancy, business management consultancy, procurement services, for others (acquisition of goods and services for other companies), professional business consultancy, professional business and organisational consultancy, business scouting, relocation services for businesses, development of marketing and advertising concepts, and real estate advertising and marketing services (facility management), business investigations, statistics, providing of professional business expertise, efficiency experts, economic forecasting, business information, economic information, business management for others, business observations, commercial or industrial management assistance, information services relating to business, marketing (marketing research), marketing, including on digital networks, conducting market research, opinion polling, research in computer data files (for others), business inquiries, offshore outsourcing, business organisation consultancy, personnel management consultancy, planning of advertising initiatives, planning and monitoring of business developments with regard to organisational matters, business management assistance, evaluation of standing timber, business advisory services, business administration, sales promotion (for others), organising commercial and business contacts, including via the Internet, providing commercial know-how (franchising), presentation of goods and services, business appraisals."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education; Providing of training; Entertainment; Sporting and cultural activities; In particular training consultancy and further training consultancy, providing electronic publications (not downloadable), vocation tuition, club services (entertainment or instruction), coaching, practical training demonstrations, conducting of educational examinations, correspondence courses, distance learning, publishing of texts (other than publicity texts), publication of printed matter in electronic form, including on the Internet, publication of magazines and books in electronic form, including on the Internet, online publication of electronic books and periodicals, arranging and conducting of cultural and/or sporting events, arranging and conducting of conferences, arranging and conducting of congresses, arranging and conducting of symposiums, personnel development through training and further training, arranging and conducting of seminars, arranging and conducting of workshops (training), arranging and conducting of colloquiums, organisation of exhibitions for cultural or educational purposes, organisation of balls, conducting lotteries, organisation of competitions (education and entertainment)."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Paber, papp (kartong) ja nendest materjalidest tooted, mis ei kuulu teistesse klassidesse; Trükised; Köitematerjal; Fotod; Kirjatarbed; Majapidamis- ja kantseleiliimid; Kunstnikutarbed; Pintslid; Kirjutusmasinad ja kantseleitarbed (va mööbel); Õppematerjalid ja näitvahendid (va aparaadid); Plastikust pakkematerjalid (väljaspool teisi kaubaklasse); Trükitüübid; Kliseed."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Reklaam; Ärijuhtimine; Ärikorraldus; Bürootööd, eelkõige omahinnaanalüüside koostamine, äriteave, väliskaubandusalane nõustamine, ettevõtete töö korraldamise ja juhtimise nõustamine, ärijuhimise nõustamine, hanketeenused (kaupade ja teenuste soetamine teistele ettevõtetele), ärialane ja organisatoorne nõustamine, ärialased uurimused, äritegevuse siirdeteenused, reklaami- ja turunduskontseptide arendamine ning kinnisvarareklaam ja -turundus (rajatisehaldus), ärialased uuringud, statistikate koostamine, ärialased eksperthinnangud, tõhususe (saavutusvõime, teovõime) ekspertiisid, majandusprognoosid, kaubandus- ja äriteave, majandusteave, ärijuhtimine teenusena, äriklientide võitmine, abi tööstus- või kaubandusettevõtete juhtimisel, äriteave, turundus (müügiuuringud), turundus, ka digitaalvõrkudes, turu-uuringud, rahvastikuküsitlused, järelepärimine arvutiandmebaasides (kolmandatele isikutele), ärialased päringud, ettevõtte põhitegevust toetavate teenuste sisseostmine, äritegevuse korraldamise nõustamine, personalijuhtimise nõustamine, reklaamimeetmete kavandamine, ettevõtte arengu korralduslik kavandamine ja järelevalve, äritegevuse juhtimise kavandamine (abi), kasvava metsa hindamine, äriline nõustamine, äriline juhtimine, müügiedendus teenusena, kaubandus- ja majanduskontaktide vahendamine, ka Interneti teel, majandusliku oskusteabe vahendamine (frantsiisiteenused), kauba- ja teenuseesitlused, äritegevuse hindamine."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Kasvatus; Väljaõpe; Meelelahutus; Spordi- ja kultuurialane tegevus; Eelkõige väljaõppe- ja täiendõppenõustamine, elektrooniliste publikatsioonide pakkumine (muud kui allalaaditavad), kutsenõustamine, klubiteenused (meelelahutus või õpetamine), treenimine, praktilise treeningu demonstratsioontunnid, eksamineerimine, kaugõppekursused, kaugõpe, tekstide (va reklaamtekstid) väljaandmine, kirjastus- ja trükitoodete väljaandmine elektroonilisel kujul, ka Internetis, ajakirjade ja raamatute väljaandmine elektroonilisel kujul, ka Internetis, elektrooniliste raamatute ja ajakirjade sidusväljaanded, kultuuri- ja/või spordiürituste organiseerimine ja läbiviimine, konverentside organiseerimine ja korraldamine, kongresside organiseerimine ja korraldamine, sümpoosionide organiseerimine ja korraldamine, personali arendamine välja- ja täiendõppe teel, seminaride korraldamine ja läbiviimine, õpikodade korraldamine ja läbiviimine (väljaõpe), kollokviumide korraldamine ja juhatamine, näituste korraldamine kultuuri- või õppeotstarbel, ballide korraldamine, loteriide korraldamine, võistluste korraldamine (haridus ja meelelahutus)."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Paperi, pahvi ja niistä tehdyt tavarat, jotka eivät sisälly muihin luokkiin; Painotuotteet; Kirjansidonta-aineet; Valokuvat; Paperitavarat ja kirjoitustarvikkeet; Paperi- ja kotitalousliimat; Taiteilijantarvikkeet; Siveltimet; Kirjoituskoneet ja toimistotarvikkeet (paitsi huonekalut); Neuvonta- ja opetusvälineet (paitsi laitteet); Muoviset pakkaustarvikkeet (jotka eivät sisälly muihin luokkiin); Painokirjasimet; Painolaatat."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Mainonta; Liikkeenjohto; Yrityshallinto; Toimistotehtävät, erityisesti kustannus-hinta-analyysien laatiminen, liiketoimintaa koskevat kyselyt, ulkomaankauppaa koskeva neuvonta, yritysten organisaatioon ja johtamiseen liittyvä neuvonta, liikkeenjohtamiseen liittyvä neuvonta, liikkeenjohtamiseen liittyvät neuvontapalvelut, hankintapalvelut kolmansien osapuolten lukuun (tavaroiden ja palvelujen hankinta toisille yrityksille), liiketaloudellinen neuvonta, liiketaloudellinen ja organisatorinen neuvonta, liiketoimintaan liittyvät tiedustelupalvelut, liiketoimintojen uudelleensijoitusten toteutus, kiinteistöjen liiketaloudellisten hyödyntämissuunnitelmien kehittäminen (tilojen hallinta), mainonta- ja markkinointikonseptien kehittäminen sekä kiinteistöjen mainonta ja markkinointi (tilojen hallinta), liiketoimintaa koskevat selvitykset, tilastojen laatiminen, yritystaloudellisten asiantuntijalausuntojen laatiminen, yritystoimintaa koskevien asiantuntijalausuntojen laatiminen, talousennusteiden laatiminen, kauppaa ja liiketoimintaa koskevien tietojen antaminen, taloutta koskevien tietojen antaminen, liikkeenjohto kolmansille osapuolille, asiakkuuksien hankinta liiketoiminnan alalla, yritysten tai liiketoiminnan johtamista koskeva avustaminen, tiedotus liiketoimintaa koskevissa asioissa, markkinointi (myyntitutkimus), markkinointi, myös digitaalisissa verkoissa, markkinatutkimukset, mielipidekyselyt, tietokoneen tiedostojen tutkiminen (muiden lukuun), tutkimus liiketoimintaa koskevissa asioissa, alihankinta kaukomaista, liiketoimintaa koskeva organisatorinen neuvonta, henkilöstöhallintoa koskeva neuvonta, mainostoimien suunnittelu, yrityksen kehityksen suunnittelu valvonta organisatorissa kysymyksissä, liikkeenjohdon suunnitelmat (avustaminen), pystypuiden arvioiminen, yritysneuvonta, yrityshallinto, myynninedistäminen (markkinointi) (muiden lukuun), kauppa- ja liiketoimintakohtaktien välittäminen, myös Internetin kautta, talouteen liittyvän taitotiedon välittäminen (franchising-toiminta), tavaroita ja palveluja koskevat esittelyt, liikeasioihin liittyvät arvonmääritykset."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Kasvatus; Koulutuksen järjestäminen; Ajanviete; Urheilu- ja kulttuuritoiminnat; Erityisesti koulutusta ja jatkokoulutusta koskeva neuvonta, elektronisten julkaisujen tarjoaminen (muiden kuin ladattavien), ammatinvalinnanohjaus, kerhotoiminta (ajanvietteen tai opetuksen alalla), valmennus, esittelyopetus käytännön harjoituksissa, pedagogisten kokeiden toteutus, etäkurssit, etäopetus, tekstien julkaiseminen (paitsi mainostekstien), kustantamo- ja painotuotteiden julkaiseminen sähköisessä muodossa, myös Internetissä, kausijulkaisujen ja kirjojen julkaiseminen elektronisessa muodossa, myös Internetissä, elektronisten kirjojen ja kausijulkaisujen julkaiseminen online-periaatteella, tilaisuuksien organisointi ja toteutus kulttuurin ja/tai urheilun alalla, konferenssien organisointi ja järjestäminen, kongressien organisointi ja järjestäminen, symposiumien organisointi ja järjestäminen, henkilöstön kehitys koulutuksen ja jatkokoulutuksen avulla, seminaarien järjestäminen ja toteutus, työpajojen järjestäminen ja toteutus (koulutus), kollokvioiden järjestäminen ja johtaminen, näyttelyiden järjestäminen kulttuuri- tai opetustarkoituksiin, juhlien järjestäminen, arpajaisten järjestäminen, kilpailujen järjestäminen (koulutus ja ajanviete)."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Papier, carton et produits en ces matières, non compris dans d'autres classes; Produits de l'imprimerie; Articles pour reliures; Photographies; Papeterie; Adhésifs (matières collantes) pour la papeterie ou le ménage; Matériel pour les artistes; Pinceaux; Machines à écrire et articles de bureau (à l'exception des meubles); Matériel d'instruction ou d'enseignement (à l'exception des appareils); Matières plastiques pour l'emballage (non comprises dans d'autres classes); Caractères d'imprimerie; Clichés."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Publicité; Gestion des affaires commerciales; Administration commerciale; Travaux de bureau, en particulier analyses du prix de revient, renseignements pour affaires, conseils commerciaux, conseils en matière d'organisation et de gestion d'entreprises, consultation pour la direction des affaires commerciales, conseils en gestion d'entreprise, acquisition pour le compte de tiers [acquisition de produits et services pour d'autres entreprises], conseils commerciaux professionnels, d'affaires professionnelles et conseils organisationnels, recherches d'affaires, services de relogement pour entreprises, développement de concepts d'utilisation pour biens immobiliers du point de vue économique (gestion d'infrastructures), développement de concepts publicitaires et de marketing, concepts de marketing et services de marketing en matières immobilières (gestion d'infrastructures), enquêtes commerciales, etablissement de statistiques, expertises dans le domaine des affaires commerciales, expertises d'entreprises, prévisions économiques, fourniture de renseignements commerciaux, informations économiques, gestion des affaires commerciales pour le compte de tiers, recherche de clients, aide à la direction de sociétés industrielles et commerciales, services d'informations commerciales, marketing [études marketing], marketing, également sur des réseaux numériques, études da marché, sondages d'opinion, recherche dans des fichiers informatiques [pour des tiers], services de recherche pour affaires, sous-traitance offshore, conseils en organisation des affaires, consultations sur les questions de personnel, services de planification publicitaire, planification et surveillance d'entreprises d'un point de vue organisationnel, services de planification en matière de gestion des affaires commerciales [aide] , estimation de bois sur pied, consultations professionnelles d´affaires, administration commerciale, promotion [services de promotion des ventes] [pour des tiers], courtage de contacts commerciaux et économiques, également par Internet, courtage de savoir-faire économique (franchisage), présentations de marchandises et services, estimation en matière commerciale."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Education; Education; Divertissement; Activités sportives et culturelles; En particulier conseils en matière de formation et conseils en matière de formation continue, mise à disposition de publications électroniques [non téléchargeables], orientation professionnelle, exploitation d'un club [divertissement ou enseignement], formation, formation pratique (démonstration), services de réalisation d'examens pédagogiques, enseignement par correspondance, enseignement par correspondance, édition de textes [à l'exception des textes publicitaires], publication de produits de l'édition et de l'imprimerie sous forme électronique, également sur l'internet, publication de magazines et livres sous forme électronique, également sur l'internet, publication en ligne de livres électroniques et périodiques, organisation et tenue de manifestations culturelles et/ou sportives, organisation et tenue de conférences, organisation et tenue de congrès, organisation et tenue de symposiums, développement de personnel par formation et formation continue, organisation et tenue de séminaires, organisation et tenue d'ateliers [formation], organisation et tenue de colloques, organisation d'expositions à but culturel ou éducatif, organisation de bals, organisation de loteries, organisation de concours [éducation et divertissement]."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Papier, Pappe (Karton) und Waren aus diesen Materialien, so weit sie nicht in anderen Klassen enthalten sind; Druckereierzeugnisse; Buchbinderartikel; Fotografien; Schreibwaren; Klebstoffe für Papier- und Schreibwaren oder für Haushaltszwecke; Künstlerbedarfsartikel; Pinsel; Schreibmaschinen und Büroartikel (ausgenommen Möbel); Lehr- und Unterrichtsmittel (ausgenommen Apparate); Verpackungsmaterial aus Kunststoff, so weit es nicht in anderen Klassen enthalten ist; Drucklettern; Druckstöcke."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Werbung; Geschäftsführung; Unternehmensverwaltung; Büroarbeiten, insbesondere Aufstellung von Kosten-Preis-Analysen, Auskünfte in Geschäftsangelegenheiten, Außenwirtschaftsberatung, Beratung bei der Organisation und Führung von Unternehmen, Beratung in Fragen der Geschäftsführung, Beratungsdienste in Fragen der Geschäftsführung, Beschaffungsdienstleistungen für Dritte [Erwerb von Waren und Dienstleistungen für andere Unternehmen], betriebswirtschaftliche Beratung, betriebswirtschaftliche und organisatorische Beratung, Business Scouting, Durchführung von Unternehmensverlagerungen, Entwicklung von Nutzungskonzepten für Immobilien in betriebswirtschaftlicher Hinsicht (Facility management), Entwicklung von Werbe- und Marketingkonzepten sowie Werbung und Marketing für Immobilien (Facility management), Ermittlungen in Geschäftsangelegenheiten, Erstellen von Statistiken, Erstellung von betriebswirtschaftlichen Gutachten, Erstellung von Geschäftsgutachten, Erstellung von Wirtschaftsprognosen, Erteilung von Auskünften in Handels- und Geschäftsangelegenheiten, Erteilung von Wirtschaftsauskünften, Geschäftsführung für Dritte, Geschäftskundschaftungen, Hilfe bei der Führung von gewerblichen oder Handelsbetrieben, Informationen in Geschäftsangelegenheiten, Marketing [Absatzforschung], Marketing auch in digitalen Netzen, Marktforschung, Meinungsforschung, Nachforschung in Computerdateien [für Dritte], Nachforschungen in Geschäftsangelegenheiten, Offshore-Outsourcing, Organisationsberatung in Geschäftsangelegenheiten, Personalmanagementberatung, Planung von Werbemaßnahmen, Planung und Überwachung von Unternehmensentwicklungen in organisatorischer Hinsicht, Planungen [Hilfe] bei der Geschäftsführung, Schätzung von ungeschlagenem Holz, Unternehmensberatung, Unternehmensverwaltung, Verkaufsförderung [Sales promotion] [für Dritte], Vermittlung von Handels- und Wirtschaftskontakten, auch über das Internet, Vermittlung von wirtschaftlichem Know-How (Franchising), Waren- und Dienstleistungspräsentationen, Wertermittlungen in Geschäftsangelegenheiten."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Erziehung; Ausbildung; Unterhaltung; sportliche und kulturelle Aktivitäten; insbesondere Ausbildungsberatung und Fortbildungsberatung, Bereitstellen von elektronischen Publikationen [nicht herunterladbar], Berufsberatung, Betrieb eines Clubs [Unterhaltung oder Unterricht], Coaching, Demonstrationsunterricht in praktischen Übungen, Durchführung von pädagogischen Prüfungen, Fernkurse, Fernunterricht, Herausgabe von Texten [ausgenommen Werbetexte], Herausgabe von Verlags- und Druckereierzeugnissen in elektronischer Form, auch im Internet, Herausgabe von Zeitschriften und Büchern in elektronischer Form, auch im Internet, Online Publikation von elektronischen Büchern und Zeitschriften, Organisation und Durchführung von kulturellen und/oder sportlichen Veranstaltungen, Organisation und Veranstaltung von Konferenzen, Organisation und Veranstaltung von Kongressen, Organisation und Veranstaltung von Symposien, Personalentwicklung durch Aus- und Fortbildung, Veranstaltung und Durchführung von Seminaren, Veranstaltung und Durchführung von Workshops [Ausbildung], Veranstaltung und Leitung von Kolloquien, Veranstaltung von Ausstellungen für kulturelle oder Unterrichtszwecke, Veranstaltung von Bällen, Veranstaltung von Lotterien, Veranstaltung von Wettbewerben [Erziehung und Unterhaltung]."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Papír, karton és ezen anyagokból készült termékek, amelyek nem tartoznak más osztályokba; Nyomdaipari termékek; Könyvkötészeti anyagok; Fényképek; Papíripari cikkek; Papíripari vagy háztartási ragasztóanyagok; Anyagok muvészek részére; Ecsetek; Írógépek és irodai cikkek (bútorok kivételével); Tanítási és oktatási anyagok (készülékek kivételével); Muanyag csomagolóanyagok (más osztályban nem szereplo); Nyomdabetuk; Klisék."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Reklámozás; Kereskedelmi ügyletek; Kereskedelmi adminisztráció; Irodai munkák, különösen költség-ár elemzések készítése, felvilágosítás üzleti ügyekben, külkereskedelmi tanácsadás, vállalatok szervezésénél és vezetésénél nyújtott tanácsadás, üzletvezetési tanácsadás, üzletvezetési tanácsadói szolgáltatás, beszerzési szolgáltatások mások számára [termékek és szolgáltatások megvásárlása más vállalatok számára], vállalatgazdasági tanácsadás, vállalatgazdasági és szervezési tanácsadás, business scouting, vállalatok áthelyezésének lebonyolítása, ingatlanhasznosítási koncepciók fejlesztése vállalatgazdasági szempontból (lehetoség menedzsment), reklám- és marketingkoncepciók kidolgozása, valamint reklámozás és marketing ingatlanok számára (lehetoség menedzsment), üzleti vizsgálatok, statisztikák összeállítása, vállalatgazdasági szakvélemények készítése, szakvéleményadás gazdasági ügyekben, gazdasági elorejelzések készítése, felvilágosítás nyújtása kereskedelmi és üzleti ügyekben, gazdasági információk nyújtása, üzletvezetés mások számára, gazdasági hírek szerzése, segítségnyújtás ipari vagy kereskedelmi vállalatok irányításában, üzleti információk, marketing [eladási kutatás], marketing digitális hálózatokban is, piackutatás, közvélemény-kutatás, keresések számítógépes fájlokban [mások számára], üzleti tájékoztatások, offshore-outsourcing, üzletszervezési tanácsadás, személyzetmenedzsment tanácsadás, reklámozással kapcsolatos intézkedések tervezése, vállalati fejlesztések tervezése és felügyelete, szervezési tekintetben, üzletvezetési [segítségnyújtás] tervezés, lábon álló fa értékbecslése, vállalati tanácsadás, vállalatigazgatás, eladástámogatás [sales promotion] [mások számára], kereskedelmi és gazdasági kapcsoltok közvetítése, az interneten is, gazdasági know-how közvetítése (franchise szolgáltatások), termékek és szolgáltatások bemutatása, üzleti értékbecslések."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Nevelés; Nevelés; Szórakoztatás; Sport- és kulturális tevékenységek; Különösen szakképzési tanácsadás és továbbképzési tanácsadás, elektronikus publikációk rendelkezésre bocsátása [nem letöltheto], pályaválasztási tanácsadás, klubok üzemeltetése [szórakoztatás vagy oktatás], képzés, gyakorlati bemutató oktatás, oktatási vizsgáztatás, levelezo tanfolyamok, távoktatás, szövegek kiadása [kivéve a reklámszövegeket], kiadói és nyomdaipari termékek kiadása elektronikus formában, az interneten is, folyóiratok és könyvek kiadása elektronikus formában, az interneten is, elektronikus könyvek és folyóiratok online publikálása, kulturális és/vagy sportrendezvények szervezése és lebonyolítása, konferenciák szervezése és rendezése, kongresszusok szervezése @©s rendezése, szimpóziumok szervezése és rendezése, személyzet fejlesztése szak- és továbbképzés által, szemináriumok rendezése és tartása, workshopok [szakképzés] rendezése és tartása, kollokviumok rendezése és vezetése, kulturális vagy oktatási célú kiállítások rendezése, bálok rendezése, sosjátékok rendezése, versenyek rendezése [oktatás és szórakoztatás]."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Carta, cartone e prodotti in questi materiali, non compresi in altre classi; Stampati; Articoli per legatoria; Fotografie; Cartoleria; Adesivi (materie collanti) per la cartoleria o per uso domestico; Materiale per artisti; Pennelli; Macchine da scrivere e articoli per ufficio (esclusi i mobili); Materiale per l'istruzione o l'insegnamento (tranne gli apparecchi); Materie plastiche per l'imballaggio (non comprese in altre classi); Caratteri tipografici; Clichés."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Gestione di affari commerciali; Amministrazione commerciale; Lavori di ufficio; Lavori d'ufficio, in particolare compilazione d'analisi sul rapporto costo-prezzo, informazioni su questioni commerciali, consulenza riguardante l'economia estera, consulenza organizzativa e gestione d'affari commerciali, consulenza per la direzione degli affari, servizi di consulenza per la direzione degli affari, acquisizioni per conto terzi [acquisto di prodotti e servizi per altre imprese], consulenza economico-aziendale, consulenza gestionale e consulenza organizzativa, business scouting, servizi di trasferimento per imprese, sviluppo di programmi pubblicitari e di marketing, nonché marketing e pubblicità per immobili (amministrazione d'infrastrutture), indagini commerciali, stesura di statistiche, stesura di perizie in materia d'economia aziendale, perizie in materia d'affari, previsioni economiche, fornitura d'informazioni su affari e questioni commerciali, informazioni economiche, gestione d'affari commerciali per conto terzi, sondaggi clientela commerciali, assistenza nella gestione d'aziende industriali e commerciali, informazioni commerciali, marketing [ricerche di mercato], marketing anche su reti digitali, servizi di ricerche di mercato, sondaggio d'opinione, ricerca in file informatici [per terzi], indagini d'affari, offshore outsourcing, consulenza per l'organizzazione degli affari, consulenza relativa alla gestione delle risorse umane, progettazione d'iniziative pubblicitarie, progettazione e monitoraggio di sviluppi aziendali dal punto di vista organizzativo, pianificazione nella gestione degli affari [assistenza], stima di legname non abbattuto, consulenza aziendale, amministrazione commerciale, promozioni [promozione delle vendite] [per terzi], fornitura di contatti economici e commerciali, anche via Internet, fornitura di know-how economico (franchising), presentazioni di prodotti e servizi, valutazioni in materia d'affari."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Educazione; Formazione; Attività sportive e culturali; Servizi scientifici e tecnologici e servizi di ricerca e progettazione ad essi relativi; In particolare consulenza in materia di formazione e aggiornamento, fornitura di pubblicazioni elettroniche [non scaricabili], orientamento vocazionale, servizi di club [divertimento o istruzione], coaching, esercitazione pratica (dimostrazione), realizzazione d'esami di profitto, corsi per corrispondenza, corsi per corrispondenza, pubblicazione di testi [eccetto quelli pubblicitari], pubblicazione di prodotti editoriali e tipografici in formato elettronico, anche in Internet, pubblicazione di riviste e libri in formato elettronico, anche in Internet, pubblicazione on-line di libri elettronici e riviste, organizzazione e realizzazione di manifestazioni culturali e/o sportive, organizzazione ed allestimento di conferenze, organizzazione ed allestimento di congressi, organizzazione ed allestimento di simposi, sviluppo del personale mediante attività di formazione e aggiornamento professionale, organizzazione e realizzazione di seminari, organizzazione e realizzazione di laboratori [formazione], organizzazione e direzione di convegni, organizzazione d'esposizioni per scopi culturali o scopi educativi, organizzazione di balli, organizzazione di lotterie, organizzazione di concorsi [istruzione e divertimento]."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Popierius, kartonas ir prekes is siu medziagu, jei jos nera itrauktos i kitas klases; Spaudiniai; Irisimo medziagos; Fotonuotraukos; Rastines reikmenys; Rastines ir buitines lipniosios medziagos; Dailininku reikmenys; Teptukai; Rasomosios masineles ir biuro reikmenys (isskyrus baldus); Mokomoji medziaga ir vaizdines priemones (isskyrus aparatura); Plastikines medziagos, skirtos ipakavimui (nepriskirtos kitoms klasems); Sriftai; Klises."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Reklama; Verslo vadyba; Verslo tvarkyba; Istaigu veikla, ypac islaidu ir kainos analiziu rengimas, informacijos teikimas verslo klausimais, konsultacijos uzsienio prekybos klausimais, konsultacijos imoniu strukturos ir vadovavimo imonems klausimais, konsultacijos verslo vadybos klausimais, konsultacines paslaugos, susijusios su verslo vadyba, isigijimo paslaugos tretiesiems asmenims (prekiu ir paslaugu isigijimas kitoms imonems), konsultacijos mikroekonomikos klausimais, konsultacijos imones ekonomikos ir organizaciniais klausimais, verslo zvalgyba, verslo perkelimas i kita vieta, nekilnojamojo turto naudojimo koncepciju tobulinimas mikroekonomikos aspektu (irenginiu valdymas), reklamos ir rinkodaros koncepciju kurimas bei nekilnojamojo turto reklama ir rinkodara (irenginiu valdymas), verslo tyrimai, statistiku rengimas, mikroekonominiu ekspertiziu rengimas, verslo ekspertiziu rengimas, ekonominiu prognoziu rengimas, informacijos prekybos ir verslo klausimais teikimas, informacijos ekonomikos klausimais teikimas, verslo vadyba tretiesiems asmenims, verslo paieska, pagalba vadovaujant verslo ar prekybinems imonems, informacija verslo klausimais, rinkodara (pardavimo tyrimai), rinkodara taip pat skaitmeniniuose tinkluose, rinkos tyrimai, viesosios nuomones apklausos, paieska kompiuteriu rinkmenose (tretiesiems asmenims), paieska verslo klausimais, neapmokestinamosios uzsakomosios paslaugos, konsultacijos verslo organizavimo klausimais, konsultacijos personalo vadybos klausimais, reklaminiu priemoniu planavimas, imoniu pletros planavimas ir prieziura organizaciniu aspektu, verslo vadybos planavimas (pagalba), misko vertinimas, verslo konsultacijos, verslo vadyba, pardavimo skatinimas (pardavimo skatinimas) (tretiesiems asmenims), tarpininkavimas uzmezgant prekybinius ir ekonominius kontaktus, taip pat internetu, ekonominiu ziniu teikimas (fransizes paslaugos), prekiu ir paslaugu pristatymas, verslo vertinimas."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Mokymai; Mokymas; Pramogos; Sportine ir kulturine veikla; Ypac konsultacijos mokymo ir kvalifikacijos kelimo klausimais, elektroniniu publikaciju (neparsisiusdinamu) teikimas, konsultacijos profesiniais klausimais, klubu veikla (pramogos arba mokymas), papildomas mokymas, praktines pratybos, pedagoginiu egzaminu vedimas, nuotoliniai kursai, nuotolinis mokymas, tekstu leidyba (isskyrus reklaminius tekstus), elektroniniu leidiniu ir spaudiniu leidyba, taip pat internete, elektroniniu periodiniu leidiniu ir knygu leidyba, taip pat internete, prijungtinis elektroniniu knygu ir periodiniu leidiniu publikavimas, kulturos ir/ar sporto renginiu organizavimas ir vedimas, konferenciju organizavimas ir rengimas, kongresu organizavimas ir rengimas, simpoziumu organizavimas ir rengimas, personalo pletra mokymo ir kvalifikacijos kelimo pagalba, seminaru rengimas ir vedimas, praktiniu seminaru rengimas ir vedimas (mokymas), kolokviumu rengimas ir vedimas, parodu rengimas kulturos ar mokymo reikmems, pobuviu rengimas, loteriju rengimas, konkursu rengimas (svietimas ir mokymas)."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Papirs, pape (kartons) un preces, kas izgatavotas no siem materialiem, ja tas nav ieklautas citas klases; Iespiedprodukcija; Gramatu iesiesanas materiali; Fotografijas; Rakstamlietas; Limvielas kancelejas vai majturibas vajadzibam; Materiali maksliniekiem; Otas; Rakstammasinas un kancelejas preces (iznemot mebeles); Macibu un uzskates lidzekli (iznemot aparaturu); Plastmasas materiali iesainosanas vajadzibam (nav ietverti citas klases); Iespiedburti; Klisejas."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Reklama; Darijumu vadisana; Uznemumu parvaldisana; Biroja darbi, jo ipasi izmaksu un cenu analizu veiksana, uzzinas darijumu jautajumos, arejas ekonomikas konsultacijas, uznemumu organizesanas un vadisanas konsultacijas, uznemejdarbibas vadibas konsultacijas, uznemejdarbibas vadibas konsultaciju pakalpojumi, sagades pakalpojumi tresajam personam [precu un pakalpojumu iegade citiem uznemumiem], profesionalas uznemejdarbibas konsultacijas, uznemejdarbibas un organizatoriskas konsultacijas, darijumu izlukosana, uznemumu parvietosana, nekustama ipasuma reklamas un tirgzinibas koncepciju izstrade (Facility management), izzinas darijumu jautajumos, statistikas izveidosana, profesionalas uznemejdarbibas ekspertize, uznemumu ekspertize, ekonomisko prognozu veiksana, uzzinu sniegsana tirdzniecibas un darijumu jautajumos, ekonomisko uzzinu sniegsana, uznemumu vadisana tresajam personam, darijumu izpete, palidziba rupniecibas vai tirdzniecibas uznemumu vadisana, uznemejdarbibas informacija, tirgziniba [noieta petijumi], tirgziniba ari digitalajos tiklos, tirgus izpete, sabiedriskas domas aptauja, datoru datnu izpete [tresajam personam], uznemejdarbibas izpete, arzonas ligumdarbu piesaistisana, organizaciju konsultesana uznemejdarbibas jautajumos, personala vadibas konsultacijas, reklamas pasakumu planosana, uznemumu attistibas planosana un noverosana, raugoties no organizatoriska viedokla, uznemumu vadibas planosana [palidziba], nenocirsto koku novertesana, uznemejdarbibas konsultacijas, uznemumu parvaldisana, pardosanas sekmesana [sales promotion] [tresajam personam], tirdzniecibas un darijumu kontaktu starpnieciba, ari interneta, saimnieciskas kompetences starpnieciba (fransizes pakalpojumi), precu un pakalpojumu prezentacijas, vertibas noteiksana darijumu jautajumos."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Izglitiba; Audzinasana; Izpriecas; Sporta un kulturas pasakumi; Jo ipasi izglitibas konsultacijas un talakizglitibas konsultacijas, elektronisku publikaciju nodrosinasana [nav lejupieladejamas], profesionalas orientacijas konsultacijas, kluba pakalpojumi [izklaide vai macibas], apmaciba, praktiskas apmacibas, izmantojot demonstracijas, izglitibas parbauzu veiksana, neklatienes kursi, neklatienes kursi, tekstu izdosana [iznemot reklamas tekstus], izdevniecibu izstradajumu izdosana elektroniska veida, zurnalu un gramatu izdosana elektroniska veida, ari interneta, elektronisko gramatu un zurnalu publicesana tiessaiste, kulturas un/vai sporta pasakumu organizesana un vadisana, konferencu organizesana un rikosana, kongresu organizesana un rikosana, simpoziju organizesana un rikosana, personala attistisanas pasakumi, izmantojot apmacibas un talakizglitibu, seminaru organizesana un rikosana, darbseminaru [izglitiba] organizesana un rikosana, kolokviju rikosana un vadisana, ballu rikosana, loteriju rikosana, sacensibu rikosana [izglitiba un izklaide]."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Karti, kartuncin (kartun) u prodotti maghmula minn dan il-materjal, mhux inkluzi fi klassijiet ohra; Materjal stampat; Materjal ghall-legatura tal-kotba; Ritratti; Kartoleriji; Sustanza li twahhal ghall-uzu ta' kartolerija u tad-dar; Materjali ta' l-artisti; Pniezel taz-zebgha; Tajprajters u oggetti necessarji ghall-ufficcju (minbarra ghamara); Materjal istruttiv u ghat-taghlim (minbarra apparat); Materjali tal-plastik ghall-ippakjar (mhux inkluz fi klassijiet ohra); Tipa tal-printer; Incizjonijiet ta' l-istampar."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Reklamar; Il-gestjoni ta' negozju; L-amministrazzjoni ta' negozju; Funzjonijiet ta' l-ufficcju, specjalment thejjija ta' analizi dwar spejjez u prezzijiet, informazzjoni dwar negozju, servizzi ta' konsulenza dwar kummerc barrani, konsulenza fl-organizzazzjoni u l-gestjoni ta' intraprizi, konsulenza dwar il-gestjoni ta' negozji, konsulenza dwar mistoqsijiet relatati mal-gestjoni ta' negozji, servizzi ta' xiri ghal terzi persuni [akkwist ta' prodotti u servizzi ghal intraprizi ohra], konsulenza ekonomika, konsulenza ekonomika u organizzattiva, scouting ta' negozji, tmexxija ta' rilokazzjonijiet ta' intraprizi, zvilupp ta' kuncetti dwar l-uzu ta' proprjetà immobbli f'sens ekonomiku (gestjoni tal-facilitajiet), zvilupp ta' kuncetti dwar reklamar u marketing kif ukoll reklamar u marketing ta' propjetà immobbli (gestjoni tal-facilitajiet), investigazzjonijiet dwar in-negozju, thejjija ta' statistici, thejjija ta' rapporti ekonomici, thejjija ta' rapporti kummercjali, thejjija ta' tbassir ekonomiku, tqassim ta' informazzjoni dwar in-negozju, tqassim ta' informazzjoni dwar l-ekonomija, gestjoni tan-negozju ghal terzi persuni, tiftix ta' klijenti ghal negozji, assistenza fil-gestjoni ta' intraprizi industrijali u kummercjali, informazzjoni dwar in-negozju, marketing [ricerka dwar il-bejgh], marketing anke fuq netwerks digitali, ricerka tas-suq, sondaggi dwar opinjonijiet, ricerka f'fajls tal-kompjuter [ghal terzi persuni], ricerka dwar in-negozju, outsourcing barra l-pajjiz, konsulenza dwar l-organizzazzjoni ta' negozju, konsulenza dwar il-gestjoni tal-personal, ippjanar ta' kampanji pubblicitarji, ippjanar u sorveljanza ta' zviluppi ta' intraprizi f'sens organizzattiv, ippjanar [assistenza] fil-gestjoni ta' negozji, stimi ta' injam mhux maqtugh, konsulenza manigerjali, amministrazzjoni ta' intraprizi, promozzjoni tal-bejgh [ghal terzi persuni], medjazzjoni ta' kuntatti fil-qasam kummercjali u ekonomiku, anke fuq l-internet, provvista ta' know-how ekonomiku (franchising), prezentazzjoni ta' prodotti u servizzi, evalwazzjonijiet ta' negozji."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Tahrig; Provvediment ta' tahrig; Divertiment; Attivitajiet kulturali u sportivi; Specjalment konsulenza dwar tahrig u dwar tahrig avvanzat, provvista ta' pubblikazzjonijiet elettronici [li ma jistghux jitnizzlu], konsulenza dwar karrieri, servizzi ta' klabb [divertiment jew taghlim], ikkowcjar, tahrig prattiku permezz ta' dimostrazzjonijiet, tmexxija ta' ezamijiet pedagogici, korsijiet bil-korrispondenza, taghlim mill-boghod, pubblikazzjoni ta' testi [bl-eccezzjoni ta' testi pubblicitarji], hrug ta' materjal stampat fil-forma elettronika anke fuq l-internet, hrug ta' pubblikazzjonijiet perjodici u kotba fil-forma elettronika, anke fuq l-internet, pubblikazzjoni onlajn ta' kotba u pubblikazzjonijiet perjodici elettronici, organizzazzjoni u tmexxija ta' attvitajiet kulturali u/jew sportivi, organizzazzjoni u tmexxija ta' konferenzi, organizzazzjoni u tmexxija ta' kungressi, organizzazzjoni u tmexxija ta' simpozji, zvilupp tal-personal permezz ta' tahrig u tahrig avvanzat, arrangament u tmexxija ta' seminars, arrangament u tmexxija ta' workshops [tahrig], organizzazzjoni u tmexxija ta' konferenzi akkademici, organizzazzjoni u tmexxija ta' wirjiet ghal skopijiet kulturali jew tat-taghlim, organizzazzjoni ta' ballijiet, organizzazzjoni ta' lotteriji, organizzazzjoni ta' kompetizzjonijiet [edukazzjoni u divertiment]."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Papier, tektura (karton) oraz przedmioty z tych materialów, o ile nie sa zawarte w innych klasach; Druki; Materialy introligatorskie; Materialy fotograficzne; Materialy pismienne; Kleje do materialów pismiennych lub do celów domowych; Materialy przeznaczone dla artystów; Pedzle malarskie; Maszyny do pisania i sprzet biurowy (z wyjatkiem mebli); Materialy szkoleniowe i instruktazowe (z wyjatkiem aparatów); Materialy z tworzyw sztucznych do pakowania (nie zawarte w innych klasach); Czcionki drukarskie; Matryce."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Reklama; Zarzadzanie w dzialalnosci handlowej; Administrowanie dzialalnosci handlowej; Prace biurowe, zwlaszcza zestawianie analiz kosztów i cen, informacje w sprawach gospodarczych, doradztwo odnosnie do stosunków gospodarczych z zagranica, doradztwo przy organizacji i prowadzeniu przedsiebiorstw, doradztwo w zakresie prowadzenia dzialalnosci gospodarczej, uslugi doradztwa w zakresie prowadzenia dzialalnosci gospodarczej, uslugi zaopatrzenia swiadczone dla osób trzecich [nabywanie towarów i uslug dla innych przedsiebiorstw], doradztwo ekonomiczne, doradztwo ekonomiczne i organizacyjne, business scouting, przeprowadzanie przenoszenia przedsiebiorstwa, opracowywanie koncepcji reklamowych i marketingowych oraz reklama i marketing nieruchomosci (zarzadzanie nieruchomosciami (facility management)), ustalenia w sprawach dzialalnosci gospodarczej, tworzenie statystyk, sporzadzanie ekspertyz ekonomicznych, sporzadzanie ekspertyz odnosnie do dzialalnosci gospodarczych, sporzadzanie prognoz ekonomicznych, udzielanie informacji w sprawach handlowych i gospodarczych, udzielanie informacji gospodarczych, prowadzenie dzialalnosci gospodarczej dla osób trzecich, pozyskiwanie klientów przedsiebiorstw, pomoc przy prowadzeniu zakladów przemyslowych lub handlowych, informacje w sprawach gospodarczych, marketing [badanie zbytu], marketing takze w sieciach cyfrowych, badania rynku, badania opinii publicznej, poszukiwania w plikach komputerowych [dla osób trzecich], poszukiwania w sprawach gospodarczych, offshore-outsourcing, doradztwo organizacyjne w sprawach gospodarczych, doradztwo w zakresie zarzadzania kadrami, planowanie srodków reklamowych, planowanie i nadzorowanie rozwojów przedsiebiorstw pod wzgledem organizacyjnym, planowania [pomoc]w prowadzeniu dzialalnosci gospodarczej, wycena drzew na pniu, doradztwo dla przedsiebiorstw, administrowanie przedsiebiorstwami, promocja sprzedazy [sales promotion] [dla osób trzecich], posredniczenie w kontaktach handlowych i gospodarczych, równiez przez internet, przekazywanie gospodarczego know-how (franchising), prezentacje towarów i uslug, ustalanie wartosci w sprawach gospodarczych."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Nauczanie; Nauczanie; Rozrywka; Dzialalnosc sportowa i kulturalna; Zwlaszcza doradztwo odnosnie do ksztalcenia i doszkalania, udostepnianie elektronicznych publikacji [nie do pobrania], doradztwo zawodowe, prowadzenie klubu [rozrywki lub dydaktycznego], szkolenia, lekcje pokazowe w cwiczeniach praktycznych, przeprowadzanie sprawdzianów pedagogicznych, kursy korespondencyjne, nauczanie korespondencyjne, wydawanie tekstów [za wyjatkiem tekstów reklamowych], wydawanie produktów wydawnictw i drukarni w postaci elektronicznej, takze w internecie, wydawanie czasopism i ksiazek w postaci elektronicznej, takze w internecie, publikacja online elektronicznych ksiazek i czasopism, organizowanie i przeprowadzanie imprez kulturalnych i/lub sportowych, organizacja i organizowanie konferencji, organizacja i organizowanie kongresów, organizacja i organizowanie sympozjów, rozwijanie umiejetnosci i wiedzy personelu poprzez ksztalcenie i doszkalanie, organizowanie i prowadzenie seminariów, organizowanie i prowadzenie warsztatów [szkolenia], organizowanie i prowadzenie kolokwiów, organizowanie wystaw w celach kulturalnych lub dydaktycznych, organizowanie balów, organizowanie loterii, organizowanie konkursów [edukacja i rozrywka]."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Papel, cartão e produtos nestas matérias, não compreendidos noutras classes; Produtos de impressão; Artigos para encadernação; Fotografias; Papelaria; Adesivos (matérias colantes), para papelaria ou para uso doméstico; Material para artistas; Pincéis; Máquinas de escrever e artigos de escritório (com excepção dos móveis); Material de instrução ou de ensino (com excepção dos aparelhos); Matérias plásticas para a embalagem (não incluídas noutras classes); Caracteres de imprensa; Clichés (esteriótipos)."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Publicidade; Gestão dos negócios comerciais; Administração comercial; Trabalhos de escritório, em especial elaboração de análises da relação preços custo/preço, informações de negócios, consultadoria em matéria de Comércio Externo, consultadoria na área da organização e gestão de empresas, consultadoria em matéria de gestão, serviços de assessoria para a direcção de negócios, serviços de aprovisionamento por conta de outrem (aquisição de mercadorias e serviços para outras empresas), consultadoria em matéria de gestão de empresas, consultadoria de gestão e organizacional, \"business scouting\", realização de deslocalizações de empresas, desenvolvimento de estratégias de publicidade e marketing, bem como publicidade e marketing para imóveis (gestão de instalações), investigações para negócios, elaboração de estatísticas, elaboração de pareceres no domínio da gestão empresarial, elaboração de pareceres comerciais, previsões económicas, prestação de informações comerciais e de negócios, prestação de informações de carácter económico, gestão de negócios por conta de outrem, informações comerciais, apoio na gestão de empresas industriais ou comerciais, informações de negócios, marketing (pesquisas de mercado), marketing também em redes digitais, estudos de mercado, sondagens de opinião, investigações em ficheiros informáticos [para terceiros], pesquisas comerciais, \"off-shore outsourcing\", consultadoria organizacional em matéria de negócios, consultadoria em matéria de gestão de recursos humanos, planeamento de acções publicitárias, planeamento e monitorização de desenvolvimentos empresariais em matéira de organização, planeamento [assistência] na gestão de negócios, cubicagem da madeira (avaliação da madeira), consultadoria empresarial, administração comercial, promoção de vendas (sales promotion por conta de outrem), mediação de contactos comerciais e económicos, também através da Internet, transmissão de know-how comercial (franchising), apresentação de produtos e serviços, avaliação de negócios comerciais."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Educação; Formação; Divertimento; Actividades desportivas e culturais; Em especial consultadoria em matéria de formação inicial e contínua, fornecimento de publicações electrónicas (não descarregáveis), orientação profissional, exploração de clubes [divertimento ou ensino], treino, formação prática (demonstração), realização de provas pedagógicas, cursos por correspondência, ensino à distância, publicação de textos (excepto textos publicitários), publicação de produtos editoriais e de impressão em formato electrónico, também na Internet, publicação de revistas e livros em formato electrónico, também na Internet, publicação de revistas e livros electrónicos em linha, organização e realização de eventos culturais e/ou desportivos, organização e realização de conferências, organização e realização de congressos, organização e realização de simpósios, desenvolvimento de pessoal no âmbito de acções de formação profissional inicial e contínua, organização e realização de seminários, organização e realização de workshops (formação), organização e direcção de colóquios, organização de exposições com fins culturais ou educativos, organização de bailes, organização de lotarias, organização de concursos (educação e divertimento)."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Hartie, carton gros (carton) si articole din aceste materiale, daca nu sunt incluse in alte clase; Produse de imprimerie; Articole pentru legatorie; Fotografii; Papetarie; Adezivi (materiale colante) pentru papetarie sau menaj; Materiale pentru artisti; Pensule; Masini de scris si articole de birou (cu exceptia mobilelor); Materiale de instruire sau invatamânt (cu exceptia aparatelor); Materiale plastice pentru ambalare (care nu sunt incluse in alte clase); Caractere tipografice; Clisee."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Publicitate; Gestiunea afacerilor comerciale; Administratie comerciala; Lucrari de birou, in special intocmirea de analize de costuri si pret, informatii in domeniul afacerilor, consultanta in gestiune externa, consultanta in organizarea si conducerea de intreprinderi, consultanta in gestionarea afacerilor, servicii de consultanta pentru conducerea afacerilor, servicii de achizitie pentru terti [achizitia de bunuri si servicii pentru alte intreprinderi], consultanta profesionala despre afaceri, consultanta in materie de afaceri si organizatorica, servicii de investigatii in materie de afaceri, servicii de reinstalare pentru intreprinderi, dezvoltarea de concepte de utilizare pentru bunuri imobiliare cu privire la afaceri (gestiune de facilitati), dezvoltare de concepte de publicitate si de marketing si publicitate si marketing pentru imobiliare (management de facilitati), determinare de oportunitati de afaceri, intocmire de statistici, expertize in domeniul afacerilor comerciale, expertize in materie de afaceri, previziuni economice, furnizarea de informatii in materie de comert si afaceri, furnizarea de informatii economice, managementul afacerilor pentru terti, investigatii in materie de afaceri, asistenta in conducerea de intreprinderi industriale si comerciale, informatii in materie de afaceri, servicii de marketing [cercetare in domeniul vanzarilor], marketing si in retele digitale, servicii de studii de piata, sondaj de opinie, cautare in fisiere computerizate [pentru terti], solicitari de informatii in domeniul afacerilor, externalizare in alte tari, consultanta in organizarea de afaceri, consultanta pentru probleme de personal, planificarea de masuri publicitare, planificare si supraveghere a dezvoltarii intreprinderilor din punct de vedere organizatoric, planificari [asistenta] in conducerea de afaceri , estimare in domeniul silvic, servicii de consultanta in afaceri, administrarea afacerilor, servicii de promovare de vanzari [promovare de vanzari] [pentru terti], intermediere de contacte comerciale si economice, si prin Internet, intermediere de know-how economic (francizare), prezentare de produse si servicii, estimare in afaceri comerciale."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Educatie; Instruire; Divertisment; Activitati sportive si culturale; In special consultanta in materie de instruire si perfectionare, furnizare de publicatii electronice [care nu pot fi descarcate], orientare profesionala, exploatarea unui club [divertisment sau educatie], asistenta profesionala, demonstratii de exercitii practice, realizarea de probe pedagogice, cursuri prin corespondenta, invatamant la distanta, publicare de texte [cu exceptia textelor publicitare], publicarea de produse editoriale si de imprimerie in format electronic, si pe Internet, publicarea de periodice si carti in format electronic, si pe internet, publicare online de carti si periodice electronice, organizare si realizare de evenimente culturale si/sau sportive, organizare si realizare de conferinte, organizarea si realizarea de congrese, organizarea si realizarea de simpozioane, dezvoltare de personal prin instruire si perfectionare, servicii de organizare si realizare de seminarii, servicii de organizare si realizare de ateliere [instruire], servicii de organizare si conducere de colocvii, organizarea de expozitii cu scop cultural sau educational, organizarea de baluri, organizare de loterii, organizarea de concursuri [educatie si divertisment]."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Papier, kartón, (lepenka) a tovar z týchto materiálov, pokial nie sú zahrnuté v ostatných triedach; Tlacoviny; Knihárske výrobky; Fotografie; Papiernický tovar a písacie potreby; Lepidlá na papier a na pouzitie v domácnosti; Potreby pre umelcov; Maliarske stetce; Písacie stroje a kancelárske potreby okrem nábytku; Vzdelávacie a ucebné potreby, okrem prístrojov; Plastické materiály na balenie (nezahrnuté v iných triedach); Tlaciarenské písmo; Stocky."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Reklamná cinnost; Obchodný manazment, obchodná správa; Obchodná administratíva; Kancelárske práce, predovsetkým zostavovanie analýz nákladov-cien, informácie v obchodných zálezitostiach, poradenstvo pri organizácii a vedení spolocností, poradenstvo v otázkach vedenia obchodu, poradenské sluzby v otázkach vedenia obchodu, zabezpecovacie sluzby pre tretie subjekty [nákup tovaru a sluzieb pre iné podniky], podnikové hospodárske poradenstvo, podnikové hospodárske a organizacné poradenstvo, Business Scouting, premiestnovanie prevádzok a podnikov (sluzby týkajúce sa -), vývoj uzívatelských konceptov pre nehnutelnosti z prevádzkovo-hospodárskeho hladiska (facility Management), vývoj reklamných a marketingových konceptov a marketing pre nehnutelnosti (facility Management), zistovanie v obchodných zálezitostiach, tvorba statistík, tvorba podnikových hospodárskych posudkov, tvorba obchodných posudkov, tvorba hospodárskych prognóz, poskytovanie informácií v obchodných a ponikových zálezitostiach, poskytovanie hospodárskych informácií, vedenie obchodu pre tretie subjekty, obchodná klientela, pomoc pri vedení priemyselných alebo obchodných podnikov, informácie v obchodných zálezitostiach, marketing [prieskum odbytu], marketing, aj v digitálnych sietiach, prieskum trhu, prieskum verejnej mienky, dodatocný prieskum v pocítacových súboroch [pre tretie subjekty], dodatocný prieskum v obchodných zálezitostiach, Offshore-Outsourcing, organizacné poradenstvo pri obchodných zálezitostiach, poradenstvo v oblasti personálneho manazmentu, plánovanie reklamných opatrení, plánovanie a kontrola podnikového vývoja z organizacného hladiska, plánovanie pri vedení obchodu [pomoc], ocenovanie nevyrúbaného dreva, podnikové poradenstvo, správa podnikov, podpora predaja [sales promotion] [pre tretie subjekty], sprostredkovanie obchodných a hospodárskych kontaktov, aj cez internet, sprostredkovanie hospodárskeho know-how (franchising), prezentácie tovarov a sluzieb, ocenovanie podnikov."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Výchova; Zabezpecovanie výcvikov, kurzov a skolení; Zábava; Sportová a kultúrna cinnost; Predovsetkým poradenstvo v oblasti vzdelávania a poradenstvo v oblasti dalsieho vzdelávania, poskytovanie elektronických publikácií [nie stiahnutelné], poradenstvo v oblasti povolania, prevádzkovanie klubov [zábava alebo vyucovanie], coaching, praktický výcvik [ukázky], realizácia pedagogických skúsok, dialkové kurzy, dialková výucba, vydávanie textov [okrem reklamných textov], vydávanie nakladatelských a tlaciarenských výrobkov v elektronickej forme, aj na internete, vydávanie casopisov a kníh v elektronickej forme, aj na internete, on line publikácie elektronických kníh a casopisov, organizácia a realizácia kultúrnych a/alebo sportových podujatí, organizácia a usporadúvanie konferencií, organizácia a usporadúvanie kongresov, organizácia a usporadúvanie sympózií, osobnostný vývoj prostredníctvom vzdelávania a dalsieho vzdelávania, usporadúvanie a vedenie seminárov, usporadúvanie a realizácia pracovaných dielní (workshop) [vzdelávanie], usporadúvanie a vedenie kolokvií, usporadúvanie výstav pre kultúrne alebo vyucovacie úcely, usporadúvanie plesov, usporadúvanie lotérií, usporadúvanie sútazí [výchova a zábava]."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Papir, lepenka (karton) in izdelki iz teh materialov, ki niso vkljuceni v druge razrede; Tiskarski izdelki; Knjigoveski material; Fotografije; Pisarniski material; Lepila za pisarniski material ali za gospodinjstvo; Potrebscine za umetnike; Copici; Pisalni stroji in pisarniski pribor (razen pohistva); Material za ucenje ali poucevanje (razen aparatov); Plasticni materiali za paketiranje (ne iz drugih razredov); Tiskarske crke; Kliseji."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Oglasna dejavnost; Vodenje komercialnih poslov; Poslovna administracija; Pisarniski posli, zlasti izdelava stroskovno cenovnih analiz, poizvedbe v poslovnih zadevah, svetovanje v zvezi z zunanjim gospodarstvom, svetovanje pri organizaciji in vodenju podjetij, svetovanje v vprasanjih vodenja komercialnih poslov, svetovalne storitve v vprasanjih vodenja komercialnih poslov, nabavne storitve za tretje osebe [nakup izdelkov in storitev za druga podjetja], strokovno poslovno svetovanje, strokovno poslovno in organizacijsko svetovanje, poslovno ogledovanje, izvajanje selitev podjetja, razvoj oglasnih in trznih konceptov, kot tudi oglasna dejavnost in trzenje z nepremicninami (upravljanje nepremicnin), poizvedbe v poslovnih zadevah, izdelava statistik, izdelava strokovno poslovnih strokovnih mnenj, izdelava poslovnih strokovnih mnenj, izdelava ekonomskih prognoz, dajanje informacij v trgovskih in poslovnih zadevah, dajanje poslovnih informacij, vodenje komercialnih poslov za tretje osebe, poslovni odjemalci, pomoc pri vodenju gospodarskih in trgovskih podjetij, informacije v poslovnih zadevah, trzenje [raziskave prodaje], trzenje tudi v digitalnih mrezah, trzne raziskave, javnomnenjske raziskave, poizvedovanje v podatkovnih datotekah [za tretje osebe], poizvedbe v poslovnih zadevah, zunanji izvajalci, organizacijsko svetovanje v poslovnih zadevah, svetovanje pri kadrovanju, nacrtovanje oglasnih ukrepov, nacrtovanje in nadzor razvoja podjetja v organizacijskem pogledu, nacrtovanja [pomoc] pri vodenju komercialnih poslov, ocenjevanje lesa (stojeca debla), poslovno svetovanje, poslovna administracija, promocijske storitve [promocija prodaje] [za tretje osebe], posredovanje trgovskih in gospodarskih stikov, tudi preko interneta, posredovanje gospodarskega strokovnega znanja (fransizne storitve), predstavitve izdelkov in storitev, cenitve v poslovnih zadevah."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Vzgoja; Pouk; Razvedrilo; Sportne in kulturne dejavnosti; Zlasti izobrazevalno svetovanje in svetovanje pri izpopolnjevanju, nudenje elektronskih publikacij [nenalozljivih], poklicno svetovanje, dejavnost kluba [razvedrilo ali pouk], usposabljanje, demonstracijski pouk v prakticnih vajah, izvajanje pedagoskih testov, dopisno izobrazevanje, dopisno izobrazevanje, publikacija besedil [razen oglasna besedila], izdajanje zalozniskih in tiskarskih izdelkov v elektronski obliki, tudi na internetu, izdajanje revij in knjig v elektronski obliki, tudi na internetu, online publikacija elektronskih knjig in revij, organizacija in izvajanje kulturnih in/ali sportnih prireditev, organizacija in prirejanje konferenc, organizacija in prirejanje kongresov, organizacija in prirejanje simpozijev, kadrovski razvoj s pomocjo izobrazevanja in izpopolnjevanja, prirejanje in izvajanje seminarjev, prirejanje in izvajanje delavnic [izobrazevanje], prirejanje in vodenje kolokvijev, prirejanje razstav za kulturne ali ucne namene, prirejanje plesov, prirejanje loterij, prirejanje tekmovanj [vzgoja in razvedrilo]."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Papel, cartón y artículos de estas materias, no comprendidos en otras clases; Productos de imprenta; Material de encuadernación; Fotografías; Artículos de papelería; Adhesivos (pegamentos) de papelería o para uso doméstico; Material para artistas; Pinceles; Máquinas de escribir y artículos de oficina (excepto muebles); Material de instrucción o material didáctico (excepto aparatos); Materias plásticas para embalaje (no comprendidas en otras clases); Caracteres de imprenta; Clichés de imprenta."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Publicidad; Gestión de negocios comerciales; Administración comercial; Trabajos de oficina, en particular listados de análisis de precios de coste, informes de negocios, asesoramiento sobre comercio exterior, servicios de consultoría en materia de organización y dirección de empresas, servicios de asesores para la dirección de empresas, servicios de asesoramiento para la dirección de empresas, servicios de aprovisionamiento para terceros [adquisición de mercancías y servicios para otras empresas], consultoría profesional de empresas, servicios de consultoría en materia de economía y consultoría de organización, Business Scouting, servicios de realojamiento para empresas, desarrollo de conceptos de aprovechamiento para inmuebles desde el punto de vista empresarial (gestión de instalaciones), desarrollo de conceptos publicitarios y de marketing así como publicidad y marketing para inmuebles (gestión de instalaciones), investigaciones de negocios, elaboración de estadísticas, elaboración de dictámenes económico-comerciales, de peritajes en negocios, previsiones económicas, comunicación de información en asuntos comerciales y de negocios, facilitación de información económica, dirección de negocios para terceros, adquisición de clientes comerciales, ayuda para la dirección de empresas industriales o comerciales, informaciones en negocios, mercadotecnia [investigación de mercados], marketing, incluso en redes digitales, de estudios de mercados, sondeos de opinión, investigaciones en archivos informáticos [todos para terceros], investigaciones sobre negocios, externalización extraterritorial, servicios de asesores para la organización de negocios, asesoramiento sobre la administración de personal, servicios de planificación publicitaria, planificación y control de de desarrollos empresariales desde el punto de vista organizacional, planificación de gestión empresarial [ayudas] , tasación de madera sin talar, servicios de asesoramiento de negocios comerciales, administración comercial, promoción [promoción de ventas] [todos para terceros], mediación de contactos comerciales y económicos, también vía Internet, mediación de know-how económico (franquicias), presentación de productos y servicios, valoraciones en negocios comerciales."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Educación; Formación; Servicios de entretenimiento; Actividades deportivas y culturales; En particular asesoramiento sobre formación y formación permanente, facilitación de publicaciones electrónicas [no descargables], orientación profesional, explotación de un club [esparcimiento o servicios de enseñanza], entrenamiento, servicios de formación práctica (demostración), servicios de realización de exámenes pedagógicos, cursos a distancia, enseñanza por correspondencia, publicación de textos [excepto textos publicitarios], publicación de productos editoriales y material impreso en formato electrónico, también en Internet, edición de revistas y libros en formato electrónico, también en Internet, publicación en línea de libros electrónicos y revistas, organización y realización de eventos culturales y/o deportivos, organización y dirección de conferencias, organización y dirección de congresos, organización y realización de simposios, dearrollo de personal a través de formación y capacitación, organización y dirección de seminarios, organización y realización de talleres [formación], organización y dirección de coloquios, organización de exposiciones para fines culturales o fines educativos, organización de bailes, organización de loterías, organización de concursos [educación y esparcimiento]."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Papper, kartong samt produkter därav, ej ingående i andra klasser; Trycksaker; Bokbinderimaterial; Fotografier; Pappersvaror (skriv- och kontorsmaterial); Klister och lim för pappersvaror och hushållsändamål; Konstnärsmaterial; Målarpenslar; Skrivmaskiner och kontorsförnödenheter (ej möbler); Instruktions- och undervisningsmaterial (ej apparater); Plastmaterial för emballering (ej ingående i andra klasser); Trycktyper; Klichéer."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Annons- och reklamverksamhet; Företagsledning; Företagsadministration; Kontorstjänster, speciellt utförande av kostnads-prisanalyser, affärsstudier, extern ekonomisk konsultation, organisationskonsulttjänster och ledning av företag, rådgivningstjänster för företagsledning, rådgivning avseende företagsledning, anskaffningstjänster för tredje part [förvärv av varor och tjänster för andra företag], professionell företagskonsultation, professionell och organisatorisk rådgivning, Business Scouting, omlokaliseringstjänster avseende företag, utveckling av användningskoncept för fastigheter ur företagsekonomisk synvinkel (skötsel av anläggningar), utveckling av reklam- och marknadsföringskoncept och marknadsföring för fastigheter (skötsel av anläggningar), företagsutredningar, statistik, sakkunniga utlåtanden inom det företagsekonomiska området, rationaliseringsexpertis, ekonomisk prognostisering, leverans av information i handels- och affärsangelägenheter, delgivning av ekonomisk information, företagsledning för andra, affärsundersökningar, hjälp vid ledning av industri- eller handelsföretag, företagsinformation, marknadsföring [marknadsundersökningar], marknadsföring även på digitala nät, marknadsundersökningar, opinionsundersökningar, sökning i datafiler [för andra], företagsundersökningar, interkontinental utlokalisering, organisationsrådgivning i affärsfrågor, konsultationer avseende personaladministration, annons- och reklamplaneringstjänster, planering och övervakning av företagsutvecklingar i organisatoriskt hänseende, planering vid företagsledning [hjälp], värdering av skog på rot, företagskonsultation, företagsadministration, sales promotiontjänster [säljfrämjande verksamhet] [för andra], förmedling av handels- och ekonomiska kontakter, även via Internet, förmedling av ekonomisk sakkunskap (franchising), varu- och tjänstepresentationer, värdering i affärsfrågor."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Uppfostran; Anordnande av handledning/instruktion; Underhållning; Sport- och idrottsaktiviteter, kulturverksamhet; Speciellt utbildningsrådgivning och fortbildningsrådgivning, tillhandahållande av elektroniska publikationer [ej nedladdningsbara], yrkesrådgivning, klubbverksamhet [underhållning eller undervisning], handledning, praktisk utbildning (instruktionstjänster), utbildningsexamination, korrespondenskurser, distansundervisning, utgivning av texter [ej reklamtexter], utgivning av förlagsprodukter och trycksaker i elektronisk form, även på Internet, utgivning av tidskrifter och böcker i elektronisk form, även på Internet, direktansluten publicering av elektroniska böcker och tidskrifter, organisation och genomförande av kulturella evenemang och/eller sportevenemang, organisation och anordnande av konferenser, organisation och anordnande av kongresser, organisation och anordnande av symposier, personalutveckling genom ut- och fortbildning, anordnande och anordnande av seminarier, anordnande och genomförande av arbetsgrupper [anordnande av handledning/instruktion], anordnande och genomförande av kollokvier, anordnande av utställningar för kulturella ändamål eller utbildningsändamål, anordnande av baler, anordnande av lotterier, anordnande av tävlingar [undervisning/utbildning och underhållning]."
+        }
+      ]
+    },
+    "id": "a1858458-6b0d-401a-879b-e1bcb67554fd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.03.01",
+      "26.03.05",
+      "26.03.24",
+      "26.03.99",
+      "26.11.01",
+      "26.11.13"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00604",
+        "publicationVolume": "98"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Rathausstr. 13,Hamburg, 20095",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "PJM PALASCHINSKI JACOBI MÖBIUS + PARTNER"
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20110407",
+        "applicationNumber": "9877648"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310407",
+      "lastPublicationDate": "20110525",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20110901",
+        "registrationNumber": "9877648"
+      }
+    },
+    "version": "20260511151818",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "vancore"
+    }
+  },
+  "_uri": "/mark/em/a1858458-6b0d-401a-879b-e1bcb67554fd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.817Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "uri": "/mark/kr/94f43d70-05d1-420b-8550-348208a06cdf",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "94f43d70-05d1-420b-8550-348208a06cdf",
+  "applicationNumber": "41-2009-0007856",
+  "registrationNumber": "4102010480000",
+  "applicationDate": "2009-04-14",
+  "registrationDate": "2010-09-15",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "SEVEnCORE",
+  "markTransliteration": "SEVENCORE",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "dvd방경영업,pc게임방경영업,게임서비스업,게임센터제공업,게임정보제공업,오락기계대여업,오락설비공급업,오락시설의 제공 및 공급업,오락업,온라인 게임 서비스업,인터넷게임센터제공업",
+      "translation_language": "en",
+      "translation": "dvd hardcore sales, pc game business, game service business, game center business, game information business, entertainment machine rental business, entertainment facility supply business, entertainment facility provision and supply business, entertainment business, online game service business, internet game center business"
+    }
+  ],
+  "owner": "NORIA CO., LTD",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "김원식 (KIM, Won Shik)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기도 안양시 동안구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "NORIA CO., LTD",
+        "applicantNativeName": "주식회사 노리아"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "dvd hardcore sales, pc game business, game service business, game center business, game information business, entertainment machine rental business, entertainment facility supply business, entertainment facility provision and supply business, entertainment business, online game service business, internet game center business",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "dvd방경영업,pc게임방경영업,게임서비스업,게임센터제공업,게임정보제공업,오락기계대여업,오락설비공급업,오락시설의 제공 및 공급업,오락업,온라인 게임 서비스업,인터넷게임센터제공업"
+        }
+      ]
+    },
+    "id": "94f43d70-05d1-420b-8550-348208a06cdf",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.01.05",
+      "26.03.10",
+      "26.04.11"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "SUITE Sunggok bldg. Teheran-ro, Gangnam-gu, Seoul, Korea(LIMEUNGSOO LAWOFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김원식 (KIM, Won Shik)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20090414",
+        "applicationNumber": "41-2009-0007856"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20100915",
+        "registrationNumber": "4102010480000"
+      }
+    },
+    "version": "20250625163648",
+    "wordMarkSpecification": {
+      "markTransliteration": "SEVENCORE",
+      "markVerbalElementText": "SEVEnCORE"
+    }
+  },
+  "_uri": "/mark/kr/94f43d70-05d1-420b-8550-348208a06cdf",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.744Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

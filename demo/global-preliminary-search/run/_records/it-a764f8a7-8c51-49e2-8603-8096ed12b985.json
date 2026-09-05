@@ -1,0 +1,187 @@
+{
+  "uri": "/mark/it/a764f8a7-8c51-49e2-8603-8096ed12b985",
+  "provider": "clarivate",
+  "office": "it",
+  "guid": "a764f8a7-8c51-49e2-8603-8096ed12b985",
+  "applicationNumber": "362016000014718",
+  "registrationNumber": "362016000014718",
+  "applicationDate": "2016-02-12",
+  "registrationDate": "2017-03-27",
+  "expiryDate": "2026-01-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-07-07",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    37,
+    39,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        37
+      ],
+      "language": "it",
+      "description": "manutenzione e installazione impianti - conduzione.",
+      "translation_language": "en",
+      "translation": "maintenance and installation - run."
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": "it",
+      "description": "distribuzione delle acque - adduzione.",
+      "translation_language": "en",
+      "translation": "Water distribution - supply."
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "it",
+      "description": "trattamenti chimici - depurazione.",
+      "translation_language": "en",
+      "translation": "chemical treatments - purification."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "consulenza e progettazione tecnica.",
+      "translation_language": "en",
+      "translation": "consultancy and technical planning."
+    }
+  ],
+  "owner": "G.O.R.I. S.P.A.",
+  "ownerNative": null,
+  "ownerCountry": "IT",
+  "representative": "GORI S.P.A.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "IT",
+        "applicantAddressCountryName": "Italy",
+        "applicantName": "G.O.R.I. S.P.A."
+      }
+    ],
+    "applicationLanguageCode": "it",
+    "cmMarkImageEUclassification": [
+      "26.01.01",
+      "26.01.02",
+      "26.01.06"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "maintenance and installation - run.",
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "manutenzione e installazione impianti - conduzione."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Water distribution - supply.",
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "distribuzione delle acque - adduzione."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "chemical treatments - purification.",
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "trattamenti chimici - depurazione."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "consultancy and technical planning.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "consulenza e progettazione tecnica."
+        }
+      ]
+    },
+    "id": "a764f8a7-8c51-49e2-8603-8096ed12b985",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "BLU,ARANCIONE,;"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "SCRITTA GORI DI COLORE BLU CARATTERIZZATA DALLA LETTERA \"O\" RAPPRESENTATA DA UN CERCHIO ARANCIONE PIENO CON SOTTO UN OVALE ARANCIONE, E DALLA LETTERA \"R\" STILIZZATA. LE LETTERE \"G\" ED \"I\" SONO DI CARATTERE \"AVANT GARD\" (MARCHIO FIGURATIVO A COLORI)."
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260628",
+    "registrationOfficeCode": "IT",
+    "registrationOfficeName": "Italy",
+    "representatives": [
+      {
+        "representativeAddress": "80056 Ercolano (Napoli)",
+        "representativeName": "GORI S.P.A."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20160212",
+        "applicationNumber": "362016000014718"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20260113",
+      "firstRegistrationApplication": {
+        "firstApplicationDate": "20060113",
+        "firstApplicationNumber": "NA/2006/000037",
+        "firstRegistrationDate": "20090312",
+        "firstRegistrationNumber": "1178862"
+      },
+      "lastPublicationDate": "20170707",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20170327",
+        "registrationNumber": "362016000014718"
+      }
+    },
+    "version": "20260628020524",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GORI"
+    }
+  },
+  "_uri": "/mark/it/a764f8a7-8c51-49e2-8603-8096ed12b985",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.047Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

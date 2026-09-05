@@ -1,0 +1,102 @@
+{
+  "uri": "/mark/ky/0fe043d4-38a2-436e-8d8d-b24559076130",
+  "provider": "clarivate",
+  "office": "ky",
+  "guid": "0fe043d4-38a2-436e-8d8d-b24559076130",
+  "applicationNumber": "T0002962",
+  "registrationNumber": null,
+  "applicationDate": "2022-12-12",
+  "registrationDate": null,
+  "expiryDate": "2032-12-12",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "for Platform as a service (PAAS) featuring computer software platforms for use in the field of securities and trading securities, for financial services, for cash management, for financial transaction cost analysis, for data management and reporting in connection with regulatory compliance, and for data management in connection with the lending of cash or securities against collateral from one party to another",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "STATE STREET BANK AND TRUST COMPANY",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "ONE LINCOLN STREET BOSTON MASSACHUSETTS",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "STATE STREET BANK AND TRUST COMPANY"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "for Platform as a service (PAAS) featuring computer software platforms for use in the field of securities and trading securities, for financial services, for cash management, for financial transaction cost analysis, for data management and reporting in connection with regulatory compliance, and for data management in connection with the lending of cash or securities against collateral from one party to another"
+        }
+      ]
+    },
+    "id": "0fe043d4-38a2-436e-8d8d-b24559076130",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20240212",
+    "registrationOfficeCode": "KY",
+    "registrationOfficeName": "Cayman Islands",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20221212",
+        "applicationNumber": "T0002962"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20321212",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20240212175934",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/ky/0fe043d4-38a2-436e-8d8d-b24559076130",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.180Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,332 @@
+{
+  "uri": "/mark/us/209d5100-6006-4b77-b3a0-b0359b367a69",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "209d5100-6006-4b77-b3a0-b0359b367a69",
+  "applicationNumber": "85359656",
+  "registrationNumber": "4108274",
+  "applicationDate": "2011-06-29",
+  "registrationDate": "2012-03-06",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2011-12-20"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2018-10-12",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "TOLTEQ ORIGINAL ENGINEERING",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": [
+    "\"ORIGINAL ENGINEERING\""
+  ],
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Electronic test and measurement devices for the compilation and dissemination of data in oil and gas drilling in the nature of measurement-while-drilling (MWD) tools, electronic pulser modules, electronic directional module, electronic controller unit, solenoid driver unit, MWD surface system for transmitting data from MWD tools to the surface, power supplies, anti-static transorbs and pigtails, software programs to analyze drilling data from MWD tools, pulser fill station",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Tolteq Group LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Gregory L. Maag",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1205 BMC Drive, Cedar Park, TX, 78613",
+        "applicantAddressCity": "Cedar Park",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "78613",
+        "applicantAddressStateName": "TEXAS",
+        "applicantAddressStreet": "1205 BMC Drive",
+        "applicantJurisdictionOfIncorporation": "TEXAS",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "Tolteq Group LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "07.09.01"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Electronic test and measurement devices for the compilation and dissemination of data in oil and gas drilling in the nature of measurement-while-drilling (MWD) tools, electronic pulser modules, electronic directional module, electronic controller unit, solenoid driver unit, MWD surface system for transmitting data from MWD tools to the surface, power supplies, anti-static transorbs and pigtails, software programs to analyze drilling data from MWD tools, pulser fill station"
+        }
+      ]
+    },
+    "id": "209d5100-6006-4b77-b3a0-b0359b367a69",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "\"ORIGINAL ENGINEERING\""
+    ],
+    "markEvents": [
+      {
+        "date": "20181012",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20170306",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20170306",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20170306",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20140317",
+        "descriptionText": "TEAS CHANGE OF OWNER ADDRESS RECEIVED"
+      },
+      {
+        "date": "20140317",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20121218",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20120306",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20111220",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20111220",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20111130",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20111117",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20111114",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20111109",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20111109",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20111031",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20111019",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20111019",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20111019",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20111019",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20111017",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20110708",
+        "descriptionText": "NOTICE OF DESIGN SEARCH CODE MAILED"
+      },
+      {
+        "date": "20110707",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20110702",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Color is not claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of a fanciful design of an aztec pyramid and to the right of the design the word \"TOLTEQ\" and below the word \"TOLTEQ\", the words \"Original Engineering\".",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "P.O. Box 4207, Cedar Park, TX, 78613",
+        "city": "Cedar Park",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "TEXAS",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Tolteq Group LLC",
+        "postalCode": "78613",
+        "stateName": "TEXAS",
+        "street": "P.O. Box 4207"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "1205 BMC Drive, Cedar Park, TX, 78613",
+        "city": "Cedar Park",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "TEXAS",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Tolteq Group LLC",
+        "postalCode": "78613",
+        "stateName": "TEXAS",
+        "street": "1205 BMC Drive"
+      },
+      {
+        "address": "1205 BMC Drive, Cedar Park, TX, 78613",
+        "city": "Cedar Park",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "TEXAS",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Tolteq Group LLC",
+        "postalCode": "78613",
+        "stateName": "TEXAS",
+        "street": "1205 BMC Drive"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "P.O. Box 4207, Cedar Park, TX, 78613",
+        "city": "Cedar Park",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "TEXAS",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Tolteq Group LLC",
+        "postalCode": "78613",
+        "stateName": "TEXAS",
+        "street": "P.O. Box 4207"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Houston, TX 77253-3267, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "Houston, TX 77253-3267",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Gregory L. Maag Conley Rose, P.C., P.O. Box 3267"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Houston, TX 77253-3267, UNITED STATES",
+        "representativeAddressLines": [
+          "Houston, TX 77253-3267",
+          "UNITED STATES"
+        ],
+        "representativeName": "Gregory L. Maag"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20110629",
+        "applicationNumber": "85359656"
+      },
+      "cancellationDate": "20181012",
+      "cancellationPublicationDate": "20181120",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "2006"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "2006"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20181012",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20111220"
+      ],
+      "registration": {
+        "registrationDate": "20120306",
+        "registrationNumber": "4108274"
+      }
+    },
+    "version": "20260110114522",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "TOLTEQ ORIGINAL ENGINEERING"
+    }
+  },
+  "_uri": "/mark/us/209d5100-6006-4b77-b3a0-b0359b367a69",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.393Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

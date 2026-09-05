@@ -1,0 +1,153 @@
+{
+  "uri": "/mark/de/8bd8b45b-b935-4c19-bbd9-38e1e8177fac",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "8bd8b45b-b935-4c19-bbd9-38e1e8177fac",
+  "applicationNumber": "302025003413.6",
+  "registrationNumber": "302025003413",
+  "applicationDate": "2025-04-07",
+  "registrationDate": "2025-10-16",
+  "expiryDate": "2035-04-07",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-11-21",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    12
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Mobile Apps für die Steuerung, Überwachung und Auswertung von Antriebseinheiten für Elektrofahrräder; wiederaufladbare Batterien für Elektrofahrräder; Sensoren zur Erfassung von Tretkraft, Trittfrequenz und Geschwindigkeit, als Bestandteile von E-Bike-Antriebssystemen",
+      "translation_language": "en",
+      "translation": "Mobile apps for controlling, monitoring, and evaluating drive units for electric bicycles; rechargeable batteries for electric bicycles; sensors for recording pedal force, cadence, and speed, as components of e-bike drive systems."
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "de",
+      "description": "Steuergeräte zur Regelung von E-Bike-Antriebssystemen; Elektronische Bedieneinheit für E-Bikes (EPAC und S-Pedelec) zur Ansicht und Konfiguration von Parametern des Fahrzeugs; Antriebseinheit für Elektrofahrräder bestehend aus dem Elektromotor",
+      "translation_language": "en",
+      "translation": "Control units for regulating e-bike drive systems; electronic control unit for e-bikes (EPAC and S-Pedelec) for viewing and configuring vehicle parameters; drive unit for electric bicycles consisting of the electric motor."
+    }
+  ],
+  "owner": "Yamaha Motor eBike Systems GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "Grünecker Patent- und Rechtsanwälte PartG mbB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Düsseldorf",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Yamaha Motor eBike Systems GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "cmMarkImageEUclassification": [
+      "55.00.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Mobile apps for controlling, monitoring, and evaluating drive units for electric bicycles; rechargeable batteries for electric bicycles; sensors for recording pedal force, cadence, and speed, as components of e-bike drive systems.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Mobile Apps für die Steuerung, Überwachung und Auswertung von Antriebseinheiten für Elektrofahrräder; wiederaufladbare Batterien für Elektrofahrräder; Sensoren zur Erfassung von Tretkraft, Trittfrequenz und Geschwindigkeit, als Bestandteile von E-Bike-Antriebssystemen"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Control units for regulating e-bike drive systems; electronic control unit for e-bikes (EPAC and S-Pedelec) for viewing and configuring vehicle parameters; drive unit for electric bicycles consisting of the electric motor.",
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Steuergeräte zur Regelung von E-Bike-Antriebssystemen; Elektronische Bedieneinheit für E-Bikes (EPAC und S-Pedelec) zur Ansicht und Konfiguration von Parametern des Fahrzeugs; Antriebseinheit für Elektrofahrräder bestehend aus dem Elektromotor"
+        }
+      ]
+    },
+    "id": "8bd8b45b-b935-4c19-bbd9-38e1e8177fac",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.01.01",
+      "27.05.01",
+      "27.05.17"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "47"
+      }
+    ],
+    "recordLastUpdated": "20260524",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Grünecker Patent- und Rechtsanwälte PartG mbB, Leopoldstr. 4, 80802 München"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "80802 München",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "Grünecker Patent- und Rechtsanwälte PartG mbB"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250407",
+        "applicationNumber": "302025003413.6"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350407",
+      "lastPublicationDate": "20251121",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20251016",
+        "registrationNumber": "302025003413"
+      }
+    },
+    "version": "20260524020004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORE"
+    }
+  },
+  "_uri": "/mark/de/8bd8b45b-b935-4c19-bbd9-38e1e8177fac",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:55.424Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

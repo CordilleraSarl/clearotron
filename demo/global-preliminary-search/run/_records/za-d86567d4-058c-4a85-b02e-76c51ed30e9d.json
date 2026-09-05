@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/za/d86567d4-058c-4a85-b02e-76c51ed30e9d",
+  "provider": "clarivate",
+  "office": "za",
+  "guid": "d86567d4-058c-4a85-b02e-76c51ed30e9d",
+  "applicationNumber": "2014/01465",
+  "registrationNumber": "2014/01465",
+  "applicationDate": "2014-01-22",
+  "registrationDate": "2019-08-26",
+  "expiryDate": "2024-01-22",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Apparatus and instruments for the supply, distribution, transformation, accumulation, regulation or control of electric current; apparatus for recording, transmission or reproduction of sound or images; magnetic data carriers, recording discs; software programs; batteries.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Gildo Pallanca Pastor, a Monaco citizen",
+  "ownerNative": null,
+  "ownerCountry": "MC",
+  "representative": "SPOOR & FISHER",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "3 avenue Princess Grace, Monaco, 98000, Monaco Monaco Monaco",
+        "applicantAddressCountryCode": "MC",
+        "applicantAddressCountryName": "Monaco",
+        "applicantName": "Gildo Pallanca Pastor, a Monaco citizen"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Apparatus and instruments for the supply, distribution, transformation, accumulation, regulation or control of electric current; apparatus for recording, transmission or reproduction of sound or images; magnetic data carriers, recording discs; software programs; batteries."
+        }
+      ]
+    },
+    "id": "d86567d4-058c-4a85-b02e-76c51ed30e9d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250414",
+    "registrationOfficeCode": "ZA",
+    "registrationOfficeName": "South Africa",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "No correspondent available"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "11 BYLS BRIDGE BOULEVARD BUILDING NO. 14 HIGH VELD EXT 73",
+        "representativeName": "SPOOR & FISHER"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20140122",
+        "applicationNumber": "2014/01465"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20240122",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20190826",
+        "registrationNumber": "2014/01465"
+      }
+    },
+    "version": "20250414172157",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/za/d86567d4-058c-4a85-b02e-76c51ed30e9d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.181Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

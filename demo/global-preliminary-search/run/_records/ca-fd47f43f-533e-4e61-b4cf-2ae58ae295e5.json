@@ -1,0 +1,264 @@
+{
+  "uri": "/mark/ca/fd47f43f-533e-4e61-b4cf-2ae58ae295e5",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "fd47f43f-533e-4e61-b4cf-2ae58ae295e5",
+  "applicationNumber": "2028427",
+  "registrationNumber": "TMA1309449",
+  "applicationDate": "2020-05-14",
+  "registrationDate": "2025-05-02",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-02-12"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "CERTIFIED DEAFBLIND INTERVENOR SPECIALIST CDBIS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "(1) Providing assistance to deafblind individuals in their daily living activities by trained specialists that have completed testing, education, experience, and evaluation; Providing personal support services for deafblind individuals by trained specialists that have completed testing, education, experience, and evaluation, namely, providing auditory, visual and tactile information to a deafblind individual such that the deafblind individual is better able to interact with his or her environment.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Academy for Certification of Vision Rehabilitation and Education Professionals",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "GOWLING WLG (CANADA) LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "4380 N. Campbell Ave., Suite 200, Tucson, Arizona, 85718",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressLines": [
+          "4380 N. Campbell Ave., Suite 200",
+          "Tucson, Arizona, 85718"
+        ],
+        "applicantName": "Academy for Certification of Vision Rehabilitation and Education Professionals"
+      }
+    ],
+    "categorizedTexts": {
+      "certificationUse": {
+        "text": "The certification mark, as intended to be used by persons authorized by the certifier, certifies that the services are provided by persons who have attained a specific level of education, training, and experience in the field of providing assistance as intervenors to deafblind individuals in their daily living activities and communications. Persons certified as intervenors must possess the requisite knowledge to provide auditory, visual and tactile information to someone who is deafblind for the purposes of assisting the individual who is deafblind to communicate. Intervenors are required to develop knowledge of deafblindness, its history, causes and psychosocial implications, as well as the ethical code governing their services as an intervenors. Intervenors must be proficient in the languages used by the deafblind individuals who they assist and become knowledgeable about the various technical and augmentatives devices available to individuals who are deafblind. A copy of the complete details of the standard are enclosed with this application and accessible to the public in the records of the Canadian Intellectual Property Office."
+      }
+    },
+    "footNotes": [
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Transfer / Transfert",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 14 nov/Nov 2022",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 14 mai/May 2022",
+      "COMMENTS / COMMENTAIRES: FROM: DeafBlind Ontario Foundation",
+      "TO: Academy for Certification of Vision Rehabilitation and Education Professionals",
+      "Voir Preuve au dossier/See evidence on File No. 2028427"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Providing assistance to deafblind individuals in their daily living activities by trained specialists that have completed testing, education, experience, and evaluation; Providing personal support services for deafblind individuals by trained specialists that have completed testing, education, experience, and evaluation, namely, providing auditory, visual and tactile information to a deafblind individual such that the deafblind individual is better able to interact with his or her environment."
+        }
+      ]
+    },
+    "id": "fd47f43f-533e-4e61-b4cf-2ae58ae295e5",
+    "ipRightKind": "tmk",
+    "kindMark": "Certification Mark",
+    "markEvents": [
+      {
+        "date": "20200514",
+        "descriptionText": "Filed"
+      },
+      {
+        "date": "20200514",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20200514",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20221114",
+        "descriptionText": "Agent changed",
+        "information": "From: 6237 To: / Voir Preuve au dossier/See evidence on File No. 2028427"
+      },
+      {
+        "date": "20221114",
+        "descriptionText": "Change in Title Registered",
+        "information": "Transfer / Voir Preuve au dossier/See evidence on File No. 2028427"
+      },
+      {
+        "date": "20221208",
+        "descriptionText": "287",
+        "information": "Multiple Reasons"
+      },
+      {
+        "date": "20230104",
+        "descriptionText": "Agent changed",
+        "information": "From/De: To/A: 8390"
+      },
+      {
+        "date": "20240715",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20240716",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20250116"
+      },
+      {
+        "date": "20250120",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20250120",
+        "descriptionText": "Approval Notice Sent",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20250212",
+        "descriptionText": "Advertised",
+        "information": "Vol.72 Issue 3668"
+      },
+      {
+        "date": "20250502",
+        "descriptionText": "Registration Pending"
+      },
+      {
+        "date": "20250502",
+        "descriptionText": "Registered",
+        "responseDate": "20350502"
+      }
+    ],
+    "markFeature": "DESIGN MARK",
+    "markImageViennaClassification": [
+      "02.09.14",
+      "24.15.02",
+      "24.15.08",
+      "24.15.13",
+      "26.01.01",
+      "26.01.03",
+      "26.01.04",
+      "26.01.14",
+      "26.01.18",
+      "26.01.20",
+      "26.01.21",
+      "26.01.24"
+    ],
+    "markImagesAvailable": true,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "4380 N. Campbell Ave., Suite 200, Tucson, Arizona, 85718",
+        "addressLines": [
+          "4380 N. Campbell Ave., Suite 200",
+          "Tucson, Arizona, 85718"
+        ],
+        "countryName": "United States",
+        "name": "Academy for Certification of Vision Rehabilitation and Education Professionals"
+      }
+    ],
+    "previousOwners": [
+      {
+        "addressLines": [
+          "DeafBlind Ontario Foundation",
+          "17665 Leslie Street, Unit 15",
+          "Newmarket",
+          "ONTARIO",
+          "CANADA",
+          "L3Y3E3"
+        ],
+        "name": "DeafBlind Ontario Foundation"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3668",
+        "publicationVolume": "72"
+      }
+    ],
+    "recordLastUpdated": "20260219",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "GOWLING WLG (CANADA) LLP",
+          "SUITE 2600, 160 ELGIN STREET",
+          "OTTAWA",
+          "ONTARIO K1P1C3"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "GOWLING WLG (CANADA) LLP",
+        "representativeReferenceNumber": "06756409CA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200514",
+        "applicationNumber": "2028427"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "formalisationDate": "20200514",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20350502",
+      "publicationDate": [
+        "20250212"
+      ],
+      "registration": {
+        "registrationDate": "20250502",
+        "registrationNumber": "TMA1309449"
+      }
+    },
+    "subjectHeadings": [
+      "CERTIFIED DEAFBLIND INTERVENOR SPECIALIST CDBIS",
+      "DEAF BLIND"
+    ],
+    "version": "20260219130002",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "CERTIFIED DEAF BLIND INTERVENOR SPECIALIST CDBIS",
+      "markVerbalElementText": "CERTIFIED DEAFBLIND INTERVENOR SPECIALIST CDBIS",
+      "markVerbalElementTextFormal": "CDBIS CERTIFIED DEAFBLIND INTERVENOR SPECIALIST Design"
+    }
+  },
+  "_uri": "/mark/ca/fd47f43f-533e-4e61-b4cf-2ae58ae295e5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

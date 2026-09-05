@@ -167,3 +167,41 @@ test("2079 the resolver states the same fault when grants never came through the
   assert.deepEqual(accountsForEmail("a@b.c", { tenants: { acme: { users: { "a@b.c": ["acme"] } } } }), ["acme"]);
   assert.equal(accountsForEmail("a@b.c", { tenants: { acme: { users: { "a@b.c": "*" }, accounts: "*" } } }), "*");
 });
+
+// ── 2191 F13 · THE ROSTER'S PATH HAS ONE OWNER ──────────────────────────────────────────────────────
+//
+// `grant` read CLEAROTRON_ACCESS_FILE and nothing else, so it refused with "Set CLEAROTRON_ACCESS_FILE"
+// — a variable NOTHING writes. `start` injects it into the environment of the services it supervises and
+// never persists it, so the door found the roster and every sibling CLI in the operator's own shell did
+// not. Enrolling a client had no working path at all.
+
+test("2191-F13 the grants path resolves with no variable set, and agrees with installPaths", async () => {
+  const { defaultGrantsPath, installPaths } = await import("../../bin/start.mjs");
+
+  // THE DEFAULT, and it must be the SAME path installPaths states — not a second opinion that drifts the
+  // first time anyone moves the base.
+  const home = "/home/somebody";
+  const viaDefault = defaultGrantsPath({ env: { HOME: home } });
+  assert.ok(viaDefault.endsWith(join("trademark", "grants.json")),
+    `the default must be the documented one, got ${viaDefault}`);
+  assert.equal(viaDefault, installPaths(dirname(dirname(viaDefault) + "/x")).grants.replace(/x$/, ""),
+    "the shape must come from installPaths");
+
+  // AN EXPLICIT VARIABLE STILL WINS — an operator whose roster lives elsewhere must not be overridden.
+  assert.equal(defaultGrantsPath({ env: { CLEAROTRON_ACCESS_FILE: "/srv/roster.json" } }), "/srv/roster.json");
+
+  // AND A MOVED BASE IS FOLLOWED. Setup records CLEAROTRON_REPORTS_DIR as <base>/pool, so the base is its
+  // parent — which is how a `--base` install keeps grant and the door pointing at one file.
+  assert.equal(defaultGrantsPath({ env: { CLEAROTRON_REPORTS_DIR: "/opt/ct/pool" } }), join("/opt/ct", "grants.json"));
+});
+
+test("2191-F13 with nothing set, grant names the real file and a command that writes it", () => {
+  const home = mkdtempSync(join(tmpdir(), "f13-nofile-"));
+  const r = spawnSync(process.execPath, [join(HERE, "..", "..", "bin", "grant.mjs"), "list"],
+    { encoding: "utf8", env: { PATH: process.env.PATH, HOME: home, CLEAROTRON_NO_ENV_FILE: "1" } });
+  const out = `${r.stdout ?? ""}${r.stderr ?? ""}`;
+  assert.doesNotMatch(out, /Set CLEAROTRON_ACCESS_FILE/,
+    "it must not send the reader to a variable nothing writes — that was the dead end");
+  assert.match(out, /grants\.json/, `it must name the file it looked for:\n${out}`);
+  assert.match(out, /clearotron start/, `and the command that creates it:\n${out}`);
+});

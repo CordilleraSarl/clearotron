@@ -1,0 +1,1089 @@
+{
+  "uri": "/mark/em/aa729094-c90f-4d11-91ce-c28ff3c78f8f",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "aa729094-c90f-4d11-91ce-c28ff3c78f8f",
+  "applicationNumber": "18335129",
+  "registrationNumber": "18335129",
+  "applicationDate": "2020-11-10",
+  "registrationDate": "2021-02-25",
+  "expiryDate": "2030-11-10",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-11-18",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "avenor college",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    16,
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        16
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "cs",
+      "description": "Ucební a instruktázní pomucky; Ucební materiály z papíru; Tistené vzdelávací materiály; Ucební pomucky [s výjimkou zarízení]; Tiskoviny; Tistené propagacní materiály; Tistené vyucovací pomucky; Tistené skolící materiály; Tistené materiály ke korespondencním kurzum.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "cs",
+      "description": "Propagace obchodu (reklama); Sluzby v oblasti obchodní propagace poskytované audiovizuálními prostredky; Propagace a porádání obchodních veletrhu; Reklama online; Reklama prostrednictvím elektronických médií a zejména internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "cs",
+      "description": "Poskytování vzdelání; Skolení; Vzdelávací a skolicí sluzby; Predskolní výchova; Skolní vzdelávání; Sluzby skoly; Výuka na základních skolách; Vzdelávací sluzby poskytované skolou; Vzdelávací sluzby ve forme korespondencních skol; Sluzby skol pro výuku jazyku; Provozování jazykových skol a zajistování jazykových kurzu; Poskytování informací o on-line vzdelávání; Sluzby dálkového vzdelávání poskytované on-line; Poskytování online vzdelávání z pocítacové databáze nebo prostrednictvím internetu nebo extranetu; Zkousení, testování (v oblasti vzdelávání); Výuka jazyku; Odborné vzdelávání pro mládez; Organizování vzdelávacích soutezí; Organizování vzdelávacích akcí; Tvorba výukových materiálu; Pocítacové skolení; Poskytování vzdelávacích kurzu; Klubové vzdelávací sluzby; Vzdelávací a skolicí sluzby; Vzdelávací a výukové sluzby; Vzdelávací sluzby poskytované na vyssím stupni stredních skol; Vzdelávací sluzby poskytované vysokými skolami; Poskytování skolení a výuky; Organizování slavností pro vzdelávací úcely; Organizování predstavení pro vzdelávací úcely; Lingvistické vzdelávání a skolení; Vzdelávací sluzby v oblasti komunikacních dovedností; Príprava a porádání vzdelávacích kurzu; Materské skoly; Vzdelávací sluzby v oblasti výuky cizích jazyku; Vzdelávací sluzby ve forme korespondencních kurzu; Vzdelávací sluzby pro výuku rucního psaní; Organizování kurzu vyuzívajících metod otevreného vyucování; Vzdelávací sluzby v oblasti rozvoje detských mentálních schopností; Vzdelávací sluzby v oblasti rozvoje detských intelektuálních schopností; Vzdelávací sluzby pro výuku psaní na klávesnici; Sluzby výuky druhého jazyka; Poskytování vzdelávacích sluzeb pro deti prostrednictvím hracích skupin; Poskytování vzdelávacích zábavních sluzeb pro deti v poskolních centrech; Poskytování pocítacem dodávaných vzdelávacích testu a hodnocení; Informace týkající se vzdelání poskytované online z pocítacové databáze anebo z internetu; Vydávání materiálu prístupných z databází nebo z internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "da",
+      "description": "Undervisnings- og instruktionsmateriale; Undervisningsmaterialer af papir; Trykte undervisningsmaterialer; Undervisningsmateriale [undtagen apparater]; Tryksager; Trykte salgsfremmende materialer; Trykte undervisningsmaterialer; Trykte uddannelsesmaterialer; Trykte materialer til korrespondancekurser.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "da",
+      "description": "Forretningsmæssig promovering [reklamer og annoncer]; Forretningsmæssig promoverende virksomhed udbudt via audiovisuelle midler; Promovering og afholdelse af fagmesser; Online annoncer og reklamer; Annonce- og reklamevirksomhed via elektroniske medier og særligt internettet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "da",
+      "description": "Levering af uddannelse; Undervisning; Uddannelses og undervisningsvirksomhed; Førskoleundervisning; Uddannelsestjenester ydet af skoler; Skolevirksomhed; Undervisning på grundskoleniveau; Uddannelsesvirksomhed ydet af skoler; Uddannelsesvirksomhed i form af fjernundervisningsuddannelser; Skolevirksomhed i forbindelse med sprogundervisning; Sprogskoler og -kurser; Tilvejebringelse af information om onlineuddannelse; Fjernundervisning leveret online; Uddannelse tilvejebragt online fra en computerdatabase, via ekstranet eller internettet; Uddannelsesmæssig eksaminering; Sprogundervisning; Faguddannelse for unge; Organisering af konkurrencer inden for uddannelse; Organisering af arrangementer med uddannelsesmæssige formål; Udvikling af undervisningsmateriale; Computerundervisning; Uddannelseskurser; Uddannelse i klubber; Uddannelses- og undervisningsvirksomhed; Uddannelses- og undervisningsvirksomhed; Uddannelsestjenester udbudt på gymnasier; Uddannelsestjenester udbudt på højere læreanstalter; Tilvejebringelse af træning, undervisning og vejledning; Organisering af fester til uddannelsesformål; Organisering af shows med uddannelsesmæssigt sigte; Lingvistisk uddannelses- og undervisningsvirksomhed; Uddannelse i kommunikationsfærdigheder; Arrangering og afholdelse af uddannelseskurser; Børnehaveklassevirksomhed [uddannelse]; Uddannelsesvirksomhed vedrørende fremmedsprogsundervisning; Uddannelsesvirksomhed i form af kurser i korrespondance; Uddannelsesvirksomhed vedrørende undervisning i udarbejdelse af manualer; Organisering af kurser, som anvender alternative indlæringsmetoder; Uddannelsesvirksomhed vedrørende udvikling af børns mentale evner; Uddannelsesvirksomhed vedrørende udvikling af børns intellektuelle evner; Uddannelsesvirksomhed vedrørende tastaturskrivning; Sprogundervisning i andetsprog; Undervisningsvirksomhed for børn gennem legegrupper; Tilvejebringelse af uddannelsesmæssig underholdning for børn i fritidshjem; Fremskaffelse af PC-eksamener og bedømmelser i uddannelsessammenhæng; Information vedrørende uddannelse leveret online fra en computerdatabase eller fra internettet; Udgivelse af materiale, som er tilgængeligt via databaser eller internettet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "nl",
+      "description": "Onderwijs-en instructiemateriaal; Lesmateriaal van papier; Gedrukt educatief materiaal; Onderwijsmateriaal [uitgezonderd toestellen]; Drukwerken; Gedrukt promotiemateriaal; Gedrukt lesmateriaal; Gedrukt opleidingsmateriaal; Gedrukt cursusmateriaal voor afstandsonderwijs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "Promotie [reclame] van bedrijven; Zakelijke promotie via audiovisuele middelen; Het promoten en houden van vakbeurzen; Onlinereclame; Reclame via elektronische media en met name via internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Het verstrekken van opvoeding; Educatie; Opvoeding, onderwijs en training; Kleuteronderwijs; Onderwijsdiensten van scholen; Scholen; Onderwijzen op basisscholen; Onderwijs verschaft door scholen; Onderwijs in de vorm van schriftelijk onderwijs; Scholing met betrekking tot taalonderwijs; Taalscholen en -cursussen (Ter beschikking stellen van -); Verschaffen van informatie over online-onderwijs; Online afstandsonderwijs; Verschaffen van online opleidingen via een computerdatabase of via het internet of extranetten; Educatieve tests; Opleiding in talen; Beroepsonderwijs voor jonge mensen; Organisatie van educatieve wedstrijden; Organisatie van educatieve evenementen; Ontwikkeling van leermateriaal; Computerondersteunde opleidingen; Educatieve cursussen (Verstrekken van -); Clubs (opvoeding); Diensten met betrekking tot opvoeding en opleiding; Onderwijs en educatieve diensten; Onderwijsdiensten geleverd door de bovenbouw van middelbare scholen; Onderwijsdiensten geleverd door hogescholen; Voorziening van training, onderwijs en scholing; Organisatie van feesten voor educatieve doeleinden; Organisatie van voorstellingen voor educatieve doeleinden; Taalkundig onderwijs en opleidingen; Onderwijs met betrekking tot communicatievaardigheden; Het organiseren en houden van onderwijscursussen; Kleuterscholen; Onderwijs met betrekking tot het onderwijzen van vreemde talen; Onderwijs in de vorm van schriftelijke cursussen; Onderwijs op het gebied van het met de hand schrijven; Onderwijs met gebruikmaking van open leermethoden; Onderwijs met betrekking tot de ontwikkeling van de mentale competenties van kinderen; Onderwijs met betrekking tot de ontwikkeling van de intellectuele vermogens van kinderen; Onderwijs op het gebied van het schrijven met toetsenborden; Tweetaligonderwijs; Onderwijs voor kinderen door middel van speelgroepen (Ter beschikking stellen van -); Educatief entertainment voor kinderen in de naschoolse opvang; Verstrekking van computergegenereerde onderwijstests en -evaluatie; Informatie met betrekking tot onderwijs, on line geleverd vanuit een computerdatabase of vanaf het Internet; Uitgeven van materiaal dat via databases of via het Internet toegankelijk is.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Educational and instructional material; Paper teaching materials; Printed educational materials; Teaching materials [except apparatus]; Printed matter; Printed promotional material; Printed teaching materials; Printed training materials; Printed correspondence course materials.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Promotion [advertising] of business; Business promotion services provided by audio/visual means; Promoting and conducting trade shows; Online advertisements; Advertising via electronic media and specifically the internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Providing of education; Teaching; Education and instruction; Pre-school education; Educational services provided by schools; School services; Teaching at elementary schools; Educational services provided by a school; Educational services in the nature of correspondence schools; School services for the teaching of languages; Provision of language schools and language courses; Providing information about online education; Distance learning services provided online; Provision of education on-line from a computer database or via the internet or extranets; Educational testing; Language tuition; Vocational education for young people; Organising of competitions for education; Organisation of educational events; Development of educational materials; Computer training; Provision of education courses; Club education services; Education and instruction services; Educational and teaching services; Educational services provided by senior high schools; Educational services provided by colleges; Providing of training, teaching and tuition; Fetes (Organisation of -) for educational purposes; Organising of shows for educational purposes; Linguistic education and training services; Education services relating to communication skills; Arranging and conducting of educational courses; Nursery schools; Educational services relating to the teaching of foreign languages; Educational services in the nature of correspondence courses; Educational services for teaching manual writing; Organisation of courses using open learning methods; Education services relating to the development of childrens' mental faculties; Education services relating to the development of childrens' intellectual faculties; Educational services for teaching keyboard writing; Second language educational services; Provision of childrens' educational services through play groups; Provision of educational entertainment services for children in after school centers; Providing computer-delivered educational testing and assessments; Information relating to education, provided on-line from a computer database or the internet; Publication of material which can be accessed from databases or from the internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "et",
+      "description": "Õppe- ja juhendmaterjalid; Paberist õppematerjalid; Trükitud õppematerjalid; Õppematerjalid, v.a seadmed; Trükitooted; Kampaaniatrükised; Trükitud õppematerjalid; Trükitud õppematerjalid; Trükitud kaugõppematerjalid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "et",
+      "description": "Ettevõtte reklaamimine teenusena; Ettevõtte audio-visuaalreklaam; Messide müügiedendus ja läbiviimine; Onlain-reklaam; Reklaam elektrooniliste vahendite ja täpsemalt interneti kaudu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "et",
+      "description": "Hariduse pakkumine; Õpetamine; Haridus ja juhendamine; Koolieelne haridus; Koolide haridusteenused; Kooliteenused; Algkoolides õpetamine; Koolide poolt pakutavad haridusteenused; Õpetamisteenused kaugõppekoolide kujul; Keeleõppeteenused koolides; Keeltekoolide ja keeltekursuste pakkumine; E-õppe kohta teabe pakkumine; Kaugõppeteenused veebis; Veebipõhise hariduse pakkumine arvutiandmebaasi, interneti või ekstraneti kaudu; Hariduslikud testimised; Keeleõpe; Noortele suunatud kutseharidus; Haridusvõistluste korraldamine; Haridusürituste korraldamine; Õppematerjalide väljatöötamine; Arvutiõpe; Õppekursuste pakkumine; Klubide haridusteenused; Haridus- ja õpetusteenused; Haridus- ja õpetusteenused; Keskkoolide osutatavad haridusteenused; Kolledzite osutatavad haridusteenused; Koolituse ja õpetamise tunniandmise pakkumine; Haridusliku eesmärgiga pidustuste korraldamine; Hariduslike eesmärkidega etenduste korraldamine; Keelealased haridus- ja koolitusteenused; Suhtlusoskuste koolitusteenused; Hariduslike kursuste korraldamine ja läbiviimine; Aedkoolid; Võõrkeeleõppe haridusteenused; Koolitusteenused kaugõppekursuste kujul; Haridusteenused käsitsi kirjutamise õpetamiseks; Avatud õppemeetodeid rakendavate kursuste korraldamine; Laste mõtlemisvõime arendamisega seotud haridusteenused; Laste intellektuaalsete võimete arendamise alased haridusteenused; Masinkirja õpetamise haridusteenused; Haridusteenused teise keele (võõrkeele) õpetamiseks; Lastele haridusteenuste pakkumine mängurühmade kaudu; Koolide pikapäevakeskustes lastele harivate meelelahutusteenuste pakkumine; Haridusliku testimise ja hindamise pakkumine arvuti kaudu; Veebipõhise haridusteabe pakkumine arvutiandmebaaside või interneti kaudu; Interneti või andmebaaside kaudu ligipääsetavate materjalide avaldamine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "fi",
+      "description": "Opetus- ja ohjemateriaalit; Paperiset opetusvälineet; Painettu opetusmateriaali; Neuvonta- ja opetusmateriaali [paitsi laitteet]; Painotuotteet; Painettu mainosmateriaali; Painettu opetusmateriaali; Painettu koulutusmateriaali; Painettu kirjekurssimateriaali.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fi",
+      "description": "Liiketoimintaan liittyvä myynninedistäminen (mainonta); Liiketoiminnan edistämispalvelut audiovisuaalisin keinoin; Messujen markkinointi ja pitäminen; Online-mainokset; Mainonta elektronisten tiedotusvälineiden ja erityisesti Internetin välityksellä.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fi",
+      "description": "Koulutuksen tarjonta; Opetuksen tarjoaminen; Koulutus ja ohjaus; Esikouluopetus; Koulujen tarjoamat koulutuspalvelut; Koulupalvelut; Opetus alakouluissa; Koulujen tarjoamat koulutuspalvelut; Koulutuspalvelut kirjeenvaihtokoulujen muodossa; Kielten opetukseen liittyvät koulupalvelut; Kielikoulujen ja kielikurssien tarjoaminen; Verkkokoulutusta koskevan tiedon tarjoaminen; Etäopetuspalvelut tarjottuina online-periaatteella; Opetuksen tarjoaminen online-muodossa tietokonetietokannasta tai Internetin tai ulkoisten verkkojen välityksellä; Koulutuksellinen testaus; Kieltenopetuspalvelut; Nuorille tarkoitettu ammattikoulutus; Koulutuskilpailujen järjestäminen; Koulutustapahtumien järjestäminen; Koulutusmateriaalien kehittäminen; Tietokonekoulutus; Koulutuksen tarjoaminen kurssien muodossa; Koulutuskerhopalvelut; Koulutus- ja opetuspalvelut; Opetus- ja koulutuspalvelut; Lukioiden tarjoamat opetuspalvelut; Korkeakoulujen tarjoamat opetuspalvelut; Valmennuksen, opetuksen ja perehdytyksen tarjoaminen; Juhlien järjestäminen koulutustarkoituksessa; Esitysten järjestäminen koulutustarkoituksessa; Kielten opetus- ja koulutuspalvelut; Viestintätaitoihin liittyvät koulutuspalvelut; Opetuskurssien järjestäminen ja toteuttaminen; Esikoulut; Vieraiden kielten opetukseen liittyvät koulutuspalvelut; Koulutuspalvelut kirjeenvaihtokurssien muodossa; Käsin kirjoittamisen opettamiseen liittyvät koulutuspalvelut; Kurssien järjestäminen avoimia oppimismenetelmiä käyttämällä; Koulutuspalvelut, jotka liittyvät lasten henkisten kykyjen kehittämiseen; Koulutuspalvelut, jotka liittyvät lasten älyllisten kykyjen kehittämiseen; Näppäimistöllä kirjoittamisen opettamiseen liittyvät koulutuspalvelut; Toiseen kieleen liittyvät koulutuspalvelut; Koulutuspalveluiden tarjoaminen lapsille leikkiryhmien kautta; Opetukseen liittyvien ajanvietepalvelujen tarjoaminen lapsille iltapäiväkerhoissa; Koulutuksellisten koe- ja arviointipalveluiden tarjoaminen tietokoneen välityksellä; Koulutustietojen tarjoaminen online-muodossa tietokannasta tai Internetistä; Tietokannoista tai Internetistä saatavan materiaalin julkaiseminen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "fr",
+      "description": "Matériel d'éducation et d'instruction; Matériel d'enseignement en papier; Matériel d'éducation imprimé; Matériel d'instruction à l'exception des appareils; Produits de l'imprimerie; Matériel promotionnel imprimé; Matériel d'enseignement imprimé; Matériel de formation imprimé; Matériel de cours par correspondance imprimé.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Promotion d'entreprise [publicité]; Services de promotion commerciale fournis par des moyens audiovisuels; Promotion et conduite de salons commerciaux; Publicité en ligne; Publicité par voie électronique et en particulier via Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Services d'éducation; Enseignement; Éducation et instruction; Éducation préscolaire; Services éducatifs fournis par des écoles; Services scolaires; Enseignement dans les écoles primaires; Services d'enseignement fournis par des écoles; Services d'enseignement sous forme d'écoles par correspondance; Services scolaires pour l'enseignement de langues; Services d'écoles de langues et de cours de langue; Fourniture d'informations concernant l'enseignement en ligne; Services d'enseignement à distance fournis en ligne; Services d'éducation en ligne via des bases de données informatiques, Internet ou des extranets; Test éducatifs; Cours de langues; Formation professionnelle pour les jeunes; Organisation de concours dans le domaine de l'éducation; Organisation d'évènements éducatifs; Conception de matériel d'enseignement; Formation en informatique; Mise à disposition de cours de formation; Services éducatifs de clubs; Services d'éducation et d'instruction; Services d'enseignement et d'éducation; Services éducatifs fournis par des lycées; Services éducatifs fournis par des collèges; Mise à disposition de services de formation, d'enseignement et de cours; Organisation de fêtes à des fins pédagogiques; Organisation de spectacles à des fins éducatives; Services de formation et d'enseignement linguistiques; Services de formation concernant les techniques de communication; Organisation et conduite de cours d'enseignement; Écoles maternelles [éducation]; Services d'enseignement concernant l'enseignement de langues étrangères; Services d'enseignement sous forme de cours par correspondance; Services éducatifs pour l'apprentissage de l'écriture manuscrite; Organisation d'enseignements appliquant des méthodes de formation ouverte; Services d'enseignement concernant le développement des facultés mentales des enfants; Services d'enseignement concernant le développement des facultés intellectuelles des enfants; Services éducatifs pour apprendre à taper à l'ordinateur; Services éducatifs relatifs à l'enseignement d'une deuxième langue; Fourniture de services éducatifs pour enfants par l'intermédiaire de groupes de jeu; Mise à disposition de services de divertissement éducatif pour enfants dans des centres parascolaires; Services de tests et d'évaluation en matière d'éducation fournis par ordinateur; Services de renseignements concernant l'éducation fournis en ligne à partir d'une base de données informatique ou d'Internet; Publication de matériel éducatif accessible via des bases de données ou Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "de",
+      "description": "Bildungs- und Unterrichtsmaterial; Unterrichtsmaterialien in Papierform; Gedrucktes Unterrichtsmaterial; Lehr- und Unterrichtsmittel [ausgenommen Apparate]; Druckereierzeugnisse; Gedruckte Werbematerialien; Gedrucktes Lehr- und Unterrichtsmaterial; Gedrucktes Unterrichtsmaterial; Gedruckte Materialen für Fernkurse.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Werbung für Geschäftsbetriebe; Audiovisuelle Werbung für Unternehmen; Bewerben und Durchführen von Fachmessen; Online-Werbung; Werbung in elektronischen Medien und speziell im Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Durchführung von Ausbildungslehrgängen; Erziehung und Unterricht; Bildung, Erziehung und Unterricht; Vorschulausbildung; Ausbildung in Schulen; Betrieb von Schulen; Unterricht an Grundschulen; Von einer Schule bereitgestellte Bildungsdienstleistungen; Ausbildungsdienstleistungen über Fernstudieneinrichtungen; Schulische Dienstleistungen in Bezug auf die Sprachenausbildung; Ausbildung in Sprachschulen und -kursen; Auskünfte in Bezug auf Online-Schulungen; Veranstaltung und Durchführung von Online-Fernkursen; Online-Ausbildung mittels einer Computerdatenbank oder über das Internet; Prüfungen im Bereich Erziehung und Bildung; Sprachschulung; Berufsausbildung für Jugendliche; Organisation von Schulwettkämpfen; Organisation von Bildungsveranstaltungen; Erstellung von Lehrmaterialien; Computerausbildung; Veranstaltung von Kursen zur Ausbildung; Ausbildungsdienstleistungen eines Clubs; Bildung, Erziehung und Unterricht; Erziehungs- und Unterrichtsdienstleistungen; Bildungsdienstleistungen erbracht durch Oberschulen; Durch Hochschulen erbrachte Bildungsdienstleistungen; Zurverfügungstellen von Ausbildung, Unterricht und Erziehung; Organisation von Festen zu Unterrichtzwecken; Organisation von Shows zu Bildungszwecken; Sprachaus- und Weiterbildungsdienstleistungen; Ausbildung in Bezug auf kommunikative Fähigkeiten; Organisation und Durchführung von Ausbildungskursen; Dienstleistungen von Kindergärten [Erziehung]; Ausbildungsdienstleistungen in Bezug auf den Fremdsprachenunterricht; Ausbildungsdienstleistungen in Form von Fernlehrgängen; Unterricht im Schreiben per Hand; Organisation von Kursen mittels offener Lernmethoden; Ausbildung im Bereich der Entwicklung der mentalen Fähigkeiten von Kindern; Ausbildung im Bereich der Entwicklung der intellektuellen Fähigkeiten von Kindern; Unterricht im Tastaturschreiben; Fremdsprachenausbildungsdienstleistungen; Erziehungsdienstleistungen für Kinder durch Spielgruppen; Zurverfügungstellen von Bildungs- und Unterhaltungsdienstleistungen für Kinder in Schulhorten; Durchführung von computergestützten Prüfungs- und Auswahlverfahren; Ausbildungsberatung, die online über eine Computerdatenbank oder dem Internet bereitgestellt wird; Veröffentlichung von Materialien, auf die über Datenbanken oder das Internet zugegriffen werden kann.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "hr",
+      "description": "Materijali za obrazovanje i poducavanje; Nastavni materijali od papira; Tiskani obrazovni materijali; Materijal za obuku (osim uredaja); Tiskani materijali; Tiskani promotivni materijal; Tiskani nastavni materijali; Tiskani obrazovni materijali; Tiskani materijali za dopisne tecajeve.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hr",
+      "description": "Promidzba [oglasavanje] poduzetnih djelatnosti; Promidzbene usluge za poduzeca putem audio-vizualnih sredstava; Promidzba i vodenje trgovackih sajmova; Online reklame; Oglasavanje putem elektronickih medija, posebno Internetom.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hr",
+      "description": "Pruzanje obrazovanja; Pruzanje poduke; Obrazovanje i poduka; Predskolsko obrazovanje; Obrazovne usluge koje pruzaju skole; Skolske usluge; Poducavanje u osnovnim skolama; Skolske obrazovne usluge; Obrazovne usluge dopisnih skola; Skolske usluge poducavanja jezika; Pruzanje jezicnih skola i jezicnih tecajeva; Pruzanje informacija o obrazovanju na internetu; Usluge ucenja na daljinu koje se pruzaju na Internetu; Pruzanje online obrazovanja putem racunalne baze podataka ili putem Interneta ili Ekstraneta; Testiranje u obrazovne svrhe; Poduka jezika; Strucno obrazovanje za mlade osobe; Organiziranje obrazovnih natjecanja; Organizacija obrazovnih dogadanja; Razvoj obrazovnih materijala; Informaticka izobrazba; Pruzanje obrazovnih tecajeva; Usluge klubskog obrazovanja; Usluge obrazovanja i poducavanja; Usluge obrazovanja i poducavanja; Obrazovne usluge koje pruzaju srednje skole; Obrazovne usluge koje pruzaju fakulteti; Pruzanje osposobljavanja, poducavanja i obuke; Svecanosti (Organiziranje -) u obrazovne svrhe; Organiziranje priredbi u obrazovne svrhe; Usluge jezicnog obrazovanja i osposobljavanja; Obrazovne usluge u svezi s komunikacijskim vjestinama; Organizacija i provedba tecajeva za poduku; Predskolska obuka; Obrazovne usluge u svezi s poducavanjem stranih jezika; Obrazovne usluge u obliku dopisnih tecajeva; Obrazovne usluge za poducavanje rucnog pisanja; Organiziranje tecajeva primjenom metoda otvorenog ucenja; Obrazovne usluge u svezi s razvojem djecjih mentalnih sposobnosti; Obrazovne usluge u svezi s razvojem djecjih intelektualnih sposobnosti; Obrazovne usluge za poducavanje pisanja pomocu tipkovnice; Obrazovne usluge u svezi s poducavanjem drugog jezika; Pruzanje djecjih obrazovnih usluga kroz grupe za igranje; Pruzanje usluga edukativne zabave za djecu u centrima za izvanskolske aktivnosti; Pruzanje usluga testiranja i ocjenjivanja znanja putem racunala; Obrazovne online informacije omogucene putem racunalne baze podataka ili putem interneta; Objavljivanje materijala kojemu je moguce pristupiti iz baza podataka ili s Interneta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "hu",
+      "description": "Oktatási és képzési anyagok; Papírból készült tananyagok; Nyomtatott oktatási anyagok; Tanítási és oktatási anyagok [kivéve készülékek, berendezések]; Nyomtatványok; Nyomtatott reklámanyagok; Nyomtatott tananyagok; Nyomtatott oktatási anyagok; Levelezo tanfolyamok nyomtatott anyagai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hu",
+      "description": "Vállalatok promóciója [reklámozás]; Audiovizuális eszközökkel nyújtott üzleti promóciós szolgáltatások; Kereskedelmi bemutatók promóciója és lebonyolítása; Online reklámozás; Hirdetés elektronikus médián, foként interneten keresztül.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hu",
+      "description": "Oktatási szolgáltatások nyújtása; Oktatás biztosítása; Oktatás és tanítás; Óvodás oktatás; Iskolák által nyújtott oktatási szolgáltatások; Iskolai szolgáltatások; Tanítás elemi iskolákban; Iskolák által nyújtott oktatási szolgáltatások; Oktatási szolgáltatások levelezo iskolák formájában; Iskolai szolgáltatások nyelvek tanításához; Nyelviskolák muködtetése és nyelvtanfolyamok tartása; Tájékoztatás nyújtása online oktatással kapcsolatban; Online távoktatási szolgáltatások; Online oktatás biztosítása számítógépes adatbázisból, vagy internet vagy extranet útján; Oktatási felmérések, vizsgálatok; Nyelvoktatás, nyelvtanítás; Ifjúsági szakképzés; Oktatási versenyek szervezése; Oktatási események szervezése; Oktatási anyagok fejlesztése; Számítógépes képzés; Tanfolyamok biztosítása; Oktatási klub szolgáltatások; Oktatási és képzési szolgáltatások; Oktatási és tanítási szolgáltatások; Középiskolai oktatási szolgáltatások; Felsooktatási szolgáltatások; Képzés, tanítás és oktatás biztosítása; Oktatási célú ünnepségek szervezése; Oktatási célú show-k rendezése; Nyelvoktatási és képzési szolgáltatások; Kommunikációs készségekkel, képességekkel kapcsolatos oktatási szolgáltatások; Tanfolyamok szervezése és lebonyolítása; Óvodák; Idegen nyelvek tanításával kapcsolatos oktatási szolgáltatások; Oktatási szolgáltatások levelezo tanfolyamok formájában; Oktatási szolgáltatások kézírás tanításához; Nyitott tanulási módszereket alkalmazó tanfolyamok szervezése; Gyermekek szellemi képességeinek fejlesztésével kapcsolatos oktatási szolgáltatások; Gyermekek intellektuális képességeinek fejlesztésével kapcsolatos oktatási szolgáltatások; Oktatási szolgáltatások gépelés, gépírás tanításához; Második nyelv oktatása; Oktatási szolgáltatások nyújtása gyermekek számára játszócsoportok útján; Oktatási szórakoztató szolgáltatások biztosítása gyermekek számára iskolaido utáni foglalkoztató központokban; Számítógéppel végzett, oktatáshoz kapcsolódó tesztelés és értékelés; Számítógépes adatbázisból vagy internetrol online biztosított oktatási információk; Adatbázisokból vagy az internetrol elérheto anyagok kiadása.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "it",
+      "description": "Materiale per l'istruzione e l'educazione; Materiali pedagogici su carta; Materiali educativi stampati; Materiale per l'insegnamento esclusi gli apparecchi; Stampati; Materiale promozionale stampato; Materiali didattici stampati; Materiale di formazione stampato; Materiale stampato per corsi per corrispondenza.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "it",
+      "description": "Promozione [pubblicità] aziendale; Servizi di promozine aziendale tramite mezzi audiovisivi; Promozione e gestione di fiere commerciali; Annunci pubblicitari on line; Pubblicità mediante supporti elettronici ed in particolare Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "Servizi educativi; Educazione; Educazione e formazione; Insegnamento rivolto alla scuola materna; Servizi di istruzione forniti da scuole; Servizi scolastici; Insegnamento in scuole elementari; Istruzione scolastica; Istruzione sotto forma di scuole per corrispondenza; Servizi scolastici nel campo dell'insegnamento delle lingue; Scuole di lingue e corsi di lingue; Fornitura di informazioni sull'istruzione online; Servizi di formazione a distanza forniti online; Fornitura di corsi on line attraverso una banca dati o tramite Internet o reti esterne; Analisi in materia d'istruzione; Servizi didattici per l'insegnamento delle lingue; Istruzione in materia di orientamento per giovani; Organizzazione di competizioni nell'ambito dell'istruzione; Organizzazione di eventi educativi; Sviluppo di materiale didattico; Formazione nel settore dell'informatica; Fornitura di corsi d'istruzione; Servizi di istruzione per club; Servizi relativi a educazione e istruzione; Servizi di insegnamento e di istruzione; Servizi d'istruzione forniti da scuole medie superiori; Servizi d'istruzione forniti da college; Fornitura di formazione, insegnamento e lezioni; Organizzazione di feste per scopi didattici; Organizzazione di spettacoli con scopi educativi; Servizi di educazione e formazione linguistica; Servizi d'istruzione in materia di capacità comunicative; Organizzazione e realizzazione di corsi d'insegnamento; Scuole materne [educazione]; Istruzione riguardante l'insegnamento delle lingue straniere; Istruzione sotto forma di corsi per corrispondenza; Servizi d'istruzione per insegnare a scrivere manualmente; Organizzazione di corsi mediante l'utilizzo di metodi di apprendimento aperto; Istruzione riguardante lo sviluppo delle facoltà mentali dei bambini; Istruzione riguardante lo sviluppo delle facoltà intellettuali dei bambini; Servizi d'istruzione per insegnare a scrivere con la tastiera; Servizi d'insegnamento di una seconda lingua; Fornitura di servizi di istruzione per bambini attraverso gruppi di gioco; Fornitura di servizi pedagogici d'intrattenimento per bambini in centri doposcuola; Verifiche e valutazioni didattiche tramite computer; Informazioni relative al campo dell'istruzione accessibili on-line tramite una banca dati o su Internet; Pubblicazione di materiali accessibili tramite banche dati o Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "lt",
+      "description": "Edukacine ir mokomoji medziaga; Popierine mokymo medziaga; Spausdintine svieciamoji medziaga; Mokymo medziaga [isskyrus aparatura]; Spaudiniai; Spausdintine reklamine medziaga; Spausdintine mokomoji medziaga; Spausdinta mokomoji medziaga; Spausdinta neakivaizdinio mokymosi medziaga.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lt",
+      "description": "Verslo propagavimas [reklamavimas]; Verslo skatinimas, garso arba vaizdo priemoniu pagalba; Prekybos mugiu reklama ir vedimas; Skelbimai internetu; Reklama elektroninemis priemonemis, ypac internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lt",
+      "description": "Svietimo teikimas; Mokymas; Svietimas ir instruktavimas; Ikimokyklinis svietimas; Mokyklu paslaugos (svietimas); Mokyklu paslaugos; Mokymas pradinese mokyklose; Mokyklu svietimo paslaugos; Svietimo paslaugos (neakivaizdiniai kursai); Mokyklu kalbu mokymo paslaugos; Kalbu mokyklos ir kalbu kursai; Informacijos apie svietima internetu teikimas; Nuotolinio mokymosi paslaugos internetu; Svietimo paslaugu teikimas tiesioginiu rysiu is kompiuteriu duomenu bazes, per interneta ar ekstraneta; Egzaminavimas svietimo srityje; Kalbu mokymas; Jaunimo profesinis lavinimas; Konkursu organizavimas svietimo srityje; Svieciamuju renginiu organizavimas; Mokomosios medziagos tobulinimas (kurimas); Kompiuterinis mokymas; Mokymo kursu parupinimas; Svietimo klubu paslaugos; Svietimo ir instruktavimo paslaugos; Svietimo ir mokymo paslaugos; Vidurinio lavinimo mokyklu teikiamos svietimo paslaugos; Kolegiju teikiamos svietimo paslaugos; Lavinimas, mokymas ir mokomuju konsultaciju teikimas; Mokomuju svenciu rengimas; Sou organizavimas svietimo tikslais; Lingvistinio svietimo ir mokymo paslaugos; Svietimo paslaugos, susijusios su bendravimo igudziais; Mokomuju kursu rengimas ir vedimas; Vaiku darzeliai; Svietimo paslaugos, susijusios su uzsienio kalbu mokymu; Neakivaizdiniai kursai (susirasinejant); Svietimo paslaugos, susijusios su rasymo ranka mokymu; Atviro mokymosi metodus naudojanciu kursu rengimas; Svietimo paslaugos, susijusios su vaiku protiniu gebejimu ugdymu; Svietimo paslaugos, susijusios su vaiku intelektiniu gebejimu ugdymu; Svietimo paslaugos, susijusios su rasymo klaviatura mokymu; Antrosios kalbos mokymas; Vaiku svietimo paslaugos, teikiamos zaidimu grupemis; Mokymo ir pramogu paslaugu teikimas vaikams popamokiniuose centruose; Kompiuteriu teikiamas mokomasis testavimas ir vertinimas; Svietimo informacija, teikiama tiesiogiai is kompiuteriniu duomenu baziu ar interneto; Medziagos, kuria galima gauti is duomenu baziu arba interneto, publikavimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "lv",
+      "description": "Izglitojosi un uzskates materiali; Macibu materiali no papira; Izglitibas iespiedmateriali; Macibu un uzskates lidzekli (iznemot aparaturu); Iespiedprodukcija; Drukati reklammateriali; Drukati macibu materiali; Drukati vingrinajumu materiali; Iespiesti neklatienes lekciju materiali.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lv",
+      "description": "Uznemejdarbibas veicinasana [reklamesana]; Uznemejdarbibas veicinasana ar audiovizualiem lidzekliem; Tirdzniecibas izstazu veicinasana un vadisana; Reklama tiessaiste; Reklama ar elektronisko mediju, jo seviski interneta, palidzibu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lv",
+      "description": "Izglitibas nodrosinasana; Macibu pakalpojumi; Audzinasana un apmaciba; Pirmsskolas izglitiba; Izglitibas pakalpojumi skolas; Skolu pakalpojumi; Macibas pamatskolas; Skolu nodrosinatie izglitibas pakalpojumi; Izglitibas nodrosinasana neklatienes skolas; Valodu apmacibas skolu pakalpojumi; Valodu skolu un valodu kursu nodrosinasana; Informacijas sniegsana par izglitibas iespejam tiessaiste; Talmacibas pakalpojumi tiessaiste; Izglitibas nodrosinasana tiessaiste, izmantojot datora datubazi vai internetu vai artiklu; Testesana izglitibas joma; Valodu apmaciba; Arodizglitiba jauniesiem; Izglitojosu konkursu rikosana; Izglitojosu pasakumu organizesana; Izglitibas materialu izstrade; Datorapmaciba; Izglitibas kursu nodrosinasana; Izglitibas klubu pakalpojumi; Izglitibas un instruesanas pakalpojumi; Macibu un izglitibas pakalpojumi; Izglitibas pakalpojumi, kas tiek sniegti vidusskolas vecakajas klases; Izglitibas pakalpojumi, ko sniedz koledzas; Apmacibu, macibu un izglitibas nodrosinasana; Svinibu organizesana izglitibas nolukiem; Izglitojosu sovu organizesana; Lingvistiskas izglitibas un apmacibu pakalpojumi; Izglitibas pakalpojumi saistiba ar komunikacijas prasmem; Izglitojosu kursu rikosana un vadisana; Bernudarzu pakalpojumi; Izglitibas pakalpojumi attieciba uz svesvalodu macisanu; Izglitibas nodrosinasana neklatienes kursos; Izglitibas pakalpojumi manualas rakstisanas macibam; Kursu rikosana, izmantojot atvertas macibu metodes; Izglitibas pakalpojumi saistiba ar bernu garigo speju attistibu; Izglitibas pakalpojumi saistiba ar bernu intelektualo speju attistibu; Izglitibas pakalpojumi tastaturas rakstisanas macibam; Izglitibas pakalpojumi otras valodas apguvei; Bernu izglitibas pakalpojumu sniegsana rotalu grupu veida; Izglitojosu izklaides pakalpojumu nodrosinasana berniem pecskolas centros; Datorizetu izglitibas eksamenu un novertejumu nodrosinasana; Izglitibas informacija, kas nodrosinata tiessaiste, izmantojot datora datubazi vai internetu; Materialu publicesana, kuram var pieklut, izmantojot datubazes vai internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "mt",
+      "description": "Materjal edukattiv u struttiv; Materjal ghat-taghlim tal-karti; Materjali edukattivi stampati; Materjal istruttiv u ghat-taghlim (minbarra apparat); Materjal stampat; Materjal promozzjonali stampat; Materjal tat-taghlim stampat; Materjali stampati ghat-tahrig; Materjali stampati ta' korsijiet ta' korrispondenza.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "mt",
+      "description": "Il-promozzjoni [reklamar] tan-negozju; Servizzi ghall-promozzjoni ta' negozju provduti permezz ta' mezzi awdjo/vizivi; Promozzjoni u tmexxija ta' fieri kummercjali; Reklamar onlajn; Reklamar permezz ta' midja elettronika u specifikament l-internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "mt",
+      "description": "Il-provvista ta' edukazzjoni; Provvista ta' taghlim; Edukazzjoni u istruzzjoni; Edukazzjoni ta' qabel l-iskola; Servizzi edukattivi pprovduti minn skejjel; Servizzi ta' skejjel; Taghlim fi skejjel elementari; Servizzi edukattivi pprovduti minn skejjel; Servizzi edukattivi fl-ghamla ta' skejjel ta' korrispondenza; Servizzi ta' skola ghat-taghlim tal-lingwi; Il-provvista ta' skejjel tal-lingwi u korsijiet tal-lingwi; Provvediment ta' informazzjoni dwar edukazzjoni onlajn; Servizzi ta' taghlim mill-boghod provduti onlajn; Provvista ta' edukazzjoni onlajn min dejtabejz tal-kompjuter jew permezz tal-internet jew ta' ekstranets; Testijiet edukattivi; Taghlim ta' lingwa; Edukazzjoni vokazzjonali ghal tfal u zghazagh; Organizzazzjoni ta' kompetizzjonijiet edukattivi; Organizzazzjoni ta' avvenimenti edukattivi; Zvilupp ta' materjal edukattiv; Tahrig fuq il-kompjuter; Provvista ta' korsijiet edukattivi; Servizzi ta' klabb edukattiv; Servizzi ta' edukazzjoni u ta' taghlim; Servizzi edukattivi u ta' taghlim; Servizzi edukattivi pprovduti minn skejjel sekondarji; Servizzi edukattivi pprovduti minn kulleggi; Provvista ta' tahrig, taghlim u edukazzjoni; Festi (Organizzazzjoni ta' -) ghal skopijiet edukattivi; Organizzazzjoni ta' spettakli bi skopijiet edukattivi; Servizzi tal-edukazzjoni u tahrig lingwistici; Servizzi edukattivi relatati mal-hiliet fil-komunikazzjoni; Organizzazzjoni u twettiq ta' korsijiet ta' taghlim; Skejjel tat-tfal zghar; Servizzi edukattivi relatati mat-taghlim ta' lingwi barranin; Servizzi edukattivi fl-ghamla ta' korsijiet b'korrispondenza; Servizzi edukattivi ghat-taghlim tal-kitba manwali; Organizzazzjoni ta' korsijiet bl-uzu ta' metodi flessibbli ta' taghlim; Servizzi edukattivi relatati mal-izvilupp tal-fakultajiet mentali tat-tfal; Servizzi ta' edukazzjoni relatati mal-izvilupp ta' fakultajiet intellettwali tat-tfal; Servizzi edukattivi ghat-taghlim ta' kitba bit-tastiera; Servizzi edukattivi ta' lingwa sekondarja; Il-provvista ta' servizzi edukattivi ghat-tfal permezz ta' gruppi tal-loghob; Provvista ta' servizzi tad-divertiment edukattiv ghat-tfal fi skejjel ta' wara l-hin; Il-provvista ta' testijiet u ezamijiet edukattivi bil-kompjuter; Informazzjoni dwar l-edukazzjoni, provduta online minn database tal-kompjuter jew mill-Internet; Pubblikazzjoni ta' materjal li jista' jigi accessat minn bazi tad-data jew mill-internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "pl",
+      "description": "Materialy edukacyjne i instruktazowe; Papierowe materialy dydaktyczne; Drukowane materialy edukacyjne; Materialy szkoleniowe i instruktazowe (z wyjatkiem aparatów); Materialy drukowane; Drukowany material promocyjny; Drukowane materialy dydaktyczne; Drukowane materialy szkoleniowe; Drukowane materialy w zakresie kursów korespondencyjnych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pl",
+      "description": "Promowanie [reklama] dzialalnosci gospodarczej; Uslugi promocji dzialalnosci gospodarczej swiadczone za posrednictwem srodków audiowizualnych; Promowanie i przeprowadzanie targów handlowych; Reklamy online; Reklama za posrednictwem mediów elektronicznych, w szczególnosci Internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pl",
+      "description": "Zapewnianie edukacji; Uslugi w zakresie oswiaty [nauczanie]; Nauczanie i szkolenia; Nauczanie przedszkolne; Uslugi edukacyjne swiadczone przez szkoly; Uslugi szkól; Nauczanie w szkolach podstawowych; Uslugi edukacyjne swiadczone przez szkoly; Uslugi edukacyjne w postaci szkól korespondencyjnych; Uslugi szkól w zakresie nauczania jezyków obcych; Swiadczenie uslug w zakresie szkól i kursów jezykowych; Udostepnianie informacji o nauczaniu on-line; Uslugi nauki na odleglosc swiadczone online; Edukacja online z komputerowej bazy danych lub za pomoca Internetu czy ekstranetów; Testy edukacyjne; Nauczanie jezyków obcych; Edukacja zawodowa dla mlodych ludzi; Organizowanie konkursów edukacyjnych; Organizowanie imprez edukacyjnych; Opracowywanie materialów edukacyjnych; Szkolenia komputerowe; Zapewnianie kursów edukacyjnych; Uslugi edukacyjne klubów; Uslugi edukacyjne i instruktazowe; Uslugi w zakresie edukacji i nauczania; Uslugi edukacyjne swiadczone przez szkoly srednie wyzszego poziomu; Uslugi edukacyjne swiadczone przez szkoly wyzsze; Zapewnianie szkolen, ksztalcenia i nauczania; Organizowanie festynów w celach edukacyjnych; Organizowanie widowisk w celach edukacyjnych; Uslugi edukacyjne i szkoleniowe w zakresie lingwistyki; Uslugi edukacyjne dotyczace umiejetnosci komunikacyjnych; Organizacja i przeprowadzanie kursów edukacyjnych; Przedszkola; Uslugi edukacyjne zwiazane z nauka jezyków obcych; Uslugi edukacyjne w postaci kursów korespondencyjnych; Uslugi edukacyjne z zakresu uczenia pisania recznego; Organizowanie kursów stosujacych metody nauki samodzielnej; Uslugi edukacyjne zwiazane z rozwojem sprawnosci umyslowej dzieci; Uslugi edukacyjne zwiazane z rozwojem sprawnosci intelektualnej dzieci; Uslugi edukacyjne z zakresu uczenia pisania na klawiaturze; Uslugi edukacyjne w zakresie nauki drugiego jezyka; Uslugi edukacyjne dla dzieci w postaci grup zabaw; Swiadczenie uslug edukacyjno-rozrywkowych dla dzieci w swietlicach pozalekcyjnych; Zapewnianie testów edukacyjnych i ocen w formie komputerowej; Informacja dotyczaca edukacji udzielana on-line z komputerowej bazy danych lub z Internetu; Publikacja materialów dostepnych za posrednictwem baz danych lub Internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "pt",
+      "description": "Material de ensino e de instrução; Material de ensino em papel; Materiais educativos impressos; Material de ensino [com exceção dos aparelhos]; Material impresso; Material promocional impresso; Materiais impressos para ensino; Materiais de formação impressos; Material impresso para cursos por correspondência.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pt",
+      "description": "Promoção [publicidade] de negócios comerciais; Serviços de promoção de negócios fornecidos através de meios audiovisuais; Promoção e realização de feiras comerciais; Anúncios publicitários online; Publicidade através de meios eletrónicos e especificamente pela Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Fornecimento de educação; Educação; Educação e Formação; Ensino pré-escolar; Serviços de educação prestados por escolas; Serviços escolares; Ensino em escolas primárias; Serviços de educação prestados por escolas; Serviços de educação sob a forma de escolas de correspondência; Serviços escolares para o ensino de línguas; Serviços de escolas e cursos de línguas; Fornecimento de informações sobre a educação em linha; Serviços de ensino à distância via online; Serviços de educação on-line a partir de uma base de dados informática ou através da Internet ou de extranets; Exames educativos; Cursos de línguas; Educação vocacional para jovens; Organização de competições educativas; Organização de eventos educativos; Desenvolvimento de material educativo; Formação em informática; Fornecimento de cursos educativos; Serviços educativos de clubes; Serviços de educação e formação; Serviços de ensino e educacionais; Serviços de educação prestados por estabelecimentos de ensino secundário; Serviços de educação prestados por estabelecimentos de ensino superior; Fornecimento de formação, educação e cursos; Organização de festas para fins educacionais; Organização de espetáculos com fins educativos; Serviços de educação e formação linguística; Serviços de educação relacionados com competências de comunicação; Organização e realização de cursos de ensino; Jardins infantis [educação]; Serviços de educação relacionados com o ensino de línguas estrangeiras; Serviços de educação sob a forma de cursos por correspondência; Serviços de educação para o ensino da escrita manual; Organização de cursos que utilizam métodos de ensino aberto; Serviços educativos relacionados com o desenvolvimento das faculdades mentais das crianças; Serviços de educação relacionados com o desenvolvimento das faculdades intelectuais das crianças; Serviços de educação para o ensino da escrita com teclado; Serviços educativos relacionados com o ensino de uma segunda língua; Prestação de serviços de educação de crianças através de grupos lúdicos; Prestação de serviços de entretenimento pedagógico para crianças em centros de apoio escolar; Fornecimento de provas e avaliações educativas através de computador; Informação relacionada com educação fornecida on-line a partir de uma base de dados informática ou da Internet; Publicação de material acessível a partir de bases de dados ou da Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "ro",
+      "description": "Materiale educative si didactice; Materiale didactice din hârtie; Materiale educative tiparite; Material didactic (cu exceptia aparatelor); Produse de imprimerie; Material promotional imprimat; Materiale de predare tiparite; Materiale de instruire tiparite; Materiale de cursuri prin corespondenta tiparite.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ro",
+      "description": "Promovarea afacerii [publicitate]; Servicii de promovare comerciala prin mijloace audiovizuale; Promovare si realizare de expozitii comerciale; Publicitate online; Publicitate prin intermediul mediilor electronice si îndeosebi prin Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ro",
+      "description": "Furnizarea educatiei; Educatie; Educatie si instruire; Educatie prescolara; Servicii educative oferite de scoli; Servicii scolare; Predare în scoli primare; Servicii educationale furnizate de scoli; Servicii educative oferite de scolile prin corespondenta; Servicii scolare pentru predarea de limbi straine; Furnizare de scoli si cursuri de limbi straine; Furnizare de informatii despre învatamânt online; Servicii de învatamânt la distanta oferite online; Servicii educative online prin baze de date informatice, internet sau extranet; Teste educative; Cursuri lingvistice; Educatie vocationala pentru tineri; Organizare de competitii educative; Organizare de evenimente educative; Elaborare de materiale educative; Instruire computerizata; Furnizare de cursuri educationale; Servicii educative oferite de cluburi; Servicii educative si de instruire; Servicii educationale si de predare; Servicii educationale furnizate de licee; Servicii educationale furnizate de colegii; Furnizare de pregatire, educatie si îndrumare; Organizare de serbari în scopuri educative; Organizare de spectacole în scopuri educative; Servicii educationale si de instruire lingvistica; Servicii educationale privind abilitatile de comunicare; Organizare si coordonare de cursuri educationale; Crese [educatie]; Servicii educative în domeniul predarii limbilor straine; Servicii educative de tipul cursurilor prin corespondenta; Servicii educationale pentru predarea scrierii de mâna; Organizare de cursuri prin metode de educatie deschisa; Servicii educative pentru dezvoltarea aptitudinilor mentale ale copiilor; Servicii educative pentru dezvoltarea aptitudinilor intelectuale ale copiilor; Servicii educationale pentru predarea scrierii cu ajutorul tastaturii; Servicii educationale cu privire la a doua limba; Furnizare de servicii educationale pentru copii prin intermediul grupurilor de joaca; Prestarea de servicii de divertisment educativ pentru copii în centre after-school; Asigurare de testari si evaluari în domeniul educatiei, furnizate prin intermediul calculatorului; Informatii în domeniul educatiei, furnizate on-line dintr-o baza de date computerizata sau de pe Internet; Publicare de materiale care pot fi accesate prin intermediul bazelor de date sau prin Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "sk",
+      "description": "Vzdelávacie a instruktázne pomôcky; Materiály z papiera na vyucovanie; Tlacené materiály na vzdelávanie; Vyucovacie pomôcky okrem prístrojov a zariadení; Tlacoviny; Tlacený agitacný materiál; Tlacené ucebné materiály; Tlacené skoliace materiály; Tlacené materiály pre korespondencné kurzy.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sk",
+      "description": "Podpora podnikania (reklama); Obchodné propagacné sluzby prostredníctvom audiovizuálnych prostriedkov; Propagácia a organizovanie veltrhov; On line reklama; Reklamné sluzby prostredníctvom elektronických médií a konkrétne internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sk",
+      "description": "Poskytovanie vzdelávania; Vyucovanie; Výchovné a vzdelávacie sluzby; Predskolská výchova; Skolské sluzby (vzdelávanie); Skolské sluzby; Vyucovanie na základných skolách; Vzdelávanie zabezpecované skolami; Vzdelávanie formou korespondencných kurzov; Sluzby skôl za úcelom výucby jazykov; Poskytovanie priestorov jazykových skôl a poskytovanie jazykových kurzov; Informovanie o online vzdelávaní; Sluzby dialkového stúdia, poskytované on-line; Poskytovanie on-line vzdelávania z pocítacových databáz alebo cez internet alebo cez extranet; Testovanie a skúsanie v oblasti vzdelávania; Jazykové vzdelávanie; Odborné vzdelávanie pre mladých ludí; Organizovanie sútazí v oblasti vzdelávania; Organizovanie vzdelávacích podujatí; Vývoj vzdelávacích materiálov; Skoliace sluzby poskytované prostredníctvom pocítaca; Poskytovanie vzdelávacích kurzov; Vzdelávacie sluzby klubov; Výchovné a vzdelávacie sluzby; Sluzby v oblasti vzdelávania a vyucovania; Vzdelávacie sluzby poskytované vyssími strednými skolami; Vzdelávacie sluzby poskytované vysokými skolami; Poskytovanie výcviku, vzdelávania a skolenia; Organizovanie vzdelávacích slávností; Organizovanie sou na vzdelávacie úcely; Jazykové vzdelávacie a skoliace sluzby; Vzdelávacie sluzby v oblasti komunikacných schopností; Organizovanie a realizácia výucbových kurzov; Detské skôlky (vzdelávanie); Vzdelávacie sluzby v oblasti vyucovania cudzích jazykov; Vzdelávacie sluzby v podobe korespondencných kurzov; Vzdelávacie sluzby v oblasti výucby písania rukou; Organizovanie kurzov, pri ktorých sa pouzívajú metódy otvoreného stúdia; Vzdelávacie sluzby v oblasti rozvoja dusevných schopností detí; Vzdelávacie sluzby v oblasti rozvoja intelektuálnych schopností detí; Vzdelávacie sluzby v oblasti výucby písania na klávesnici; Vzdelávacie sluzby v oblasti výucby druhého cudzieho jazyka; Poskytovanie detských vzdelávacích sluzieb prostredníctvom herných skupín; Poskytovanie vzdelávacích zábavných sluzieb pre deti v mimoskolských strediskách; Poskytovanie studijných testov a hodnotení dodaných pocítacom; Informácie súvisiace so vzdelávaním poskytované on-line z pocítacových databáz alebo prostredníctvom internetu; Vydávanie materiálov ku ktorým mozno pristupovat prostredníctvom databáz alebo internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "sl",
+      "description": "Gradivo za izobrazevanje in poucevanje; Materiali za poucevanje iz papirja; Tiskani izobrazevalni materiali; Material za ucenje ali poucevanje (razen aparatov); Tiskovine; Promocijski tiskani material; Tiskani poucevalni materiali; Tiskan izobrazevalni material; Tiskani zapiski za dopisne tecaje.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sl",
+      "description": "Promocija podjetja (oglasevanje); Poslovno promocijske storitve z avdiovizualnimi sredstvi; Promocija in izvajanje sejmov; Spletni oglasi; Oglasevanje preko elektronskih medijev, zlasti preko interneta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sl",
+      "description": "Nudenje izobrazevanja; Poucevanje; Izobrazevanje in poucevanje; Predsolsko izobrazevanje; Izobrazevalne storitve, ki jih nudijo sole; Storitve sol; Ucenje na osnovnih solah; Izobrazevalne storitve, ki jih nudijo sole; Izobrazevalne storitve v obliki dopisnih sol; Solske storitve za poucevanje tujih jezikov; Nudenje jezikovnih sol in jezikovnih tecajev; Zagotavljanje informacij o spletnem izobrazevanju; Storitve ucenja na daljavo, nudene na spletu; Nudenje spletnega izobrazevanja iz racunalniske podatkovne zbirke ali preko interneta ali ekstranetov; Izobrazevalni izpiti; Storitve poucevanja tujih jezikov; Poklicno izobrazevanje za mlade; Organizacija izobrazevalnih tekmovanj; Organizacija izobrazevalnih prireditev; Razvoj izobrazevalnih materialov; Izobrazevalne storitve s pomocjo racunalnikov; Nudenje izobrazevalnih tecajev; Klubske izobrazevalne storitve; Storitve izobrazevanja in poucevanja; Izobrazevalne in poucevalne storitve; Izobrazevalne storitve, ki jih nudijo srednje sole; Izobrazevalne storitve, ki jih nudijo visokosolske ustanove; Nudenje usposabljanja, izobrazevanja in poucevanja; Organizacija praznovanj za izobrazevalne namene; Organizacija predstav za izobrazevalne namene; Storitve jezikovnega izobrazevanja in usposabljanja; Izobrazevalne storitve v zvezi s komunikacijskimi spretnostmi; Organizacija in izvajanje izobrazevalnih tecajev; Otroski vrtci; Izobrazevalne storitve v zvezi s poucevanjem tujih jezikov; Izobrazevalne storitve v obliki dopisnih tecajev; Izobrazevalne storitve za poucevanje rocnega pisanja; Organizacija tecajev z uporabo metod odprtega ucenja; Izobrazevalne storitve v zvezi z razvojem otrokovih dusevnih sposobnosti; Izobrazevalne storitve v zvezi z razvojem otrokovih intelektualnih sposobnosti; Izobrazevalne storitve za poucevanje tipkanja; Izobrazevalne storitve za drugi tuji jezik; Nudenje otroskih izobrazevalnih storitev preko igralnih skupin; Nudenje izobrazevalno razvedrilnih storitev za otroke in centre za varstvo otrok po soli; Nudenje racunalniskega preverjanja znanja in ocenjevanja; Izobrazevalne informacije, nudene na spletu preko racunalniske podatkovne baze ali interneta; Publikacija materialov, ki so dostopni preko podatkovnih baz ali interneta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "es",
+      "description": "Material de educación e instrucción; Material de enseñanza de papel; Material educativo impreso; Material de instrucción, excepto aparatos; Material impreso; Material promocional impreso; Material pedagógico impreso; Material de aprendizaje impreso; Material impreso para cursos por correspondencia.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Promoción [publicidad] de negocios comerciales; Servicios de promoción de negocios prestados por medios audiovisuales; Promoción y realización de exposiciones comerciales; Publicidad en línea (online); Publicidad a través de medios electrónicos y específicamente Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Prestación de servicios de educación; Educación; Educación e instrucción; Educación preescolar; Servicios educativos prestados por escuelas; Servicios de escuelas; Enseñanza en escuelas primarias; Servicios de educación prestados por colegios; Servicios educativos en forma de escuelas por correspondencia; Servicios escolares destinados a la enseñanza de idiomas; Facilitación de escuelas y cursos de idiomas; Suministro de información sobre educación en línea; Servicios de formación a distancia en línea; Formación facilitada en línea desde una base de datos informática, a través de Internet o extranets; Exámenes educativos; Enseñanza de idiomas; Educación vocacional para gente joven; Organización de competiciones con fines educativos; Organización de actividades educativas; Desarrollo de materiales educativos; Formación en informática; Facilitación de cursos educativos; Servicios educativos de clubes; Servicios de educación e instrucción; Servicios de enseñanza y educación; Servicios educativos prestados por centros de secundaria superior; Servicios educativos prestados por facultades; Servicios de formación, enseñanza y docencia; Organización de fiestas con fines educativos; Organización de espectáculos con fines educativos; Servicios de educación y formación lingüística; Servicios de educación relacionados con aptitudes de comunicación; Organización y realización de cursos de enseñanza; Jardines de infancia; Servicios educativos relacionados con la enseñanza de idiomas extranjeros; Servicios educativos en forma de cursos por correspondencia; Servicios educativos para la enseñanza de escritura manual; Organización de cursos que utilizan métodos de aprendizaje abierto; Servicios de educación relacionados con el desarrollo de las facultades mentales de los niños; Servicios educativos relacionados con el desarrollo de las facultades intelectuales de los niños; Servicios educativos para la enseñanza de escritura con teclado; Servicios educativos de una segunda lengua; Prestación de servicios de educación infantil a través de grupos de juegos; Servicios educativos y de entretenimiento para niños, prestados en centros extraescolares; Facilitación de exámenes y evaluaciones educativos por ordenador; Información relacionada con la educación, facilitada en línea desde una base de datos informática o desde Internet; Publicación de material accesible desde bases de datos o desde Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "sw",
+      "description": "Utbildnings- och instruktionsmaterial; Undervisningsmaterial av papper; Tryckt utbildningsmaterial; Undervisningsmaterial [inte apparater]; Trycksaker; Tryckt marknadsföringsmaterial; Tryckt undervisningsmaterial; Tryckt material för instruktion/handledning; Tryckt korrespondenskursmaterial.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sw",
+      "description": "Marknadsföring av affärsverksamhet [reklam]; Företagsfrämjande tjänster utförda via audiovisuella hjälpmedel; Främjande och genomförande av handelsmässor; Onlineannonsering; Annons- och reklamverksamhet via elektroniska media särskilt genom internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sw",
+      "description": "Anordnande av utbildning; Anordnande av undervisning; Utbildning och instruktion; Förskoleundervisning; Utbildningstjänster erbjudna av skolor; Skoltjänster; Undervisning på lågstadiet; Undervisning/utbildning som anordnas av skolor; Utbildningstjänster i form av korrespondensskolor; Skoltjänster avseende språkundervisning; Anordnande av språkskolor och språkkurser; Tillhandahållande av information om onlineutbildning; Distansstudietjänster tillhandahållna online; Upplåtande av utbildning online via datoriserade databaser, Internet eller extranät; Utbildningsprov; Utbildning i främmande språk; Yrkesutbildning för unga människor; Anordnande av utbildningsrelaterade tävlingar; Organisation av undervisningsevenemang; Utveckling av utbildningsmaterial; Datorundervisning; Tillhandahållande av utbildningskurser; Klubbtjänster (utbildning); Utbildnings- och undervisningstjänster; Undervisnings- och utbildningstjänster; Utbildningstjänster tillhandahållna av högstadie- eller gymnasieskolor; Utbildningstjänster tillhandahållna av högskolor; Utbildning, undervisning och handledning; Organisering av fester för utbildningsändamål; Organisering av shower för utbildningsändamål; Språkutbildnings- och -undervisningstjänster; Utbildningstjänster rörande kommunikationsförmåga; Anordnande och genomförande av utbildningskurser; Förskolor; Utbildningstjänster avseende undervisning i främmande språk; Utbildningstjänster i form av korrespondenskurser; Utbildning avseende undervisning i handskrift; Anordnande av kurser med hjälp av öppna inlärningsmetoder; Utbildningstjänster rörande utveckling av barns mentala förmågor; Utbildningstjänster rörande utveckling av barns intellektuella förmågor; Utbildningstjänster avseende undervisning i maskinskrivning; Utbildningstjänster avseende andraspråk; Anordnande av undervisning/utbildning för barn genom lekgrupper; Tillhandahållande av pedagogiska underhållningstjänster för barn på fritidshem; Tillhandahållande av datorlevererade utbildningsprov och -utvärderingar; Information avseende utbildning genom direktanslutning till en databas eller från Internet; Publicering av material som är tillgängligt från databaser eller från Internet.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "FUNDATIA AVENOR",
+  "ownerNative": null,
+  "ownerCountry": "RO",
+  "representative": "Crina Frisch",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Greenfield Residence, Str. Drumul Padurea Pustnicu, No. 125, Suit 07, 1st district,Bucharest, 014042",
+        "applicantAddressCountryCode": "RO",
+        "applicantAddressCountryName": "Romania",
+        "applicantName": "FUNDATIA AVENOR"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "01.03.02",
+      "05.05.19",
+      "25.12.01"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Ucební a instruktázní pomucky; Ucební materiály z papíru; Tistené vzdelávací materiály; Ucební pomucky [s výjimkou zarízení]; Tiskoviny; Tistené propagacní materiály; Tistené vyucovací pomucky; Tistené skolící materiály; Tistené materiály ke korespondencním kurzum."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Propagace obchodu (reklama); Sluzby v oblasti obchodní propagace poskytované audiovizuálními prostredky; Propagace a porádání obchodních veletrhu; Reklama online; Reklama prostrednictvím elektronických médií a zejména internetu."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Poskytování vzdelání; Skolení; Vzdelávací a skolicí sluzby; Predskolní výchova; Skolní vzdelávání; Sluzby skoly; Výuka na základních skolách; Vzdelávací sluzby poskytované skolou; Vzdelávací sluzby ve forme korespondencních skol; Sluzby skol pro výuku jazyku; Provozování jazykových skol a zajistování jazykových kurzu; Poskytování informací o on-line vzdelávání; Sluzby dálkového vzdelávání poskytované on-line; Poskytování online vzdelávání z pocítacové databáze nebo prostrednictvím internetu nebo extranetu; Zkousení, testování (v oblasti vzdelávání); Výuka jazyku; Odborné vzdelávání pro mládez; Organizování vzdelávacích soutezí; Organizování vzdelávacích akcí; Tvorba výukových materiálu; Pocítacové skolení; Poskytování vzdelávacích kurzu; Klubové vzdelávací sluzby; Vzdelávací a skolicí sluzby; Vzdelávací a výukové sluzby; Vzdelávací sluzby poskytované na vyssím stupni stredních skol; Vzdelávací sluzby poskytované vysokými skolami; Poskytování skolení a výuky; Organizování slavností pro vzdelávací úcely; Organizování predstavení pro vzdelávací úcely; Lingvistické vzdelávání a skolení; Vzdelávací sluzby v oblasti komunikacních dovedností; Príprava a porádání vzdelávacích kurzu; Materské skoly; Vzdelávací sluzby v oblasti výuky cizích jazyku; Vzdelávací sluzby ve forme korespondencních kurzu; Vzdelávací sluzby pro výuku rucního psaní; Organizování kurzu vyuzívajících metod otevreného vyucování; Vzdelávací sluzby v oblasti rozvoje detských mentálních schopností; Vzdelávací sluzby v oblasti rozvoje detských intelektuálních schopností; Vzdelávací sluzby pro výuku psaní na klávesnici; Sluzby výuky druhého jazyka; Poskytování vzdelávacích sluzeb pro deti prostrednictvím hracích skupin; Poskytování vzdelávacích zábavních sluzeb pro deti v poskolních centrech; Poskytování pocítacem dodávaných vzdelávacích testu a hodnocení; Informace týkající se vzdelání poskytované online z pocítacové databáze anebo z internetu; Vydávání materiálu prístupných z databází nebo z internetu."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Undervisnings- og instruktionsmateriale; Undervisningsmaterialer af papir; Trykte undervisningsmaterialer; Undervisningsmateriale [undtagen apparater]; Tryksager; Trykte salgsfremmende materialer; Trykte undervisningsmaterialer; Trykte uddannelsesmaterialer; Trykte materialer til korrespondancekurser."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Forretningsmæssig promovering [reklamer og annoncer]; Forretningsmæssig promoverende virksomhed udbudt via audiovisuelle midler; Promovering og afholdelse af fagmesser; Online annoncer og reklamer; Annonce- og reklamevirksomhed via elektroniske medier og særligt internettet."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Levering af uddannelse; Undervisning; Uddannelses og undervisningsvirksomhed; Førskoleundervisning; Uddannelsestjenester ydet af skoler; Skolevirksomhed; Undervisning på grundskoleniveau; Uddannelsesvirksomhed ydet af skoler; Uddannelsesvirksomhed i form af fjernundervisningsuddannelser; Skolevirksomhed i forbindelse med sprogundervisning; Sprogskoler og -kurser; Tilvejebringelse af information om onlineuddannelse; Fjernundervisning leveret online; Uddannelse tilvejebragt online fra en computerdatabase, via ekstranet eller internettet; Uddannelsesmæssig eksaminering; Sprogundervisning; Faguddannelse for unge; Organisering af konkurrencer inden for uddannelse; Organisering af arrangementer med uddannelsesmæssige formål; Udvikling af undervisningsmateriale; Computerundervisning; Uddannelseskurser; Uddannelse i klubber; Uddannelses- og undervisningsvirksomhed; Uddannelses- og undervisningsvirksomhed; Uddannelsestjenester udbudt på gymnasier; Uddannelsestjenester udbudt på højere læreanstalter; Tilvejebringelse af træning, undervisning og vejledning; Organisering af fester til uddannelsesformål; Organisering af shows med uddannelsesmæssigt sigte; Lingvistisk uddannelses- og undervisningsvirksomhed; Uddannelse i kommunikationsfærdigheder; Arrangering og afholdelse af uddannelseskurser; Børnehaveklassevirksomhed [uddannelse]; Uddannelsesvirksomhed vedrørende fremmedsprogsundervisning; Uddannelsesvirksomhed i form af kurser i korrespondance; Uddannelsesvirksomhed vedrørende undervisning i udarbejdelse af manualer; Organisering af kurser, som anvender alternative indlæringsmetoder; Uddannelsesvirksomhed vedrørende udvikling af børns mentale evner; Uddannelsesvirksomhed vedrørende udvikling af børns intellektuelle evner; Uddannelsesvirksomhed vedrørende tastaturskrivning; Sprogundervisning i andetsprog; Undervisningsvirksomhed for børn gennem legegrupper; Tilvejebringelse af uddannelsesmæssig underholdning for børn i fritidshjem; Fremskaffelse af PC-eksamener og bedømmelser i uddannelsessammenhæng; Information vedrørende uddannelse leveret online fra en computerdatabase eller fra internettet; Udgivelse af materiale, som er tilgængeligt via databaser eller internettet."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Onderwijs-en instructiemateriaal; Lesmateriaal van papier; Gedrukt educatief materiaal; Onderwijsmateriaal [uitgezonderd toestellen]; Drukwerken; Gedrukt promotiemateriaal; Gedrukt lesmateriaal; Gedrukt opleidingsmateriaal; Gedrukt cursusmateriaal voor afstandsonderwijs."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Promotie [reclame] van bedrijven; Zakelijke promotie via audiovisuele middelen; Het promoten en houden van vakbeurzen; Onlinereclame; Reclame via elektronische media en met name via internet."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Het verstrekken van opvoeding; Educatie; Opvoeding, onderwijs en training; Kleuteronderwijs; Onderwijsdiensten van scholen; Scholen; Onderwijzen op basisscholen; Onderwijs verschaft door scholen; Onderwijs in de vorm van schriftelijk onderwijs; Scholing met betrekking tot taalonderwijs; Taalscholen en -cursussen (Ter beschikking stellen van -); Verschaffen van informatie over online-onderwijs; Online afstandsonderwijs; Verschaffen van online opleidingen via een computerdatabase of via het internet of extranetten; Educatieve tests; Opleiding in talen; Beroepsonderwijs voor jonge mensen; Organisatie van educatieve wedstrijden; Organisatie van educatieve evenementen; Ontwikkeling van leermateriaal; Computerondersteunde opleidingen; Educatieve cursussen (Verstrekken van -); Clubs (opvoeding); Diensten met betrekking tot opvoeding en opleiding; Onderwijs en educatieve diensten; Onderwijsdiensten geleverd door de bovenbouw van middelbare scholen; Onderwijsdiensten geleverd door hogescholen; Voorziening van training, onderwijs en scholing; Organisatie van feesten voor educatieve doeleinden; Organisatie van voorstellingen voor educatieve doeleinden; Taalkundig onderwijs en opleidingen; Onderwijs met betrekking tot communicatievaardigheden; Het organiseren en houden van onderwijscursussen; Kleuterscholen; Onderwijs met betrekking tot het onderwijzen van vreemde talen; Onderwijs in de vorm van schriftelijke cursussen; Onderwijs op het gebied van het met de hand schrijven; Onderwijs met gebruikmaking van open leermethoden; Onderwijs met betrekking tot de ontwikkeling van de mentale competenties van kinderen; Onderwijs met betrekking tot de ontwikkeling van de intellectuele vermogens van kinderen; Onderwijs op het gebied van het schrijven met toetsenborden; Tweetaligonderwijs; Onderwijs voor kinderen door middel van speelgroepen (Ter beschikking stellen van -); Educatief entertainment voor kinderen in de naschoolse opvang; Verstrekking van computergegenereerde onderwijstests en -evaluatie; Informatie met betrekking tot onderwijs, on line geleverd vanuit een computerdatabase of vanaf het Internet; Uitgeven van materiaal dat via databases of via het Internet toegankelijk is."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Educational and instructional material; Paper teaching materials; Printed educational materials; Teaching materials [except apparatus]; Printed matter; Printed promotional material; Printed teaching materials; Printed training materials; Printed correspondence course materials."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Promotion [advertising] of business; Business promotion services provided by audio/visual means; Promoting and conducting trade shows; Online advertisements; Advertising via electronic media and specifically the internet."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing of education; Teaching; Education and instruction; Pre-school education; Educational services provided by schools; School services; Teaching at elementary schools; Educational services provided by a school; Educational services in the nature of correspondence schools; School services for the teaching of languages; Provision of language schools and language courses; Providing information about online education; Distance learning services provided online; Provision of education on-line from a computer database or via the internet or extranets; Educational testing; Language tuition; Vocational education for young people; Organising of competitions for education; Organisation of educational events; Development of educational materials; Computer training; Provision of education courses; Club education services; Education and instruction services; Educational and teaching services; Educational services provided by senior high schools; Educational services provided by colleges; Providing of training, teaching and tuition; Fetes (Organisation of -) for educational purposes; Organising of shows for educational purposes; Linguistic education and training services; Education services relating to communication skills; Arranging and conducting of educational courses; Nursery schools; Educational services relating to the teaching of foreign languages; Educational services in the nature of correspondence courses; Educational services for teaching manual writing; Organisation of courses using open learning methods; Education services relating to the development of childrens' mental faculties; Education services relating to the development of childrens' intellectual faculties; Educational services for teaching keyboard writing; Second language educational services; Provision of childrens' educational services through play groups; Provision of educational entertainment services for children in after school centers; Providing computer-delivered educational testing and assessments; Information relating to education, provided on-line from a computer database or the internet; Publication of material which can be accessed from databases or from the internet."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Õppe- ja juhendmaterjalid; Paberist õppematerjalid; Trükitud õppematerjalid; Õppematerjalid, v.a seadmed; Trükitooted; Kampaaniatrükised; Trükitud õppematerjalid; Trükitud õppematerjalid; Trükitud kaugõppematerjalid."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Ettevõtte reklaamimine teenusena; Ettevõtte audio-visuaalreklaam; Messide müügiedendus ja läbiviimine; Onlain-reklaam; Reklaam elektrooniliste vahendite ja täpsemalt interneti kaudu."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Hariduse pakkumine; Õpetamine; Haridus ja juhendamine; Koolieelne haridus; Koolide haridusteenused; Kooliteenused; Algkoolides õpetamine; Koolide poolt pakutavad haridusteenused; Õpetamisteenused kaugõppekoolide kujul; Keeleõppeteenused koolides; Keeltekoolide ja keeltekursuste pakkumine; E-õppe kohta teabe pakkumine; Kaugõppeteenused veebis; Veebipõhise hariduse pakkumine arvutiandmebaasi, interneti või ekstraneti kaudu; Hariduslikud testimised; Keeleõpe; Noortele suunatud kutseharidus; Haridusvõistluste korraldamine; Haridusürituste korraldamine; Õppematerjalide väljatöötamine; Arvutiõpe; Õppekursuste pakkumine; Klubide haridusteenused; Haridus- ja õpetusteenused; Haridus- ja õpetusteenused; Keskkoolide osutatavad haridusteenused; Kolledzite osutatavad haridusteenused; Koolituse ja õpetamise tunniandmise pakkumine; Haridusliku eesmärgiga pidustuste korraldamine; Hariduslike eesmärkidega etenduste korraldamine; Keelealased haridus- ja koolitusteenused; Suhtlusoskuste koolitusteenused; Hariduslike kursuste korraldamine ja läbiviimine; Aedkoolid; Võõrkeeleõppe haridusteenused; Koolitusteenused kaugõppekursuste kujul; Haridusteenused käsitsi kirjutamise õpetamiseks; Avatud õppemeetodeid rakendavate kursuste korraldamine; Laste mõtlemisvõime arendamisega seotud haridusteenused; Laste intellektuaalsete võimete arendamise alased haridusteenused; Masinkirja õpetamise haridusteenused; Haridusteenused teise keele (võõrkeele) õpetamiseks; Lastele haridusteenuste pakkumine mängurühmade kaudu; Koolide pikapäevakeskustes lastele harivate meelelahutusteenuste pakkumine; Haridusliku testimise ja hindamise pakkumine arvuti kaudu; Veebipõhise haridusteabe pakkumine arvutiandmebaaside või interneti kaudu; Interneti või andmebaaside kaudu ligipääsetavate materjalide avaldamine."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Opetus- ja ohjemateriaalit; Paperiset opetusvälineet; Painettu opetusmateriaali; Neuvonta- ja opetusmateriaali [paitsi laitteet]; Painotuotteet; Painettu mainosmateriaali; Painettu opetusmateriaali; Painettu koulutusmateriaali; Painettu kirjekurssimateriaali."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Liiketoimintaan liittyvä myynninedistäminen (mainonta); Liiketoiminnan edistämispalvelut audiovisuaalisin keinoin; Messujen markkinointi ja pitäminen; Online-mainokset; Mainonta elektronisten tiedotusvälineiden ja erityisesti Internetin välityksellä."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Koulutuksen tarjonta; Opetuksen tarjoaminen; Koulutus ja ohjaus; Esikouluopetus; Koulujen tarjoamat koulutuspalvelut; Koulupalvelut; Opetus alakouluissa; Koulujen tarjoamat koulutuspalvelut; Koulutuspalvelut kirjeenvaihtokoulujen muodossa; Kielten opetukseen liittyvät koulupalvelut; Kielikoulujen ja kielikurssien tarjoaminen; Verkkokoulutusta koskevan tiedon tarjoaminen; Etäopetuspalvelut tarjottuina online-periaatteella; Opetuksen tarjoaminen online-muodossa tietokonetietokannasta tai Internetin tai ulkoisten verkkojen välityksellä; Koulutuksellinen testaus; Kieltenopetuspalvelut; Nuorille tarkoitettu ammattikoulutus; Koulutuskilpailujen järjestäminen; Koulutustapahtumien järjestäminen; Koulutusmateriaalien kehittäminen; Tietokonekoulutus; Koulutuksen tarjoaminen kurssien muodossa; Koulutuskerhopalvelut; Koulutus- ja opetuspalvelut; Opetus- ja koulutuspalvelut; Lukioiden tarjoamat opetuspalvelut; Korkeakoulujen tarjoamat opetuspalvelut; Valmennuksen, opetuksen ja perehdytyksen tarjoaminen; Juhlien järjestäminen koulutustarkoituksessa; Esitysten järjestäminen koulutustarkoituksessa; Kielten opetus- ja koulutuspalvelut; Viestintätaitoihin liittyvät koulutuspalvelut; Opetuskurssien järjestäminen ja toteuttaminen; Esikoulut; Vieraiden kielten opetukseen liittyvät koulutuspalvelut; Koulutuspalvelut kirjeenvaihtokurssien muodossa; Käsin kirjoittamisen opettamiseen liittyvät koulutuspalvelut; Kurssien järjestäminen avoimia oppimismenetelmiä käyttämällä; Koulutuspalvelut, jotka liittyvät lasten henkisten kykyjen kehittämiseen; Koulutuspalvelut, jotka liittyvät lasten älyllisten kykyjen kehittämiseen; Näppäimistöllä kirjoittamisen opettamiseen liittyvät koulutuspalvelut; Toiseen kieleen liittyvät koulutuspalvelut; Koulutuspalveluiden tarjoaminen lapsille leikkiryhmien kautta; Opetukseen liittyvien ajanvietepalvelujen tarjoaminen lapsille iltapäiväkerhoissa; Koulutuksellisten koe- ja arviointipalveluiden tarjoaminen tietokoneen välityksellä; Koulutustietojen tarjoaminen online-muodossa tietokannasta tai Internetistä; Tietokannoista tai Internetistä saatavan materiaalin julkaiseminen."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Matériel d'éducation et d'instruction; Matériel d'enseignement en papier; Matériel d'éducation imprimé; Matériel d'instruction à l'exception des appareils; Produits de l'imprimerie; Matériel promotionnel imprimé; Matériel d'enseignement imprimé; Matériel de formation imprimé; Matériel de cours par correspondance imprimé."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Promotion d'entreprise [publicité]; Services de promotion commerciale fournis par des moyens audiovisuels; Promotion et conduite de salons commerciaux; Publicité en ligne; Publicité par voie électronique et en particulier via Internet."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services d'éducation; Enseignement; Éducation et instruction; Éducation préscolaire; Services éducatifs fournis par des écoles; Services scolaires; Enseignement dans les écoles primaires; Services d'enseignement fournis par des écoles; Services d'enseignement sous forme d'écoles par correspondance; Services scolaires pour l'enseignement de langues; Services d'écoles de langues et de cours de langue; Fourniture d'informations concernant l'enseignement en ligne; Services d'enseignement à distance fournis en ligne; Services d'éducation en ligne via des bases de données informatiques, Internet ou des extranets; Test éducatifs; Cours de langues; Formation professionnelle pour les jeunes; Organisation de concours dans le domaine de l'éducation; Organisation d'évènements éducatifs; Conception de matériel d'enseignement; Formation en informatique; Mise à disposition de cours de formation; Services éducatifs de clubs; Services d'éducation et d'instruction; Services d'enseignement et d'éducation; Services éducatifs fournis par des lycées; Services éducatifs fournis par des collèges; Mise à disposition de services de formation, d'enseignement et de cours; Organisation de fêtes à des fins pédagogiques; Organisation de spectacles à des fins éducatives; Services de formation et d'enseignement linguistiques; Services de formation concernant les techniques de communication; Organisation et conduite de cours d'enseignement; Écoles maternelles [éducation]; Services d'enseignement concernant l'enseignement de langues étrangères; Services d'enseignement sous forme de cours par correspondance; Services éducatifs pour l'apprentissage de l'écriture manuscrite; Organisation d'enseignements appliquant des méthodes de formation ouverte; Services d'enseignement concernant le développement des facultés mentales des enfants; Services d'enseignement concernant le développement des facultés intellectuelles des enfants; Services éducatifs pour apprendre à taper à l'ordinateur; Services éducatifs relatifs à l'enseignement d'une deuxième langue; Fourniture de services éducatifs pour enfants par l'intermédiaire de groupes de jeu; Mise à disposition de services de divertissement éducatif pour enfants dans des centres parascolaires; Services de tests et d'évaluation en matière d'éducation fournis par ordinateur; Services de renseignements concernant l'éducation fournis en ligne à partir d'une base de données informatique ou d'Internet; Publication de matériel éducatif accessible via des bases de données ou Internet."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Bildungs- und Unterrichtsmaterial; Unterrichtsmaterialien in Papierform; Gedrucktes Unterrichtsmaterial; Lehr- und Unterrichtsmittel [ausgenommen Apparate]; Druckereierzeugnisse; Gedruckte Werbematerialien; Gedrucktes Lehr- und Unterrichtsmaterial; Gedrucktes Unterrichtsmaterial; Gedruckte Materialen für Fernkurse."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Werbung für Geschäftsbetriebe; Audiovisuelle Werbung für Unternehmen; Bewerben und Durchführen von Fachmessen; Online-Werbung; Werbung in elektronischen Medien und speziell im Internet."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Durchführung von Ausbildungslehrgängen; Erziehung und Unterricht; Bildung, Erziehung und Unterricht; Vorschulausbildung; Ausbildung in Schulen; Betrieb von Schulen; Unterricht an Grundschulen; Von einer Schule bereitgestellte Bildungsdienstleistungen; Ausbildungsdienstleistungen über Fernstudieneinrichtungen; Schulische Dienstleistungen in Bezug auf die Sprachenausbildung; Ausbildung in Sprachschulen und -kursen; Auskünfte in Bezug auf Online-Schulungen; Veranstaltung und Durchführung von Online-Fernkursen; Online-Ausbildung mittels einer Computerdatenbank oder über das Internet; Prüfungen im Bereich Erziehung und Bildung; Sprachschulung; Berufsausbildung für Jugendliche; Organisation von Schulwettkämpfen; Organisation von Bildungsveranstaltungen; Erstellung von Lehrmaterialien; Computerausbildung; Veranstaltung von Kursen zur Ausbildung; Ausbildungsdienstleistungen eines Clubs; Bildung, Erziehung und Unterricht; Erziehungs- und Unterrichtsdienstleistungen; Bildungsdienstleistungen erbracht durch Oberschulen; Durch Hochschulen erbrachte Bildungsdienstleistungen; Zurverfügungstellen von Ausbildung, Unterricht und Erziehung; Organisation von Festen zu Unterrichtzwecken; Organisation von Shows zu Bildungszwecken; Sprachaus- und Weiterbildungsdienstleistungen; Ausbildung in Bezug auf kommunikative Fähigkeiten; Organisation und Durchführung von Ausbildungskursen; Dienstleistungen von Kindergärten [Erziehung]; Ausbildungsdienstleistungen in Bezug auf den Fremdsprachenunterricht; Ausbildungsdienstleistungen in Form von Fernlehrgängen; Unterricht im Schreiben per Hand; Organisation von Kursen mittels offener Lernmethoden; Ausbildung im Bereich der Entwicklung der mentalen Fähigkeiten von Kindern; Ausbildung im Bereich der Entwicklung der intellektuellen Fähigkeiten von Kindern; Unterricht im Tastaturschreiben; Fremdsprachenausbildungsdienstleistungen; Erziehungsdienstleistungen für Kinder durch Spielgruppen; Zurverfügungstellen von Bildungs- und Unterhaltungsdienstleistungen für Kinder in Schulhorten; Durchführung von computergestützten Prüfungs- und Auswahlverfahren; Ausbildungsberatung, die online über eine Computerdatenbank oder dem Internet bereitgestellt wird; Veröffentlichung von Materialien, auf die über Datenbanken oder das Internet zugegriffen werden kann."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Materijali za obrazovanje i poducavanje; Nastavni materijali od papira; Tiskani obrazovni materijali; Materijal za obuku (osim uredaja); Tiskani materijali; Tiskani promotivni materijal; Tiskani nastavni materijali; Tiskani obrazovni materijali; Tiskani materijali za dopisne tecajeve."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Promidzba [oglasavanje] poduzetnih djelatnosti; Promidzbene usluge za poduzeca putem audio-vizualnih sredstava; Promidzba i vodenje trgovackih sajmova; Online reklame; Oglasavanje putem elektronickih medija, posebno Internetom."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Pruzanje obrazovanja; Pruzanje poduke; Obrazovanje i poduka; Predskolsko obrazovanje; Obrazovne usluge koje pruzaju skole; Skolske usluge; Poducavanje u osnovnim skolama; Skolske obrazovne usluge; Obrazovne usluge dopisnih skola; Skolske usluge poducavanja jezika; Pruzanje jezicnih skola i jezicnih tecajeva; Pruzanje informacija o obrazovanju na internetu; Usluge ucenja na daljinu koje se pruzaju na Internetu; Pruzanje online obrazovanja putem racunalne baze podataka ili putem Interneta ili Ekstraneta; Testiranje u obrazovne svrhe; Poduka jezika; Strucno obrazovanje za mlade osobe; Organiziranje obrazovnih natjecanja; Organizacija obrazovnih dogadanja; Razvoj obrazovnih materijala; Informaticka izobrazba; Pruzanje obrazovnih tecajeva; Usluge klubskog obrazovanja; Usluge obrazovanja i poducavanja; Usluge obrazovanja i poducavanja; Obrazovne usluge koje pruzaju srednje skole; Obrazovne usluge koje pruzaju fakulteti; Pruzanje osposobljavanja, poducavanja i obuke; Svecanosti (Organiziranje -) u obrazovne svrhe; Organiziranje priredbi u obrazovne svrhe; Usluge jezicnog obrazovanja i osposobljavanja; Obrazovne usluge u svezi s komunikacijskim vjestinama; Organizacija i provedba tecajeva za poduku; Predskolska obuka; Obrazovne usluge u svezi s poducavanjem stranih jezika; Obrazovne usluge u obliku dopisnih tecajeva; Obrazovne usluge za poducavanje rucnog pisanja; Organiziranje tecajeva primjenom metoda otvorenog ucenja; Obrazovne usluge u svezi s razvojem djecjih mentalnih sposobnosti; Obrazovne usluge u svezi s razvojem djecjih intelektualnih sposobnosti; Obrazovne usluge za poducavanje pisanja pomocu tipkovnice; Obrazovne usluge u svezi s poducavanjem drugog jezika; Pruzanje djecjih obrazovnih usluga kroz grupe za igranje; Pruzanje usluga edukativne zabave za djecu u centrima za izvanskolske aktivnosti; Pruzanje usluga testiranja i ocjenjivanja znanja putem racunala; Obrazovne online informacije omogucene putem racunalne baze podataka ili putem interneta; Objavljivanje materijala kojemu je moguce pristupiti iz baza podataka ili s Interneta."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Oktatási és képzési anyagok; Papírból készült tananyagok; Nyomtatott oktatási anyagok; Tanítási és oktatási anyagok [kivéve készülékek, berendezések]; Nyomtatványok; Nyomtatott reklámanyagok; Nyomtatott tananyagok; Nyomtatott oktatási anyagok; Levelezo tanfolyamok nyomtatott anyagai."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Vállalatok promóciója [reklámozás]; Audiovizuális eszközökkel nyújtott üzleti promóciós szolgáltatások; Kereskedelmi bemutatók promóciója és lebonyolítása; Online reklámozás; Hirdetés elektronikus médián, foként interneten keresztül."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Oktatási szolgáltatások nyújtása; Oktatás biztosítása; Oktatás és tanítás; Óvodás oktatás; Iskolák által nyújtott oktatási szolgáltatások; Iskolai szolgáltatások; Tanítás elemi iskolákban; Iskolák által nyújtott oktatási szolgáltatások; Oktatási szolgáltatások levelezo iskolák formájában; Iskolai szolgáltatások nyelvek tanításához; Nyelviskolák muködtetése és nyelvtanfolyamok tartása; Tájékoztatás nyújtása online oktatással kapcsolatban; Online távoktatási szolgáltatások; Online oktatás biztosítása számítógépes adatbázisból, vagy internet vagy extranet útján; Oktatási felmérések, vizsgálatok; Nyelvoktatás, nyelvtanítás; Ifjúsági szakképzés; Oktatási versenyek szervezése; Oktatási események szervezése; Oktatási anyagok fejlesztése; Számítógépes képzés; Tanfolyamok biztosítása; Oktatási klub szolgáltatások; Oktatási és képzési szolgáltatások; Oktatási és tanítási szolgáltatások; Középiskolai oktatási szolgáltatások; Felsooktatási szolgáltatások; Képzés, tanítás és oktatás biztosítása; Oktatási célú ünnepségek szervezése; Oktatási célú show-k rendezése; Nyelvoktatási és képzési szolgáltatások; Kommunikációs készségekkel, képességekkel kapcsolatos oktatási szolgáltatások; Tanfolyamok szervezése és lebonyolítása; Óvodák; Idegen nyelvek tanításával kapcsolatos oktatási szolgáltatások; Oktatási szolgáltatások levelezo tanfolyamok formájában; Oktatási szolgáltatások kézírás tanításához; Nyitott tanulási módszereket alkalmazó tanfolyamok szervezése; Gyermekek szellemi képességeinek fejlesztésével kapcsolatos oktatási szolgáltatások; Gyermekek intellektuális képességeinek fejlesztésével kapcsolatos oktatási szolgáltatások; Oktatási szolgáltatások gépelés, gépírás tanításához; Második nyelv oktatása; Oktatási szolgáltatások nyújtása gyermekek számára játszócsoportok útján; Oktatási szórakoztató szolgáltatások biztosítása gyermekek számára iskolaido utáni foglalkoztató központokban; Számítógéppel végzett, oktatáshoz kapcsolódó tesztelés és értékelés; Számítógépes adatbázisból vagy internetrol online biztosított oktatási információk; Adatbázisokból vagy az internetrol elérheto anyagok kiadása."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Materiale per l'istruzione e l'educazione; Materiali pedagogici su carta; Materiali educativi stampati; Materiale per l'insegnamento esclusi gli apparecchi; Stampati; Materiale promozionale stampato; Materiali didattici stampati; Materiale di formazione stampato; Materiale stampato per corsi per corrispondenza."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Promozione [pubblicità] aziendale; Servizi di promozine aziendale tramite mezzi audiovisivi; Promozione e gestione di fiere commerciali; Annunci pubblicitari on line; Pubblicità mediante supporti elettronici ed in particolare Internet."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi educativi; Educazione; Educazione e formazione; Insegnamento rivolto alla scuola materna; Servizi di istruzione forniti da scuole; Servizi scolastici; Insegnamento in scuole elementari; Istruzione scolastica; Istruzione sotto forma di scuole per corrispondenza; Servizi scolastici nel campo dell'insegnamento delle lingue; Scuole di lingue e corsi di lingue; Fornitura di informazioni sull'istruzione online; Servizi di formazione a distanza forniti online; Fornitura di corsi on line attraverso una banca dati o tramite Internet o reti esterne; Analisi in materia d'istruzione; Servizi didattici per l'insegnamento delle lingue; Istruzione in materia di orientamento per giovani; Organizzazione di competizioni nell'ambito dell'istruzione; Organizzazione di eventi educativi; Sviluppo di materiale didattico; Formazione nel settore dell'informatica; Fornitura di corsi d'istruzione; Servizi di istruzione per club; Servizi relativi a educazione e istruzione; Servizi di insegnamento e di istruzione; Servizi d'istruzione forniti da scuole medie superiori; Servizi d'istruzione forniti da college; Fornitura di formazione, insegnamento e lezioni; Organizzazione di feste per scopi didattici; Organizzazione di spettacoli con scopi educativi; Servizi di educazione e formazione linguistica; Servizi d'istruzione in materia di capacità comunicative; Organizzazione e realizzazione di corsi d'insegnamento; Scuole materne [educazione]; Istruzione riguardante l'insegnamento delle lingue straniere; Istruzione sotto forma di corsi per corrispondenza; Servizi d'istruzione per insegnare a scrivere manualmente; Organizzazione di corsi mediante l'utilizzo di metodi di apprendimento aperto; Istruzione riguardante lo sviluppo delle facoltà mentali dei bambini; Istruzione riguardante lo sviluppo delle facoltà intellettuali dei bambini; Servizi d'istruzione per insegnare a scrivere con la tastiera; Servizi d'insegnamento di una seconda lingua; Fornitura di servizi di istruzione per bambini attraverso gruppi di gioco; Fornitura di servizi pedagogici d'intrattenimento per bambini in centri doposcuola; Verifiche e valutazioni didattiche tramite computer; Informazioni relative al campo dell'istruzione accessibili on-line tramite una banca dati o su Internet; Pubblicazione di materiali accessibili tramite banche dati o Internet."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Edukacine ir mokomoji medziaga; Popierine mokymo medziaga; Spausdintine svieciamoji medziaga; Mokymo medziaga [isskyrus aparatura]; Spaudiniai; Spausdintine reklamine medziaga; Spausdintine mokomoji medziaga; Spausdinta mokomoji medziaga; Spausdinta neakivaizdinio mokymosi medziaga."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Verslo propagavimas [reklamavimas]; Verslo skatinimas, garso arba vaizdo priemoniu pagalba; Prekybos mugiu reklama ir vedimas; Skelbimai internetu; Reklama elektroninemis priemonemis, ypac internetu."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Svietimo teikimas; Mokymas; Svietimas ir instruktavimas; Ikimokyklinis svietimas; Mokyklu paslaugos (svietimas); Mokyklu paslaugos; Mokymas pradinese mokyklose; Mokyklu svietimo paslaugos; Svietimo paslaugos (neakivaizdiniai kursai); Mokyklu kalbu mokymo paslaugos; Kalbu mokyklos ir kalbu kursai; Informacijos apie svietima internetu teikimas; Nuotolinio mokymosi paslaugos internetu; Svietimo paslaugu teikimas tiesioginiu rysiu is kompiuteriu duomenu bazes, per interneta ar ekstraneta; Egzaminavimas svietimo srityje; Kalbu mokymas; Jaunimo profesinis lavinimas; Konkursu organizavimas svietimo srityje; Svieciamuju renginiu organizavimas; Mokomosios medziagos tobulinimas (kurimas); Kompiuterinis mokymas; Mokymo kursu parupinimas; Svietimo klubu paslaugos; Svietimo ir instruktavimo paslaugos; Svietimo ir mokymo paslaugos; Vidurinio lavinimo mokyklu teikiamos svietimo paslaugos; Kolegiju teikiamos svietimo paslaugos; Lavinimas, mokymas ir mokomuju konsultaciju teikimas; Mokomuju svenciu rengimas; Sou organizavimas svietimo tikslais; Lingvistinio svietimo ir mokymo paslaugos; Svietimo paslaugos, susijusios su bendravimo igudziais; Mokomuju kursu rengimas ir vedimas; Vaiku darzeliai; Svietimo paslaugos, susijusios su uzsienio kalbu mokymu; Neakivaizdiniai kursai (susirasinejant); Svietimo paslaugos, susijusios su rasymo ranka mokymu; Atviro mokymosi metodus naudojanciu kursu rengimas; Svietimo paslaugos, susijusios su vaiku protiniu gebejimu ugdymu; Svietimo paslaugos, susijusios su vaiku intelektiniu gebejimu ugdymu; Svietimo paslaugos, susijusios su rasymo klaviatura mokymu; Antrosios kalbos mokymas; Vaiku svietimo paslaugos, teikiamos zaidimu grupemis; Mokymo ir pramogu paslaugu teikimas vaikams popamokiniuose centruose; Kompiuteriu teikiamas mokomasis testavimas ir vertinimas; Svietimo informacija, teikiama tiesiogiai is kompiuteriniu duomenu baziu ar interneto; Medziagos, kuria galima gauti is duomenu baziu arba interneto, publikavimas."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Izglitojosi un uzskates materiali; Macibu materiali no papira; Izglitibas iespiedmateriali; Macibu un uzskates lidzekli (iznemot aparaturu); Iespiedprodukcija; Drukati reklammateriali; Drukati macibu materiali; Drukati vingrinajumu materiali; Iespiesti neklatienes lekciju materiali."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Uznemejdarbibas veicinasana [reklamesana]; Uznemejdarbibas veicinasana ar audiovizualiem lidzekliem; Tirdzniecibas izstazu veicinasana un vadisana; Reklama tiessaiste; Reklama ar elektronisko mediju, jo seviski interneta, palidzibu."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Izglitibas nodrosinasana; Macibu pakalpojumi; Audzinasana un apmaciba; Pirmsskolas izglitiba; Izglitibas pakalpojumi skolas; Skolu pakalpojumi; Macibas pamatskolas; Skolu nodrosinatie izglitibas pakalpojumi; Izglitibas nodrosinasana neklatienes skolas; Valodu apmacibas skolu pakalpojumi; Valodu skolu un valodu kursu nodrosinasana; Informacijas sniegsana par izglitibas iespejam tiessaiste; Talmacibas pakalpojumi tiessaiste; Izglitibas nodrosinasana tiessaiste, izmantojot datora datubazi vai internetu vai artiklu; Testesana izglitibas joma; Valodu apmaciba; Arodizglitiba jauniesiem; Izglitojosu konkursu rikosana; Izglitojosu pasakumu organizesana; Izglitibas materialu izstrade; Datorapmaciba; Izglitibas kursu nodrosinasana; Izglitibas klubu pakalpojumi; Izglitibas un instruesanas pakalpojumi; Macibu un izglitibas pakalpojumi; Izglitibas pakalpojumi, kas tiek sniegti vidusskolas vecakajas klases; Izglitibas pakalpojumi, ko sniedz koledzas; Apmacibu, macibu un izglitibas nodrosinasana; Svinibu organizesana izglitibas nolukiem; Izglitojosu sovu organizesana; Lingvistiskas izglitibas un apmacibu pakalpojumi; Izglitibas pakalpojumi saistiba ar komunikacijas prasmem; Izglitojosu kursu rikosana un vadisana; Bernudarzu pakalpojumi; Izglitibas pakalpojumi attieciba uz svesvalodu macisanu; Izglitibas nodrosinasana neklatienes kursos; Izglitibas pakalpojumi manualas rakstisanas macibam; Kursu rikosana, izmantojot atvertas macibu metodes; Izglitibas pakalpojumi saistiba ar bernu garigo speju attistibu; Izglitibas pakalpojumi saistiba ar bernu intelektualo speju attistibu; Izglitibas pakalpojumi tastaturas rakstisanas macibam; Izglitibas pakalpojumi otras valodas apguvei; Bernu izglitibas pakalpojumu sniegsana rotalu grupu veida; Izglitojosu izklaides pakalpojumu nodrosinasana berniem pecskolas centros; Datorizetu izglitibas eksamenu un novertejumu nodrosinasana; Izglitibas informacija, kas nodrosinata tiessaiste, izmantojot datora datubazi vai internetu; Materialu publicesana, kuram var pieklut, izmantojot datubazes vai internetu."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Materjal edukattiv u struttiv; Materjal ghat-taghlim tal-karti; Materjali edukattivi stampati; Materjal istruttiv u ghat-taghlim (minbarra apparat); Materjal stampat; Materjal promozzjonali stampat; Materjal tat-taghlim stampat; Materjali stampati ghat-tahrig; Materjali stampati ta' korsijiet ta' korrispondenza."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Il-promozzjoni [reklamar] tan-negozju; Servizzi ghall-promozzjoni ta' negozju provduti permezz ta' mezzi awdjo/vizivi; Promozzjoni u tmexxija ta' fieri kummercjali; Reklamar onlajn; Reklamar permezz ta' midja elettronika u specifikament l-internet."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Il-provvista ta' edukazzjoni; Provvista ta' taghlim; Edukazzjoni u istruzzjoni; Edukazzjoni ta' qabel l-iskola; Servizzi edukattivi pprovduti minn skejjel; Servizzi ta' skejjel; Taghlim fi skejjel elementari; Servizzi edukattivi pprovduti minn skejjel; Servizzi edukattivi fl-ghamla ta' skejjel ta' korrispondenza; Servizzi ta' skola ghat-taghlim tal-lingwi; Il-provvista ta' skejjel tal-lingwi u korsijiet tal-lingwi; Provvediment ta' informazzjoni dwar edukazzjoni onlajn; Servizzi ta' taghlim mill-boghod provduti onlajn; Provvista ta' edukazzjoni onlajn min dejtabejz tal-kompjuter jew permezz tal-internet jew ta' ekstranets; Testijiet edukattivi; Taghlim ta' lingwa; Edukazzjoni vokazzjonali ghal tfal u zghazagh; Organizzazzjoni ta' kompetizzjonijiet edukattivi; Organizzazzjoni ta' avvenimenti edukattivi; Zvilupp ta' materjal edukattiv; Tahrig fuq il-kompjuter; Provvista ta' korsijiet edukattivi; Servizzi ta' klabb edukattiv; Servizzi ta' edukazzjoni u ta' taghlim; Servizzi edukattivi u ta' taghlim; Servizzi edukattivi pprovduti minn skejjel sekondarji; Servizzi edukattivi pprovduti minn kulleggi; Provvista ta' tahrig, taghlim u edukazzjoni; Festi (Organizzazzjoni ta' -) ghal skopijiet edukattivi; Organizzazzjoni ta' spettakli bi skopijiet edukattivi; Servizzi tal-edukazzjoni u tahrig lingwistici; Servizzi edukattivi relatati mal-hiliet fil-komunikazzjoni; Organizzazzjoni u twettiq ta' korsijiet ta' taghlim; Skejjel tat-tfal zghar; Servizzi edukattivi relatati mat-taghlim ta' lingwi barranin; Servizzi edukattivi fl-ghamla ta' korsijiet b'korrispondenza; Servizzi edukattivi ghat-taghlim tal-kitba manwali; Organizzazzjoni ta' korsijiet bl-uzu ta' metodi flessibbli ta' taghlim; Servizzi edukattivi relatati mal-izvilupp tal-fakultajiet mentali tat-tfal; Servizzi ta' edukazzjoni relatati mal-izvilupp ta' fakultajiet intellettwali tat-tfal; Servizzi edukattivi ghat-taghlim ta' kitba bit-tastiera; Servizzi edukattivi ta' lingwa sekondarja; Il-provvista ta' servizzi edukattivi ghat-tfal permezz ta' gruppi tal-loghob; Provvista ta' servizzi tad-divertiment edukattiv ghat-tfal fi skejjel ta' wara l-hin; Il-provvista ta' testijiet u ezamijiet edukattivi bil-kompjuter; Informazzjoni dwar l-edukazzjoni, provduta online minn database tal-kompjuter jew mill-Internet; Pubblikazzjoni ta' materjal li jista' jigi accessat minn bazi tad-data jew mill-internet."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Materialy edukacyjne i instruktazowe; Papierowe materialy dydaktyczne; Drukowane materialy edukacyjne; Materialy szkoleniowe i instruktazowe (z wyjatkiem aparatów); Materialy drukowane; Drukowany material promocyjny; Drukowane materialy dydaktyczne; Drukowane materialy szkoleniowe; Drukowane materialy w zakresie kursów korespondencyjnych."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Promowanie [reklama] dzialalnosci gospodarczej; Uslugi promocji dzialalnosci gospodarczej swiadczone za posrednictwem srodków audiowizualnych; Promowanie i przeprowadzanie targów handlowych; Reklamy online; Reklama za posrednictwem mediów elektronicznych, w szczególnosci Internetu."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Zapewnianie edukacji; Uslugi w zakresie oswiaty [nauczanie]; Nauczanie i szkolenia; Nauczanie przedszkolne; Uslugi edukacyjne swiadczone przez szkoly; Uslugi szkól; Nauczanie w szkolach podstawowych; Uslugi edukacyjne swiadczone przez szkoly; Uslugi edukacyjne w postaci szkól korespondencyjnych; Uslugi szkól w zakresie nauczania jezyków obcych; Swiadczenie uslug w zakresie szkól i kursów jezykowych; Udostepnianie informacji o nauczaniu on-line; Uslugi nauki na odleglosc swiadczone online; Edukacja online z komputerowej bazy danych lub za pomoca Internetu czy ekstranetów; Testy edukacyjne; Nauczanie jezyków obcych; Edukacja zawodowa dla mlodych ludzi; Organizowanie konkursów edukacyjnych; Organizowanie imprez edukacyjnych; Opracowywanie materialów edukacyjnych; Szkolenia komputerowe; Zapewnianie kursów edukacyjnych; Uslugi edukacyjne klubów; Uslugi edukacyjne i instruktazowe; Uslugi w zakresie edukacji i nauczania; Uslugi edukacyjne swiadczone przez szkoly srednie wyzszego poziomu; Uslugi edukacyjne swiadczone przez szkoly wyzsze; Zapewnianie szkolen, ksztalcenia i nauczania; Organizowanie festynów w celach edukacyjnych; Organizowanie widowisk w celach edukacyjnych; Uslugi edukacyjne i szkoleniowe w zakresie lingwistyki; Uslugi edukacyjne dotyczace umiejetnosci komunikacyjnych; Organizacja i przeprowadzanie kursów edukacyjnych; Przedszkola; Uslugi edukacyjne zwiazane z nauka jezyków obcych; Uslugi edukacyjne w postaci kursów korespondencyjnych; Uslugi edukacyjne z zakresu uczenia pisania recznego; Organizowanie kursów stosujacych metody nauki samodzielnej; Uslugi edukacyjne zwiazane z rozwojem sprawnosci umyslowej dzieci; Uslugi edukacyjne zwiazane z rozwojem sprawnosci intelektualnej dzieci; Uslugi edukacyjne z zakresu uczenia pisania na klawiaturze; Uslugi edukacyjne w zakresie nauki drugiego jezyka; Uslugi edukacyjne dla dzieci w postaci grup zabaw; Swiadczenie uslug edukacyjno-rozrywkowych dla dzieci w swietlicach pozalekcyjnych; Zapewnianie testów edukacyjnych i ocen w formie komputerowej; Informacja dotyczaca edukacji udzielana on-line z komputerowej bazy danych lub z Internetu; Publikacja materialów dostepnych za posrednictwem baz danych lub Internetu."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Material de ensino e de instrução; Material de ensino em papel; Materiais educativos impressos; Material de ensino [com exceção dos aparelhos]; Material impresso; Material promocional impresso; Materiais impressos para ensino; Materiais de formação impressos; Material impresso para cursos por correspondência."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Promoção [publicidade] de negócios comerciais; Serviços de promoção de negócios fornecidos através de meios audiovisuais; Promoção e realização de feiras comerciais; Anúncios publicitários online; Publicidade através de meios eletrónicos e especificamente pela Internet."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Fornecimento de educação; Educação; Educação e Formação; Ensino pré-escolar; Serviços de educação prestados por escolas; Serviços escolares; Ensino em escolas primárias; Serviços de educação prestados por escolas; Serviços de educação sob a forma de escolas de correspondência; Serviços escolares para o ensino de línguas; Serviços de escolas e cursos de línguas; Fornecimento de informações sobre a educação em linha; Serviços de ensino à distância via online; Serviços de educação on-line a partir de uma base de dados informática ou através da Internet ou de extranets; Exames educativos; Cursos de línguas; Educação vocacional para jovens; Organização de competições educativas; Organização de eventos educativos; Desenvolvimento de material educativo; Formação em informática; Fornecimento de cursos educativos; Serviços educativos de clubes; Serviços de educação e formação; Serviços de ensino e educacionais; Serviços de educação prestados por estabelecimentos de ensino secundário; Serviços de educação prestados por estabelecimentos de ensino superior; Fornecimento de formação, educação e cursos; Organização de festas para fins educacionais; Organização de espetáculos com fins educativos; Serviços de educação e formação linguística; Serviços de educação relacionados com competências de comunicação; Organização e realização de cursos de ensino; Jardins infantis [educação]; Serviços de educação relacionados com o ensino de línguas estrangeiras; Serviços de educação sob a forma de cursos por correspondência; Serviços de educação para o ensino da escrita manual; Organização de cursos que utilizam métodos de ensino aberto; Serviços educativos relacionados com o desenvolvimento das faculdades mentais das crianças; Serviços de educação relacionados com o desenvolvimento das faculdades intelectuais das crianças; Serviços de educação para o ensino da escrita com teclado; Serviços educativos relacionados com o ensino de uma segunda língua; Prestação de serviços de educação de crianças através de grupos lúdicos; Prestação de serviços de entretenimento pedagógico para crianças em centros de apoio escolar; Fornecimento de provas e avaliações educativas através de computador; Informação relacionada com educação fornecida on-line a partir de uma base de dados informática ou da Internet; Publicação de material acessível a partir de bases de dados ou da Internet."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Materiale educative si didactice; Materiale didactice din hârtie; Materiale educative tiparite; Material didactic (cu exceptia aparatelor); Produse de imprimerie; Material promotional imprimat; Materiale de predare tiparite; Materiale de instruire tiparite; Materiale de cursuri prin corespondenta tiparite."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Promovarea afacerii [publicitate]; Servicii de promovare comerciala prin mijloace audiovizuale; Promovare si realizare de expozitii comerciale; Publicitate online; Publicitate prin intermediul mediilor electronice si îndeosebi prin Internet."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Furnizarea educatiei; Educatie; Educatie si instruire; Educatie prescolara; Servicii educative oferite de scoli; Servicii scolare; Predare în scoli primare; Servicii educationale furnizate de scoli; Servicii educative oferite de scolile prin corespondenta; Servicii scolare pentru predarea de limbi straine; Furnizare de scoli si cursuri de limbi straine; Furnizare de informatii despre învatamânt online; Servicii de învatamânt la distanta oferite online; Servicii educative online prin baze de date informatice, internet sau extranet; Teste educative; Cursuri lingvistice; Educatie vocationala pentru tineri; Organizare de competitii educative; Organizare de evenimente educative; Elaborare de materiale educative; Instruire computerizata; Furnizare de cursuri educationale; Servicii educative oferite de cluburi; Servicii educative si de instruire; Servicii educationale si de predare; Servicii educationale furnizate de licee; Servicii educationale furnizate de colegii; Furnizare de pregatire, educatie si îndrumare; Organizare de serbari în scopuri educative; Organizare de spectacole în scopuri educative; Servicii educationale si de instruire lingvistica; Servicii educationale privind abilitatile de comunicare; Organizare si coordonare de cursuri educationale; Crese [educatie]; Servicii educative în domeniul predarii limbilor straine; Servicii educative de tipul cursurilor prin corespondenta; Servicii educationale pentru predarea scrierii de mâna; Organizare de cursuri prin metode de educatie deschisa; Servicii educative pentru dezvoltarea aptitudinilor mentale ale copiilor; Servicii educative pentru dezvoltarea aptitudinilor intelectuale ale copiilor; Servicii educationale pentru predarea scrierii cu ajutorul tastaturii; Servicii educationale cu privire la a doua limba; Furnizare de servicii educationale pentru copii prin intermediul grupurilor de joaca; Prestarea de servicii de divertisment educativ pentru copii în centre after-school; Asigurare de testari si evaluari în domeniul educatiei, furnizate prin intermediul calculatorului; Informatii în domeniul educatiei, furnizate on-line dintr-o baza de date computerizata sau de pe Internet; Publicare de materiale care pot fi accesate prin intermediul bazelor de date sau prin Internet."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Vzdelávacie a instruktázne pomôcky; Materiály z papiera na vyucovanie; Tlacené materiály na vzdelávanie; Vyucovacie pomôcky okrem prístrojov a zariadení; Tlacoviny; Tlacený agitacný materiál; Tlacené ucebné materiály; Tlacené skoliace materiály; Tlacené materiály pre korespondencné kurzy."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Podpora podnikania (reklama); Obchodné propagacné sluzby prostredníctvom audiovizuálnych prostriedkov; Propagácia a organizovanie veltrhov; On line reklama; Reklamné sluzby prostredníctvom elektronických médií a konkrétne internetu."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Poskytovanie vzdelávania; Vyucovanie; Výchovné a vzdelávacie sluzby; Predskolská výchova; Skolské sluzby (vzdelávanie); Skolské sluzby; Vyucovanie na základných skolách; Vzdelávanie zabezpecované skolami; Vzdelávanie formou korespondencných kurzov; Sluzby skôl za úcelom výucby jazykov; Poskytovanie priestorov jazykových skôl a poskytovanie jazykových kurzov; Informovanie o online vzdelávaní; Sluzby dialkového stúdia, poskytované on-line; Poskytovanie on-line vzdelávania z pocítacových databáz alebo cez internet alebo cez extranet; Testovanie a skúsanie v oblasti vzdelávania; Jazykové vzdelávanie; Odborné vzdelávanie pre mladých ludí; Organizovanie sútazí v oblasti vzdelávania; Organizovanie vzdelávacích podujatí; Vývoj vzdelávacích materiálov; Skoliace sluzby poskytované prostredníctvom pocítaca; Poskytovanie vzdelávacích kurzov; Vzdelávacie sluzby klubov; Výchovné a vzdelávacie sluzby; Sluzby v oblasti vzdelávania a vyucovania; Vzdelávacie sluzby poskytované vyssími strednými skolami; Vzdelávacie sluzby poskytované vysokými skolami; Poskytovanie výcviku, vzdelávania a skolenia; Organizovanie vzdelávacích slávností; Organizovanie sou na vzdelávacie úcely; Jazykové vzdelávacie a skoliace sluzby; Vzdelávacie sluzby v oblasti komunikacných schopností; Organizovanie a realizácia výucbových kurzov; Detské skôlky (vzdelávanie); Vzdelávacie sluzby v oblasti vyucovania cudzích jazykov; Vzdelávacie sluzby v podobe korespondencných kurzov; Vzdelávacie sluzby v oblasti výucby písania rukou; Organizovanie kurzov, pri ktorých sa pouzívajú metódy otvoreného stúdia; Vzdelávacie sluzby v oblasti rozvoja dusevných schopností detí; Vzdelávacie sluzby v oblasti rozvoja intelektuálnych schopností detí; Vzdelávacie sluzby v oblasti výucby písania na klávesnici; Vzdelávacie sluzby v oblasti výucby druhého cudzieho jazyka; Poskytovanie detských vzdelávacích sluzieb prostredníctvom herných skupín; Poskytovanie vzdelávacích zábavných sluzieb pre deti v mimoskolských strediskách; Poskytovanie studijných testov a hodnotení dodaných pocítacom; Informácie súvisiace so vzdelávaním poskytované on-line z pocítacových databáz alebo prostredníctvom internetu; Vydávanie materiálov ku ktorým mozno pristupovat prostredníctvom databáz alebo internetu."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Gradivo za izobrazevanje in poucevanje; Materiali za poucevanje iz papirja; Tiskani izobrazevalni materiali; Material za ucenje ali poucevanje (razen aparatov); Tiskovine; Promocijski tiskani material; Tiskani poucevalni materiali; Tiskan izobrazevalni material; Tiskani zapiski za dopisne tecaje."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Promocija podjetja (oglasevanje); Poslovno promocijske storitve z avdiovizualnimi sredstvi; Promocija in izvajanje sejmov; Spletni oglasi; Oglasevanje preko elektronskih medijev, zlasti preko interneta."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Nudenje izobrazevanja; Poucevanje; Izobrazevanje in poucevanje; Predsolsko izobrazevanje; Izobrazevalne storitve, ki jih nudijo sole; Storitve sol; Ucenje na osnovnih solah; Izobrazevalne storitve, ki jih nudijo sole; Izobrazevalne storitve v obliki dopisnih sol; Solske storitve za poucevanje tujih jezikov; Nudenje jezikovnih sol in jezikovnih tecajev; Zagotavljanje informacij o spletnem izobrazevanju; Storitve ucenja na daljavo, nudene na spletu; Nudenje spletnega izobrazevanja iz racunalniske podatkovne zbirke ali preko interneta ali ekstranetov; Izobrazevalni izpiti; Storitve poucevanja tujih jezikov; Poklicno izobrazevanje za mlade; Organizacija izobrazevalnih tekmovanj; Organizacija izobrazevalnih prireditev; Razvoj izobrazevalnih materialov; Izobrazevalne storitve s pomocjo racunalnikov; Nudenje izobrazevalnih tecajev; Klubske izobrazevalne storitve; Storitve izobrazevanja in poucevanja; Izobrazevalne in poucevalne storitve; Izobrazevalne storitve, ki jih nudijo srednje sole; Izobrazevalne storitve, ki jih nudijo visokosolske ustanove; Nudenje usposabljanja, izobrazevanja in poucevanja; Organizacija praznovanj za izobrazevalne namene; Organizacija predstav za izobrazevalne namene; Storitve jezikovnega izobrazevanja in usposabljanja; Izobrazevalne storitve v zvezi s komunikacijskimi spretnostmi; Organizacija in izvajanje izobrazevalnih tecajev; Otroski vrtci; Izobrazevalne storitve v zvezi s poucevanjem tujih jezikov; Izobrazevalne storitve v obliki dopisnih tecajev; Izobrazevalne storitve za poucevanje rocnega pisanja; Organizacija tecajev z uporabo metod odprtega ucenja; Izobrazevalne storitve v zvezi z razvojem otrokovih dusevnih sposobnosti; Izobrazevalne storitve v zvezi z razvojem otrokovih intelektualnih sposobnosti; Izobrazevalne storitve za poucevanje tipkanja; Izobrazevalne storitve za drugi tuji jezik; Nudenje otroskih izobrazevalnih storitev preko igralnih skupin; Nudenje izobrazevalno razvedrilnih storitev za otroke in centre za varstvo otrok po soli; Nudenje racunalniskega preverjanja znanja in ocenjevanja; Izobrazevalne informacije, nudene na spletu preko racunalniske podatkovne baze ali interneta; Publikacija materialov, ki so dostopni preko podatkovnih baz ali interneta."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Material de educación e instrucción; Material de enseñanza de papel; Material educativo impreso; Material de instrucción, excepto aparatos; Material impreso; Material promocional impreso; Material pedagógico impreso; Material de aprendizaje impreso; Material impreso para cursos por correspondencia."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Promoción [publicidad] de negocios comerciales; Servicios de promoción de negocios prestados por medios audiovisuales; Promoción y realización de exposiciones comerciales; Publicidad en línea (online); Publicidad a través de medios electrónicos y específicamente Internet."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Prestación de servicios de educación; Educación; Educación e instrucción; Educación preescolar; Servicios educativos prestados por escuelas; Servicios de escuelas; Enseñanza en escuelas primarias; Servicios de educación prestados por colegios; Servicios educativos en forma de escuelas por correspondencia; Servicios escolares destinados a la enseñanza de idiomas; Facilitación de escuelas y cursos de idiomas; Suministro de información sobre educación en línea; Servicios de formación a distancia en línea; Formación facilitada en línea desde una base de datos informática, a través de Internet o extranets; Exámenes educativos; Enseñanza de idiomas; Educación vocacional para gente joven; Organización de competiciones con fines educativos; Organización de actividades educativas; Desarrollo de materiales educativos; Formación en informática; Facilitación de cursos educativos; Servicios educativos de clubes; Servicios de educación e instrucción; Servicios de enseñanza y educación; Servicios educativos prestados por centros de secundaria superior; Servicios educativos prestados por facultades; Servicios de formación, enseñanza y docencia; Organización de fiestas con fines educativos; Organización de espectáculos con fines educativos; Servicios de educación y formación lingüística; Servicios de educación relacionados con aptitudes de comunicación; Organización y realización de cursos de enseñanza; Jardines de infancia; Servicios educativos relacionados con la enseñanza de idiomas extranjeros; Servicios educativos en forma de cursos por correspondencia; Servicios educativos para la enseñanza de escritura manual; Organización de cursos que utilizan métodos de aprendizaje abierto; Servicios de educación relacionados con el desarrollo de las facultades mentales de los niños; Servicios educativos relacionados con el desarrollo de las facultades intelectuales de los niños; Servicios educativos para la enseñanza de escritura con teclado; Servicios educativos de una segunda lengua; Prestación de servicios de educación infantil a través de grupos de juegos; Servicios educativos y de entretenimiento para niños, prestados en centros extraescolares; Facilitación de exámenes y evaluaciones educativos por ordenador; Información relacionada con la educación, facilitada en línea desde una base de datos informática o desde Internet; Publicación de material accesible desde bases de datos o desde Internet."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Utbildnings- och instruktionsmaterial; Undervisningsmaterial av papper; Tryckt utbildningsmaterial; Undervisningsmaterial [inte apparater]; Trycksaker; Tryckt marknadsföringsmaterial; Tryckt undervisningsmaterial; Tryckt material för instruktion/handledning; Tryckt korrespondenskursmaterial."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Marknadsföring av affärsverksamhet [reklam]; Företagsfrämjande tjänster utförda via audiovisuella hjälpmedel; Främjande och genomförande av handelsmässor; Onlineannonsering; Annons- och reklamverksamhet via elektroniska media särskilt genom internet."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Anordnande av utbildning; Anordnande av undervisning; Utbildning och instruktion; Förskoleundervisning; Utbildningstjänster erbjudna av skolor; Skoltjänster; Undervisning på lågstadiet; Undervisning/utbildning som anordnas av skolor; Utbildningstjänster i form av korrespondensskolor; Skoltjänster avseende språkundervisning; Anordnande av språkskolor och språkkurser; Tillhandahållande av information om onlineutbildning; Distansstudietjänster tillhandahållna online; Upplåtande av utbildning online via datoriserade databaser, Internet eller extranät; Utbildningsprov; Utbildning i främmande språk; Yrkesutbildning för unga människor; Anordnande av utbildningsrelaterade tävlingar; Organisation av undervisningsevenemang; Utveckling av utbildningsmaterial; Datorundervisning; Tillhandahållande av utbildningskurser; Klubbtjänster (utbildning); Utbildnings- och undervisningstjänster; Undervisnings- och utbildningstjänster; Utbildningstjänster tillhandahållna av högstadie- eller gymnasieskolor; Utbildningstjänster tillhandahållna av högskolor; Utbildning, undervisning och handledning; Organisering av fester för utbildningsändamål; Organisering av shower för utbildningsändamål; Språkutbildnings- och -undervisningstjänster; Utbildningstjänster rörande kommunikationsförmåga; Anordnande och genomförande av utbildningskurser; Förskolor; Utbildningstjänster avseende undervisning i främmande språk; Utbildningstjänster i form av korrespondenskurser; Utbildning avseende undervisning i handskrift; Anordnande av kurser med hjälp av öppna inlärningsmetoder; Utbildningstjänster rörande utveckling av barns mentala förmågor; Utbildningstjänster rörande utveckling av barns intellektuella förmågor; Utbildningstjänster avseende undervisning i maskinskrivning; Utbildningstjänster avseende andraspråk; Anordnande av undervisning/utbildning för barn genom lekgrupper; Tillhandahållande av pedagogiska underhållningstjänster för barn på fritidshem; Tillhandahållande av datorlevererade utbildningsprov och -utvärderingar; Information avseende utbildning genom direktanslutning till en databas eller från Internet; Publicering av material som är tillgängligt från databaser eller från Internet."
+        }
+      ]
+    },
+    "id": "aa729094-c90f-4d11-91ce-c28ff3c78f8f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "25.05.95",
+      "26.11.09",
+      "26.11.98",
+      "27.05.12",
+      "29.01.04",
+      "29.01.08"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "220"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "54 Carol I Boulevard, B entry, 3rd floor, suite 5,Bucharest, 020915",
+        "representativeAddressCountryCode": "RO",
+        "representativeAddressCountryName": "Romania",
+        "representativeName": "Crina Frisch"
+      }
+    ],
+    "secondLanguageCode": "es",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20201110",
+        "applicationNumber": "18335129"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20301110",
+      "lastPublicationDate": "20201118",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20210225",
+        "registrationNumber": "18335129"
+      }
+    },
+    "version": "20260511221906",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "avenor college"
+    }
+  },
+  "_uri": "/mark/em/aa729094-c90f-4d11-91ce-c28ff3c78f8f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.826Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

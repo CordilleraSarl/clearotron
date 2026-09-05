@@ -1,0 +1,184 @@
+{
+  "uri": "/mark/jp/c39e487b-9964-4642-8ee8-2f00b1d56a13",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "c39e487b-9964-4642-8ee8-2f00b1d56a13",
+  "applicationNumber": "2012-098348",
+  "registrationNumber": "5709324",
+  "applicationDate": "2012-12-04",
+  "registrationDate": "2014-10-10",
+  "expiryDate": "2024-10-10",
+  "renewalDate": null,
+  "lastPublicationDate": "2014-11-11",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＥＳＱＯＲＴ　Ｅｎｅｒｅｓ　Ｓｍａｒｔ　Ｑｕｏｔａ　Ｏｒｇａｎｉｚｅｄｅｄ　ａｎｄ　Ｒｅｃｏｍｍｅｎｄ　Ｔｅｃｈｎｏｌｏｇｙ",
+  "markTransliteration": "ENARISUSUMAATOKUOOTAOOGANAIZUDEDDOANDOREKOMENDOTEKUNOROJII ENERESUSUMAATOKUOOTAOOGANAIZUDEDDOANDOREKOMENDOTEKUNOROJII ESUKOOTO",
+  "markTranslation": "ESQORT ENERES SMART QUOTA ORGANIZEDED AND RECOMMEND TECHNOLOGY",
+  "markFeature": "DESIGN AND COLOR",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "コンピュータプログラム（記憶されたもの），画像処理用コンピュータプログラム",
+      "translation_language": "en",
+      "translation": "A computer program (stored), a computer program for image processing"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "通信ネットワークを利用したアプリケーションソフトウェアの提供，アプリケーションソフトウェアの貸与，データベース管理用又は個人のスケジュール管理用の電子計算機用プログラムの提供，アニメーションに関する電子計算機用プログラムの提供，アプリケーションサービスプロバイダーによるコンピュータプログラムの提供，移動体電話による通信又は電子計算機端末による通信におけるサーバーの記憶領域の貸与に関するコンサルティング及びこれらに関する情報の提供，緊急通報システム用コンピュータプログラムの提供，通信ネットワーク用コンピュータプログラムの提供",
+      "translation_language": "en",
+      "translation": "Provision of application software using communication network, lending of application software, provision of programs for computer for database management or personal schedule management, provision of computer program for animation, provision of computer program by application service provider, Provide consultation on lending of server storage area in communication by mobile phone or computer terminal, providing information on them, provision of computer program for emergency notification system, provision of computer program for communication network"
+    }
+  ],
+  "owner": "ENERES CO.,LTD.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "Ryuka IP Law Firm",
+  "priorities": [
+    {
+      "priorityDate": "20121204"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CHIYODA TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "ENERES CO.,LTD.",
+        "applicantNativeAddress": "東京都千代田区",
+        "applicantNativeName": "株式会社エナリス"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "A computer program (stored), a computer program for image processing",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "コンピュータプログラム（記憶されたもの），画像処理用コンピュータプログラム"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provision of application software using communication network, lending of application software, provision of programs for computer for database management or personal schedule management, provision of computer program for animation, provision of computer program by application service provider, Provide consultation on lending of server storage area in communication by mobile phone or computer terminal, providing information on them, provision of computer program for emergency notification system, provision of computer program for communication network",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "通信ネットワークを利用したアプリケーションソフトウェアの提供，アプリケーションソフトウェアの貸与，データベース管理用又は個人のスケジュール管理用の電子計算機用プログラムの提供，アニメーションに関する電子計算機用プログラムの提供，アプリケーションサービスプロバイダーによるコンピュータプログラムの提供，移動体電話による通信又は電子計算機端末による通信におけるサーバーの記憶領域の貸与に関するコンサルティング及びこれらに関する情報の提供，緊急通報システム用コンピュータプログラムの提供，通信ネットワーク用コンピュータプログラムの提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        }
+      ]
+    },
+    "id": "c39e487b-9964-4642-8ee8-2f00b1d56a13",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN AND COLOR",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "COLOUR CLAIMED"
+      }
+    ],
+    "markImageViennaClassification": [
+      "01.01.01.00",
+      "01.01.02.00",
+      "01.01.10.02",
+      "01.01.12.03",
+      "01.15.09.00",
+      "01.15.15.00",
+      "25.12.25.00",
+      "26.01.01.00",
+      "26.01.03.00",
+      "26.01.12.00",
+      "26.01.13.00",
+      "26.02.05.00",
+      "27.05.01.15",
+      "27.05.08.00",
+      "27.05.21.00",
+      "29.01.02.01",
+      "29.01.02.02",
+      "29.01.04.01",
+      "29.01.04.02",
+      "29.01.11.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20121204"
+      }
+    ],
+    "recordLastUpdated": "20251024",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "Ryuka IP Law Firm",
+        "representativeNativeName": "弁理士法人ＲＹＵＫＡ国際特許事務所"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20121204",
+        "applicationNumber": "2012-098348"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20241010",
+      "lastPublicationDate": "20141111",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20141010",
+        "registrationNumber": "5709324"
+      }
+    },
+    "version": "20251024082610",
+    "wordMarkSpecification": {
+      "markTranslation": "ESQORT ENERES SMART QUOTA ORGANIZEDED AND RECOMMEND TECHNOLOGY",
+      "markTransliteration": "ENARISUSUMAATOKUOOTAOOGANAIZUDEDDOANDOREKOMENDOTEKUNOROJII ENERESUSUMAATOKUOOTAOOGANAIZUDEDDOANDOREKOMENDOTEKUNOROJII ESUKOOTO",
+      "markVerbalElementText": "ＥＳＱＯＲＴ　Ｅｎｅｒｅｓ　Ｓｍａｒｔ　Ｑｕｏｔａ　Ｏｒｇａｎｉｚｅｄｅｄ　ａｎｄ　Ｒｅｃｏｍｍｅｎｄ　Ｔｅｃｈｎｏｌｏｇｙ"
+    }
+  },
+  "_uri": "/mark/jp/c39e487b-9964-4642-8ee8-2f00b1d56a13",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.709Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

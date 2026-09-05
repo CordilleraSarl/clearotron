@@ -64,7 +64,7 @@ nothing and one that never looked look alike. `vendor-as-architecture.test.mjs` 
   goes in `LEGIT` with its reason.
 - `publication-scrub.test.mjs` — no operator identity, the withheld-path table still describes the tree, and no
   shipped file points a reader at a path that will not be there. Citations outside this tree are declared with a
-  reason in `../../shared/withheld-paths.mjs`; an undeclared one fails.
+  reason on the export's own drop list; an undeclared one fails.
 
 ## Setting up a worktree: run a real `npm ci`, and do not link `node_modules`
 

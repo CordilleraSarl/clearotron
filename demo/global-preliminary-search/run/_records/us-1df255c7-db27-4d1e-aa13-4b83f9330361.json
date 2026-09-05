@@ -1,0 +1,538 @@
+{
+  "uri": "/mark/us/1df255c7-db27-4d1e-aa13-4b83f9330361",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "1df255c7-db27-4d1e-aa13-4b83f9330361",
+  "applicationNumber": "88371547",
+  "registrationNumber": "6269178",
+  "applicationDate": "2019-04-04",
+  "registrationDate": "2021-02-16",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2020-05-05"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QUORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Downloadable computer software to connect to an internet based platform for analyzing business, financial and security data relating to the monitoring and detection of crime and fraud and for assessing business, financial, regulatory and legal risks; all the aforesaid relating only to risk management and security",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Providing business information, business intelligence, providing an on-line computer database in the field of business information; business research and business data analysis featuring the monitoring and detection of business crime and fraud and assessment of business, financial, regulatory and legal risks for business purposes; all the aforesaid relating only to risk management and security",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Computer security and prevention of computer risk, consultancy; Software as a service (SAAS) featuring software for analyzing business, financial and security data relating to the monitoring and detection of crime and fraud and for assessing business, financial, regulatory and legal risks; Platform as a service (PAAS) featuring computer software platforms for analyzing business, financial and security data relating to the monitoring and detection of crime and fraud and for assessing business, financial, regulatory and legal risks; all the aforesaid relating only to risk management and security",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": null,
+      "description": "INT. CL. 45 Physical security and risk consultancy. Crime and fraud detection, investigation, and prevention services, namely, compiling and analyzing crime and fraud occurrence data; online computer database compiling crime and fraud occurrence data; all the aforesaid relating only to risk management and security",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "QUORI PTE. LTD",
+  "ownerNative": null,
+  "ownerCountry": "SG",
+  "representative": "Karen Lim",
+  "priorities": [
+    {
+      "priorityApplicationDate": "20190328",
+      "priorityApplicationNumber": "UK0000338768",
+      "priorityCountryCode": "GB",
+      "priorityCountryName": "United Kingdom"
+    },
+    {
+      "priorityCountryCode": "GB",
+      "priorityCountryName": "United Kingdom",
+      "priorityExpiryDate": "20261026",
+      "priorityRegistrationDate": "20170120",
+      "priorityRegistrationNumber": "UK0000319338"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "68 CIRCULAR ROAD, #02-01, SINGAPORE, 049422, SING",
+        "applicantAddressCity": "SINGAPORE",
+        "applicantAddressCountryCode": "SG",
+        "applicantAddressCountryName": "Singapore",
+        "applicantAddressPostalCode": "049422",
+        "applicantAddressStreet": "68 CIRCULAR ROAD, #02-01",
+        "applicantJurisdictionOfIncorporation": "Singapore",
+        "applicantLegalEntity": "COMPANY",
+        "applicantName": "QUORI PTE. LTD"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "68 CIRCULAR ROAD, #02-01, SINGAPORE, 049422, SING",
+            "city": "SINGAPORE",
+            "countryCode": "SG",
+            "countryName": "Singapore",
+            "jurisdictionOfIncorporation": "Singapore",
+            "legalEntity": "COMPANY",
+            "name": "QUORI PTE. LTD",
+            "postalCode": "049422",
+            "street": "68 CIRCULAR ROAD, #02-01"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "United Kingdom",
+            "legalEntity": "PRIVATE LIMITED COMPANY",
+            "name": "ANUERA LIMITED"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "FROSS ZELNICK LEHRMAN & ZISSU, P.C., 151 WEST 42ND STREET, 17TH FLOOR, NEW YORK, NY 10036",
+            "addressLines": [
+              "KAREN LIM",
+              "FROSS ZELNICK LEHRMAN & ZISSU, P.C.",
+              "151 WEST 42ND STREET, 17TH FLOOR",
+              "NEW YORK, NY 10036"
+            ],
+            "name": "KAREN LIM"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20210827",
+        "recordedDate": "20210907",
+        "reelFrameNumber": "7415/0107"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Downloadable computer software to connect to an internet based platform for analyzing business, financial and security data relating to the monitoring and detection of crime and fraud and for assessing business, financial, regulatory and legal risks; all the aforesaid relating only to risk management and security"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Providing business information, business intelligence, providing an on-line computer database in the field of business information; business research and business data analysis featuring the monitoring and detection of business crime and fraud and assessment of business, financial, regulatory and legal risks for business purposes; all the aforesaid relating only to risk management and security"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Computer security and prevention of computer risk, consultancy; Software as a service (SAAS) featuring software for analyzing business, financial and security data relating to the monitoring and detection of crime and fraud and for assessing business, financial, regulatory and legal risks; Platform as a service (PAAS) featuring computer software platforms for analyzing business, financial and security data relating to the monitoring and detection of crime and fraud and for assessing business, financial, regulatory and legal risks; all the aforesaid relating only to risk management and security"
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsServicesDescription": "INT. CL. 45 Physical security and risk consultancy. Crime and fraud detection, investigation, and prevention services, namely, compiling and analyzing crime and fraud occurrence data; online computer database compiling crime and fraud occurrence data; all the aforesaid relating only to risk management and security"
+        }
+      ]
+    },
+    "id": "1df255c7-db27-4d1e-aa13-4b83f9330361",
+    "ipRightKind": "tmk",
+    "litigationInformation": {
+      "proceedings": [
+        {
+          "decision": {
+            "code": "9",
+            "date": "20201112",
+            "text": "TERMINATED"
+          },
+          "decisionBoard": "Trademark Trial and Appeal Board (TTAB)",
+          "filingDate": "20200602",
+          "identifier": "88371547",
+          "interlocutoryAttorneyName": "SYSTEM ADMIN",
+          "kind": "Extension of Time to Oppose",
+          "kindCode": "EXT",
+          "litigationParties": [
+            {
+              "kind": "Plaintiff",
+              "kindCode": "P",
+              "name": "QUOORI, INC.",
+              "representatives": [
+                {
+                  "addressCity": "LOS ANGELES",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "90067",
+                  "addressState": "CA",
+                  "addressStreet": "2049 CENTURY PARK EAST, SUITE 3200",
+                  "companyName": "MCDERMOTT WILL & EMERY LLP",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "ELLIE HOURIZADEH"
+                }
+              ]
+            },
+            {
+              "kind": "Defendant",
+              "kindCode": "D",
+              "name": "ANUERA LIMITED",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "88371547",
+                  "markVerbalElementText": "QUORI",
+                  "registrationNumber": "0000000"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "NEW YORK",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "10036",
+                  "addressState": "NY",
+                  "addressStreet": "151 WEST 42ND ST., 17TH FL.",
+                  "companyName": "FROSS ZELNICK LEHRMAN & ZISSU, P.C.",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "KAREN LIM"
+                }
+              ]
+            }
+          ],
+          "proceedingEvents": [
+            {
+              "code": "T",
+              "eventDate": "20200901",
+              "text": "#6 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20200901",
+              "text": "#5 FINAL 60-DAY REQUEST TO EXT TIME TO OPPOSE"
+            },
+            {
+              "code": "T",
+              "eventDate": "20200701",
+              "text": "#4 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20200701",
+              "text": "#3 ADD'L 60-DAY REQUEST TO EXT TIME TO OPPOSE"
+            },
+            {
+              "code": "T",
+              "eventDate": "20200602",
+              "text": "#2 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20200602",
+              "text": "#1 STATEMENT OF USE"
+            }
+          ]
+        }
+      ]
+    },
+    "markEvents": [
+      {
+        "date": "20260216",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20210915",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20210216",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20210112",
+        "descriptionText": "POST PUBLICATION AMENDMENT - ENTERED"
+      },
+      {
+        "date": "20210107",
+        "descriptionText": "ASSIGNED TO PETITION STAFF"
+      },
+      {
+        "date": "20201112",
+        "descriptionText": "EXTENSION OF TIME TO OPPOSE PROCESS - TERMINATED"
+      },
+      {
+        "date": "20201029",
+        "descriptionText": "TEAS POST PUBLICATION AMENDMENT RECEIVED"
+      },
+      {
+        "date": "20200602",
+        "descriptionText": "EXTENSION OF TIME TO OPPOSE RECEIVED"
+      },
+      {
+        "date": "20200505",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20200505",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20200415",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20200326",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20200325",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20200325",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20200319",
+        "descriptionText": "TEAS RESPONSE TO SUSPENSION INQUIRY RECEIVED"
+      },
+      {
+        "date": "20200115",
+        "descriptionText": "SUSPENSION LETTER  WRITTEN"
+      },
+      {
+        "date": "20200115",
+        "descriptionText": "LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20200115",
+        "descriptionText": "NOTIFICATION OF LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20200113",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20200113",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20200110",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20191218",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20190620",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20190620",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20190620",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20190614",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20190422",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20190408",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "601 International House, London, W1B 2QD, GBRI",
+        "city": "London",
+        "countryCode": "GB",
+        "countryName": "United Kingdom",
+        "jurisdictionOfIncorporation": "UNITED KINGDOM",
+        "name": "Anuera Limited",
+        "postalCode": "W1B 2QD",
+        "secondaryAddressUnit": "223 Regent Street",
+        "street": "601 International House"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "601 International House, London, W1B 2QD, GBRI",
+        "city": "London",
+        "countryCode": "GB",
+        "countryName": "United Kingdom",
+        "jurisdictionOfIncorporation": "UNITED KINGDOM",
+        "name": "Anuera Limited",
+        "postalCode": "W1B 2QD",
+        "secondaryAddressUnit": "223 Regent Street",
+        "street": "601 International House"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "601 International House, London, W1B 2QD, GBRI",
+        "city": "London",
+        "countryCode": "GB",
+        "countryName": "United Kingdom",
+        "jurisdictionOfIncorporation": "UNITED KINGDOM",
+        "name": "Anuera Limited",
+        "postalCode": "W1B 2QD",
+        "secondaryAddressUnit": "223 Regent Street",
+        "street": "601 International House"
+      }
+    ],
+    "postRegistrationOwners": [
+      {
+        "address": "68 CIRCULAR ROAD, #02-01, SINGAPORE, 049422, SING",
+        "city": "SINGAPORE",
+        "countryCode": "SG",
+        "countryName": "Singapore",
+        "jurisdictionOfIncorporation": "SINGAPORE",
+        "legalEntity": "COMPANY",
+        "name": "QUORI PTE. LTD",
+        "postalCode": "049422",
+        "street": "68 CIRCULAR ROAD, #02-01"
+      }
+    ],
+    "priorities": [
+      {
+        "priorityApplicationDate": "20190328",
+        "priorityApplicationNumber": "UK0000338768",
+        "priorityCountryCode": "GB",
+        "priorityCountryName": "United Kingdom"
+      },
+      {
+        "priorityCountryCode": "GB",
+        "priorityCountryName": "United Kingdom",
+        "priorityExpiryDate": "20261026",
+        "priorityRegistrationDate": "20170120",
+        "priorityRegistrationNumber": "UK0000319338"
+      }
+    ],
+    "recordLastUpdated": "20260219",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "97277899",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "QORI",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "97277899",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "QORI",
+            "refusalStatus": "Refused"
+          }
+        ],
+        "refusalStatus": "Cited"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "New York, NY 10036, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "New York, NY 10036",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Karen Lim Fross Zelnick Lehrman & Zissu, P.C., 151 West 42nd St., 17th Fl."
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "New York, NY 10036, UNITED STATES",
+        "representativeAddressLines": [
+          "New York, NY 10036",
+          "UNITED STATES"
+        ],
+        "representativeName": "Karen Lim"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190404",
+        "applicationNumber": "88371547"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20210216",
+        "markOfficialStatusEvents": [
+          "Section 44(D)",
+          "Section 44(d) Filed",
+          "Section 44(e) Filed",
+          "Section 44(e) Currently"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20200505"
+      ],
+      "registration": {
+        "registrationDate": "20210216",
+        "registrationNumber": "6269178"
+      }
+    },
+    "version": "20260219041010",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QUORI"
+    }
+  },
+  "_uri": "/mark/us/1df255c7-db27-4d1e-aa13-4b83f9330361",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:25.705Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

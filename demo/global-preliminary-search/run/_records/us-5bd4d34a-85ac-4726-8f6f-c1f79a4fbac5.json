@@ -1,0 +1,375 @@
+{
+  "uri": "/mark/us/5bd4d34a-85ac-4726-8f6f-c1f79a4fbac5",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "5bd4d34a-85ac-4726-8f6f-c1f79a4fbac5",
+  "applicationNumber": "87801290",
+  "registrationNumber": "5639649",
+  "applicationDate": "2018-02-16",
+  "registrationDate": "2018-12-25",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2018-08-14"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2025-07-11",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "GCM GROSVENOR CONSORTIUM",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": [
+    "\"CONSORTIUM\""
+  ],
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Educational services, namely, conducting conferences, lectures, seminars, classes, round tables, workshops, panel discussions, and professional development programs in the field of asset management",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "GCM GROSVENOR L.P.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Bruce Goldner",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "900 NORTH MICHIGAN AVENUE, CHICAGO, ILLINOIS, 60611",
+        "applicantAddressCity": "CHICAGO",
+        "applicantAddressPostalCode": "60611",
+        "applicantAddressStateName": "ILLINOIS",
+        "applicantAddressStreet": "900 NORTH MICHIGAN AVENUE",
+        "applicantJurisdictionOfIncorporation": "ILLINOIS",
+        "applicantLegalEntity": "LIMITED PARTNERSHIP",
+        "applicantName": "GCM GROSVENOR L.P.",
+        "applicantSecondaryAddressUnit": "SUITE 1100"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "900 NORTH MICHIGAN AVENUE, CHICAGO, ILLINOIS, 60611",
+            "city": "CHICAGO",
+            "jurisdictionOfIncorporation": "ILLINOIS",
+            "legalEntity": "LIMITED PARTNERSHIP",
+            "name": "GCM GROSVENOR L.P.",
+            "postalCode": "60611",
+            "secondaryAddressUnit": "SUITE 1100",
+            "stateName": "ILLINOIS",
+            "street": "900 NORTH MICHIGAN AVENUE"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED PARTNERSHIP",
+            "name": "GCM CUSTOMIZED FUND INVESTMENT GROUP, L.P."
+          },
+          {
+            "jurisdictionOfIncorporation": "ILLINOIS",
+            "legalEntity": "LIMITED PARTNERSHIP",
+            "name": "GROSVENOR CAPITAL MANAGEMENT, L.P."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "SKADDEN, ARPS, SLATE, MEAGHER & FLOM LLP, ONE MANHATTAN WEST, NEW YORK, NY 10001-8602",
+            "addressLines": [
+              "MS. MONIQUE L RIBANDO",
+              "SKADDEN, ARPS, SLATE, MEAGHER & FLOM LLP",
+              "ONE MANHATTAN WEST",
+              "NEW YORK, NY 10001-8602"
+            ],
+            "name": "MS. MONIQUE L RIBANDO"
+          }
+        ],
+        "descriptionText": "MERGER AND CHANGE OF NAME EFFECTIVE 1/2/2025 12:00:00 AM",
+        "executedDate": "20250102",
+        "recordedDate": "20250123",
+        "reelFrameNumber": "8750/0783"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Educational services, namely, conducting conferences, lectures, seminars, classes, round tables, workshops, panel discussions, and professional development programs in the field of asset management"
+        }
+      ]
+    },
+    "id": "5bd4d34a-85ac-4726-8f6f-c1f79a4fbac5",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "\"CONSORTIUM\""
+    ],
+    "markEvents": [
+      {
+        "date": "20250711",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20231225",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20181225",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20181120",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE E-MAILED"
+      },
+      {
+        "date": "20181119",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20181116",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20181116",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20181023",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20181023",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20181009",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20180814",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20180814",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20180725",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20180724",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20180705",
+        "descriptionText": "WITHDRAWN FROM PUB - OG REVIEW QUERY"
+      },
+      {
+        "date": "20180704",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20180615",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20180605",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20180605",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20180605",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20180605",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20180605",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20180601",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20180225",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20180220",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "900 North Michigan Avenue, Suite 1100, Chicago, IL, 60611",
+        "city": "Chicago",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "entities": [
+          {
+            "name": "GCM, L.L.C., an Illinois Limited Liability Company"
+          }
+        ],
+        "jurisdictionOfIncorporation": "ILLINOIS",
+        "legalEntity": "LIMITED PARTNERSHIP",
+        "name": "Grosvenor Capital Management, L.P.",
+        "postalCode": "60611",
+        "stateName": "ILLINOIS",
+        "street": "900 North Michigan Avenue, Suite 1100"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "900 North Michigan Avenue, Suite 1100, Chicago, IL, 60611",
+        "city": "Chicago",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "entities": [
+          {
+            "name": "GCM, L.L.C., an Illinois Limited Liability Company"
+          }
+        ],
+        "jurisdictionOfIncorporation": "ILLINOIS",
+        "legalEntity": "LIMITED PARTNERSHIP",
+        "name": "Grosvenor Capital Management, L.P.",
+        "postalCode": "60611",
+        "stateName": "ILLINOIS",
+        "street": "900 North Michigan Avenue, Suite 1100"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "900 North Michigan Avenue, Suite 1100, Chicago, IL, 60611",
+        "city": "Chicago",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "entities": [
+          {
+            "name": "GCM, L.L.C., an Illinois Limited Liability Company"
+          }
+        ],
+        "jurisdictionOfIncorporation": "ILLINOIS",
+        "legalEntity": "LIMITED PARTNERSHIP",
+        "name": "Grosvenor Capital Management, L.P.",
+        "postalCode": "60611",
+        "stateName": "ILLINOIS",
+        "street": "900 North Michigan Avenue, Suite 1100"
+      }
+    ],
+    "recordLastUpdated": "20260130",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "NEW YORK, NY 10036, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "NEW YORK, NY 10036",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "BRUCE GOLDNER SKADDEN, ARPS, SLATE, MEAGHER & FLOM LLP, FOUR TIMES SQUARE"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "NEW YORK, NY 10036, UNITED STATES",
+        "representativeAddressLines": [
+          "NEW YORK, NY 10036",
+          "UNITED STATES"
+        ],
+        "representativeName": "Bruce Goldner"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20180216",
+        "applicationNumber": "87801290"
+      },
+      "cancellationDate": "20250711",
+      "cancellationPublicationDate": "20250805",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20180308"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20180308"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20250711",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20180814"
+      ],
+      "registration": {
+        "registrationDate": "20181225",
+        "registrationNumber": "5639649"
+      },
+      "withdrawalDate": [
+        "20180705"
+      ]
+    },
+    "version": "20260130161046",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GCM GROSVENOR CONSORTIUM"
+    }
+  },
+  "_uri": "/mark/us/5bd4d34a-85ac-4726-8f6f-c1f79a4fbac5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

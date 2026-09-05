@@ -1,0 +1,134 @@
+{
+  "uri": "/mark/gb/e7c0c60c-c5c8-4110-af61-4c23761fcc67",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "e7c0c60c-c5c8-4110-af61-4c23761fcc67",
+  "applicationNumber": "3406564",
+  "registrationNumber": "3406564",
+  "applicationDate": "2019-06-13",
+  "registrationDate": "2019-09-06",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "COCO'S AT 22 GROSVENOR SQUARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Nightclub services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "en",
+      "description": "Restaurant and bar services; private members dining club services; private members drinking club services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "The Audley Hotel Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Boult Wade Tennant LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "4th Floor, Millbank Tower, 21-24 Millbank, London SW1P 4QP",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "The Audley Hotel Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Nightclub services."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Restaurant and bar services; private members dining club services; private members drinking club services."
+        }
+      ]
+    },
+    "id": "e7c0c60c-c5c8-4110-af61-4c23761fcc67",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2019/026"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Salisbury Square House, 8 Salisbury Square, London EC4Y 8AP",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Boult Wade Tennant LLP"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20190613",
+        "applicationNumber": "3406564"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ABANDONED",
+      "registration": {
+        "registrationDate": "20190906",
+        "registrationNumber": "3406564"
+      }
+    },
+    "version": "20250627200302",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "COCO'S AT 22 GROSVENOR SQUARE"
+    }
+  },
+  "_uri": "/mark/gb/e7c0c60c-c5c8-4110-af61-4c23761fcc67",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.815Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,186 @@
+{
+  "uri": "/mark/kr/6a16a457-f85f-44f5-9a01-6909f81f5794",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "6a16a457-f85f-44f5-9a01-6909f81f5794",
+  "applicationNumber": "40-2000-0020523",
+  "registrationNumber": "4005022140000",
+  "applicationDate": "2000-04-28",
+  "registrationDate": "2001-09-24",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "RORI",
+  "markTransliteration": "RORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    3,
+    9,
+    18,
+    25,
+    26
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        3
+      ],
+      "language": "ko",
+      "description": "나리싱크림, 눈썹용 연필, 립스틱, 마스카라, 마스크팩, 맛사지용 겔, 맛사지용 오일, 매니큐어, 매니큐어용 에나멜, 매니큐어제거제, 머릿기름, 모발용 웨이브제, 배스오일, 배스파우더, 베이비오일, 베이비파우더, 볼연지, 볼터치, 선밀크, 비의료용 방향제, 선스크린로션, 선스크린크림, 선오일, 선탠제, 셰이빙크림, 스킨밀크, 스킨프레시너, 아이라이너, 아이섀도, 애프터셰이브로션, 오데코롱, 인체용 방취제, 일반화장수, 입술광택제, 입술피부보호제, 체중감량용 화장품, 콜드크림, 콤팩트용 고형분, 크린싱크림, 파마약, 파운데이션크림, 퍼머넌트웨이빙로션, 페이스파우더, 피부미백크림, 핸드크림, 향수, 헤어겔, 헤어글레이즈, 헤어드레싱어, 헤어로션, 헤어모이스처라이저, 헤어무스, 헤어스프레이, 헤어컨디셔너, 헤어크림, 헤어토닉, 화장분, 화장용바셀린, 화장용 수렴제, 화장용 연필, 화장용 탤컴파우더, 바디용품, 목욕용품, 화장용 로션처리티슈, 화장용 탈지면, 목욕비누, 물비누, 미용비누, 샴푸, 세제용클렌저, 종이비누, 헤어린스, 화장비누",
+      "translation_language": "en",
+      "translation": "Narissing cream, eyebrow pencil, lipstick, mascara, mask pack, massage gel, massage oil, nail polish, manicure enamel, nail polish remover, hair oil, hair wave agent, bath oil, bath powder, baby oil, baby powder, Rouge, cheek touch, sun milk, non-medical air freshener, sunscreen lotion, sunscreen cream, sun oil, tanning agent, shaving cream, skin milk, skin freshener, eyeliner, eye shadow, aftershave lotion, eau de cologne, human body deodorant, general lotion, lip gloss, lip skin protectant, weight loss cosmetic, cold cream, compact solid, cleansing cream, perm, foundation cream, permanent waving lotion, face powder, skin whitening cream, hand cream, Perfume, hair gel, hair glaze, hair dresser, hair lotion, hair moisturizer, hair mousse, hair spray, hair conditioner, hair cream, hair tonic, cosmetic powder, cosmetic Vaseline, cosmetic astringent, cosmetic pencil, makeup For talcum powder, body products, bath products, cosmetic lotion-treated tissue, cosmetic cotton wool, bath soap, water soap, beauty soap, shampoo, detergent cleanser, paper soap, hair conditioner, makeup soap"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "보통안경, 선글라스",
+      "translation_language": "en",
+      "translation": "regular glasses, sunglasses"
+    },
+    {
+      "classes": [
+        18
+      ],
+      "language": "ko",
+      "description": "보스턴백, 비금속제 지갑, 비치백, 슈트케이스, 신용카드케이스, 여행가방, 여행용트렁크, 패스포트케이스, 핸드백",
+      "translation_language": "en",
+      "translation": "Boston bag, non-metal wallet, beach bag, suit case, credit card case, travel bag, travel trunk, passport case, handbag"
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "ko",
+      "description": "거들, 나이트가운, 남방셔츠, 네글리제, 드레싱가운, 만틸라 , 목욕가운, 바디스, 보디셔츠, 브레지어, 블라우스, 셔츠요크, 셔츠프런트, 속내의, 속바지, 속셔츠, 속팬티, 수영모자, 수영복, 수영팬츠, 슈미젯 , 슈미즈, 스웨터, 스웨트셔츠, 스웨트팬츠, 스포츠셔츠, 슬립, 와이셔츠, 운동용 유니폼, 유니타드, 잠옷, 저지 , 조끼, 카디건, 칼라커프스, 케미솔 , 코르셋, 코슬렛 , 콤비네이션내의, 탱크탑, 테디 , 트랙슈트, 파자마, 팬티스타킹, 페티코트 , 폴로셔츠, 풀오버 , t셔츠, 의류용 멜빵, 혁대, 넥타이, 래그워머, 머프 , 목도리, 스카프, 스타킹, 운동용 스타킹, 양말, 타이츠",
+      "translation_language": "en",
+      "translation": "Girdle, Nightgown, Southern Shirt, Negligee, Dressing Gown, Mantilla, Bathrobe, Bodysuit, Body Shirt, Bra, Blouse, Shirt York, Shirt Front, Undergarment, Underpants, Undershirt, Underpants, Swim Cap, Swimwear, Swimming Pants, Chemise, Chemise, Sweater, Sweatshirt, Sweatpants, Sports Shirt, Slip, Shirt, Workout Uniform, Unitard, Pajamas, Jersey, Vest, Cardigan, Collar Cuff, Chemisole, Corset, Corset, Combination Undergarment, tank top, teddy, tracksuit, pajama, pantyhose, petticoat, polo shirt, pullover, t-shirt, suspenders, belt, tie, ragwarmer, muff, scarf, scarf, stockings, workout stockings, socks, tights"
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "ko",
+      "description": "머리리본, 머리핀, 헤어밴드",
+      "translation_language": "en",
+      "translation": "hair ribbon, hairpin, hair band"
+    }
+  ],
+  "owner": "CHONG WOO CO., LTD.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "손창규 (Sohn Chang Kyu)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "인천광역시 서구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "CHONG WOO CO., LTD.",
+        "applicantNativeName": "주식회사 종우실업"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Narissing cream, eyebrow pencil, lipstick, mascara, mask pack, massage gel, massage oil, nail polish, manicure enamel, nail polish remover, hair oil, hair wave agent, bath oil, bath powder, baby oil, baby powder, Rouge, cheek touch, sun milk, non-medical air freshener, sunscreen lotion, sunscreen cream, sun oil, tanning agent, shaving cream, skin milk, skin freshener, eyeliner, eye shadow, aftershave lotion, eau de cologne, human body deodorant, general lotion, lip gloss, lip skin protectant, weight loss cosmetic, cold cream, compact solid, cleansing cream, perm, foundation cream, permanent waving lotion, face powder, skin whitening cream, hand cream, Perfume, hair gel, hair glaze, hair dresser, hair lotion, hair moisturizer, hair mousse, hair spray, hair conditioner, hair cream, hair tonic, cosmetic powder, cosmetic Vaseline, cosmetic astringent, cosmetic pencil, makeup For talcum powder, body products, bath products, cosmetic lotion-treated tissue, cosmetic cotton wool, bath soap, water soap, beauty soap, shampoo, detergent cleanser, paper soap, hair conditioner, makeup soap",
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "나리싱크림, 눈썹용 연필, 립스틱, 마스카라, 마스크팩, 맛사지용 겔, 맛사지용 오일, 매니큐어, 매니큐어용 에나멜, 매니큐어제거제, 머릿기름, 모발용 웨이브제, 배스오일, 배스파우더, 베이비오일, 베이비파우더, 볼연지, 볼터치, 선밀크, 비의료용 방향제, 선스크린로션, 선스크린크림, 선오일, 선탠제, 셰이빙크림, 스킨밀크, 스킨프레시너, 아이라이너, 아이섀도, 애프터셰이브로션, 오데코롱, 인체용 방취제, 일반화장수, 입술광택제, 입술피부보호제, 체중감량용 화장품, 콜드크림, 콤팩트용 고형분, 크린싱크림, 파마약, 파운데이션크림, 퍼머넌트웨이빙로션, 페이스파우더, 피부미백크림, 핸드크림, 향수, 헤어겔, 헤어글레이즈, 헤어드레싱어, 헤어로션, 헤어모이스처라이저, 헤어무스, 헤어스프레이, 헤어컨디셔너, 헤어크림, 헤어토닉, 화장분, 화장용바셀린, 화장용 수렴제, 화장용 연필, 화장용 탤컴파우더, 바디용품, 목욕용품, 화장용 로션처리티슈, 화장용 탈지면, 목욕비누, 물비누, 미용비누, 샴푸, 세제용클렌저, 종이비누, 헤어린스, 화장비누"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "regular glasses, sunglasses",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "보통안경, 선글라스"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Boston bag, non-metal wallet, beach bag, suit case, credit card case, travel bag, travel trunk, passport case, handbag",
+          "intClassNumber": "18",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "보스턴백, 비금속제 지갑, 비치백, 슈트케이스, 신용카드케이스, 여행가방, 여행용트렁크, 패스포트케이스, 핸드백"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Girdle, Nightgown, Southern Shirt, Negligee, Dressing Gown, Mantilla, Bathrobe, Bodysuit, Body Shirt, Bra, Blouse, Shirt York, Shirt Front, Undergarment, Underpants, Undershirt, Underpants, Swim Cap, Swimwear, Swimming Pants, Chemise, Chemise, Sweater, Sweatshirt, Sweatpants, Sports Shirt, Slip, Shirt, Workout Uniform, Unitard, Pajamas, Jersey, Vest, Cardigan, Collar Cuff, Chemisole, Corset, Corset, Combination Undergarment, tank top, teddy, tracksuit, pajama, pantyhose, petticoat, polo shirt, pullover, t-shirt, suspenders, belt, tie, ragwarmer, muff, scarf, scarf, stockings, workout stockings, socks, tights",
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "거들, 나이트가운, 남방셔츠, 네글리제, 드레싱가운, 만틸라 , 목욕가운, 바디스, 보디셔츠, 브레지어, 블라우스, 셔츠요크, 셔츠프런트, 속내의, 속바지, 속셔츠, 속팬티, 수영모자, 수영복, 수영팬츠, 슈미젯 , 슈미즈, 스웨터, 스웨트셔츠, 스웨트팬츠, 스포츠셔츠, 슬립, 와이셔츠, 운동용 유니폼, 유니타드, 잠옷, 저지 , 조끼, 카디건, 칼라커프스, 케미솔 , 코르셋, 코슬렛 , 콤비네이션내의, 탱크탑, 테디 , 트랙슈트, 파자마, 팬티스타킹, 페티코트 , 폴로셔츠, 풀오버 , t셔츠, 의류용 멜빵, 혁대, 넥타이, 래그워머, 머프 , 목도리, 스카프, 스타킹, 운동용 스타킹, 양말, 타이츠"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "hair ribbon, hairpin, hair band",
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "머리리본, 머리핀, 헤어밴드"
+        }
+      ]
+    },
+    "id": "6a16a457-f85f-44f5-9a01-6909f81f5794",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "# Teheran-ro, Gangnam-gu, Seoul Republic of Korea(GLOBAL COMET PATENT OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "손창규 (Sohn Chang Kyu)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20000428",
+        "applicationNumber": "40-2000-0020523"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20010924",
+        "registrationNumber": "4005022140000"
+      }
+    },
+    "version": "20250625155355",
+    "wordMarkSpecification": {
+      "markTransliteration": "RORI",
+      "markVerbalElementText": "RORI"
+    }
+  },
+  "_uri": "/mark/kr/6a16a457-f85f-44f5-9a01-6909f81f5794",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:43.692Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

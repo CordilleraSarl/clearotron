@@ -1,0 +1,111 @@
+{
+  "uri": "/mark/br/c3c2beeb-34d5-4d24-8770-522b6fcf0a2a",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "c3c2beeb-34d5-4d24-8770-522b6fcf0a2a",
+  "applicationNumber": "912520558",
+  "registrationNumber": null,
+  "applicationDate": "2017-03-31",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "DATA DRIVEN BRASIL CONNECTING DATA AND BUSINESS PRESENTED BY NEOWAY",
+  "markTransliteration": null,
+  "markTranslation": "DATA = DADOS - DRIVEN = ORIENTADOS - CONNECTING DATA AND BUSINESS = CONECTANDO DADOS E NEGÓCIOS - PRESENTED BY = APRESENTADO POR.",
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Organização e apresentação de conferências; Organização e apresentação de congressos; Organização e apresentação de oficinas de trabalho [treinamento]; Organização e apresentação de seminários; Organização e apresentação de simpósios.",
+      "translation_language": "en",
+      "translation": "Organization and presentation of conferences; Organization and presentation of congresses; Organization and presentation of workshops [training]; organization and presentation of seminars; Organization and presentation of symposia."
+    }
+  ],
+  "owner": "NEOWAY TECNOLOGIA INTEGRADA ASSESSORIA E NEGÓCIOS SA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "No agent available",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "NEOWAY TECNOLOGIA INTEGRADA ASSESSORIA E NEGÓCIOS SA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Organization and presentation of conferences; Organization and presentation of congresses; Organization and presentation of workshops [training]; organization and presentation of seminars; Organization and presentation of symposia.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Organização e apresentação de conferências; Organização e apresentação de congressos; Organização e apresentação de oficinas de trabalho [treinamento]; Organização e apresentação de seminários; Organização e apresentação de simpósios."
+        }
+      ]
+    },
+    "id": "c3c2beeb-34d5-4d24-8770-522b6fcf0a2a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.03.04",
+      "27.05.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260501",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "No agent available"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20170331",
+        "applicationNumber": "912520558"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20260501020235",
+    "wordMarkSpecification": {
+      "markTranslation": "DATA = DADOS - DRIVEN = ORIENTADOS - CONNECTING DATA AND BUSINESS = CONECTANDO DADOS E NEGÓCIOS - PRESENTED BY = APRESENTADO POR.",
+      "markVerbalElementText": "DATA DRIVEN BRASIL CONNECTING DATA AND BUSINESS PRESENTED BY NEOWAY"
+    }
+  },
+  "_uri": "/mark/br/c3c2beeb-34d5-4d24-8770-522b6fcf0a2a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.811Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "uri": "/mark/au/3882ab55-7fc3-425d-9c01-cc3fe86fbc93",
+  "provider": "clarivate",
+  "office": "au",
+  "guid": "3882ab55-7fc3-425d-9c01-cc3fe86fbc93",
+  "applicationNumber": "955988",
+  "registrationNumber": "955988",
+  "applicationDate": "2003-05-30",
+  "registrationDate": "2003-05-30",
+  "expiryDate": "2033-05-30",
+  "renewalDate": null,
+  "lastPublicationDate": "2003-11-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "venturi",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Loudspeakers, audio amplifiers, subwoofers, DVD players, compact disc players, radio receivers, television receivers and monitors, television support systems; none of the foregoing being computer equipment or for use in relation to computer equipment",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Standard Radio Distributors Pty Ltd",
+  "ownerNative": null,
+  "ownerCountry": "AU",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "3/200 Turner Street PORT MELBOURNE 3207, VIC",
+        "applicantAddressCountryCode": "AU",
+        "applicantAddressCountryName": "Australia",
+        "applicantName": "Standard Radio Distributors Pty Ltd"
+      },
+      {
+        "applicantAddress": "3/200 Turner Street PORT MELBOURNE 3207, VIC",
+        "applicantAddressCountryCode": "AU",
+        "applicantAddressCountryName": "Australia",
+        "applicantName": "Robert Gardiner"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Loudspeakers, audio amplifiers, subwoofers, DVD players, compact disc players, radio receivers, television receivers and monitors, television support systems; none of the foregoing being computer equipment or for use in relation to computer equipment"
+        }
+      ]
+    },
+    "id": "3882ab55-7fc3-425d-9c01-cc3fe86fbc93",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "AU",
+    "registrationOfficeName": "Australia",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "PO Box 98 PORT MELBOURNE 3207 VIC",
+        "representativeCorrespondentAddressCountryCode": "AU",
+        "representativeCorrespondentAddressCountryName": "Australia",
+        "representativeCorrespondentName": "Standard Radio Distributors Pty Ltd"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20030530",
+        "applicationNumber": "955988"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330530",
+      "lastPublicationDate": "20031120",
+      "markCurrentStatus": "REGISTERED: REGISTERED/PROTECTED",
+      "registration": {
+        "registrationDate": "20030530",
+        "registrationNumber": "955988"
+      }
+    },
+    "version": "20250625150443",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "venturi"
+    }
+  },
+  "_uri": "/mark/au/3882ab55-7fc3-425d-9c01-cc3fe86fbc93",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.177Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

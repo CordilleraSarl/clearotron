@@ -1,0 +1,127 @@
+{
+  "uri": "/mark/br/c19b1254-0b49-46a7-a614-37bf646bf1fa",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "c19b1254-0b49-46a7-a614-37bf646bf1fa",
+  "applicationNumber": "816454752",
+  "registrationNumber": null,
+  "applicationDate": "1991-10-17",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "GORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    3,
+    9,
+    10,
+    16,
+    21,
+    24,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        3,
+        9,
+        10,
+        16,
+        21,
+        24,
+        35,
+        42
+      ],
+      "language": "pt",
+      "description": "Artigos para escritório, material didático e de desenho.",
+      "translation_language": "en",
+      "translation": "Office supplies, teaching and drawing materials."
+    }
+  ],
+  "owner": "GORI ALL - WOOD INTERNATIONAL AS.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "No agent available",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "GORI ALL - WOOD INTERNATIONAL AS."
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Office supplies, teaching and drawing materials.",
+          "intClassNumber": "01,03,09,10,16,21,24,35,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Artigos para escritório, material didático e de desenho."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "16.30"
+        }
+      ]
+    },
+    "id": "c19b1254-0b49-46a7-a614-37bf646bf1fa",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "No agent available"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19911017",
+        "applicationNumber": "816454752"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20250630192905",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GORI"
+    }
+  },
+  "_uri": "/mark/br/c19b1254-0b49-46a7-a614-37bf646bf1fa",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.048Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/gb/8e3fee4c-048b-4763-a855-1b5effd487e3",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "8e3fee4c-048b-4763-a855-1b5effd487e3",
+  "applicationNumber": "UK00912878864",
+  "registrationNumber": "UK00912878864",
+  "applicationDate": "2014-05-15",
+  "registrationDate": "2014-10-02",
+  "expiryDate": "2034-05-15",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR CASINOS PRESENTS GOLIATH",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    28,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Downloadable games and downloadable poker games; computer software and downloadable software including downloadable software in the nature of a mobile application, all for use in poker, games, gaming, gambling, lotteries and competitions; computer and video game cassettes, cartridges, discs and programs, including interactive programs; parts and fittings for the aforesaid; handheld electronic amusement apparatus for providing Internet access to selected websites.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "en",
+      "description": "Amusement games and machines (automatic and coin operated); gaming equipment and apparatus including electronic games and electronic poker games; poker playing equipment including playing cards, poker chips, table felt, playing card shuffling machines, blind and dealer buttons; card markers and rule books all sold as a unit; electronic poker, games, gaming and gambling apparatus; handheld electronic poker, games, gaming and gambling apparatus; interactive electronic apparatus for use in poker, games, gaming, gambling, lotteries and competitions; networked electronic terminals for gaming purposes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Entertainment services; gaming, gambling, betting, casino game and card game services; organisation, production and presentation of poker tournaments, competitions, games and events; including the provision of all the aforesaid services rendered live or through the medium of television or provided online from a computer database or via the Internet; hosting and arranging of award ceremonies and parties.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Rank Leisure Holdings Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Potter Clarkson LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "TOR, Saint-Cloud Way, Maidenhead SL6 8BN, Berkshire",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Rank Leisure Holdings Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Downloadable games and downloadable poker games; computer software and downloadable software including downloadable software in the nature of a mobile application, all for use in poker, games, gaming, gambling, lotteries and competitions; computer and video game cassettes, cartridges, discs and programs, including interactive programs; parts and fittings for the aforesaid; handheld electronic amusement apparatus for providing Internet access to selected websites."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Amusement games and machines (automatic and coin operated); gaming equipment and apparatus including electronic games and electronic poker games; poker playing equipment including playing cards, poker chips, table felt, playing card shuffling machines, blind and dealer buttons; card markers and rule books all sold as a unit; electronic poker, games, gaming and gambling apparatus; handheld electronic poker, games, gaming and gambling apparatus; interactive electronic apparatus for use in poker, games, gaming, gambling, lotteries and competitions; networked electronic terminals for gaming purposes."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Entertainment services; gaming, gambling, betting, casino game and card game services; organisation, production and presentation of poker tournaments, competitions, games and events; including the provision of all the aforesaid services rendered live or through the medium of television or provided online from a computer database or via the Internet; hosting and arranging of award ceremonies and parties."
+        }
+      ]
+    },
+    "id": "8e3fee4c-048b-4763-a855-1b5effd487e3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Chapel Quarter, Mount Street, Nottingham NG1 6HQ",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Potter Clarkson LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20140515",
+        "applicationNumber": "UK00912878864"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340515",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20141002",
+        "registrationNumber": "UK00912878864"
+      }
+    },
+    "version": "20250627213441",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR CASINOS PRESENTS GOLIATH"
+    }
+  },
+  "_uri": "/mark/gb/8e3fee4c-048b-4763-a855-1b5effd487e3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

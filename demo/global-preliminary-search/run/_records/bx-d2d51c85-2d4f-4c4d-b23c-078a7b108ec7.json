@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/bx/d2d51c85-2d4f-4c4d-b23c-078a7b108ec7",
+  "provider": "clarivate",
+  "office": "bx",
+  "guid": "d2d51c85-2d4f-4c4d-b23c-078a7b108ec7",
+  "applicationNumber": "1537503",
+  "registrationNumber": "1537503",
+  "applicationDate": "2025-11-24",
+  "registrationDate": "2026-02-07",
+  "expiryDate": "2035-11-24",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-02-07",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MARVENQ",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Opleidingen, trainingen, cursussen, workshops, seminars op juridisch gebied, waaronder privacywetgeving, AI-wetgeving, datawetgeving en cybersecurity zoals AVG, Data Act, Digital Services Act, AI Act, Digital Markets Act, alsmede NIS2 (network information security act II) en DORA (digital operational resilience act), datalekken, cyberincidenten, of gegevensbescherming; Opleidingen, trainingen, cursussen, workshops, seminars op juridisch gebied, waaronder verbintenissenrechtelijke onderwerpen, zoals het opstellen van en uitonderhandelen van contracten",
+      "translation_language": "en",
+      "translation": "Education, training, courses, workshops, seminars in the legal field, including privacy law, AI law, data law and cybersecurity such as GDPR, Data Act, Digital Services Act, AI Act, Digital Markets Act, as well as NIS2 (Network Information Security Act II) and DORA (Digital Operational Resilience Act), data breaches, cyber incidents, or data protection; Education, training, courses, workshops, seminars in the legal field, including contract law topics, such as drafting and negotiating contracts"
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "nl",
+      "description": "Juridische dienstverlening; Diensten van advocaten, waaronder procederen voor rechterlijke instanties almede voor mediation autoriteiten; Juridische dienstverlening op het gebied van privacywetgeving, AI-wetgeving, datawetgeving en cybersecurity zoals AVG, Data Act, Digital Services Act, AI Act, Digital Markets Act, alsmede NIS2 (network information security act II) en DORA (digital operational resilience act), datalekken, cyberincidenten, of gegevensbescherming; Juridische dienstverlening op het gebied van verbintenissenrechtelijke onderwerpen; Juridische diensten verband houdende met het opstellen van en het adviseren over contracten, alsmede het verlenen van bijstand bij juridische uitonderhandeling van contracten; Juridische dienstverlening bestaande uit het verlenen van bijstand bij datalekken en cyberincidenten; Juridische dienstverlening bestaande uit het verlenen van bijstand bij onderzoeken en ondervragingen van toezichthoudende autoriteiten (gegevensbeschermingsautoriteiten); Juridische advisering op het gebied van en met betrekking tot gegevensbescherming",
+      "translation_language": "en",
+      "translation": "Legal services; Legal services, including litigation before courts and mediation authorities; Legal services in the field of privacy legislation, AI legislation, data legislation and cybersecurity such as the GDPR, Data Act, Digital Services Act, AI Act, Digital Markets Act, as well as NIS2 (Network Information Security Act II) and DORA (Digital Operational Resilience Act), data breaches, cyber incidents, or data protection; Legal services in the field of contract law matters; Legal services related to drafting and advising on contracts, as well as providing assistance in the legal negotiation of contracts; Legal services consisting of providing assistance with data breaches and cyber incidents; Legal services consisting of providing assistance with investigations and interrogations by supervisory authorities (data protection authorities); Legal advice in the field of and relating to data protection"
+    }
+  ],
+  "owner": "Lex Aquila B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "Labels B.V.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Vinkenpolderweg 33 B, 2952 AV Alblasserdam",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "Lex Aquila B.V."
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education, training, courses, workshops, seminars in the legal field, including privacy law, AI law, data law and cybersecurity such as GDPR, Data Act, Digital Services Act, AI Act, Digital Markets Act, as well as NIS2 (Network Information Security Act II) and DORA (Digital Operational Resilience Act), data breaches, cyber incidents, or data protection; Education, training, courses, workshops, seminars in the legal field, including contract law topics, such as drafting and negotiating contracts",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Opleidingen, trainingen, cursussen, workshops, seminars op juridisch gebied, waaronder privacywetgeving, AI-wetgeving, datawetgeving en cybersecurity zoals AVG, Data Act, Digital Services Act, AI Act, Digital Markets Act, alsmede NIS2 (network information security act II) en DORA (digital operational resilience act), datalekken, cyberincidenten, of gegevensbescherming; Opleidingen, trainingen, cursussen, workshops, seminars op juridisch gebied, waaronder verbintenissenrechtelijke onderwerpen, zoals het opstellen van en uitonderhandelen van contracten"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Legal services; Legal services, including litigation before courts and mediation authorities; Legal services in the field of privacy legislation, AI legislation, data legislation and cybersecurity such as the GDPR, Data Act, Digital Services Act, AI Act, Digital Markets Act, as well as NIS2 (Network Information Security Act II) and DORA (Digital Operational Resilience Act), data breaches, cyber incidents, or data protection; Legal services in the field of contract law matters; Legal services related to drafting and advising on contracts, as well as providing assistance in the legal negotiation of contracts; Legal services consisting of providing assistance with data breaches and cyber incidents; Legal services consisting of providing assistance with investigations and interrogations by supervisory authorities (data protection authorities); Legal advice in the field of and relating to data protection",
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Juridische dienstverlening; Diensten van advocaten, waaronder procederen voor rechterlijke instanties almede voor mediation autoriteiten; Juridische dienstverlening op het gebied van privacywetgeving, AI-wetgeving, datawetgeving en cybersecurity zoals AVG, Data Act, Digital Services Act, AI Act, Digital Markets Act, alsmede NIS2 (network information security act II) en DORA (digital operational resilience act), datalekken, cyberincidenten, of gegevensbescherming; Juridische dienstverlening op het gebied van verbintenissenrechtelijke onderwerpen; Juridische diensten verband houdende met het opstellen van en het adviseren over contracten, alsmede het verlenen van bijstand bij juridische uitonderhandeling van contracten; Juridische dienstverlening bestaande uit het verlenen van bijstand bij datalekken en cyberincidenten; Juridische dienstverlening bestaande uit het verlenen van bijstand bij onderzoeken en ondervragingen van toezichthoudende autoriteiten (gegevensbeschermingsautoriteiten); Juridische advisering op het gebied van en met betrekking tot gegevensbescherming"
+        }
+      ]
+    },
+    "id": "d2d51c85-2d4f-4c4d-b23c-078a7b108ec7",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "0207"
+      }
+    ],
+    "recordLastUpdated": "20260428",
+    "registrationOfficeCode": "BX",
+    "registrationOfficeName": "Benelux",
+    "representatives": [
+      {
+        "representativeAddress": "Wilhelminasingel 3, 4818 AA Breda",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "Labels B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251124",
+        "applicationNumber": "1537503"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20351124",
+      "lastPublicationDate": "20260207",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20260207",
+        "registrationNumber": "1537503"
+      }
+    },
+    "version": "20260428020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MARVENQ"
+    }
+  },
+  "_uri": "/mark/bx/d2d51c85-2d4f-4c4d-b23c-078a7b108ec7",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.566Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

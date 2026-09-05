@@ -1,0 +1,262 @@
+{
+  "schema": 1,
+  "id": "cli-demo-mtkmg4u1-24484cda",
+  "runId": "tmpdemo2014knockoutsearch-venqori-2026-09-02-sample-capture",
+  "slug": "tmpdemo2014knockoutsearch-venqori",
+  "codename": "sample-capture",
+  "date": "2026-09-02",
+  "agent": "clawdi",
+  "forwarder": "e2e",
+  "ref": "DEMO-2014-knockout-search",
+  "state": "delivered",
+  "lane": "knockout",
+  "pid": 2295978,
+  "pidStarttime": "44451246",
+  "engineCommit": "fb4d88b22f1c5fc8d988fec28b558fdf912acb68",
+  "engineCommitSource": "git",
+  "updatedAt": "2026-09-02T21:46:53.238Z",
+  "startedAt": "2026-09-02T21:43:15.549Z",
+  "markName": "VENQORI",
+  "marks": [
+    {
+      "name": "VENQORI"
+    }
+  ],
+  "classes": [
+    9,
+    42,
+    41
+  ],
+  "stageLabel": "Knockout search",
+  "stepIndex": 5,
+  "stepLabel": "Sending to you",
+  "stepN": 6,
+  "stepTotal": 6,
+  "verdict": "Low",
+  "url": "https://test-trademark.cordillera.ch/tmpdemo2014knockoutsearch-venqori-2026-09-02-sample-capture/report.html",
+  "failedStage": null,
+  "reason": null,
+  "deliveredAt": "2026-09-02T21:46:53.238Z",
+  "tokens": {
+    "total": {
+      "input": 20,
+      "output": 14214,
+      "cacheRead": 305472,
+      "cacheWrite": 59941,
+      "attempts": 2,
+      "thoughtTurns": 2
+    },
+    "byStage": {
+      "knockout-assess#0": {
+        "input": 12,
+        "output": 12219,
+        "cacheRead": 235925,
+        "cacheWrite": 47069,
+        "attempts": 1,
+        "thoughtTurns": 1
+      },
+      "knockout-frame": {
+        "input": 8,
+        "output": 1995,
+        "cacheRead": 69547,
+        "cacheWrite": 12872,
+        "attempts": 1,
+        "thoughtTurns": 1
+      }
+    },
+    "byModel": {
+      "anthropic/claude-opus-5": {
+        "input": 20,
+        "output": 14214,
+        "cacheRead": 305472,
+        "cacheWrite": 59941,
+        "attempts": 2,
+        "thoughtTurns": 2
+      }
+    },
+    "byEngine": {
+      "anthropic-agent": {
+        "input": 20,
+        "output": 14214,
+        "cacheRead": 305472,
+        "cacheWrite": 59941,
+        "attempts": 2,
+        "thoughtTurns": 2
+      }
+    },
+    "byAuthMode": {
+      "subscription": {
+        "input": 20,
+        "output": 14214,
+        "cacheRead": 305472,
+        "cacheWrite": 59941,
+        "attempts": 2,
+        "thoughtTurns": 2
+      }
+    }
+  },
+  "economics": {
+    "phase": "delivered",
+    "schemaVersion": 1,
+    "modelBasis": "requested",
+    "dispatchCensus": {
+      "total": 2,
+      "measured": 2,
+      "streamed": 0,
+      "unmeasured": 0,
+      "codeSide": 0
+    },
+    "dispatchCensusReconciles": true,
+    "tokens": {
+      "input": 20,
+      "output": 14214,
+      "cacheWrite": 59941,
+      "cacheRead": 305472
+    },
+    "tokensComplete": true,
+    "byBilling": {
+      "anthropic-agent|subscription|anthropic/claude-opus-5": {
+        "engine": "anthropic-agent",
+        "authMode": "subscription",
+        "model": "anthropic/claude-opus-5",
+        "dispatches": 2,
+        "tokens": {
+          "input": 20,
+          "output": 14214,
+          "cacheWrite": 59941,
+          "cacheRead": 305472
+        }
+      }
+    },
+    "billingComposition": {
+      "basis": "byBilling",
+      "vendors": [
+        "anthropic"
+      ],
+      "engines": [
+        "anthropic-agent"
+      ],
+      "unmappedEngines": [],
+      "billingModes": [
+        "subscription"
+      ],
+      "mixedVendors": false,
+      "mixedBillingModes": false,
+      "unattributedDispatches": 0,
+      "notProviderBilledDispatches": 0,
+      "complete": true,
+      "statement": "this run spent on one vendor (anthropic) under one billing mode (subscription)"
+    },
+    "emittedVsLanded": {
+      "emittedOutputTokens": 14214,
+      "landedBytes": 13628,
+      "landedBytesFromStages": 2,
+      "stagesWithoutLandedRecord": [
+        "knockout-sweep",
+        "register-count",
+        "tool-calls"
+      ],
+      "landedShareIsFloor": true,
+      "landedShare": 0.2397,
+      "landedShareBasis": "landedBytes / (emittedOutputTokens * bytesPerOutputTokenAssumed)",
+      "bytesPerOutputTokenAssumed": 4,
+      "emittedOnDispatchesThatWroteNothing": 0,
+      "thinkingNotSeparable": "thinking is billed inside output_tokens and is never broken out (engine/CONTRACT.md §2) — it sits inside the not-landed share and cannot be split from discarded prose",
+      "thoughtTurns": 2
+    },
+    "emittedVsLandedByStage": {
+      "knockout-assess#0": {
+        "emittedOutputTokens": 12219,
+        "landedBytes": 12240,
+        "landedShare": 0.2504,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "knockout-frame": {
+        "emittedOutputTokens": 1995,
+        "landedBytes": 1388,
+        "landedShare": 0.1739,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "knockout-sweep": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
+      "register-count": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
+      "tool-calls": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      }
+    },
+    "quotedVsActual": {
+      "quoted": null,
+      "quoteSource": null,
+      "quoteReason": "no {event:\"quote\"} row on _driver/run.jsonl — this run was never sized (the knockout lane computes no quote)",
+      "unitsVersion": null,
+      "dimensions": {
+        "turnaroundHours": {
+          "quoted": null,
+          "actual": 0.06,
+          "ratio": null,
+          "actualBasis": "wall:status.startedAt→terminal",
+          "actualIncludesParked": true,
+          "reason": null
+        },
+        "units": {
+          "quoted": null,
+          "actual": null,
+          "reason": "an owner-relative 1-10 estimate scale — nothing the run produces is denominated in it"
+        },
+        "raw": {
+          "quoted": null,
+          "actual": null,
+          "reason": "the absolute effort estimate — an input to the scale, not a physical quantity the run emits"
+        },
+        "costBand": {
+          "quoted": null,
+          "actual": null,
+          "reason": "a 1-5 display band derived from the estimate — no measured counterpart exists"
+        },
+        "searches": {
+          "quoted": null,
+          "actual": null,
+          "reason": "quoted searches are PRODUCT units (what the customer bought); no run artifact records a comparable count, and mapping them onto provider calls or model dispatches would be an invented correspondence"
+        },
+        "gridCalls": {
+          "quoted": null,
+          "actual": null,
+          "reason": "quoted grid calls are a sizing term; the provider-call ledger counts calls of a different shape and the two are not 1:1"
+        },
+        "checksPerName": {
+          "quoted": null,
+          "actual": null,
+          "reason": "a per-name marketplace fan-out constant, not an outcome"
+        }
+      },
+      "measurable": 1,
+      "unmeasurable": 6
+    }
+  },
+  "statement": "Knockout screen — 1 mark: 1 Low.",
+  "reports": [
+    {
+      "mark": "VENQORI",
+      "url": "https://test-trademark.cordillera.ch/tmpdemo2014knockoutsearch-venqori-2026-09-02-sample-capture/report.html"
+    }
+  ],
+  "sendPending": true,
+  "endedAt": "2026-09-02T21:46:53.238Z"
+}

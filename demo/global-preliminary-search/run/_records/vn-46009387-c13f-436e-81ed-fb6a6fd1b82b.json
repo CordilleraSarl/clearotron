@@ -1,0 +1,193 @@
+{
+  "uri": "/mark/vn/46009387-c13f-436e-81ed-fb6a6fd1b82b",
+  "provider": "clarivate",
+  "office": "vn",
+  "guid": "46009387-c13f-436e-81ed-fb6a6fd1b82b",
+  "applicationNumber": "4201229478",
+  "registrationNumber": "40225137",
+  "applicationDate": "2012-12-28",
+  "registrationDate": "2014-05-28",
+  "expiryDate": "2032-12-28",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "YORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    8,
+    9,
+    11,
+    21,
+    35
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7
+      ],
+      "language": "vi",
+      "description": "Máy xay sinh tố; máy xay ép thực phẩm đa năng; máy hút bụi (dùng điện); máy rửa rau quả dùng điện (có thêm chức năng khử độc); máy rửa bát đĩa (dùng điện); máy giặt; máy đánh giày; máy nén; máy đánh trứng (dùng điện).",
+      "translation_language": "en",
+      "translation": "Blender; multi-function food blender; vacuum cleaner (electric); Electric fruit and vegetable washing machine (with additional detoxification function); dishwasher (electric); washing machine; shoe polisher; compressor; Egg beater (electric)."
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "vi",
+      "description": "Dụng cụ mở nắp hộp không dùng điện; muôi (dụng cụ cầm tay); dụng cụ nhà bếp làm bằng inox như: thìa; dĩa; kéo; kẹp; bàn là (dùng điện).",
+      "translation_language": "en",
+      "translation": "Non-electric can opener; ladle (hand tool); kitchen utensils made of stainless steel such as spoons; plate; drag; clip; iron (electric)."
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "vi",
+      "description": "Máy biến thế; máy chỉnh lưu dòng điện (máy nắn dòng); ắc quy điện; thiết bị để nạp ắc quy điện; máy chiếu (thiết bị kết hợp với máy vi tính); pin quang điện.",
+      "translation_language": "en",
+      "translation": "Transformers; current rectifier (current straightener); electric battery; equipment for charging electric batteries; projector (device combined with computer); photovoltaic battery."
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "vi",
+      "description": "Lò nướng dùng điện; nồi cơm điện; nồi áp suất dùng điện (không phải là bộ phận của máy móc); bình tắm nóng lạnh dùng điện, ga, năng lượng mặt trời; nồi đa năng (dùng điện); bình đun nước siêu tốc dùng điện (bình thuỷ điện); thiết bị lọc nước không dùng điện; máy sưởi điện; bếp nướng; bếp lẩu nướng (dùng điện); tủ đông lạnh; máy điều hòa nhiệt độ; máy sấy tóc (dùng điện); máy sấy bát (dùng điện); máy sấy khô quần áo (dùng điện); lò vi sóng (dùng điện); máy hút khói dùng cho nhà bếp (dùng điện); thiết bị lọc không khí; máy lọc nước dùng điện (có tích hợp thiết bị trao đổi nhiệt để cấp nước nóng và lạnh); máy lọc nước (dùng điện); bếp nướng (sử dụng gas); quạt điện; quạt xạc; bếp gas; bếp âm (dùng điện); đèn xạc; bếp điện từ; ấm sắc thuốc (dùng điện); tủ nướng; máy khử trùng; khay giữ nóng thức ăn dùng điện; máy làm sữa chua (là thiết bị trao đổi nhiệt).",
+      "translation_language": "en",
+      "translation": "Electric oven; electric cooker; electric pressure cooker (not a part of machinery); hot and cold shower using electricity, gas, and solar energy; multi-function cooker (electric); electric water heater (hydroelectric kettle); non-electric water filtration equipment; electric heater; grill; hotpot grill (electric); freezer; air conditioner; hair dryer (electric); dish dryer (electric); clothes dryer (electric); microwave oven (electric); kitchen hood (electric); air filtration equipment; electric water purifier (with integrated heat exchanger to supply hot and cold water); water purifier (electric); grill (using gas); electric fan; charging fan; gas stove; Built-in stove (electric); charging lamp; electromagnetic stove; medicinal kettle (electric); baking cabinet; sterilizer; electric food warming tray; Yogurt maker (heat exchanger)."
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "vi",
+      "description": "Nồi áp suất không dùng điện (không phải là bộ phận của máy móc); ấm đun nước inox không dùng điện (ấm còi); nồi nhôm không dùng điện; nồi inox không dùng điện; chảo nhôm không dùng điện; chảo inox không dùng điện; bát (bằng inox); đũa (bằng inox); chậu rửa bằng inox (không phải là bộ phận của thiết bị vệ sinh và không gắn cố định).",
+      "translation_language": "en",
+      "translation": "Non-electric pressure cooker (not a part of the machine); non-electric stainless steel kettle (whistle kettle); non-electric aluminum pot; non-electric stainless steel pot; non-electric aluminum pan; non-electric stainless steel pan; bowl (stainless steel); chopsticks (stainless steel); Stainless steel sink (not a part of sanitary equipment and not permanently attached)."
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "vi",
+      "description": "Dịch vụ mua bán và ký gửi các sản phẩm đồ điện tử, các sản phẩm đồ gia dụng cụ thể là: máy xay sinh tố, máy xay ép thực phẩm đa năng, máy hút bụi (dùng điện), máy rửa rau quả dùng điện (có thêm chức năng khử độc), máy rửa bát đĩa (dùng điện), máy giặt, máy đánh giày, máy đánh trứng (dùng điện), dụng cụ mở nắp hộp, dụng cụ nhà bếp làm bằng inox như: thìa, dĩa, muôi, kéo kẹp, bàn là (dùng điện), máy chiếu (thiết bị kết hợp với máy vi tính), lò nướng, nồi cơm điện, nồi áp suất dùng điện (không phải là bộ phận của máy móc), bình tắm nóng lạnh dùng điện, ga, năng lượng mặt trời, nồi đa năng (dùng điện), bình đun nước siêu tốc dùng điện (bình thuỷ điện), thết bị lọc nước không dùng điện, máy sưởi điện, bếp nướng; bếp lẩu nướng (dùng điện), tủ đông lạnh, máy điều hòa nhiệt độ, máy sấy tóc (dùng điện), máy sấy bát (dùng điện), máy sấy khô quần áo (dùng điện), lò vi sóng (dùng điện), máy hút khói dùng cho nhà bếp (dùng điện), thiết bị lọc không khí, máy lọc nước dùng điện (có tích hợp thiết bị trao đổi nhiệt để cấp nước nóng và lạnh), máy lọc nước (dùng điện), bếp nướng (sử dụng gas), quạt điện, quạt xạc, bếp gas, bếp âm (dùng điện), bếp điện từ, ấm sắc thuốc, tủ nướng, máy khử trùng, khay giữ nóng thức ăn dùng điện, máy làm sữa chua, nồi áp suất không dùng điện (không là bộ phận của máy móc), ấm đun nước inox không dùng điện (ấm còi), nồi nhôm, nồi inox, chảo nhôm, chảo inox.",
+      "translation_language": "en",
+      "translation": "Services of buying, selling and consigning electronic products and household appliances, specifically: blenders, multi-function food processors, vacuum cleaners (electric), fruit and vegetable washers electric (with additional detoxification function), dishwasher (electric), washing machine, shoe shine machine, egg beater (electric), can opener, stainless steel kitchen utensils such as spoons , fork, ladle, scissors, iron (electric), projector (equipment combined with computer), oven, rice cooker, electric pressure cooker (not part of machinery) , shower heater using electricity, gas, solar energy, multi-function cooker (electric), electric water heater (hydroelectric), non-electric water filter, electric heater, grill ; hotpot grill (electric), freezer, air conditioner, hair dryer (electric), dish dryer (electric), clothes dryer (electric), microwave (electric) ), kitchen hood (electric), air purifier, electric water purifier (with integrated heat exchanger to supply hot and cold water), water purifier (electric), grill (using gas), electric fan, charging fan, gas stove, built-in stove (using electricity), induction cooker, medicine kettle, oven, sterilizer, electric food warming tray, milk maker sour, non-electric pressure cooker (not part of machinery), non-electric stainless steel kettle (whistle kettle), aluminum pot, stainless steel pot, aluminum pan, stainless steel pan."
+    }
+  ],
+  "owner": "Công ty cổ phần Mặt Trời Vàng",
+  "ownerNative": null,
+  "ownerCountry": "VN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Lô CN7, cụm công nghiệp vừa và nhỏ, xã Minh Khai, huyện Từ Liêm, thành phố Hà Nội",
+        "applicantAddressCountryCode": "VN",
+        "applicantAddressCountryName": "Vietnam",
+        "applicantName": "Công ty cổ phần Mặt Trời Vàng"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Blender; multi-function food blender; vacuum cleaner (electric); Electric fruit and vegetable washing machine (with additional detoxification function); dishwasher (electric); washing machine; shoe polisher; compressor; Egg beater (electric).",
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "vi",
+          "intGoodsServicesDescription": "Máy xay sinh tố; máy xay ép thực phẩm đa năng; máy hút bụi (dùng điện); máy rửa rau quả dùng điện (có thêm chức năng khử độc); máy rửa bát đĩa (dùng điện); máy giặt; máy đánh giày; máy nén; máy đánh trứng (dùng điện)."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Non-electric can opener; ladle (hand tool); kitchen utensils made of stainless steel such as spoons; plate; drag; clip; iron (electric).",
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "vi",
+          "intGoodsServicesDescription": "Dụng cụ mở nắp hộp không dùng điện; muôi (dụng cụ cầm tay); dụng cụ nhà bếp làm bằng inox như: thìa; dĩa; kéo; kẹp; bàn là (dùng điện)."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Transformers; current rectifier (current straightener); electric battery; equipment for charging electric batteries; projector (device combined with computer); photovoltaic battery.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "vi",
+          "intGoodsServicesDescription": "Máy biến thế; máy chỉnh lưu dòng điện (máy nắn dòng); ắc quy điện; thiết bị để nạp ắc quy điện; máy chiếu (thiết bị kết hợp với máy vi tính); pin quang điện."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electric oven; electric cooker; electric pressure cooker (not a part of machinery); hot and cold shower using electricity, gas, and solar energy; multi-function cooker (electric); electric water heater (hydroelectric kettle); non-electric water filtration equipment; electric heater; grill; hotpot grill (electric); freezer; air conditioner; hair dryer (electric); dish dryer (electric); clothes dryer (electric); microwave oven (electric); kitchen hood (electric); air filtration equipment; electric water purifier (with integrated heat exchanger to supply hot and cold water); water purifier (electric); grill (using gas); electric fan; charging fan; gas stove; Built-in stove (electric); charging lamp; electromagnetic stove; medicinal kettle (electric); baking cabinet; sterilizer; electric food warming tray; Yogurt maker (heat exchanger).",
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "vi",
+          "intGoodsServicesDescription": "Lò nướng dùng điện; nồi cơm điện; nồi áp suất dùng điện (không phải là bộ phận của máy móc); bình tắm nóng lạnh dùng điện, ga, năng lượng mặt trời; nồi đa năng (dùng điện); bình đun nước siêu tốc dùng điện (bình thuỷ điện); thiết bị lọc nước không dùng điện; máy sưởi điện; bếp nướng; bếp lẩu nướng (dùng điện); tủ đông lạnh; máy điều hòa nhiệt độ; máy sấy tóc (dùng điện); máy sấy bát (dùng điện); máy sấy khô quần áo (dùng điện); lò vi sóng (dùng điện); máy hút khói dùng cho nhà bếp (dùng điện); thiết bị lọc không khí; máy lọc nước dùng điện (có tích hợp thiết bị trao đổi nhiệt để cấp nước nóng và lạnh); máy lọc nước (dùng điện); bếp nướng (sử dụng gas); quạt điện; quạt xạc; bếp gas; bếp âm (dùng điện); đèn xạc; bếp điện từ; ấm sắc thuốc (dùng điện); tủ nướng; máy khử trùng; khay giữ nóng thức ăn dùng điện; máy làm sữa chua (là thiết bị trao đổi nhiệt)."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Non-electric pressure cooker (not a part of the machine); non-electric stainless steel kettle (whistle kettle); non-electric aluminum pot; non-electric stainless steel pot; non-electric aluminum pan; non-electric stainless steel pan; bowl (stainless steel); chopsticks (stainless steel); Stainless steel sink (not a part of sanitary equipment and not permanently attached).",
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "vi",
+          "intGoodsServicesDescription": "Nồi áp suất không dùng điện (không phải là bộ phận của máy móc); ấm đun nước inox không dùng điện (ấm còi); nồi nhôm không dùng điện; nồi inox không dùng điện; chảo nhôm không dùng điện; chảo inox không dùng điện; bát (bằng inox); đũa (bằng inox); chậu rửa bằng inox (không phải là bộ phận của thiết bị vệ sinh và không gắn cố định)."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Services of buying, selling and consigning electronic products and household appliances, specifically: blenders, multi-function food processors, vacuum cleaners (electric), fruit and vegetable washers electric (with additional detoxification function), dishwasher (electric), washing machine, shoe shine machine, egg beater (electric), can opener, stainless steel kitchen utensils such as spoons , fork, ladle, scissors, iron (electric), projector (equipment combined with computer), oven, rice cooker, electric pressure cooker (not part of machinery) , shower heater using electricity, gas, solar energy, multi-function cooker (electric), electric water heater (hydroelectric), non-electric water filter, electric heater, grill ; hotpot grill (electric), freezer, air conditioner, hair dryer (electric), dish dryer (electric), clothes dryer (electric), microwave (electric) ), kitchen hood (electric), air purifier, electric water purifier (with integrated heat exchanger to supply hot and cold water), water purifier (electric), grill (using gas), electric fan, charging fan, gas stove, built-in stove (using electricity), induction cooker, medicine kettle, oven, sterilizer, electric food warming tray, milk maker sour, non-electric pressure cooker (not part of machinery), non-electric stainless steel kettle (whistle kettle), aluminum pot, stainless steel pot, aluminum pan, stainless steel pan.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "vi",
+          "intGoodsServicesDescription": "Dịch vụ mua bán và ký gửi các sản phẩm đồ điện tử, các sản phẩm đồ gia dụng cụ thể là: máy xay sinh tố, máy xay ép thực phẩm đa năng, máy hút bụi (dùng điện), máy rửa rau quả dùng điện (có thêm chức năng khử độc), máy rửa bát đĩa (dùng điện), máy giặt, máy đánh giày, máy đánh trứng (dùng điện), dụng cụ mở nắp hộp, dụng cụ nhà bếp làm bằng inox như: thìa, dĩa, muôi, kéo kẹp, bàn là (dùng điện), máy chiếu (thiết bị kết hợp với máy vi tính), lò nướng, nồi cơm điện, nồi áp suất dùng điện (không phải là bộ phận của máy móc), bình tắm nóng lạnh dùng điện, ga, năng lượng mặt trời, nồi đa năng (dùng điện), bình đun nước siêu tốc dùng điện (bình thuỷ điện), thết bị lọc nước không dùng điện, máy sưởi điện, bếp nướng; bếp lẩu nướng (dùng điện), tủ đông lạnh, máy điều hòa nhiệt độ, máy sấy tóc (dùng điện), máy sấy bát (dùng điện), máy sấy khô quần áo (dùng điện), lò vi sóng (dùng điện), máy hút khói dùng cho nhà bếp (dùng điện), thiết bị lọc không khí, máy lọc nước dùng điện (có tích hợp thiết bị trao đổi nhiệt để cấp nước nóng và lạnh), máy lọc nước (dùng điện), bếp nướng (sử dụng gas), quạt điện, quạt xạc, bếp gas, bếp âm (dùng điện), bếp điện từ, ấm sắc thuốc, tủ nướng, máy khử trùng, khay giữ nóng thức ăn dùng điện, máy làm sữa chua, nồi áp suất không dùng điện (không là bộ phận của máy móc), ấm đun nước inox không dùng điện (ấm còi), nồi nhôm, nồi inox, chảo nhôm, chảo inox."
+        }
+      ]
+    },
+    "id": "46009387-c13f-436e-81ed-fb6a6fd1b82b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250517",
+    "registrationOfficeCode": "VN",
+    "registrationOfficeName": "Vietnam",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20121228",
+        "applicationNumber": "4201229478"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321228",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20140528",
+        "registrationNumber": "40225137"
+      }
+    },
+    "version": "20250517191922",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "YORI"
+    }
+  },
+  "_uri": "/mark/vn/46009387-c13f-436e-81ed-fb6a6fd1b82b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:45.803Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

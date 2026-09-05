@@ -1,0 +1,1344 @@
+{
+  "uri": "/mark/em/b4033056-8e90-434d-b21b-c7791c6c2857",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "b4033056-8e90-434d-b21b-c7791c6c2857",
+  "applicationNumber": "10532968",
+  "registrationNumber": "10532968",
+  "applicationDate": "2011-12-29",
+  "registrationDate": "2012-06-25",
+  "expiryDate": "2031-12-29",
+  "renewalDate": null,
+  "lastPublicationDate": "2012-03-16",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VANCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    15,
+    35,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        15
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "cs",
+      "description": "Hudební nástroje.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "cs",
+      "description": "Pomoc pri rízení obchodní cinnosti; Obchodní administrativa; Kancelárské práce; Maloobchodní a velkoobchodní sluzby v oblasti hudebních nástroju; Dovoz a vývoz hudebních nástroju; Zprostredkování pri nákupu a prodeji hudebních nástroju; Shromazdování pro druhé hudebních nástroju (s výjimkou jejich prepravy); Sestavování statistik; Zpracování trhu, pruzkum trhu a analýza trhu; Pruzkum verejného mínení; Shromazdování dat v centrálním souboru; Administrativní správa datových souboru; Organizování veletrhu a výstav pro komercní nebo reklamní úcely; Poskytování informací, informace a poradenství týkající se výse uvedených sluzeb; Veskeré výse uvedené sluzby, také neposkytované elektronickou cestou, vcetne internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "cs",
+      "description": "Výroba, oprava, instalace, restaurace a ladení hudebních nástroju; Poskytování informací, informace a poradenství týkající se výse uvedených sluzeb; Veskeré výse uvedené sluzby, také neposkytované elektronickou cestou, vcetne internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Návrh a tvorba hudebních nástroju; Sluzby prumyslových návrháru týkající se hudebních nástroju; Prumyslová tvorba hudebních nástroju; Grafické návrhy a grafika; Návrhy výrobku (sluzby); Provádení kontrol kvality; Návrh a vývoj pocítacového hardwaru a softwaru pro hudební odvetví; Poskytování informací, informace a poradenství týkající se výse uvedených sluzeb; Veskeré výse uvedené sluzby, také neposkytované elektronickou cestou, vcetne internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "da",
+      "description": "Musikinstrumenter.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "da",
+      "description": "Bistand ved forretningsledelse; Bistand ved forretningsadministration; Bistand ved varetagelse af kontoropgaver; Detail- og engrossalg af musikinstrumenter; Import og eksport af musikinstrumenter; Formidling ved køb og salg af musikinstrumenter; Samling for andre af musikinstrumenter (dog ikke transport heraf); Udarbejdelse af statistikker; Markedsbearbejdelse, -undersøgelse og -analyse; Meningsmålinger; Indsamling af data til en central datasamling; Databaseadministration; Organisering af messer og udstillinger med kommercielle eller reklamemæssige formål; Oplysning, information og rådgivning vedrørende førnævnte tjenesteydelser; Alle førnævnte tjenesteydelser ydes også ad elektronisk vej, herunder internettet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "da",
+      "description": "Bygning, reparation, installation, restaurering og stemning af musikinstrumenter; Oplysning, information og rådgivning vedrørende førnævnte tjenesteydelser; Alle førnævnte tjenesteydelser udbydes også ad elektronisk vej, herunder internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Design og formgivning af musikinstrumenter; Industriel design vedrørende musikinstrumenter; Industriel formgivning af musikinstrumenter; Rådgivning vedrørende grafisk design og grafisk design; Produktdesign; Kvalitetskontrol; Design og udvikling af computere og software til musikbranchen; Oplysning, information og rådgivning vedrørende førnævnte tjenesteydelser; Alle førnævnte tjenesteydelser udbydes også ad elektronisk vej, herunder internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "nl",
+      "description": "Muziekinstrumenten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "Beheer van commerciële zaken; zakelijke administratie; administratieve diensten; detailhandels- en groothandelsdiensten op het gebied van muziekinstrumenten; import en export van muziekinstrumenten; bemiddeling bij de aan- en verkoop van muziekinstrumenten; het bijeenbrengen voor derden van muziekinstrumenten (uitgezonderd het transport daarvan); opstellen van statistieken; marktbewerking, -onderzoek en - analyse; opiniepeilingen; gegevensverzameling in een centraal bestand; administratief beheer van gegevensbestanden; organisatie van beurzen en tentoonstellingen voor commerciële of publicitaire doeleinden; voorlichting informatie en advisering inzake voornoemde diensten; alle voornoemde diensten al dan niet verleend via elektronische weg, waaronder Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "nl",
+      "description": "Bouw, reparatie, installatie, restauratie en stemmen van muziekinstrumenten; voorlichting, informatie en advisering inzake voornoemde diensten; alle voornoemde diensten al dan niet verleend via elektronische weg, waaronder Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Het ontwerpen en vormgeven van muziekinstrumenten; diensten van een industrieel ontwerper met betrekking tot muziekinstrumenten; industriële vormgeving van muziekinstrumenten; grafisch ontwerp en grafisch tekenen; productontwerp; het uitvoeren van kwaliteitscontroles; ontwerpen en ontwikkelen van computers en van software voor de muziekbranche; voorlichting, informatie en advisering inzake voornoemde diensten; alle voornoemde diensten al dan niet verleend via elektronische weg, waaronder Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "en",
+      "description": "Musical instruments.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Business management; Business administration; Office functions; Retailing and wholesaling in the field of musical instruments; Import and export of musical instruments; Arranging the purchase and sale of musical instruments; Bringing together, for others, of musical instruments (excluding the transport thereof); Drawing up of statistics; Market canvassing, research and analysis; Opinion polling services; Collecting data in a central file; Data file administration; Organisation of trade fairs and exhibitions for commercial and advertising purposes; Information and consultancy relating to the aforesaid services; All the aforesaid services whethr or not provided via electronic channels, including the Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Building construction, repair, installation services, restoration and tuning of musical instruments; Information and consultancy relating to the aforesaid services; All the aforesaid services whether or not via electronic channels, including the Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Design of musical instruments; Industrial design in relation to musical instruments; Industrial design of musical instruments; Graphic design and graphic art services; Design services for products; Quality control; Design and development of computers and software for the music industry; Information and consultancy relating to the aforesaid services; The aforesaid services also via electronic channels, including the Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "et",
+      "description": "Muusikariistad.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "et",
+      "description": "Ärijuhtimine; Ärikorraldus; Kontoriteenused; Muusikariistade jae- ja hulgimüügiteenused; Muusikariistade import ja eksport; Muusikariistade ostmise ja müümise vahendamine; Muusikariistade koondamine kolmandatele isikutele (va transport); Statistika koostamine; Turundus, turuanalüüsid ja -uuringud; Arvamusuuringuteenused; Andmete kogumine keskfaili; Andmefailide administratiivhaldus; Kaubandus- või reklaamimesside ja -näituste korraldamine; Konsultatsioon, teave ja nõustamine seoses eespool nimetatud teenustega; Kõik eespool nimetatud teenused kas elektroonilisel teel või mitte, sh Interneti teel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "et",
+      "description": "Muusikariistade ehitamine, parandamine, paigaldamine, ennistamine ja häälestamine; Konsultatsioon, teave ja nõustamine seoses eespool nimetatud teenustega; Kõik eespool nimetatud teenused kas elektroonilisel kujul või mitte, sh Interneti teel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Muusikariistade kujundamine ja kavandamine; Muusikariistade tööstusdisaineri teenused; Muusikariistade tööstusdisain; Graafilise kujunduse ja graafilise kunsti teenused; Tootekujunduse teenused; Kvaliteedikontrollide korraldamine; Muusika arvutite ja arvutitarkvara projekteerimine ja arendamine; Konsultatsioon, nõustamine ja teave seoses eespool nimetatud teenustega; Kõik eespool nimetatud teenused kas elektroonilisel kujul või mitte, sh Interneti teel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "fi",
+      "description": "Soittimet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fi",
+      "description": "Liikkeenjohto; Yrityshallinto; Toimistotehtävät; Soittimiin liittyvät vähittäis- ja tukkukauppapalvelut; Soitinten tuonti ja vienti; Soitinten ostoon ja myyntiin liittyvä välitys; Soitinten kokoaminen yhteen muiden hyväksi (paitsi niiden kuljetus); Tilastojen laatiminen; Markkinointi, markkinointitutkimus ja -analyysit; Mielipidekyselyt; Keskustietokantaan kerätyt tiedot; Tiedostojen hallinta; Messujen ja näyttelyiden järjestäminen mainonta- tai kaupallisiin tarkoituksiin; Edellä mainittuihin palveluihin liittyvä neuvonta ja tiedotus; Kaikkia edellä mainittuja palveluja tarjotaan myös elektronisesti, mukaan lukien Internetin kautta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "fi",
+      "description": "Soitinten rakentaminen, korjaus, asennus, entisöinti ja viritys; Edellä mainittuihin palveluihin liittyvä opastus, neuvonta ja tiedotus; Kaikkia edellä mainittuja palveluja tarjotaan myös elektronisesti, mukaan lukien Internetin kautta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Soitinten suunnittelu ja muotoilu; Soittimiin liittyvät teolliset muotoilupalvelut; Soitinten teollinen muotoilu; Graafiseen suunnitteluun ja taiteeseen liittyvät palvelut; Tuotesuunnittelupalvelut; Laatuarviointien suorittaminen; Tietokoneiden ja ohjelmistojen suunnittelu ja kehitys musiikkialaa varten; Edellä mainittuihin palveluihin liittyvä opastus, neuvonta ja tiedotus; Kaikkia edellä mainittuja palveluja tarjotaan myös elektronisesti, mukaan lukien Internetin kautta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "fr",
+      "description": "Instruments de musique.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Gestion des affaires commerciales; Administration commerciale; Travaux de bureau; Services de vente au détail et de gros dans le domaine des instruments de musique; Importation et exportation d'instruments de musique; Médiation pour l'achat et la vente d'instruments de musique; Rassemblement d'instruments de musique pour le compte de tiers (à l'exception de leur transport); Établissement de statistiques; Étude de marché, enquête de marché et analyse de marché; Services de sondages d'opinion; Compilation de données dans un fichier central; Gestion administrative de bases de données; Organisation de foires et d'expositions à but commercial ou publicitaire; Explications, informations et conseils concernant les services précités; Tous les services précités fournis ou non par voie électronique, notamment via internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "fr",
+      "description": "Construction, réparation, installation, restauration et raccordement d'instruments de musique; Renseignements, informations et conseils relatifs aux services précités; Tous les services précités fournis ou non par voie électronique, notamment via internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Conception et design d'instruments de musique; Services d'un dessinateur industriel en rapport avec les instruments de musique; Conception industrielle d'instruments de musique; Services de conception graphique et d'art graphique; Services de conception de produits; Réalisation de contrôles de qualité; Conception et développement d'ordinateurs et de logiciels pour l'industrie de la musique; Renseignements, informations et conseils en ce qui concerne les services précités; Tous les services précités fournis ou non par voie électronique, notamment via internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "de",
+      "description": "Musikinstrumente.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Geschäftsführung; Unternehmensverwaltung; Büroarbeiten; Einzelhandels- und Großhandelsdienstleistungen im Bereich von Musikinstrumenten; Import und Export von Musikinstrumenten; Vermittlung beim An- und Verkauf von Musikinstrumenten; Zusammenstellung für Dritte von Musikinstrumenten (ausgenommen deren Transport); Erstellung von Statistiken; Marktbearbeitung, -forschung und -analyse; Meinungsforschung; Datenspeicherung in einer zentralen Datenbank; Verwaltung von Dateien; Veranstaltung von Messen und Ausstellungen für wirtschaftliche oder Werbezwecke; Auskünfte, Informationen und Beratung in Bezug auf die vorstehend genannten Dienstleistungen; Bereitstellung aller vorstehend genannten Dienstleistungen auch auf elektronischem Weg einschließlich Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "de",
+      "description": "Bau, Reparatur, Installation, Instandsetzung und Stimmen von Musikinstrumenten; Auskünfte, Informationen und Beratung in Bezug auf die vorstehend genannten Dienstleistungen; Bereitstellung aller vorstehend genannten Dienstleistungen auch auf elektronischem Weg einschließlich Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Entwurf und Gestaltung von Musikinstrumenten; Dienstleistungen eines Industriedesigners in Bezug auf Musikinstrumente; Industriedesign von Musikinstrumenten; Dienstleistungen in Bezug auf Grafikdesign und Grafiken; Produktdesign; Durchführung von Qualitätsprüfungen; Entwurf und Entwicklung von Computern und Software für die Musikbranche; Auskünfte, Informationen und Beratung in Bezug auf die vorstehend genannten Dienstleistungen; Bereitstellung aller vorstehend genannten Dienstleistungen auch auf elektronischem Weg einschließlich Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "hu",
+      "description": "Hangszerek.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hu",
+      "description": "Kereskedelmi ügyletek; Kereskedelmi adminisztráció; Irodai munkák; Kiskereskedelmi és nagykereskedelmi szolgáltatások hangszerek területén; Hangszerek importja és exportja; Közvetítés hangszerek beszerzésénél és értékesítésénél; Hangszerek összegyujtése harmadik személyek számára (kivéve szállítás); Statisztikák lerajzolása; Piacelokészítés, piacelemzés és piackutatás; Közvélemény-kutatási szolgáltatások; Adatgyujtés központi állományba; Adatállományok adminisztratív kezelése; Kereskedelmi vagy reklám célú vásár és kiállítás szervezése; Felvilágosítás, tájékoztatás és tanácsadás az elobb felsorolt szolgáltatások tárgyában; Minden fent felsorolt szolgáltatás akár elektronikus úton, ezek között az interneten át is.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "hu",
+      "description": "Hangszerek építése, javítása, felszerelése, helyreállítása és behangolása; Felvilágosítás, tájékoztatás és tanácsadás az elobb felsorolt szolgáltatások tárgyában; Minden fent felsorolt szolgáltatás akár elektronikus úton, ezek között az interneten át is.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Hangszerek tervezése és formázása; Hangszerekkel kapcsolatos ipari tervezési szolgáltatások; Hangszerek ipari formatervezése; Grafikai tervezés és grafikai muvészeti szolgáltatások; Termék tervezési szolgáltatások; Minoségellenorzések végzése; Számítógépek és szoftverek tervezése és fejlesztése a zenei ágazat számára; Felvilágosítás, tájékoztatás és tanácsadás az elobb felsorolt szolgáltatások tárgyában; Minden fent felsorolt szolgáltatás akár elektronikus úton, ezek között az interneten át is.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "it",
+      "description": "Strumenti musicali.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "it",
+      "description": "Gestione di affari commerciali; Amministrazione commerciale; Lavori di ufficio; Servizi di commercio al dettaglio e all'ingrosso di strumenti musicali; Importazione ed esportazione di strumenti musicali; Mediazione per acquisto e vendita di strumenti musicali; Raccolta per terzi di strumenti musicali (eccetto il loro trasporto); Elaborazione di statistiche; Ricerche, analisi e interventi sul mercato; Sondaggi d'opinione; Raccolta di dati in un archivio centrale; Gestione amministrativa d'archivi di dati; Organizzazione di fiere ed esposizioni per scopi pubblicitari o commerciali; Consulenza e informazioni in materia dei suddetti servizi; Tutti i suddetti servizi forniti anche mediante sistemi elettronici, compresa Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "it",
+      "description": "Costruzione, riparazione, installazione, ristorazione e accordatura di strumenti musicali; Informazioni e consulenza in materia dei suddetti servizi; Tutti i suddetti servizi forniti anche mediante sistemi elettronici, compresa Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Progettazione e modellazione di strumenti musicali; Servizi di un progettista industriale di strumenti musicali; Progettazione industriale di strumenti musicali; Disegno grafico ed arti grafiche; Progettazione di prodotti; Esecuzione di controlli di qualità; Progettazione e sviluppo di computer e software per il settore musicale; Consulenza e informazioni in materia dei suddetti servizi; Tutti i suddetti servizi forniti anche mediante sistemi elettronici, compresa Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "lt",
+      "description": "Muzikos instrumentai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lt",
+      "description": "Verslo vadyba; Verslo tvarkyba; Istaigu veikla; Mazmenines ir didmenines prekybos paslaugos muzikos instrumentu srityje; Muzikos instrumentu importas ir eksportas; Tarpininkavimas perkant ir parduodant muzikos instrumentus; Muzikos instrumentu pateikimas (isskyrus ju gabenima) tretiesiems asmenims; Statistiniu duomenu rinkimas; Rinkodara, rinkos tyrimai ir analize; Viesosios nuomones apklausos paslaugos; Duomenu surinkimas i centrini banka; Duomenu rinkmenu administravimas; Prekybos mugiu ir parodu, skirtu komercijos ir reklamos tikslams, organizavimas; Konsultacijos ir informacija apie minetas paslaugas; Minetos paslaugos, taip pat teikiamos elektroniniu budu, pavyzdziui, internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "lt",
+      "description": "Muzikos instrumentu gamyba, remontas, montavimas, restauravimas ir derinimas; Konsultacijos ir informacija apie minetas paslaugas; Minetos paslaugos, taip pat teikiamos elektroniniu budu, pavyzdziui, internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Muzikos instrumentu projektavimas ir kurimas; Pramoniniu projektuotuju paslaugos, susijusios su muzikos instrumentais; Muzikos instrumentu pramoninis dizainas; Grafinio projektavimo ir grafinio meno paslaugos; Gaminiu projektavimo paslaugos; Kokybes tyrimai; Muzikos rinkai skirtu kompiuteriu ir programines irangos kurimas ir tobulinimas; Konsultacijos ir informacija apie minetas paslaugas; Minetos paslaugos, taip pat teikiamos elektroniniu budu, pavyzdziui, internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "lv",
+      "description": "Muzikas instrumenti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lv",
+      "description": "Darijumu vadisana; Uznemumu parvaldisana; Biroja darbi; Mazumtirdznieciba un vairumtirdznieciba muzikas instrumentu joma; Muzikas instrumentu imports un eksports; Starpnieciba, ieperkot un pardodot muzikas instrumentus; Muzikas instrumentu apkoposana tresajam personam (iznemot to transportesanu); Statistikas sagatavosana; Tirgu apkalposana, tirgus analize un tirgus izpete; Sabiedriskas domas aptauja; Datu apkoposana centralaja datu banka; Datu bazu administrativa vadisana; Tirdzniecibas gadatirgu un izstazu organizesana komerciala un reklamas noluka; Konsultacijas, informacija un konsultacijas saistiba ar ieprieks minetajiem pakalpojumiem; Visi ieprieks minetie pakalpojumi tiek sniegti, izmantojot elektronisko veidu, tostarp internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "lv",
+      "description": "Muzikas instrumentu izgatavosana, remonts, uzstadisana, restauresana un noskanosana; Konsultacijas un informacija saistiba ar ieprieks minetajiem pakalpojumiem; Visi ieprieks minetie pakalpojumi tiek sniegti, izmantojot elektronisko veidu, tostarp internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Muzikas instrumentu projektesana un dizains; Rupniecisko projektetaju pakalpojumi saistiba ar muzikas instrumentiem; Muzikas instrumentu rupnieciskais dizains; Lietiskas grafikas un grafikas pakalpojumi; Produktu projektesanas pakalpojumi; Kvalitates parbauzu veiksana; Muzikas nozare pielietojamu datoru un programmaturu projektesana un izstrade; Konsultacijas un informacija saistiba ar ieprieks minetajiem pakalpojumiem; Visi ieprieks minetie pakalpojumi tiek sniegti, izmantojot elektronisko veidu, tostarp internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "mt",
+      "description": "Strumenti muzikali.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "mt",
+      "description": "Il-gestjoni ta' negozju; L-amministrazzjoni ta' negozju; Funzjonijiet ta' ufficcju; Servizzi ta' bejgh bl-imnut u bl-ingrossa fil-qasam ta' strumenti muzikali; L-importazzjoni u l-esportazzjoni ta' strumenti muzikali; Medjazzjoni fix-xiri u l-bejgh ta' strumenti muzikali; Gbir ta' strumenti muzikali ghal terzi persuni (minbarra trasport); It-thejjija ta' statistika; Ir-revizjoni, l-analizi u r-ricerka tas-suq; Servizzi ta' stharrig ta' l-opinjoni; Il-gabra ta' data f'databases centrali; Gestjoni amministrattiva ta' fajls tad-dejta; L-organizzazzjoni ta' fieri tal-kummerc u esebizzjonijiet ghal skopijiet kummercjali jew ta' reklamar; Konsulenza u informazzjoni dwar is-servizzi msemmija; Is-servizzi kollha msemmija qabel jistghu jkunu pprovduti b'mod elettroniku jew le, inkluz permezz tal-Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "mt",
+      "description": "Bini, tiswija, installazzjoni, restawr u intonazzjoni ta' strumenti muzikali; Konsulenza u informazzjoni dwar is-servizzi msemmija; Is-servizzi kollha msemmija qabel jistghu jkunu pprovduti b'mod elettroniku jew le, inkluz permezz tal-Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Disinn ta' strumenti muzikali; Servizzi minn disinjatur industrijali fil-qasam ta' strumenti muzikali; Disinn industrijali dwar strumenti muzikali; Disinn grafiku u servizzi ta' arti grafika; Servizzi ta' disinn ta' prodott; Tmexxija ta' analizi tal-kwalità; Servizzi ta' disinn u zvilupp tal-kompjuter u softwer ghall-industrija tal-muzika; Konsulenza u informazzjoni dwar is-servizzi msemmija; Is-servizzi kollha msemmija qabel jistghu jkunu pprovduti b'mod elettroniku jew le, inkluz permezz tal-Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "pl",
+      "description": "Instrumenty muzyczne.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pl",
+      "description": "Zarzadzanie w dzialalnosci handlowej; Administrowanie dzialalnosci handlowej; Prace biurowe; Uslugi handlu detalicznego i hurtowego w zakresie instrumentów muzycznych; Import i eksport instrumentów muzycznych; Posrednictwo przy zakupie i sprzedazy instrumentów muzycznych; Zbiórka instrumentów muzycznych na rzecz osób trzecich (z wyjatkiem ich transportu); Opracowywanie danych statystycznych; Rozpracowywanie rynku, analizy i badania rynku; Badania opinii publicznej; Zbieranie danych w centralnej bazie danych; Administrowanie baza danych; Organizowanie targów handlowych i wystaw w celach handlowych lub reklamowych; Doradztwo i uslugi informacyjne w zakresie wymienionych uslug; Wymienione uslugi swiadczone takze droga elektroniczna, w tym przez internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "pl",
+      "description": "Budowa, naprawa, montaz, restauracja i strojenie instrumentów muzycznych; Doradztwo i uslugi informacyjne w zakresie wymienionych uslug; Wymienione uslugi swiadczone takze droga elektroniczna, w tym przez internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Projektowanie i wzornictwo w zakresie instrumentów muzycznych; Uslugi projektowania przemyslowego w odniesieniu do instrumentów muzycznych; Wzornictwo przemyslowe w zakresie instrumentów muzycznych; Uslugi w zakresie projektowania graficznego i grafiki; Uslugi w zakresie wzornictwa przemyslowego; Przeprowadzanie badan jakosci; Uslugi w zakresie projektowania i ulepszania sprzetu komputerowego oraz oprogramowania dla branzy muzycznej; Doradztwo, informacje i konsulting, w zakresie wymienionych uslug; Wymienione uslugi swiadczone takze droga elektroniczna, w tym przez internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "pt",
+      "description": "Instrumentos de música.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pt",
+      "description": "Gestão dos negócios comerciais; Administração comercial; Trabalhos de escritório; Serviços de comércio retalhista e grossista em matéria de instrumentos musicais; Importação e exportação de instrumentos musicais; Mediação na compra e venda de instrumentos musicais; Reunião para terceiros de instrumentos musicais (com exceção do respetivo transporte); Estabelecimento de estatísticas; Avaliação, prospecção e análise de mercado; Sondagem de opinião; Compilação de dados num ficheiro central; Gestão administrativa de bases de dados; Organização de feiras comerciais e exposições com fins comerciais ou publicitários; Consultadoria, informações e esclarecimentos sobre os serviços atrás referidos; Todos os serviços atrás referidos também prestados por via electrónica, incluindo a Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "pt",
+      "description": "Construção, reparações, serviços de instalação, restauro e afinação de instrumentos musicais; Esclarecimentos, informações e consultadoria sobre os serviços atrás referidos; Todos os serviços atrás referidos também prestados por via electrónica, incluindo a Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Conceção e desenho de instrumentos musicais; Serviços de um desenhador industrial relacionados com instrumentos musicais; Desenho industrial de instrumentos musicais; Serviços de desenho gráfico e de artes gráficas; Serviços de concepção de produtos; Realização de auditorias de qualidade; Conceção e desenvolvimento de computadores e software para o setor da música; Consultadoria, informações e esclarecimentos sobre os serviços atrás referidos; Todos os serviços atrás referidos também prestados por via electrónica, incluindo a Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "ro",
+      "description": "Instrumente muzicale.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ro",
+      "description": "Gestiunea afacerilor comerciale; Administratie comerciala; Lucrari de birou; Servicii de comert cu amanuntul si cu ridicata în domeniul instrumentelor muzicale; Import si export de instrumente muzicale; Intermediere la cumpararea si vânzare de instrumente muzicale; Reunirea pentru terti de instrumente muzicale (cu exceptia transportului acestora); Întocmire de statistici; Prelucrarea, cercetarea si analiza de piata; Servicii de sondaje de opinie; Colectarea de date intr-un fisier central; Gestionare administrativa a fisierelor de date; Organizarea de targuri si expozitii pentru scopuri comerciale sau publicitare; Instructiuni, informatii si consultanta privind serviciile mentionate anterior; Toate serviciile mentionate anterior, prestate si pe cale electronica, printre care prin internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "ro",
+      "description": "Constructie, reparare, instalare, restaurare si acordare a instrumentelor muzicale; Instructiuni, informatii si consultanta privind serviciile mentionate anterior; Toate serviciile mentionate anterior, prestate si pe cale electronica, printre care prin internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Design si proiectare a instrumentelor muzicale; Servicii ale unui designer industrial cu privire la instrumentele muzicale; Proiectare industriala a instrumentelor muzicale; Servicii de desen grafic si arte grafice; Servicii de proiectare a produselor; Realizare de verificari de calitate; Design si dezvoltare de calculatoare si de software pentru sectorul muzical; Instructiuni, informatii si consultanta privind serviciile mentionate anterior; Toate serviciile mentionate anterior, prestate si pe cale electronica, printre care prin internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "sk",
+      "description": "Hudobné nástroje.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sk",
+      "description": "Obchodný manazment, obchodná správa; Obchodná administratíva; Kancelárske práce; Maloobchodný a velkoobchodný predaj hudobných nástrojov; Dovoz a vývoz hudobných nástrojov; Sprostredkovanie pri kúpe a predaji hudobných nástrojov; Zabezpecovanie hudobných nástrojov pre tretie strany (okrem ich prepravy); Koncipovanie statistík; Starostlivost o trhy, prieskum a analýza trhu; Sluzby v oblasti prieskumov verejnej mienky; Zber údajov do centrálnej databázy; Administratívna správa súborov s dátami; Organizovanie trhov a výstav s obchodným a reklamným úcelom; Konzultácie, informácie a poradenstvo súvisiace s vyssie uvedenými sluzbami; Vsetky vyssie uvedené sluzby, prípadne poskytované aj elektronickou cestou vrátane internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "sk",
+      "description": "Výstavba, oprava, instalácia, restaurovanie a ladenie hudobných nástrojov; Konzultácie, informácie a poradenstvo súvisiace s vyssie uvedenými sluzbami; Vsetky vyssie uvedené sluzby, prípadne poskytované aj elektronickou cestou vrátane internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Návrh a tvorba hudobných nástrojov; Sluzby priemyselných návrhárov v súvislosti s hudobnými nástrojmi; Priemyselná tvorba hudobných nástrojov; Grafické navrhovanie a sluzby umeleckých grafikov; Dizajn výrobkov (sluzby); Realizácia skúsok kvality; Návrh a vývoj pocítacov a softvéru pre hudobné odvetvie; Konzultácie, informácie a poradenstvo súvisiace s vyssie uvedenými sluzbami; Vsetky vyssie uvedené sluzby, prípadne poskytované aj elektronickou cestou vrátane internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "sl",
+      "description": "Glasbeni instrumenti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sl",
+      "description": "Vodenje komercialnih poslov; Poslovna administracija; Pisarniski posli; Maloprodajne in veleprodajne storitve na podrocju glasbenih instrumentov; Uvoz in izvoz glasbenih instrumentov; Posredovanje pri nakupu in prodaji glasbenih instrumentov; Zbiranje za druge glasbenih instrumentov (razen prevoza); Sestavljanje (razvrscanje) statistik; Obdelava, raziskava in analiza trzisca; Javnomnenjske raziskave; Zbiranje podatkov v centralni bazi; Administrativno vodenje podatkovnih baz; Organiziranje trgovinskih sejmov za komercialne ali reklamne namene; Svetovanje, informacije in obvescanje v zvezi z omenjenimi storitvami; Vse prej omenjene storitve, tudi po elektronski poti, vkljucno z internetom.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "sl",
+      "description": "Gradnja, popravila, instalacija, restavracija in uglasevanje glasbenih instrumentov; Svetovanje, informacije in obvescanje v zvezi z omenjenimi storitvami; Vse prej omenjene storitve, tudi po elektronski poti, vkljucno z internetom.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Oblikovanje in izdelovanje glasbenih instrumentov; Storitve industrijskih oblikovalcev, ki se nanasajo na glasbene instrumente; Industrijsko oblikovanje glasbenih instrumentov; Storitve graficnega oblikovanja in graficne umetnosti; Storitve oblikovanja izdelka; Izvajanje kontrol kakovosti; Oblikovanje in razvoj racunalnikov in programske opreme za glasbeno zvrst; Svetovanje, informacije in obvescanje v zvezi z omenjenimi storitvami; Vse prej omenjene storitve, tudi po elektronski poti, vkljucno z internetom.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "es",
+      "description": "Instrumentos musicales.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Gestión de negocios comerciales; Administración comercial; Trabajos de oficina; Servicios de comercio minorista y mayorista en el ámbito de los instrumentos musicales; Importación o exportación de instrumentos musicales; Mediación en la compra y venta de instrumentos musicales; Recopilación para terceros de instrumentos musicales (con excepción de su transporte); Elaboración de estadísticas; Prospección, investigación (búsqueda) y análisis de mercados; Servicios de sondeo de opinión; Recopilación de datos en una base de datos central; Gestión administrativa de archivos de datos; Organización de ferias y exposiciones con fines comerciales o publicitarios; Asesoramiento e información sobre los servicios mencionados; Todos los servicios anteriores prestados por vía electrónica o por otros medios, incluyendo Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "es",
+      "description": "Construcción, reparación, instalación, restauración y elección de instrumentos musicales; Información y asesoramiento sobre los servicios mencionados; Todos los servicios anteriores prestados por vía electrónica o por otros medios, incluyendo Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Diseño de instrumentos musicales; Servicios de un diseñador industrial en relación con instrumentos musicales; Diseño industrial de instrumentos musicales; Servicios de diseño gráfico y artes gráficas; Servicios de diseño de productos; Realización de controles de calidad; Diseño y desarrollo de ordenadores y de software para el área musical; Asesoramiento e información sobre los servicios mencionados; Todos los servicios anteriores prestados por vía electrónica o por otros medios, incluyendo Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "sw",
+      "description": "Musikinstrument.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sw",
+      "description": "Företagsledning; Företagsadministration; Kontorstjänster; Detaljhandels- och partihandelstjänster inom området musikinstrument; Import och export av musikinstrument; Förmedling vid köp och försäljning av musikinstrument; Sammanförande av musikinstrument för andras räkning (ej transport); Uppställning av statistik; Marknadsbearbetning, -undersökning och -analys; Tjänster avseende opinionsundersökningar; Insamling av data i ett centralt register; Administrativ hantering av datafiler; Anordnande av mässor och utställningar för kommersiellt eller reklamändamål; Rådgivning, information och upplysning avseende nämnda tjänster; Alla nämnda tjänster även via elektroniska hjälpmedel, inklusive Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "sw",
+      "description": "Tillverkning, reparation, installation, renovering och stämning av musikinstrument; Rådgivning, information och upplysning avseende nämnda tjänster; Alla nämnda tjänster även via elektroniska hjälpmedel, inklusive Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Utformning och formgivning av musikinstrument; Industriella formgivningstjänster avseende musikinstrument; Industriell formgivning av musikinstrument; Grafisk formgivning och grafisk konst; Produktutformning; Genomförande av kvalitetsprovningar; Utformning och utveckling av datorer och av programvara för musikbranschen; Rådgivning, information och upplysning avseende nämnda tjänster; Alla nämnda tjänster även via elektroniska hjälpmedel, inklusive Internet.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Vancore Holding B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "DE MERKPLAATS B.V.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Tolhuswei 7 A,Joure, 8501 ZP",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "Vancore Holding B.V."
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Hudební nástroje."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Pomoc pri rízení obchodní cinnosti; Obchodní administrativa; Kancelárské práce; Maloobchodní a velkoobchodní sluzby v oblasti hudebních nástroju; Dovoz a vývoz hudebních nástroju; Zprostredkování pri nákupu a prodeji hudebních nástroju; Shromazdování pro druhé hudebních nástroju (s výjimkou jejich prepravy); Sestavování statistik; Zpracování trhu, pruzkum trhu a analýza trhu; Pruzkum verejného mínení; Shromazdování dat v centrálním souboru; Administrativní správa datových souboru; Organizování veletrhu a výstav pro komercní nebo reklamní úcely; Poskytování informací, informace a poradenství týkající se výse uvedených sluzeb; Veskeré výse uvedené sluzby, také neposkytované elektronickou cestou, vcetne internetu."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Výroba, oprava, instalace, restaurace a ladení hudebních nástroju; Poskytování informací, informace a poradenství týkající se výse uvedených sluzeb; Veskeré výse uvedené sluzby, také neposkytované elektronickou cestou, vcetne internetu."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Návrh a tvorba hudebních nástroju; Sluzby prumyslových návrháru týkající se hudebních nástroju; Prumyslová tvorba hudebních nástroju; Grafické návrhy a grafika; Návrhy výrobku (sluzby); Provádení kontrol kvality; Návrh a vývoj pocítacového hardwaru a softwaru pro hudební odvetví; Poskytování informací, informace a poradenství týkající se výse uvedených sluzeb; Veskeré výse uvedené sluzby, také neposkytované elektronickou cestou, vcetne internetu."
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Musikinstrumenter."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Bistand ved forretningsledelse; Bistand ved forretningsadministration; Bistand ved varetagelse af kontoropgaver; Detail- og engrossalg af musikinstrumenter; Import og eksport af musikinstrumenter; Formidling ved køb og salg af musikinstrumenter; Samling for andre af musikinstrumenter (dog ikke transport heraf); Udarbejdelse af statistikker; Markedsbearbejdelse, -undersøgelse og -analyse; Meningsmålinger; Indsamling af data til en central datasamling; Databaseadministration; Organisering af messer og udstillinger med kommercielle eller reklamemæssige formål; Oplysning, information og rådgivning vedrørende førnævnte tjenesteydelser; Alle førnævnte tjenesteydelser ydes også ad elektronisk vej, herunder internettet."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Bygning, reparation, installation, restaurering og stemning af musikinstrumenter; Oplysning, information og rådgivning vedrørende førnævnte tjenesteydelser; Alle førnævnte tjenesteydelser udbydes også ad elektronisk vej, herunder internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Design og formgivning af musikinstrumenter; Industriel design vedrørende musikinstrumenter; Industriel formgivning af musikinstrumenter; Rådgivning vedrørende grafisk design og grafisk design; Produktdesign; Kvalitetskontrol; Design og udvikling af computere og software til musikbranchen; Oplysning, information og rådgivning vedrørende førnævnte tjenesteydelser; Alle førnævnte tjenesteydelser udbydes også ad elektronisk vej, herunder internet."
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Muziekinstrumenten."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Beheer van commerciële zaken; zakelijke administratie; administratieve diensten; detailhandels- en groothandelsdiensten op het gebied van muziekinstrumenten; import en export van muziekinstrumenten; bemiddeling bij de aan- en verkoop van muziekinstrumenten; het bijeenbrengen voor derden van muziekinstrumenten (uitgezonderd het transport daarvan); opstellen van statistieken; marktbewerking, -onderzoek en - analyse; opiniepeilingen; gegevensverzameling in een centraal bestand; administratief beheer van gegevensbestanden; organisatie van beurzen en tentoonstellingen voor commerciële of publicitaire doeleinden; voorlichting informatie en advisering inzake voornoemde diensten; alle voornoemde diensten al dan niet verleend via elektronische weg, waaronder Internet."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Bouw, reparatie, installatie, restauratie en stemmen van muziekinstrumenten; voorlichting, informatie en advisering inzake voornoemde diensten; alle voornoemde diensten al dan niet verleend via elektronische weg, waaronder Internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Het ontwerpen en vormgeven van muziekinstrumenten; diensten van een industrieel ontwerper met betrekking tot muziekinstrumenten; industriële vormgeving van muziekinstrumenten; grafisch ontwerp en grafisch tekenen; productontwerp; het uitvoeren van kwaliteitscontroles; ontwerpen en ontwikkelen van computers en van software voor de muziekbranche; voorlichting, informatie en advisering inzake voornoemde diensten; alle voornoemde diensten al dan niet verleend via elektronische weg, waaronder Internet."
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Musical instruments."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Business management; Business administration; Office functions; Retailing and wholesaling in the field of musical instruments; Import and export of musical instruments; Arranging the purchase and sale of musical instruments; Bringing together, for others, of musical instruments (excluding the transport thereof); Drawing up of statistics; Market canvassing, research and analysis; Opinion polling services; Collecting data in a central file; Data file administration; Organisation of trade fairs and exhibitions for commercial and advertising purposes; Information and consultancy relating to the aforesaid services; All the aforesaid services whethr or not provided via electronic channels, including the Internet."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Building construction, repair, installation services, restoration and tuning of musical instruments; Information and consultancy relating to the aforesaid services; All the aforesaid services whether or not via electronic channels, including the Internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Design of musical instruments; Industrial design in relation to musical instruments; Industrial design of musical instruments; Graphic design and graphic art services; Design services for products; Quality control; Design and development of computers and software for the music industry; Information and consultancy relating to the aforesaid services; The aforesaid services also via electronic channels, including the Internet."
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Muusikariistad."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Ärijuhtimine; Ärikorraldus; Kontoriteenused; Muusikariistade jae- ja hulgimüügiteenused; Muusikariistade import ja eksport; Muusikariistade ostmise ja müümise vahendamine; Muusikariistade koondamine kolmandatele isikutele (va transport); Statistika koostamine; Turundus, turuanalüüsid ja -uuringud; Arvamusuuringuteenused; Andmete kogumine keskfaili; Andmefailide administratiivhaldus; Kaubandus- või reklaamimesside ja -näituste korraldamine; Konsultatsioon, teave ja nõustamine seoses eespool nimetatud teenustega; Kõik eespool nimetatud teenused kas elektroonilisel teel või mitte, sh Interneti teel."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Muusikariistade ehitamine, parandamine, paigaldamine, ennistamine ja häälestamine; Konsultatsioon, teave ja nõustamine seoses eespool nimetatud teenustega; Kõik eespool nimetatud teenused kas elektroonilisel kujul või mitte, sh Interneti teel."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Muusikariistade kujundamine ja kavandamine; Muusikariistade tööstusdisaineri teenused; Muusikariistade tööstusdisain; Graafilise kujunduse ja graafilise kunsti teenused; Tootekujunduse teenused; Kvaliteedikontrollide korraldamine; Muusika arvutite ja arvutitarkvara projekteerimine ja arendamine; Konsultatsioon, nõustamine ja teave seoses eespool nimetatud teenustega; Kõik eespool nimetatud teenused kas elektroonilisel kujul või mitte, sh Interneti teel."
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Soittimet."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Liikkeenjohto; Yrityshallinto; Toimistotehtävät; Soittimiin liittyvät vähittäis- ja tukkukauppapalvelut; Soitinten tuonti ja vienti; Soitinten ostoon ja myyntiin liittyvä välitys; Soitinten kokoaminen yhteen muiden hyväksi (paitsi niiden kuljetus); Tilastojen laatiminen; Markkinointi, markkinointitutkimus ja -analyysit; Mielipidekyselyt; Keskustietokantaan kerätyt tiedot; Tiedostojen hallinta; Messujen ja näyttelyiden järjestäminen mainonta- tai kaupallisiin tarkoituksiin; Edellä mainittuihin palveluihin liittyvä neuvonta ja tiedotus; Kaikkia edellä mainittuja palveluja tarjotaan myös elektronisesti, mukaan lukien Internetin kautta."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Soitinten rakentaminen, korjaus, asennus, entisöinti ja viritys; Edellä mainittuihin palveluihin liittyvä opastus, neuvonta ja tiedotus; Kaikkia edellä mainittuja palveluja tarjotaan myös elektronisesti, mukaan lukien Internetin kautta."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Soitinten suunnittelu ja muotoilu; Soittimiin liittyvät teolliset muotoilupalvelut; Soitinten teollinen muotoilu; Graafiseen suunnitteluun ja taiteeseen liittyvät palvelut; Tuotesuunnittelupalvelut; Laatuarviointien suorittaminen; Tietokoneiden ja ohjelmistojen suunnittelu ja kehitys musiikkialaa varten; Edellä mainittuihin palveluihin liittyvä opastus, neuvonta ja tiedotus; Kaikkia edellä mainittuja palveluja tarjotaan myös elektronisesti, mukaan lukien Internetin kautta."
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Instruments de musique."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Gestion des affaires commerciales; Administration commerciale; Travaux de bureau; Services de vente au détail et de gros dans le domaine des instruments de musique; Importation et exportation d'instruments de musique; Médiation pour l'achat et la vente d'instruments de musique; Rassemblement d'instruments de musique pour le compte de tiers (à l'exception de leur transport); Établissement de statistiques; Étude de marché, enquête de marché et analyse de marché; Services de sondages d'opinion; Compilation de données dans un fichier central; Gestion administrative de bases de données; Organisation de foires et d'expositions à but commercial ou publicitaire; Explications, informations et conseils concernant les services précités; Tous les services précités fournis ou non par voie électronique, notamment via internet."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Construction, réparation, installation, restauration et raccordement d'instruments de musique; Renseignements, informations et conseils relatifs aux services précités; Tous les services précités fournis ou non par voie électronique, notamment via internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Conception et design d'instruments de musique; Services d'un dessinateur industriel en rapport avec les instruments de musique; Conception industrielle d'instruments de musique; Services de conception graphique et d'art graphique; Services de conception de produits; Réalisation de contrôles de qualité; Conception et développement d'ordinateurs et de logiciels pour l'industrie de la musique; Renseignements, informations et conseils en ce qui concerne les services précités; Tous les services précités fournis ou non par voie électronique, notamment via internet."
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Musikinstrumente."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Geschäftsführung; Unternehmensverwaltung; Büroarbeiten; Einzelhandels- und Großhandelsdienstleistungen im Bereich von Musikinstrumenten; Import und Export von Musikinstrumenten; Vermittlung beim An- und Verkauf von Musikinstrumenten; Zusammenstellung für Dritte von Musikinstrumenten (ausgenommen deren Transport); Erstellung von Statistiken; Marktbearbeitung, -forschung und -analyse; Meinungsforschung; Datenspeicherung in einer zentralen Datenbank; Verwaltung von Dateien; Veranstaltung von Messen und Ausstellungen für wirtschaftliche oder Werbezwecke; Auskünfte, Informationen und Beratung in Bezug auf die vorstehend genannten Dienstleistungen; Bereitstellung aller vorstehend genannten Dienstleistungen auch auf elektronischem Weg einschließlich Internet."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Bau, Reparatur, Installation, Instandsetzung und Stimmen von Musikinstrumenten; Auskünfte, Informationen und Beratung in Bezug auf die vorstehend genannten Dienstleistungen; Bereitstellung aller vorstehend genannten Dienstleistungen auch auf elektronischem Weg einschließlich Internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Entwurf und Gestaltung von Musikinstrumenten; Dienstleistungen eines Industriedesigners in Bezug auf Musikinstrumente; Industriedesign von Musikinstrumenten; Dienstleistungen in Bezug auf Grafikdesign und Grafiken; Produktdesign; Durchführung von Qualitätsprüfungen; Entwurf und Entwicklung von Computern und Software für die Musikbranche; Auskünfte, Informationen und Beratung in Bezug auf die vorstehend genannten Dienstleistungen; Bereitstellung aller vorstehend genannten Dienstleistungen auch auf elektronischem Weg einschließlich Internet."
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Hangszerek."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Kereskedelmi ügyletek; Kereskedelmi adminisztráció; Irodai munkák; Kiskereskedelmi és nagykereskedelmi szolgáltatások hangszerek területén; Hangszerek importja és exportja; Közvetítés hangszerek beszerzésénél és értékesítésénél; Hangszerek összegyujtése harmadik személyek számára (kivéve szállítás); Statisztikák lerajzolása; Piacelokészítés, piacelemzés és piackutatás; Közvélemény-kutatási szolgáltatások; Adatgyujtés központi állományba; Adatállományok adminisztratív kezelése; Kereskedelmi vagy reklám célú vásár és kiállítás szervezése; Felvilágosítás, tájékoztatás és tanácsadás az elobb felsorolt szolgáltatások tárgyában; Minden fent felsorolt szolgáltatás akár elektronikus úton, ezek között az interneten át is."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Hangszerek építése, javítása, felszerelése, helyreállítása és behangolása; Felvilágosítás, tájékoztatás és tanácsadás az elobb felsorolt szolgáltatások tárgyában; Minden fent felsorolt szolgáltatás akár elektronikus úton, ezek között az interneten át is."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Hangszerek tervezése és formázása; Hangszerekkel kapcsolatos ipari tervezési szolgáltatások; Hangszerek ipari formatervezése; Grafikai tervezés és grafikai muvészeti szolgáltatások; Termék tervezési szolgáltatások; Minoségellenorzések végzése; Számítógépek és szoftverek tervezése és fejlesztése a zenei ágazat számára; Felvilágosítás, tájékoztatás és tanácsadás az elobb felsorolt szolgáltatások tárgyában; Minden fent felsorolt szolgáltatás akár elektronikus úton, ezek között az interneten át is."
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Strumenti musicali."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Gestione di affari commerciali; Amministrazione commerciale; Lavori di ufficio; Servizi di commercio al dettaglio e all'ingrosso di strumenti musicali; Importazione ed esportazione di strumenti musicali; Mediazione per acquisto e vendita di strumenti musicali; Raccolta per terzi di strumenti musicali (eccetto il loro trasporto); Elaborazione di statistiche; Ricerche, analisi e interventi sul mercato; Sondaggi d'opinione; Raccolta di dati in un archivio centrale; Gestione amministrativa d'archivi di dati; Organizzazione di fiere ed esposizioni per scopi pubblicitari o commerciali; Consulenza e informazioni in materia dei suddetti servizi; Tutti i suddetti servizi forniti anche mediante sistemi elettronici, compresa Internet."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Costruzione, riparazione, installazione, ristorazione e accordatura di strumenti musicali; Informazioni e consulenza in materia dei suddetti servizi; Tutti i suddetti servizi forniti anche mediante sistemi elettronici, compresa Internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Progettazione e modellazione di strumenti musicali; Servizi di un progettista industriale di strumenti musicali; Progettazione industriale di strumenti musicali; Disegno grafico ed arti grafiche; Progettazione di prodotti; Esecuzione di controlli di qualità; Progettazione e sviluppo di computer e software per il settore musicale; Consulenza e informazioni in materia dei suddetti servizi; Tutti i suddetti servizi forniti anche mediante sistemi elettronici, compresa Internet."
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Muzikos instrumentai."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Verslo vadyba; Verslo tvarkyba; Istaigu veikla; Mazmenines ir didmenines prekybos paslaugos muzikos instrumentu srityje; Muzikos instrumentu importas ir eksportas; Tarpininkavimas perkant ir parduodant muzikos instrumentus; Muzikos instrumentu pateikimas (isskyrus ju gabenima) tretiesiems asmenims; Statistiniu duomenu rinkimas; Rinkodara, rinkos tyrimai ir analize; Viesosios nuomones apklausos paslaugos; Duomenu surinkimas i centrini banka; Duomenu rinkmenu administravimas; Prekybos mugiu ir parodu, skirtu komercijos ir reklamos tikslams, organizavimas; Konsultacijos ir informacija apie minetas paslaugas; Minetos paslaugos, taip pat teikiamos elektroniniu budu, pavyzdziui, internetu."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Muzikos instrumentu gamyba, remontas, montavimas, restauravimas ir derinimas; Konsultacijos ir informacija apie minetas paslaugas; Minetos paslaugos, taip pat teikiamos elektroniniu budu, pavyzdziui, internetu."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Muzikos instrumentu projektavimas ir kurimas; Pramoniniu projektuotuju paslaugos, susijusios su muzikos instrumentais; Muzikos instrumentu pramoninis dizainas; Grafinio projektavimo ir grafinio meno paslaugos; Gaminiu projektavimo paslaugos; Kokybes tyrimai; Muzikos rinkai skirtu kompiuteriu ir programines irangos kurimas ir tobulinimas; Konsultacijos ir informacija apie minetas paslaugas; Minetos paslaugos, taip pat teikiamos elektroniniu budu, pavyzdziui, internetu."
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Muzikas instrumenti."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Darijumu vadisana; Uznemumu parvaldisana; Biroja darbi; Mazumtirdznieciba un vairumtirdznieciba muzikas instrumentu joma; Muzikas instrumentu imports un eksports; Starpnieciba, ieperkot un pardodot muzikas instrumentus; Muzikas instrumentu apkoposana tresajam personam (iznemot to transportesanu); Statistikas sagatavosana; Tirgu apkalposana, tirgus analize un tirgus izpete; Sabiedriskas domas aptauja; Datu apkoposana centralaja datu banka; Datu bazu administrativa vadisana; Tirdzniecibas gadatirgu un izstazu organizesana komerciala un reklamas noluka; Konsultacijas, informacija un konsultacijas saistiba ar ieprieks minetajiem pakalpojumiem; Visi ieprieks minetie pakalpojumi tiek sniegti, izmantojot elektronisko veidu, tostarp internetu."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Muzikas instrumentu izgatavosana, remonts, uzstadisana, restauresana un noskanosana; Konsultacijas un informacija saistiba ar ieprieks minetajiem pakalpojumiem; Visi ieprieks minetie pakalpojumi tiek sniegti, izmantojot elektronisko veidu, tostarp internetu."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Muzikas instrumentu projektesana un dizains; Rupniecisko projektetaju pakalpojumi saistiba ar muzikas instrumentiem; Muzikas instrumentu rupnieciskais dizains; Lietiskas grafikas un grafikas pakalpojumi; Produktu projektesanas pakalpojumi; Kvalitates parbauzu veiksana; Muzikas nozare pielietojamu datoru un programmaturu projektesana un izstrade; Konsultacijas un informacija saistiba ar ieprieks minetajiem pakalpojumiem; Visi ieprieks minetie pakalpojumi tiek sniegti, izmantojot elektronisko veidu, tostarp internetu."
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Strumenti muzikali."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Il-gestjoni ta' negozju; L-amministrazzjoni ta' negozju; Funzjonijiet ta' ufficcju; Servizzi ta' bejgh bl-imnut u bl-ingrossa fil-qasam ta' strumenti muzikali; L-importazzjoni u l-esportazzjoni ta' strumenti muzikali; Medjazzjoni fix-xiri u l-bejgh ta' strumenti muzikali; Gbir ta' strumenti muzikali ghal terzi persuni (minbarra trasport); It-thejjija ta' statistika; Ir-revizjoni, l-analizi u r-ricerka tas-suq; Servizzi ta' stharrig ta' l-opinjoni; Il-gabra ta' data f'databases centrali; Gestjoni amministrattiva ta' fajls tad-dejta; L-organizzazzjoni ta' fieri tal-kummerc u esebizzjonijiet ghal skopijiet kummercjali jew ta' reklamar; Konsulenza u informazzjoni dwar is-servizzi msemmija; Is-servizzi kollha msemmija qabel jistghu jkunu pprovduti b'mod elettroniku jew le, inkluz permezz tal-Internet."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Bini, tiswija, installazzjoni, restawr u intonazzjoni ta' strumenti muzikali; Konsulenza u informazzjoni dwar is-servizzi msemmija; Is-servizzi kollha msemmija qabel jistghu jkunu pprovduti b'mod elettroniku jew le, inkluz permezz tal-Internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Disinn ta' strumenti muzikali; Servizzi minn disinjatur industrijali fil-qasam ta' strumenti muzikali; Disinn industrijali dwar strumenti muzikali; Disinn grafiku u servizzi ta' arti grafika; Servizzi ta' disinn ta' prodott; Tmexxija ta' analizi tal-kwalità; Servizzi ta' disinn u zvilupp tal-kompjuter u softwer ghall-industrija tal-muzika; Konsulenza u informazzjoni dwar is-servizzi msemmija; Is-servizzi kollha msemmija qabel jistghu jkunu pprovduti b'mod elettroniku jew le, inkluz permezz tal-Internet."
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Instrumenty muzyczne."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Zarzadzanie w dzialalnosci handlowej; Administrowanie dzialalnosci handlowej; Prace biurowe; Uslugi handlu detalicznego i hurtowego w zakresie instrumentów muzycznych; Import i eksport instrumentów muzycznych; Posrednictwo przy zakupie i sprzedazy instrumentów muzycznych; Zbiórka instrumentów muzycznych na rzecz osób trzecich (z wyjatkiem ich transportu); Opracowywanie danych statystycznych; Rozpracowywanie rynku, analizy i badania rynku; Badania opinii publicznej; Zbieranie danych w centralnej bazie danych; Administrowanie baza danych; Organizowanie targów handlowych i wystaw w celach handlowych lub reklamowych; Doradztwo i uslugi informacyjne w zakresie wymienionych uslug; Wymienione uslugi swiadczone takze droga elektroniczna, w tym przez internet."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Budowa, naprawa, montaz, restauracja i strojenie instrumentów muzycznych; Doradztwo i uslugi informacyjne w zakresie wymienionych uslug; Wymienione uslugi swiadczone takze droga elektroniczna, w tym przez internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Projektowanie i wzornictwo w zakresie instrumentów muzycznych; Uslugi projektowania przemyslowego w odniesieniu do instrumentów muzycznych; Wzornictwo przemyslowe w zakresie instrumentów muzycznych; Uslugi w zakresie projektowania graficznego i grafiki; Uslugi w zakresie wzornictwa przemyslowego; Przeprowadzanie badan jakosci; Uslugi w zakresie projektowania i ulepszania sprzetu komputerowego oraz oprogramowania dla branzy muzycznej; Doradztwo, informacje i konsulting, w zakresie wymienionych uslug; Wymienione uslugi swiadczone takze droga elektroniczna, w tym przez internet."
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Instrumentos de música."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Gestão dos negócios comerciais; Administração comercial; Trabalhos de escritório; Serviços de comércio retalhista e grossista em matéria de instrumentos musicais; Importação e exportação de instrumentos musicais; Mediação na compra e venda de instrumentos musicais; Reunião para terceiros de instrumentos musicais (com exceção do respetivo transporte); Estabelecimento de estatísticas; Avaliação, prospecção e análise de mercado; Sondagem de opinião; Compilação de dados num ficheiro central; Gestão administrativa de bases de dados; Organização de feiras comerciais e exposições com fins comerciais ou publicitários; Consultadoria, informações e esclarecimentos sobre os serviços atrás referidos; Todos os serviços atrás referidos também prestados por via electrónica, incluindo a Internet."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Construção, reparações, serviços de instalação, restauro e afinação de instrumentos musicais; Esclarecimentos, informações e consultadoria sobre os serviços atrás referidos; Todos os serviços atrás referidos também prestados por via electrónica, incluindo a Internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Conceção e desenho de instrumentos musicais; Serviços de um desenhador industrial relacionados com instrumentos musicais; Desenho industrial de instrumentos musicais; Serviços de desenho gráfico e de artes gráficas; Serviços de concepção de produtos; Realização de auditorias de qualidade; Conceção e desenvolvimento de computadores e software para o setor da música; Consultadoria, informações e esclarecimentos sobre os serviços atrás referidos; Todos os serviços atrás referidos também prestados por via electrónica, incluindo a Internet."
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Instrumente muzicale."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Gestiunea afacerilor comerciale; Administratie comerciala; Lucrari de birou; Servicii de comert cu amanuntul si cu ridicata în domeniul instrumentelor muzicale; Import si export de instrumente muzicale; Intermediere la cumpararea si vânzare de instrumente muzicale; Reunirea pentru terti de instrumente muzicale (cu exceptia transportului acestora); Întocmire de statistici; Prelucrarea, cercetarea si analiza de piata; Servicii de sondaje de opinie; Colectarea de date intr-un fisier central; Gestionare administrativa a fisierelor de date; Organizarea de targuri si expozitii pentru scopuri comerciale sau publicitare; Instructiuni, informatii si consultanta privind serviciile mentionate anterior; Toate serviciile mentionate anterior, prestate si pe cale electronica, printre care prin internet."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Constructie, reparare, instalare, restaurare si acordare a instrumentelor muzicale; Instructiuni, informatii si consultanta privind serviciile mentionate anterior; Toate serviciile mentionate anterior, prestate si pe cale electronica, printre care prin internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Design si proiectare a instrumentelor muzicale; Servicii ale unui designer industrial cu privire la instrumentele muzicale; Proiectare industriala a instrumentelor muzicale; Servicii de desen grafic si arte grafice; Servicii de proiectare a produselor; Realizare de verificari de calitate; Design si dezvoltare de calculatoare si de software pentru sectorul muzical; Instructiuni, informatii si consultanta privind serviciile mentionate anterior; Toate serviciile mentionate anterior, prestate si pe cale electronica, printre care prin internet."
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Hudobné nástroje."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Obchodný manazment, obchodná správa; Obchodná administratíva; Kancelárske práce; Maloobchodný a velkoobchodný predaj hudobných nástrojov; Dovoz a vývoz hudobných nástrojov; Sprostredkovanie pri kúpe a predaji hudobných nástrojov; Zabezpecovanie hudobných nástrojov pre tretie strany (okrem ich prepravy); Koncipovanie statistík; Starostlivost o trhy, prieskum a analýza trhu; Sluzby v oblasti prieskumov verejnej mienky; Zber údajov do centrálnej databázy; Administratívna správa súborov s dátami; Organizovanie trhov a výstav s obchodným a reklamným úcelom; Konzultácie, informácie a poradenstvo súvisiace s vyssie uvedenými sluzbami; Vsetky vyssie uvedené sluzby, prípadne poskytované aj elektronickou cestou vrátane internetu."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Výstavba, oprava, instalácia, restaurovanie a ladenie hudobných nástrojov; Konzultácie, informácie a poradenstvo súvisiace s vyssie uvedenými sluzbami; Vsetky vyssie uvedené sluzby, prípadne poskytované aj elektronickou cestou vrátane internetu."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Návrh a tvorba hudobných nástrojov; Sluzby priemyselných návrhárov v súvislosti s hudobnými nástrojmi; Priemyselná tvorba hudobných nástrojov; Grafické navrhovanie a sluzby umeleckých grafikov; Dizajn výrobkov (sluzby); Realizácia skúsok kvality; Návrh a vývoj pocítacov a softvéru pre hudobné odvetvie; Konzultácie, informácie a poradenstvo súvisiace s vyssie uvedenými sluzbami; Vsetky vyssie uvedené sluzby, prípadne poskytované aj elektronickou cestou vrátane internetu."
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Glasbeni instrumenti."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Vodenje komercialnih poslov; Poslovna administracija; Pisarniski posli; Maloprodajne in veleprodajne storitve na podrocju glasbenih instrumentov; Uvoz in izvoz glasbenih instrumentov; Posredovanje pri nakupu in prodaji glasbenih instrumentov; Zbiranje za druge glasbenih instrumentov (razen prevoza); Sestavljanje (razvrscanje) statistik; Obdelava, raziskava in analiza trzisca; Javnomnenjske raziskave; Zbiranje podatkov v centralni bazi; Administrativno vodenje podatkovnih baz; Organiziranje trgovinskih sejmov za komercialne ali reklamne namene; Svetovanje, informacije in obvescanje v zvezi z omenjenimi storitvami; Vse prej omenjene storitve, tudi po elektronski poti, vkljucno z internetom."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Gradnja, popravila, instalacija, restavracija in uglasevanje glasbenih instrumentov; Svetovanje, informacije in obvescanje v zvezi z omenjenimi storitvami; Vse prej omenjene storitve, tudi po elektronski poti, vkljucno z internetom."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Oblikovanje in izdelovanje glasbenih instrumentov; Storitve industrijskih oblikovalcev, ki se nanasajo na glasbene instrumente; Industrijsko oblikovanje glasbenih instrumentov; Storitve graficnega oblikovanja in graficne umetnosti; Storitve oblikovanja izdelka; Izvajanje kontrol kakovosti; Oblikovanje in razvoj racunalnikov in programske opreme za glasbeno zvrst; Svetovanje, informacije in obvescanje v zvezi z omenjenimi storitvami; Vse prej omenjene storitve, tudi po elektronski poti, vkljucno z internetom."
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Instrumentos musicales."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Gestión de negocios comerciales; Administración comercial; Trabajos de oficina; Servicios de comercio minorista y mayorista en el ámbito de los instrumentos musicales; Importación o exportación de instrumentos musicales; Mediación en la compra y venta de instrumentos musicales; Recopilación para terceros de instrumentos musicales (con excepción de su transporte); Elaboración de estadísticas; Prospección, investigación (búsqueda) y análisis de mercados; Servicios de sondeo de opinión; Recopilación de datos en una base de datos central; Gestión administrativa de archivos de datos; Organización de ferias y exposiciones con fines comerciales o publicitarios; Asesoramiento e información sobre los servicios mencionados; Todos los servicios anteriores prestados por vía electrónica o por otros medios, incluyendo Internet."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Construcción, reparación, instalación, restauración y elección de instrumentos musicales; Información y asesoramiento sobre los servicios mencionados; Todos los servicios anteriores prestados por vía electrónica o por otros medios, incluyendo Internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Diseño de instrumentos musicales; Servicios de un diseñador industrial en relación con instrumentos musicales; Diseño industrial de instrumentos musicales; Servicios de diseño gráfico y artes gráficas; Servicios de diseño de productos; Realización de controles de calidad; Diseño y desarrollo de ordenadores y de software para el área musical; Asesoramiento e información sobre los servicios mencionados; Todos los servicios anteriores prestados por vía electrónica o por otros medios, incluyendo Internet."
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Musikinstrument."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Företagsledning; Företagsadministration; Kontorstjänster; Detaljhandels- och partihandelstjänster inom området musikinstrument; Import och export av musikinstrument; Förmedling vid köp och försäljning av musikinstrument; Sammanförande av musikinstrument för andras räkning (ej transport); Uppställning av statistik; Marknadsbearbetning, -undersökning och -analys; Tjänster avseende opinionsundersökningar; Insamling av data i ett centralt register; Administrativ hantering av datafiler; Anordnande av mässor och utställningar för kommersiellt eller reklamändamål; Rådgivning, information och upplysning avseende nämnda tjänster; Alla nämnda tjänster även via elektroniska hjälpmedel, inklusive Internet."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Tillverkning, reparation, installation, renovering och stämning av musikinstrument; Rådgivning, information och upplysning avseende nämnda tjänster; Alla nämnda tjänster även via elektroniska hjälpmedel, inklusive Internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Utformning och formgivning av musikinstrument; Industriella formgivningstjänster avseende musikinstrument; Industriell formgivning av musikinstrument; Grafisk formgivning och grafisk konst; Produktutformning; Genomförande av kvalitetsprovningar; Utformning och utveckling av datorer och av programvara för musikbranschen; Rådgivning, information och upplysning avseende nämnda tjänster; Alla nämnda tjänster även via elektroniska hjälpmedel, inklusive Internet."
+        }
+      ]
+    },
+    "id": "b4033056-8e90-434d-b21b-c7791c6c2857",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00084",
+        "publicationVolume": "54"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Herengracht 227,Amsterdam, 1016 BG",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "DE MERKPLAATS B.V."
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20111229",
+        "applicationNumber": "10532968"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311229",
+      "lastPublicationDate": "20120316",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20120625",
+        "registrationNumber": "10532968"
+      }
+    },
+    "version": "20260511152602",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VANCORE"
+    }
+  },
+  "_uri": "/mark/em/b4033056-8e90-434d-b21b-c7791c6c2857",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.812Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

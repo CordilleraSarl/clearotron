@@ -1,0 +1,249 @@
+{
+  "uri": "/mark/ca/6424921d-c3f4-44a6-9a2f-cd426855a161",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "6424921d-c3f4-44a6-9a2f-cd426855a161",
+  "applicationNumber": "1119946",
+  "registrationNumber": "TMA586062",
+  "applicationDate": "2001-10-31",
+  "registrationDate": "2003-07-28",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2003-02-19"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "CV ENCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "(1) Contact lenses",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "CooperVision International Holding Company, LP",
+  "ownerNative": null,
+  "ownerCountry": "BB",
+  "representative": "SMART & BIGGAR LP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Suite #2, Fidelity House, Wildey Business Park, St. Michael",
+        "applicantAddressCountryCode": "BB",
+        "applicantAddressCountryName": "Barbados",
+        "applicantAddressLines": [
+          "Suite #2, Fidelity House",
+          "Wildey Business Park",
+          "St. Michael"
+        ],
+        "applicantName": "CooperVision International Holding Company, LP"
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Used in CANADA since at least as early as 2000 on wares marked (1)",
+        "typeDescription": "First Use"
+      }
+    ],
+    "footNotes": [
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Assignment / Cession",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 13 janv/Jan 2006",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 07 déc/Dec 2005",
+      "COMMENTS / COMMENTAIRES: FROM: COOPERVISION CANADA CORP.",
+      "TO: CooperVision International Holding Company, LP",
+      "Voir Preuve au dossier/See evidence on File No. 367062"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Contact lenses"
+        }
+      ]
+    },
+    "id": "6424921d-c3f4-44a6-9a2f-cd426855a161",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20190307",
+        "descriptionText": "Automatic Expungement - Failure to Renew"
+      },
+      {
+        "date": "20180815",
+        "descriptionText": "Renewal Notice Sent",
+        "responseDate": "20190215"
+      },
+      {
+        "date": "20180129",
+        "descriptionText": "Nice Classification Courtesy Letter Sent"
+      },
+      {
+        "date": "20060113",
+        "descriptionText": "Change in Title Registered",
+        "information": "Assignment / Voir Preuve au dossier/See evidence on File No. 367062"
+      },
+      {
+        "date": "20030728",
+        "descriptionText": "Registered",
+        "responseDate": "20180728"
+      },
+      {
+        "date": "20030509",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20031109"
+      },
+      {
+        "date": "20030509",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20030219",
+        "descriptionText": "Advertised",
+        "information": "Vol.50 Issue 2521"
+      },
+      {
+        "date": "20030114",
+        "descriptionText": "Approved"
+      },
+      {
+        "date": "20021129",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20030329"
+      },
+      {
+        "date": "20021129",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20011109",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20011102",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20011031",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "100 McPherson Street, Markham, ONTARIO, L3R3V6",
+        "addressLines": [
+          "100 McPherson Street,",
+          "Markham,",
+          "ONTARIO",
+          "L3R3V6"
+        ],
+        "countryName": "Canada",
+        "name": "COOPERVISION CANADA CORP.",
+        "postalCode": "L3R3V6"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "2521",
+        "publicationVolume": "50"
+      }
+    ],
+    "recordLastUpdated": "20250624",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "SMART & BIGGAR LP",
+          "SUITE 1000, 55 METCALFE STREET",
+          "P.O. BOX 2999, STATION D",
+          "OTTAWA",
+          "ONTARIO K1P5Y6"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "SMART & BIGGAR LP",
+        "representativeReferenceNumber": "73677-26"
+      }
+    ],
+    "status": {
+      "active": false,
+      "allowanceDate": [
+        "20030509"
+      ],
+      "application": {
+        "applicationDate": "20011031",
+        "applicationNumber": "1119946"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "expungementDate": "20190307",
+      "firstUsed": [
+        {
+          "firstUsedDate": "2000",
+          "firstUsedText": "Used in CANADA since at least as early as 2000 on wares marked (1)"
+        }
+      ],
+      "formalisationDate": "20011109",
+      "markCurrentStatus": "Expunged",
+      "nextRenewalDate": "20180728",
+      "publicationDate": [
+        "20030219"
+      ],
+      "registration": {
+        "registrationDate": "20030728",
+        "registrationNumber": "TMA586062"
+      }
+    },
+    "subjectHeadings": [
+      "CV ENCORE"
+    ],
+    "version": "20250624150209",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "CV ENCORE",
+      "markVerbalElementTextFormal": "CV ENCORE"
+    }
+  },
+  "_uri": "/mark/ca/6424921d-c3f4-44a6-9a2f-cd426855a161",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.730Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,615 @@
+{
+  "uri": "/mark/wo/6fb43ee0-66a1-43b0-9ef3-b9e508fd62cb",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "6fb43ee0-66a1-43b0-9ef3-b9e508fd62cb",
+  "applicationNumber": null,
+  "registrationNumber": "1370931",
+  "applicationDate": null,
+  "registrationDate": "2017-06-07",
+  "expiryDate": "2027-06-07",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-10-19",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    2,
+    3,
+    4,
+    16,
+    20,
+    28,
+    35,
+    37,
+    40,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        2
+      ],
+      "language": "en",
+      "description": "White lead; paper for dyeing Easter eggs; dyes; binding preparations for paints; agglutinants for paints; primers; gamboge for painting; repositionable paint patches; carbonyl [wood preservative]; toner cartridges, filled, for printers and photocopiers; dyewood; dye-wood; colorants; dyestuffs; toners [ink] for photocopiers; ink [toner] for photocopiers; aluminium paints; wood stains; engraving ink; ceramic paints; distempers; fireproof paints; printing ink; enamels for painting; enamel paints; paints; black japan; bitumen varnish; bronzing lacquers; lacquers; oils for the preservation of wood; lime wash; silver paste; printers' pastes [ink]; coatings [paints]; coatings for roofing felt [paints]; coatings for tarred felt [paints]; wood coatings [paints]; varnishes; aluminium powder for painting; bronze powder for painting; silvering powders; metals in powder form for use in painting, decorating, printing and art; protective preparations for metals; wood mordants; mordants for leather; stains for leather; thinners for paints; thinners for lacquers; whitewash; thickeners for paints; siccatives [drying agents] for paints; badigeon; anti-tarnishing preparations for metals; wood preservatives; fixatives [varnishes]; fixatives for watercolors [watercolours]; fixatives for watercolors; fixatives for watercolours; metal foil for use in painting, decorating, printing and art; dyewood extracts; wood dyestuffs; enamels [varnishes]; silver emulsions [pigments].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "en",
+      "description": "Lip glosses; petroleum jelly for cosmetic purposes; adhesives for cosmetic purposes; tailors' wax; waxes for leather; polish for furniture and flooring; polishing wax; make-up; perfumes; greases for cosmetic purposes; perfumery; cosmetic pencils; cosmetic dyes; cosmetic creams; nail polish; nail varnish; oils for perfumes and scents; oils for cosmetic purposes; oils for toilet purposes; soap; cakes of toilet soap; cakes of soap; cosmetic kits; false nails; lipsticks; pomades for cosmetic purposes; paint stripping preparations; make-up preparations.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        4
+      ],
+      "language": "en",
+      "description": "Oils for releasing form work [building]; perfumed candles; Christmas tree candles; candles; tapers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Aquarelles; watercolors [paintings]; watercolours [paintings]; albums; scrapbooks; posters; paper bows; note books; pads [stationery]; drawing pads; booklets; wrapping paper; packing paper; modelling wax, not for dental purposes; signboards of paper or cardboard; modelling clay; polymer modelling clay; engravings; graphic representations; printed publications; gums [adhesives] for stationery or household purposes; transfers [decalcomanias]; decalcomanias; cardboard; catalogues; covers of paper for flower pots; flower-pot covers of paper; glue for stationery or household purposes; pastes for stationery or household purposes; gluten [glue] for stationery or household purposes; starch paste [adhesive] for stationery or household purposes; books; boxes of paper or cardboard; paint boxes [articles for use in school]; correcting fluids [office requisites]; paper ribbons; gummed tape [stationery]; adhesive bands for stationery or household purposes; correcting tapes [office requisites]; adhesive tapes for stationery or household purposes; self-adhesive tapes for stationery or household purposes; flyers; paint trays; plastics for modeling; graphic prints; modelling materials; teaching materials [except apparatus]; sealing compounds for stationery purposes; adhesives [glues] for stationery or household purposes; bookbinding material; bags [envelopes, pouches] of paper or plastics, for packaging; painters' easels; printing sets, portable [office requisites]; bibs of paper; stickers [stationery]; bottle envelopes of paper or cardboard; covers [stationery]; wrappers [stationery]; passport holders; embroidery designs [patterns]; musical greeting cards; greeting cards; conical paper bags; palettes for painters; papier mâché; modelling paste; plastic film for wrapping; coasters of paper; mats for beer glasses; gummed cloth for stationery purposes; printed matter; prospectuses; graphic reproductions; histological sections for teaching purposes; stationery; figurines [statuettes] of papier mâché; flags of paper; silver paper; molds for modelling clays [artists' materials]; moulds for modelling clays [artists' materials]; photo-engravings; photographs [printed]; canvas for painting; watercolor [watercolour] saucers for artists; stencils; cabinets for stationery [office requisites]; shields [paper seals]; prints [engravings]; labels, not of textile.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "en",
+      "description": "Busts of wood, wax, plaster or plastic; screws, not of metal; display stands; showcases [furniture]; rattan; plaited straw, except matting; wickerwork; works of art of wood, wax, plaster or plastic; cabinet work; reeds [plaiting materials]; statues of wood, wax, plaster or plastic; woven timber blinds [furniture]; boxes of wood or plastic; chests for toys.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "en",
+      "description": "Novelties for parties, dances [party favors, favours]; scratch cards for playing lottery games; jigsaw puzzles; dolls' houses; dominoes; toys; stuffed toys; plush toys; mobiles [toys]; practical jokes [novelties]; parlor games; parlour games; board games; ring games; games; building games; kaleidoscopes; playing cards; bells for Christmas trees; dolls' rooms; confetti; explosive bonbons [Christmas crackers]; cosaques [toy fireworks]; dice; dolls' beds; building blocks [toys]; dolls; puppets; marionettes; carnival masks; masks [playthings]; matryoshka dolls; teddy bears; toy models; scale model kits [toys]; scale model vehicles; balls for games; toy construction sets; toy model train sets; dolls' clothes; gloves for games; toy pistols; rattles [playthings]; candle holders for Christmas trees; Christmas tree stands; portable games with liquid crystal displays; soap bubbles [toys]; ornaments for Christmas trees, except illumination articles and confectionery; conjuring apparatus; apparatus for games; toy figures; counters [discs] for games; foosball tables; marbles for games; playing balls; play balloons; paper party hats.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Personnel recruitment; personnel management consultancy; office machines and equipment rental; outsourced administrative management for companies.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Rental of construction equipment; rental of excavators; warehouse construction and repair.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "en",
+      "description": "Paper treating; woodworking; metal treating; pattern printing; offset printing; printing; custom assembling of materials for others; cloth cutting; planning [saw mill]; colour separation services; silkscreen printing.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Chemical analysis; industrial design; graphic arts design; cosmetic research; mechanical research; chemical research; research and development of new products for others; scientific research; technical research; quality control; server hosting; computer software design; creating and maintaining web sites for others; computer programming; packaging design; scientific laboratory services; styling [industrial design]; electronic data storage.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "en",
+      "description": "Night guard services; monitoring intellectual property rights for legal advisory purposes; monitoring of burglar and security alarms; licensing of intellectual property; guard services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        2
+      ],
+      "language": "fr",
+      "description": "Céruse; papier pour la teinture d'oeufs de Pâques; teintures; liants pour peintures; agglutinants pour peintures; apprêts [peintures]; gommes-guttes pour la peinture; pastilles de peinture repositionnables; carbonyle pour la préservation du bois; cartouches de toner pleines pour imprimantes et photocopieurs; bois de teinture; bois colorant; colorants; matières tinctoriales; toners [encres] pour photocopieurs; encres [toner] pour photocopieurs; peintures aluminium; teintures pour le bois; encres pour la gravure; peintures pour la céramique; détrempes; peintures ignifuges; encres d'imprimerie; émaux pour la peinture; peintures-émail; peintures; vernis Japon; vernis au bitume; laques de bronzage; laques; huiles pour la conservation du bois; lait de chaux; pâte d'argent; pâtes d'imprimerie [encres]; enduits [peintures]; enduits pour le carton bitumé [peintures]; enduits pour le carton bitumé [peintures]; enduits pour le bois [peintures]; vernis; poudre d'aluminium pour la peinture; poudre de bronze pour la peinture; poudres à argenter; métaux en poudre pour travaux de peinture, décoration, imprimerie et art; préparations pour la protection de métaux; mordants pour le bois; mordants pour le cuir; mordants pour le cuir; diluants pour peintures; diluants pour laques; blanc de chaux; épaississants pour peintures; siccatifs pour peintures; badigeons; préparations contre la ternissure des métaux; produits pour la conservation du bois; fixatifs [vernis]; fixatifs pour l'aquarelle; fixatifs pour l'aquarelle; fixatifs pour peintures à l'eau; feuilles métalliques destinées à la peinture, la décoration, l'imprimerie et l'art; extraits de bois colorant; extraits de bois colorant; peintures émail [vernis]; émulsions d'argent [pigments].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "fr",
+      "description": "Brillants à lèvres; vaseline à usage cosmétique; adhésifs à usage cosmétique; cire pour tailleurs; cires pour le cuir; encaustiques pour meubles et parquets; cire à polir; produits de maquillage; parfums; graisses à usage cosmétique; produits de parfumerie; crayons cosmétiques; teintures cosmétiques; crèmes cosmétiques; vernis à ongles; vernis pour les ongles; huiles pour parfums et senteurs; huiles à usage cosmétique; huiles de toilette; savons; savonnettes; pains de savon; nécessaires de beauté; faux ongles; rouges à lèvres; pommades à usage cosmétique; préparations pour le décapage de peintures; préparations de maquillage.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        4
+      ],
+      "language": "fr",
+      "description": "Huiles de décoffrage; bougies parfumées; bougies pour arbres de Noël; bougies; chandelles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "fr",
+      "description": "Aquarelles; aquarelles [peintures]; aquarelles [peintures]; albums; albums de scrapbooking; affiches; noeuds en papier; carnets; blocs [papeterie]; blocs à dessin; livrets; papier d'empaquetage; papier d'emballage; cires à modeler non à usage dentaire; enseignes en papier ou en carton; argile à modeler; argile de polymère à modeler; gravures; représentations graphiques; publications imprimées; gommes [adhésifs] pour la papeterie ou le ménage; décalcomanies; décalcomanies; carton; catalogues; cache-pots en papier; cache-pot en papier; colles pour la papeterie ou le ménage; colles pour la papeterie ou le ménage; gluten [colle] pour la papeterie ou le ménage; colle d'amidon pour la papeterie ou le ménage; livres; boîtes en papier ou en carton; boîtes de peinture [matériel scolaire]; correcteurs liquides [articles de bureau]; rubans de papier; bandes gommées [papeterie]; bandes adhésives pour la papeterie ou le ménage; rubans correcteurs [articles de bureau]; rubans adhésifs pour la papeterie ou le ménage; rubans auto-adhésifs pour la papeterie ou le ménage; tracts; bacs à peinture; matières plastiques pour le modelage; impressions graphiques; matériaux pour le modelage; matériel d'enseignement [à l'exception d'appareils]; matières à cacheter; adhésifs [colles] pour la papeterie ou le ménage; articles pour reliures; sacs [enveloppes, pochettes] en papier ou en matières plastiques pour le conditionnement; chevalets pour la peinture; imprimeries portatives [articles de bureau]; bavoirs en papier; autocollants [articles de papeterie]; enveloppes pour bouteilles, en carton ou en papier; couvertures [articles de papeterie]; couvertures [articles de papeterie]; pochettes pour passeports; modèles de broderie; cartes de voeux musicales; cartes de voeux; cornets de papier; palettes de peintre; papier mâché; pâte à modeler; films en matières plastiques pour l'empaquetage; dessous de carafes en papier; dessous de chopes à bière; toiles gommées pour la papeterie; produits d'imprimerie; prospectus; reproductions graphiques; coupes histologiques aux fins d'enseignement; articles de papeterie; figurines [statuettes] en papier mâché; drapeaux en papier; papier d'argent; moules pour argile à modeler [matériel pour artistes]; moules pour argile à modeler [matériel pour artistes]; photogravures; photographies [imprimées]; toiles pour la peinture; godets pour la peinture; stencils; coffrets pour la papeterie [articles de bureau]; écussons [cachets en papier]; planches [gravures]; étiquettes, autres que textiles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "fr",
+      "description": "Bustes en bois, cire, plâtre ou plastique; vis non métalliques; présentoirs; vitrines [meubles]; rotin; paille tressée à l'exception de nattes; vannerie; objets d'art en bois, en cire, en plâtre ou en matières plastiques; produits d'ébénisterie; roseau [matière à tresser]; statues en bois, en cire, en plâtre ou en matières plastiques; stores en bois tissé [meubles]; boîtes en bois ou en matières plastiques; coffres à jouets.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "fr",
+      "description": "Objets de cotillon; tickets à gratter pour jeux de loterie; casse-têtes; maisons de poupées; jeux de dominos; jouets; jouets rembourrés; jouets en peluche; mobiles [jouets]; farces [attrapes]; jeux de société; jeux de société; jeux de table; jeux d'anneaux; jeux; jeux de construction; kaléidoscopes; cartes à jouer; clochettes pour arbres de Noël; chambres de poupées; confettis; bonbons à pétards [diablotins de Noël]; bonbons à pétards; dés; lits de poupées; blocs pour jeux de construction; poupées; marionnettes; marionnettes; masques de carnaval; masques [articles de jeu]; poupées russes; ours en peluche; modèles réduits [jouets]; modèles réduits prêts-à-monter [jouets]; modèles réduits de véhicules; balles et ballons pour jeux; jeux de construction; trains miniatures [jouets]; vêtements pour poupées; gants pour jeux; pistolets [jouets]; hochets [articles de jeu]; porte-bougies pour arbres de Noël; supports pour arbres de Noël; jeux portables pourvus d'écrans à cristaux liquides; jouets pour faire des bulles de savon; décorations pour arbres de Noël autres qu'articles d'éclairage et de confiserie; appareils de prestidigitation; appareils pour jeux; figurines de jeu; jetons pour jeux; tables de baby-foot; billes pour jeux; balles et ballons de jeu; ballons de jeu; chapeaux de cotillon en papier.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Recrutement de personnel; services de conseillers en gestion de personnel; location de machines et de matériel de bureau; gestion administrative externalisée pour entreprises.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "fr",
+      "description": "Location d'équipements de construction; location d'excavateurs; construction et réparation d'entrepôts.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "fr",
+      "description": "Traitement de papier; travaux sur bois; traitement de métaux; services d'impression de motifs; travaux d'impression offset; travaux d'imprimerie; services d'assemblage de matériaux sur commande pour des tiers; services de découpe d'étoffes; services de rabotage [scierie]; traitement de séparation de couleurs; sérigraphie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Analyses chimiques; dessin industriel; services de création d'arts graphiques; recherche cosmétique; recherches mécaniques; recherches en chimie; recherche et développement de nouveaux produits pour des tiers; recherches scientifiques; recherches techniques; contrôle de qualité; services d'hébergement sur des serveurs; services de conception de logiciels informatiques; création et maintenance de sites Web pour des tiers; programmation informatique; services de conception d'emballages; services de laboratoires scientifiques; services de stylisme [dessin industriel]; services de stockage électronique de données.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "fr",
+      "description": "Services de gardiens de nuit; surveillance de droits de propriété intellectuelle à des fins de conseil juridique; surveillance d'alarmes anti-effraction et de sécurité; octroi de licences de propriété intellectuelle; services de gardiennage.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        2
+      ],
+      "language": "es",
+      "description": "Cerusa; papel para teñir huevos de Pascua; tintes; aglutinantes para pinturas; aglutinantes para pinturas; pinturas de imprimación; gutagamba para pintura; pintura en parches reposicionables; carbonilo para conservar la madera; cartuchos de tóner (tinta) de impresoras y fotocopiadoras; madera colorante; madera colorante; colorantes; materias tintóreas; tóner [tinta] para fotocopiadoras; tinta [tóner] para fotocopiadoras; pinturas de aluminio; tintes para madera; tintas para grabado; pinturas para cerámica; pinturas al temple; pinturas ignífugas; tintas de imprenta; esmaltes para pintar; esmaltes para pintar; pinturas; barnices de asfalto; barnices de betún; lacas para broncear; lacas; aceites para conservar la madera; lechada de cal; pasta de plata; pastas de imprenta [tintas]; recubrimientos [pinturas]; enlucidos para cartón alquitranado [pinturas]; enlucidos para cartón alquitranado [pinturas]; recubrimientos para madera [pinturas]; barnices; aluminio en polvo para pintar; polvo de bronce para pintar; polvos para platear; metales en polvo para pintores, decoradores, impresores y artistas; preparaciones para proteger los metales; mordientes para la madera; mordientes para el cuero; tinturas para el cuero; diluyentes para pinturas; diluyentes para lacas; blanco de cal; espesantes para pinturas; desecantes [agentes de secado] para pinturas; estuco; preparaciones contra el deslustre de los metales; productos para conservar la madera; fijadores [barnices]; fijadores para acuarelas; fijadores para acuarelas; fijadores para acuarelas; metales en hojas para pintores, decoradores, impresores y artistas; extractos de madera colorante; extractos de madera colorante; esmaltes [barnices]; emulsiones de plata [pigmentos].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "es",
+      "description": "Brillos de labios; jalea de petróleo para uso cosmético; adhesivos [pegamentos] para uso cosmético; cera de sastre; ceras para el cuero; encáusticos; cera de lustrado; productos de maquillaje; perfumes; grasas para uso cosmético; productos de perfumería; lápices para uso cosmético; tintes cosméticos; cremas cosméticas; esmaltes de uñas; esmalte de uñas; aceites de perfumería; aceites para uso cosmético; aceites de tocador; jabón; pastillas de jabón; pastillas de jabón; neceseres de cosmética; uñas postizas; barras de labios [pintalabios]; pomadas para uso cosmético; preparaciones para quitar pinturas; preparaciones de maquillaje.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        4
+      ],
+      "language": "es",
+      "description": "Aceites de desencofrado [construcción]; velas perfumadas; velas para árboles de Navidad; velas [iluminación]; candelas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "es",
+      "description": "Acuarelas; acuarelas [pinturas]; acuarelas; álbumes; álbumes de recortes; carteles; lazos de papel; libretas; blocs [artículos de papelería]; blocs de dibujo; cartillas (cuadernillos); papel de envolver; papel de embalaje; ceras de modelar que no sean para uso dental; letreros de papel o cartón; arcilla de modelar; arcilla de modelar polimérica; grabados; representaciones gráficas; publicaciones impresas; gomas [pegamentos] de papelería o para uso doméstico; calcomanías; calcomanías; cartón; catálogos; cubremacetas de papel; cubremacetas de papel; pegamentos de papelería o para uso doméstico; colas de papelería o para uso doméstico; gluten [cola] de papelería o para uso doméstico; cola de almidón de papelería o para uso doméstico; libros; cajas de papel o cartón; cajas de pinturas [material escolar]; líquidos correctores [artículos de oficina]; cintas de papel; cinta engomada [de papelería]; bandas adhesivas de papelería o para uso doméstico; cintas correctoras [artículos de oficina]; cintas adhesivas de papelería o para uso doméstico; cintas adhesivas de papelería o para uso doméstico; volantes; bandejas para pintura; materias plásticas para modelar; dibujos; materiales para modelar; material de instrucción [excepto aparatos]; materiales para sellar; adhesivos [pegamentos] de papelería o para uso doméstico; material de encuadernación; bolsas [envolturas, bolsitas] de papel o de materias plásticas para embalaje; caballetes de pintura; imprentas portátiles [artículos de oficina]; baberos de papel; adhesivos [artículos de papelería]; envolturas de cartón o papel para botellas; forros [artículos de papelería]; forros para libros o cuadernos [artículos de papelería]; fundas para pasaportes; patrones de bordado; tarjetas de felicitación musicales; tarjetas de felicitación; cucuruchos de papel; paletas de pintor; papel maché; pasta de modelar; películas de materias plásticas para embalar; posabotellas y posavasos de papel; posavasos para cerveza; telas engomadas de papelería; productos de imprenta; prospectos; reproducciones gráficas; cortes histológicos [material didáctico]; artículos de papelería; figuras [estatuillas] de papel maché; banderas de papel; papel de plata; moldes para arcilla de modelar [material para artistas]; moldes para arcilla de modelar [material para artistas]; fotograbados; fotografías [impresas]; lienzos para pintar; salseras de acuarelas para artistas; clichés de multicopista; cajas de papelería [artículos de oficina]; escudos [sellos de papel]; láminas [grabados]; etiquetas que no sean de tela.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "es",
+      "description": "Bustos de madera, cera, yeso o materias plásticas; tornillos no metálicos; expositores [muebles]; vitrinas [muebles]; mimbre; paja trenzada, excepto esteras; artículos de cestería; objetos de arte de madera, cera, yeso o materias plásticas; productos de ebanistería; caña [material trenzable]; estatuas de madera, cera, yeso o plástico; persianas de madera tejida [muebles]; cajas de madera o materias plásticas; arcones para juguetes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "es",
+      "description": "Artículos de cotillón para bailes y fiestas [recuerdos de fiestas]; billetes de lotería para raspar; rompecabezas [puzles]; casas de muñecas; juegos de dominó; juguetes; juguetes de tela; juguetes de peluche; móviles [juguetes]; artículos de broma; juegos de salón; juegos de sociedad; juegos de tablero; juegos de anillas; juegos; juegos de construcción; caleidoscopios; juegos de naipes; campanitas para árboles de Navidad; habitaciones de muñecas; confetis; sorpresas detonantes en forma de caramelo; triquitraques [petardos de juguete]; dados (juegos); camas de muñecas; bloques de construcción [juguetes]; muñecas; marionetas; marionetas; máscaras de carnaval; máscaras [juguetes]; matrioskas; osos de peluche; maquetas de juguete; kits de modelos a escala [juguetes]; modelos reducidos de vehículos; balones y pelotas para juegos; juegos de construcción; juegos de trenes en miniatura; ropa de muñecas; guantes para juegos; pistolas de juguete; sonajeros; portavelas para árboles de Navidad; soportes para árboles de Navidad; juegos portátiles con pantalla de cristal líquido; juguetes para hacer pompas de jabón; adornos para árboles de Navidad, excepto artículos de iluminación y golosinas; aparatos de prestidigitación; aparatos para juegos; figuras de juguete; fichas para juegos; futbolines; canicas para jugar; pelotas de juego; globos [juguetes]; sombreros de papel para fiestas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Selección de personal; consultoría sobre recursos humanos; alquiler de máquinas y aparatos de oficina; gestión administrativa externalizada para empresas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "es",
+      "description": "Alquiler de equipos de construcción; alquiler de excavadoras; instalación y reparación de almacenes (depósitos).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "es",
+      "description": "Tratamiento del papel; trabajo de la madera; tratamiento de metales; estampado de motivos; servicios de impresión en offset; servicios de impresión; ensamblaje personalizado de materiales por cuenta de terceros; corte de telas; planificación [serrería]; tratamiento de separación de colores; serigrafía.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Análisis químicos; diseño industrial; diseño de artes gráficas; investigación cosmetológica; investigación mecánica; investigación química; investigación y desarrollo de nuevos productos para terceros; investigación científica; investigación técnica; control de calidad; alojamiento de servidores; diseño de software; creación y mantenimiento de sitios web para terceros; programación informática; diseño de envases y embalajes; servicios de laboratorios científicos; estilismo [diseño industrial]; almacenamiento electrónico de datos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "es",
+      "description": "Servicios de vigilancia nocturna; servicios de vigilancia de los derechos de propiedad intelectual con fines de asesoramiento jurídico; inspección de alarmas antirrobo y de seguridad; concesión de licencias de propiedad intelectual; servicios de guardias.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "INDIVIDUAL ENTREPRENEUR NOVICHKOV VALENTIN",
+  "ownerNative": null,
+  "ownerCountry": "RU",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicRegistrationApplicationOfficeCode": "RU",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20170222",
+          "basicRegistrationNumber": "606696"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "CH",
+      "EG",
+      "IR",
+      "TR",
+      "UA",
+      "BY",
+      "EM",
+      "RS"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "A. NEVSKOGO STR., 5-84 RU-150052 YAROSLAVL",
+        "applicantAddressCountryCode": "RU",
+        "applicantAddressCountryName": "Russian Federation",
+        "applicantName": "INDIVIDUAL ENTREPRENEUR NOVICHKOV VALENTIN"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "basicRegistrationApplications": [
+      {
+        "basicRegistrationApplicationOfficeCode": "RU",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20170222",
+            "basicRegistrationNumber": "606696"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "CH",
+      "EG",
+      "IR",
+      "TR",
+      "UA",
+      "BY",
+      "EM",
+      "RS"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "02",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "White lead; paper for dyeing Easter eggs; dyes; binding preparations for paints; agglutinants for paints; primers; gamboge for painting; repositionable paint patches; carbonyl [wood preservative]; toner cartridges, filled, for printers and photocopiers; dyewood; dye-wood; colorants; dyestuffs; toners [ink] for photocopiers; ink [toner] for photocopiers; aluminium paints; wood stains; engraving ink; ceramic paints; distempers; fireproof paints; printing ink; enamels for painting; enamel paints; paints; black japan; bitumen varnish; bronzing lacquers; lacquers; oils for the preservation of wood; lime wash; silver paste; printers' pastes [ink]; coatings [paints]; coatings for roofing felt [paints]; coatings for tarred felt [paints]; wood coatings [paints]; varnishes; aluminium powder for painting; bronze powder for painting; silvering powders; metals in powder form for use in painting, decorating, printing and art; protective preparations for metals; wood mordants; mordants for leather; stains for leather; thinners for paints; thinners for lacquers; whitewash; thickeners for paints; siccatives [drying agents] for paints; badigeon; anti-tarnishing preparations for metals; wood preservatives; fixatives [varnishes]; fixatives for watercolors [watercolours]; fixatives for watercolors; fixatives for watercolours; metal foil for use in painting, decorating, printing and art; dyewood extracts; wood dyestuffs; enamels [varnishes]; silver emulsions [pigments]."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Lip glosses; petroleum jelly for cosmetic purposes; adhesives for cosmetic purposes; tailors' wax; waxes for leather; polish for furniture and flooring; polishing wax; make-up; perfumes; greases for cosmetic purposes; perfumery; cosmetic pencils; cosmetic dyes; cosmetic creams; nail polish; nail varnish; oils for perfumes and scents; oils for cosmetic purposes; oils for toilet purposes; soap; cakes of toilet soap; cakes of soap; cosmetic kits; false nails; lipsticks; pomades for cosmetic purposes; paint stripping preparations; make-up preparations."
+        },
+        {
+          "intClassNumber": "04",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Oils for releasing form work [building]; perfumed candles; Christmas tree candles; candles; tapers."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Aquarelles; watercolors [paintings]; watercolours [paintings]; albums; scrapbooks; posters; paper bows; note books; pads [stationery]; drawing pads; booklets; wrapping paper; packing paper; modelling wax, not for dental purposes; signboards of paper or cardboard; modelling clay; polymer modelling clay; engravings; graphic representations; printed publications; gums [adhesives] for stationery or household purposes; transfers [decalcomanias]; decalcomanias; cardboard; catalogues; covers of paper for flower pots; flower-pot covers of paper; glue for stationery or household purposes; pastes for stationery or household purposes; gluten [glue] for stationery or household purposes; starch paste [adhesive] for stationery or household purposes; books; boxes of paper or cardboard; paint boxes [articles for use in school]; correcting fluids [office requisites]; paper ribbons; gummed tape [stationery]; adhesive bands for stationery or household purposes; correcting tapes [office requisites]; adhesive tapes for stationery or household purposes; self-adhesive tapes for stationery or household purposes; flyers; paint trays; plastics for modeling; graphic prints; modelling materials; teaching materials [except apparatus]; sealing compounds for stationery purposes; adhesives [glues] for stationery or household purposes; bookbinding material; bags [envelopes, pouches] of paper or plastics, for packaging; painters' easels; printing sets, portable [office requisites]; bibs of paper; stickers [stationery]; bottle envelopes of paper or cardboard; covers [stationery]; wrappers [stationery]; passport holders; embroidery designs [patterns]; musical greeting cards; greeting cards; conical paper bags; palettes for painters; papier mâché; modelling paste; plastic film for wrapping; coasters of paper; mats for beer glasses; gummed cloth for stationery purposes; printed matter; prospectuses; graphic reproductions; histological sections for teaching purposes; stationery; figurines [statuettes] of papier mâché; flags of paper; silver paper; molds for modelling clays [artists' materials]; moulds for modelling clays [artists' materials]; photo-engravings; photographs [printed]; canvas for painting; watercolor [watercolour] saucers for artists; stencils; cabinets for stationery [office requisites]; shields [paper seals]; prints [engravings]; labels, not of textile."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Busts of wood, wax, plaster or plastic; screws, not of metal; display stands; showcases [furniture]; rattan; plaited straw, except matting; wickerwork; works of art of wood, wax, plaster or plastic; cabinet work; reeds [plaiting materials]; statues of wood, wax, plaster or plastic; woven timber blinds [furniture]; boxes of wood or plastic; chests for toys."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Novelties for parties, dances [party favors, favours]; scratch cards for playing lottery games; jigsaw puzzles; dolls' houses; dominoes; toys; stuffed toys; plush toys; mobiles [toys]; practical jokes [novelties]; parlor games; parlour games; board games; ring games; games; building games; kaleidoscopes; playing cards; bells for Christmas trees; dolls' rooms; confetti; explosive bonbons [Christmas crackers]; cosaques [toy fireworks]; dice; dolls' beds; building blocks [toys]; dolls; puppets; marionettes; carnival masks; masks [playthings]; matryoshka dolls; teddy bears; toy models; scale model kits [toys]; scale model vehicles; balls for games; toy construction sets; toy model train sets; dolls' clothes; gloves for games; toy pistols; rattles [playthings]; candle holders for Christmas trees; Christmas tree stands; portable games with liquid crystal displays; soap bubbles [toys]; ornaments for Christmas trees, except illumination articles and confectionery; conjuring apparatus; apparatus for games; toy figures; counters [discs] for games; foosball tables; marbles for games; playing balls; play balloons; paper party hats."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Personnel recruitment; personnel management consultancy; office machines and equipment rental; outsourced administrative management for companies."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Rental of construction equipment; rental of excavators; warehouse construction and repair."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Paper treating; woodworking; metal treating; pattern printing; offset printing; printing; custom assembling of materials for others; cloth cutting; planning [saw mill]; colour separation services; silkscreen printing."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Chemical analysis; industrial design; graphic arts design; cosmetic research; mechanical research; chemical research; research and development of new products for others; scientific research; technical research; quality control; server hosting; computer software design; creating and maintaining web sites for others; computer programming; packaging design; scientific laboratory services; styling [industrial design]; electronic data storage."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Night guard services; monitoring intellectual property rights for legal advisory purposes; monitoring of burglar and security alarms; licensing of intellectual property; guard services."
+        },
+        {
+          "intClassNumber": "02",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Céruse; papier pour la teinture d'oeufs de Pâques; teintures; liants pour peintures; agglutinants pour peintures; apprêts [peintures]; gommes-guttes pour la peinture; pastilles de peinture repositionnables; carbonyle pour la préservation du bois; cartouches de toner pleines pour imprimantes et photocopieurs; bois de teinture; bois colorant; colorants; matières tinctoriales; toners [encres] pour photocopieurs; encres [toner] pour photocopieurs; peintures aluminium; teintures pour le bois; encres pour la gravure; peintures pour la céramique; détrempes; peintures ignifuges; encres d'imprimerie; émaux pour la peinture; peintures-émail; peintures; vernis Japon; vernis au bitume; laques de bronzage; laques; huiles pour la conservation du bois; lait de chaux; pâte d'argent; pâtes d'imprimerie [encres]; enduits [peintures]; enduits pour le carton bitumé [peintures]; enduits pour le carton bitumé [peintures]; enduits pour le bois [peintures]; vernis; poudre d'aluminium pour la peinture; poudre de bronze pour la peinture; poudres à argenter; métaux en poudre pour travaux de peinture, décoration, imprimerie et art; préparations pour la protection de métaux; mordants pour le bois; mordants pour le cuir; mordants pour le cuir; diluants pour peintures; diluants pour laques; blanc de chaux; épaississants pour peintures; siccatifs pour peintures; badigeons; préparations contre la ternissure des métaux; produits pour la conservation du bois; fixatifs [vernis]; fixatifs pour l'aquarelle; fixatifs pour l'aquarelle; fixatifs pour peintures à l'eau; feuilles métalliques destinées à la peinture, la décoration, l'imprimerie et l'art; extraits de bois colorant; extraits de bois colorant; peintures émail [vernis]; émulsions d'argent [pigments]."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Brillants à lèvres; vaseline à usage cosmétique; adhésifs à usage cosmétique; cire pour tailleurs; cires pour le cuir; encaustiques pour meubles et parquets; cire à polir; produits de maquillage; parfums; graisses à usage cosmétique; produits de parfumerie; crayons cosmétiques; teintures cosmétiques; crèmes cosmétiques; vernis à ongles; vernis pour les ongles; huiles pour parfums et senteurs; huiles à usage cosmétique; huiles de toilette; savons; savonnettes; pains de savon; nécessaires de beauté; faux ongles; rouges à lèvres; pommades à usage cosmétique; préparations pour le décapage de peintures; préparations de maquillage."
+        },
+        {
+          "intClassNumber": "04",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Huiles de décoffrage; bougies parfumées; bougies pour arbres de Noël; bougies; chandelles."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Aquarelles; aquarelles [peintures]; aquarelles [peintures]; albums; albums de scrapbooking; affiches; noeuds en papier; carnets; blocs [papeterie]; blocs à dessin; livrets; papier d'empaquetage; papier d'emballage; cires à modeler non à usage dentaire; enseignes en papier ou en carton; argile à modeler; argile de polymère à modeler; gravures; représentations graphiques; publications imprimées; gommes [adhésifs] pour la papeterie ou le ménage; décalcomanies; décalcomanies; carton; catalogues; cache-pots en papier; cache-pot en papier; colles pour la papeterie ou le ménage; colles pour la papeterie ou le ménage; gluten [colle] pour la papeterie ou le ménage; colle d'amidon pour la papeterie ou le ménage; livres; boîtes en papier ou en carton; boîtes de peinture [matériel scolaire]; correcteurs liquides [articles de bureau]; rubans de papier; bandes gommées [papeterie]; bandes adhésives pour la papeterie ou le ménage; rubans correcteurs [articles de bureau]; rubans adhésifs pour la papeterie ou le ménage; rubans auto-adhésifs pour la papeterie ou le ménage; tracts; bacs à peinture; matières plastiques pour le modelage; impressions graphiques; matériaux pour le modelage; matériel d'enseignement [à l'exception d'appareils]; matières à cacheter; adhésifs [colles] pour la papeterie ou le ménage; articles pour reliures; sacs [enveloppes, pochettes] en papier ou en matières plastiques pour le conditionnement; chevalets pour la peinture; imprimeries portatives [articles de bureau]; bavoirs en papier; autocollants [articles de papeterie]; enveloppes pour bouteilles, en carton ou en papier; couvertures [articles de papeterie]; couvertures [articles de papeterie]; pochettes pour passeports; modèles de broderie; cartes de voeux musicales; cartes de voeux; cornets de papier; palettes de peintre; papier mâché; pâte à modeler; films en matières plastiques pour l'empaquetage; dessous de carafes en papier; dessous de chopes à bière; toiles gommées pour la papeterie; produits d'imprimerie; prospectus; reproductions graphiques; coupes histologiques aux fins d'enseignement; articles de papeterie; figurines [statuettes] en papier mâché; drapeaux en papier; papier d'argent; moules pour argile à modeler [matériel pour artistes]; moules pour argile à modeler [matériel pour artistes]; photogravures; photographies [imprimées]; toiles pour la peinture; godets pour la peinture; stencils; coffrets pour la papeterie [articles de bureau]; écussons [cachets en papier]; planches [gravures]; étiquettes, autres que textiles."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Bustes en bois, cire, plâtre ou plastique; vis non métalliques; présentoirs; vitrines [meubles]; rotin; paille tressée à l'exception de nattes; vannerie; objets d'art en bois, en cire, en plâtre ou en matières plastiques; produits d'ébénisterie; roseau [matière à tresser]; statues en bois, en cire, en plâtre ou en matières plastiques; stores en bois tissé [meubles]; boîtes en bois ou en matières plastiques; coffres à jouets."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Objets de cotillon; tickets à gratter pour jeux de loterie; casse-têtes; maisons de poupées; jeux de dominos; jouets; jouets rembourrés; jouets en peluche; mobiles [jouets]; farces [attrapes]; jeux de société; jeux de société; jeux de table; jeux d'anneaux; jeux; jeux de construction; kaléidoscopes; cartes à jouer; clochettes pour arbres de Noël; chambres de poupées; confettis; bonbons à pétards [diablotins de Noël]; bonbons à pétards; dés; lits de poupées; blocs pour jeux de construction; poupées; marionnettes; marionnettes; masques de carnaval; masques [articles de jeu]; poupées russes; ours en peluche; modèles réduits [jouets]; modèles réduits prêts-à-monter [jouets]; modèles réduits de véhicules; balles et ballons pour jeux; jeux de construction; trains miniatures [jouets]; vêtements pour poupées; gants pour jeux; pistolets [jouets]; hochets [articles de jeu]; porte-bougies pour arbres de Noël; supports pour arbres de Noël; jeux portables pourvus d'écrans à cristaux liquides; jouets pour faire des bulles de savon; décorations pour arbres de Noël autres qu'articles d'éclairage et de confiserie; appareils de prestidigitation; appareils pour jeux; figurines de jeu; jetons pour jeux; tables de baby-foot; billes pour jeux; balles et ballons de jeu; ballons de jeu; chapeaux de cotillon en papier."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Recrutement de personnel; services de conseillers en gestion de personnel; location de machines et de matériel de bureau; gestion administrative externalisée pour entreprises."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Location d'équipements de construction; location d'excavateurs; construction et réparation d'entrepôts."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Traitement de papier; travaux sur bois; traitement de métaux; services d'impression de motifs; travaux d'impression offset; travaux d'imprimerie; services d'assemblage de matériaux sur commande pour des tiers; services de découpe d'étoffes; services de rabotage [scierie]; traitement de séparation de couleurs; sérigraphie."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Analyses chimiques; dessin industriel; services de création d'arts graphiques; recherche cosmétique; recherches mécaniques; recherches en chimie; recherche et développement de nouveaux produits pour des tiers; recherches scientifiques; recherches techniques; contrôle de qualité; services d'hébergement sur des serveurs; services de conception de logiciels informatiques; création et maintenance de sites Web pour des tiers; programmation informatique; services de conception d'emballages; services de laboratoires scientifiques; services de stylisme [dessin industriel]; services de stockage électronique de données."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de gardiens de nuit; surveillance de droits de propriété intellectuelle à des fins de conseil juridique; surveillance d'alarmes anti-effraction et de sécurité; octroi de licences de propriété intellectuelle; services de gardiennage."
+        },
+        {
+          "intClassNumber": "02",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Cerusa; papel para teñir huevos de Pascua; tintes; aglutinantes para pinturas; aglutinantes para pinturas; pinturas de imprimación; gutagamba para pintura; pintura en parches reposicionables; carbonilo para conservar la madera; cartuchos de tóner (tinta) de impresoras y fotocopiadoras; madera colorante; madera colorante; colorantes; materias tintóreas; tóner [tinta] para fotocopiadoras; tinta [tóner] para fotocopiadoras; pinturas de aluminio; tintes para madera; tintas para grabado; pinturas para cerámica; pinturas al temple; pinturas ignífugas; tintas de imprenta; esmaltes para pintar; esmaltes para pintar; pinturas; barnices de asfalto; barnices de betún; lacas para broncear; lacas; aceites para conservar la madera; lechada de cal; pasta de plata; pastas de imprenta [tintas]; recubrimientos [pinturas]; enlucidos para cartón alquitranado [pinturas]; enlucidos para cartón alquitranado [pinturas]; recubrimientos para madera [pinturas]; barnices; aluminio en polvo para pintar; polvo de bronce para pintar; polvos para platear; metales en polvo para pintores, decoradores, impresores y artistas; preparaciones para proteger los metales; mordientes para la madera; mordientes para el cuero; tinturas para el cuero; diluyentes para pinturas; diluyentes para lacas; blanco de cal; espesantes para pinturas; desecantes [agentes de secado] para pinturas; estuco; preparaciones contra el deslustre de los metales; productos para conservar la madera; fijadores [barnices]; fijadores para acuarelas; fijadores para acuarelas; fijadores para acuarelas; metales en hojas para pintores, decoradores, impresores y artistas; extractos de madera colorante; extractos de madera colorante; esmaltes [barnices]; emulsiones de plata [pigmentos]."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Brillos de labios; jalea de petróleo para uso cosmético; adhesivos [pegamentos] para uso cosmético; cera de sastre; ceras para el cuero; encáusticos; cera de lustrado; productos de maquillaje; perfumes; grasas para uso cosmético; productos de perfumería; lápices para uso cosmético; tintes cosméticos; cremas cosméticas; esmaltes de uñas; esmalte de uñas; aceites de perfumería; aceites para uso cosmético; aceites de tocador; jabón; pastillas de jabón; pastillas de jabón; neceseres de cosmética; uñas postizas; barras de labios [pintalabios]; pomadas para uso cosmético; preparaciones para quitar pinturas; preparaciones de maquillaje."
+        },
+        {
+          "intClassNumber": "04",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aceites de desencofrado [construcción]; velas perfumadas; velas para árboles de Navidad; velas [iluminación]; candelas."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Acuarelas; acuarelas [pinturas]; acuarelas; álbumes; álbumes de recortes; carteles; lazos de papel; libretas; blocs [artículos de papelería]; blocs de dibujo; cartillas (cuadernillos); papel de envolver; papel de embalaje; ceras de modelar que no sean para uso dental; letreros de papel o cartón; arcilla de modelar; arcilla de modelar polimérica; grabados; representaciones gráficas; publicaciones impresas; gomas [pegamentos] de papelería o para uso doméstico; calcomanías; calcomanías; cartón; catálogos; cubremacetas de papel; cubremacetas de papel; pegamentos de papelería o para uso doméstico; colas de papelería o para uso doméstico; gluten [cola] de papelería o para uso doméstico; cola de almidón de papelería o para uso doméstico; libros; cajas de papel o cartón; cajas de pinturas [material escolar]; líquidos correctores [artículos de oficina]; cintas de papel; cinta engomada [de papelería]; bandas adhesivas de papelería o para uso doméstico; cintas correctoras [artículos de oficina]; cintas adhesivas de papelería o para uso doméstico; cintas adhesivas de papelería o para uso doméstico; volantes; bandejas para pintura; materias plásticas para modelar; dibujos; materiales para modelar; material de instrucción [excepto aparatos]; materiales para sellar; adhesivos [pegamentos] de papelería o para uso doméstico; material de encuadernación; bolsas [envolturas, bolsitas] de papel o de materias plásticas para embalaje; caballetes de pintura; imprentas portátiles [artículos de oficina]; baberos de papel; adhesivos [artículos de papelería]; envolturas de cartón o papel para botellas; forros [artículos de papelería]; forros para libros o cuadernos [artículos de papelería]; fundas para pasaportes; patrones de bordado; tarjetas de felicitación musicales; tarjetas de felicitación; cucuruchos de papel; paletas de pintor; papel maché; pasta de modelar; películas de materias plásticas para embalar; posabotellas y posavasos de papel; posavasos para cerveza; telas engomadas de papelería; productos de imprenta; prospectos; reproducciones gráficas; cortes histológicos [material didáctico]; artículos de papelería; figuras [estatuillas] de papel maché; banderas de papel; papel de plata; moldes para arcilla de modelar [material para artistas]; moldes para arcilla de modelar [material para artistas]; fotograbados; fotografías [impresas]; lienzos para pintar; salseras de acuarelas para artistas; clichés de multicopista; cajas de papelería [artículos de oficina]; escudos [sellos de papel]; láminas [grabados]; etiquetas que no sean de tela."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Bustos de madera, cera, yeso o materias plásticas; tornillos no metálicos; expositores [muebles]; vitrinas [muebles]; mimbre; paja trenzada, excepto esteras; artículos de cestería; objetos de arte de madera, cera, yeso o materias plásticas; productos de ebanistería; caña [material trenzable]; estatuas de madera, cera, yeso o plástico; persianas de madera tejida [muebles]; cajas de madera o materias plásticas; arcones para juguetes."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Artículos de cotillón para bailes y fiestas [recuerdos de fiestas]; billetes de lotería para raspar; rompecabezas [puzles]; casas de muñecas; juegos de dominó; juguetes; juguetes de tela; juguetes de peluche; móviles [juguetes]; artículos de broma; juegos de salón; juegos de sociedad; juegos de tablero; juegos de anillas; juegos; juegos de construcción; caleidoscopios; juegos de naipes; campanitas para árboles de Navidad; habitaciones de muñecas; confetis; sorpresas detonantes en forma de caramelo; triquitraques [petardos de juguete]; dados (juegos); camas de muñecas; bloques de construcción [juguetes]; muñecas; marionetas; marionetas; máscaras de carnaval; máscaras [juguetes]; matrioskas; osos de peluche; maquetas de juguete; kits de modelos a escala [juguetes]; modelos reducidos de vehículos; balones y pelotas para juegos; juegos de construcción; juegos de trenes en miniatura; ropa de muñecas; guantes para juegos; pistolas de juguete; sonajeros; portavelas para árboles de Navidad; soportes para árboles de Navidad; juegos portátiles con pantalla de cristal líquido; juguetes para hacer pompas de jabón; adornos para árboles de Navidad, excepto artículos de iluminación y golosinas; aparatos de prestidigitación; aparatos para juegos; figuras de juguete; fichas para juegos; futbolines; canicas para jugar; pelotas de juego; globos [juguetes]; sombreros de papel para fiestas."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Selección de personal; consultoría sobre recursos humanos; alquiler de máquinas y aparatos de oficina; gestión administrativa externalizada para empresas."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Alquiler de equipos de construcción; alquiler de excavadoras; instalación y reparación de almacenes (depósitos)."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Tratamiento del papel; trabajo de la madera; tratamiento de metales; estampado de motivos; servicios de impresión en offset; servicios de impresión; ensamblaje personalizado de materiales por cuenta de terceros; corte de telas; planificación [serrería]; tratamiento de separación de colores; serigrafía."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Análisis químicos; diseño industrial; diseño de artes gráficas; investigación cosmetológica; investigación mecánica; investigación química; investigación y desarrollo de nuevos productos para terceros; investigación científica; investigación técnica; control de calidad; alojamiento de servidores; diseño de software; creación y mantenimiento de sitios web para terceros; programación informática; diseño de envases y embalajes; servicios de laboratorios científicos; estilismo [diseño industrial]; almacenamiento electrónico de datos."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de vigilancia nocturna; servicios de vigilancia de los derechos de propiedad intelectual con fines de asesoramiento jurídico; inspección de alarmas antirrobo y de seguridad; concesión de licencias de propiedad intelectual; servicios de guardias."
+        }
+      ]
+    },
+    "id": "6fb43ee0-66a1-43b0-9ef3-b9e508fd62cb",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "40"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "BOX 1414 RU-150044 YAROSLAVL",
+        "representativeCorrespondentAddressCountryCode": "RU",
+        "representativeCorrespondentAddressCountryName": "Russian Federation",
+        "representativeCorrespondentName": "INDIVIDUAL ENTREPRENEUR NOVICHKOV VALENTIN"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270607",
+      "lastPublicationDate": "20171019",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20170607",
+        "registrationNumber": "1370931"
+      }
+    },
+    "version": "20250620183844",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LORI"
+    }
+  },
+  "_uri": "/mark/wo/6fb43ee0-66a1-43b0-9ef3-b9e508fd62cb",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.455Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

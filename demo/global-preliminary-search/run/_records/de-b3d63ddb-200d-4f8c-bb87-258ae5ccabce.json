@@ -1,0 +1,154 @@
+{
+  "uri": "/mark/de/b3d63ddb-200d-4f8c-bb87-258ae5ccabce",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "b3d63ddb-200d-4f8c-bb87-258ae5ccabce",
+  "applicationNumber": "302019236185.0",
+  "registrationNumber": "302019236185",
+  "applicationDate": "2019-11-09",
+  "registrationDate": "2020-01-15",
+  "expiryDate": "2029-11-09",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-02-14",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Heaven Orchestra",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Herunterladbare Musikaufzeichnungen; Musiktonträger; Herunterladbare digitale Musik aus dem Internet; Musikaufzeichnungen; Musikvideoaufzeichnungen; Audio-CDs; Herunterladbare Videoaufnahmen mit Musik; Herunterladbare Tonaufzeichnungen",
+      "translation_language": "en",
+      "translation": "downloadable music recordings; Music recordings; Digital music downloadable from the Internet; Music recordings; Music video recordings; Audio CDs; Downloadable video recordings featuring music; Downloadable sound recordings"
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "de",
+      "description": "Druckereierzeugnisse; Gedruckte Notenblätter; Unterrichtshandbücher für Musik; Noten [Notenblätter]; Notenmaterial [Partituren]; Gedruckte Noten; Musikbücher",
+      "translation_language": "en",
+      "translation": "printed matter; Printed sheet music; Instruction manuals for music; Sheet music; Sheet music [scores]; Printed notes; Music books"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Aufführungen von Tanz, Musik und Schauspiel; Musikdarbietungen [Orchester]; Aufnehmen von Musik; Aufnahme von Videofilmen; Bereitstellung von Online-Musik, nicht herunterladbar; Dienstleistungen eines Musikverlages; Unterhaltung; Musikproduktion; Musikalische Darbietungen; Musikkonzerte; Unterricht in Musik; Durchführung von Live-Konzerten; Unterhaltung auf dem Gebiet der darstellenden Kunst; Veranstaltung von Musikkonzerten; Organisation von Musikveranstaltungen; Unterhaltung in Form von Tanzdarbietungen; Durchführung von Live-Musikkonzerten",
+      "translation_language": "en",
+      "translation": "Performances of dance, music and drama; Musical performances [orchestras]; Recording music; Recording of video films; Providing online music, not downloadable; Music publishing services; Entertainment; Music production; Musical performances; Music concerts; Teaching music; Conducting live concerts; Entertainment in the field of the performing arts; Organization of music concerts; Organization of musical events; Entertainment in the nature of dance performances; Conducting live music concerts"
+    }
+  ],
+  "owner": "Schmitt, Lisa",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "68167 Mannheim",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Schmitt, Lisa"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "downloadable music recordings; Music recordings; Digital music downloadable from the Internet; Music recordings; Music video recordings; Audio CDs; Downloadable video recordings featuring music; Downloadable sound recordings",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Herunterladbare Musikaufzeichnungen; Musiktonträger; Herunterladbare digitale Musik aus dem Internet; Musikaufzeichnungen; Musikvideoaufzeichnungen; Audio-CDs; Herunterladbare Videoaufnahmen mit Musik; Herunterladbare Tonaufzeichnungen"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "printed matter; Printed sheet music; Instruction manuals for music; Sheet music; Sheet music [scores]; Printed notes; Music books",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Druckereierzeugnisse; Gedruckte Notenblätter; Unterrichtshandbücher für Musik; Noten [Notenblätter]; Notenmaterial [Partituren]; Gedruckte Noten; Musikbücher"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Performances of dance, music and drama; Musical performances [orchestras]; Recording music; Recording of video films; Providing online music, not downloadable; Music publishing services; Entertainment; Music production; Musical performances; Music concerts; Teaching music; Conducting live concerts; Entertainment in the field of the performing arts; Organization of music concerts; Organization of musical events; Entertainment in the nature of dance performances; Conducting live music concerts",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Aufführungen von Tanz, Musik und Schauspiel; Musikdarbietungen [Orchester]; Aufnehmen von Musik; Aufnahme von Videofilmen; Bereitstellung von Online-Musik, nicht herunterladbar; Dienstleistungen eines Musikverlages; Unterhaltung; Musikproduktion; Musikalische Darbietungen; Musikkonzerte; Unterricht in Musik; Durchführung von Live-Konzerten; Unterhaltung auf dem Gebiet der darstellenden Kunst; Veranstaltung von Musikkonzerten; Organisation von Musikveranstaltungen; Unterhaltung in Form von Tanzdarbietungen; Durchführung von Live-Musikkonzerten"
+        }
+      ]
+    },
+    "id": "b3d63ddb-200d-4f8c-bb87-258ae5ccabce",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "07"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Schmitt, Käfertaler Str. 30, 68167 Mannheim"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20191109",
+        "applicationNumber": "302019236185.0"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20291109",
+      "lastPublicationDate": "20200214",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20200115",
+        "registrationNumber": "302019236185"
+      }
+    },
+    "version": "20250627164702",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Heaven Orchestra"
+    }
+  },
+  "_uri": "/mark/de/b3d63ddb-200d-4f8c-bb87-258ae5ccabce",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.813Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

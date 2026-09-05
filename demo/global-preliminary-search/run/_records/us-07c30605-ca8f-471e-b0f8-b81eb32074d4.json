@@ -1,0 +1,894 @@
+{
+  "uri": "/mark/us/07c30605-ca8f-471e-b0f8-b81eb32074d4",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "07c30605-ca8f-471e-b0f8-b81eb32074d4",
+  "applicationNumber": "85884119",
+  "registrationNumber": "4539757",
+  "applicationDate": "2013-03-22",
+  "registrationDate": "2014-05-27",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2013-07-16"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2021-01-01",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ELVEN QUEEN",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    28
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Computer software and firmware for games of chance on any computerized platform, including dedicated gaming consoles, video based slot machines, reel based slot machines, and video lottery terminals",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": null,
+      "description": "INT. CL. 28 Gaming machines, namely, devices which accept a wager; reconfigurable casino gaming equipment, namely, gaming machines and operational computer software therefor sold as a unit",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SG GAMING, INC.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "KRISTIANNE NABONG",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6601 BERMUDA ROAD, LAS VEGAS, NEVADA, 89119",
+        "applicantAddressCity": "LAS VEGAS",
+        "applicantAddressPostalCode": "89119",
+        "applicantAddressStateName": "NEVADA",
+        "applicantAddressStreet": "6601 BERMUDA ROAD",
+        "applicantJurisdictionOfIncorporation": "NEVADA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "SG GAMING, INC."
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "6601 BERMUDA ROAD, LAS VEGAS, NEVADA, 89119",
+            "city": "LAS VEGAS",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SCIENTIFIC GAMES INTERNATIONAL, INC.",
+            "postalCode": "89119",
+            "stateName": "NEVADA",
+            "street": "6601 BERMUDA ROAD"
+          },
+          {
+            "address": "6601 BERMUDA ROAD, LAS VEGAS, NEVADA, 89119",
+            "city": "LAS VEGAS",
+            "jurisdictionOfIncorporation": "NEVADA",
+            "legalEntity": "CORPORATION",
+            "name": "SCIENTIFIC GAMES CORPORATION",
+            "postalCode": "89119",
+            "stateName": "NEVADA",
+            "street": "6601 BERMUDA ROAD"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "ASSOCIATION",
+            "name": "BANK OF AMERICA, N.A."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "4400 EASTON COMMONS WAY, COLUMBUS, OH 43219",
+            "addressLines": [
+              "CT CORPORATION ATTN: TED MULLIGAN",
+              "4400 EASTON COMMONS WAY",
+              "COLUMBUS, OH 43219"
+            ],
+            "name": "CT CORPORATION ATTN: TED MULLIGAN"
+          }
+        ],
+        "descriptionText": "RELEASE OF SECURITY INTEREST AT REEL 5163 FRAME 0434",
+        "executedDate": "20220414",
+        "recordedDate": "20220712",
+        "reelFrameNumber": "7783/0617"
+      },
+      {
+        "assignees": [
+          {
+            "address": "6601 BERMUDA ROAD, LAS VEGAS, NEVADA, 89119",
+            "city": "LAS VEGAS",
+            "jurisdictionOfIncorporation": "NEVADA",
+            "legalEntity": "CORPORATION",
+            "name": "SG GAMING, INC.",
+            "postalCode": "89119",
+            "stateName": "NEVADA",
+            "street": "6601 BERMUDA ROAD"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "NEVADA",
+            "legalEntity": "CORPORATION",
+            "name": "BALLY GAMING, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "6601 BERMUDA ROAD, LAS VEGAS, NV 89119",
+            "addressLines": [
+              "CYNTHIA SMITH",
+              "6601 BERMUDA ROAD",
+              "LAS VEGAS, NV 89119"
+            ],
+            "name": "CYNTHIA SMITH"
+          }
+        ],
+        "descriptionText": "CHANGE OF NAME",
+        "executedDate": "20200103",
+        "recordedDate": "20200109",
+        "reelFrameNumber": "6834/0327"
+      },
+      {
+        "assignees": [
+          {
+            "address": "6601 SOUTH BERMUDA ROAD, LAS VEGAS, NEVADA, 89119",
+            "city": "LAS VEGAS",
+            "jurisdictionOfIncorporation": "NEVADA",
+            "legalEntity": "CORPORATION",
+            "name": "BALLY GAMING, INC.",
+            "postalCode": "89119",
+            "stateName": "NEVADA",
+            "street": "6601 SOUTH BERMUDA ROAD"
+          },
+          {
+            "address": "6601 SOUTH BERMUDA ROAD, LAS VEGAS, NEVADA, 89119",
+            "city": "LAS VEGAS",
+            "jurisdictionOfIncorporation": "NEVADA",
+            "legalEntity": "CORPORATION",
+            "name": "BALLY TECHNOLOGIES, INC.",
+            "postalCode": "89119",
+            "stateName": "NEVADA",
+            "street": "6601 SOUTH BERMUDA ROAD"
+          },
+          {
+            "address": "1500 BLUEGRASS LAKES PARKWAY, ALPHARETTA, GEORGIA, 30004",
+            "city": "ALPHARETTA",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "MDI ENTERTAINMENT, LLC",
+            "postalCode": "30004",
+            "stateName": "GEORGIA",
+            "street": "1500 BLUEGRASS LAKES PARKWAY"
+          },
+          {
+            "address": "900 TECHNOLOGY PARKWAY - SUITE 300, CEDAR FALLS, IOWA, 50613",
+            "city": "CEDAR FALLS",
+            "jurisdictionOfIncorporation": "IOWA",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "PHANTOM EFX, LLC",
+            "postalCode": "50613",
+            "stateName": "IOWA",
+            "street": "900 TECHNOLOGY PARKWAY - SUITE 300"
+          },
+          {
+            "address": "750 LEXINGTON AVENUE, 25TH FLOOR, NEW YORK, NEW YORK, 10022",
+            "city": "NEW YORK",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SCIENTIFIC GAMES CORPORATION",
+            "postalCode": "10022",
+            "stateName": "NEW YORK",
+            "street": "750 LEXINGTON AVENUE, 25TH FLOOR"
+          },
+          {
+            "address": "750 LEXINGTON AVENUE, 25TH FLOOR, NEW YORK, NEW YORK, 10022",
+            "city": "NEW YORK",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SCIENTIFIC GAMES INTERNATIONAL, INC.",
+            "postalCode": "10022",
+            "stateName": "NEW YORK",
+            "street": "750 LEXINGTON AVENUE, 25TH FLOOR"
+          },
+          {
+            "address": "750 LEXINGTON AVENUE, 25TH FLOOR, NEW YORK, NEW YORK, 10022",
+            "city": "NEW YORK",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SCIENTIFIC GAMES PRODUCTS, INC.",
+            "postalCode": "10022",
+            "stateName": "NEW YORK",
+            "street": "750 LEXINGTON AVENUE, 25TH FLOOR"
+          },
+          {
+            "address": "1500 BLUEGRASS LAKES PARKWAY, ALPHARETTA, GEORGIA, 30004",
+            "city": "ALPHARETTA",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SCIENTIFIC GAMES SA, INC.",
+            "postalCode": "30004",
+            "stateName": "GEORGIA",
+            "street": "1500 BLUEGRASS LAKES PARKWAY"
+          },
+          {
+            "address": "6601 SOUTH BERMUDA ROAD, LAS VEGAS, NEVADA, 89119",
+            "city": "LAS VEGAS",
+            "jurisdictionOfIncorporation": "NEVADA",
+            "legalEntity": "CORPORATION",
+            "name": "SIERRA DESIGN GROUP",
+            "postalCode": "89119",
+            "stateName": "NEVADA",
+            "street": "6601 SOUTH BERMUDA ROAD"
+          },
+          {
+            "address": "3401 N. CALIFORNIA AVE., CHICAGO, ILLINOIS, 60618",
+            "city": "CHICAGO",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "WILLIAMS ELECTRONICS GAMES, INC.",
+            "postalCode": "60618",
+            "stateName": "ILLINOIS",
+            "street": "3401 N. CALIFORNIA AVE."
+          },
+          {
+            "address": "3401 N. CALIFORNIA AVE., CHICAGO, ILLINOIS, 60618",
+            "city": "CHICAGO",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "WILLIAMS INTERACTIVE LLC",
+            "postalCode": "60618",
+            "stateName": "ILLINOIS",
+            "street": "3401 N. CALIFORNIA AVE."
+          },
+          {
+            "address": "750 LEXINGTON AVENUE, 25TH FLOOR, NEW YORK, NEW YORK, 10022",
+            "city": "NEW YORK",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "WMS GAMING INC.",
+            "postalCode": "10022",
+            "stateName": "NEW YORK",
+            "street": "750 LEXINGTON AVENUE, 25TH FLOOR"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "BANK",
+            "name": "DEUTSCHE BANK TRUST COMPANY AMERICAS"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "650 TOWN CENTER DRIVE, SUITE 2000, COSTA MESA, CA 92626",
+            "addressLines": [
+              "LATHAM & WATKINS LLP",
+              "650 TOWN CENTER DRIVE, SUITE 2000",
+              "COSTA MESA, CA 92626"
+            ],
+            "name": "LATHAM & WATKINS LLP"
+          }
+        ],
+        "descriptionText": "RELEASE OF SECURITY INTEREST IN TRADEMARKS (RELEASES REEL/FRAME 5412/0714)",
+        "executedDate": "20180302",
+        "recordedDate": "20181115",
+        "reelFrameNumber": "6566/0105"
+      },
+      {
+        "assignees": [
+          {
+            "address": "60 WALL ST., 16TH FLOOR, NEW YORK, NEW YORK, 10005",
+            "city": "NEW YORK",
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "BANK",
+            "name": "DEUTSCHE BANK TRUST COMPANY AMERICAS, AS COLLATERAL AGENT",
+            "postalCode": "10005",
+            "secondaryAddressUnit": "MSNYC60-1630",
+            "stateName": "NEW YORK",
+            "street": "60 WALL ST., 16TH FLOOR"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SCIENTIFIC GAMES INTERNATIONAL, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "NEVADA",
+            "legalEntity": "CORPORATION",
+            "name": "SCIENTIFIC GAMES CORPORATION"
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SCIENTIFIC GAMES SA, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "WILLIAMS ELECTRONICS GAMES, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "NEVADA",
+            "legalEntity": "CORPORATION",
+            "name": "BALLY GAMING, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "NEW JERSEY",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "LAPIS SOFTWARE ASSOCIATES, L.L.C."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "MDI ENTERTAINMENT, LLC"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "4400 EASTON COMMONS WAY, SUITE 125, COLUMBUS, OH 43219",
+            "addressLines": [
+              "CT CORPORATION",
+              "4400 EASTON COMMONS WAY",
+              "SUITE 125",
+              "COLUMBUS, OH 43219"
+            ],
+            "name": "CT CORPORATION"
+          }
+        ],
+        "descriptionText": "SECURITY AGREEMENT",
+        "executedDate": "20180409",
+        "recordedDate": "20180411",
+        "reelFrameNumber": "6316/0001"
+      },
+      {
+        "assignees": [
+          {
+            "address": "60 WALL ST., 16TH FLOOR, MSNYC60-1630, NEW YORK, NEW YORK, 10005",
+            "city": "NEW YORK",
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "BANK",
+            "name": "DEUTSCHE BANK TRUST COMPANY AMERICAS, AS COLLATERAL AGENT",
+            "postalCode": "10005",
+            "stateName": "NEW YORK",
+            "street": "60 WALL ST., 16TH FLOOR, MSNYC60-1630"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SCIENTIFIC GAMES INTERNATIONAL, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SCIENTIFIC GAMES CORPORATION"
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SCIENTIFIC GAMES SA, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "WILLIAMS ELECTRONICS GAMES, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "NEVADA",
+            "legalEntity": "CORPORATION",
+            "name": "BALLY GAMING, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "NEW JERSEY",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "LAPIS SOFTWARE ASSOCIATES, L.L.C."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "MDI ENTERTAINMENT, LLC"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "4400 EASTON COMMONS WAY, SUITE 125, COLUMBUS, OH 43219",
+            "addressLines": [
+              "CT CORPORATION",
+              "4400 EASTON COMMONS WAY",
+              "SUITE 125",
+              "COLUMBUS, OH 43219"
+            ],
+            "name": "CT CORPORATION"
+          }
+        ],
+        "descriptionText": "SECURITY AGREEMENT",
+        "executedDate": "20171214",
+        "recordedDate": "20171219",
+        "reelFrameNumber": "6265/0615"
+      },
+      {
+        "assignees": [
+          {
+            "address": "6650 S. EL CAMINO ROAD, LAS VEGAS, NEVADA, 89118",
+            "aliasName": "DBA BALLY TECHNOLOGIES",
+            "city": "LAS VEGAS",
+            "jurisdictionOfIncorporation": "NEVADA",
+            "legalEntity": "CORPORATION",
+            "name": "BALLY GAMING, INC.",
+            "postalCode": "89118",
+            "stateName": "NEVADA",
+            "street": "6650 S. EL CAMINO ROAD"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "WMS GAMING INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "6650 S. EL CAMINO ROAD, LEGAL DEPARTMENT, LAS VEGAS, NV 89118",
+            "addressLines": [
+              "CYNTHIA L. SMITH",
+              "6650 S. EL CAMINO ROAD",
+              "LEGAL DEPARTMENT",
+              "LAS VEGAS, NV 89118"
+            ],
+            "name": "CYNTHIA L. SMITH"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20150731",
+        "recordedDate": "20150804",
+        "reelFrameNumber": "5592/0612"
+      },
+      {
+        "assignees": [
+          {
+            "address": "60 WALL ST., 16TH FL., MSNYC60-1630, NEW YORK, NEW YORK, 10005",
+            "city": "NEW YORK",
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "BANK",
+            "name": "DEUTSCHE BANK TRUST COMPANY AMERICAS, AS COLLATERAL AGENT",
+            "postalCode": "10005",
+            "stateName": "NEW YORK",
+            "street": "60 WALL ST., 16TH FL., MSNYC60-1630"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "NEVADA",
+            "legalEntity": "CORPORATION",
+            "name": "BALLY GAMING, INC"
+          },
+          {
+            "jurisdictionOfIncorporation": "NEVADA",
+            "legalEntity": "CORPORATION",
+            "name": "BALLY TECHNOLOGIES, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "MDI ENTERTAINMENT, LLC"
+          },
+          {
+            "jurisdictionOfIncorporation": "IOWA",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "PHANTOM EFX, LLC"
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SCIENTIFIC GAMES CORPORATION"
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SCIENTIFIC GAMES INTERNATIONAL, INC"
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SCIENTIFIC GAMES PRODUCTS, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SCIENTIFIC GAMES SA, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "NEVADA",
+            "legalEntity": "CORPORATION",
+            "name": "SIERRA DESIGN GROUP"
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "WILLIAMS ELECTRONICS GAMES, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "WILLIAMS INTERACTIVE LLC"
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "WMS GAMING INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "80 PINE STREET, C/O CAHILL GORDON & REINDEL LLP, NEW YORK, NY 10005",
+            "addressLines": [
+              "ELAINE CARRERA, LEGAL ASSISTANT",
+              "80 PINE STREET",
+              "C/O CAHILL GORDON & REINDEL LLP",
+              "NEW YORK, NY 10005"
+            ],
+            "name": "ELAINE CARRERA, LEGAL ASSISTANT"
+          }
+        ],
+        "descriptionText": "SECURITY AGREEMENT",
+        "executedDate": "20141121",
+        "recordedDate": "20141203",
+        "reelFrameNumber": "5412/0714"
+      },
+      {
+        "assignees": [
+          {
+            "address": "901 MAIN STREET, FLOOR 14, DALLAS, TEXAS, 75202",
+            "city": "DALLAS",
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "ASSOCIATION",
+            "name": "BANK OF AMERICA, N.A., AS COLLATERAL AGENT",
+            "postalCode": "75202",
+            "stateName": "TEXAS",
+            "street": "901 MAIN STREET, FLOOR 14"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SCIENTIFIC GAMES INTERNATIONAL, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "SCIENTIFIC GAMES CORPORATION"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "21 TADCASTER CIRCLE, ATTN: PENELOPE J.A. AGODOA, WALDORF, MD 20602",
+            "addressLines": [
+              "IP RESEARCH PLUS, INC.",
+              "21 TADCASTER CIRCLE",
+              "ATTN: PENELOPE J.A. AGODOA",
+              "WALDORF, MD 20602"
+            ],
+            "name": "IP RESEARCH PLUS, INC."
+          }
+        ],
+        "descriptionText": "SECURITY AGREEMENT",
+        "executedDate": "20131018",
+        "recordedDate": "20131115",
+        "reelFrameNumber": "5163/0434"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Computer software and firmware for games of chance on any computerized platform, including dedicated gaming consoles, video based slot machines, reel based slot machines, and video lottery terminals"
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsServicesDescription": "INT. CL. 28 Gaming machines, namely, devices which accept a wager; reconfigurable casino gaming equipment, namely, gaming machines and operational computer software therefor sold as a unit"
+        }
+      ]
+    },
+    "id": "07c30605-ca8f-471e-b0f8-b81eb32074d4",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20220824",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20210101",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20200122",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20190527",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20190227",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20180820",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20180502",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20180221",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20170823",
+        "descriptionText": "TEAS CHANGE OF OWNER ADDRESS RECEIVED"
+      },
+      {
+        "date": "20170823",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20150812",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20141210",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20140527",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20140424",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE E-MAILED"
+      },
+      {
+        "date": "20140416",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20140404",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20140403",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20140307",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20140307",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20131204",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20130910",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20130716",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20130716",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20130626",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20130612",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20130611",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20130326",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20130326",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "800 SOUTH NORTHPOINT BOULEVARD, WAUKEGAN, IL, 60085",
+        "city": "WAUKEGAN",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "WMS GAMING INC.",
+        "postalCode": "60085",
+        "stateName": "ILLINOIS",
+        "street": "800 SOUTH NORTHPOINT BOULEVARD"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "800 SOUTH NORTHPOINT BOULEVARD, WAUKEGAN, IL, 60085",
+        "city": "WAUKEGAN",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "WMS GAMING INC.",
+        "postalCode": "60085",
+        "stateName": "ILLINOIS",
+        "street": "800 SOUTH NORTHPOINT BOULEVARD"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "800 SOUTH NORTHPOINT BOULEVARD, WAUKEGAN, IL, 60085",
+        "city": "WAUKEGAN",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "WMS GAMING INC.",
+        "postalCode": "60085",
+        "stateName": "ILLINOIS",
+        "street": "800 SOUTH NORTHPOINT BOULEVARD"
+      }
+    ],
+    "postRegistrationOwners": [
+      {
+        "address": "6601 BERMUDA ROAD, LAS VEGAS, NV, 89119",
+        "city": "LAS VEGAS",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NEVADA",
+        "legalEntity": "CORPORATION",
+        "name": "SG GAMING, INC.",
+        "postalCode": "89119",
+        "stateName": "NEVADA",
+        "street": "6601 BERMUDA ROAD"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "CHICAGO, IL 60654, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "CHICAGO, IL 60654",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "KRISTIANNE NABONG Scientific Games Corporation, 350 N. ORLEANS, SUITE 2000S"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "CHICAGO, IL 60654, UNITED STATES",
+        "representativeAddressLines": [
+          "CHICAGO, IL 60654",
+          "UNITED STATES"
+        ],
+        "representativeName": "KRISTIANNE NABONG"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20130322",
+        "applicationNumber": "85884119"
+      },
+      "cancellationDate": "20210101",
+      "cancellationPublicationDate": "20210209",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20130924"
+        },
+        {
+          "firstUsedClass": "28",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20130924"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20130924"
+        },
+        {
+          "firstUsedCommerceClass": "28",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20130924"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20210101",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20130716"
+      ],
+      "registration": {
+        "registrationDate": "20140527",
+        "registrationNumber": "4539757"
+      }
+    },
+    "version": "20260110161324",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "11 QUEEN",
+      "markVerbalElementText": "ELVEN QUEEN"
+    }
+  },
+  "_uri": "/mark/us/07c30605-ca8f-471e-b0f8-b81eb32074d4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.567Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

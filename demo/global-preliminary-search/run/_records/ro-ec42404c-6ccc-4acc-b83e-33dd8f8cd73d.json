@@ -1,0 +1,210 @@
+{
+  "uri": "/mark/ro/ec42404c-6ccc-4acc-b83e-33dd8f8cd73d",
+  "provider": "clarivate",
+  "office": "ro",
+  "guid": "ec42404c-6ccc-4acc-b83e-33dd8f8cd73d",
+  "applicationNumber": "M 2005 02702",
+  "registrationNumber": "70984",
+  "applicationDate": "2005-03-15",
+  "registrationDate": "2006-04-17",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "LORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    14,
+    26,
+    28,
+    30,
+    33,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        14
+      ],
+      "language": "ro",
+      "description": "Bijuterii ( din metale preţiose ).",
+      "translation_language": "en",
+      "translation": "Jewelry (Precious metals)."
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "ro",
+      "description": "Dantele, broderii, panglici şi şireturi;nasturi, capse şi copci.",
+      "translation_language": "en",
+      "translation": "Lace, embroidery, ribbons and laces; buttons, staples and clasps."
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "ro",
+      "description": "Jocuri, jucării, articole de gimnastică şi de sport necuprinse în alte clase.",
+      "translation_language": "en",
+      "translation": "Games and playthings, gymnastic and sporting articles not included in other classes."
+    },
+    {
+      "classes": [
+        30
+      ],
+      "language": "ro",
+      "description": "Ciocolată, bomboane, îngheţată.",
+      "translation_language": "en",
+      "translation": "Chocolate, candy, ice cream."
+    },
+    {
+      "classes": [
+        33
+      ],
+      "language": "ro",
+      "description": "Şampanie, vin.",
+      "translation_language": "en",
+      "translation": "Champagne, wine."
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ro",
+      "description": "Organizarea şi prezentarea, în direct, de spectacole, piese de teatru, concerte, spectacole de operă şi balet;emisiuni tv;educaţie, instruire, divertisment, activităţi sportive şi culturale.",
+      "translation_language": "en",
+      "translation": "The organization and presentation, live, of shows, plays, concerts, opera and ballet performances; TV shows; education, training, entertainment, sports and cultural activities."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Servicii de decoraţiuni interioare;servicii de design ( în domeniul modei, legat de textile, îmbrăcăminte, pantofi, bijuterii, mobilă).",
+      "translation_language": "en",
+      "translation": "Interior decoration services; design services (in the field of fashion, related to textiles, clothing, shoes, jewelry, furniture)."
+    }
+  ],
+  "owner": "GROZA LOREDANA",
+  "ownerNative": null,
+  "ownerCountry": "RO",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Str. Biserica Amzei Nr. 27, Etaj 5, Ap. 7, Sector 1, BUCUREŞTI",
+        "applicantAddressCountryCode": "RO",
+        "applicantAddressCountryName": "Romania",
+        "applicantName": "GROZA LOREDANA"
+      }
+    ],
+    "applicationLanguageCode": "ro",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Jewelry (Precious metals).",
+          "intClassNumber": "14",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Bijuterii ( din metale preţiose )."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Lace, embroidery, ribbons and laces; buttons, staples and clasps.",
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Dantele, broderii, panglici şi şireturi;nasturi, capse şi copci."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Games and playthings, gymnastic and sporting articles not included in other classes.",
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Jocuri, jucării, articole de gimnastică şi de sport necuprinse în alte clase."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Chocolate, candy, ice cream.",
+          "intClassNumber": "30",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Ciocolată, bomboane, îngheţată."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Champagne, wine.",
+          "intClassNumber": "33",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Şampanie, vin."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "The organization and presentation, live, of shows, plays, concerts, opera and ballet performances; TV shows; education, training, entertainment, sports and cultural activities.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Organizarea şi prezentarea, în direct, de spectacole, piese de teatru, concerte, spectacole de operă şi balet;emisiuni tv;educaţie, instruire, divertisment, activităţi sportive şi culturale."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Interior decoration services; design services (in the field of fashion, related to textiles, clothing, shoes, jewelry, furniture).",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de decoraţiuni interioare;servicii de design ( în domeniul modei, legat de textile, îmbrăcăminte, pantofi, bijuterii, mobilă)."
+        }
+      ]
+    },
+    "id": "ec42404c-6ccc-4acc-b83e-33dd8f8cd73d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260802",
+    "registrationOfficeCode": "RO",
+    "registrationOfficeName": "Romania",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20050315",
+        "applicationNumber": "M 2005 02702"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20060417",
+        "registrationNumber": "70984"
+      }
+    },
+    "version": "20260802020208",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LORI"
+    }
+  },
+  "_uri": "/mark/ro/ec42404c-6ccc-4acc-b83e-33dd8f8cd73d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.455Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

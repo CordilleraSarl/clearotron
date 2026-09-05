@@ -148,8 +148,8 @@ route** — it strips that key from the published manifest and leaves the reposi
 
 Two further constraints, both of which stop a package being cut from just anywhere:
 
-- **The de-identification scan needs a full clone.** `scripts/publication-scan.mjs` refuses a shallow one
-  (exit 2 — could-not-look, not a pass) because it walks history it cannot see.
+- **The de-identification scan needs a full clone.** It refuses a shallow one (exit 2 — could-not-look,
+  not a pass) because it walks history it cannot see.
 - **It also needs its table**, passed with `--blocklist` (or `CLEAROTRON_IDENTIFIER_BLOCKLIST`), and
   that table lives in the private config store rather than in this repository. Without it the scan
   exits 2 rather than arming a weaker rule set quietly.
@@ -545,7 +545,7 @@ Copy or author the customers, context packs and project overlays you want; assum
    **The example above is sized in minutes; a real clearance is sized in hours.**
    The engine sizes a knockout search at 5 to 10 minutes — which is what this job orders — and a clearance
    at up to 2.5 hours.
-   The example run in `examples/sample-run/` took 2 h 35 m, and it is a clearance, not a knockout. A
+   The example run in `demo/` took 2 h 35 m, and it is a clearance, not a knockout. A
    single stage of a clearance can legitimately run 45 minutes — let it finish.
    [How long a run takes](#how-long-a-run-takes) below gives the provenance of each figure.
 
@@ -576,7 +576,7 @@ its internal refutation verdict, and then:
 
 Hours, not minutes.
 
-**One measured run.** The sample in `examples/sample-run/` took **2 h 35 m** from `startedAt` to
+**One measured run.** The sample in `demo/` took **2 h 35 m** from `startedAt` to
 `deliveredAt` (`run/status.json`) — one mark, two classes, one register, 214 register calls, 37 model
 dispatches. That is 1.29× the 2 hours the run quoted itself.
 

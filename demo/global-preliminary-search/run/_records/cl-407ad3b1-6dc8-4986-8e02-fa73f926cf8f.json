@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/cl/407ad3b1-6dc8-4986-8e02-fa73f926cf8f",
+  "provider": "clarivate",
+  "office": "cl",
+  "guid": "407ad3b1-6dc8-4986-8e02-fa73f926cf8f",
+  "applicationNumber": "1468882",
+  "registrationNumber": null,
+  "applicationDate": "2021-08-05",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "QORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    37,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35,
+        37,
+        40,
+        42
+      ],
+      "language": "en",
+      "description": "No goods available",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "DIEGO MAXIMILIANO MUÑOZ CARRASCO",
+  "ownerNative": null,
+  "ownerCountry": "CL",
+  "representative": "MÜHLENBROCK & KÜHNER SPA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "MAIPÚ",
+        "applicantAddressCountryCode": "CL",
+        "applicantAddressCountryName": "Chile",
+        "applicantName": "DIEGO MAXIMILIANO MUÑOZ CARRASCO"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35,37,40,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "No goods available"
+        }
+      ]
+    },
+    "id": "407ad3b1-6dc8-4986-8e02-fa73f926cf8f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "En fondo de color blanco la palabra QORE en colores negro y morado, donde la letra O esta representada por la imagen de un botón de encendido y tres líneas verticales en la parte superior, todas ellas en color morado. En fondo de color blanco la palabra QORE en colores negro y morado, donde la letra O esta representada por la imagen de un botón de encendido y tres líneas verticales en la parte superior, todas ellas en color morado."
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260615",
+    "registrationOfficeCode": "CL",
+    "registrationOfficeName": "Chile",
+    "representatives": [
+      {
+        "representativeAddress": "LAS CONDES",
+        "representativeAddressCountryCode": "CL",
+        "representativeAddressCountryName": "Chile",
+        "representativeName": "MÜHLENBROCK & KÜHNER SPA"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20210805",
+        "applicationNumber": "1468882"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "markCurrentStatus": "WITHDRAWN MARK"
+    },
+    "version": "20260615163140",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORE"
+    }
+  },
+  "_uri": "/mark/cl/407ad3b1-6dc8-4986-8e02-fa73f926cf8f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:55.423Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

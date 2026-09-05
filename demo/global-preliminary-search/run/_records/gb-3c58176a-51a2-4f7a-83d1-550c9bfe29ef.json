@@ -1,0 +1,152 @@
+{
+  "uri": "/mark/gb/3c58176a-51a2-4f7a-83d1-550c9bfe29ef",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "3c58176a-51a2-4f7a-83d1-550c9bfe29ef",
+  "applicationNumber": "UK00902792257",
+  "registrationNumber": "UK00902792257",
+  "applicationDate": "2002-07-29",
+  "registrationDate": "2003-11-20",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "N NAVE NORTRAIL",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    39,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        39
+      ],
+      "language": "en",
+      "description": "Transport; packaging and storage of goods; travel arrangements; arranging of tours; information for tourists; transportation information; travel reservation; transport of travellers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education; providing of training; entertainment; sporting and cultural activities; providing of sports and recreation facilities; information about recreation.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Scientific and technological services and research and design relating thereto; computer programming; design and development of computer hardware and software; creating and maintaining web-sites for others; consultation in environment protection.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Hordaland Fylkeskommune v/Kulturlandskapsenteret",
+  "ownerNative": null,
+  "ownerCountry": "NO",
+  "representative": "Onsagers UK Ltd",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "P.O.Box 7900, Bergen 5020",
+        "applicantAddressCountryCode": "NO",
+        "applicantAddressCountryName": "Norway",
+        "applicantName": "Hordaland Fylkeskommune v/Kulturlandskapsenteret"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "26.11.25",
+      "37.01.14"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Transport; packaging and storage of goods; travel arrangements; arranging of tours; information for tourists; transportation information; travel reservation; transport of travellers."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education; providing of training; entertainment; sporting and cultural activities; providing of sports and recreation facilities; information about recreation."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific and technological services and research and design relating thereto; computer programming; design and development of computer hardware and software; creating and maintaining web-sites for others; consultation in environment protection."
+        }
+      ]
+    },
+    "id": "3c58176a-51a2-4f7a-83d1-550c9bfe29ef",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.21",
+      "27.99.14"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20251128",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Future Business Centre, Cambridge Campus, King Hedges Road, Cambridge CB4 2HY",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Onsagers UK Ltd"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20020729",
+        "applicationNumber": "UK00902792257"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ARCHIVED",
+      "registration": {
+        "registrationDate": "20031120",
+        "registrationNumber": "UK00902792257"
+      }
+    },
+    "version": "20251128020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "N NAVE NORTRAIL"
+    }
+  },
+  "_uri": "/mark/gb/3c58176a-51a2-4f7a-83d1-550c9bfe29ef",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "uri": "/mark/cn/66caac62-af20-4124-8ff9-08544cf39cfe",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "66caac62-af20-4124-8ff9-08544cf39cfe",
+  "applicationNumber": "31497629",
+  "registrationNumber": "31497629",
+  "applicationDate": "2018-06-08",
+  "registrationDate": "2019-03-21",
+  "expiryDate": "2029-03-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-12-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "青文科睿",
+  "markTransliteration": "QINGWENKERUI qing wen ke rui",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "学校(教育);辅导(培训);家教服务;培训;组织教育或娱乐竞赛;安排和组织培训班;提供在线电子出版物(非下载);组织文化或教育展览;就业指导(教育或培训顾问);教育考核",
+      "translation_language": "en",
+      "translation": "School (education); Counseling (training); Tutoring services; Training; Organizing educational or recreational competitions; Arranging and organizing training courses; Providing online electronic publications (not downloadable); Organizing cultural or educational exhibitions; Employment guidance (education or training) Consultant)"
+    }
+  ],
+  "owner": "Beijing Qingwen Keyui Cultural Development Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市密云区西大桥路67号十里堡镇政府办公楼407室-1042",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Beijing Qingwen Keyui Cultural Development Co., Ltd.",
+        "applicantNativeName": "北京青文科睿文化发展有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "School (education); Counseling (training); Tutoring services; Training; Organizing educational or recreational competitions; Arranging and organizing training courses; Providing online electronic publications (not downloadable); Organizing cultural or educational exhibitions; Employment guidance (education or training) Consultant)",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "学校(教育);辅导(培训);家教服务;培训;组织教育或娱乐竞赛;安排和组织培训班;提供在线电子出版物(非下载);组织文化或教育展览;就业指导(教育或培训顾问);教育考核"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Publishing service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4104",
+          "subNatGoodsServicesDescription": "Publishing service"
+        }
+      ]
+    },
+    "id": "66caac62-af20-4124-8ff9-08544cf39cfe",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1628"
+      }
+    ],
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京梦知网科技有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180608",
+        "applicationNumber": "31497629"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290320",
+      "lastPublicationDate": "20181220",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20190321",
+        "registrationNumber": "31497629"
+      }
+    },
+    "version": "20251003051111",
+    "wordMarkSpecification": {
+      "markTransliteration": "QINGWENKERUI qing wen ke rui",
+      "markVerbalElementText": "青文科睿"
+    }
+  },
+  "_uri": "/mark/cn/66caac62-af20-4124-8ff9-08544cf39cfe",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:34.423Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-transliteration-numeric"
+  }
+}

@@ -1,0 +1,245 @@
+{
+  "uri": "/mark/wo/05eda484-30f2-4f4a-a8b3-cd6d944cef2f",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "05eda484-30f2-4f4a-a8b3-cd6d944cef2f",
+  "applicationNumber": null,
+  "registrationNumber": "1139597",
+  "applicationDate": null,
+  "registrationDate": "2012-10-05",
+  "expiryDate": "2032-10-05",
+  "renewalDate": "2022-10-05",
+  "lastPublicationDate": "2022-10-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Shoes for protection against accidents, irradiation and fire, safety shoes, protective shoes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Wholesaling and retailing in the field of shoes for protection against accidents, irradiation and fire, safety shoes, protective shoes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Chaussures de protection contre les accidents, l'irradiation et le feu, chaussures de sécurité, chaussures de protection.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Vente en gros et au détail dans le domaine des chaussures de protection contre les accidents, l'irradiation et le feu, chaussures de sécurité, chaussures de protection.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Calzado de protección contra los accidentes, las radiaciones y el fuego, calzado de seguridad, calzado de protección.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Venta mayorista y minorista de calzado de protección contra accidentes, las radiaciones y el fuego, calzado de seguridad, calzado de protección.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Elten GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "RÖSLER RASCH van der HEIDE & PARTNER PATENT-UND RECHTSANWÄLTE Partnerschaftsgesellschaft mbB",
+  "priorities": [
+    {
+      "priorityCountryCode": "EM",
+      "priorityCountryName": "EU trade marks",
+      "priorityDate": "20120419",
+      "priorityNumber": "010819589"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20120419",
+          "basicApplicationNumber": "010819589"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "EM",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20120918",
+          "basicRegistrationNumber": "010819589"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "CH",
+      "NO"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Ostwall 7-9 47589 Uedem",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Elten GmbH"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20120419",
+            "basicApplicationNumber": "010819589"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "EM",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20120918",
+            "basicRegistrationNumber": "010819589"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "CH",
+      "NO"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Shoes for protection against accidents, irradiation and fire, safety shoes, protective shoes."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Wholesaling and retailing in the field of shoes for protection against accidents, irradiation and fire, safety shoes, protective shoes."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Chaussures de protection contre les accidents, l'irradiation et le feu, chaussures de sécurité, chaussures de protection."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Vente en gros et au détail dans le domaine des chaussures de protection contre les accidents, l'irradiation et le feu, chaussures de sécurité, chaussures de protection."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Calzado de protección contra los accidentes, las radiaciones y el fuego, calzado de seguridad, calzado de protección."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Venta mayorista y minorista de calzado de protección contra accidentes, las radiaciones y el fuego, calzado de seguridad, calzado de protección."
+        }
+      ]
+    },
+    "id": "05eda484-30f2-4f4a-a8b3-cd6d944cef2f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "EM",
+        "priorityCountryName": "EU trade marks",
+        "priorityDate": "20120419",
+        "priorityNumber": "010819589"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "40"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "Bodenseestraße 18 81241 München",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "RÖSLER RASCH van der HEIDE & PARTNER PATENT-UND RECHTSANWÄLTE Partnerschaftsgesellschaft mbB"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321005",
+      "lastPublicationDate": "20221020",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20121005",
+        "registrationNumber": "1139597"
+      },
+      "renewalDate": "20221005",
+      "renewalPublishedDate": "20221020"
+    },
+    "version": "20250620173118",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JORI"
+    }
+  },
+  "_uri": "/mark/wo/05eda484-30f2-4f4a-a8b3-cd6d944cef2f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:22.073Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

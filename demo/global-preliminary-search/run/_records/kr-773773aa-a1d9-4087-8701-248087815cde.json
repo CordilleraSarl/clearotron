@@ -1,0 +1,185 @@
+{
+  "uri": "/mark/kr/773773aa-a1d9-4087-8701-248087815cde",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "773773aa-a1d9-4087-8701-248087815cde",
+  "applicationNumber": "45-1998-0001221",
+  "registrationNumber": null,
+  "applicationDate": "1998-09-18",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "BEN KOREA",
+  "markTransliteration": "BEN KOREA",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    11,
+    36,
+    40
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "검파기, 고정국다중통신기계기구, 고주파장치, 발진기, 보안기, 어댑터, 자기측정기, 자기탐광기, 자기탐지기, 저항측정기, 전기자기측정용검출기, 중앙처리장치(프로세서), 차량용통신기계기구, 휴대용통신기계기구",
+      "translation_language": "en",
+      "translation": "Detector, fixed station multiple communication equipment, high-frequency device, oscillator, security device, adapter, magnetic measuring instrument, magnetic probe, magnetic detector, resistance measuring instrument, detector for electromagnetic measurement, central processing unit (processor), vehicle communication equipment, portable communication equipment"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "ko",
+      "description": "면역친화력색층분석기, 소생장치, 심장박동조절장치, 온풍치료장치, 응급처치용온열팩, 적외선등치료기, 초단파치료기계기구, 초음파처리기계기구, 핵자기공명단층촬영장치",
+      "translation_language": "en",
+      "translation": "Immune affinity chromatography, resuscitation device, heart pacemaker, warm air treatment device, first aid heat pack, infrared light therapy device, microwave therapy device, ultrasonic processing device, nuclear magnetic resonance tomography device."
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "ko",
+      "description": "가정용연수기, 가정용정수기",
+      "translation_language": "en",
+      "translation": "Home water softener, home water purifier"
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "ko",
+      "description": "가정용정수기상품중개업, 무선통신기기상품중개업, 오퍼업, 의료기기상품중개업, 전기자기측정기기상품중개업, 전기통신기기상품중개업, 전자응용기기상품중개업",
+      "translation_language": "en",
+      "translation": "Home water purifier product brokerage, wireless communication device product brokerage, offer up, medical device product brokerage, electromagnetic measuring device product brokerage, telecommunication device product brokerage, electronic application device product brokerage."
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "ko",
+      "description": "공기정화업, 공기탈취업, 사진처리업, 쓰레기소각업, 쓰레기처리업, 폐기물재생업",
+      "translation_language": "en",
+      "translation": "Air purification business, air removal business, photo processing business, waste incineration business, waste disposal business, waste recycling business"
+    }
+  ],
+  "owner": "Ben Korea Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "박경재 (PARK, Kyung Jae)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 영등포구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Ben Korea Co., Ltd.",
+        "applicantNativeName": "(주)벤 코리아"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Detector, fixed station multiple communication equipment, high-frequency device, oscillator, security device, adapter, magnetic measuring instrument, magnetic probe, magnetic detector, resistance measuring instrument, detector for electromagnetic measurement, central processing unit (processor), vehicle communication equipment, portable communication equipment",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "검파기, 고정국다중통신기계기구, 고주파장치, 발진기, 보안기, 어댑터, 자기측정기, 자기탐광기, 자기탐지기, 저항측정기, 전기자기측정용검출기, 중앙처리장치(프로세서), 차량용통신기계기구, 휴대용통신기계기구"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Immune affinity chromatography, resuscitation device, heart pacemaker, warm air treatment device, first aid heat pack, infrared light therapy device, microwave therapy device, ultrasonic processing device, nuclear magnetic resonance tomography device.",
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "면역친화력색층분석기, 소생장치, 심장박동조절장치, 온풍치료장치, 응급처치용온열팩, 적외선등치료기, 초단파치료기계기구, 초음파처리기계기구, 핵자기공명단층촬영장치"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Home water softener, home water purifier",
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "가정용연수기, 가정용정수기"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Home water purifier product brokerage, wireless communication device product brokerage, offer up, medical device product brokerage, electromagnetic measuring device product brokerage, telecommunication device product brokerage, electronic application device product brokerage.",
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "가정용정수기상품중개업, 무선통신기기상품중개업, 오퍼업, 의료기기상품중개업, 전기자기측정기기상품중개업, 전기통신기기상품중개업, 전자응용기기상품중개업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Air purification business, air removal business, photo processing business, waste incineration business, waste disposal business, waste recycling business",
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "공기정화업, 공기탈취업, 사진처리업, 쓰레기소각업, 쓰레기처리업, 폐기물재생업"
+        }
+      ]
+    },
+    "id": "773773aa-a1d9-4087-8701-248087815cde",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.10"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260717",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울 종로구 북촌로*길 * (가회동)(법률사무소북촌)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "박경재 (PARK, Kyung Jae)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19980918",
+        "applicationNumber": "45-1998-0001221"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260717020622",
+    "wordMarkSpecification": {
+      "markTransliteration": "BEN KOREA",
+      "markVerbalElementText": "BEN KOREA"
+    }
+  },
+  "_uri": "/mark/kr/773773aa-a1d9-4087-8701-248087815cde",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:55.071Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

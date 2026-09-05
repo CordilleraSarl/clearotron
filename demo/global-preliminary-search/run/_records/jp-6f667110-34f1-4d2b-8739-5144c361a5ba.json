@@ -1,0 +1,196 @@
+{
+  "uri": "/mark/jp/6f667110-34f1-4d2b-8739-5144c361a5ba",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "6f667110-34f1-4d2b-8739-5144c361a5ba",
+  "applicationNumber": "2010-031467",
+  "registrationNumber": "5396012",
+  "applicationDate": "2010-04-20",
+  "registrationDate": "2011-03-04",
+  "expiryDate": "2021-03-04",
+  "renewalDate": null,
+  "lastPublicationDate": "2011-04-05",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＳＥＶＥｎＣＯＲＥ",
+  "markTransliteration": "SEBUNKOA",
+  "markTranslation": "SEVENCORE",
+  "markFeature": "DESIGN AND COLOR",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "バーチャルリアリティゲーム用家庭用テレビゲーム機用ソフトウェア，バーチャルリアリティゲーム用業務用テレビゲーム機用ソフトウェア，バーチャルリアリティゲーム用コンピューターゲーム用ソフトウェア，記録済みゲーム用コンピュータプログラム，記録済みコンピュータソフトウェア，記録済みコンピュータプログラム，データ処理装置，磁気ディスク記録装置，光ディスク記録装置，デジタルディスクドライブ，デジタルシグナルプロセッサー，無線コンテンツ配信用コンピュータソフトウェア，イメージ・グラフィック及びテキスト処理用コンピューター用ソフトウェア，画像・音声及び映像編集用コンピュータプログラム，外部ディスプレー画面又は外部モニターを使用するゲーム機・ゲームおもちゃ，オペレーティングシステム用のコンピュータープログラム，ワークステーション，携帯電話用コンピュータアプリケーションソフトウェア，コンピュータゲーム用プログラム，コンピュータソフトウェア，ＩＣカード（スマートカード），インターネットを利用して受信し、及び保存することができる音楽ファイル，電子出版物（電気通信回線を通じてダウンロードできるものを含む。），電子計算機用プログラム（電気通信回線を通じてダウンロードできるものを含む。），録音又は録画済みコンパクトディスク，コンピュータゲーム用プログラムを記憶させたＣＤ－ＲＯＭ，未記録のコンパクトディスク",
+      "translation_language": "en",
+      "translation": "Software for a home video game machine for a virtual reality game, software for a commercial video game machine for a virtual reality game, software for a computer game for a virtual reality game, a computer program for a recorded game, a recorded computer software, a recorded computer program, A data processing device, a magnetic disk recording device, an optical disk recording device, a digital disk drive, a digital signal processor, a computer software for distributing wireless contents, a computer software for image / graphics and text processing, a computer program for image / sound and video editing Display screen or game machine using external monitor · Game toy, Operating system Computer programs for computers, workstations, computer application software for mobile phones, computer game programs, computer software, IC cards (smart cards), music files that can be received and stored via the Internet, electronic publications (Including those which can be downloaded through an electric communication line), programs for electronic computers (including those downloadable through telecommunication lines), compact discs recorded or recorded, CD-ROMs storing computer game programs, Unrecorded compact disc"
+    }
+  ],
+  "owner": "NORIA CO., LTD.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "IPD INTERNATIONAL PATENT FIRM",
+  "priorities": [
+    {
+      "priorityDate": "20100420"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "NORIA CO., LTD.",
+        "applicantNativeAddress": "大韓民国",
+        "applicantNativeName": "ノリア　カンパニーリミテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Software for a home video game machine for a virtual reality game, software for a commercial video game machine for a virtual reality game, software for a computer game for a virtual reality game, a computer program for a recorded game, a recorded computer software, a recorded computer program, A data processing device, a magnetic disk recording device, an optical disk recording device, a digital disk drive, a digital signal processor, a computer software for distributing wireless contents, a computer software for image / graphics and text processing, a computer program for image / sound and video editing Display screen or game machine using external monitor · Game toy, Operating system Computer programs for computers, workstations, computer application software for mobile phones, computer game programs, computer software, IC cards (smart cards), music files that can be received and stored via the Internet, electronic publications (Including those which can be downloaded through an electric communication line), programs for electronic computers (including those downloadable through telecommunication lines), compact discs recorded or recorded, CD-ROMs storing computer game programs, Unrecorded compact disc",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "バーチャルリアリティゲーム用家庭用テレビゲーム機用ソフトウェア，バーチャルリアリティゲーム用業務用テレビゲーム機用ソフトウェア，バーチャルリアリティゲーム用コンピューターゲーム用ソフトウェア，記録済みゲーム用コンピュータプログラム，記録済みコンピュータソフトウェア，記録済みコンピュータプログラム，データ処理装置，磁気ディスク記録装置，光ディスク記録装置，デジタルディスクドライブ，デジタルシグナルプロセッサー，無線コンテンツ配信用コンピュータソフトウェア，イメージ・グラフィック及びテキスト処理用コンピューター用ソフトウェア，画像・音声及び映像編集用コンピュータプログラム，外部ディスプレー画面又は外部モニターを使用するゲーム機・ゲームおもちゃ，オペレーティングシステム用のコンピュータープログラム，ワークステーション，携帯電話用コンピュータアプリケーションソフトウェア，コンピュータゲーム用プログラム，コンピュータソフトウェア，ＩＣカード（スマートカード），インターネットを利用して受信し、及び保存することができる音楽ファイル，電子出版物（電気通信回線を通じてダウンロードできるものを含む。），電子計算機用プログラム（電気通信回線を通じてダウンロードできるものを含む。），録音又は録画済みコンパクトディスク，コンピュータゲーム用プログラムを記憶させたＣＤ－ＲＯＭ，未記録のコンパクトディスク"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "09G53",
+          "natGoodsServicesDescription": "Arcade games (apparatus for-) adapted for use with an external display screen or monitor"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Telecommunication devices and apparatus"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        },
+        {
+          "natClassNumber": "24A01",
+          "natGoodsServicesDescription": "Consumer games (apparatus for-) adopted for use with an external display screen or monitor, Electronic circuits and CD-ROMs recorded with programs for hand-held games with liquid crystal displays"
+        },
+        {
+          "natClassNumber": "24E02"
+        },
+        {
+          "natClassNumber": "26A01",
+          "natGoodsServicesDescription": "Electronic publications"
+        },
+        {
+          "natClassNumber": "26D01",
+          "natGoodsServicesDescription": "Exposed cinematographic films, Exposed slide films, Slide film mounts, Downloadable image files, Recorded video discs and video tapes"
+        }
+      ]
+    },
+    "id": "6f667110-34f1-4d2b-8739-5144c361a5ba",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN AND COLOR",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "COLOUR CLAIMED"
+      }
+    ],
+    "markImageViennaClassification": [
+      "15.09.01.00",
+      "15.09.11.00",
+      "26.01.01.00",
+      "26.01.05.00",
+      "26.01.12.00",
+      "26.02.01.00",
+      "26.03.01.00",
+      "26.03.02.00",
+      "26.03.05.00",
+      "26.03.10.00",
+      "26.03.12.00",
+      "26.03.16.00",
+      "26.03.19.00",
+      "26.04.02.00",
+      "26.04.05.00",
+      "26.04.11.00",
+      "26.04.18.00",
+      "26.11.01.00",
+      "26.11.02.00",
+      "26.11.07.00",
+      "26.11.08.00",
+      "26.11.10.00",
+      "29.01.04.02",
+      "29.01.05.02",
+      "29.01.06.03",
+      "29.01.06.04",
+      "29.01.08.02",
+      "29.01.11.00",
+      "29.01.15.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20100420"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "IPD INTERNATIONAL PATENT FIRM",
+        "representativeNativeName": "アイ・ピー・ディー国際特許業務法人"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20100420",
+        "applicationNumber": "2010-031467"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20210304",
+      "lastPublicationDate": "20110405",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20110304",
+        "registrationNumber": "5396012"
+      }
+    },
+    "version": "20240320103432",
+    "wordMarkSpecification": {
+      "markTranslation": "SEVENCORE",
+      "markTransliteration": "SEBUNKOA",
+      "markVerbalElementText": "ＳＥＶＥｎＣＯＲＥ"
+    }
+  },
+  "_uri": "/mark/jp/6f667110-34f1-4d2b-8739-5144c361a5ba",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.730Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

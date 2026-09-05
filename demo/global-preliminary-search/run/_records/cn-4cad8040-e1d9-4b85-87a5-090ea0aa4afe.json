@@ -1,0 +1,136 @@
+{
+  "uri": "/mark/cn/4cad8040-e1d9-4b85-87a5-090ea0aa4afe",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "4cad8040-e1d9-4b85-87a5-090ea0aa4afe",
+  "applicationNumber": "22762415",
+  "registrationNumber": "22762415",
+  "applicationDate": "2017-02-06",
+  "registrationDate": "2018-02-21",
+  "expiryDate": "2028-02-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-11-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "企业魂",
+  "markTransliteration": "SOHEAVEN qi ye hun",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "工业品外观设计;计算机软件设计;计算机硬件设计和开发咨询;恢复计算机数据;计算机系统分析;计算机系统设计;计算机程序复制;把有形的数据或文件转换成电子媒体;计算机程序和数据的数据转换（非有形转换）;计算机软件咨询",
+      "translation_language": "en",
+      "translation": "Industrial design; computer software design; computer hardware design and development consulting; computer data recovery; computer system analysis; computer system design; computer program copy; the tangible data or documents into electronic media; computer programs and data conversion (Non-physical conversion); computer software consulting"
+    }
+  ],
+  "owner": "Mind Sea Training Technology Consulting (Shanghai) Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "上海市浦东新区牡丹路60号4楼402室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Mind Sea Training Technology Consulting (Shanghai) Co., Ltd.",
+        "applicantNativeName": "心灵海培训技术咨询(上海)有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Industrial design; computer software design; computer hardware design and development consulting; computer data recovery; computer system analysis; computer system design; computer program copy; the tangible data or documents into electronic media; computer programs and data conversion (Non-physical conversion); computer software consulting",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "工业品外观设计;计算机软件设计;计算机硬件设计和开发咨询;恢复计算机数据;计算机系统分析;计算机系统设计;计算机程序复制;把有形的数据或文件转换成电子媒体;计算机程序和数据的数据转换（非有形转换）;计算机软件咨询"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Registered design service",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4216",
+          "subNatGoodsServicesDescription": "Registered design service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "4cad8040-e1d9-4b85-87a5-090ea0aa4afe",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1576"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "上海永暨知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170206",
+        "applicationNumber": "22762415"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280220",
+      "lastPublicationDate": "20171120",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180221",
+        "registrationNumber": "22762415"
+      }
+    },
+    "version": "20251002185205",
+    "wordMarkSpecification": {
+      "markTransliteration": "SOHEAVEN qi ye hun",
+      "markVerbalElementText": "企业魂"
+    }
+  },
+  "_uri": "/mark/cn/4cad8040-e1d9-4b85-87a5-090ea0aa4afe",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.563Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,190 @@
+{
+  "uri": "/mark/us/155ec9f6-84cd-4cee-8d43-4197ffba3642",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "155ec9f6-84cd-4cee-8d43-4197ffba3642",
+  "applicationNumber": "50048522",
+  "registrationNumber": null,
+  "applicationDate": "2026-08-13",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "NORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Education services, namely, training educators in the field of Educational services, namely, providing online interactive and scenario-based training in workplace violence prevention, non-escalation, de-escalation, behavioral observation, situational awareness, crisis communication, conflict management, and safe response decision-making, including instruction using Iron Temple Training Center's proprietary 12 Points of De-Escalation framework, with coaching, performance assessment, and feedback.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Providing temporary use of on-line non-downloadable software and applications using artificial intelligence (AI) for Providing temporary use of online non-downloadable artificial intelligence (AI) and machine learning software for providing interactive workplace safety training simulations, evaluating user responses, generating performance feedback, and generating reports in the fields of workplace violence prevention, non-escalation, and de-escalation.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Iron Temple Training Center",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Po box 429, Augusta, NJ, 07848, USAM",
+        "applicantAddressCity": "Augusta",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "07848",
+        "applicantAddressStateName": "NEW JERSEY",
+        "applicantAddressStreet": "Po box 429",
+        "applicantAliasName": "Safe State Solutions",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INCORPORATED ASSOCIATION",
+        "applicantName": "Iron Temple Training Center"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Education services, namely, training educators in the field of Educational services, namely, providing online interactive and scenario-based training in workplace violence prevention, non-escalation, de-escalation, behavioral observation, situational awareness, crisis communication, conflict management, and safe response decision-making, including instruction using Iron Temple Training Center's proprietary 12 Points of De-Escalation framework, with coaching, performance assessment, and feedback."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Providing temporary use of on-line non-downloadable software and applications using artificial intelligence (AI) for Providing temporary use of online non-downloadable artificial intelligence (AI) and machine learning software for providing interactive workplace safety training simulations, evaluating user responses, generating performance feedback, and generating reports in the fields of workplace violence prevention, non-escalation, and de-escalation."
+        }
+      ]
+    },
+    "id": "155ec9f6-84cd-4cee-8d43-4197ffba3642",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260813",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20260813",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Po box 429, Augusta, NJ, 07848, USAM",
+        "aliasName": "Safe State Solutions",
+        "city": "Augusta",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INCORPORATED ASSOCIATION",
+        "name": "Iron Temple Training Center",
+        "postalCode": "07848",
+        "stateName": "NEW JERSEY",
+        "street": "Po box 429"
+      },
+      {
+        "address": "Po box 429, Augusta, NJ, 07848, USAM",
+        "aliasName": "Safe State Solutions",
+        "city": "Augusta",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INCORPORATED ASSOCIATION",
+        "name": "Iron Temple Training Center",
+        "postalCode": "07848",
+        "stateName": "NEW JERSEY",
+        "street": "Po box 429"
+      }
+    ],
+    "recordLastUpdated": "20260814",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Augusta, NJ 07848, United States",
+        "representativeCorrespondentAddressLines": [
+          "Augusta, NJ 07848",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Iron Temple Training Center, Po box 429"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Augusta, NJ 07848, United States",
+        "representativeAddressLines": [
+          "Augusta, NJ 07848",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260813",
+        "applicationNumber": "50048522"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "NEW APPLICATION - RECORD INITIALIZED NOT ASSIGNED TO EXAMINER",
+        "markOfficialStatusCode": "630",
+        "markOfficialStatusDate": "20260813",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260814142009",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NORI"
+    }
+  },
+  "_uri": "/mark/us/155ec9f6-84cd-4cee-8d43-4197ffba3642",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.691Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

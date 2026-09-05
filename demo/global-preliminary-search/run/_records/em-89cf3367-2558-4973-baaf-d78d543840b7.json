@@ -1,0 +1,718 @@
+{
+  "uri": "/mark/em/89cf3367-2558-4973-baaf-d78d543840b7",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "89cf3367-2558-4973-baaf-d78d543840b7",
+  "applicationNumber": "9581356",
+  "registrationNumber": "9581356",
+  "applicationDate": "2010-12-08",
+  "registrationDate": "2011-04-15",
+  "expiryDate": "2030-12-08",
+  "renewalDate": null,
+  "lastPublicationDate": "2011-01-05",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Venor",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "cs",
+      "description": "Diagnostické prípravky a reagencie pro kontrolu kvality lékarských výrobku, farmaceutických prípravku, kosmetiky, Chemikálie, Laboratorní cinidla,Jejich suroviny a výrobní prostredí.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Vedecké a technologické sluzby a s nimi spojený výzkum a návrhy; Prumyslové analýzy a výzkum; Návrhy a vývoj pocítacového hardwaru a softwaru.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "da",
+      "description": "Diagnosticeringsmidler og reagenser til kvalitetskontrol af medicinske produkter, farmaceutiske præparater, kosmetiske præparater, Kemiske produkter, Laboratoriereagenser,Udgangsstoffer samt fremstillingsomgivelser hertil.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Videnskabelige og teknologiske tjenesteydelser samt forskning og design i forbindelse dermed; Industriel analyse og forskning; Design og udvikling af computerhardware og -software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "nl",
+      "description": "Diagnostische middelen en reagentia voor kwaliteitscontrole van medische producten, farmaceutische producten, cosmetica, Chemische producten, Reagentia voor laboratoria,Basisstoffen daarvan alsmede productieomgevingen daarvoor.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Wetenschappelijke en technologische diensten, alsmede bijbehorende onderzoeks- en ontwerpdiensten; Dienstverlening op het gebied van industriële analyse en industrieel onderzoek; Ontwerp en ontwikkeling van hard- en software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "en",
+      "description": "Diagnostic preparations and reagents for quality control testing of medical products, pharmaceuticals, cosmetics, chemicals, laboratory reagents, their raw materials and manufacturing environments.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Scientific and technological services and research and design relating thereto; Industrial analysis and research services; Design and development of computer hardware and software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "et",
+      "description": "Diagnoosipreparaadid ja reaktiivid meditsiinitoodete, farmaatsiapreparaatide, kosmeetikavahendite kvaliteedi kontrolliks, Kemikaalid, Laboratoorsed reaktiivid,Nende lähteained, samuti valmistuskeskkonnad.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Teaduslikud ja tehnoloogilised uurimused ja projekteerimine teenusena; Tööstuslikud analüüsid ja uurimused teenusena; Arvuti riist- ja tarkvara kavandamine ja väljatöötamine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "fi",
+      "description": "Diagnostiset tuotteet ja reagenssit lääkinnällisten tuotteiden, farmaseuttisten tuotteiden, kosmetiikan laadunvalvontaan, Kemialliset tuotteet, Laboratorioreagenssit,Niiden lähtöaineet sekä valmistusympäristöt.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Tieteelliset ja teknologiset palvelut sekä niihin liittyvä tutkimus ja suunnittelu; Teolliset analyysi- ja tutkimuspalvelut; Tietokonelaitteistojen ja -ohjelmistojen suunnittelu ja kehittäminen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "fr",
+      "description": "Produits diagnostiques et réactifs de contrôle de la qualité de produits médicaux, pharmaceutiques et cosmétiques, Produits chimiques, Réactifs utilisés en laboratoire,Les substances produites et leurs environnements de fabrication.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services scientifiques et technologiques ainsi que services de recherches et de conception y relatifs; Services d'analyses et de recherches industrielles; Conception et développement de matériel informatique et de logiciels.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "de",
+      "description": "Diagnostika und Reagenzien für die Qualitätskontrolle von Medizinprodukten, Pharmazeutika, Kosmetika, Chemikalien, Laborreagenzien, deren Ausgangsstoffe sowie Herstellungsumgebungen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Wissenschaftliche und technologische Dienstleistungen und Forschungsarbeiten und diesbezügliche Designerdienstleistungen; Industrielle Analyse- und Forschungsdienstleistungen; Entwurf und Entwicklung von Computerhardware und -software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "hu",
+      "description": "Diagnosztikai szerek és reagensek gyógyászati termékek, gyógyszerészeti készítmények, kozmetikumok minoségének ellenorzéséhez, Vegyianyagok, Laboratóriumi reagensek,Ezek kiindulási anyagai, valamint eloállításuk környezete.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Tudományos és muszaki szolgáltatások, valamint az idetartozó tervezoi és kutatói tevékenység; Ipari elemzo és kutató szolgáltatások; Számítógépes hardver és szoftver tervezése és fejlesztése.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "it",
+      "description": "Prodotti diagnostici e reagenti per il controllo qualità di prodotti medici, farmaci, cosmetici, Prodotti chimici, Reagenti da laboratorio,Relative materie prime nonchè condizioni di produzione.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Servizi scientifici e tecnologici e servizi di ricerca e progettazione ad essi relativi; Servizi di analisi e di ricerche industriali; Progettazione e sviluppo di hardware e software per computer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "lt",
+      "description": "Diagnostikos preparatai ir reagentai medicinos produktu kokybes kontroles reikmems, farmaciniai preparatai, kosmetika, Chemikalai, Laboratoriniai reagentai,Ju pradines medziagos bei gamybos terpe.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Mokslo ir technologiju paslaugos ir su tuo susije tyrimai ir projektavimas; Pramonines analizes ir tyrimu paslaugos; Kompiuterio aparatines ir programines irangos projektavimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "lv",
+      "description": "Diagnostikas lidzekli un reagenti medicinas izstradajumu, farmaceitisko preparatu, kosmetikas kvalitates parbaudei, Kimikalijas, Laboratorijas reagenti,To reagenti, ka ari razosanas apstakli.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Zinatniskie un tehnologiskie pakalpojumi, izpete un projektesana sajas jomas; Rupnieciska izpete un izstradnes; Datoru aparaturu un programmaturu projektesana.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "mt",
+      "description": "Dijanjostika u reagenti ghall-kontroll tal-kwalità ta' prodotti tal-medicina, tal-farmacewtika, tal-kozmetika, Kimici, Reagenti tal-laboratorju,Il-materja prima taghhom, kif ukoll il-post tal-produzzjoni.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Servizzi xjentifici u teknologici u ricerka u disinn relatati ma' l-istess; Analizi industrijali u servizzi ta' ricerka; Id-disinn u l-izvilupp ta' hardwer u softwer tal-kompjuter.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "pl",
+      "description": "Diagnostyka i odczynniki do kontroli jakosci produktów medycznych, farmaceutyków, kosmetyków, Chemikalia, Odczynniki laboratoryjne,Ich materialy wyjsciowe oraz srodowiska do produkcji.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Naukowe i techniczne uslugi i badania oraz ich projektowanie; Przemyslowa analiza i badanie uslug; Projektowanie i rozwijanie sprzetu i oprogramowania komputerowego.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "pt",
+      "description": "Produtos de diagnóstico e reagentes para o controlo de qualidade de produtos medicinais, produtos farmacêuticos, cosméticos, Produtos químicos, Reagentes para uso laboratorial,Substâncias de base, assim como zonas de fabrico dos mesmos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Serviços científicos e tecnológicos bem como serviços de pesquisas e concepção a eles referentes; Serviços de análises e pesquisas industriais; Concepção e desenvolvimento de hardware e software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "ro",
+      "description": "Produse de diagnosticare si reactivi pentru controlul calitatii produselor medicale, produselor farmaceutice, cosmeticelor, Chimicale, Reactivi de laborator,Materii prime pentru acestea, precum si medii de fabricare.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Servicii stiintifice si tehnologice, precum si serviciile de cercetare si proiectare referitoare la acestea; Servicii de analiza si cercetare industriala; Proiectare si dezvoltare de hardware si software de calculator.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "sk",
+      "description": "Diagnostické prípravky a cinidlá pre kontrolu kvality medicínskych produktov, farmaceutík, kozmetiky, Chemikálie, Laboratórne cinidlá,Ich výstupné látky, ako aj výrobné okolie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Vedecké a technologické sluzby, výskum a navrhovanie, ktoré s tým súvisia; Priemyselné analýzy a výskumné sluzby; Návrh a vývoj pocítacového hardvéru a softvéru.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "sl",
+      "description": "Diagnosticna sredstva in reagenti za kontrolo kakovosti medicinskih proizvodov, zdravil, kozmeticnih sredstev, Kemikalije, Laboratorijski reagenti,Njihove izhodiscne snovi ter proizvodna okolja.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Znanstvene in tehnoloske storitve in raziskave ter pripadajoce storitve oblikovanja; Industrijske analize in raziskave; Oblikovanje in razvoj racunalniske strojne opreme in programske opreme.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "es",
+      "description": "Productos de diagnóstico y reactivos para control de calidad de productos medicinales, productos farmacéuticos, cosméticos, Productos químicos, Reactivos de laboratorio,Sus materiales de partida, así como sus entornos de producción.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios científicos y tecnológicos así como servicios de investigación y diseño relativos a ellos; Servicios de análisis y de investigación industrial; Diseño y desarrollo de ordenadores y software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "sw",
+      "description": "Diagnostiska preparat och reagsnser för kvalitetskontroll av medicinska produkter, farmaceutika, kosmetika, Kemiska produkter, Laboratoriereagenser,Deras utgångsämnen samt tillverkningsomgivningar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Vetenskapliga och teknologiska tjänster och därtill relaterad forskning och design; Industriella analyser och forskningstjänster; Utformning och utveckling av maskin- och programvara.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Minerva Biolabs GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Schkopauer Ring 13,Berlin, 12681",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Minerva Biolabs GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Diagnostické prípravky a reagencie pro kontrolu kvality lékarských výrobku, farmaceutických prípravku, kosmetiky, Chemikálie, Laboratorní cinidla,Jejich suroviny a výrobní prostredí."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Vedecké a technologické sluzby a s nimi spojený výzkum a návrhy; Prumyslové analýzy a výzkum; Návrhy a vývoj pocítacového hardwaru a softwaru."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Diagnosticeringsmidler og reagenser til kvalitetskontrol af medicinske produkter, farmaceutiske præparater, kosmetiske præparater, Kemiske produkter, Laboratoriereagenser,Udgangsstoffer samt fremstillingsomgivelser hertil."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Videnskabelige og teknologiske tjenesteydelser samt forskning og design i forbindelse dermed; Industriel analyse og forskning; Design og udvikling af computerhardware og -software."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Diagnostische middelen en reagentia voor kwaliteitscontrole van medische producten, farmaceutische producten, cosmetica, Chemische producten, Reagentia voor laboratoria,Basisstoffen daarvan alsmede productieomgevingen daarvoor."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Wetenschappelijke en technologische diensten, alsmede bijbehorende onderzoeks- en ontwerpdiensten; Dienstverlening op het gebied van industriële analyse en industrieel onderzoek; Ontwerp en ontwikkeling van hard- en software."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Diagnostic preparations and reagents for quality control testing of medical products, pharmaceuticals, cosmetics, chemicals, laboratory reagents, their raw materials and manufacturing environments."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific and technological services and research and design relating thereto; Industrial analysis and research services; Design and development of computer hardware and software."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Diagnoosipreparaadid ja reaktiivid meditsiinitoodete, farmaatsiapreparaatide, kosmeetikavahendite kvaliteedi kontrolliks, Kemikaalid, Laboratoorsed reaktiivid,Nende lähteained, samuti valmistuskeskkonnad."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Teaduslikud ja tehnoloogilised uurimused ja projekteerimine teenusena; Tööstuslikud analüüsid ja uurimused teenusena; Arvuti riist- ja tarkvara kavandamine ja väljatöötamine."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Diagnostiset tuotteet ja reagenssit lääkinnällisten tuotteiden, farmaseuttisten tuotteiden, kosmetiikan laadunvalvontaan, Kemialliset tuotteet, Laboratorioreagenssit,Niiden lähtöaineet sekä valmistusympäristöt."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tieteelliset ja teknologiset palvelut sekä niihin liittyvä tutkimus ja suunnittelu; Teolliset analyysi- ja tutkimuspalvelut; Tietokonelaitteistojen ja -ohjelmistojen suunnittelu ja kehittäminen."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Produits diagnostiques et réactifs de contrôle de la qualité de produits médicaux, pharmaceutiques et cosmétiques, Produits chimiques, Réactifs utilisés en laboratoire,Les substances produites et leurs environnements de fabrication."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services scientifiques et technologiques ainsi que services de recherches et de conception y relatifs; Services d'analyses et de recherches industrielles; Conception et développement de matériel informatique et de logiciels."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Diagnostika und Reagenzien für die Qualitätskontrolle von Medizinprodukten, Pharmazeutika, Kosmetika, Chemikalien, Laborreagenzien, deren Ausgangsstoffe sowie Herstellungsumgebungen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Wissenschaftliche und technologische Dienstleistungen und Forschungsarbeiten und diesbezügliche Designerdienstleistungen; Industrielle Analyse- und Forschungsdienstleistungen; Entwurf und Entwicklung von Computerhardware und -software."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Diagnosztikai szerek és reagensek gyógyászati termékek, gyógyszerészeti készítmények, kozmetikumok minoségének ellenorzéséhez, Vegyianyagok, Laboratóriumi reagensek,Ezek kiindulási anyagai, valamint eloállításuk környezete."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Tudományos és muszaki szolgáltatások, valamint az idetartozó tervezoi és kutatói tevékenység; Ipari elemzo és kutató szolgáltatások; Számítógépes hardver és szoftver tervezése és fejlesztése."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Prodotti diagnostici e reagenti per il controllo qualità di prodotti medici, farmaci, cosmetici, Prodotti chimici, Reagenti da laboratorio,Relative materie prime nonchè condizioni di produzione."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi scientifici e tecnologici e servizi di ricerca e progettazione ad essi relativi; Servizi di analisi e di ricerche industriali; Progettazione e sviluppo di hardware e software per computer."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Diagnostikos preparatai ir reagentai medicinos produktu kokybes kontroles reikmems, farmaciniai preparatai, kosmetika, Chemikalai, Laboratoriniai reagentai,Ju pradines medziagos bei gamybos terpe."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Mokslo ir technologiju paslaugos ir su tuo susije tyrimai ir projektavimas; Pramonines analizes ir tyrimu paslaugos; Kompiuterio aparatines ir programines irangos projektavimas."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Diagnostikas lidzekli un reagenti medicinas izstradajumu, farmaceitisko preparatu, kosmetikas kvalitates parbaudei, Kimikalijas, Laboratorijas reagenti,To reagenti, ka ari razosanas apstakli."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Zinatniskie un tehnologiskie pakalpojumi, izpete un projektesana sajas jomas; Rupnieciska izpete un izstradnes; Datoru aparaturu un programmaturu projektesana."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Dijanjostika u reagenti ghall-kontroll tal-kwalità ta' prodotti tal-medicina, tal-farmacewtika, tal-kozmetika, Kimici, Reagenti tal-laboratorju,Il-materja prima taghhom, kif ukoll il-post tal-produzzjoni."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi xjentifici u teknologici u ricerka u disinn relatati ma' l-istess; Analizi industrijali u servizzi ta' ricerka; Id-disinn u l-izvilupp ta' hardwer u softwer tal-kompjuter."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Diagnostyka i odczynniki do kontroli jakosci produktów medycznych, farmaceutyków, kosmetyków, Chemikalia, Odczynniki laboratoryjne,Ich materialy wyjsciowe oraz srodowiska do produkcji."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Naukowe i techniczne uslugi i badania oraz ich projektowanie; Przemyslowa analiza i badanie uslug; Projektowanie i rozwijanie sprzetu i oprogramowania komputerowego."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Produtos de diagnóstico e reagentes para o controlo de qualidade de produtos medicinais, produtos farmacêuticos, cosméticos, Produtos químicos, Reagentes para uso laboratorial,Substâncias de base, assim como zonas de fabrico dos mesmos."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços científicos e tecnológicos bem como serviços de pesquisas e concepção a eles referentes; Serviços de análises e pesquisas industriais; Concepção e desenvolvimento de hardware e software."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Produse de diagnosticare si reactivi pentru controlul calitatii produselor medicale, produselor farmaceutice, cosmeticelor, Chimicale, Reactivi de laborator,Materii prime pentru acestea, precum si medii de fabricare."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii stiintifice si tehnologice, precum si serviciile de cercetare si proiectare referitoare la acestea; Servicii de analiza si cercetare industriala; Proiectare si dezvoltare de hardware si software de calculator."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Diagnostické prípravky a cinidlá pre kontrolu kvality medicínskych produktov, farmaceutík, kozmetiky, Chemikálie, Laboratórne cinidlá,Ich výstupné látky, ako aj výrobné okolie."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Vedecké a technologické sluzby, výskum a navrhovanie, ktoré s tým súvisia; Priemyselné analýzy a výskumné sluzby; Návrh a vývoj pocítacového hardvéru a softvéru."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Diagnosticna sredstva in reagenti za kontrolo kakovosti medicinskih proizvodov, zdravil, kozmeticnih sredstev, Kemikalije, Laboratorijski reagenti,Njihove izhodiscne snovi ter proizvodna okolja."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Znanstvene in tehnoloske storitve in raziskave ter pripadajoce storitve oblikovanja; Industrijske analize in raziskave; Oblikovanje in razvoj racunalniske strojne opreme in programske opreme."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Productos de diagnóstico y reactivos para control de calidad de productos medicinales, productos farmacéuticos, cosméticos, Productos químicos, Reactivos de laboratorio,Sus materiales de partida, así como sus entornos de producción."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios científicos y tecnológicos así como servicios de investigación y diseño relativos a ellos; Servicios de análisis y de investigación industrial; Diseño y desarrollo de ordenadores y software."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Diagnostiska preparat och reagsnser för kvalitetskontroll av medicinska produkter, farmaceutika, kosmetika, Kemiska produkter, Laboratoriereagenser,Deras utgångsämnen samt tillverkningsomgivningar."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Vetenskapliga och teknologiska tjänster och därtill relaterad forskning och design; Industriella analyser och forskningstjänster; Utformning och utveckling av maskin- och programvara."
+        }
+      ]
+    },
+    "id": "89cf3367-2558-4973-baaf-d78d543840b7",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00301",
+        "publicationVolume": "03"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20101208",
+        "applicationNumber": "9581356"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20301208",
+      "lastPublicationDate": "20110105",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20110415",
+        "registrationNumber": "9581356"
+      }
+    },
+    "version": "20260511144922",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Venor"
+    }
+  },
+  "_uri": "/mark/em/89cf3367-2558-4973-baaf-d78d543840b7",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.817Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

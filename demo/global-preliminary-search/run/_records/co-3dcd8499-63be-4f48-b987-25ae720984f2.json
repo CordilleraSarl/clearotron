@@ -1,0 +1,180 @@
+{
+  "uri": "/mark/co/3dcd8499-63be-4f48-b987-25ae720984f2",
+  "provider": "clarivate",
+  "office": "co",
+  "guid": "3dcd8499-63be-4f48-b987-25ae720984f2",
+  "applicationNumber": "SD20260073653",
+  "registrationNumber": null,
+  "applicationDate": "2026-07-16",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "Dori",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    24,
+    25,
+    28,
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        24
+      ],
+      "language": "es",
+      "description": "forros de sombrero; forros para servilletas de materias textiles; forros [telas]; forros textiles para prendas de vestir; forros y entretelas.",
+      "translation_language": "en",
+      "translation": "hat linings; napkin linings of textile materials; linings [fabrics]; textile linings for garments; linings and interlinings."
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "es",
+      "description": "prendas de vestir ' .",
+      "translation_language": "en",
+      "translation": "garments. &#39;"
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "es",
+      "description": "peluches [juguetes].",
+      "translation_language": "en",
+      "translation": "stuffed animals [toys]."
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "servicios de comercialización de nuevos productos; servicios de intermediarios comerciales para la compra y venta de productos de consumo.",
+      "translation_language": "en",
+      "translation": "services for marketing new products; commercial intermediary services for the purchase and sale of consumer products."
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "educación; formación; servicios de entretenimiento; actividades deportivas y culturales.",
+      "translation_language": "en",
+      "translation": "education; training; entertainment services; sports and cultural activities."
+    }
+  ],
+  "owner": "SUBLIMATEX SAS",
+  "ownerNative": null,
+  "ownerCountry": "CO",
+  "representative": "JOHNNY GIL LOPERA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Carrera 5 # 12 - 31, piso 1 PEREIRA RISARALDA",
+        "applicantAddressCountryCode": "CO",
+        "applicantAddressCountryName": "Colombia",
+        "applicantName": "SUBLIMATEX SAS"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "hat linings; napkin linings of textile materials; linings [fabrics]; textile linings for garments; linings and interlinings.",
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "forros de sombrero; forros para servilletas de materias textiles; forros [telas]; forros textiles para prendas de vestir; forros y entretelas."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "garments. &#39;",
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "prendas de vestir ' ."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "stuffed animals [toys].",
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "peluches [juguetes]."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "services for marketing new products; commercial intermediary services for the purchase and sale of consumer products.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "servicios de comercialización de nuevos productos; servicios de intermediarios comerciales para la compra y venta de productos de consumo."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "education; training; entertainment services; sports and cultural activities.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "educación; formación; servicios de entretenimiento; actividades deportivas y culturales."
+        }
+      ]
+    },
+    "id": "3dcd8499-63be-4f48-b987-25ae720984f2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260901",
+    "registrationOfficeCode": "CO",
+    "registrationOfficeName": "Colombia",
+    "representatives": [
+      {
+        "representativeAddress": "cra 5 12 31",
+        "representativeAddressCountryCode": "CO",
+        "representativeAddressCountryName": "Colombia",
+        "representativeName": "JOHNNY GIL LOPERA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260716",
+        "applicationNumber": "SD20260073653"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260901020308",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Dori"
+    }
+  },
+  "_uri": "/mark/co/3dcd8499-63be-4f48-b987-25ae720984f2",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.998Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

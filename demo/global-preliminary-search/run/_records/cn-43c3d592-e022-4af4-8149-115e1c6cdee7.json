@@ -1,0 +1,149 @@
+{
+  "uri": "/mark/cn/43c3d592-e022-4af4-8149-115e1c6cdee7",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "43c3d592-e022-4af4-8149-115e1c6cdee7",
+  "applicationNumber": "30362805",
+  "registrationNumber": null,
+  "applicationDate": "2018-04-19",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "七巧板",
+  "markTransliteration": "PIECE PUZZLE SEVEN qi qiao ban",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "计数器;计算机;计算机器;计算机用磁盘驱动器;传真机;测量用链;计算机软件(已录制);闪光灯标(信号灯);地秤;通话筒",
+      "translation_language": "en",
+      "translation": "Counter; computer; computer; computer disk drive; fax machine; measuring chain; computer software (recorded); flashing light (signal light);"
+    }
+  ],
+  "owner": "Heze Tangram Education Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Heze Tangram Education Technology Co., Ltd.",
+        "applicantNativeName": "菏泽七巧板教育科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Counter; computer; computer; computer disk drive; fax machine; measuring chain; computer software (recorded); flashing light (signal light);",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计数器;计算机;计算机器;计算机用磁盘驱动器;传真机;测量用链;计算机软件(已录制);闪光灯标(信号灯);地秤;通话筒"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Data-processing equipments used in recording and automatic vending machines",
+        "Computers and their external equipments",
+        "Machines used in office (except for typewriters, duplicators and printers)",
+        "Measures",
+        "Signalling apparatus and instruments",
+        "Scales",
+        "Equipments used in communication and navigation"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0902",
+          "subNatGoodsServicesDescription": "Data-processing equipments used in recording and automatic vending machines"
+        },
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0903",
+          "subNatGoodsServicesDescription": "Machines used in office (except for typewriters, duplicators and printers)"
+        },
+        {
+          "subNatClassNumber": "0905",
+          "subNatGoodsServicesDescription": "Measures"
+        },
+        {
+          "subNatClassNumber": "0906",
+          "subNatGoodsServicesDescription": "Signalling apparatus and instruments"
+        },
+        {
+          "subNatClassNumber": "0904",
+          "subNatGoodsServicesDescription": "Scales"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        }
+      ]
+    },
+    "id": "43c3d592-e022-4af4-8149-115e1c6cdee7",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "山东商盾企业管理咨询有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180419",
+        "applicationNumber": "30362805"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251003040531",
+    "wordMarkSpecification": {
+      "markTransliteration": "PIECE PUZZLE SEVEN qi qiao ban",
+      "markVerbalElementText": "七巧板"
+    }
+  },
+  "_uri": "/mark/cn/43c3d592-e022-4af4-8149-115e1c6cdee7",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.563Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

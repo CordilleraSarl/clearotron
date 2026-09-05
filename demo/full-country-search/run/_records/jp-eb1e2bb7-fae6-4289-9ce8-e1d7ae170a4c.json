@@ -1,0 +1,170 @@
+{
+  "uri": "/mark/jp/eb1e2bb7-fae6-4289-9ce8-e1d7ae170a4c",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "eb1e2bb7-fae6-4289-9ce8-e1d7ae170a4c",
+  "applicationNumber": "2025-130639",
+  "registrationNumber": "7068434",
+  "applicationDate": "2025-11-13",
+  "registrationDate": "2026-07-28",
+  "expiryDate": "2036-07-28",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-08-05",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Ｚｙｎｑｏｒｅ",
+  "markTransliteration": "JINKOA JINKORE JINKUORE",
+  "markTranslation": "ZYNQORE",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "データ送信用ケーブル，充電器，蓄電池，望遠鏡，ドライブレコーダー，携帯電話機用ケース，眼鏡用及びサングラス用枠，ＧＰＳナビゲーション装置，カメラ，ウェブカメラ，イヤホン，携帯電話機及びスマートフォン用ホルダー，温度計（「診断用機械器具」に属するものを除く。），オーディオスピーカー",
+      "translation_language": "en",
+      "translation": "Data transmission cables, Chargers, Storage batteries, Telescopes, Drive recorders, Mobile phone cases, Eyeglass and sunglasses frames, GPS navigation devices, Cameras, Web cameras, Earphones, Mobile phone and smartphone holders, Thermometers (excluding those classified as \"diagnostic machines and instruments\"), Audio speakers"
+    }
+  ],
+  "owner": "Chen, Jing Wen",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "KIKEGAWA TAKUMI",
+  "priorities": [
+    {
+      "priorityDate": "20251113"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Chen, Jing Wen",
+        "applicantNativeAddress": "中華人民共和国",
+        "applicantNativeName": "陳静文"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Data transmission cables, Chargers, Storage batteries, Telescopes, Drive recorders, Mobile phone cases, Eyeglass and sunglasses frames, GPS navigation devices, Cameras, Web cameras, Earphones, Mobile phone and smartphone holders, Thermometers (excluding those classified as \"diagnostic machines and instruments\"), Audio speakers",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "データ送信用ケーブル，充電器，蓄電池，望遠鏡，ドライブレコーダー，携帯電話機用ケース，眼鏡用及びサングラス用枠，ＧＰＳナビゲーション装置，カメラ，ウェブカメラ，イヤホン，携帯電話機及びスマートフォン用ホルダー，温度計（「診断用機械器具」に属するものを除く。），オーディオスピーカー"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "10B01",
+          "natGoodsServicesDescription": "Photographic machines and apparatus; Cinematographic machines and apparatus; Optical machines and apparatus"
+        },
+        {
+          "natClassNumber": "10C01",
+          "natGoodsServicesDescription": "Measuring or testing machines and instruments"
+        },
+        {
+          "natClassNumber": "11A01",
+          "natGoodsServicesDescription": "Power distribution or control machines and apparatus; Rotary converters; Phase modifiers; Solar batteries"
+        },
+        {
+          "natClassNumber": "11A03",
+          "natGoodsServicesDescription": "Solar batteries; Batteries, electric"
+        },
+        {
+          "natClassNumber": "11A05",
+          "natGoodsServicesDescription": "Electric wires and cables"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Telecommunication machines and apparatus; Personal digital assistants"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "23B01",
+          "natGoodsServicesDescription": "Goggles for sports; Divers' masks; Swimming goggles; Dust protective goggles and masks"
+        }
+      ]
+    },
+    "id": "eb1e2bb7-fae6-4289-9ce8-e1d7ae170a4c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20251113"
+      }
+    ],
+    "recordLastUpdated": "20260821",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "KIKEGAWA TAKUMI",
+        "representativeNativeName": "亀卦川　巧"
+      },
+      {
+        "representativeName": "TecLaw IIPO",
+        "representativeNativeName": "弁理士法人テックロー国際知財事務所"
+      },
+      {
+        "representativeName": "KINOSHITA YOHEI",
+        "representativeNativeName": "木下　洋平"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251113",
+        "applicationNumber": "2025-130639"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360728",
+      "lastPublicationDate": "20260805",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260728",
+        "registrationNumber": "7068434"
+      }
+    },
+    "version": "20260821081721",
+    "wordMarkSpecification": {
+      "markTranslation": "ZYNQORE",
+      "markTransliteration": "JINKOA JINKORE JINKUORE",
+      "markVerbalElementText": "Ｚｙｎｑｏｒｅ"
+    }
+  },
+  "_uri": "/mark/jp/eb1e2bb7-fae6-4289-9ce8-e1d7ae170a4c",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.709Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/pe/f13c8dd5-6fdf-408f-aa93-5928df71e3cc",
+  "provider": "clarivate",
+  "office": "pe",
+  "guid": "f13c8dd5-6fdf-408f-aa93-5928df71e3cc",
+  "applicationNumber": "881588-2021",
+  "registrationNumber": "P00306301",
+  "applicationDate": "2021-01-27",
+  "registrationDate": "2021-03-24",
+  "expiryDate": "2031-03-24",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QOIR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "aparatos e instrumentos científicos, náuticos, geodésicos, fotográficos, cinematográficos, ópticos, de pesaje, de medición, de señalización, de control (inspección), de salvamento y de enseñanza; aparatos e instrumentos de conducción, distribución, transformación, acumulación, regulación o control de la electricidad; aparatos de grabación, transmisión o reproducción de sonido o imágenes; soportes de registro magnéticos, discos acústicos; discos compactos, dvd y otros soportes de grabación digitales; mecanismos para aparatos de previo pago; cajas registradoras, máquinas de calcular, equipos de procesamiento de datos, ordenadores; software; extintores.",
+      "translation_language": "en",
+      "translation": "scientific, nautical, surveying, photographic, cinematographic, optical, weighing, measuring, signalling, control (inspection), life-saving and teaching apparatus and instruments; Apparatus and instruments for conduction, distribution, transformation, accumulation, regulation or control of electricity; apparatus for recording, transmission or reproduction of sound or images; magnetic record carriers, recording discs; compact discs, dvd and other digital recording media; mechanisms for pre-paid devices; cash registers, calculating machines, data processing equipment, computers; software; fire extinguishers."
+    }
+  ],
+  "owner": "CONZA MENDOZA CARLOS BRANTY",
+  "ownerNative": null,
+  "ownerCountry": "PE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "PUNO - PUNO - PUNO",
+        "applicantAddressCountryCode": "PE",
+        "applicantAddressCountryName": "Peru",
+        "applicantName": "CONZA MENDOZA CARLOS BRANTY"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "scientific, nautical, surveying, photographic, cinematographic, optical, weighing, measuring, signalling, control (inspection), life-saving and teaching apparatus and instruments; Apparatus and instruments for conduction, distribution, transformation, accumulation, regulation or control of electricity; apparatus for recording, transmission or reproduction of sound or images; magnetic record carriers, recording discs; compact discs, dvd and other digital recording media; mechanisms for pre-paid devices; cash registers, calculating machines, data processing equipment, computers; software; fire extinguishers.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "aparatos e instrumentos científicos, náuticos, geodésicos, fotográficos, cinematográficos, ópticos, de pesaje, de medición, de señalización, de control (inspección), de salvamento y de enseñanza; aparatos e instrumentos de conducción, distribución, transformación, acumulación, regulación o control de la electricidad; aparatos de grabación, transmisión o reproducción de sonido o imágenes; soportes de registro magnéticos, discos acústicos; discos compactos, dvd y otros soportes de grabación digitales; mecanismos para aparatos de previo pago; cajas registradoras, máquinas de calcular, equipos de procesamiento de datos, ordenadores; software; extintores."
+        }
+      ]
+    },
+    "id": "f13c8dd5-6fdf-408f-aa93-5928df71e3cc",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.11.12",
+      "27.05.17",
+      "03.07.19"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260813",
+    "registrationOfficeCode": "PE",
+    "registrationOfficeName": "Peru",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210127",
+        "applicationNumber": "881588-2021"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310324",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20210324",
+        "registrationNumber": "P00306301"
+      }
+    },
+    "version": "20260813020822",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOIR"
+    }
+  },
+  "_uri": "/mark/pe/f13c8dd5-6fdf-408f-aa93-5928df71e3cc",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:40.630Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

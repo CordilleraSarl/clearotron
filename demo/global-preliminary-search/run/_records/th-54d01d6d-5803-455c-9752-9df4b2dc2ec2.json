@@ -1,0 +1,204 @@
+{
+  "uri": "/mark/th/54d01d6d-5803-455c-9752-9df4b2dc2ec2",
+  "provider": "clarivate",
+  "office": "th",
+  "guid": "54d01d6d-5803-455c-9752-9df4b2dc2ec2",
+  "applicationNumber": "146040",
+  "registrationNumber": "99798",
+  "applicationDate": "1985-03-04",
+  "registrationDate": "1985-03-04",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "LORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "th",
+      "description": "กระโปรง ชุดนอนสตรี เสื้อเชิ้ต กางเกงขาสั้น เสื้อยืด.",
+      "translation_language": "en",
+      "translation": "Women&#39;s skirts, pajamas, shirts, shorts, T-shirts."
+    }
+  ],
+  "owner": "Mr. Manit Euathavikun",
+  "ownerNative": null,
+  "ownerCountry": "TH",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "TH",
+        "applicantAddressCountryName": "Thailand",
+        "applicantName": "Mr. Manit Euathavikun",
+        "applicantNativeAddress": "อยู่เลขที่ 308/11 ซอยศูนย์การค้าใหม่โบ๊เบ๊ ถนนกรุงเกษม แขวงสี่แยกมหานาค เขตดุสิต กรุงเทพมหานคร",
+        "applicantNativeName": "นายมานิต เอื้อทวีกุล"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Women&#39;s skirts, pajamas, shirts, shorts, T-shirts.",
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "th",
+          "intGoodsServicesDescription": "กระโปรง ชุดนอนสตรี เสื้อเชิ้ต กางเกงขาสั้น เสื้อยืด."
+        }
+      ]
+    },
+    "id": "54d01d6d-5803-455c-9752-9df4b2dc2ec2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20241115",
+    "registrationOfficeCode": "TH",
+    "registrationOfficeName": "Thailand",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "39/42 หมู่บ้านโอษธีศ 1 ซอยโชคชัย 4 ถนนลาดพร้าว แขวงลาดพร้าว เขตลาดพร้าว เขตลาดพร้าว กรุงเทพมหานคร",
+        "representativeNativeName": "นายวีรวุธ สุดกรยุทธ์"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19850304",
+        "applicationNumber": "146040"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "19850304",
+        "registrationNumber": "99798"
+      }
+    },
+    "version": "20241115164609",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LORI"
+    }
+  },
+  "_uri": "/mark/th/54d01d6d-5803-455c-9752-9df4b2dc2ec2",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.455Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

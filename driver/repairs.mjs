@@ -149,7 +149,8 @@ export const DETERMINISTIC_RE = /\bhttp\s?4(0[0349]|1[04])\b|uri too long|own no
 //
 // TWO CLAIMS, NOT ONE — and collapsing them in EITHER direction is a bug this has now had both ways.
 // The original conflated them by classifying on the quote. The first cut of this fix conflated them by
-// withholding the quote, and driver/test/pipeline.mock.test.mjs:1646 (`repair-first A1: a 414-shaped dispatch failure is terminal`) caught it: a 414-shaped DISPATCH
+// withholding the quote, and the repair-first arm that holds a 414-shaped dispatch failure terminal
+// caught it: a 414-shaped DISPATCH
 // failure keeps its verbatim "HTTP 414 URI Too Long" in the terminal diagnosis, and that quote is the
 // whole teal-causeway lesson — three parks that never surfaced the provider error they were about.
 //

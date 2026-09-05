@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/br/731838b5-ea97-4ec4-a6d7-7b95dd30522a",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "731838b5-ea97-4ec4-a6d7-7b95dd30522a",
+  "applicationNumber": "819422274",
+  "registrationNumber": null,
+  "applicationDate": "1996-07-12",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    5,
+    9,
+    10,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        5,
+        9,
+        10,
+        42
+      ],
+      "language": "pt",
+      "description": "Substâncias e produtos correlatos destinados à defesa e à proteção da saúde.",
+      "translation_language": "en",
+      "translation": "Substances and related products intended for the defense and protection of health."
+    }
+  ],
+  "owner": "SALVIA COMERCIO IMPORTACAO E EXPORTACAO LTDA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "O PRÓPRIO.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "SALVIA COMERCIO IMPORTACAO E EXPORTACAO LTDA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Substances and related products intended for the defense and protection of health.",
+          "intClassNumber": "05,09,10,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Substâncias e produtos correlatos destinados à defesa e à proteção da saúde."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "05.50"
+        }
+      ]
+    },
+    "id": "731838b5-ea97-4ec4-a6d7-7b95dd30522a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "O PRÓPRIO."
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19960712",
+        "applicationNumber": "819422274"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20250630201341",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/br/731838b5-ea97-4ec4-a6d7-7b95dd30522a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.178Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

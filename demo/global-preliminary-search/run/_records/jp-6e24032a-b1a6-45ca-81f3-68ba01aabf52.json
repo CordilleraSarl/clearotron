@@ -1,0 +1,217 @@
+{
+  "uri": "/mark/jp/6e24032a-b1a6-45ca-81f3-68ba01aabf52",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "6e24032a-b1a6-45ca-81f3-68ba01aabf52",
+  "applicationNumber": "2003-100747",
+  "registrationNumber": "4768249",
+  "applicationDate": "2003-11-13",
+  "registrationDate": "2004-04-30",
+  "expiryDate": "2014-04-30",
+  "renewalDate": null,
+  "lastPublicationDate": "2004-06-08",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＹｏＲｉ",
+  "markTransliteration": "YORII YOROI",
+  "markTranslation": "YORI",
+  "markFeature": "DESIGN AND COLOR",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "写真機械器具，映画機械器具，光学機械器具，測定機械器具，配電用又は制御用の機械器具，回転変流機，調相機，電池，電気磁気測定器，電線及びケーブル，電気アイロン，電気式ヘアカーラー，電気ブザー，電気通信機械器具，電子応用機械器具及びその部品，家庭用テレビゲームおもちゃ，携帯用液晶画面ゲームおもちゃ用のプログラムを記憶させた電子回路及びＣＤ－ＲＯＭ，スロットマシン，レコード，メトロノーム，電子楽器用自動演奏プログラムを記憶させた電子回路及びＣＤ－ＲＯＭ，映写フィルム，スライドフィルム，スライドフィルム用マウント，録画済みビデオディスク及びビデオテープ，電子出版物",
+      "translation_language": "en",
+      "translation": "Photographic machinery equipment, movie machinery equipment, optical machinery equipment, measurement machinery equipment, mechanical equipment for distribution or control, rotary current transformer, phase shifter, battery, electromechanical measuring instrument, electric wire and cable, electric iron, electric hair Electronic circuit and CD-ROM, slot machines, record, metronome that stores programs for toys, portable LCD screen games toys, curler, electric buzzer, telecommunications machine equipment, electronic appliances equipment and parts thereof, home video game toys , An electronic circuit storing an automatic performance program for an electronic musical instrument, a CD-ROM, a projection film, a slide film, a mount for a slide film, a recorded video disk and a video tape, an electronic publication"
+    }
+  ],
+  "owner": "MATSUSHITA ELECTRIC INDUSTRIAL CO., LTD.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "NISHINO YOSHINORI",
+  "priorities": [
+    {
+      "priorityDate": "20031113"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "KADOMA OSAKA FU",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "MATSUSHITA ELECTRIC INDUSTRIAL CO., LTD.",
+        "applicantNativeAddress": "大阪府門真市大字門真１００６番地",
+        "applicantNativeName": "松下電器産業株式会社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Photographic machinery equipment, movie machinery equipment, optical machinery equipment, measurement machinery equipment, mechanical equipment for distribution or control, rotary current transformer, phase shifter, battery, electromechanical measuring instrument, electric wire and cable, electric iron, electric hair Electronic circuit and CD-ROM, slot machines, record, metronome that stores programs for toys, portable LCD screen games toys, curler, electric buzzer, telecommunications machine equipment, electronic appliances equipment and parts thereof, home video game toys , An electronic circuit storing an automatic performance program for an electronic musical instrument, a CD-ROM, a projection film, a slide film, a mount for a slide film, a recorded video disk and a video tape, an electronic publication",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "写真機械器具，映画機械器具，光学機械器具，測定機械器具，配電用又は制御用の機械器具，回転変流機，調相機，電池，電気磁気測定器，電線及びケーブル，電気アイロン，電気式ヘアカーラー，電気ブザー，電気通信機械器具，電子応用機械器具及びその部品，家庭用テレビゲームおもちゃ，携帯用液晶画面ゲームおもちゃ用のプログラムを記憶させた電子回路及びＣＤ－ＲＯＭ，スロットマシン，レコード，メトロノーム，電子楽器用自動演奏プログラムを記憶させた電子回路及びＣＤ－ＲＯＭ，映写フィルム，スライドフィルム，スライドフィルム用マウント，録画済みビデオディスク及びビデオテープ，電子出版物"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "10B01",
+          "natGoodsServicesDescription": "Photographic, cinematographic or optical apparatus"
+        },
+        {
+          "natClassNumber": "10C01",
+          "natGoodsServicesDescription": "Measuring apparatus and instruments"
+        },
+        {
+          "natClassNumber": "11A01",
+          "natGoodsServicesDescription": "Electrical distribution or control machines, Rotary converters, Phase modifiers"
+        },
+        {
+          "natClassNumber": "11A03",
+          "natGoodsServicesDescription": "Batteries"
+        },
+        {
+          "natClassNumber": "11A04",
+          "natGoodsServicesDescription": "Electric or magnetic measuring machines and instruments"
+        },
+        {
+          "natClassNumber": "11A05",
+          "natGoodsServicesDescription": "Electric wires and cables"
+        },
+        {
+          "natClassNumber": "11A06",
+          "natGoodsServicesDescription": "Electric flat irons, Electrically heated hair curlers, Electric buzzers"
+        },
+        {
+          "natClassNumber": "11A07"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Electrical communication apparatus and instruments"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, instruments and parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        },
+        {
+          "natClassNumber": "24A01",
+          "natGoodsServicesDescription": "Video game apparatus for personal use, Programmed-data-carrying Electronic Circuits and CD-ROM for Portable Gaming Machines comprising of Liquid Crystal Displays"
+        },
+        {
+          "natClassNumber": "24B02",
+          "natGoodsServicesDescription": "Slot machines"
+        },
+        {
+          "natClassNumber": "24E01",
+          "natGoodsServicesDescription": "Records, metronomes, Programmed-data-carrying Electronic Circuit and CD-ROM with Automatic Music Playing Programs  for Electronic Music Instruments"
+        },
+        {
+          "natClassNumber": "24E02"
+        },
+        {
+          "natClassNumber": "26A01",
+          "natGoodsServicesDescription": "Electronic Publications"
+        },
+        {
+          "natClassNumber": "26D01",
+          "natGoodsServicesDescription": "Cinematographic films, Slide films, Transparencies, Prerecorded videodiscs or tapes, Electronic Publishments"
+        }
+      ]
+    },
+    "id": "6e24032a-b1a6-45ca-81f3-68ba01aabf52",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN AND COLOR",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "COLOUR CLAIMED"
+      }
+    ],
+    "markImageViennaClassification": [
+      "26.01.01.00",
+      "26.01.02.00",
+      "26.01.04.00",
+      "26.01.19.00",
+      "26.02.05.00",
+      "27.05.01.09",
+      "27.05.21.00",
+      "29.01.01.02",
+      "29.01.02.02",
+      "29.01.08.01",
+      "29.01.08.02",
+      "29.01.11.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20031113"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "NISHINO YOSHINORI",
+        "representativeNativeName": "西野　吉徳"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20031113",
+        "applicationNumber": "2003-100747"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20140430",
+      "lastPublicationDate": "20040608",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20040430",
+        "registrationNumber": "4768249"
+      }
+    },
+    "version": "20240321111903",
+    "wordMarkSpecification": {
+      "markTranslation": "YORI",
+      "markTransliteration": "YORII YOROI",
+      "markVerbalElementText": "ＹｏＲｉ"
+    }
+  },
+  "_uri": "/mark/jp/6e24032a-b1a6-45ca-81f3-68ba01aabf52",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:45.803Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

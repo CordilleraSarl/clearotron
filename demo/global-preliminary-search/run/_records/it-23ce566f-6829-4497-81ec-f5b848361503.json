@@ -1,0 +1,256 @@
+{
+  "uri": "/mark/it/23ce566f-6829-4497-81ec-f5b848361503",
+  "provider": "clarivate",
+  "office": "it",
+  "guid": "23ce566f-6829-4497-81ec-f5b848361503",
+  "applicationNumber": "302020000117050",
+  "registrationNumber": "302020000117050",
+  "applicationDate": "2020-12-24",
+  "registrationDate": "2021-05-12",
+  "expiryDate": "2030-12-24",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "I LOVE NORCIA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    37,
+    38,
+    39,
+    41,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione inclusi nella classificazione nizza: pubblicità; servizi oggetto di protezione inclusi nella classificazione mgs (al netto nizza): gestione di affari commerciali; sviluppo e coordinamento di progetti di volontariato per organizzazioni di beneficenza; servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: organizzazione di fiere; servizi di vendita",
+      "translation_language": "en",
+      "translation": "protected services included in the Nice classification: advertising; protected services included in the mgs classification (net of nice): management of commercial affairs; development and coordination of volunteer projects for charitable organizations; protected services not included in the nizza-mgs classification: organization of fairs; selling services"
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione inclusi nella classificazione nizza: affari immobiliari; servizi oggetto di protezione inclusi nella classificazione mgs (al netto nizza): affari finanziari; affari monetari; servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: collette per beneficenza; fundraising per scopo di beneficenza; raccolta fondi per beneficenza; servizi di beneficenza",
+      "translation_language": "en",
+      "translation": "protected services included in the Nice classification: real estate affairs; protected services included in the mgs classification (net of nice): financial affairs; monetary affairs; protected services not included in the nizza-mgs classification: collections for charities; fundraising for charitable purposes; fundraising for charity; charitable services"
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione inclusi nella classificazione mgs (al netto nizza): ristrutturazione di edifici; servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: costruzione per beneficenza",
+      "translation_language": "en",
+      "translation": "services subject to protection included in the MGS classification (net of Nice): renovation of buildings; protected services not included in the nizza-mgs classification: construction for charity"
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione inclusi nella classificazione mgs (al netto nizza): telecomunicazioni; servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: opere di beneficenza ovvero telecomunicazioni; servizi che forniscono accesso a reti di dati, banche dati e siti web; servizi di beneficenza ovvero servizi di telecomunicazioni",
+      "translation_language": "en",
+      "translation": "protected services included in the mgs classification (net of nice): telecommunications; protected services not included in the nizza-mgs classification: charitable works or telecommunications; services providing access to data networks, databases and websites; charitable services or telecommunications services"
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione inclusi nella classificazione nizza: trasporto; servizi oggetto di protezione inclusi nella classificazione mgs (al netto nizza): organizzazione di viaggi; servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: fornitura di trasporto per beneficenza; imballaggio e deposito merci; servizi di confezionamento, imballaggio ed immagazzinamento",
+      "translation_language": "en",
+      "translation": "services subject to protection included in the Nice classification: transport; protected services included in the mgs classification (net of nice): travel organisation; protected services not included in the nizza-mgs classification: provision of transport for charity; packing and storage of goods; packing, packaging and warehousing services"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione inclusi nella classificazione nizza: educazione; servizi oggetto di protezione inclusi nella classificazione mgs (al netto nizza): attività sportive e culturali; divertimento; formazione; servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: organizzazione di eventi",
+      "translation_language": "en",
+      "translation": "services subject to protection included in the Nice classification: education; protected services included in the mgs classification (net of nice): sporting and cultural activities; fun; training; protected services not included in the nizza-mgs classification: organization of events"
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione inclusi nella classificazione mgs (al netto nizza): alloggi temporanei; servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: asili nido; fornitura di cibi e bevande per persone bisognose; servizi di ristorazione; servizi offerti da case di riposo per anziani; strutture per la guida diurna e per gli anziani",
+      "translation_language": "en",
+      "translation": "services subject to protection included in the MGS classification (net of Nice): temporary accommodation; protected services not included in the nizza-mgs classification: nurseries; provision of food and drink for people in need; catering services; services offered by retirement homes for the elderly; facilities for daytime driving and for the elderly"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione inclusi nella classificazione nizza: servizi medici; servizi oggetto di protezione inclusi nella classificazione mgs (al netto nizza): servizi di agricoltura; servizi di silvicoltura; servizi medici; servizi veterinari; servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: servizi di beneficenza ovvero fornitura di servizi medici",
+      "translation_language": "en",
+      "translation": "services subject to protection included in the Nice classification: medical services; protected services included in the mgs classification (net of nice): agricultural services; forestry services; medical services; veterinary services; protected services not included in the nizza-mgs classification: charitable services or provision of medical services"
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione inclusi nella classificazione mgs (al netto nizza): servizi di acquisti personali per conto terzi; servizi giuridici; servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: offerta di indumenti a persone bisognose; servizi di accompagnamento anziani e disabili; servizi di beneficenza; servizi di sicurezza per protezione di beni e persone",
+      "translation_language": "en",
+      "translation": "protected services included in the MGS classification (net of Nice): personal shopping services on behalf of third parties; legal services; protected services not included in the nizza-mgs classification: offering of clothing to people in need; elderly and disabled support services; charitable services; security services for the protection of property and people"
+    }
+  ],
+  "owner": "I LOVE NORCIA",
+  "ownerNative": null,
+  "ownerCountry": "IT",
+  "representative": "STUDIO COMMERCIALISTA MARCO MOSCATELLI",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Norcia 06046, Perugia",
+        "applicantAddressCountryCode": "IT",
+        "applicantAddressCountryName": "Italy",
+        "applicantName": "I LOVE NORCIA"
+      }
+    ],
+    "applicationLanguageCode": "it",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "protected services included in the Nice classification: advertising; protected services included in the mgs classification (net of nice): management of commercial affairs; development and coordination of volunteer projects for charitable organizations; protected services not included in the nizza-mgs classification: organization of fairs; selling services",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione inclusi nella classificazione nizza: pubblicità; servizi oggetto di protezione inclusi nella classificazione mgs (al netto nizza): gestione di affari commerciali; sviluppo e coordinamento di progetti di volontariato per organizzazioni di beneficenza; servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: organizzazione di fiere; servizi di vendita"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "protected services included in the Nice classification: real estate affairs; protected services included in the mgs classification (net of nice): financial affairs; monetary affairs; protected services not included in the nizza-mgs classification: collections for charities; fundraising for charitable purposes; fundraising for charity; charitable services",
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione inclusi nella classificazione nizza: affari immobiliari; servizi oggetto di protezione inclusi nella classificazione mgs (al netto nizza): affari finanziari; affari monetari; servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: collette per beneficenza; fundraising per scopo di beneficenza; raccolta fondi per beneficenza; servizi di beneficenza"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "services subject to protection included in the MGS classification (net of Nice): renovation of buildings; protected services not included in the nizza-mgs classification: construction for charity",
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione inclusi nella classificazione mgs (al netto nizza): ristrutturazione di edifici; servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: costruzione per beneficenza"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "protected services included in the mgs classification (net of nice): telecommunications; protected services not included in the nizza-mgs classification: charitable works or telecommunications; services providing access to data networks, databases and websites; charitable services or telecommunications services",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione inclusi nella classificazione mgs (al netto nizza): telecomunicazioni; servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: opere di beneficenza ovvero telecomunicazioni; servizi che forniscono accesso a reti di dati, banche dati e siti web; servizi di beneficenza ovvero servizi di telecomunicazioni"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "services subject to protection included in the Nice classification: transport; protected services included in the mgs classification (net of nice): travel organisation; protected services not included in the nizza-mgs classification: provision of transport for charity; packing and storage of goods; packing, packaging and warehousing services",
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione inclusi nella classificazione nizza: trasporto; servizi oggetto di protezione inclusi nella classificazione mgs (al netto nizza): organizzazione di viaggi; servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: fornitura di trasporto per beneficenza; imballaggio e deposito merci; servizi di confezionamento, imballaggio ed immagazzinamento"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "services subject to protection included in the Nice classification: education; protected services included in the mgs classification (net of nice): sporting and cultural activities; fun; training; protected services not included in the nizza-mgs classification: organization of events",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione inclusi nella classificazione nizza: educazione; servizi oggetto di protezione inclusi nella classificazione mgs (al netto nizza): attività sportive e culturali; divertimento; formazione; servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: organizzazione di eventi"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "services subject to protection included in the MGS classification (net of Nice): temporary accommodation; protected services not included in the nizza-mgs classification: nurseries; provision of food and drink for people in need; catering services; services offered by retirement homes for the elderly; facilities for daytime driving and for the elderly",
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione inclusi nella classificazione mgs (al netto nizza): alloggi temporanei; servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: asili nido; fornitura di cibi e bevande per persone bisognose; servizi di ristorazione; servizi offerti da case di riposo per anziani; strutture per la guida diurna e per gli anziani"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "services subject to protection included in the Nice classification: medical services; protected services included in the mgs classification (net of nice): agricultural services; forestry services; medical services; veterinary services; protected services not included in the nizza-mgs classification: charitable services or provision of medical services",
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione inclusi nella classificazione nizza: servizi medici; servizi oggetto di protezione inclusi nella classificazione mgs (al netto nizza): servizi di agricoltura; servizi di silvicoltura; servizi medici; servizi veterinari; servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: servizi di beneficenza ovvero fornitura di servizi medici"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "protected services included in the MGS classification (net of Nice): personal shopping services on behalf of third parties; legal services; protected services not included in the nizza-mgs classification: offering of clothing to people in need; elderly and disabled support services; charitable services; security services for the protection of property and people",
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione inclusi nella classificazione mgs (al netto nizza): servizi di acquisti personali per conto terzi; servizi giuridici; servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: offerta di indumenti a persone bisognose; servizi di accompagnamento anziani e disabili; servizi di beneficenza; servizi di sicurezza per protezione di beni e persone"
+        }
+      ]
+    },
+    "id": "23ce566f-6829-4497-81ec-f5b848361503",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "IL MARCHIO CONSISTE NELLE PAROLE I LOVE NORCIA E NELLA RAFFIGURAZIONE DI UN CUORE IRREGOLARE"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250403",
+    "registrationOfficeCode": "IT",
+    "registrationOfficeName": "Italy",
+    "representatives": [
+      {
+        "representativeAddress": "VIA INNOCENZO FIORUCCI snc 06046 Norcia (Perugia)",
+        "representativeName": "STUDIO COMMERCIALISTA MARCO MOSCATELLI"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20201224",
+        "applicationNumber": "302020000117050"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20301224",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20210512",
+        "registrationNumber": "302020000117050"
+      }
+    },
+    "version": "20250403191942",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "I LOVE NORCIA"
+    }
+  },
+  "_uri": "/mark/it/23ce566f-6829-4497-81ec-f5b848361503",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

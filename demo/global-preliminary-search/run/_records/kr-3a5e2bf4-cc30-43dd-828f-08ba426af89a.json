@@ -1,0 +1,148 @@
+{
+  "uri": "/mark/kr/3a5e2bf4-cc30-43dd-828f-08ba426af89a",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "3a5e2bf4-cc30-43dd-828f-08ba426af89a",
+  "applicationNumber": "40-1996-0037701",
+  "registrationNumber": "4003923240000",
+  "applicationDate": "1996-08-26",
+  "registrationDate": "1998-01-22",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "GOLEE 고리",
+  "markTransliteration": "GOLEE",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    17,
+    21
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        17,
+        21
+      ],
+      "language": "ko",
+      "description": "광섬유케이블,전기절연용관,절연테이프,통신케이블",
+      "translation_language": "en",
+      "translation": "Fiber optic cable, electrical insulation cable, insulation tape, communication cable"
+    }
+  ],
+  "owner": "SIN Yong Goo",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "박형준 (Park Hyung Joon)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "광주광역시 북구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "SIN Yong Goo",
+        "applicantNativeName": "신용구"
+      },
+      {
+        "applicantAddress": "광주광역시 북구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "SHIN, YONG JIN",
+        "applicantNativeName": "신용진"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Fiber optic cable, electrical insulation cable, insulation tape, communication cable",
+          "intClassNumber": "07,08,09,10,11,17,21",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "광섬유케이블,전기절연용관,절연테이프,통신케이블"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "039"
+        }
+      ]
+    },
+    "id": "3a5e2bf4-cc30-43dd-828f-08ba426af89a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "F, Samho Building, , Saimdang-ro -gil, Seocho-gu, Seoul, Republic of Korea(Hansol International Patent and Law Office)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "박형준 (Park Hyung Joon)"
+      },
+      {
+        "representativeAddress": "DAEMYUNG VALEON KNOWLEDGE INDUSTRY CENTER F., Beobwon-ro, Songpa-gu, Seoul, KOREA(ASIANA IP & LAW OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "황이남 (HWANG, E-NAM)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19960826",
+        "applicationNumber": "40-1996-0037701"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19980122",
+        "registrationNumber": "4003923240000"
+      }
+    },
+    "version": "20250625145419",
+    "wordMarkSpecification": {
+      "markTransliteration": "GOLEE",
+      "markVerbalElementText": "GOLEE 고리"
+    }
+  },
+  "_uri": "/mark/kr/3a5e2bf4-cc30-43dd-828f-08ba426af89a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.049Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

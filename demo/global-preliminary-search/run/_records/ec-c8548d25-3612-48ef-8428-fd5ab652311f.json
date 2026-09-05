@@ -1,0 +1,101 @@
+{
+  "uri": "/mark/ec/c8548d25-3612-48ef-8428-fd5ab652311f",
+  "provider": "clarivate",
+  "office": "ec",
+  "guid": "c8548d25-3612-48ef-8428-fd5ab652311f",
+  "applicationNumber": "2018-67777",
+  "registrationNumber": null,
+  "applicationDate": null,
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "RAVENCORP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Actualización de software, alojamiento de sitios web, alquiler de servidores web, alquiler de software, recuperación de datos informáticos, consultoría sobre diseño y desarrollo de hardware, programación informática, consultoría en hardware, consultoría sobre software, creación y mantenimiento de sitios web para terceros, datos informáticos (recuperación de), diseño de sistemas informáticos, diseño de software, duplicación de programas informáticos, hardware (consultoría en), instalación de software, mantenimiento de software, ordenadores (consultoría en materia de), ordenadores (programación de), programación de computadoras, programación de ordenadores, programas informáticos (duplicación de), recuperación de bases de datos, recuperación de datos informáticos, servidores web (alquiler de), sitios informáticos [sitios web]: (alojamiento de), software (actualización de), software (alquiler de), software (consultoría en), software (diseño de), software (instalación de), software (mantenimiento de).",
+      "translation_language": "en",
+      "translation": "Software updating, website hosting, web server rental, software rental, computer data recovery, hardware design and development consulting, computer programming, hardware consulting, software consulting, website creation and maintenance for others , computer data (recovery), computer system design, software design, computer program duplication, hardware (consulting), software installation, software maintenance, computers (consulting), computers (programming), computer programming, computer programming, computer programs (duplication of), database recovery, computer data recovery, web servers (rental of), computer sites [websites]: (hosting of), software (updating of) , software (rental), software (consulting), software (design), software (installation), software (maintenance)."
+    }
+  ],
+  "owner": "FRANCISCO SILVA",
+  "ownerNative": null,
+  "ownerCountry": "EC",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "EC",
+        "applicantAddressCountryName": "Ecuador",
+        "applicantName": "FRANCISCO SILVA"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Software updating, website hosting, web server rental, software rental, computer data recovery, hardware design and development consulting, computer programming, hardware consulting, software consulting, website creation and maintenance for others , computer data (recovery), computer system design, software design, computer program duplication, hardware (consulting), software installation, software maintenance, computers (consulting), computers (programming), computer programming, computer programming, computer programs (duplication of), database recovery, computer data recovery, web servers (rental of), computer sites [websites]: (hosting of), software (updating of) , software (rental), software (consulting), software (design), software (installation), software (maintenance).",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Actualización de software, alojamiento de sitios web, alquiler de servidores web, alquiler de software, recuperación de datos informáticos, consultoría sobre diseño y desarrollo de hardware, programación informática, consultoría en hardware, consultoría sobre software, creación y mantenimiento de sitios web para terceros, datos informáticos (recuperación de), diseño de sistemas informáticos, diseño de software, duplicación de programas informáticos, hardware (consultoría en), instalación de software, mantenimiento de software, ordenadores (consultoría en materia de), ordenadores (programación de), programación de computadoras, programación de ordenadores, programas informáticos (duplicación de), recuperación de bases de datos, recuperación de datos informáticos, servidores web (alquiler de), sitios informáticos [sitios web]: (alojamiento de), software (actualización de), software (alquiler de), software (consultoría en), software (diseño de), software (instalación de), software (mantenimiento de)."
+        }
+      ]
+    },
+    "id": "c8548d25-3612-48ef-8428-fd5ab652311f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "EC",
+    "registrationOfficeName": "Ecuador",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationNumber": "2018-67777"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20240320105932",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RAVENCORP"
+    }
+  },
+  "_uri": "/mark/ec/c8548d25-3612-48ef-8428-fd5ab652311f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.742Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

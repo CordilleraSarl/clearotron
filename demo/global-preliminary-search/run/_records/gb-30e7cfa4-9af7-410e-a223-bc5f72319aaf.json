@@ -1,0 +1,159 @@
+{
+  "uri": "/mark/gb/30e7cfa4-9af7-410e-a223-bc5f72319aaf",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "30e7cfa4-9af7-410e-a223-bc5f72319aaf",
+  "applicationNumber": "UK00918100893",
+  "registrationNumber": "UK00918100893",
+  "applicationDate": "2019-07-29",
+  "registrationDate": "2019-11-20",
+  "expiryDate": "2029-07-29",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "CREATIVE NORTH SOLUTION",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Control installations (Electric -); Radio apparatus and instruments; Wireless controllers to remotely monitor and control the function and status of other electrical, electronic, and mechanical devices or systems; Integrated circuit cards [smart cards]; Sensors and detectors; Computer software for computer aided software engineering; Computer hardware for use in computer-assisted software engineering; Sensor controllers; Monitoring instruments.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "en",
+      "description": "Custom construction of machines.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Computer software design; Computer software consultancy; Software development; Preparation of technical manuals; Research in the field of electrical engineering; Graphic design; Engineering services for the design of structures; Mechanical engineering; Construction drafting; Consultancy in the field of construction drafting; Testing the functionality of apparatus and instruments; Testing the functionality of machines; Testing of apparatus in the field of electrical engineering; Testing, analysis and evaluation of the goods of others for the purpose of certification; Quality testing of products for certification purposes; Technical testing services; Technological advisory services relating to machine engineering analysis.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "CREATIVE NORTH SOLUTION GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "SCHNEBBE, HEUSER & PARTNER",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Bültbek 11, siek 22962",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "CREATIVE NORTH SOLUTION GmbH"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "26.11.02",
+      "26.11.12",
+      "37.01.19"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Control installations (Electric -); Radio apparatus and instruments; Wireless controllers to remotely monitor and control the function and status of other electrical, electronic, and mechanical devices or systems; Integrated circuit cards [smart cards]; Sensors and detectors; Computer software for computer aided software engineering; Computer hardware for use in computer-assisted software engineering; Sensor controllers; Monitoring instruments."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Custom construction of machines."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software design; Computer software consultancy; Software development; Preparation of technical manuals; Research in the field of electrical engineering; Graphic design; Engineering services for the design of structures; Mechanical engineering; Construction drafting; Consultancy in the field of construction drafting; Testing the functionality of apparatus and instruments; Testing the functionality of machines; Testing of apparatus in the field of electrical engineering; Testing, analysis and evaluation of the goods of others for the purpose of certification; Quality testing of products for certification purposes; Technical testing services; Technological advisory services relating to machine engineering analysis."
+        }
+      ]
+    },
+    "id": "30e7cfa4-9af7-410e-a223-bc5f72319aaf",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "25.05.95",
+      "27.05.25",
+      "27.99.03",
+      "27.99.14",
+      "27.99.19",
+      "29.01.04",
+      "29.01.08"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Esplanade 41, Hamburg 20354",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "SCHNEBBE, HEUSER & PARTNER"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190729",
+        "applicationNumber": "UK00918100893"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290729",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20191120",
+        "registrationNumber": "UK00918100893"
+      }
+    },
+    "version": "20250627220057",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "CREATIVE NORTH SOLUTION"
+    }
+  },
+  "_uri": "/mark/gb/30e7cfa4-9af7-410e-a223-bc5f72319aaf",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.815Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

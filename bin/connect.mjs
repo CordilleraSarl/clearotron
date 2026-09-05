@@ -37,6 +37,7 @@
 // FIRST IMPORT — the rename layer must apply before any module-top env capture evaluates.
 import "../shared/env-local.mjs";
 import { createInterface } from "node:readline/promises";
+import { requireInteractive } from "../shared/invocation.mjs";   // — a prompt with nobody to answer it
 import { stdin, stdout } from "node:process";
 import { readFileSync, writeFileSync, existsSync, copyFileSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -46,13 +47,13 @@ import { execFileSync } from "node:child_process";
 import { createServer } from "node:net";
 import { CONNECT_CLIENTS, clientById, whatItNeeds } from "../shared/connect-clients.mjs";
 import { stdioConnectFor, STDIO_SHAPES } from "../shared/stdio-connect.mjs";
-import { clientDoorAddress, clientDoorPort, clientDoorState, enablePlan, applyEnablePlan, describeChange, recordConnectKey, CLIENT_DOOR_UNIT } from "../shared/client-door.mjs";
+import { defaultDenylistPath, clientDoorAddress, clientDoorPort, clientDoorState, enablePlan, applyEnablePlan, describeChange, recordConnectKey, CLIENT_DOOR_UNIT } from "../shared/client-door.mjs";
 import { mintToken, tokenId, accountsForEmail, loadGrants } from "../shared/scope.mjs";
 import { envFrom } from "../shared/env-aliases.mjs";
 import { atomicWrite } from "../driver/progress.mjs";
 // — F40. SERVER_INSTALL_SET is what `bin/start.mjs` re-exports as
 // BACKGROUND_UNITS; taken from shared/ so this verb does not reach into another bin/ entry point.
-import { SERVER_INSTALL_SET } from "../shared/server-units.mjs";
+import { SERVER_INSTALL_SET, unitHealthVerdict } from "../shared/server-units.mjs";
 import { unitEnvironment, unitValue, couldNotDetermine } from "../driver/unit-environment.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -88,8 +89,12 @@ const UNIT_DIR = join(homedir(), ".config", "systemd", "user");
 const ENV_PATH = join(homedir(), ".env");
 // Where the revocation list lives when this install has never named one — created by connect so the
 // door is BORN consulting it (; measured: no denylist is configured on production,
-// and `isRevoked()` fails open on an unset path, so assuming one makes every issued key unrevokable).
-const DENYLIST_PATH = join(homedir(), ".config", "clearotron", "token-denylist");
+// and `isRevoked()` returns false on an UNSET path — still true, and deliberately so: a deployment that
+// never asked for a denylist is not taken down by one. It is an unreadable list that now refuses
+//. Assuming a path nobody set still makes every issued key unrevokable).
+// — one owner for this path. It was written out here, in disconnect and twice
+// in start; `start` named it and created nothing, which is how a revoked key kept answering 200.
+const DENYLIST_PATH = defaultDenylistPath(homedir());
 const say = (s = "") => console.log(s);
 
 /**
@@ -212,9 +217,28 @@ const settle = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0,
  * Is the unit STILL up? Not "was the start accepted".
  *
  * `Type=simple` marks a unit active the instant it forks, so a door that exits on its first line reports
- * healthy for about a second. This settles, then requires the unit to be active AND running AND never to
- * have restarted — a restart counter above zero means it has already died at least once, whatever it
- * says right now.
+ * healthy for about a second. This settles, then asks the ONE authority — `unitHealthVerdict` — rather
+ * than keeping a second opinion here.
+ *
+ * IT USED TO REQUIRE `NRestarts === "0"` AS WELL, and that was the same defect fixed
+ * in the health check of `start --background`, left standing on this path (2203). NRestarts is a
+ * LIFETIME counter: a door that crash-looped, was fixed, and has served ever since reads
+ * `active/running` carrying a permanent non-zero count, because systemd's own auto-restart increments
+ * it and nothing on this path clears it. So `connect` refused to call a recovered door healthy —
+ * forever, on any box whose door has ever gone down once — on the path a client takes to get enrolled.
+ * The comment that justified it said "a restart counter above zero means it has already died at least
+ * once, whatever it says right now", which is TRUE and is exactly the wrong question: what was asked
+ * is whether the door works now.
+ *
+ * A door failing now is still caught, and by the field that means it: a looping unit reads
+ * `activating/auto-restart`, never `active/running`.
+ *
+ * NO `type` IS PASSED, AND THAT IS CHECKED RATHER THAN ASSUMED. `unitHealthVerdict` judges a oneshot by
+ * being ENABLED and everything else by the state pair, so a oneshot reaching here with the default
+ * would be judged against a pair it can never satisfy. There is exactly one call site: this function is
+ * handed to `shared/client-door.mjs` as `io.unitIsHealthy` (below), and the one caller there invokes it
+ * with `CLIENT_DOOR_UNIT` — a `Type=simple` door. If a second caller ever passes a member of
+ * `SERVER_INSTALL_SET`, this needs the unit's declared type, not this default.
  */
 function unitIsHealthy(name) {
   settle(3000);
@@ -223,7 +247,7 @@ function unitIsHealthy(name) {
       ["--user", "show", name, "-p", "ActiveState", "-p", "SubState", "-p", "NRestarts"],
       { encoding: "utf8" });
     const f = Object.fromEntries(out.trim().split("\n").map((l) => l.split("=")));
-    return f.ActiveState === "active" && f.SubState === "running" && f.NRestarts === "0";
+    return unitHealthVerdict({ activeState: f.ActiveState, subState: f.SubState, nRestarts: f.NRestarts }).ok;
   } catch { return false; }
 }
 
@@ -481,6 +505,7 @@ async function main() {
     say("");
     CONNECT_CLIENTS.forEach((c, n) => say(`    ${n + 1}) ${c.name}`));
     say("");
+    requireInteractive({ verb: "connect" });
     const rl = createInterface({ input: stdin, output: stdout });
     try {
       const answer = (await rl.question(`  1-${CONNECT_CLIENTS.length}: `)).trim();

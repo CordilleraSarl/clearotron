@@ -1,0 +1,124 @@
+{
+  "uri": "/mark/kr/a8ee304f-71e9-4042-8ff0-dbc65c0320a8",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "a8ee304f-71e9-4042-8ff0-dbc65c0320a8",
+  "applicationNumber": "40-2010-0062468",
+  "registrationNumber": "4008958040000",
+  "applicationDate": "2010-12-03",
+  "registrationDate": "2011-12-22",
+  "expiryDate": "2031-12-22",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "KORI",
+  "markTransliteration": "KORI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "각도게이지,각도기,거리측정기,경도시험기,계수기,금속경도시험기,농도계,마이크로미터,소음계(騷音計),수준기(水準器),온도센서,정밀측정기기,조도계(照度計),측량용 수준기,캘리퍼스,표면거칠기측정기,풍속계,회전계,회전수계수기",
+      "translation_language": "en",
+      "translation": "Angle gauge, protractor, distance measuring device, hardness tester, counter, metal hardness tester, densitometer, micrometer, sound level meter, temperature sensor, precision measuring device, illuminance meter, for surveying Level meter, caliper, surface roughness meter, anemometer, rotation meter, speed counter"
+    }
+  ],
+  "owner": "KBone CO., LTD.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "이병일 (LEE, Byung Il)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "대구광역시 중구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "KBone CO., LTD.",
+        "applicantNativeName": "(주)케이비원"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Angle gauge, protractor, distance measuring device, hardness tester, counter, metal hardness tester, densitometer, micrometer, sound level meter, temperature sensor, precision measuring device, illuminance meter, for surveying Level meter, caliper, surface roughness meter, anemometer, rotation meter, speed counter",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "각도게이지,각도기,거리측정기,경도시험기,계수기,금속경도시험기,농도계,마이크로미터,소음계(騷音計),수준기(水準器),온도센서,정밀측정기기,조도계(照度計),측량용 수준기,캘리퍼스,표면거칠기측정기,풍속계,회전계,회전수계수기"
+        }
+      ]
+    },
+    "id": "a8ee304f-71e9-4042-8ff0-dbc65c0320a8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.03.06",
+      "26.04.09",
+      "26.04.11"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "(ho,E&C INNOBIZ TOWER, Sindang-dong) Dalseo-daero, Dalseo-gu, Daegu, Korea(DAE YEON PATENT & LAW FIRM)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "이병일 (LEE, Byung Il)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20101203",
+        "applicationNumber": "40-2010-0062468"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311222",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20111222",
+        "registrationNumber": "4008958040000"
+      }
+    },
+    "version": "20250625165934",
+    "wordMarkSpecification": {
+      "markTransliteration": "KORI",
+      "markVerbalElementText": "KORI"
+    }
+  },
+  "_uri": "/mark/kr/a8ee304f-71e9-4042-8ff0-dbc65c0320a8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.793Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

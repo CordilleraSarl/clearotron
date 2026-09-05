@@ -1,0 +1,165 @@
+{
+  "uri": "/mark/de/365b7bbd-fe5e-41aa-819c-053432d5fdb3",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "365b7bbd-fe5e-41aa-819c-053432d5fdb3",
+  "applicationNumber": "30542506.4",
+  "registrationNumber": "30542506",
+  "applicationDate": "2005-07-21",
+  "registrationDate": "2006-01-12",
+  "expiryDate": null,
+  "renewalDate": "2015-08-01",
+  "lastPublicationDate": "2006-02-17",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2025-08-01",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "GDV eNorm",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    36,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        36
+      ],
+      "language": "de",
+      "description": "Versicherungswesen;",
+      "translation_language": "en",
+      "translation": "insurance;"
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "de",
+      "description": "Bereitstellen von Informationen im Internet; Bereitstellung von Plattformen im Internet; elektronische Nachrichtenübermittlung;",
+      "translation_language": "en",
+      "translation": "Providing information on the Internet; Providing platforms on the Internet; electronic messaging;"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "EDV-Beratung; elektronische Datenspeicherung; Konvertieren von Computerprogrammen und Daten (ausgenommen physische Veränderung).",
+      "translation_language": "en",
+      "translation": "IT consulting; electronic data storage; Converting computer programs and data (except physical change)."
+    }
+  ],
+  "owner": "Gesamtverband der Deutschen Versicherungswirtschaft e.V.",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "Nordemann Czychowski & Partner Rechtsanwältinnen und Rechtsanwälte Partnerschaft mbB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Berlin",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Gesamtverband der Deutschen Versicherungswirtschaft e.V."
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "insurance;",
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Versicherungswesen;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Providing information on the Internet; Providing platforms on the Internet; electronic messaging;",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Bereitstellen von Informationen im Internet; Bereitstellung von Plattformen im Internet; elektronische Nachrichtenübermittlung;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "IT consulting; electronic data storage; Converting computer programs and data (except physical change).",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "EDV-Beratung; elektronische Datenspeicherung; Konvertieren von Computerprogrammen und Daten (ausgenommen physische Veränderung)."
+        }
+      ]
+    },
+    "id": "365b7bbd-fe5e-41aa-819c-053432d5fdb3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "02600",
+        "publicationVolume": "07"
+      }
+    ],
+    "recordLastUpdated": "20260512",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "NORDEMANN CZYCHOWSKI & PARTNER Rechtsanwältinnen und Rechtsanwälte mbB, Kurfürstendamm 178, 10707 Berlin"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "10707 Berlin",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "Nordemann Czychowski & Partner Rechtsanwältinnen und Rechtsanwälte Partnerschaft mbB"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20050721",
+        "applicationNumber": "30542506.4"
+      },
+      "cancellationDate": "20250801",
+      "cmNormalisedStatus": "CANCELLED",
+      "lastPublicationDate": "20060217",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20060112",
+        "registrationNumber": "30542506"
+      },
+      "renewalDate": "20150801",
+      "renewalPublishedDate": "20150522"
+    },
+    "version": "20260512020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GDV eNorm"
+    }
+  },
+  "_uri": "/mark/de/365b7bbd-fe5e-41aa-819c-053432d5fdb3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.814Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

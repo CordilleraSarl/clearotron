@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/pe/7c9542a3-0d41-4f78-8aef-18f3115f75d4",
+  "provider": "clarivate",
+  "office": "pe",
+  "guid": "7c9542a3-0d41-4f78-8aef-18f3115f75d4",
+  "applicationNumber": "28015-2024",
+  "registrationNumber": "T00041620",
+  "applicationDate": "2024-06-17",
+  "registrationDate": "2024-11-27",
+  "expiryDate": "2034-11-27",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Qore",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "aplicaciones informáticas (apps) referidas exclusivamente al manejo de un programa de lealtad, y de promociones relacionadas a servicios bancarios.",
+      "translation_language": "en",
+      "translation": "computer applications (apps) exclusively related to the management of a loyalty program and promotions related to banking services."
+    }
+  ],
+  "owner": "BANCO DE CREDITO DEL PERU",
+  "ownerNative": null,
+  "ownerCountry": "UNKN",
+  "representative": "ESPINOSA REBOA FRANCISCO ALBERTO",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "LIMA - LIMA - SAN ISIDRO",
+        "applicantAddressCountryCode": "UNKN",
+        "applicantAddressCountryName": "Unknown Applicant Country/Region",
+        "applicantName": "BANCO DE CREDITO DEL PERU"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "computer applications (apps) exclusively related to the management of a loyalty program and promotions related to banking services.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "aplicaciones informáticas (apps) referidas exclusivamente al manejo de un programa de lealtad, y de promociones relacionadas a servicios bancarios."
+        }
+      ]
+    },
+    "id": "7c9542a3-0d41-4f78-8aef-18f3115f75d4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260811",
+    "registrationOfficeCode": "PE",
+    "registrationOfficeName": "Peru",
+    "representatives": [
+      {
+        "representativeAddress": "LIMA - LIMA - SAN ISIDRO",
+        "representativeAddressCountryCode": "PE",
+        "representativeAddressCountryName": "Peru",
+        "representativeName": "ESPINOSA REBOA FRANCISCO ALBERTO"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240617",
+        "applicationNumber": "28015-2024"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20341127",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20241127",
+        "registrationNumber": "T00041620"
+      }
+    },
+    "version": "20260811020445",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Qore"
+    }
+  },
+  "_uri": "/mark/pe/7c9542a3-0d41-4f78-8aef-18f3115f75d4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:55.424Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

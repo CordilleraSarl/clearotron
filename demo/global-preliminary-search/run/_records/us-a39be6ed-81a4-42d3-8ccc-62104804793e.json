@@ -1,0 +1,787 @@
+{
+  "uri": "/mark/us/a39be6ed-81a4-42d3-8ccc-62104804793e",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "a39be6ed-81a4-42d3-8ccc-62104804793e",
+  "applicationNumber": "76285649",
+  "registrationNumber": "2851292",
+  "applicationDate": "2001-07-16",
+  "registrationDate": "2004-06-08",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2003-05-20"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2011-01-14",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 computer software for database access and management, and for organization, dissemination, retrieval, analysis and reporting of data, in the fields of employment hiring, recruiting, placement, staffing, employment outplacement, employment testing, pre-employment background investigation and screening, career counseling, career networking and human resources",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 staffing and employment agency services; employment hiring, recruiting, placement staffing, employment outplacement, career networking, and human resources services; consulting services in the fields of employment hiring, recruiting, placement staffing, employment outplacement, career networking, and human resources; employee leasing services; computer database management services; providing on-line databases and on-line information in the fields of employment hiring, recruiting, placement staffing, employment outplacement, career networking and human resources, and career counseling, via an Internet website",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 employment testing, pre-employment background investigation and screening, and career counseling services; consulting services in the fields of employment testing, pre-employment background investigation and screening, and career counseling; information technology consulting services; computer services, namely, computer programming in the fields of employment hiring, recruiting, placement, staffing, employment outplacement, employment testing, pre-employment background investigation and screening, career counseling, career networking and human resources; providing on-line information in the fields of employment testing, and pre-employment background investigation and screening, via an Internet website; Providing on-line databases and on-line information in the field of career counseling via an Internet website",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "VENTURI STAFFING PARTNERS, INC.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Karl S. Sawyer, Jr.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2709 WATER RIDGE PARKWAY, CHARLOTTE, NORTH CAROLINA, 28217",
+        "applicantAddressCity": "CHARLOTTE",
+        "applicantAddressPostalCode": "28217",
+        "applicantAddressStateName": "NORTH CAROLINA",
+        "applicantAddressStreet": "2709 WATER RIDGE PARKWAY",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "VENTURI STAFFING PARTNERS, INC."
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "2709 WATER RIDGE PARKWAY, CHARLOTTE, NORTH CAROLINA, 28217",
+            "city": "CHARLOTTE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "VENTURI STAFFING PARTNERS, INC.",
+            "postalCode": "28217",
+            "stateName": "NORTH CAROLINA",
+            "street": "2709 WATER RIDGE PARKWAY"
+          },
+          {
+            "address": "435 ELM STREET, CINCINNATI, OHIO, 45202",
+            "city": "CINCINNATI",
+            "jurisdictionOfIncorporation": "OHIO",
+            "legalEntity": "CORPORATION",
+            "name": "ROBERT LEE BROWN, INC.",
+            "postalCode": "45202",
+            "secondaryAddressUnit": "SUITE 700",
+            "stateName": "OHIO",
+            "street": "435 ELM STREET"
+          }
+        ],
+        "assignors": [
+          {
+            "legalEntity": "NATIONAL ASSOCIATION",
+            "name": "U.S. BANK NATIONAL ASSOCIATION, AS SUCCESSOR IN INTEREST TO FIRSTAR BANK, NA"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "55 EAST MONROE STREET, SUITE 3700, CHICAGO, IL 60603",
+            "addressLines": [
+              "NANCY BROUGHER C/O GOLDBERG KOHN",
+              "55 EAST MONROE STREET",
+              "SUITE 3700",
+              "CHICAGO, IL 60603"
+            ],
+            "name": "NANCY BROUGHER C/O GOLDBERG KOHN"
+          }
+        ],
+        "descriptionText": "RELEASE BY SECURED PARTY",
+        "executedDate": "20061121",
+        "recordedDate": "20061122",
+        "reelFrameNumber": "3433/0080"
+      },
+      {
+        "assignees": [
+          {
+            "address": "ONE US BANK PLAZA, ST. LOUIS, MISSOURI, 63101",
+            "city": "ST. LOUIS",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "ASSOCIATION",
+            "name": "U.S. BANK NATIONAL ASSOCIATION",
+            "postalCode": "63101",
+            "secondaryAddressUnit": "7TH & WASHINGTON",
+            "stateName": "MISSOURI",
+            "street": "ONE US BANK PLAZA"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "VENTURI STAFFING PARTNERS, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "ONE US BANK PLAZA, ST. LOUIS, MO 63101",
+            "addressLines": [
+              "CLYDE L. SMITH",
+              "ONE US BANK PLAZA",
+              "ST. LOUIS, MO 63101"
+            ],
+            "name": "CLYDE L. SMITH"
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "20040930",
+        "recordedDate": "20041222",
+        "reelFrameNumber": "2996/0297"
+      },
+      {
+        "assignees": [
+          {
+            "address": "2709 WATER RIDGE PARKWAY, CHARLOTTE, NORTH CAROLINA, 28217",
+            "city": "CHARLOTTE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "VENTURI STAFFING PARTNERS, INC.",
+            "postalCode": "28217",
+            "stateName": "NORTH CAROLINA",
+            "street": "2709 WATER RIDGE PARKWAY"
+          }
+        ],
+        "assignors": [
+          {
+            "legalEntity": "CORPORATION",
+            "name": "VENTURI PARTNERS, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "KURT A. SUMME, 441 VINE STREET, 2700 CAREW TOWER",
+            "addressLines": [
+              "WOOD, HERRON & EVANS, LLP",
+              "KURT A. SUMME",
+              "441 VINE STREET",
+              "2700 CAREW TOWER",
+              "CINCINNATI, OH 45202"
+            ],
+            "name": "WOOD, HERRON & EVANS, LLP"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20040930",
+        "recordedDate": "20041203",
+        "reelFrameNumber": "2986/0417"
+      },
+      {
+        "assignees": [
+          {
+            "address": "4400 POST OAK PARKWAY, HOUSTON, TEXAS, 77027",
+            "city": "HOUSTON",
+            "jurisdictionOfIncorporation": "NORTH CAROLINA",
+            "legalEntity": "CORPORATION",
+            "name": "VENTURI PARTNERS, INC. (F/K/A PERSONNEL GROUP OF AMERICA, INC.)",
+            "postalCode": "77027",
+            "stateName": "TEXAS",
+            "street": "4400 POST OAK PARKWAY"
+          }
+        ],
+        "assignors": [
+          {
+            "legalEntity": "ASSOCIATION",
+            "name": "BANK OF AMERICA, N.A., AS ADMINISTRATIVE AGENT"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "PENELOPE J.A. AGODOA, 1030 15TH STREET, NW, SUITE 920, WASHINGTON, DC  20005",
+            "addressLines": [
+              "FEDERAL RESEARCH COMPANY, LLC",
+              "PENELOPE J.A. AGODOA",
+              "1030 15TH STREET, NW, SUITE 920",
+              "WASHINGTON, DC  20005"
+            ],
+            "name": "FEDERAL RESEARCH COMPANY, LLC"
+          }
+        ],
+        "descriptionText": "RELEASE BY SECURED PARTY",
+        "executedDate": "20040927",
+        "recordedDate": "20041006",
+        "reelFrameNumber": "2952/0157"
+      },
+      {
+        "assignees": [
+          {
+            "address": "2709 WATER RIDGE PARKWAY, CHARLOTTE, NORTH CAROLINA, 28217",
+            "city": "CHARLOTTE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "VENTURI PARTNERS, INC.",
+            "postalCode": "28217",
+            "stateName": "NORTH CAROLINA",
+            "street": "2709 WATER RIDGE PARKWAY"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "PERSONNEL GROUP OF AMERICA, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "214 N. TRYON STREET, HEARST TOWER - 47TH FLOOR, CHARLOTTE, NC 28202",
+            "addressLines": [
+              "MICHAEL TOBIN",
+              "214 N. TRYON STREET",
+              "HEARST TOWER - 47TH FLOOR",
+              "CHARLOTTE, NC 28202"
+            ],
+            "name": "MICHAEL TOBIN"
+          }
+        ],
+        "descriptionText": "CHANGE OF NAME",
+        "executedDate": "20030805",
+        "recordedDate": "20040220",
+        "reelFrameNumber": "2797/0290"
+      },
+      {
+        "assignees": [
+          {
+            "address": "101 NORTH TRYON STREET, 15TH FLOOR, CHARLOTTE, NORTH CAROLINA, 28255",
+            "city": "CHARLOTTE",
+            "legalEntity": "NATIONAL BANKING ASSOCIATION",
+            "name": "BANK OF AMERICA, N.A., AS AGENT",
+            "postalCode": "28255",
+            "secondaryAddressUnit": "ONE INDEPENDENCE CENTER",
+            "stateName": "NORTH CAROLINA",
+            "street": "101 NORTH TRYON STREET, 15TH FLOOR"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "PERSONNEL GROUP OF AMERICA, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "STEVEN D. THOMAS, 2200 WEST MAIN STREET, SUITE 800, DURHAM, NORTH CAROLINA 27705",
+            "addressLines": [
+              "MOORE & VAN ALLEN PLLC",
+              "STEVEN D. THOMAS",
+              "2200 WEST MAIN STREET, SUITE 800",
+              "DURHAM, NORTH CAROLINA 27705"
+            ],
+            "name": "MOORE & VAN ALLEN PLLC"
+          }
+        ],
+        "descriptionText": "NOTICE OF GRANT OF SECURITY INTEREST",
+        "executedDate": "20010321",
+        "recordedDate": "20020418",
+        "reelFrameNumber": "2498/0312"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 computer software for database access and management, and for organization, dissemination, retrieval, analysis and reporting of data, in the fields of employment hiring, recruiting, placement, staffing, employment outplacement, employment testing, pre-employment background investigation and screening, career counseling, career networking and human resources"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 staffing and employment agency services; employment hiring, recruiting, placement staffing, employment outplacement, career networking, and human resources services; consulting services in the fields of employment hiring, recruiting, placement staffing, employment outplacement, career networking, and human resources; employee leasing services; computer database management services; providing on-line databases and on-line information in the fields of employment hiring, recruiting, placement staffing, employment outplacement, career networking and human resources, and career counseling, via an Internet website"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 employment testing, pre-employment background investigation and screening, and career counseling services; consulting services in the fields of employment testing, pre-employment background investigation and screening, and career counseling; information technology consulting services; computer services, namely, computer programming in the fields of employment hiring, recruiting, placement, staffing, employment outplacement, employment testing, pre-employment background investigation and screening, career counseling, career networking and human resources; providing on-line information in the fields of employment testing, and pre-employment background investigation and screening, via an Internet website; Providing on-line databases and on-line information in the field of career counseling via an Internet website"
+        }
+      ]
+    },
+    "id": "a39be6ed-81a4-42d3-8ccc-62104804793e",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20110114",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20040608",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20040325",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20040316",
+        "descriptionText": "CASE FILE IN TICRS"
+      },
+      {
+        "date": "20040308",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20040206",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20040205",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20040121",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20030812",
+        "descriptionText": "NOA MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20030520",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20030430",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20030110",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20030109",
+        "descriptionText": "EXAMINERS AMENDMENT MAILED"
+      },
+      {
+        "date": "20030106",
+        "descriptionText": "PREVIOUS ALLOWANCE COUNT WITHDRAWN"
+      },
+      {
+        "date": "20021108",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20021018",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20021010",
+        "descriptionText": "UNRESPONSIVE/DUPLICATE PAPER RECEIVED"
+      },
+      {
+        "date": "20020418",
+        "descriptionText": "FINAL REFUSAL MAILED"
+      },
+      {
+        "date": "20020116",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20010925",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "20010914",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "5605 Carnegie Boulevard, Charlotte, NC, 28209",
+        "city": "Charlotte",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Personnel Group of America, Inc.",
+        "postalCode": "28209",
+        "secondaryAddressUnit": "Suite 500",
+        "stateName": "NORTH CAROLINA",
+        "street": "5605 Carnegie Boulevard"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "2709 WATER RIDGE PARKWAY, CHARLOTTE, NC, 28217",
+        "city": "CHARLOTTE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "VENTURI PARTNERS, INC.",
+        "postalCode": "28217",
+        "stateName": "NORTH CAROLINA",
+        "street": "2709 WATER RIDGE PARKWAY"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "5605 Carnegie Boulevard, Charlotte, NC, 28209",
+        "city": "Charlotte",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Personnel Group of America, Inc.",
+        "postalCode": "28209",
+        "secondaryAddressUnit": "Suite 500",
+        "stateName": "NORTH CAROLINA",
+        "street": "5605 Carnegie Boulevard"
+      }
+    ],
+    "postPublicationOwners": [
+      {
+        "address": "2709 WATER RIDGE PARKWAY, CHARLOTTE, NC, 28217",
+        "city": "CHARLOTTE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "VENTURI PARTNERS, INC.",
+        "postalCode": "28217",
+        "stateName": "NORTH CAROLINA",
+        "street": "2709 WATER RIDGE PARKWAY"
+      }
+    ],
+    "postRegistrationOwners": [
+      {
+        "address": "2709 WATER RIDGE PARKWAY, CHARLOTTE, NC, 28217",
+        "city": "CHARLOTTE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "VENTURI STAFFING PARTNERS, INC.",
+        "postalCode": "28217",
+        "stateName": "NORTH CAROLINA",
+        "street": "2709 WATER RIDGE PARKWAY"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "85975488",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI FETISH BONNEVILLE",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937497",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI ANTARCTICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77982949",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85028551",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI AMERICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85975488",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI FETISH BONNEVILLE",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937538",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937497",
+            "markCurrentStatus": "Renewed",
+            "markVerbalElementText": "VENTURI ANTARCTICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77982949",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85028551",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI AMERICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85975488",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI FETISH BONNEVILLE",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937538",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85975488",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI FETISH BONNEVILLE",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937497",
+            "markCurrentStatus": "Renewed",
+            "markVerbalElementText": "VENTURI ANTARCTICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77982949",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937538",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937497",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "VENTURI ANTARCTICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77982949",
+            "markCurrentStatus": "Renewed",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85028551",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI AMERICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85975488",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI FETISH BONNEVILLE",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937497",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI ANTARCTICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937538",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77982949",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85028551",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI AMERICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85975488",
+            "markCurrentStatus": "Renewed",
+            "markVerbalElementText": "VENTURI FETISH BONNEVILLE",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937497",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI ANTARCTICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937538",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77982949",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85028551",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI AMERICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85975488",
+            "markCurrentStatus": "Renewed",
+            "markVerbalElementText": "VENTURI FETISH BONNEVILLE",
+            "refusalStatus": "Refused"
+          }
+        ],
+        "refusalStatus": "Cited"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "214 N TRYON ST, CHARLOTTE, NC 28202, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "214 N TRYON ST",
+          "CHARLOTTE, NC 28202",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "KARL S SAWYER JR KENNEDY COVINGTON LOBDELL & HICKMAN, LLP, HEARST TWR 47TH FL"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "214 N TRYON ST, CHARLOTTE, NC 28202, UNITED STATES",
+        "representativeAddressLines": [
+          "214 N TRYON ST",
+          "CHARLOTTE, NC 28202",
+          "UNITED STATES"
+        ],
+        "representativeName": "Karl S. Sawyer, Jr."
+      }
+    ],
+    "status": {
+      "active": false,
+      "allowanceDate": [
+        "20030812"
+      ],
+      "application": {
+        "applicationDate": "20010716",
+        "applicationNumber": "76285649"
+      },
+      "cancellationDate": "20110114",
+      "cancellationPublicationDate": "20110222",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20020712"
+        },
+        {
+          "firstUsedClass": "35",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20020712"
+        },
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20020712"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20031215"
+        },
+        {
+          "firstUsedCommerceClass": "35",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20031215"
+        },
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20031215"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20110114",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20030520"
+      ],
+      "registration": {
+        "registrationDate": "20040608",
+        "registrationNumber": "2851292"
+      },
+      "withdrawalDate": [
+        "20021214"
+      ]
+    },
+    "version": "20260109052920",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/us/a39be6ed-81a4-42d3-8ccc-62104804793e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.179Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

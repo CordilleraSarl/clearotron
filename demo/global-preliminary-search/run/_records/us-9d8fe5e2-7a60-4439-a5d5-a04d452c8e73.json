@@ -1,0 +1,177 @@
+{
+  "uri": "/mark/us/9d8fe5e2-7a60-4439-a5d5-a04d452c8e73",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "9d8fe5e2-7a60-4439-a5d5-a04d452c8e73",
+  "applicationNumber": "50013176",
+  "registrationNumber": null,
+  "applicationDate": "2026-07-25",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VUNQERI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Cases for mobile phones; Multimedia projectors",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Wei Qin",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "ming liu",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "No. 31, Zhaohui Road, Yuhua District, Changsha, 410000, CHIN",
+        "applicantAddressCity": "Changsha",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantAddressPostalCode": "410000",
+        "applicantAddressStreet": "No. 31, Zhaohui Road, Yuhua District",
+        "applicantJurisdictionOfIncorporation": "CHINA",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Wei Qin"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Cases for mobile phones; Multimedia projectors"
+        }
+      ]
+    },
+    "id": "9d8fe5e2-7a60-4439-a5d5-a04d452c8e73",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260725",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20260725",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20260725",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "No. 31, Zhaohui Road, Yuhua District, Changsha, 410000, CHIN",
+        "city": "Changsha",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Wei Qin",
+        "postalCode": "410000",
+        "street": "No. 31, Zhaohui Road, Yuhua District"
+      },
+      {
+        "address": "No. 31, Zhaohui Road, Yuhua District, Changsha, 410000, CHIN",
+        "city": "Changsha",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Wei Qin",
+        "postalCode": "410000",
+        "street": "No. 31, Zhaohui Road, Yuhua District"
+      }
+    ],
+    "recordLastUpdated": "20260810",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Nanshan Street, shenzhen, 518000, China",
+        "representativeCorrespondentAddressLines": [
+          "Nanshan Street",
+          "shenzhen, 518000",
+          "China"
+        ],
+        "representativeCorrespondentName": "ming liu, Yongxin Times Square Dongbin Road,"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Nanshan Street, shenzhen, 518000, China",
+        "representativeAddressLines": [
+          "Nanshan Street",
+          "shenzhen, 518000",
+          "China"
+        ],
+        "representativeName": "ming liu"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260725",
+        "applicationNumber": "50013176"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "NEW APPLICATION - RECORD INITIALIZED NOT ASSIGNED TO EXAMINER",
+        "markOfficialStatusCode": "630",
+        "markOfficialStatusDate": "20260725",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260810151004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VUNQERI"
+    }
+  },
+  "_uri": "/mark/us/9d8fe5e2-7a60-4439-a5d5-a04d452c8e73",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

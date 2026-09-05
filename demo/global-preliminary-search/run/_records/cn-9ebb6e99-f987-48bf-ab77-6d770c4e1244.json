@@ -1,0 +1,160 @@
+{
+  "uri": "/mark/cn/9ebb6e99-f987-48bf-ab77-6d770c4e1244",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "9ebb6e99-f987-48bf-ab77-6d770c4e1244",
+  "applicationNumber": "43352726",
+  "registrationNumber": null,
+  "applicationDate": "2019-12-26",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "柒月微光",
+  "markTransliteration": "SEVEN QI YUE WEI GUANG",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "无线电设备,信号灯,电传真设备,计算机外围设备,智能手机用保护套,音乐耳机,电影机器和设备,USB线,配电设备,移动电源（可充电电池）",
+      "translation_language": "en",
+      "translation": "Radio equipment, signal lights, telefax equipment, computer peripherals, protective covers for smartphones, music headphones, movie machines and equipment, USB cables, power distribution equipment, mobile power (rechargeable batteries)"
+    }
+  ],
+  "owner": "Wuhan Yaolang Moxun Network Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "湖北省武汉市江岸区福星惠誉.红桥村K3（红桥城K3）第8幢单元26层19号（-16）",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Wuhan Yaolang Moxun Network Technology Co., Ltd.",
+        "applicantNativeName": "武汉耀朗魔讯网络科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Radio equipment, signal lights, telefax equipment, computer peripherals, protective covers for smartphones, music headphones, movie machines and equipment, USB cables, power distribution equipment, mobile power (rechargeable batteries)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "无线电设备,信号灯,电传真设备,计算机外围设备,智能手机用保护套,音乐耳机,电影机器和设备,USB线,配电设备,移动电源（可充电电池）"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Machines used in office (except for typewriters, duplicators and printers)",
+        "Signalling apparatus and instruments",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Apparatus and instruments for photographic and cinematographic",
+        "Cables",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0903",
+          "subNatGoodsServicesDescription": "Machines used in office (except for typewriters, duplicators and printers)"
+        },
+        {
+          "subNatClassNumber": "0906",
+          "subNatGoodsServicesDescription": "Signalling apparatus and instruments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0912",
+          "subNatGoodsServicesDescription": "Cables"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "9ebb6e99-f987-48bf-ab77-6d770c4e1244",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "阿里巴巴科技（北京）有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20191226",
+        "applicationNumber": "43352726"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251003234538",
+    "wordMarkSpecification": {
+      "markTransliteration": "SEVEN QI YUE WEI GUANG",
+      "markVerbalElementText": "柒月微光"
+    }
+  },
+  "_uri": "/mark/cn/9ebb6e99-f987-48bf-ab77-6d770c4e1244",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.564Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

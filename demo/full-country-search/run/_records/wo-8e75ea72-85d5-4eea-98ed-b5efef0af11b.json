@@ -1,0 +1,260 @@
+{
+  "uri": "/mark/wo/8e75ea72-85d5-4eea-98ed-b5efef0af11b",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "8e75ea72-85d5-4eea-98ed-b5efef0af11b",
+  "applicationNumber": null,
+  "registrationNumber": "1858066",
+  "applicationDate": null,
+  "registrationDate": "2024-10-16",
+  "expiryDate": "2034-10-16",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-06-05",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Electronic, electro technical and electromagnetic modules; data processing equipment, data storage apparatus namely, data processors for scanning, reading, storing and interpreting electronic data contained on RFID and NFC chips; microprocessors; interfaces for computers; integrated circuits (ICs), chips (integrated circuits); semiconductors; smart cards; smart card integrated circuits; labels, smart cards and tags with integrated RFID chips; RFID chips and tags; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; contactless smart cards; dual interface smart cards; dual interface integrated circuits (ICs) that provide a link between contactless cards and contact cards; encoded contactless smart cards containing programming used for determining the fare to be paid by passengers who book their trip electronically; encoded contactless smart cards containing programming used for gaining access to certain areas, buildings, premises, and vehicles; encoded contactless smart cards containing programming used for payment; writers and readers for wireless transmission to and from transponder chips; computer programs for controlling transmission of data to and reading of data from transponder chips; data processing machines for fare determination using transponder chips; Electronic wristbands, namely, electronic readers/recorders for authenticating identity, controlling access to functions, managing events, ticketing, promoting brand loyalty, promoting brands, cashless vending, transportation and membership identification; computer hardware, software and peripheral devices used for access control and authentication purposes; electronic key fobs being remote control apparatus; cloud computing software; cloud computing systems; software for cloud infrastructure; cloud computing platform software; application software for cloud computing services; cloud based software solutions for managing digitized credentials onto mobile devices and wearable devices supporting NFC-enabled mobile devices for mobile fare payments, mobile transit ticketing, smart card access; Software solutions for the implementation of smartcards on mobile devices and wearable devices; Software solutions for security and risk management in respect of smartcard implementation on mobile devices and wearable devices; Software solutions for virtual card storing on mobile devices and wearable devices embedded on a HCE (Host Card Emulation); Software solutions for virtual card storing on mobile devices and wearable device embedded on a SE (Secure Element); Secure access module (hardware solution); interface software; interface circuits for remote devices; secure microprocessors; secure terminals for electronic transactions; secure digital (SD) card readers; Secure Digital (SD) memory cards; software for facilitating secure transactions; SIM cards; SIM cards of mobile NFC devices over the air (OTA).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Computer programming services; installation, repair and maintenance in relation to software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, and software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags; research, design and development services related to computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; research, design and development services related to electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags; research, design and development services related to NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to parts, fitting and accessories for all the aforesaid goods; custom programming of software; customisation and custom programming of electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags; customisation and custom programming of computer hardware for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags; customisation and custom programming of NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for near field communications applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets; customisation and custom programming of parts, fitting and accessories for all the aforesaid goods; cloud computing; cloud computing services; cloud computing featuring software for use service management for cloud platforms and on-premise environments; advisory, consultancy and information services in relation to all the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Modules électroniques, électrotechniques et électromagnétiques; équipements pour le traitement de données, appareils pour le stockage de données, à savoir processeurs de données pour le scannage, la lecture, le stockage et l'interprétation de données électroniques contenues sur des puces RFID et NFC; microprocesseurs; interfaces pour ordinateurs; circuits intégrés, puces (circuits intégrés); semi-conducteurs; cartes à puce; circuits intégrés de cartes à puce; vignettes, cartes à puce et étiquettes avec puces RFID intégrées; puces et étiquette RFID; matériel informatique et logiciels pour créer, programmer, commander, coder, scanner, lire et interpréter des étiquettes et puces d'identification par radiofréquence; cartes à puce sans contact; cartes à puce à double interface; circuits intégrés à double interface fournissant une liaison entre les cartes à contact et sans contact; cartes à puce sans contact codées contenant des programmes utilisés pour déterminer le tarif à payer pour des passagers ayant réservé leur voyage par voie électronique; cartes à puce sans contact codées contenant des programmes utilisés pour obtenir l'accès à certaines zones et à certains bâtiments, locaux et véhicules; cartes à puce sans contact codées contenant des programmes utilisés pour le paiement; lecteurs et graveurs de transmission sans fil vers et à partir de puces de transpondeurs; programmes informatiques pour la commande de la transmission de données à destination, et de la lecture de données en provenance, de puces de transpondeurs; machines de traitement de données pour la détermination du prix de titres de transport au moyen de puces de transpondeurs; bracelets électroniques, à savoir lecteurs/enregistreurs électroniques pour l'authentification d'identité, le contrôle d'accès à des fonctions, la gestion d'événements, la billetterie, la promotion de la fidélisation à une marque, la promotion de marques, la vente sans numéraire, le transport et l'identification de membres; matériel, logiciels et dispositifs périphériques informatiques utilisés à des fins d'authentification et de contrôle d'accès; breloques porte-clés électroniques en tant qu'appareils de commande à distance; logiciels d'informatique en nuage; systèmes d'informatique en nuage; logiciels pour infrastructures en nuage; logiciels de plates-formes d'informatique en nuage; logiciels d'application pour services d'informatique en nuage; solutions logicielles en nuage pour la gestion de justificatifs numérisés sur des dispositifs mobiles et dispositifs à porter sur soi comportant des dispositifs mobiles équipés de la technologie NFC pour paiements de titres de transport mobiles, billetterie de transit mobile, accès par carte à puce; solutions logicielles pour l'implémentation de cartes à puce sur des dispositifs mobiles et dispositifs à porter sur soi; solutions logicielles pour la sécurité et la gestion de risques en matière d'implémentation de cartes à puce sur des dispositifs mobiles et dispositifs à porter sur soi; solutions logicielles pour le stockage de cartes virtuelles sur des dispositifs mobiles et des dispositifs à porter sur soi intégrés sur une émulation de carte hôte (HCE); solutions logicielles pour le stockage de cartes virtuelles sur des dispositifs mobiles et des dispositifs à porter sur soi intégrés sur un élément sécurisé (SE); module d'accès sécurisé (solution matérielle); logiciels d'interface; circuits d'interface pour dispositifs distants; microprocesseurs sécurisés; terminaux sécurisés pour transactions électroniques; lecteurs de cartes SD; cartes mémoire numériques (SD) protégées; logiciels pour la facilitation de transactions sécurisées; Cartes SIM; cartes SIM de dispositifs NFC mobiles sur l'over-the-air (OTA).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services de programmation informatique; installation, réparation et maintenance en rapport avec des logiciels pour la création, la programmation, la commande, le codage, le scannage, la lecture et l'interprétation d'étiquettes et puces RFID, ainsi que de logiciels pour déterminer le tarif à payer pour des passagers ayant réservé leur voyage par voie électronique; services de recherche, conception et développement en lien avec des modules électroniques, électrotechniques et électromagnétiques, parties et éléments de construction, machines pour le traitement de données, appareils pour le stockage de données, microprocesseurs, interfaces, circuits intégrés (CI), puces, semi-conducteurs et cartes à puce, dispositifs de commande pour cartes à puce, dispositifs de commande pour étiquettes et puces RFID; services de recherche, conception et développement en lien avec du matériel et des logiciels informatiques pour la création, la programmation, la commande, le codage, le scannage, la lecture et l'interprétation d'étiquettes et puces RFID; services de recherche, conception et développement en lien avec des appareils, instruments et équipements électroniques pour la création, la programmation, la commande, le codage, le scannage, la lecture et l'interprétation d'étiquettes et puces RFID, antennes pour le scannage, la lecture et l'interprétation d'étiquettes et puces RFID; services de recherche, conception et développement en lien avec des appareils, instruments et équipements en champ proche (NFC), y compris modules électroniques, électrotechniques et électromagnétiques, parties et éléments de construction et circuits intégrés pour applications NFC, cartes de paiement électroniques, appareils pour le traitement de données et logiciels pour déterminer le tarif à payer pour des passagers ayant réservé leur voyage par voie électronique; services de recherche, conception et développement en lien avec des parties, garnitures et accessoires pour tous les produits précités; programmation sur mesure de logiciels; personnalisation et programmation sur mesure de modules électroniques, électrotechniques et électromagnétiques, parties et éléments de construction, machines pour le traitement de données, appareils pour le stockage de données, microprocesseurs, interfaces, circuits intégrés (CI), puces, semi-conducteurs et cartes à puce, dispositifs de commande pour cartes à puce, dispositifs de commande pour étiquettes et puces RFID; personnalisation et programmation sur mesure de matériel informatique pour la création, la programmation, la commande, le codage, le scannage, la lecture et l'interprétation d'étiquettes et puces RFID, appareils, instruments et équipements électroniques pour la création, la programmation, la commande, le codage, le scannage, la lecture et l'interprétation d'étiquettes et puces RFID, antennes pour le scannage, la lecture et l'interprétation d'étiquettes et puces RFID; personnalisation et programmation sur mesure d'appareils, instruments et équipements NFC (communication en champ proche), y compris modules électroniques, électrotechniques et électromagnétiques, parties et éléments de construction et circuits intégrés pour applications de communication en champ proche, cartes de paiement électroniques, appareils pour le traitement de données et logiciels pour déterminer le tarif à payer pour des passagers ayant des billets de voyage électroniques; personnalisation et programmation sur mesure de parties, garnitures et accessoires pour tous les produits précités; informatique en nuage; services d'informatique en nuage; services d'informatique en nuage proposant des logiciels à utiliser pour la gestion de services pour des plateformes en nuage et des environnements locaux; fourniture de conseils, services de conseillers et informations en rapport avec tous les services précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Módulos electrónicos, electrotécnicos y electromagnéticos; equipos de procesamiento de datos, aparatos de almacenamiento de datos, a saber, procesadores de datos para escanear, leer, almacenar e interpretar datos electrónicos contenidos en chips de RFID y NFC; microprocesadores; interfaces de ordenador; circuitos integrados, chips (circuitos integrados); semiconductores; tarjetas inteligentes; circuitos integrados de tarjetas inteligentes; etiquetas, tarjetas inteligentes y etiquetas con chips de identificación por radiofrecuencia integrados; chips y etiquetas de identificación por radiofrecuencia; hardware y software para la creación, programación, control, codificación, escaneado, lectura e interpretación de chips y etiquetas de identificación por radiofrecuencia (RFID); tarjetas inteligentes sin contacto; tarjetas inteligentes de interfaces de doble puerto; circuitos integrados de doble puerto que establecen un enlace entre las tarjetas sin contacto y las tarjetas con contacto; tarjetas inteligentes codificadas sin contacto que contienen programación utilizada para determinar las tarifas de pago de pasajeros que reservan sus viajes electrónicamente; tarjetas inteligentes sin contacto codificadas que contienen programación utilizada para obtener acceso a determinadas áreas, edificios, locales y vehículos; tarjetas inteligentes codificadas sin contacto que contienen programas utilizados para el pago; grabadores y lectores para la transmisión inalámbrica hacia y desde chips transpondedores; programas informáticas para controlar la transmisión de datos y leer los datos de los chips transpondedores; máquinas de procesamiento de datos para determinar las tarifas mediante chips transpondedores; muñequeras electrónicas, a saber, lectores/grabadores electrónicos para la autenticación de la identidad, el control del acceso a funciones, la gestión de eventos, la emisión de billetes, la promoción de la fidelización de marcas, la promoción de marcas, los distribuidores automáticos sin efectivo, el transporte y la identificación de miembros; hardware, software y dispositivos periféricos para fines de autenticación y de control de acceso; llaveros electrónicos en cuanto aparatos de control remoto; software de computación en la nube; sistemas de servicios informáticos en la nube; software para infraestructura en la nube; software de plataformas informáticas en la nube; software de aplicaciones para servicios de informática en la nube; soluciones de software basadas en la nube para la gestión de credenciales digitalizadas en dispositivos móviles y dispositivos portátiles con dispositivos móviles compatibles con comunicación de campo cercano para pagos de tarifas móviles, emisión de billetes de tránsito móviles, acceso a tarjetas inteligentes; Soluciones de software para la implementación de tarjetas inteligentes en dispositivos móviles y dispositivos portátiles; Soluciones de software de seguridad y gestión de riesgos respecto de la implementación de tarjetas inteligentes en dispositivos móviles y dispositivos portátiles; Soluciones de software para el almacenamiento de tarjetas virtuales en dispositivos móviles y dispositivos portátiles integrados en una base de datos (emulación de tarjetas de host); Soluciones de software para el almacenamiento de tarjetas virtuales en dispositivos móviles y dispositivos portátiles integrados en un dispositivo (elemento seguro); Módulos de acceso seguro (soluciones de hardware); software de interfaz; circuitos de interfaz para dispositivos remotos; microprocesadores protegidos; terminales protegidos para transacciones electrónicas; lectores de tarjetas digitales (SD) seguros; Tarjetas de memoria digitales seguras (SD); software para facilitar transacciones seguras; tarjetas SIM; tarjetas SIM de dispositivos NFC móviles por aire.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Programación informática; instalación, reparación y mantenimiento en relación con software para la creación, la programación, el control, la codificación, el escaneado, la lectura y la interpretación de chips y etiquetas de identificación por radiofrecuencia, así como software para determinar las tarifas de pago de pasajeros con billetes electrónicos de viaje; servicios de investigación, diseño y desarrollo relacionados con módulos electrónicos, electrotécnicos y electromagnéticos, partes y elementos de construcción, máquinas de procesamiento de datos, aparatos de almacenamiento de datos, microprocesadores, interfaces, circuitos integrados (CI), chips, semiconductores y tarjetas inteligentes, controladores para tarjetas inteligentes, controladores para chips y etiquetas de identificación por radiofrecuencia; servicios de investigación, diseño y desarrollo relacionados con hardware y software informáticos de creación, programación, control, codificación, escaneado, lectura e interpretación de chips y etiquetas de identificación por radiofrecuencia; servicios de investigación, diseño y desarrollo relacionados con aparatos, instrumentos y equipos electrónicos para la creación, la programación, el control, la codificación, el escaneado, la lectura y la interpretación de chips y etiquetas de identificación por radiofrecuencia, antenas para escanear, leer e interpretar chips y etiquetas de identificación por radiofrecuencia; servicios de investigación, diseño y desarrollo relacionados con aparatos, instrumentos y equipos de comunicaciones de campo cercano (NFC), incluidos módulos electrónicos, electrotécnicos y electromagnéticos, partes y elementos de construcción y circuitos integrados para aplicaciones NFC, tarjetas de pago electrónico, aparatos de procesamiento de datos y software para determinar las tarifas de pago con billetes electrónicos de viaje; servicios de investigación, diseño y desarrollo relacionados con partes, piezas accesorias y accesorios para los productos antes mencionados; programación por encargo de software; personalización y programación personalizada de módulos electrónicos, electrotécnicos y electromagnéticos, partes y elementos de construcción, máquinas de procesamiento de datos, aparatos de almacenamiento de datos, microprocesadores, interfaces, circuitos integrados (IC), chips, semiconductores y tarjetas inteligentes, controladores para tarjetas inteligentes, controladores para chips y etiquetas RFID; personalización y programación personalizada de hardware informático para crear, programar, controlar, codificar, escanear, leer e interpretar chips y etiquetas RFID, aparatos electrónicos, instrumentos y equipos para crear, programar, controlar, codificar, escanear, leer e interpretar chips y etiquetas RFID, antenas para escanear, leer e interpretar chips y etiquetas RFID; personalización y programación personalizada de aparatos, instrumentos y equipos NFC (comunicaciones de campo cercano), incluidos módulos electrónicos, electrotécnicos y electromagnéticos, piezas y elementos de construcción y circuitos integrados para aplicaciones de comunicaciones de campo cercano, tarjetas de pago electrónico, aparatos de procesamiento de datos y software para determinar la tarifa que deben pagar los pasajeros con billetes electrónicos; personalización y programación por encargo de partes, piezas accesorias y accesorios para los productos mencionados; informática en la nube; servicios de informática en la nube; servicios informáticos en la nube con software para ser utilizado en la gestión de servicios de plataformas en la nube y entornos en las instalaciones; asesoramiento, consultoría e información en relación con todos los servicios antes mencionados.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20241016",
+          "basicApplicationNumber": "1512593"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "BX"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "BR",
+      "CN",
+      "GB",
+      "IN",
+      "JP",
+      "KR",
+      "SG",
+      "TR",
+      "US",
+      "RU",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20241016",
+            "basicApplicationNumber": "1512593"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "BX"
+      }
+    ],
+    "cmMarkImageEUclassification": [
+      "26.01.01",
+      "26.01.04",
+      "26.01.06",
+      "29.02.00"
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "BR",
+      "CN",
+      "GB",
+      "IN",
+      "JP",
+      "KR",
+      "SG",
+      "TR",
+      "US",
+      "RU",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electronic, electro technical and electromagnetic modules; data processing equipment, data storage apparatus namely, data processors for scanning, reading, storing and interpreting electronic data contained on RFID and NFC chips; microprocessors; interfaces for computers; integrated circuits (ICs), chips (integrated circuits); semiconductors; smart cards; smart card integrated circuits; labels, smart cards and tags with integrated RFID chips; RFID chips and tags; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; contactless smart cards; dual interface smart cards; dual interface integrated circuits (ICs) that provide a link between contactless cards and contact cards; encoded contactless smart cards containing programming used for determining the fare to be paid by passengers who book their trip electronically; encoded contactless smart cards containing programming used for gaining access to certain areas, buildings, premises, and vehicles; encoded contactless smart cards containing programming used for payment; writers and readers for wireless transmission to and from transponder chips; computer programs for controlling transmission of data to and reading of data from transponder chips; data processing machines for fare determination using transponder chips; Electronic wristbands, namely, electronic readers/recorders for authenticating identity, controlling access to functions, managing events, ticketing, promoting brand loyalty, promoting brands, cashless vending, transportation and membership identification; computer hardware, software and peripheral devices used for access control and authentication purposes; electronic key fobs being remote control apparatus; cloud computing software; cloud computing systems; software for cloud infrastructure; cloud computing platform software; application software for cloud computing services; cloud based software solutions for managing digitized credentials onto mobile devices and wearable devices supporting NFC-enabled mobile devices for mobile fare payments, mobile transit ticketing, smart card access; Software solutions for the implementation of smartcards on mobile devices and wearable devices; Software solutions for security and risk management in respect of smartcard implementation on mobile devices and wearable devices; Software solutions for virtual card storing on mobile devices and wearable devices embedded on a HCE (Host Card Emulation); Software solutions for virtual card storing on mobile devices and wearable device embedded on a SE (Secure Element); Secure access module (hardware solution); interface software; interface circuits for remote devices; secure microprocessors; secure terminals for electronic transactions; secure digital (SD) card readers; Secure Digital (SD) memory cards; software for facilitating secure transactions; SIM cards; SIM cards of mobile NFC devices over the air (OTA)."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer programming services; installation, repair and maintenance in relation to software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, and software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags; research, design and development services related to computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; research, design and development services related to electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags; research, design and development services related to NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to parts, fitting and accessories for all the aforesaid goods; custom programming of software; customisation and custom programming of electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags; customisation and custom programming of computer hardware for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags; customisation and custom programming of NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for near field communications applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets; customisation and custom programming of parts, fitting and accessories for all the aforesaid goods; cloud computing; cloud computing services; cloud computing featuring software for use service management for cloud platforms and on-premise environments; advisory, consultancy and information services in relation to all the aforesaid services."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Modules électroniques, électrotechniques et électromagnétiques; équipements pour le traitement de données, appareils pour le stockage de données, à savoir processeurs de données pour le scannage, la lecture, le stockage et l'interprétation de données électroniques contenues sur des puces RFID et NFC; microprocesseurs; interfaces pour ordinateurs; circuits intégrés, puces (circuits intégrés); semi-conducteurs; cartes à puce; circuits intégrés de cartes à puce; vignettes, cartes à puce et étiquettes avec puces RFID intégrées; puces et étiquette RFID; matériel informatique et logiciels pour créer, programmer, commander, coder, scanner, lire et interpréter des étiquettes et puces d'identification par radiofréquence; cartes à puce sans contact; cartes à puce à double interface; circuits intégrés à double interface fournissant une liaison entre les cartes à contact et sans contact; cartes à puce sans contact codées contenant des programmes utilisés pour déterminer le tarif à payer pour des passagers ayant réservé leur voyage par voie électronique; cartes à puce sans contact codées contenant des programmes utilisés pour obtenir l'accès à certaines zones et à certains bâtiments, locaux et véhicules; cartes à puce sans contact codées contenant des programmes utilisés pour le paiement; lecteurs et graveurs de transmission sans fil vers et à partir de puces de transpondeurs; programmes informatiques pour la commande de la transmission de données à destination, et de la lecture de données en provenance, de puces de transpondeurs; machines de traitement de données pour la détermination du prix de titres de transport au moyen de puces de transpondeurs; bracelets électroniques, à savoir lecteurs/enregistreurs électroniques pour l'authentification d'identité, le contrôle d'accès à des fonctions, la gestion d'événements, la billetterie, la promotion de la fidélisation à une marque, la promotion de marques, la vente sans numéraire, le transport et l'identification de membres; matériel, logiciels et dispositifs périphériques informatiques utilisés à des fins d'authentification et de contrôle d'accès; breloques porte-clés électroniques en tant qu'appareils de commande à distance; logiciels d'informatique en nuage; systèmes d'informatique en nuage; logiciels pour infrastructures en nuage; logiciels de plates-formes d'informatique en nuage; logiciels d'application pour services d'informatique en nuage; solutions logicielles en nuage pour la gestion de justificatifs numérisés sur des dispositifs mobiles et dispositifs à porter sur soi comportant des dispositifs mobiles équipés de la technologie NFC pour paiements de titres de transport mobiles, billetterie de transit mobile, accès par carte à puce; solutions logicielles pour l'implémentation de cartes à puce sur des dispositifs mobiles et dispositifs à porter sur soi; solutions logicielles pour la sécurité et la gestion de risques en matière d'implémentation de cartes à puce sur des dispositifs mobiles et dispositifs à porter sur soi; solutions logicielles pour le stockage de cartes virtuelles sur des dispositifs mobiles et des dispositifs à porter sur soi intégrés sur une émulation de carte hôte (HCE); solutions logicielles pour le stockage de cartes virtuelles sur des dispositifs mobiles et des dispositifs à porter sur soi intégrés sur un élément sécurisé (SE); module d'accès sécurisé (solution matérielle); logiciels d'interface; circuits d'interface pour dispositifs distants; microprocesseurs sécurisés; terminaux sécurisés pour transactions électroniques; lecteurs de cartes SD; cartes mémoire numériques (SD) protégées; logiciels pour la facilitation de transactions sécurisées; Cartes SIM; cartes SIM de dispositifs NFC mobiles sur l'over-the-air (OTA)."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de programmation informatique; installation, réparation et maintenance en rapport avec des logiciels pour la création, la programmation, la commande, le codage, le scannage, la lecture et l'interprétation d'étiquettes et puces RFID, ainsi que de logiciels pour déterminer le tarif à payer pour des passagers ayant réservé leur voyage par voie électronique; services de recherche, conception et développement en lien avec des modules électroniques, électrotechniques et électromagnétiques, parties et éléments de construction, machines pour le traitement de données, appareils pour le stockage de données, microprocesseurs, interfaces, circuits intégrés (CI), puces, semi-conducteurs et cartes à puce, dispositifs de commande pour cartes à puce, dispositifs de commande pour étiquettes et puces RFID; services de recherche, conception et développement en lien avec du matériel et des logiciels informatiques pour la création, la programmation, la commande, le codage, le scannage, la lecture et l'interprétation d'étiquettes et puces RFID; services de recherche, conception et développement en lien avec des appareils, instruments et équipements électroniques pour la création, la programmation, la commande, le codage, le scannage, la lecture et l'interprétation d'étiquettes et puces RFID, antennes pour le scannage, la lecture et l'interprétation d'étiquettes et puces RFID; services de recherche, conception et développement en lien avec des appareils, instruments et équipements en champ proche (NFC), y compris modules électroniques, électrotechniques et électromagnétiques, parties et éléments de construction et circuits intégrés pour applications NFC, cartes de paiement électroniques, appareils pour le traitement de données et logiciels pour déterminer le tarif à payer pour des passagers ayant réservé leur voyage par voie électronique; services de recherche, conception et développement en lien avec des parties, garnitures et accessoires pour tous les produits précités; programmation sur mesure de logiciels; personnalisation et programmation sur mesure de modules électroniques, électrotechniques et électromagnétiques, parties et éléments de construction, machines pour le traitement de données, appareils pour le stockage de données, microprocesseurs, interfaces, circuits intégrés (CI), puces, semi-conducteurs et cartes à puce, dispositifs de commande pour cartes à puce, dispositifs de commande pour étiquettes et puces RFID; personnalisation et programmation sur mesure de matériel informatique pour la création, la programmation, la commande, le codage, le scannage, la lecture et l'interprétation d'étiquettes et puces RFID, appareils, instruments et équipements électroniques pour la création, la programmation, la commande, le codage, le scannage, la lecture et l'interprétation d'étiquettes et puces RFID, antennes pour le scannage, la lecture et l'interprétation d'étiquettes et puces RFID; personnalisation et programmation sur mesure d'appareils, instruments et équipements NFC (communication en champ proche), y compris modules électroniques, électrotechniques et électromagnétiques, parties et éléments de construction et circuits intégrés pour applications de communication en champ proche, cartes de paiement électroniques, appareils pour le traitement de données et logiciels pour déterminer le tarif à payer pour des passagers ayant des billets de voyage électroniques; personnalisation et programmation sur mesure de parties, garnitures et accessoires pour tous les produits précités; informatique en nuage; services d'informatique en nuage; services d'informatique en nuage proposant des logiciels à utiliser pour la gestion de services pour des plateformes en nuage et des environnements locaux; fourniture de conseils, services de conseillers et informations en rapport avec tous les services précités."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Módulos electrónicos, electrotécnicos y electromagnéticos; equipos de procesamiento de datos, aparatos de almacenamiento de datos, a saber, procesadores de datos para escanear, leer, almacenar e interpretar datos electrónicos contenidos en chips de RFID y NFC; microprocesadores; interfaces de ordenador; circuitos integrados, chips (circuitos integrados); semiconductores; tarjetas inteligentes; circuitos integrados de tarjetas inteligentes; etiquetas, tarjetas inteligentes y etiquetas con chips de identificación por radiofrecuencia integrados; chips y etiquetas de identificación por radiofrecuencia; hardware y software para la creación, programación, control, codificación, escaneado, lectura e interpretación de chips y etiquetas de identificación por radiofrecuencia (RFID); tarjetas inteligentes sin contacto; tarjetas inteligentes de interfaces de doble puerto; circuitos integrados de doble puerto que establecen un enlace entre las tarjetas sin contacto y las tarjetas con contacto; tarjetas inteligentes codificadas sin contacto que contienen programación utilizada para determinar las tarifas de pago de pasajeros que reservan sus viajes electrónicamente; tarjetas inteligentes sin contacto codificadas que contienen programación utilizada para obtener acceso a determinadas áreas, edificios, locales y vehículos; tarjetas inteligentes codificadas sin contacto que contienen programas utilizados para el pago; grabadores y lectores para la transmisión inalámbrica hacia y desde chips transpondedores; programas informáticas para controlar la transmisión de datos y leer los datos de los chips transpondedores; máquinas de procesamiento de datos para determinar las tarifas mediante chips transpondedores; muñequeras electrónicas, a saber, lectores/grabadores electrónicos para la autenticación de la identidad, el control del acceso a funciones, la gestión de eventos, la emisión de billetes, la promoción de la fidelización de marcas, la promoción de marcas, los distribuidores automáticos sin efectivo, el transporte y la identificación de miembros; hardware, software y dispositivos periféricos para fines de autenticación y de control de acceso; llaveros electrónicos en cuanto aparatos de control remoto; software de computación en la nube; sistemas de servicios informáticos en la nube; software para infraestructura en la nube; software de plataformas informáticas en la nube; software de aplicaciones para servicios de informática en la nube; soluciones de software basadas en la nube para la gestión de credenciales digitalizadas en dispositivos móviles y dispositivos portátiles con dispositivos móviles compatibles con comunicación de campo cercano para pagos de tarifas móviles, emisión de billetes de tránsito móviles, acceso a tarjetas inteligentes; Soluciones de software para la implementación de tarjetas inteligentes en dispositivos móviles y dispositivos portátiles; Soluciones de software de seguridad y gestión de riesgos respecto de la implementación de tarjetas inteligentes en dispositivos móviles y dispositivos portátiles; Soluciones de software para el almacenamiento de tarjetas virtuales en dispositivos móviles y dispositivos portátiles integrados en una base de datos (emulación de tarjetas de host); Soluciones de software para el almacenamiento de tarjetas virtuales en dispositivos móviles y dispositivos portátiles integrados en un dispositivo (elemento seguro); Módulos de acceso seguro (soluciones de hardware); software de interfaz; circuitos de interfaz para dispositivos remotos; microprocesadores protegidos; terminales protegidos para transacciones electrónicas; lectores de tarjetas digitales (SD) seguros; Tarjetas de memoria digitales seguras (SD); software para facilitar transacciones seguras; tarjetas SIM; tarjetas SIM de dispositivos NFC móviles por aire."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Programación informática; instalación, reparación y mantenimiento en relación con software para la creación, la programación, el control, la codificación, el escaneado, la lectura y la interpretación de chips y etiquetas de identificación por radiofrecuencia, así como software para determinar las tarifas de pago de pasajeros con billetes electrónicos de viaje; servicios de investigación, diseño y desarrollo relacionados con módulos electrónicos, electrotécnicos y electromagnéticos, partes y elementos de construcción, máquinas de procesamiento de datos, aparatos de almacenamiento de datos, microprocesadores, interfaces, circuitos integrados (CI), chips, semiconductores y tarjetas inteligentes, controladores para tarjetas inteligentes, controladores para chips y etiquetas de identificación por radiofrecuencia; servicios de investigación, diseño y desarrollo relacionados con hardware y software informáticos de creación, programación, control, codificación, escaneado, lectura e interpretación de chips y etiquetas de identificación por radiofrecuencia; servicios de investigación, diseño y desarrollo relacionados con aparatos, instrumentos y equipos electrónicos para la creación, la programación, el control, la codificación, el escaneado, la lectura y la interpretación de chips y etiquetas de identificación por radiofrecuencia, antenas para escanear, leer e interpretar chips y etiquetas de identificación por radiofrecuencia; servicios de investigación, diseño y desarrollo relacionados con aparatos, instrumentos y equipos de comunicaciones de campo cercano (NFC), incluidos módulos electrónicos, electrotécnicos y electromagnéticos, partes y elementos de construcción y circuitos integrados para aplicaciones NFC, tarjetas de pago electrónico, aparatos de procesamiento de datos y software para determinar las tarifas de pago con billetes electrónicos de viaje; servicios de investigación, diseño y desarrollo relacionados con partes, piezas accesorias y accesorios para los productos antes mencionados; programación por encargo de software; personalización y programación personalizada de módulos electrónicos, electrotécnicos y electromagnéticos, partes y elementos de construcción, máquinas de procesamiento de datos, aparatos de almacenamiento de datos, microprocesadores, interfaces, circuitos integrados (IC), chips, semiconductores y tarjetas inteligentes, controladores para tarjetas inteligentes, controladores para chips y etiquetas RFID; personalización y programación personalizada de hardware informático para crear, programar, controlar, codificar, escanear, leer e interpretar chips y etiquetas RFID, aparatos electrónicos, instrumentos y equipos para crear, programar, controlar, codificar, escanear, leer e interpretar chips y etiquetas RFID, antenas para escanear, leer e interpretar chips y etiquetas RFID; personalización y programación personalizada de aparatos, instrumentos y equipos NFC (comunicaciones de campo cercano), incluidos módulos electrónicos, electrotécnicos y electromagnéticos, piezas y elementos de construcción y circuitos integrados para aplicaciones de comunicaciones de campo cercano, tarjetas de pago electrónico, aparatos de procesamiento de datos y software para determinar la tarifa que deben pagar los pasajeros con billetes electrónicos; personalización y programación por encargo de partes, piezas accesorias y accesorios para los productos mencionados; informática en la nube; servicios de informática en la nube; servicios informáticos en la nube con software para ser utilizado en la gestión de servicios de plataformas en la nube y entornos en las instalaciones; asesoramiento, consultoría e información en relación con todos los servicios antes mencionados."
+        }
+      ]
+    },
+    "id": "8e75ea72-85d5-4eea-98ed-b5efef0af11b",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN ONLY",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "Blue, green, orange and white.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      },
+      {
+        "markImageColourClaimedText": "Bleu, vert, orange et blanc",
+        "markImageColourClaimedTextLanguageCode": "fr"
+      },
+      {
+        "markImageColourClaimedText": "Azul, verde, naranja y blanco",
+        "markImageColourClaimedTextLanguageCode": "es"
+      }
+    ],
+    "markImageViennaClassification": [
+      "26.01",
+      "29.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "21"
+      }
+    ],
+    "recordLastUpdated": "20260823",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices, Anna van Buerenplein 21 A NL-2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20341016",
+      "lastPublicationDate": "20250605",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20241016",
+        "registrationNumber": "1858066"
+      }
+    },
+    "version": "20260823020003"
+  },
+  "_uri": "/mark/wo/8e75ea72-85d5-4eea-98ed-b5efef0af11b",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.460Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

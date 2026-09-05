@@ -1,0 +1,151 @@
+{
+  "uri": "/mark/fr/1a4d9de2-d825-4d6a-b828-e1c009d7be3b",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "1a4d9de2-d825-4d6a-b828-e1c009d7be3b",
+  "applicationNumber": "18 4505765",
+  "registrationNumber": "18 4505765",
+  "applicationDate": "2018-12-05",
+  "registrationDate": null,
+  "expiryDate": "2028-12-04",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-04-19",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "AVENCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": ": Appareils pour l’enregistrement, la transmission, la reproduction ou le traitement du son ou des images ; supports d’enregistrement magnétiques ; disques acoustiques, magnétiques ou optiques ; disquettes souples ; supports de données optiques, magnétiques ; équipement pour le traitement de l’information et les ordinateurs ; logiciels de jeux ; logiciels (programmes enregistrés) ; programmes d’ordinateurs enregistrés ; périphériques d’ordinateurs ; cartes à mémoire ou à microprocesseur ; applications logicielles informatiques téléchargeables ; publications électroniques téléchargeables ; plateformes informatiques sous forme de logiciels enregistrés ou téléchargeables ",
+      "translation_language": "en",
+      "translation": "Apparatus for recording, transmission, reproduction or processing of sound or images; magnetic recording media; acoustic, magnetic or optical discs; floppy disks; optical, magnetic data carriers; data processing equipment and computers; game software; computer software (recorded programs); recorded computer programs; computer peripherals; memory or microprocessor cards; downloadable computer software applications; downloadable electronic publications; computer platforms in the form of recorded or downloadable software"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": ": Aide à la direction des affaires ; conseils en organisation et direction des affaires ; consultation pour la direction des affaires ; consultation professionnelle d'affaires ; expertises en affaires commerciales ; informations d'affaires ; investigations pour affaires ; recherches pour affaires ; renseignements d'affaires ; analyse du prix de revient ; services de comparaison de prix ; services d'approvisionnement pour des tiers [achat de produits et de services pour d'autres entreprises] ; aide à la consultation professionnelle d'affaires ; direction d'entreprises commerciales ou industrielles ; services de conseils pour la direction des affaires ; aide à la direction d'entreprises commerciales ou industrielles ; expertises en affaires ; gestion de projets commerciaux; recherches d'informations commerciales dans des fichiers informatiques pour des tiers ; étude de marché ; recherche de marché ; estimation en affaires commerciales ; recrutement de personnel ; projets (aide à la direction des affaires); services d'expertise en productivité d'entreprise ; organisation d'expositions de foires à buts commerciaux ou de publicité ; audit comptable et financier ; audits d’entreprises à savoir analyses commerciales ; compilation d'informations dans des bases de données informatiques ; gestion des bases de données ; recueil de données dans un fichier central ; conseils en amélioration de la performance et en optimisation des coûts des entreprises (conseils en organisation des affaires) ; services de vente au détail en ligne de logiciels téléchargeables ; services de vente au détail de logiciels ",
+      "translation_language": "en",
+      "translation": "Business management assistance; advice on organization and business management; consulting for business management; professional business consultation; expertise in commercial affairs; business information; business investigations; business research; business information; cost price analysis; price comparison services; procurement services for others [purchasing goods and services for other businesses]; professional business consulting assistance; management of commercial or industrial enterprises; business management advisory services; assistance in the management of commercial or industrial enterprises; business expertise; business project management; research of commercial information in computer files for third parties; market research; market research; business appraisal; staff recruitment; projects (business management assistance); business productivity consulting services; organization of trade fair exhibitions for commercial or advertising purposes; accounting and financial audit; business audits, namely business analyses; compilation of information into computer databases; database management; collection of data in a central file; business performance improvement and cost optimization consulting (business organization consulting); online retail services featuring downloadable software; software retail services"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": ": Analyse de systèmes informatiques ; conception et développement d’ordinateurs et de logiciels; conception de systèmes informatiques; recherche et développement de nouveaux produits pour des tiers; conception, installation, maintenance, mise à jour, location de logiciels; programmation pour ordinateurs; consultation en matière d’ordinateurs et de logiciels; conseils en technologie de l’information ; conversion de données et de programmes informatiques autre que conversion physique; conversion de données ou de documents d`un support physique vers un support électronique; analyse pour l`implantation de systèmes d’ordinateur ; location de logiciels informatiques ; logiciel-services (SaaS) ; stockage électronique de données ; gestion de projets informatiques ; contrôle de qualité.",
+      "translation_language": "en",
+      "translation": "Computer systems analysis; design and development of computers and computer software; design of computer systems; research and development of new products for others; design, installation, maintenance, updating, rental of computer software; programming for computers; computer and software consultancy; information technology consulting; conversion of data and computer programs other than physical conversion; conversion of data or documents from a physical medium to an electronic medium; analysis for the implementation of computer systems; rental of computer software; software as a service (SaaS); electronic data storage; IT project management; quality control."
+    }
+  ],
+  "owner": "AVENCORE",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "IPSIDE, Madame Frédérique CHINCHOLE",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "AVENCORE"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Apparatus for recording, transmission, reproduction or processing of sound or images; magnetic recording media; acoustic, magnetic or optical discs; floppy disks; optical, magnetic data carriers; data processing equipment and computers; game software; computer software (recorded programs); recorded computer programs; computer peripherals; memory or microprocessor cards; downloadable computer software applications; downloadable electronic publications; computer platforms in the form of recorded or downloadable software",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Appareils pour l’enregistrement, la transmission, la reproduction ou le traitement du son ou des images ; supports d’enregistrement magnétiques ; disques acoustiques, magnétiques ou optiques ; disquettes souples ; supports de données optiques, magnétiques ; équipement pour le traitement de l’information et les ordinateurs ; logiciels de jeux ; logiciels (programmes enregistrés) ; programmes d’ordinateurs enregistrés ; périphériques d’ordinateurs ; cartes à mémoire ou à microprocesseur ; applications logicielles informatiques téléchargeables ; publications électroniques téléchargeables ; plateformes informatiques sous forme de logiciels enregistrés ou téléchargeables "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Business management assistance; advice on organization and business management; consulting for business management; professional business consultation; expertise in commercial affairs; business information; business investigations; business research; business information; cost price analysis; price comparison services; procurement services for others [purchasing goods and services for other businesses]; professional business consulting assistance; management of commercial or industrial enterprises; business management advisory services; assistance in the management of commercial or industrial enterprises; business expertise; business project management; research of commercial information in computer files for third parties; market research; market research; business appraisal; staff recruitment; projects (business management assistance); business productivity consulting services; organization of trade fair exhibitions for commercial or advertising purposes; accounting and financial audit; business audits, namely business analyses; compilation of information into computer databases; database management; collection of data in a central file; business performance improvement and cost optimization consulting (business organization consulting); online retail services featuring downloadable software; software retail services",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Aide à la direction des affaires ; conseils en organisation et direction des affaires ; consultation pour la direction des affaires ; consultation professionnelle d'affaires ; expertises en affaires commerciales ; informations d'affaires ; investigations pour affaires ; recherches pour affaires ; renseignements d'affaires ; analyse du prix de revient ; services de comparaison de prix ; services d'approvisionnement pour des tiers [achat de produits et de services pour d'autres entreprises] ; aide à la consultation professionnelle d'affaires ; direction d'entreprises commerciales ou industrielles ; services de conseils pour la direction des affaires ; aide à la direction d'entreprises commerciales ou industrielles ; expertises en affaires ; gestion de projets commerciaux; recherches d'informations commerciales dans des fichiers informatiques pour des tiers ; étude de marché ; recherche de marché ; estimation en affaires commerciales ; recrutement de personnel ; projets (aide à la direction des affaires); services d'expertise en productivité d'entreprise ; organisation d'expositions de foires à buts commerciaux ou de publicité ; audit comptable et financier ; audits d’entreprises à savoir analyses commerciales ; compilation d'informations dans des bases de données informatiques ; gestion des bases de données ; recueil de données dans un fichier central ; conseils en amélioration de la performance et en optimisation des coûts des entreprises (conseils en organisation des affaires) ; services de vente au détail en ligne de logiciels téléchargeables ; services de vente au détail de logiciels "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer systems analysis; design and development of computers and computer software; design of computer systems; research and development of new products for others; design, installation, maintenance, updating, rental of computer software; programming for computers; computer and software consultancy; information technology consulting; conversion of data and computer programs other than physical conversion; conversion of data or documents from a physical medium to an electronic medium; analysis for the implementation of computer systems; rental of computer software; software as a service (SaaS); electronic data storage; IT project management; quality control.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Analyse de systèmes informatiques ; conception et développement d’ordinateurs et de logiciels; conception de systèmes informatiques; recherche et développement de nouveaux produits pour des tiers; conception, installation, maintenance, mise à jour, location de logiciels; programmation pour ordinateurs; consultation en matière d’ordinateurs et de logiciels; conseils en technologie de l’information ; conversion de données et de programmes informatiques autre que conversion physique; conversion de données ou de documents d`un support physique vers un support électronique; analyse pour l`implantation de systèmes d’ordinateur ; location de logiciels informatiques ; logiciel-services (SaaS) ; stockage électronique de données ; gestion de projets informatiques ; contrôle de qualité."
+        }
+      ]
+    },
+    "id": "1a4d9de2-d825-4d6a-b828-e1c009d7be3b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00199",
+        "publicationVolume": "16"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeName": "IPSIDE, Madame Frédérique CHINCHOLE"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20181205",
+        "applicationNumber": "18 4505765"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20281204",
+      "lastPublicationDate": "20190419",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "18 4505765"
+      }
+    },
+    "version": "20250426162928",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENCORE"
+    }
+  },
+  "_uri": "/mark/fr/1a4d9de2-d825-4d6a-b828-e1c009d7be3b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.731Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

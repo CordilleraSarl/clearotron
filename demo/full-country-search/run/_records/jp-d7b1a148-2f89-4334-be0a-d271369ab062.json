@@ -1,0 +1,165 @@
+{
+  "uri": "/mark/jp/d7b1a148-2f89-4334-be0a-d271369ab062",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "d7b1a148-2f89-4334-be0a-d271369ab062",
+  "applicationNumber": "2022-111550",
+  "registrationNumber": null,
+  "applicationDate": "2022-09-28",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＡＤＡＰＴ　ｂｙ　ａｌｉｇｎ",
+  "markTransliteration": "ADAPUTOBAIARAIN",
+  "markTranslation": "ADAPT BY ALIGN",
+  "markFeature": "DESIGN AND COLOR",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "歯・顎の移動及び歯科治療計画案の描写用のデジタル画像用モバイルソフトウェアアプリケーション（歯科治療の計画立案用モバイルアプリケーションの性質を有するダウンロード可能なソフトウェア），歯列不正咬合の特徴及び重症度の分類用モバイルアプリケーションの性質を有するダウンロード可能なソフトウェア，リアルタイムの歯科治療の計画立案用ユーザーインターフェースを提供するダウンロード可能なコンピュータソフトウェア，電子計算機用プログラム",
+      "translation_language": "en",
+      "translation": "Mobile software application for digital images for tooth / jaw movement and depiction of dental treatment planning (downloadable software with the nature of mobile application for dental treatment planning), dentition malocclusion characteristics and severity classification Downloadable software with the nature of mobile applications for, downloadable computer software that provides a user interface for real-time dental treatment planning, computer programs"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "歯科及び矯正歯科の分野における訓練，歯科及び矯正歯科医療の開発及びプロモーションの分野における訓練，技芸・スポーツ又は知識の教授",
+      "translation_language": "en",
+      "translation": "Training in the field of dentistry and orthodontics, training in the field of development and promotion of dentistry and orthodontics, teaching of arts and sports or knowledge"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YAMAMOTO HIDESAKU",
+  "priorities": [
+    {
+      "priorityDate": "20201012"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Mobile software application for digital images for tooth / jaw movement and depiction of dental treatment planning (downloadable software with the nature of mobile application for dental treatment planning), dentition malocclusion characteristics and severity classification Downloadable software with the nature of mobile applications for, downloadable computer software that provides a user interface for real-time dental treatment planning, computer programs",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "歯・顎の移動及び歯科治療計画案の描写用のデジタル画像用モバイルソフトウェアアプリケーション（歯科治療の計画立案用モバイルアプリケーションの性質を有するダウンロード可能なソフトウェア），歯列不正咬合の特徴及び重症度の分類用モバイルアプリケーションの性質を有するダウンロード可能なソフトウェア，リアルタイムの歯科治療の計画立案用ユーザーインターフェースを提供するダウンロード可能なコンピュータソフトウェア，電子計算機用プログラム"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Training in the field of dentistry and orthodontics, training in the field of development and promotion of dentistry and orthodontics, teaching of arts and sports or knowledge",
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "歯科及び矯正歯科の分野における訓練，歯科及び矯正歯科医療の開発及びプロモーションの分野における訓練，技芸・スポーツ又は知識の教授"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "41A01",
+          "natGoodsServicesDescription": "Educational and instruction services relating to arts, crafts, sports or general knowledge"
+        }
+      ]
+    },
+    "id": "d7b1a148-2f89-4334-be0a-d271369ab062",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN AND COLOR",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "COLOUR CLAIMED"
+      }
+    ],
+    "markImageViennaClassification": [
+      "29.01.04.01",
+      "29.01.08.01",
+      "29.01.11.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20201012"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20220928",
+        "applicationNumber": "2022-111550"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "LAPSED [EXPIRED]"
+    },
+    "version": "20240320153104",
+    "wordMarkSpecification": {
+      "markTranslation": "ADAPT BY ALIGN",
+      "markTransliteration": "ADAPUTOBAIARAIN",
+      "markVerbalElementText": "ＡＤＡＰＴ　ｂｙ　ａｌｉｇｎ"
+    }
+  },
+  "_uri": "/mark/jp/d7b1a148-2f89-4334-be0a-d271369ab062",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.741Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

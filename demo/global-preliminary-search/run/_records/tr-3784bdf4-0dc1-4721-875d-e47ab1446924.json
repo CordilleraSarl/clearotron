@@ -1,0 +1,121 @@
+{
+  "uri": "/mark/tr/3784bdf4-0dc1-4721-875d-e47ab1446924",
+  "provider": "clarivate",
+  "office": "tr",
+  "guid": "3784bdf4-0dc1-4721-875d-e47ab1446924",
+  "applicationNumber": "2007/44406",
+  "registrationNumber": "2007 44406",
+  "applicationDate": "2007-08-16",
+  "registrationDate": null,
+  "expiryDate": "2027-08-16",
+  "renewalDate": null,
+  "lastPublicationDate": "2008-09-30",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "kori",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "tr",
+      "description": "Sayaçlar.",
+      "translation_language": "en",
+      "translation": "Counters."
+    }
+  ],
+  "owner": "ERMAK TEKNİK MALZEME SANAYİ VE TİCARET LİMİTED ŞİRKETİ",
+  "ownerNative": null,
+  "ownerCountry": "TR",
+  "representative": "EMİNE NAZLI ESİNOĞLU",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Rami Kışla Caddesi No:51/57A Topcular-Eyüp İSTANBUL",
+        "applicantAddressCountryCode": "TR",
+        "applicantAddressCountryName": "Turkey",
+        "applicantName": "ERMAK TEKNİK MALZEME SANAYİ VE TİCARET LİMİTED ŞİRKETİ"
+      }
+    ],
+    "applicationLanguageCode": "tr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Counters.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Sayaçlar."
+        }
+      ]
+    },
+    "id": "3784bdf4-0dc1-4721-875d-e47ab1446924",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "395"
+      }
+    ],
+    "recordLastUpdated": "20250708",
+    "registrationOfficeCode": "TR",
+    "registrationOfficeName": "Turkey",
+    "representatives": [
+      {
+        "representativeAddress": "Büyükdere Cad. Kuğu İş Hanı No:81 Kat:2 D:3-4 Mecidiyeköy, İSTANBUL",
+        "representativeName": "EMİNE NAZLI ESİNOĞLU"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20070816",
+        "applicationNumber": "2007/44406"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270816",
+      "lastPublicationDate": "20080930",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "2007 44406"
+      },
+      "renewalPublishedDate": "20170731"
+    },
+    "version": "20250708162237",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "kori"
+    }
+  },
+  "_uri": "/mark/tr/3784bdf4-0dc1-4721-875d-e47ab1446924",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.792Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

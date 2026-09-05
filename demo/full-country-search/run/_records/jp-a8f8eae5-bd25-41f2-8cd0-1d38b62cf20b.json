@@ -1,0 +1,138 @@
+{
+  "uri": "/mark/jp/a8f8eae5-bd25-41f2-8cd0-1d38b62cf20b",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "a8f8eae5-bd25-41f2-8cd0-1d38b62cf20b",
+  "applicationNumber": "2014-085005",
+  "registrationNumber": "5739793",
+  "applicationDate": "2014-10-08",
+  "registrationDate": "2015-02-06",
+  "expiryDate": "2025-02-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2015-03-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "Ｑｏｒｒｅｔｃｏｌｏｒａｇｅ",
+  "markTransliteration": "KOREKARAAJU KORETTOKARAAEEJI KORETTOKARAREEJI",
+  "markTranslation": "QORRETCOLORAGE",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "電子出版物",
+      "translation_language": "en",
+      "translation": "Electronic publication"
+    }
+  ],
+  "owner": "K.K. MIRROIR",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "KATO TAKASHI",
+  "priorities": [
+    {
+      "priorityDate": "20141008"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "YOKOHAMA KANAGAWA KEN",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "K.K. MIRROIR",
+        "applicantNativeAddress": "神奈川県横浜市",
+        "applicantNativeName": "株式会社Ｍｉｒｒｏｉｒ"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electronic publication",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "電子出版物"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "26A01",
+          "natGoodsServicesDescription": "Electronic publications"
+        },
+        {
+          "natClassNumber": "26D01",
+          "natGoodsServicesDescription": "Downloadable image files; Recorded video discs and video tapes; Electronic publications; Exposed cinematographic films; Exposed slide films; Slide film mounts"
+        }
+      ]
+    },
+    "id": "a8f8eae5-bd25-41f2-8cd0-1d38b62cf20b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20141008"
+      }
+    ],
+    "recordLastUpdated": "20260220",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "KATO TAKASHI",
+        "representativeNativeName": "加藤　卓士"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20141008",
+        "applicationNumber": "2014-085005"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20250206",
+      "lastPublicationDate": "20150310",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20150206",
+        "registrationNumber": "5739793"
+      }
+    },
+    "version": "20260220082317",
+    "wordMarkSpecification": {
+      "markTranslation": "QORRETCOLORAGE",
+      "markTransliteration": "KOREKARAAJU KORETTOKARAAEEJI KORETTOKARAREEJI",
+      "markVerbalElementText": "Ｑｏｒｒｅｔｃｏｌｏｒａｇｅ"
+    }
+  },
+  "_uri": "/mark/jp/a8f8eae5-bd25-41f2-8cd0-1d38b62cf20b",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.710Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

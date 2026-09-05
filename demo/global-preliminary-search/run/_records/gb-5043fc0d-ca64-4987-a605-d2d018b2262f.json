@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/gb/5043fc0d-ca64-4987-a605-d2d018b2262f",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "5043fc0d-ca64-4987-a605-d2d018b2262f",
+  "applicationNumber": "2649117",
+  "registrationNumber": "2649117",
+  "applicationDate": "2013-01-23",
+  "registrationDate": "2013-05-24",
+  "expiryDate": "2033-01-23",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "vencuro",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer Software",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Employment recruiting consultancy; Employment agency services; Employment outplacement services; Personnel recruitment services and employment agencies; Employment recruitment; Consultancy relating to personnel recruitment; Personnel recruitment agency services; Recruitment consultancy services; Consultancy of personnel recruitment; Interviewing services [for personnel recruitment]; Recruitment of personnel; Recruitment (personnel-); Personnel recruitment; Personnel recruitment advertising; Personnel recruitment services and employment agencies; Employment recruitment; Recruitment services; Personnel recruitment consultancy; Professional recruitment services; Permanent staff recruitment; Personnel placement and recruitment; Personnel recruitment services; Recruitment and placement services; Human resources consultancy; Human resources management; Human resources consultation.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Design and development of computer hardware and software; computer programming; installation, maintenance and repair of computer software; computer consultancy services;",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Morson Group Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "HGF Limited",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Adamson House, 2 Centenary Way, Salford, M50 1RD",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Morson Group Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer Software"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Employment recruiting consultancy; Employment agency services; Employment outplacement services; Personnel recruitment services and employment agencies; Employment recruitment; Consultancy relating to personnel recruitment; Personnel recruitment agency services; Recruitment consultancy services; Consultancy of personnel recruitment; Interviewing services [for personnel recruitment]; Recruitment of personnel; Recruitment (personnel-); Personnel recruitment; Personnel recruitment advertising; Personnel recruitment services and employment agencies; Employment recruitment; Recruitment services; Personnel recruitment consultancy; Professional recruitment services; Permanent staff recruitment; Personnel placement and recruitment; Personnel recruitment services; Recruitment and placement services; Human resources consultancy; Human resources management; Human resources consultation."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Design and development of computer hardware and software; computer programming; installation, maintenance and repair of computer software; computer consultancy services;"
+        }
+      ]
+    },
+    "id": "5043fc0d-ca64-4987-a605-d2d018b2262f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "6983"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "1 City Walk, Leeds LS11 9DX",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "HGF Limited"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20130123",
+        "applicationNumber": "2649117"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330123",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20130524",
+        "registrationNumber": "2649117"
+      }
+    },
+    "version": "20250627192947",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "vencuro"
+    }
+  },
+  "_uri": "/mark/gb/5043fc0d-ca64-4987-a605-d2d018b2262f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.819Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

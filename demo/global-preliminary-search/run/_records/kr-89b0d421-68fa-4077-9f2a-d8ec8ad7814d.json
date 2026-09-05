@@ -1,0 +1,165 @@
+{
+  "uri": "/mark/kr/89b0d421-68fa-4077-9f2a-d8ec8ad7814d",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "89b0d421-68fa-4077-9f2a-d8ec8ad7814d",
+  "applicationNumber": "40-1996-0037762",
+  "registrationNumber": "4003866420000",
+  "applicationDate": "1996-08-26",
+  "registrationDate": "1997-12-15",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "LEPORCELLANE DILAVENO RICHARD-GINORI",
+  "markTransliteration": "LEPORCELLANE DILAVENO RICHARD-GINORI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    11,
+    14,
+    16,
+    18,
+    19,
+    20,
+    21,
+    24,
+    26,
+    27,
+    28
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        14,
+        16,
+        18,
+        19,
+        20,
+        21,
+        24,
+        26,
+        27,
+        28
+      ],
+      "language": "ko",
+      "description": "공기,대접,도시락상,동이,물잔,바랭이,밥그릇,밥통,보시기,사발,새창으로 열림,세이커,소반,솥,수통,술잔,얼음냉장고,이쑤시개케이스,쟁반,접시,컵,화분",
+      "translation_language": "en",
+      "translation": "Air, hospitality, lunch box, dong, water cup, rice bowl, rice bowl, bogi, bowl, open in new window, shaker, soban, pot, water bottle, sake cup, ice refrigerator, toothpick case, tray, plate, cup, flowerpot"
+    }
+  ],
+  "owner": "Richard-Ginori 1735 S. blood. a.",
+  "ownerNative": null,
+  "ownerCountry": "IT",
+  "representative": "목돈상 (MOK, Don-sang)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "이탈리아공화국",
+        "applicantAddressCountryCode": "IT",
+        "applicantAddressCountryName": "Italy",
+        "applicantName": "Richard-Ginori 1735 S. blood. a.",
+        "applicantNativeName": "리차드-지노리 1735 에스. 피. 에이."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Air, hospitality, lunch box, dong, water cup, rice bowl, rice bowl, bogi, bowl, open in new window, shaker, soban, pot, water bottle, sake cup, ice refrigerator, toothpick case, tray, plate, cup, flowerpot",
+          "intClassNumber": "01,05,06,07,08,09,11,14,16,18,19,20,21,24,26,27,28",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "공기,대접,도시락상,동이,물잔,바랭이,밥그릇,밥통,보시기,사발,새창으로 열림,세이커,소반,솥,수통,술잔,얼음냉장고,이쑤시개케이스,쟁반,접시,컵,화분"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "018"
+        }
+      ]
+    },
+    "id": "89b0d421-68fa-4077-9f2a-d8ec8ad7814d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "18.03.09",
+      "26.11.13"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 강남구 강남대로 호 (역삼동, 황화빌딩)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목돈상 (MOK, Don-sang)"
+      },
+      {
+        "representativeAddress": "SEOUL(NONE OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목영동 (Mok Young Dong)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19960826",
+        "applicationNumber": "40-1996-0037762"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19971215",
+        "registrationNumber": "4003866420000"
+      }
+    },
+    "version": "20250625145419",
+    "wordMarkSpecification": {
+      "markTransliteration": "LEPORCELLANE DILAVENO RICHARD-GINORI",
+      "markVerbalElementText": "LEPORCELLANE DILAVENO RICHARD-GINORI"
+    }
+  },
+  "_uri": "/mark/kr/89b0d421-68fa-4077-9f2a-d8ec8ad7814d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.829Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

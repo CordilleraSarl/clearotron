@@ -1,0 +1,165 @@
+{
+  "uri": "/mark/fr/cb623db2-1eec-40b4-b913-be0090b433ca",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "cb623db2-1eec-40b4-b913-be0090b433ca",
+  "applicationNumber": "D 26 5256455",
+  "registrationNumber": null,
+  "applicationDate": "2026-05-12",
+  "registrationDate": null,
+  "expiryDate": "2036-05-12",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-06-05",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "AVENOR INDUSTRIES",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    13,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6
+      ],
+      "language": "fr",
+      "description": ": Métaux communs et leurs alliages ; Matériaux de construction métalliques ; Constructions transportables métalliques ; Panneaux acoustiques métalliques ; Matériaux métalliques pour les voies ferrées ; Câbles et fils métalliques non électriques ; Quincaillerie métallique ; Tuyaux métalliques ; Constructions métalliques ; Echafaudages métalliques ; Boîtes en métaux communs ; Récipients d'emballage en métal ; Monuments métalliques ; Objets d'art en métaux communs ; Statues en métaux communs ; Figurines en métaux communs ; Plaques d'immatriculation métalliques",
+      "translation_language": "en",
+      "translation": "Base metals and their alloys; Metallic building materials; Transportable metallic structures; Metallic acoustic panels; Metallic materials for railway tracks; Non-electric metallic cables and wires; Metallic hardware; Metallic pipes; Metallic structures; Metallic scaffolding; Base metal cans; Metal packaging containers; Metallic monuments; Works of art made of base metal; Statues made of base metal; Figurines made of base metal; Metallic license plates"
+    },
+    {
+      "classes": [
+        13
+      ],
+      "language": "en",
+      "description": ": Munitions et projectiles",
+      "translation_language": "en",
+      "translation": ": Munitions et projectiles"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": ": Recherches scientifiques ; Recherches technologiques ; Recherche et développement de nouveaux produits pour des tiers.",
+      "translation_language": "en",
+      "translation": "Scientific research; Technological research; Research and development of new products for third parties."
+    }
+  ],
+  "owner": "AVENOR INDUSTRIES SAS, société par actions simplifiée",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Bâtiment Flammarion, 106 Rue du Lieutenant Petit Leroy, 94550 Chevilly-Larue",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "AVENOR INDUSTRIES SAS, société par actions simplifiée"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "cmMarkImageEUclassification": [
+      "15.09.18",
+      "26.04.01",
+      "26.04.07",
+      "26.04.12",
+      "29.02.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Base metals and their alloys; Metallic building materials; Transportable metallic structures; Metallic acoustic panels; Metallic materials for railway tracks; Non-electric metallic cables and wires; Metallic hardware; Metallic pipes; Metallic structures; Metallic scaffolding; Base metal cans; Metal packaging containers; Metallic monuments; Works of art made of base metal; Statues made of base metal; Figurines made of base metal; Metallic license plates",
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Métaux communs et leurs alliages ; Matériaux de construction métalliques ; Constructions transportables métalliques ; Panneaux acoustiques métalliques ; Matériaux métalliques pour les voies ferrées ; Câbles et fils métalliques non électriques ; Quincaillerie métallique ; Tuyaux métalliques ; Constructions métalliques ; Echafaudages métalliques ; Boîtes en métaux communs ; Récipients d'emballage en métal ; Monuments métalliques ; Objets d'art en métaux communs ; Statues en métaux communs ; Figurines en métaux communs ; Plaques d'immatriculation métalliques"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": ": Munitions et projectiles",
+          "intClassNumber": "13",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": ": Munitions et projectiles"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific research; Technological research; Research and development of new products for third parties.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": ": Recherches scientifiques ; Recherches technologiques ; Recherche et développement de nouveaux produits pour des tiers."
+        }
+      ]
+    },
+    "id": "cb623db2-1eec-40b4-b913-be0090b433ca",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Couleur(s) de la marque : Noir (#0D1214), rouge (#CA0100), blanc (#FFFFFF) Logo en forme de carre plein aux bords arrondis, lui meme entoure par un autre carre non plein, aux bords exterieurs arrondis, et ayant 4 encoches non traversantes sur les faces interieures, s enfoncant a mi profondeur. Le carre plein du centre peut eventuellement etre colore differemment du reste, en rouge par exemple. Sur la droite de ces deux carres se situe le nom AVENOR INDUSTRIES en noir avec INDUSTRIES en dessous de AVENOR, les deux alignes sur la gauche au niveau de la première lettre. Le O de AVENOR peut etre colore en rouge."
+      }
+    ],
+    "markImageViennaClassification": [
+      "26.04.01",
+      "26.04.07",
+      "27.05.01",
+      "29.01.01",
+      "29.01.08",
+      "29.01.11"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "23"
+      }
+    ],
+    "recordLastUpdated": "20260616",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260512",
+        "applicationNumber": "D 26 5256455"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360512",
+      "lastPublicationDate": "20260605",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260616020004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENOR INDUSTRIES"
+    }
+  },
+  "_uri": "/mark/fr/cb623db2-1eec-40b4-b913-be0090b433ca",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.817Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

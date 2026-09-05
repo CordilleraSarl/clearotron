@@ -1,0 +1,129 @@
+{
+  "uri": "/mark/th/03db6cda-9c0e-4512-92c1-f24b214d7b45",
+  "provider": "clarivate",
+  "office": "th",
+  "guid": "03db6cda-9c0e-4512-92c1-f24b214d7b45",
+  "applicationNumber": "647572",
+  "registrationNumber": "36375",
+  "applicationDate": "2006-12-13",
+  "registrationDate": "2006-12-13",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "เซไกคิวเซเคียว",
+  "markTransliteration": "Seven Q Seven trigger sickle",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "th",
+      "description": "งานบรรณาธิการ การแปล การบริการสื่อข่าว การรายงานด้านภาพถ่าย การถ่ายภาพ.",
+      "translation_language": "en",
+      "translation": "Editorial translation service news media. Reporting to the photo shoot."
+    }
+  ],
+  "owner": "Toho No Hikari",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "Toho No Hikari",
+        "applicantNativeAddress": "7 - 11, โมโมยามาโช, อตามิ, ชิซูโอกะ, ประเทศญี่ปุ่น",
+        "applicantNativeName": "โตโฮ โน ฮิคาริ"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Editorial translation service news media. Reporting to the photo shoot.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "th",
+          "intGoodsServicesDescription": "งานบรรณาธิการ การแปล การบริการสื่อข่าว การรายงานด้านภาพถ่าย การถ่ายภาพ."
+        }
+      ]
+    },
+    "id": "03db6cda-9c0e-4512-92c1-f24b214d7b45",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20241115",
+    "registrationOfficeCode": "TH",
+    "registrationOfficeName": "Thailand",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "11 ชั้นที่ 16 อาคารคิว. เฮ้าส์ ถนนสาทรใต้ แขวงทุ่งมหาเมฆ เขตสาทร กรุงเทพมหานคร",
+        "representativeNativeName": "นางสาวดวงเดือน ณ น่าน"
+      },
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "11 ชั้นที่ 16 อาคารคิว. เฮ้าส์ ถนนสาทรใต้ แขวงทุ่งมหาเมฆ เขตสาทร กรุงเทพมหานคร",
+        "representativeNativeName": "นายมงคล วุฒิธนากุล"
+      },
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "11 ชั้นที่ 16 อาคารคิว. เฮ้าส์ ถนนสาทรใต้ แขวงทุ่งมหาเมฆ เขตสาทร กรุงเทพมหานคร 10120",
+        "representativeNativeName": "บริษัท ไพร้ซ์สานนท์ประภาสและวีนน์ จำกัด (ดีคอนส์)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20061213",
+        "applicationNumber": "647572"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20061213",
+        "registrationNumber": "36375"
+      }
+    },
+    "version": "20241115224127",
+    "wordMarkSpecification": {
+      "markTransliteration": "Seven Q Seven trigger sickle",
+      "markVerbalElementText": "เซไกคิวเซเคียว"
+    }
+  },
+  "_uri": "/mark/th/03db6cda-9c0e-4512-92c1-f24b214d7b45",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.566Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

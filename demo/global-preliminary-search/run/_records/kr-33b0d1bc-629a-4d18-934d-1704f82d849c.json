@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/kr/33b0d1bc-629a-4d18-934d-1704f82d849c",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "33b0d1bc-629a-4d18-934d-1704f82d849c",
+  "applicationNumber": "41-2011-0024036",
+  "registrationNumber": null,
+  "applicationDate": "2011-08-11",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "고리",
+  "markTransliteration": "KORREE",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "그룹 및 행사조직/ 토의참석/ 사회사업 및 공동체네트워크에서 참여에 등록된 사용자를 위한 가상공동체제작업을 포함한 컴퓨터 또는 모바일기기 서비스업, 사용자가 제작한 콘텐츠 또는 특수한 콘텐츠/ 개인 프로파일/ 음향/ 비디오/ 데이터영상을 포함한 개인 웹페이지형태의 컴퓨터서비스업, 소셜 네트워크 및 가상 커뮤니티 만들기 및 오디오/비디오/사진 이미지/텍스트/그래픽/데이터의 전송을 위한 내려받기 불가능한 소프트웨어 어플리케이션의 일시적 사용 제공업, 어플리케이션 서비스 프로바이더 서비스업[커뮤니케이션 네트워크를 통하여 전자 매체 또는 정보를 제공/업로딩/다운로딩/스트리밍/포스팅/디스플레잉/블로깅/링킹/공유하 는 것을 가능하게 하는 소프트웨어를 제공하는 서비스임], 온라인 네트워크 서비스 제공업[사용자들이 다양한 웹사이트간 개인적인 신원정보를 전송/공유할 수 있도록 하는 서비스임], 컴퓨터 검색지표 및 정보데이터베이스상의 정보 특히 컴퓨터 및 통신네트워크를 통한 텍스트/ 전자문서/ 데이터베이스/ 그래픽 및 시청각 정보제공업, 컴퓨터 서비스업[등록된 사용자가 그룹 및 이벤트를 만들고, 논의에 참가하고, 소셜/사업적 커뮤니티네트워킹에 참여하도록 하는 가상 커뮤니티를 만드는 것임], 컴퓨터 서비스업[사용자들이 통신네트워크를 통하여 미팅/이벤트/상호토론을 조직하고 실행할 수 있도록 하는 전자설비의 호스팅업], 컴퓨터와 커뮤니티 네트워크상의 텍스트/전자적 서류/데이터베이스/그래픽/음향영상정보로부터 검색가능한 정보의 인덱스와 데이터베이스 정보제공업, 통신망을 통한 모임/ 행사 및 대화형 토의개최용 전자시설호스트대행업을 포함한 컴퓨터 또는 모바일기기 서비스업",
+      "translation_language": "en",
+      "translation": "Organizing groups and events / attending discussions / servicing computers or mobile devices, including working in virtual communities for registered users for participation in social projects and community networks; computer services in the form of personal web pages, including user-generated content or special content / personal profiles / audio / video / data images; creating social networks and virtual communities and providing temporary use of non-downloadable software applications for the transmission of audio / video / photo images / text / graphics / data, application service providers. Service business [a service that provides software that enables provision/uploading/downloading/streaming/posting/displaying/blogging/linking/sharing of electronic media or information through communication networks], online network service provider business [a service that allows users to transmit/share personal identification information between various websites], computer search indicators and information on information databases, especially text/electronic documents/databases/graphics and Audiovisual information provision business, computer service business [creating a virtual community that allows registered users to create groups and events, participate in discussions, and participate in social/business community networking], computer service business [hosting of electronic equipment that allows users to organize and conduct meetings/events/interactive discussions through communication networks], index and database information provision of searchable information from text/electronic documents/databases/graphics/audio-visual information on computers and community networks, Computer or mobile device service industry, including electronic facility hosting agency for holding meetings/events and interactive discussions through communication networks"
+    }
+  ],
+  "owner": "socialexperiencewrap Co., Ltd",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "박진호 (PARK, Jin-Ho)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 마포구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "socialexperiencewrap Co., Ltd",
+        "applicantNativeName": "(주) 소셜익스피리언스랩"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Organizing groups and events / attending discussions / servicing computers or mobile devices, including working in virtual communities for registered users for participation in social projects and community networks; computer services in the form of personal web pages, including user-generated content or special content / personal profiles / audio / video / data images; creating social networks and virtual communities and providing temporary use of non-downloadable software applications for the transmission of audio / video / photo images / text / graphics / data, application service providers. Service business [a service that provides software that enables provision/uploading/downloading/streaming/posting/displaying/blogging/linking/sharing of electronic media or information through communication networks], online network service provider business [a service that allows users to transmit/share personal identification information between various websites], computer search indicators and information on information databases, especially text/electronic documents/databases/graphics and Audiovisual information provision business, computer service business [creating a virtual community that allows registered users to create groups and events, participate in discussions, and participate in social/business community networking], computer service business [hosting of electronic equipment that allows users to organize and conduct meetings/events/interactive discussions through communication networks], index and database information provision of searchable information from text/electronic documents/databases/graphics/audio-visual information on computers and community networks, Computer or mobile device service industry, including electronic facility hosting agency for holding meetings/events and interactive discussions through communication networks",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "그룹 및 행사조직/ 토의참석/ 사회사업 및 공동체네트워크에서 참여에 등록된 사용자를 위한 가상공동체제작업을 포함한 컴퓨터 또는 모바일기기 서비스업, 사용자가 제작한 콘텐츠 또는 특수한 콘텐츠/ 개인 프로파일/ 음향/ 비디오/ 데이터영상을 포함한 개인 웹페이지형태의 컴퓨터서비스업, 소셜 네트워크 및 가상 커뮤니티 만들기 및 오디오/비디오/사진 이미지/텍스트/그래픽/데이터의 전송을 위한 내려받기 불가능한 소프트웨어 어플리케이션의 일시적 사용 제공업, 어플리케이션 서비스 프로바이더 서비스업[커뮤니케이션 네트워크를 통하여 전자 매체 또는 정보를 제공/업로딩/다운로딩/스트리밍/포스팅/디스플레잉/블로깅/링킹/공유하 는 것을 가능하게 하는 소프트웨어를 제공하는 서비스임], 온라인 네트워크 서비스 제공업[사용자들이 다양한 웹사이트간 개인적인 신원정보를 전송/공유할 수 있도록 하는 서비스임], 컴퓨터 검색지표 및 정보데이터베이스상의 정보 특히 컴퓨터 및 통신네트워크를 통한 텍스트/ 전자문서/ 데이터베이스/ 그래픽 및 시청각 정보제공업, 컴퓨터 서비스업[등록된 사용자가 그룹 및 이벤트를 만들고, 논의에 참가하고, 소셜/사업적 커뮤니티네트워킹에 참여하도록 하는 가상 커뮤니티를 만드는 것임], 컴퓨터 서비스업[사용자들이 통신네트워크를 통하여 미팅/이벤트/상호토론을 조직하고 실행할 수 있도록 하는 전자설비의 호스팅업], 컴퓨터와 커뮤니티 네트워크상의 텍스트/전자적 서류/데이터베이스/그래픽/음향영상정보로부터 검색가능한 정보의 인덱스와 데이터베이스 정보제공업, 통신망을 통한 모임/ 행사 및 대화형 토의개최용 전자시설호스트대행업을 포함한 컴퓨터 또는 모바일기기 서비스업"
+        }
+      ]
+    },
+    "id": "33b0d1bc-629a-4d18-934d-1704f82d849c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260816",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "경기 하남시 미사대로 (덕풍동) 현대지식산업센터 한강미사*차 D동 호(아이피줌국제특허법률사무소)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "박진호 (PARK, Jin-Ho)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20110811",
+        "applicationNumber": "41-2011-0024036"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260816020414",
+    "wordMarkSpecification": {
+      "markTransliteration": "KORREE",
+      "markVerbalElementText": "고리"
+    }
+  },
+  "_uri": "/mark/kr/33b0d1bc-629a-4d18-934d-1704f82d849c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.049Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

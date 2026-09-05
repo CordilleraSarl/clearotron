@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/xs/6cb8e26d-57d5-4b04-8d23-a13897bec756",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "6cb8e26d-57d5-4b04-8d23-a13897bec756",
+  "applicationNumber": null,
+  "registrationNumber": "10122",
+  "applicationDate": null,
+  "registrationDate": "2011-11-01",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SURVIVE NORFOLK",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": [
+    "NORFOLK"
+  ],
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Cultural event",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "URBAN PLAYGROUND, L.L.C.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "3300 AZALEA GARDEN ROAD, NORFOLK, VA, 23513",
+        "applicantAddressCity": "NORFOLK",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "23513",
+        "applicantAddressStateName": "VIRGINIA",
+        "applicantAddressStreet": "3300 AZALEA GARDEN ROAD",
+        "applicantLegalEntity": "LIMITED LIABILITY COMPANY",
+        "applicantName": "URBAN PLAYGROUND, L.L.C.",
+        "applicantStateOfIncorporation": "VIRGINIA"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Cultural event"
+        }
+      ]
+    },
+    "id": "6cb8e26d-57d5-4b04-8d23-a13897bec756",
+    "ipRightKind": "tmk",
+    "kindMark": "SERVICE MARK",
+    "markDisclaimers": [
+      "NORFOLK"
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "3300 AZALEA GARDEN ROAD, NORFOLK, VA, 23513",
+        "city": "NORFOLK",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "LIMITED LIABILITY COMPANY",
+        "name": "URBAN PLAYGROUND, L.L.C.",
+        "postalCode": "23513",
+        "stateName": "VIRGINIA",
+        "stateOfIncorporation": "VIRGINIA",
+        "street": "3300 AZALEA GARDEN ROAD"
+      }
+    ],
+    "recordLastUpdated": "20240305",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20101001"
+        }
+      ],
+      "firstUsedAnywhereDate": "20101001",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20111101",
+        "registrationNumber": "10122"
+      }
+    },
+    "usStateOfficeCode": "VA",
+    "usStateOfficeName": "VIRGINIA",
+    "version": "20240305094844",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SURVIVE NORFOLK"
+    }
+  },
+  "_uri": "/mark/xs/6cb8e26d-57d5-4b04-8d23-a13897bec756",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.833Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

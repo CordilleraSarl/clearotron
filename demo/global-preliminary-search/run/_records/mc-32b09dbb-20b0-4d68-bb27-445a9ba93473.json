@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/mc/32b09dbb-20b0-4d68-bb27-445a9ba93473",
+  "provider": "clarivate",
+  "office": "mc",
+  "guid": "32b09dbb-20b0-4d68-bb27-445a9ba93473",
+  "applicationNumber": null,
+  "registrationNumber": "26000289",
+  "applicationDate": "2026-06-18",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2026-08-07",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    12,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "MONSIEUR GILDO PIERRE PALLANCA PASTOR",
+  "ownerNative": null,
+  "ownerCountry": "MC",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "RUE DU GABIAN MONACO",
+        "applicantAddressCountryCode": "MC",
+        "applicantAddressCountryName": "Monaco",
+        "applicantName": "MONSIEUR GILDO PIERRE PALLANCA PASTOR"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09"
+        },
+        {
+          "intClassNumber": "12"
+        },
+        {
+          "intClassNumber": "42"
+        }
+      ]
+    },
+    "id": "32b09dbb-20b0-4d68-bb27-445a9ba93473",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00010",
+        "publicationVolume": "665"
+      }
+    ],
+    "recordLastUpdated": "20260827",
+    "registrationOfficeCode": "MC",
+    "registrationOfficeName": "Monaco",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260618"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "lastPublicationDate": "20260807",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "26000289"
+      }
+    },
+    "version": "20260827021223",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/mc/32b09dbb-20b0-4d68-bb27-445a9ba93473",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.180Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

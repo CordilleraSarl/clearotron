@@ -1,0 +1,158 @@
+{
+  "uri": "/mark/gb/0e6d3c84-3d7e-42d8-8ae8-a2fc7df393cc",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "0e6d3c84-3d7e-42d8-8ae8-a2fc7df393cc",
+  "applicationNumber": "3694704",
+  "registrationNumber": "3694704",
+  "applicationDate": "2021-09-14",
+  "registrationDate": "2022-03-25",
+  "expiryDate": "2031-09-14",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NORTHWOOD OVER & ABOVE NORTHWOOD OVER & ABOVE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Advertising services; promotion services; franchising; services rendered by a  franchisor; recruitment of franchisees; advertising of franchised businesses for  sale; providing assistance in the management of franchised businesses;  management assistance; providing commercial assistance in the establishment and  operation of estate agencies and letting agencies; business management; business  development, business administration; business administration compliance;  analysis and economic forecasting; auditing services; supplier management  services; support and advice services to franchisees in relation to the  renting/or leasing of commercial premises.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Real estate services; real estate management; estate agency services; property  management services; property portfolio management; real estate valuation;  property valuation; financial services; property letting; student lettings;  rental of property; property leasing; renting of accommodation; rent collection;  guaranteed rent services; lease renewals; management of blocks; insurance  services; all of the aforesaid in relation to residential and commercial  properties.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Training; training and further training consultancy; training services;  providing training; commercial training services; training in administration;  know-how transfer [training]; business mentoring services; business training;  business training services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Northwood GB Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Hamilton Pratt",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "The Old Courthouse, 60a London Road, Grantham , Lincolnshire, NG31 6HR",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Northwood GB Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "06.01.02",
+      "26.04.02",
+      "26.04.22"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Advertising services; promotion services; franchising; services rendered by a  franchisor; recruitment of franchisees; advertising of franchised businesses for  sale; providing assistance in the management of franchised businesses;  management assistance; providing commercial assistance in the establishment and  operation of estate agencies and letting agencies; business management; business  development, business administration; business administration compliance;  analysis and economic forecasting; auditing services; supplier management  services; support and advice services to franchisees in relation to the  renting/or leasing of commercial premises."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Real estate services; real estate management; estate agency services; property  management services; property portfolio management; real estate valuation;  property valuation; financial services; property letting; student lettings;  rental of property; property leasing; renting of accommodation; rent collection;  guaranteed rent services; lease renewals; management of blocks; insurance  services; all of the aforesaid in relation to residential and commercial  properties."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Training; training and further training consultancy; training services;  providing training; commercial training services; training in administration;  know-how transfer [training]; business mentoring services; business training;  business training services."
+        }
+      ]
+    },
+    "id": "0e6d3c84-3d7e-42d8-8ae8-a2fc7df393cc",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.99.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2022/002"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "3a Tournament Court, Tournament Fields, Warwick CV34 6LG, Warwickshire",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Hamilton Pratt"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210914",
+        "applicationNumber": "3694704"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310914",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20220325",
+        "registrationNumber": "3694704"
+      }
+    },
+    "version": "20250627221639",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NORTHWOOD OVER & ABOVE NORTHWOOD OVER & ABOVE"
+    }
+  },
+  "_uri": "/mark/gb/0e6d3c84-3d7e-42d8-8ae8-a2fc7df393cc",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.815Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

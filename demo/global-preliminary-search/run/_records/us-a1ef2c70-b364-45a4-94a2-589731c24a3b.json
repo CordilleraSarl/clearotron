@@ -1,0 +1,216 @@
+{
+  "uri": "/mark/us/a1ef2c70-b364-45a4-94a2-589731c24a3b",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "a1ef2c70-b364-45a4-94a2-589731c24a3b",
+  "applicationNumber": "99975184",
+  "registrationNumber": null,
+  "applicationDate": "2025-09-24",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "NORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Providing temporary use of on-line non-downloadable software and applications using artificial intelligence (AI) for family organization, namely, for managing shared      calendars, tasks, chores, meal planning, shopping lists, and household      communication",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Domus Next Inc.",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "WENZHU YU",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "651 N. Broad St., Suite 308, Middletown, DE, 19709, USAM",
+        "applicantAddressCity": "Middletown",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "19709",
+        "applicantAddressStateName": "DELAWARE",
+        "applicantAddressStreet": "651 N. Broad St., Suite 308",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Domus Next Inc."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Providing temporary use of on-line non-downloadable software and applications using artificial intelligence (AI) for family organization, namely, for managing shared      calendars, tasks, chores, meal planning, shopping lists, and household      communication"
+        }
+      ]
+    },
+    "id": "a1ef2c70-b364-45a4-94a2-589731c24a3b",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260227",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20260121",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20260121",
+        "descriptionText": "DIVISIONAL PROCESSING COMPLETE"
+      },
+      {
+        "date": "20251125",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20251112",
+        "descriptionText": "TEAS REQUEST TO DIVIDE RECEIVED"
+      },
+      {
+        "date": "20251112",
+        "descriptionText": "TEAS AMENDMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20251112",
+        "descriptionText": "DIVISIONAL REQUEST RECEIVED"
+      },
+      {
+        "date": "20250924",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20250924",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "651 N. Broad St., Suite 308, Middletown, DE, 19709, USAM",
+        "city": "Middletown",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Domus Next Inc.",
+        "postalCode": "19709",
+        "stateName": "DELAWARE",
+        "street": "651 N. Broad St., Suite 308"
+      },
+      {
+        "address": "651 N. Broad St., Suite 308, Middletown, DE, 19709, USAM",
+        "city": "Middletown",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Domus Next Inc.",
+        "postalCode": "19709",
+        "stateName": "DELAWARE",
+        "street": "651 N. Broad St., Suite 308"
+      }
+    ],
+    "recordLastUpdated": "20260407",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Beijing, 100600, CHINA",
+        "representativeCorrespondentAddressLines": [
+          "Beijing, 100600",
+          "CHINA"
+        ],
+        "representativeCorrespondentName": "WENZHU YU ANJIE BROAD LAW FIRM, No. 19 Dongfangdonglu, Chaoyang District"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Beijing, 100600, CHINA",
+        "representativeAddressLines": [
+          "Beijing, 100600",
+          "CHINA"
+        ],
+        "representativeName": "WENZHU YU"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250924",
+        "applicationNumber": "99975184"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20251017"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20251017"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "NEW APPLICATION - RECORD INITIALIZED NOT ASSIGNED TO EXAMINER",
+        "markOfficialStatusCode": "630",
+        "markOfficialStatusDate": "20250924",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260407095058",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NORI"
+    }
+  },
+  "_uri": "/mark/us/a1ef2c70-b364-45a4-94a2-589731c24a3b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.691Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

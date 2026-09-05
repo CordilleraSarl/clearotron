@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/ru/1eca38fc-51da-49a4-8897-85a82acb451c",
+  "provider": "clarivate",
+  "office": "ru",
+  "guid": "1eca38fc-51da-49a4-8897-85a82acb451c",
+  "applicationNumber": "2022720778",
+  "registrationNumber": "909007",
+  "applicationDate": "2022-04-04",
+  "registrationDate": "2022-12-06",
+  "expiryDate": "2032-04-04",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Zori",
+  "markTransliteration": "Zori",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        37
+      ],
+      "language": "ru",
+      "description": "- асфальтирование; бурение скважин; изоляция сооружений; консультации по вопросам строительства; монтаж инженерных коммуникаций на строительных площадках; монтаж строительных лесов; мощение дорог; мытье окон; надзор [контрольно-управляющий] за строительными работами; предоставление информации по вопросам ремонта; предоставление информации по вопросам строительства; прокат бульдозеров; прокат строительной техники; работы каменно-строительные; работы кровельные; работы малярные внутренние и наружные; работы плотницкие; работы штукатурные; разработка карьеров; ремонт линий электропередачи; снос строительных сооружений; сооружение и ремонт складов; строительство; уборка снега; уборка улиц; укладка искусственного газона; услуги бытовые [услуги по уборке]; услуги электриков; установка и ремонт лифтов; установка и ремонт охранной сигнализации; установка и ремонт печей; установка и ремонт устройств для кондиционирования воздуха; установка и ремонт устройств пожарной сигнализации; установка и ремонт электроприборов.",
+      "translation_language": "en",
+      "translation": "- asphalting; drilling of the wells; building insulation; consultations on construction issues; installation of engineering communications at construction sites; installation of scaffolding; road paving; window washing; supervision [supervisor] of construction work; providing information on repair issues; providing information on construction issues; rental of bulldozers; rental of construction equipment; stone-building works; roofing works; works painting internal and external; carpentry work; plastering works; quarrying; repair of power lines; demolition of building structures; construction and repair of warehouses; building; snow removal; street cleaning; laying artificial turf; household services [cleaning services]; electrical services; installation and repair of elevators; installation and repair of security alarms; installation and repair of furnaces; installation and repair of air conditioning devices; installation and repair of fire alarm devices; installation and repair of electrical appliances."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ru",
+      "description": "- дизайн интерьерный; дизайн промышленный; дизайн художественный; инжиниринг; исследования в области строительства зданий; консультации по вопросам архитектуры; услуги архитектурные; экспертиза инженерно-техническая.",
+      "translation_language": "en",
+      "translation": "- interior design; industrial design; artistic design; engineering; research in the field of building construction; architecture consulting; architectural services; engineering expertise."
+    }
+  ],
+  "owner": "ZELENAJA DOLINA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "ZELENAJA DOLINA"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- asphalting; drilling of the wells; building insulation; consultations on construction issues; installation of engineering communications at construction sites; installation of scaffolding; road paving; window washing; supervision [supervisor] of construction work; providing information on repair issues; providing information on construction issues; rental of bulldozers; rental of construction equipment; stone-building works; roofing works; works painting internal and external; carpentry work; plastering works; quarrying; repair of power lines; demolition of building structures; construction and repair of warehouses; building; snow removal; street cleaning; laying artificial turf; household services [cleaning services]; electrical services; installation and repair of elevators; installation and repair of security alarms; installation and repair of furnaces; installation and repair of air conditioning devices; installation and repair of fire alarm devices; installation and repair of electrical appliances.",
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- асфальтирование; бурение скважин; изоляция сооружений; консультации по вопросам строительства; монтаж инженерных коммуникаций на строительных площадках; монтаж строительных лесов; мощение дорог; мытье окон; надзор [контрольно-управляющий] за строительными работами; предоставление информации по вопросам ремонта; предоставление информации по вопросам строительства; прокат бульдозеров; прокат строительной техники; работы каменно-строительные; работы кровельные; работы малярные внутренние и наружные; работы плотницкие; работы штукатурные; разработка карьеров; ремонт линий электропередачи; снос строительных сооружений; сооружение и ремонт складов; строительство; уборка снега; уборка улиц; укладка искусственного газона; услуги бытовые [услуги по уборке]; услуги электриков; установка и ремонт лифтов; установка и ремонт охранной сигнализации; установка и ремонт печей; установка и ремонт устройств для кондиционирования воздуха; установка и ремонт устройств пожарной сигнализации; установка и ремонт электроприборов."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- interior design; industrial design; artistic design; engineering; research in the field of building construction; architecture consulting; architectural services; engineering expertise.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- дизайн интерьерный; дизайн промышленный; дизайн художественный; инжиниринг; исследования в области строительства зданий; консультации по вопросам архитектуры; услуги архитектурные; экспертиза инженерно-техническая."
+        }
+      ]
+    },
+    "id": "1eca38fc-51da-49a4-8897-85a82acb451c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "05.05.19",
+      "05.05.21"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250705",
+    "registrationOfficeCode": "RU",
+    "registrationOfficeName": "Russian Federation",
+    "representatives": [
+      {
+        "representativeNativeName": "625007, г. Тюмень, ул. Мельникайте, 129, 337, Охинько Софья Владимировна"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220404",
+        "applicationNumber": "2022720778"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320404",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20221206",
+        "registrationNumber": "909007"
+      }
+    },
+    "version": "20250705083656",
+    "wordMarkSpecification": {
+      "markTransliteration": "Zori",
+      "markVerbalElementText": "Zori"
+    }
+  },
+  "_uri": "/mark/ru/1eca38fc-51da-49a4-8897-85a82acb451c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:32.138Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

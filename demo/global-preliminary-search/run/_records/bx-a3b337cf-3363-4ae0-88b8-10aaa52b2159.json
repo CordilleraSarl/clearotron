@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/bx/a3b337cf-3363-4ae0-88b8-10aaa52b2159",
+  "provider": "clarivate",
+  "office": "bx",
+  "guid": "a3b337cf-3363-4ae0-88b8-10aaa52b2159",
+  "applicationNumber": "1371942",
+  "registrationNumber": "1371942",
+  "applicationDate": "2018-03-17",
+  "registrationDate": "2018-11-29",
+  "expiryDate": "2028-03-17",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-11-29",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Energy Save Nordic Nederland",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    11
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Meetapparatuur voor thermische energie; Energiebeheer (Apparatuur voor -); Elektrische regelapparaten voor energiebeheer; Besturingsapparatuur (elektrische -) [anders dan kleppen] voor gebruik bij het conserveren van energie in boilers; Energieregulateurs.",
+      "translation_language": "en",
+      "translation": "Measuring equipment for thermal energy; Power Management (Equipment for -); Electric control apparatus for energy management; Control equipment (electric -) [other than valves] for use in energy conservation in boilers; Energy regulators."
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "nl",
+      "description": "Warmtepompen voor de verwerking van energie; Verwarmingsinstallaties op zonne-energie; Waterverwarmers op zonne- energie; Warmteopslagapparatuur [zonne-energie] voor verwarming; Zonne-energiecollectoren voor verwarming; Ventilatietoestellen aangedreven door zonne-energie; Zonne- energiecollectoren (verwarming).",
+      "translation_language": "en",
+      "translation": "Heat pumps for energy processing; solar energy heating installations; solar powered water heaters; Heat storage equipment [solar energy] for heating; Solar energy collectors for heating; ventilation apparatus powered by solar energy; Solar energy collectors (heating)."
+    }
+  ],
+  "owner": "Frederik de Gooijer",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Emmalaan 17, 1862 ER Bergen",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "Frederik de Gooijer"
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Measuring equipment for thermal energy; Power Management (Equipment for -); Electric control apparatus for energy management; Control equipment (electric -) [other than valves] for use in energy conservation in boilers; Energy regulators.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Meetapparatuur voor thermische energie; Energiebeheer (Apparatuur voor -); Elektrische regelapparaten voor energiebeheer; Besturingsapparatuur (elektrische -) [anders dan kleppen] voor gebruik bij het conserveren van energie in boilers; Energieregulateurs."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Heat pumps for energy processing; solar energy heating installations; solar powered water heaters; Heat storage equipment [solar energy] for heating; Solar energy collectors for heating; ventilation apparatus powered by solar energy; Solar energy collectors (heating).",
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Warmtepompen voor de verwerking van energie; Verwarmingsinstallaties op zonne-energie; Waterverwarmers op zonne- energie; Warmteopslagapparatuur [zonne-energie] voor verwarming; Zonne-energiecollectoren voor verwarming; Ventilatietoestellen aangedreven door zonne-energie; Zonne- energiecollectoren (verwarming)."
+        }
+      ]
+    },
+    "id": "a3b337cf-3363-4ae0-88b8-10aaa52b2159",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1129"
+      }
+    ],
+    "recordLastUpdated": "20250623",
+    "registrationOfficeCode": "BX",
+    "registrationOfficeName": "Benelux",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180317",
+        "applicationNumber": "1371942"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280317",
+      "lastPublicationDate": "20181129",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20181129",
+        "registrationNumber": "1371942"
+      }
+    },
+    "version": "20250623182257",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Energy Save Nordic Nederland"
+    }
+  },
+  "_uri": "/mark/bx/a3b337cf-3363-4ae0-88b8-10aaa52b2159",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.805Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

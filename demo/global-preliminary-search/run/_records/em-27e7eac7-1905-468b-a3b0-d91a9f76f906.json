@@ -1,0 +1,531 @@
+{
+  "uri": "/mark/em/27e7eac7-1905-468b-a3b0-d91a9f76f906",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "27e7eac7-1905-468b-a3b0-d91a9f76f906",
+  "applicationNumber": "16384844",
+  "registrationNumber": "16384844",
+  "applicationDate": "2017-02-18",
+  "registrationDate": "2018-09-27",
+  "expiryDate": "2027-02-18",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-03-08",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QODI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Antény; Antény; Rádia; Akustické vazební cleny; Megafony; Stereoskopy; Elektrické vedení, Jmenovite, Kabely a dráty; Ochranné pomucky pro osobní pouzití proti úrazum, jmenovite obuv pro ochranu pred úrazy a pozárem, odevy pro ochranu pred úrazy, ozárením a pozárem, stíty na ochranu obliceje; Elektrické baterie; Nabíjecky baterií; Zvuková výstrazná zarízení; Polovodice; Optické lampy; Elektrodynamická zarízení pro dálkové rízení signalizace.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Antenner; Antenner; Radioenheder; Akustiske sammenkoblere; Megafoner; Stereoskoper; Elektriske ledninger, Nemlig, Kabler og ledninger; Beskyttelsesindretninger til personlig brug mod ulykker, nemlig fodtøj til beskyttelse mod ulykker og ild, beklædning til beskyttelse mod ulykker, bestråling og ild, ansigtsskærme; Batterier, elektriske; Ladere til elektriske batterier; Lydalarmer; Halvledere; Optiske lanterner; Elektrodynamiske apparater til fjernkontrol af signaler.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Antennes; Antennes; Radio's; Akoestische koppelaars; Megafoons; Stereoscopen; Elektrische hoofdleidingen, Te weten, Kabels en leidingen; Toestellen voor de bescherming van personen tegen ongevallen, te weten schoenen ter bescherming tegen ongevallen en brand, kledingstukken ter bescherming tegen ongevallen, straling en brand, beschermingskappen voor het gezicht; Elektrische batterijen; Acculaders; Akoestische alarminrichtingen; Halfgeleiders; Optische lampen; Elektrodynamische apparatuur voor de bediening op afstand van signalen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Aerials; Antennas; Radios; Acoustic couplers; Megaphones; Stereoscopes; Electricity mains, namely, electric cables and wires; Protection devices for personal use against accidents, namely, shoes for protection against accidents and fire, clothing for protection against accidents, irradiation and fire, face-protection shields; Batteries, electric; Chargers for electric batteries; Sound alarms; Semi-conductors; Optical lanterns; Electro-dynamic apparatus for the remote control of signals.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Antennid; Antennid; Raadiod; Akustilised sidestid, helisidestid; Megafonid, ruuporid; Stereoskoobid; Võrguliinid, Nimelt, Elektrikaablid ja -juhtmed; Individuaalkaitsevahendid õnnetuste vastu, nimelt kaitsejalatsid tule ja õnnetuste vastu, kaitserõivad õnnetuste, kiirguse ja tule vastu, näokaitsesirmid; Elektripatareid; Akulaadurid; Helilised häireseadmed, alarmiseadmed; Pooljuhid; Optilised lambid; Elektrodünaamilised signaalide kaugjuhtimise seadmed.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Antennit; Antennit; Radiolaitteet; Kytkimet, akustiset; Megafonit; Stereoskoopit; Pääjohdot, Nimittäin, Sähkökaapelit ja -johdot; Henkilökohtaiset suojavälineet onnettomuuksien varalta, nimittäin onnettomuuksilta ja tulelta suojaavat suojakengät, vaatteet onnettomuuksilta, säteilyltä ja tulelta suojautumiseen, kasvosuojat; Sähköparistot; Latauslaitteet sähköparistoille; Äänihälyttimet; Puolijohteet; Optiset lyhdyt; Kauko-ohjaukseen käytettävät sähködynaamiset merkinantolaitteet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Antennes; Antennes; Postes de radio; Coupleurs acoustiques; Mégaphones; Stéréoscopes; Conduites d'électricité, À savoir, Câbles et fils électriques; Dispositifs de protection à usage personnel contre les accidents, à savoir chaussures de protection contre les accidents et le feu, vêtements de protection contre les accidents, les radiations et le feu, écrans de protection faciale; Piles électriques; Chargeurs pour accumulateurs électriques; Avertisseurs acoustiques; Semi-conducteurs; Lanternes optiques; Appareils électrodynamiques pour commande à distance de signaux.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Antennen; Antennen; Rundfunkgeräte; Akustische Koppler; Megafone; Stereoskope; Elektrische Leitungen, Nämlich, Kabel und Drähte; Unfallschutzvorrichtungen für den persönlichen Gebrauch, nämlich Schuhe zum Schutz vor Unfällen und Feuer, Kleidung zum Schutz gegen Unfälle, Strahlen und Feuer, Gesichtsschutzschilde; Elektrische Batterien; Ladegeräte für elektrische Akkumulatoren; Akustische Alarmgeräte; Halbleiter; Optische Lampen; Signalfernsteuergeräte [elektrodynamisch].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Antene; Antene; Radio uredaji; Akusticni spreznici; Megafoni; Stereoskopi; Elektricni vodovi, Odnosno, Kablovi i zice; Uredaji za zastitu za osobnu uporabu za zastitu od nezgoda, i to obuca za zastitu od nezgoda i pozara, odjeca za zastitu od nezgoda, zracenja i vatre, stitnici za zastitu lica; Elektricne baterije; Punjaci za elektricne baterije; Zvucni alarmi; Poluvodici; Opticke svjetiljke; Elektrodinamicki uredaji za daljinsko upravljanje signalima.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Antennák; Antennák; Rádiók; Akusztikus kapcsolók; Megafonok; Sztereoszkópok; Vezetékek, elektromos, Nevezetesen, Kábelek és vezetékek; Védoeszközök személyek balesetvédelmére, nevezetesen balesetvédelmi biztonsági védolábbelik és baleset- és tuzvédelemre, ruházat balesetek, sugárveszély és tuz megelozésére, arcvédo maszkok; Elektromos elemek, akkumulátorok; Akkumulátor- és elemtöltok; Hangriasztók; Félvezetok; Optikai lámpák; Elektrodinamikai készülékek jelzések, jelzolámpák távirányítására.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Antenne; Antenne; Apparecchi radiofonici; Accoppiatori acustici; Megafoni; Stereoscopi; Reti elettriche, Ovvero, Cavi e fili elettrici; Dispositivi di protezione personale contro gli infortuni, ovvero, calzature protettive contro infortuni e incendi, abbigliamento protettivo contro gli infortuni, le radiazioni e il fuoco, schermi per la protezione del viso; Batterie elettriche; Apparecchi per ricaricare gli accumulatori elettrici; Allarmi acustici; Semiconduttori; Lampade ottiche; Apparecchi elettrodinamici per il telecomando dei segnali.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Antenos; Antenos; Radijo aparatai; Akustinio rysio irenginiai; Megafonai; Stereoskopai; Elektros izoliaciniai vamzdeliai, Butent,, Elektriniai kabeliai ir laidai; Asmenines apsaugos priemones nuo nelaimingu atsitikimu, butent apsauginiai batai nuo nelaimingu atsitikimu ir ugnies, apsauginiai drabuziai nuo nelaimingu atsitikimu, jonizuojancios spinduliuotes ir gaisro, apsaugines veido kaukes; Elektrines baterijos; Bateriju ikrovimo itaisai; Garso signalizatoriai; Puslaidininkiai; Optiniai zibintai; Elektrodinaminiai signalu nuotolinio valdymo aparatai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Antenas; Antenas; Radiouztvereji; Akustiskas uzmavas; Megafoni; Stereoskopi; Elektribas izolacijas vadi, Proti, Elektriskie kabeli un vadi; Personiskai lietosanai paredzetas ierices aizsardzibai pret nelaimes gadijumiem, proti, apavi aizsardzibai pret nelaimes gadijumiem un uguni, apgerbs aizsardzibai pret nelaimes gadijumiem, starojumu un uguni, sejas aizsargi; Elektriskie akumulatori; Elektrisko bateriju ladetaji; Skanas signalierices; Pusvaditaji; Optiskie gaismekli; Elektrodinamiskie aparati signalu talvadibai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Erjils; Erjils; Settijiet tar-radju; Konnetturi akustici; Megafoni; Sterjoskopji; Kondjuwits ta' l-elettriku, Jigifieri, Kejbils u wajers; Taghmir ta' protezzjoni ghall-uzu personali kontra incidenti, jigifieri, zraben ghal protezzjoni minn incidenti u nar, hwejjeg ghal protezzjoni minn incidenti, irradjazzjoni u nar, ilqugh ghall-protezzjoni tal-wicc; Batteriji tal-elettriku; Karikaturi ghal batteriji elettrici; Allarmi bil-hsejjes; Semikondutturi; Fanali ottici; Taghmir elettro-dinamiku ghall-kontroll mill-boghod ta' sinjali.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Anteny; Anteny; Radia; Sprzegacze akustyczne; Megafony; Stereoskopy; Elektryczne (przewody -), To znaczy, Kable i przewody elektryczne; Urzadzenia ochronne do uzytku osobistego do ochrony przed wypadkami, mianowicie obuwie ochronne do ochrony przed wypadkami i ogniem, odziez ochronna do ochrony przed wypadkami, napromieniowaniem i ogniem, oslony twarzy; Baterie elektryczne; Ladowarki do baterii; Alarmy dzwiekowe; Pólprzewodniki; Lampy optyczne; Urzadzenia elektrodynamiczne do zdalnego sterowania sygnalami.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Antenas; Antenas; Aparelhos de rádio; Acopladores acústicos; Megafones; Estereoscópios; Condutas (cabos principais) de electricidade, Nomeadamente, Cabos e fios elétricos; Dispositivos de proteção pessoal contra acidentes, especificamente calçado de proteção contra acidentes e fogo, vestuário de proteção contra acidentes, radiações e fogo, viseiras de proteção; Baterias elétricas; Aparelhos para recarga de acumuladores elétricos; Alarmes sonoros; Semicondutores; Lâmpadas óticas; Aparelhos eletrodinâmicos para o controlo remoto de sinalização.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Antene; Antene; Radiouri; Cuploare acustice; Megafoane; Stereoscoape; Retele electrice, Si anume, Cabluri si fire; Dispozitive de protectie, de uz personal, împotriva accidentelor, si anume, încaltaminte de protectie de siguranta împotriva accidentelor si focului, îmbracaminte de protectie împotriva accidentelor, iradierii si focului, viziere de protectie; Baterii galvanice; Alimentatoare pentru acumulatoare; Avertizoare acustice; Semiconductoare; Lanterne optice; Aparate electrodinamice pentru comanda de la distanta a semnalelor.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Antény; Antény; Rádiá; Akustické spriahadlá; Megafóny; Stereoskopy; Elektroinstalacné rúrky, Menovite, Káble a drôty; Osobné ochranné prostriedky proti nehodám, menovite topánky na ochranu pred úrazmi a poziarom, odevy na ochranu pred úrazmi, oziarením a poziarom, stíty na ochranu tváre; Elektrické batérie (clánky); Nabíjacky batérií; Zvukové signálne zariadenia; Polovodice; Optické lampy; Elektrodynamické zariadenia na dialkové ovládanie návestidiel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Antene; Antene; Radio aparati; Akusticni spoji; Megafoni; Stereoskopi; Elektricni vodi, In sicer, Kabli in zice; Zascitne naprave proti poskodbam za osebno uporabo, in sicer cevlji za zascito pred nesrecami in ognjem, oblacila za zascito pred nesrecami, sevanjem in ognjem, scitniki za obraz; Elektricne baterije; Elektricni polnilniki za baterije; Zvocni alarmi; Polprevodniki; Opticne svetilke; Elektrodinamicni aparati za daljinsko upravljanje signalov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Antenas; Antenas; Aparatos de radio; Acopladores acústicos; Megáfonos; Estereoscopios; Tomas de red eléctrica, En concreto, Cables y conductores eléctricos; Dispositivos de protección para uso personal frente a accidentes, en concreto, zapatos de protección frente a los accidentes y el fuego, prendas de vestir de protección frente a accidentes, irradiación y fuego, protectores faciales; Pilas eléctricas; Cargadores para baterías eléctricas; Alarmas sonoras; Semiconductores; Linternas ópticas; Aparatos electrodinámicos para el control remoto de señales.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Antenner; Antenner; Radior; Akustiska kopplingsapparater; Megafoner; Stereoskop; Elektriska huvudledningar, Nämligen, Elektriska kablar och ledningar; Skyddsanordningar mot olyckor för personligt bruk, nämligen fotbeklädnader för skydd mot olyckor och brand, kläder för skydd mot olyckor, strålning och brand, ansiktsskydd; Batterier, elektriska; Batteriladdare; Akustiska alarm; Halvledare; Optiska lampor; Elektrodynamiska apparater för fjärrstyrning av signaler.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "HK ZUOYOU INFORMATION LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "HK",
+  "representative": "Katarzyna Binder-Sony",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "12 / F, SanTai Building, 137-139 Connaught Road Central,Hong Kong",
+        "applicantAddressCountryCode": "HK",
+        "applicantAddressCountryName": "Hong Kong",
+        "applicantName": "HK ZUOYOU INFORMATION LIMITED"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "25.05.05",
+      "26.04.03",
+      "26.04.12"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Antény; Antény; Rádia; Akustické vazební cleny; Megafony; Stereoskopy; Elektrické vedení, Jmenovite, Kabely a dráty; Ochranné pomucky pro osobní pouzití proti úrazum, jmenovite obuv pro ochranu pred úrazy a pozárem, odevy pro ochranu pred úrazy, ozárením a pozárem, stíty na ochranu obliceje; Elektrické baterie; Nabíjecky baterií; Zvuková výstrazná zarízení; Polovodice; Optické lampy; Elektrodynamická zarízení pro dálkové rízení signalizace."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Antenner; Antenner; Radioenheder; Akustiske sammenkoblere; Megafoner; Stereoskoper; Elektriske ledninger, Nemlig, Kabler og ledninger; Beskyttelsesindretninger til personlig brug mod ulykker, nemlig fodtøj til beskyttelse mod ulykker og ild, beklædning til beskyttelse mod ulykker, bestråling og ild, ansigtsskærme; Batterier, elektriske; Ladere til elektriske batterier; Lydalarmer; Halvledere; Optiske lanterner; Elektrodynamiske apparater til fjernkontrol af signaler."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Antennes; Antennes; Radio's; Akoestische koppelaars; Megafoons; Stereoscopen; Elektrische hoofdleidingen, Te weten, Kabels en leidingen; Toestellen voor de bescherming van personen tegen ongevallen, te weten schoenen ter bescherming tegen ongevallen en brand, kledingstukken ter bescherming tegen ongevallen, straling en brand, beschermingskappen voor het gezicht; Elektrische batterijen; Acculaders; Akoestische alarminrichtingen; Halfgeleiders; Optische lampen; Elektrodynamische apparatuur voor de bediening op afstand van signalen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Aerials; Antennas; Radios; Acoustic couplers; Megaphones; Stereoscopes; Electricity mains, namely, electric cables and wires; Protection devices for personal use against accidents, namely, shoes for protection against accidents and fire, clothing for protection against accidents, irradiation and fire, face-protection shields; Batteries, electric; Chargers for electric batteries; Sound alarms; Semi-conductors; Optical lanterns; Electro-dynamic apparatus for the remote control of signals."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Antennid; Antennid; Raadiod; Akustilised sidestid, helisidestid; Megafonid, ruuporid; Stereoskoobid; Võrguliinid, Nimelt, Elektrikaablid ja -juhtmed; Individuaalkaitsevahendid õnnetuste vastu, nimelt kaitsejalatsid tule ja õnnetuste vastu, kaitserõivad õnnetuste, kiirguse ja tule vastu, näokaitsesirmid; Elektripatareid; Akulaadurid; Helilised häireseadmed, alarmiseadmed; Pooljuhid; Optilised lambid; Elektrodünaamilised signaalide kaugjuhtimise seadmed."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Antennit; Antennit; Radiolaitteet; Kytkimet, akustiset; Megafonit; Stereoskoopit; Pääjohdot, Nimittäin, Sähkökaapelit ja -johdot; Henkilökohtaiset suojavälineet onnettomuuksien varalta, nimittäin onnettomuuksilta ja tulelta suojaavat suojakengät, vaatteet onnettomuuksilta, säteilyltä ja tulelta suojautumiseen, kasvosuojat; Sähköparistot; Latauslaitteet sähköparistoille; Äänihälyttimet; Puolijohteet; Optiset lyhdyt; Kauko-ohjaukseen käytettävät sähködynaamiset merkinantolaitteet."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Antennes; Antennes; Postes de radio; Coupleurs acoustiques; Mégaphones; Stéréoscopes; Conduites d'électricité, À savoir, Câbles et fils électriques; Dispositifs de protection à usage personnel contre les accidents, à savoir chaussures de protection contre les accidents et le feu, vêtements de protection contre les accidents, les radiations et le feu, écrans de protection faciale; Piles électriques; Chargeurs pour accumulateurs électriques; Avertisseurs acoustiques; Semi-conducteurs; Lanternes optiques; Appareils électrodynamiques pour commande à distance de signaux."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Antennen; Antennen; Rundfunkgeräte; Akustische Koppler; Megafone; Stereoskope; Elektrische Leitungen, Nämlich, Kabel und Drähte; Unfallschutzvorrichtungen für den persönlichen Gebrauch, nämlich Schuhe zum Schutz vor Unfällen und Feuer, Kleidung zum Schutz gegen Unfälle, Strahlen und Feuer, Gesichtsschutzschilde; Elektrische Batterien; Ladegeräte für elektrische Akkumulatoren; Akustische Alarmgeräte; Halbleiter; Optische Lampen; Signalfernsteuergeräte [elektrodynamisch]."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Antene; Antene; Radio uredaji; Akusticni spreznici; Megafoni; Stereoskopi; Elektricni vodovi, Odnosno, Kablovi i zice; Uredaji za zastitu za osobnu uporabu za zastitu od nezgoda, i to obuca za zastitu od nezgoda i pozara, odjeca za zastitu od nezgoda, zracenja i vatre, stitnici za zastitu lica; Elektricne baterije; Punjaci za elektricne baterije; Zvucni alarmi; Poluvodici; Opticke svjetiljke; Elektrodinamicki uredaji za daljinsko upravljanje signalima."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Antennák; Antennák; Rádiók; Akusztikus kapcsolók; Megafonok; Sztereoszkópok; Vezetékek, elektromos, Nevezetesen, Kábelek és vezetékek; Védoeszközök személyek balesetvédelmére, nevezetesen balesetvédelmi biztonsági védolábbelik és baleset- és tuzvédelemre, ruházat balesetek, sugárveszély és tuz megelozésére, arcvédo maszkok; Elektromos elemek, akkumulátorok; Akkumulátor- és elemtöltok; Hangriasztók; Félvezetok; Optikai lámpák; Elektrodinamikai készülékek jelzések, jelzolámpák távirányítására."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Antenne; Antenne; Apparecchi radiofonici; Accoppiatori acustici; Megafoni; Stereoscopi; Reti elettriche, Ovvero, Cavi e fili elettrici; Dispositivi di protezione personale contro gli infortuni, ovvero, calzature protettive contro infortuni e incendi, abbigliamento protettivo contro gli infortuni, le radiazioni e il fuoco, schermi per la protezione del viso; Batterie elettriche; Apparecchi per ricaricare gli accumulatori elettrici; Allarmi acustici; Semiconduttori; Lampade ottiche; Apparecchi elettrodinamici per il telecomando dei segnali."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Antenos; Antenos; Radijo aparatai; Akustinio rysio irenginiai; Megafonai; Stereoskopai; Elektros izoliaciniai vamzdeliai, Butent,, Elektriniai kabeliai ir laidai; Asmenines apsaugos priemones nuo nelaimingu atsitikimu, butent apsauginiai batai nuo nelaimingu atsitikimu ir ugnies, apsauginiai drabuziai nuo nelaimingu atsitikimu, jonizuojancios spinduliuotes ir gaisro, apsaugines veido kaukes; Elektrines baterijos; Bateriju ikrovimo itaisai; Garso signalizatoriai; Puslaidininkiai; Optiniai zibintai; Elektrodinaminiai signalu nuotolinio valdymo aparatai."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Antenas; Antenas; Radiouztvereji; Akustiskas uzmavas; Megafoni; Stereoskopi; Elektribas izolacijas vadi, Proti, Elektriskie kabeli un vadi; Personiskai lietosanai paredzetas ierices aizsardzibai pret nelaimes gadijumiem, proti, apavi aizsardzibai pret nelaimes gadijumiem un uguni, apgerbs aizsardzibai pret nelaimes gadijumiem, starojumu un uguni, sejas aizsargi; Elektriskie akumulatori; Elektrisko bateriju ladetaji; Skanas signalierices; Pusvaditaji; Optiskie gaismekli; Elektrodinamiskie aparati signalu talvadibai."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Erjils; Erjils; Settijiet tar-radju; Konnetturi akustici; Megafoni; Sterjoskopji; Kondjuwits ta' l-elettriku, Jigifieri, Kejbils u wajers; Taghmir ta' protezzjoni ghall-uzu personali kontra incidenti, jigifieri, zraben ghal protezzjoni minn incidenti u nar, hwejjeg ghal protezzjoni minn incidenti, irradjazzjoni u nar, ilqugh ghall-protezzjoni tal-wicc; Batteriji tal-elettriku; Karikaturi ghal batteriji elettrici; Allarmi bil-hsejjes; Semikondutturi; Fanali ottici; Taghmir elettro-dinamiku ghall-kontroll mill-boghod ta' sinjali."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Anteny; Anteny; Radia; Sprzegacze akustyczne; Megafony; Stereoskopy; Elektryczne (przewody -), To znaczy, Kable i przewody elektryczne; Urzadzenia ochronne do uzytku osobistego do ochrony przed wypadkami, mianowicie obuwie ochronne do ochrony przed wypadkami i ogniem, odziez ochronna do ochrony przed wypadkami, napromieniowaniem i ogniem, oslony twarzy; Baterie elektryczne; Ladowarki do baterii; Alarmy dzwiekowe; Pólprzewodniki; Lampy optyczne; Urzadzenia elektrodynamiczne do zdalnego sterowania sygnalami."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Antenas; Antenas; Aparelhos de rádio; Acopladores acústicos; Megafones; Estereoscópios; Condutas (cabos principais) de electricidade, Nomeadamente, Cabos e fios elétricos; Dispositivos de proteção pessoal contra acidentes, especificamente calçado de proteção contra acidentes e fogo, vestuário de proteção contra acidentes, radiações e fogo, viseiras de proteção; Baterias elétricas; Aparelhos para recarga de acumuladores elétricos; Alarmes sonoros; Semicondutores; Lâmpadas óticas; Aparelhos eletrodinâmicos para o controlo remoto de sinalização."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Antene; Antene; Radiouri; Cuploare acustice; Megafoane; Stereoscoape; Retele electrice, Si anume, Cabluri si fire; Dispozitive de protectie, de uz personal, împotriva accidentelor, si anume, încaltaminte de protectie de siguranta împotriva accidentelor si focului, îmbracaminte de protectie împotriva accidentelor, iradierii si focului, viziere de protectie; Baterii galvanice; Alimentatoare pentru acumulatoare; Avertizoare acustice; Semiconductoare; Lanterne optice; Aparate electrodinamice pentru comanda de la distanta a semnalelor."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Antény; Antény; Rádiá; Akustické spriahadlá; Megafóny; Stereoskopy; Elektroinstalacné rúrky, Menovite, Káble a drôty; Osobné ochranné prostriedky proti nehodám, menovite topánky na ochranu pred úrazmi a poziarom, odevy na ochranu pred úrazmi, oziarením a poziarom, stíty na ochranu tváre; Elektrické batérie (clánky); Nabíjacky batérií; Zvukové signálne zariadenia; Polovodice; Optické lampy; Elektrodynamické zariadenia na dialkové ovládanie návestidiel."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Antene; Antene; Radio aparati; Akusticni spoji; Megafoni; Stereoskopi; Elektricni vodi, In sicer, Kabli in zice; Zascitne naprave proti poskodbam za osebno uporabo, in sicer cevlji za zascito pred nesrecami in ognjem, oblacila za zascito pred nesrecami, sevanjem in ognjem, scitniki za obraz; Elektricne baterije; Elektricni polnilniki za baterije; Zvocni alarmi; Polprevodniki; Opticne svetilke; Elektrodinamicni aparati za daljinsko upravljanje signalov."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Antenas; Antenas; Aparatos de radio; Acopladores acústicos; Megáfonos; Estereoscopios; Tomas de red eléctrica, En concreto, Cables y conductores eléctricos; Dispositivos de protección para uso personal frente a accidentes, en concreto, zapatos de protección frente a los accidentes y el fuego, prendas de vestir de protección frente a accidentes, irradiación y fuego, protectores faciales; Pilas eléctricas; Cargadores para baterías eléctricas; Alarmas sonoras; Semiconductores; Linternas ópticas; Aparatos electrodinámicos para el control remoto de señales."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Antenner; Antenner; Radior; Akustiska kopplingsapparater; Megafoner; Stereoskop; Elektriska huvudledningar, Nämligen, Elektriska kablar och ledningar; Skyddsanordningar mot olyckor för personligt bruk, nämligen fotbeklädnader för skydd mot olyckor och brand, kläder för skydd mot olyckor, strålning och brand, ansiktsskydd; Batterier, elektriska; Batteriladdare; Akustiska alarm; Halvledare; Optiska lampor; Elektrodynamiska apparater för fjärrstyrning av signaler."
+        }
+      ]
+    },
+    "id": "27e7eac7-1905-468b-a3b0-d91a9f76f906",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "NO BULGARIAN SUPPORTED",
+        "markImageColourClaimedTextLanguageCode": "bg"
+      },
+      {
+        "markImageColourClaimedText": "Modrá; Cerná.",
+        "markImageColourClaimedTextLanguageCode": "cs"
+      },
+      {
+        "markImageColourClaimedText": "Blå; Sort.",
+        "markImageColourClaimedTextLanguageCode": "da"
+      },
+      {
+        "markImageColourClaimedText": "Blau; Schwarz.",
+        "markImageColourClaimedTextLanguageCode": "de"
+      },
+      {
+        "markImageColourClaimedText": "NO GREEK SUPPORTED",
+        "markImageColourClaimedTextLanguageCode": "el"
+      },
+      {
+        "markImageColourClaimedText": "Blue; Black.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      },
+      {
+        "markImageColourClaimedText": "Azul; Negro.",
+        "markImageColourClaimedTextLanguageCode": "es"
+      },
+      {
+        "markImageColourClaimedText": "Sinine; Must.",
+        "markImageColourClaimedTextLanguageCode": "et"
+      },
+      {
+        "markImageColourClaimedText": "Sininen; Musta.",
+        "markImageColourClaimedTextLanguageCode": "fi"
+      },
+      {
+        "markImageColourClaimedText": "Bleu; Noir.",
+        "markImageColourClaimedTextLanguageCode": "fr"
+      },
+      {
+        "markImageColourClaimedText": "Kék; Fekete.",
+        "markImageColourClaimedTextLanguageCode": "hu"
+      },
+      {
+        "markImageColourClaimedText": "Blu; Nero.",
+        "markImageColourClaimedTextLanguageCode": "it"
+      },
+      {
+        "markImageColourClaimedText": "Melyna; Juoda.",
+        "markImageColourClaimedTextLanguageCode": "lt"
+      },
+      {
+        "markImageColourClaimedText": "Zils; Melns.",
+        "markImageColourClaimedTextLanguageCode": "lv"
+      },
+      {
+        "markImageColourClaimedText": "Blu; Iswed.",
+        "markImageColourClaimedTextLanguageCode": "mt"
+      },
+      {
+        "markImageColourClaimedText": "Blauw; Zwart.",
+        "markImageColourClaimedTextLanguageCode": "nl"
+      },
+      {
+        "markImageColourClaimedText": "Niebieski; Czarny.",
+        "markImageColourClaimedTextLanguageCode": "pl"
+      },
+      {
+        "markImageColourClaimedText": "Azul; Preto.",
+        "markImageColourClaimedTextLanguageCode": "pt"
+      },
+      {
+        "markImageColourClaimedText": "Albastru; Negru.",
+        "markImageColourClaimedTextLanguageCode": "ro"
+      },
+      {
+        "markImageColourClaimedText": "Modrá; Cierna.",
+        "markImageColourClaimedTextLanguageCode": "sk"
+      },
+      {
+        "markImageColourClaimedText": "Modra; Crna.",
+        "markImageColourClaimedTextLanguageCode": "sl"
+      },
+      {
+        "markImageColourClaimedText": "Blått; Svart.",
+        "markImageColourClaimedTextLanguageCode": "sw"
+      }
+    ],
+    "markImageViennaClassification": [
+      "26.04.03",
+      "26.04.09",
+      "26.04.98",
+      "29.01.04"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "46"
+      }
+    ],
+    "recordLastUpdated": "20260828",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "ul. Meissnera 7/26,Warszawa, 03-982",
+        "representativeAddressCountryCode": "PL",
+        "representativeAddressCountryName": "Poland",
+        "representativeName": "Katarzyna Binder-Sony"
+      }
+    ],
+    "secondLanguageCode": "de",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170218",
+        "applicationNumber": "16384844"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270218",
+      "lastPublicationDate": "20170308",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20180927",
+        "registrationNumber": "16384844"
+      }
+    },
+    "version": "20260828020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QODI"
+    }
+  },
+  "_uri": "/mark/em/27e7eac7-1905-468b-a3b0-d91a9f76f906",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:59.113Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

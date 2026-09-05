@@ -1,0 +1,141 @@
+{
+  "uri": "/mark/cn/0699dd87-46e5-479a-be6a-5e715f367b7f",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "0699dd87-46e5-479a-be6a-5e715f367b7f",
+  "applicationNumber": "49939288",
+  "registrationNumber": "49939288",
+  "applicationDate": "2020-09-22",
+  "registrationDate": "2021-09-07",
+  "expiryDate": "2031-09-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-06-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "博日",
+  "markTransliteration": "BO RI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "化学研究,医学实验室服务,气象预报",
+      "translation_language": "en",
+      "translation": "Chemical research, medical laboratory services, weather forecasting"
+    }
+  ],
+  "owner": "Hangzhou Bori Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "浙江省杭州市滨江区高新技术产业开发区滨安路1192号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Hangzhou Bori Technology Co., Ltd.",
+        "applicantNativeName": "杭州博日科技股份有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Chemical research, medical laboratory services, weather forecasting",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "化学研究,医学实验室服务,气象预报"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Chemical research service",
+        "Meteorological information service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4211",
+          "subNatGoodsServicesDescription": "Chemical research service"
+        },
+        {
+          "subNatClassNumber": "4213",
+          "subNatGoodsServicesDescription": "Meteorological information service"
+        }
+      ]
+    },
+    "id": "0699dd87-46e5-479a-be6a-5e715f367b7f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1746"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "超凡知识产权服务股份有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200922",
+        "applicationNumber": "49939288"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310906",
+      "lastPublicationDate": "20210606",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20210907",
+        "registrationNumber": "49939288"
+      }
+    },
+    "version": "20251004064956",
+    "wordMarkSpecification": {
+      "markTransliteration": "BO RI",
+      "markVerbalElementText": "博日"
+    }
+  },
+  "_uri": "/mark/cn/0699dd87-46e5-479a-be6a-5e715f367b7f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.211Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

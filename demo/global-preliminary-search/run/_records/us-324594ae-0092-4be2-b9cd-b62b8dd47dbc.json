@@ -1,0 +1,170 @@
+{
+  "uri": "/mark/us/324594ae-0092-4be2-b9cd-b62b8dd47dbc",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "324594ae-0092-4be2-b9cd-b62b8dd47dbc",
+  "applicationNumber": "99883096",
+  "registrationNumber": null,
+  "applicationDate": "2026-06-13",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "GRAVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Shoes for protection against accidents and fire; Shoes for protection against accidents, irradiation and fire; Protective industrial shoes; Protective industrial footwear; Protective footwear for the prevention of accident or injury",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Taizhou Zhengsheng Cross-border E-commerce Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "XINSHUO WANG",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Room 101, Building 1, No. 89-1, Qingnian South Road, Hailing District, Taizhou, Jiangsu, 225300, CHIN",
+        "applicantAddressCity": "Taizhou, Jiangsu",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantAddressPostalCode": "225300",
+        "applicantAddressStreet": "Room 101, Building 1, No. 89-1, Qingnian South Road, Hailing District",
+        "applicantJurisdictionOfIncorporation": "CHINA",
+        "applicantName": "Taizhou Zhengsheng Cross-border E-commerce Co., Ltd."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Shoes for protection against accidents and fire; Shoes for protection against accidents, irradiation and fire; Protective industrial shoes; Protective industrial footwear; Protective footwear for the prevention of accident or injury"
+        }
+      ]
+    },
+    "id": "324594ae-0092-4be2-b9cd-b62b8dd47dbc",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260613",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20260613",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Room 101, Building 1, No. 89-1, Qingnian South Road, Hailing District, Taizhou, Jiangsu, 225300, CHIN",
+        "city": "Taizhou, Jiangsu",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "name": "Taizhou Zhengsheng Cross-border E-commerce Co., Ltd.",
+        "postalCode": "225300",
+        "street": "Room 101, Building 1, No. 89-1, Qingnian South Road, Hailing District"
+      },
+      {
+        "address": "Room 101, Building 1, No. 89-1, Qingnian South Road, Hailing District, Taizhou, Jiangsu, 225300, CHIN",
+        "city": "Taizhou, Jiangsu",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "name": "Taizhou Zhengsheng Cross-border E-commerce Co., Ltd.",
+        "postalCode": "225300",
+        "street": "Room 101, Building 1, No. 89-1, Qingnian South Road, Hailing District"
+      }
+    ],
+    "recordLastUpdated": "20260617",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Suite 200, San Jose, CA 95131, United States",
+        "representativeCorrespondentAddressLines": [
+          "Suite 200",
+          "San Jose, CA 95131",
+          "United States"
+        ],
+        "representativeCorrespondentName": "XINSHUO WANG NEW UNION LAW, APC, 2570 N. 1st St"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Suite 200, San Jose, CA 95131, United States",
+        "representativeAddressLines": [
+          "Suite 200",
+          "San Jose, CA 95131",
+          "United States"
+        ],
+        "representativeName": "XINSHUO WANG"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260613",
+        "applicationNumber": "99883096"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "NEW APPLICATION - RECORD INITIALIZED NOT ASSIGNED TO EXAMINER",
+        "markOfficialStatusCode": "630",
+        "markOfficialStatusDate": "20260613",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260617093828",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GRAVENOR"
+    }
+  },
+  "_uri": "/mark/us/324594ae-0092-4be2-b9cd-b62b8dd47dbc",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

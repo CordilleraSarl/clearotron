@@ -1,0 +1,104 @@
+{
+  "uri": "/mark/kh/74f71c9f-d70f-4a88-a189-975b56764160",
+  "provider": "clarivate",
+  "office": "kh",
+  "guid": "74f71c9f-d70f-4a88-a189-975b56764160",
+  "applicationNumber": "83772/2019",
+  "registrationNumber": "78382",
+  "applicationDate": "2019-01-22",
+  "registrationDate": "2020-10-14",
+  "expiryDate": "2029-01-22",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "HEAVEN OR HELL",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "FREMANTLEMEDIA LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "STEPHEN STREET LONDON W T AL",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "FREMANTLEMEDIA LIMITED"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41"
+        }
+      ]
+    },
+    "id": "74f71c9f-d70f-4a88-a189-975b56764160",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "KH",
+    "registrationOfficeName": "Cambodia",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190122",
+        "applicationNumber": "83772/2019"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290122",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20201014",
+        "registrationNumber": "78382"
+      }
+    },
+    "version": "20240321101904",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "HEAVEN OR HELL"
+    }
+  },
+  "_uri": "/mark/kh/74f71c9f-d70f-4a88-a189-975b56764160",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,726 @@
+{
+  "schema": 1,
+  "id": "example-euipo-0001",
+  "runId": "tmp0001-venqori-2026-08-11-sample-capture",
+  "slug": "tmp0001-venqori",
+  "codename": "sample-capture",
+  "date": "2026-08-11",
+  "agent": "clawdi",
+  "forwarder": "alex",
+  "ref": "TMP-0001",
+  "markName": "VENQORI",
+  "classes": [
+    9,
+    41
+  ],
+  "state": "delivered",
+  "stepIndex": 8,
+  "stepLabel": "Sending to you",
+  "stepN": 9,
+  "stepTotal": 9,
+  "lastStage": "publish",
+  "verdict": "CONDITIONAL",
+  "url": null,
+  "failedStage": null,
+  "reason": null,
+  "deliveredAt": "2026-08-11T09:04:25.604Z",
+  "attempts": 1,
+  "updatedAt": "2026-08-11T09:04:25.604Z",
+  "startedAt": "2026-08-11T06:28:58.751Z",
+  "providerUsage": {
+    "euipo": {
+      "search": 0,
+      "record_fetch": 27,
+      "image": 0,
+      "phoneme": 0,
+      "batch_screen": 0,
+      "enumerate": 0,
+      "execute_plan": 185,
+      "propose_supplemental": 2,
+      "total": 214,
+      "by_tool": {
+        "execute_plan": 185,
+        "propose_supplemental": 2,
+        "record_fetch": 27
+      },
+      "unclassified": 0,
+      "ledger": {
+        "configured": true,
+        "present": true,
+        "readable": true,
+        "rowsScanned": 214
+      },
+      "retries": 0,
+      "errors": 0,
+      "cache_hits": 0,
+      "bytes": 1559647,
+      "duplicate_fetches": 0,
+      "duplicate_fetches_same_session": 0,
+      "duplicate_fetches_cross_session": 0
+    }
+  },
+  "tokens": {
+    "total": {
+      "input": 5897,
+      "output": 605156,
+      "cacheRead": 66087747,
+      "cacheWrite": 3409937,
+      "attempts": 37,
+      "thoughtTurns": 35
+    },
+    "byStage": {
+      "blind-frame": {
+        "input": 352,
+        "output": 16863,
+        "cacheRead": 275428,
+        "cacheWrite": 39004,
+        "attempts": 1,
+        "thoughtTurns": 1
+      },
+      "common-law-half:a": {
+        "input": 254,
+        "output": 21152,
+        "cacheRead": 2110533,
+        "cacheWrite": 150029,
+        "attempts": 2,
+        "thoughtTurns": 2
+      },
+      "common-law-half:b": {
+        "input": 322,
+        "output": 23249,
+        "cacheRead": 2753195,
+        "cacheWrite": 156324,
+        "attempts": 2,
+        "thoughtTurns": 2
+      },
+      "common-law-half:m": {
+        "input": 156,
+        "output": 71091,
+        "cacheRead": 14281217,
+        "cacheWrite": 226602,
+        "attempts": 1,
+        "thoughtTurns": 1
+      },
+      "doubt-closure": {
+        "input": 6,
+        "output": 11570,
+        "cacheRead": 161721,
+        "cacheWrite": 68457,
+        "attempts": 1,
+        "thoughtTurns": 1
+      },
+      "frame-diff": {
+        "input": 22,
+        "output": 12882,
+        "cacheRead": 1065799,
+        "cacheWrite": 102914,
+        "attempts": 2,
+        "thoughtTurns": 1
+      },
+      "matter-frame": {
+        "input": 37,
+        "output": 24839,
+        "cacheRead": 777958,
+        "cacheWrite": 96957,
+        "attempts": 2,
+        "thoughtTurns": 2
+      },
+      "narrative-refutation": {
+        "input": 85,
+        "output": 63698,
+        "cacheRead": 5401509,
+        "cacheWrite": 282085,
+        "attempts": 2,
+        "thoughtTurns": 2
+      },
+      "placement-inquiry": {
+        "input": 68,
+        "output": 62344,
+        "cacheRead": 5008240,
+        "cacheWrite": 190451,
+        "attempts": 1,
+        "thoughtTurns": 1
+      },
+      "prelim-variants": {
+        "input": 29,
+        "output": 37302,
+        "cacheRead": 1243466,
+        "cacheWrite": 97519,
+        "attempts": 1,
+        "thoughtTurns": 1
+      },
+      "register-digest": {
+        "input": 164,
+        "output": 81963,
+        "cacheRead": 14483377,
+        "cacheWrite": 499597,
+        "attempts": 2,
+        "thoughtTurns": 2
+      },
+      "register-unit:incumbent-class": {
+        "input": 22,
+        "output": 7026,
+        "cacheRead": 1209895,
+        "cacheWrite": 172311,
+        "attempts": 1,
+        "thoughtTurns": 1
+      },
+      "register-unit:primary-sweep": {
+        "input": 4154,
+        "output": 26107,
+        "cacheRead": 2540942,
+        "cacheWrite": 223232,
+        "attempts": 3,
+        "thoughtTurns": 3
+      },
+      "register-unit:saturation-probe": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "register-unit:transliteration-numeric": {
+        "input": 20,
+        "output": 8577,
+        "cacheRead": 684452,
+        "cacheWrite": 96307,
+        "attempts": 1,
+        "thoughtTurns": 1
+      },
+      "report-card:1": {
+        "input": 6,
+        "output": 2941,
+        "cacheRead": 137622,
+        "cacheWrite": 37000,
+        "attempts": 1,
+        "thoughtTurns": 1
+      },
+      "report-card:10": {
+        "input": 6,
+        "output": 1648,
+        "cacheRead": 137207,
+        "cacheWrite": 35526,
+        "attempts": 1,
+        "thoughtTurns": 1
+      },
+      "report-card:2": {
+        "input": 6,
+        "output": 1450,
+        "cacheRead": 138596,
+        "cacheWrite": 36036,
+        "attempts": 1,
+        "thoughtTurns": 1
+      },
+      "report-card:3": {
+        "input": 6,
+        "output": 1793,
+        "cacheRead": 134436,
+        "cacheWrite": 32475,
+        "attempts": 1,
+        "thoughtTurns": 1
+      },
+      "report-card:4": {
+        "input": 4,
+        "output": 1287,
+        "cacheRead": 75248,
+        "cacheWrite": 19633,
+        "attempts": 1,
+        "thoughtTurns": 1
+      },
+      "report-card:5": {
+        "input": 4,
+        "output": 1521,
+        "cacheRead": 75576,
+        "cacheWrite": 20142,
+        "attempts": 1,
+        "thoughtTurns": 1
+      },
+      "report-card:6": {
+        "input": 8,
+        "output": 1253,
+        "cacheRead": 193139,
+        "cacheWrite": 31701,
+        "attempts": 1,
+        "thoughtTurns": 1
+      },
+      "report-card:7": {
+        "input": 4,
+        "output": 1519,
+        "cacheRead": 75649,
+        "cacheWrite": 20253,
+        "attempts": 1,
+        "thoughtTurns": 1
+      },
+      "report-card:8": {
+        "input": 6,
+        "output": 1540,
+        "cacheRead": 137967,
+        "cacheWrite": 35755,
+        "attempts": 1,
+        "thoughtTurns": 1
+      },
+      "report-card:9": {
+        "input": 6,
+        "output": 1084,
+        "cacheRead": 138045,
+        "cacheWrite": 35384,
+        "attempts": 1,
+        "thoughtTurns": 1
+      },
+      "report-overview": {
+        "input": 6,
+        "output": 3949,
+        "cacheRead": 155493,
+        "cacheWrite": 111671,
+        "attempts": 1,
+        "thoughtTurns": 1
+      },
+      "skeptic": {
+        "input": 16,
+        "output": 21272,
+        "cacheRead": 642438,
+        "cacheWrite": 147738,
+        "attempts": 1,
+        "thoughtTurns": 1
+      },
+      "synthesis": {
+        "input": 128,
+        "output": 95236,
+        "cacheRead": 12048599,
+        "cacheWrite": 444834,
+        "attempts": 2,
+        "thoughtTurns": 2
+      }
+    },
+    "byModel": {
+      "anthropic/claude-opus-5": {
+        "input": 863,
+        "output": 382245,
+        "cacheRead": 39238577,
+        "cacheWrite": 1650447,
+        "attempts": 11,
+        "thoughtTurns": 11
+      },
+      "anthropic/claude-haiku-4-5": {
+        "input": 576,
+        "output": 44401,
+        "cacheRead": 4863728,
+        "cacheWrite": 306353,
+        "attempts": 4,
+        "thoughtTurns": 4
+      },
+      "anthropic/claude-sonnet-5": {
+        "input": 4458,
+        "output": 178510,
+        "cacheRead": 21985442,
+        "cacheWrite": 1453137,
+        "attempts": 21,
+        "thoughtTurns": 20
+      },
+      "code": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      }
+    },
+    "byEngine": {
+      "anthropic-agent": {
+        "input": 5897,
+        "output": 605156,
+        "cacheRead": 66087747,
+        "cacheWrite": 3409937,
+        "attempts": 36,
+        "thoughtTurns": 35
+      },
+      "unknown": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      }
+    },
+    "byAuthMode": {
+      "subscription": {
+        "input": 5897,
+        "output": 605156,
+        "cacheRead": 66087747,
+        "cacheWrite": 3409937,
+        "attempts": 36,
+        "thoughtTurns": 35
+      },
+      "unknown": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      }
+    }
+  },
+  "economics": {
+    "phase": "delivered",
+    "schemaVersion": 1,
+    "modelBasis": "requested",
+    "dispatchCensus": {
+      "total": 37,
+      "measured": 36,
+      "streamed": 0,
+      "unmeasured": 0,
+      "codeSide": 1
+    },
+    "tokens": {
+      "input": 5897,
+      "output": 605156,
+      "cacheWrite": 3409937,
+      "cacheRead": 66087747
+    },
+    "tokensComplete": true,
+    "byBilling": {
+      "anthropic-agent|subscription|anthropic/claude-opus-5": {
+        "engine": "anthropic-agent",
+        "authMode": "subscription",
+        "model": "anthropic/claude-opus-5",
+        "dispatches": 11,
+        "tokens": {
+          "input": 863,
+          "output": 382245,
+          "cacheWrite": 1650447,
+          "cacheRead": 39238577
+        }
+      },
+      "anthropic-agent|subscription|anthropic/claude-haiku-4-5": {
+        "engine": "anthropic-agent",
+        "authMode": "subscription",
+        "model": "anthropic/claude-haiku-4-5",
+        "dispatches": 4,
+        "tokens": {
+          "input": 576,
+          "output": 44401,
+          "cacheWrite": 306353,
+          "cacheRead": 4863728
+        }
+      },
+      "anthropic-agent|subscription|anthropic/claude-sonnet-5": {
+        "engine": "anthropic-agent",
+        "authMode": "subscription",
+        "model": "anthropic/claude-sonnet-5",
+        "dispatches": 21,
+        "tokens": {
+          "input": 4458,
+          "output": 178510,
+          "cacheWrite": 1453137,
+          "cacheRead": 21985442
+        }
+      },
+      "code|not-provider-billed|code:execute-plan": {
+        "engine": "code",
+        "authMode": "not-provider-billed",
+        "model": "code:execute-plan",
+        "dispatches": 1,
+        "tokens": {
+          "input": 0,
+          "output": 0,
+          "cacheWrite": 0,
+          "cacheRead": 0
+        }
+      }
+    },
+    "emittedVsLanded": {
+      "emittedOutputTokens": 605156,
+      "landedBytes": 297912,
+      "landedBytesFromStages": 28,
+      "stagesWithoutLandedRecord": [
+        "reading-log",
+        "record-discard"
+      ],
+      "landedShareIsFloor": true,
+      "landedShare": 0.1231,
+      "landedShareBasis": "landedBytes / (emittedOutputTokens * bytesPerOutputTokenAssumed)",
+      "bytesPerOutputTokenAssumed": 4,
+      "emittedOnDispatchesThatWroteNothing": 12631,
+      "thinkingNotSeparable": "thinking is billed inside output_tokens and is never broken out (engine/CONTRACT.md §2) — it sits inside the not-landed share and cannot be split from discarded prose",
+      "thoughtTurns": 35
+    },
+    "emittedVsLandedByStage": {
+      "blind-frame": {
+        "emittedOutputTokens": 16863,
+        "landedBytes": 19190,
+        "landedShare": 0.2845,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "common-law-half:a": {
+        "emittedOutputTokens": 21152,
+        "landedBytes": 26152,
+        "landedShare": 0.3091,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "common-law-half:b": {
+        "emittedOutputTokens": 23249,
+        "landedBytes": 23519,
+        "landedShare": 0.2529,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "common-law-half:m": {
+        "emittedOutputTokens": 71091,
+        "landedBytes": 7234,
+        "landedShare": 0.0254,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "doubt-closure": {
+        "emittedOutputTokens": 11570,
+        "landedBytes": 10344,
+        "landedShare": 0.2235,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "frame-diff": {
+        "emittedOutputTokens": 12882,
+        "landedBytes": 6993,
+        "landedShare": 0.1357,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "matter-frame": {
+        "emittedOutputTokens": 24839,
+        "landedBytes": 11058,
+        "landedShare": 0.1113,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "narrative-refutation": {
+        "emittedOutputTokens": 63698,
+        "landedBytes": 12415,
+        "landedShare": 0.0487,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "placement-inquiry": {
+        "emittedOutputTokens": 62344,
+        "landedBytes": 36997,
+        "landedShare": 0.1484,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "prelim-variants": {
+        "emittedOutputTokens": 37302,
+        "landedBytes": 28404,
+        "landedShare": 0.1904,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "reading-log": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
+      "record-discard": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
+      "register-digest": {
+        "emittedOutputTokens": 81963,
+        "landedBytes": 59251,
+        "landedShare": 0.1807,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "register-unit:incumbent-class": {
+        "emittedOutputTokens": 7026,
+        "landedBytes": 2427,
+        "landedShare": 0.0864,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "register-unit:primary-sweep": {
+        "emittedOutputTokens": 26107,
+        "landedBytes": 4662,
+        "landedShare": 0.0446,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "register-unit:saturation-probe": {
+        "emittedOutputTokens": 0,
+        "landedBytes": 823,
+        "landedShare": null,
+        "landedShareReason": "the stage journalled no emitted output tokens to compare against",
+        "tokensComplete": true
+      },
+      "register-unit:transliteration-numeric": {
+        "emittedOutputTokens": 8577,
+        "landedBytes": 2457,
+        "landedShare": 0.0716,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:1": {
+        "emittedOutputTokens": 2941,
+        "landedBytes": 1568,
+        "landedShare": 0.1333,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:10": {
+        "emittedOutputTokens": 1648,
+        "landedBytes": 1008,
+        "landedShare": 0.1529,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:2": {
+        "emittedOutputTokens": 1450,
+        "landedBytes": 1852,
+        "landedShare": 0.3193,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:3": {
+        "emittedOutputTokens": 1793,
+        "landedBytes": 1628,
+        "landedShare": 0.227,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:4": {
+        "emittedOutputTokens": 1287,
+        "landedBytes": 1245,
+        "landedShare": 0.2418,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:5": {
+        "emittedOutputTokens": 1521,
+        "landedBytes": 1251,
+        "landedShare": 0.2056,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:6": {
+        "emittedOutputTokens": 1253,
+        "landedBytes": 1145,
+        "landedShare": 0.2285,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:7": {
+        "emittedOutputTokens": 1519,
+        "landedBytes": 1516,
+        "landedShare": 0.2495,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:8": {
+        "emittedOutputTokens": 1540,
+        "landedBytes": 1279,
+        "landedShare": 0.2076,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:9": {
+        "emittedOutputTokens": 1084,
+        "landedBytes": 1303,
+        "landedShare": 0.3005,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-overview": {
+        "emittedOutputTokens": 3949,
+        "landedBytes": 2083,
+        "landedShare": 0.1319,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "skeptic": {
+        "emittedOutputTokens": 21272,
+        "landedBytes": 5299,
+        "landedShare": 0.0623,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "synthesis": {
+        "emittedOutputTokens": 95236,
+        "landedBytes": 24809,
+        "landedShare": 0.0651,
+        "landedShareReason": null,
+        "tokensComplete": true
+      }
+    },
+    "quotedVsActual": {
+      "quoted": {
+        "unitsVersion": 2,
+        "pipeline": "clearance",
+        "raw": 32.2,
+        "units": 7,
+        "costBand": 4,
+        "searches": 1,
+        "checksPerName": 4,
+        "gridCalls": 1,
+        "turnaroundHours": 2,
+        "turnaround": "~2 hours"
+      },
+      "quoteSource": "_driver/run.jsonl:{event:\"quote\"}",
+      "quoteReason": null,
+      "unitsVersion": 2,
+      "dimensions": {
+        "turnaroundHours": {
+          "quoted": 2,
+          "actual": 2.59,
+          "ratio": 1.29,
+          "actualBasis": "wall:status.startedAt→terminal",
+          "actualIncludesParked": true,
+          "reason": null
+        },
+        "units": {
+          "quoted": 7,
+          "actual": null,
+          "reason": "an owner-relative 1-10 estimate scale — nothing the run produces is denominated in it"
+        },
+        "raw": {
+          "quoted": 32.2,
+          "actual": null,
+          "reason": "the absolute effort estimate — an input to the scale, not a physical quantity the run emits"
+        },
+        "costBand": {
+          "quoted": 4,
+          "actual": null,
+          "reason": "a 1-5 display band derived from the estimate — no measured counterpart exists"
+        },
+        "searches": {
+          "quoted": 1,
+          "actual": null,
+          "reason": "quoted searches are PRODUCT units (what the customer bought); no run artifact records a comparable count, and mapping them onto provider calls or model dispatches would be an invented correspondence"
+        },
+        "gridCalls": {
+          "quoted": 1,
+          "actual": null,
+          "reason": "quoted grid calls are a sizing term; the provider-call ledger counts calls of a different shape and the two are not 1:1"
+        },
+        "checksPerName": {
+          "quoted": 4,
+          "actual": null,
+          "reason": "a per-name marketplace fan-out constant, not an outcome"
+        }
+      },
+      "measurable": 1,
+      "unmeasurable": 6
+    }
+  },
+  "statement": "Manageable — conditional on: A live EU class-9 registration for QORI, the applied-for mark's second element, stands on the register searched.",
+  "sendPending": true
+}

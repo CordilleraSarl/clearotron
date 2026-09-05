@@ -57,8 +57,16 @@ import { atomicWrite } from "../driver/progress.mjs";
 import { accessView } from "../driver/portal-config-view.mjs";
 import { makePrincipal } from "../driver/portal-access.mjs";
 import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
+import { defaultGrantsPath } from "./start.mjs";       // — one owner for the roster's path
 
-const FILE = envFrom(process.env, "CLEAROTRON_ACCESS_FILE") || "";
+// — bb8's F13. This read the variable and nothing else, so it refused with
+// "Set CLEAROTRON_ACCESS_FILE" — a name NOTHING writes. `start` injects it into the environment of the
+// services it supervises and never persists it, so the door found the roster and this command, run in
+// the operator's own shell, could not. Enrolling a client had no working path at all.
+//
+// The default comes from installPaths' own owner rather than being recomputed here: a second opinion
+// about the same path drifts the first time anyone moves the base.
+const FILE = defaultGrantsPath();
 
 const die = (msg, code = 1) => { console.error(msg); process.exit(code); };
 const out = (msg) => console.log(msg);
@@ -66,8 +74,7 @@ const out = (msg) => console.log(msg);
 /** The grants file, or a stated refusal. NEVER an invented empty one — a typo in the path would then
  *  silently create a second guest list nobody reads. */
 function readGrants() {
-  if (!FILE) die("No guest list configured. Set CLEAROTRON_ACCESS_FILE to the grants file the portal reads.");
-  if (!existsSync(FILE)) die(`No guest list at ${FILE}. \`npm start\` writes an empty one at install; point CLEAROTRON_ACCESS_FILE at it, or create it as {"tenants":{}}.`);
+  if (!existsSync(FILE)) die(`No guest list at ${FILE}. \`clearotron start\` writes an empty one the first time it runs — start the product once, or set CLEAROTRON_ACCESS_FILE if your roster lives elsewhere.`);
   let g;
   try { g = JSON.parse(readFileSync(FILE, "utf8")); }
   catch (e) { die(`${basename(FILE)} is not valid JSON (${e.message}). Refusing to touch it — fix it by hand, or the portal will 500 on every request until you do.`); }
@@ -177,12 +184,37 @@ if (cmd === "add") {
   // The route exists — it is the file — and `grant --help` documents it. What was missing is that the
   // refusal which STOPS you did not carry it, so the shape of the object is printed here, against this
   // install's own path, rather than left to a reader to find in another command's help.
-  if (!tenants[tenant]) die(`No tenant "${tenant}". It must already exist with its accounts — this command grants access to a tenant, it does not create one.
-Tenants: ${Object.keys(tenants).join(", ") || "(none)"}
+  // — bb8's F13. THE FIRST TENANT IS CREATED HERE. Before this, enrolling anyone
+  // on a fresh install ran out of road: the file is {"tenants":{}}, `brandowner` does not write tenants,
+  // and this command refused because none existed. 2176's F38 fix printed the JSON shape into the
+  // refusal, which is better than a bare stop and still asks a person to hand-edit the file the product
+  // is meant to manage.
+  //
+  // ONLY WHEN THE ROSTER IS EMPTY, and that limit is the point. Creating on any unknown name would mean
+  // a typo mints a tenant nobody meant, silently, in the file the door reads — so once there is a roster
+  // to typo against, the refusal stays and lists what exists.
+  const firstTenant = !tenants[tenant] && Object.keys(tenants).length === 0;
+  if (firstTenant) {
+    // `--accounts` is already required by the usage check above, so there is no second guard for it
+    // here: a branch that cannot be reached reads as protection and provides none.
+    //
+    // SEEDED FROM --accounts, not created empty. Created empty, the very next check — "tenant does not
+    // hold <key>" — refuses, nothing is written, and the first tenant can never be granted anything:
+    // the dead end moves one line down rather than closing. Found by driving the enrolment rather than
+    // reading the diff. For a tenant that does not exist yet, the accounts this grant names ARE the
+    // accounts the tenant covers; a narrower set for the user comes from editing it afterwards.
+    tenants[tenant] = {
+      accounts: accountsArg === "*" ? "*" : accountsArg.split(",").map((x) => x.trim()).filter(Boolean),
+      users: {},
+    };
+    out(`Creating the first tenant "${tenant}" in ${FILE}, holding: ${accountsArg}`);
+  }
+  if (!tenants[tenant]) die(`No tenant "${tenant}". It must already exist with its accounts — this command grants access to a tenant, and it creates one only when there are none at all, so that a typo cannot mint a tenant nobody meant.
+Tenants: ${Object.keys(tenants).join(", ")}
 
-No command creates one yet. Add it to ${FILE} — the shape is:
+To add another, put it in ${FILE} — the shape is:
     { "tenants": { "${tenant}": { "accounts": ["<brand-owner-key>"], "users": {} } } }
-"accounts" holds the brand-owner keys this tenant may act for; \`clearotron brandowner list\` names the ones this install has. Then run this command again.`);
+"accounts" holds the brand-owner keys this tenant may act for; \`clearotron doctor\` names the ones this install has, under "brand owner(s) resolve here". Then run this command again.`);
 
   const before = JSON.parse(JSON.stringify(grants));
   const value = accountsArg === "*" ? "*" : accountsArg.split(",").map((s) => s.trim()).filter(Boolean);

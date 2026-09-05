@@ -1,0 +1,361 @@
+{
+  "uri": "/mark/us/e628a2b3-3ede-41ff-a7a0-7077b2ae16d1",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "e628a2b3-3ede-41ff-a7a0-7077b2ae16d1",
+  "applicationNumber": "97277899",
+  "registrationNumber": null,
+  "applicationDate": "2022-02-22",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2023-04-13",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "QORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    36,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Downloadable computer software for mobile payments; Downloadable computer software for blockchain technology; Downloadable computer software for facilitating payment transactions by electronic means; Downloadable computer software for online payments; Downloadable computer software for generating cryptographic keys for receiving and spending cryptocurrency; Downloadable mobile applications for mobile payments (allowing brick and mortar merchants to accept bank2bank and crypto2fiat payments on their phone or tablet); Downloadable mobile operating system software; none of the aforesaid in connection with investment management, investment funds, financial indices, investment advice or retirement planning",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Advertising, marketing and promotion services; Business administration of consumer loyalty programs; Business advisory services, consultancy and information; Incentive award programs to promote the sale of products and services of others; Promoting the goods and services of others by means of a loyalty rewards card scheme; Providing commercial information and advice for consumers in the choice of products and services; none of the aforesaid in connection with investment management, investment funds, financial indices, investment advice or retirement planning",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": null,
+      "description": "INT. CL. 36 Banking services; Bill payment services provided via an electronic wallet; Credit and cash card payment processing services; Cryptocurrency exchange services featuring blockchain technology; Financial exchange; Financial exchange of virtual currency; Financial transaction services, namely, providing secure commercial transactions and payment options; Financing services; Internet banking services; Issuance of credit cards; Issue of tokens of value; On-line banking services; Processing of credit card payments; Processing of electronic wallet payments; Providing electronic processing of credit card transactions and electronic payments via a global computer network; none of the aforesaid in connection with investment management, investment funds, financial indices, investment advice or retirement planning",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Computer programming; Computer software development; Platform as a service (PAAS) featuring computer software platforms for payments; Software as a service (SAAS) services featuring software for payments; Software design and development; none of the aforesaid in connection with investment management, investment funds, financial indices, investment advice or retirement planning",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Firepay Merchant Services",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "Marek Krizka",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "25, Rue de Ponthieu, Paris, 75008, FRAN",
+        "applicantAddressCity": "Paris",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantAddressPostalCode": "75008",
+        "applicantAddressStreet": "25, Rue de Ponthieu",
+        "applicantJurisdictionOfIncorporation": "FRANCE",
+        "applicantLegalEntity": "Private shares company",
+        "applicantName": "Firepay Merchant Services"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "26.05.10",
+      "26.05.37",
+      "26.07.10",
+      "26.09.10",
+      "27.03.01",
+      "30.01.17",
+      "30.05.01",
+      "30.05.05",
+      "30.05.08"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Downloadable computer software for mobile payments; Downloadable computer software for blockchain technology; Downloadable computer software for facilitating payment transactions by electronic means; Downloadable computer software for online payments; Downloadable computer software for generating cryptographic keys for receiving and spending cryptocurrency; Downloadable mobile applications for mobile payments (allowing brick and mortar merchants to accept bank2bank and crypto2fiat payments on their phone or tablet); Downloadable mobile operating system software; none of the aforesaid in connection with investment management, investment funds, financial indices, investment advice or retirement planning"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Advertising, marketing and promotion services; Business administration of consumer loyalty programs; Business advisory services, consultancy and information; Incentive award programs to promote the sale of products and services of others; Promoting the goods and services of others by means of a loyalty rewards card scheme; Providing commercial information and advice for consumers in the choice of products and services; none of the aforesaid in connection with investment management, investment funds, financial indices, investment advice or retirement planning"
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsServicesDescription": "INT. CL. 36 Banking services; Bill payment services provided via an electronic wallet; Credit and cash card payment processing services; Cryptocurrency exchange services featuring blockchain technology; Financial exchange; Financial exchange of virtual currency; Financial transaction services, namely, providing secure commercial transactions and payment options; Financing services; Internet banking services; Issuance of credit cards; Issue of tokens of value; On-line banking services; Processing of credit card payments; Processing of electronic wallet payments; Providing electronic processing of credit card transactions and electronic payments via a global computer network; none of the aforesaid in connection with investment management, investment funds, financial indices, investment advice or retirement planning"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Computer programming; Computer software development; Platform as a service (PAAS) featuring computer software platforms for payments; Software as a service (SAAS) services featuring software for payments; Software design and development; none of the aforesaid in connection with investment management, investment funds, financial indices, investment advice or retirement planning"
+        }
+      ]
+    },
+    "id": "e628a2b3-3ede-41ff-a7a0-7077b2ae16d1",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20230428",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20230428",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20230428",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20230112",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20230112",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20230112",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20221206",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20220502",
+        "descriptionText": "TEAS AMENDMENT ENTERED BEFORE ATTORNEY ASSIGNED"
+      },
+      {
+        "date": "20220502",
+        "descriptionText": "TEAS VOLUNTARY AMENDMENT RECEIVED"
+      },
+      {
+        "date": "20220301",
+        "descriptionText": "NOTICE OF DESIGN SEARCH CODE E-MAILED"
+      },
+      {
+        "date": "20220228",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20220225",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Color is not claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of the word \"qori\" represented in a stylized font and a design consisting of the graphic representation of a 3D geometrical shape before the name. The geometrical shape is a rhombus which is slightly overlapped with a triangle in the lower right corner. Therefore the shape resembles the letter \"q\".",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "25, Rue de Ponthieu, Paris, 75008, FRAN",
+        "city": "Paris",
+        "countryCode": "FR",
+        "countryName": "France",
+        "jurisdictionOfIncorporation": "FRANCE",
+        "legalEntity": "Private shares company",
+        "name": "Firepay Merchant Services",
+        "postalCode": "75008",
+        "street": "25, Rue de Ponthieu"
+      },
+      {
+        "address": "25, Rue de Ponthieu, Paris, 75008, FRAN",
+        "city": "Paris",
+        "countryCode": "FR",
+        "countryName": "France",
+        "jurisdictionOfIncorporation": "FRANCE",
+        "legalEntity": "Private shares company",
+        "name": "Firepay Merchant Services",
+        "postalCode": "75008",
+        "street": "25, Rue de Ponthieu"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "88371547",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "QUORI",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "88501740",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "KORE",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "88501745",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "KORE",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "88371547",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "QUORI",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "88501740",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "KORE",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "88501745",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "KORE",
+            "refusalStatus": "Cited"
+          }
+        ],
+        "refusalStatus": "Refused"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "NEW YORK, NY 10022, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "NEW YORK, NY 10022",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Marek Krizka, 477 MADISSON AVENUE, 6TH FLOOR"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "NEW YORK, NY 10022, UNITED STATES",
+        "representativeAddressLines": [
+          "NEW YORK, NY 10022",
+          "UNITED STATES"
+        ],
+        "representativeName": "Marek Krizka"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20230413",
+      "active": false,
+      "application": {
+        "applicationDate": "20220222",
+        "applicationNumber": "97277899"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "202110"
+        },
+        {
+          "firstUsedClass": "35",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "202110"
+        },
+        {
+          "firstUsedClass": "36",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "202110"
+        },
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "202110"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "202110"
+        },
+        {
+          "firstUsedCommerceClass": "35",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "202110"
+        },
+        {
+          "firstUsedCommerceClass": "36",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "202110"
+        },
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "202110"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20230428",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260113081512",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORI"
+    }
+  },
+  "_uri": "/mark/us/e628a2b3-3ede-41ff-a7a0-7077b2ae16d1",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.393Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

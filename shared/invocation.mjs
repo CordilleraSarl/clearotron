@@ -188,3 +188,21 @@ export const invoke = (verb, argv1 = process.argv[1] ?? "", env = process.env, i
  * and for somebody who already has it, names the exact runnable form.
  */
 export const bareInvocation = (verb) => `clearotron ${verb}`;
+
+/**
+ * Refuse a prompt when there is nobody to answer it.
+ *
+ * — bb8's F14 item 5. `install` has said this since it was written; `connect`
+ * and `disconnect` prompt through readline and did not, so piped or redirected they read EOF and took
+ * it as an answer. `install`'s exit code and wording are the model, and this is that model shared
+ * rather than copied a third time.
+ *
+ * Called at the PROMPT, never at entry: both commands have `--list` and `--dry-run`, which are
+ * legitimately scriptable, and a guard at the top would break them.
+ */
+export function requireInteractive({ verb, stdin = process.stdin, exit = (c) => process.exit(c), err = console.error }) {
+  if (stdin.isTTY) return;
+  err(`\n${verb}: this step asks a question and stdin is not a terminal.\n`
+    + "Run it in a terminal. `--list` and `--dry-run` need no answer and work either way.\n");
+  exit(2);
+}

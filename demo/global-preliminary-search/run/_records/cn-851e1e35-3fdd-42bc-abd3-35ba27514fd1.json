@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/cn/851e1e35-3fdd-42bc-abd3-35ba27514fd1",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "851e1e35-3fdd-42bc-abd3-35ba27514fd1",
+  "applicationNumber": "8604820",
+  "registrationNumber": "8604820",
+  "applicationDate": "2010-08-24",
+  "registrationDate": "2011-09-07",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2011-06-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2023-12-20",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "文科理科",
+  "markTransliteration": "WEN KE LI KE",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "眼镜链;擦眼镜布;眼镜盒;眼镜玻璃;眼镜架;眼镜;隐形眼镜;太阳镜",
+      "translation_language": "en",
+      "translation": "glasses chain; glasses cloth; glasses case; glasses glass; glasses frame; glasses; contact lenses; sunglasses"
+    }
+  ],
+  "owner": "Shenzhen Xinsiya Underwear Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市龙岗区布吉街道松元头建华工业小区综合楼5栋第3层",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Xinsiya Underwear Co., Ltd.",
+        "applicantNativeName": "深圳市新思雅内衣有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "glasses chain; glasses cloth; glasses case; glasses glass; glasses frame; glasses; contact lenses; sunglasses",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "眼镜链;擦眼镜布;眼镜盒;眼镜玻璃;眼镜架;眼镜;隐形眼镜;太阳镜"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Glasses and those accessories"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        }
+      ]
+    },
+    "id": "851e1e35-3fdd-42bc-abd3-35ba27514fd1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1266"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京派诚商标代理有限公司"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20100824",
+        "applicationNumber": "8604820"
+      },
+      "cancellationDate": "20231220",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20110606",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20110907",
+        "registrationNumber": "8604820"
+      }
+    },
+    "version": "20251002012551",
+    "wordMarkSpecification": {
+      "markTransliteration": "WEN KE LI KE",
+      "markVerbalElementText": "文科理科"
+    }
+  },
+  "_uri": "/mark/cn/851e1e35-3fdd-42bc-abd3-35ba27514fd1",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:58.826Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-transliteration-numeric"
+  }
+}

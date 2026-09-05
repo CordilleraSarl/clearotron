@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/tr/6949ceb0-adcd-4b87-a399-ef250ce3bab2",
+  "provider": "clarivate",
+  "office": "tr",
+  "guid": "6949ceb0-adcd-4b87-a399-ef250ce3bab2",
+  "applicationNumber": "2019/68580",
+  "registrationNumber": "2019 68580",
+  "applicationDate": "2019-07-19",
+  "registrationDate": null,
+  "expiryDate": "2029-07-19",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-01-31",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "cangüven organizasyon",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "tr",
+      "description": "Eğitim ve öğretim hizmetleri. Sempozyum, konferans, kongre ve seminer düzenleme, idare hizmetleri. Spor, kültür ve eğlence hizmetleri (sinema, spor karşılaşmaları, tiyatro, müze, konser gibi kültür ve eğlence etkinlikleri için bilet sağlama hizmetleri dahil). Dergi, kitap, gazete v.b.gibi yayınların basıma hazır hale getirilmesi, okuyucuya ulaştırılmasına ilişkin hizmetler (global iletişim ağları vasıtasıyla anılan hizmetlerin sağlanması da dahil). Film, televizyon ve radyo programları yapım hizmetleri. Haber muhabirliği hizmetleri, foto-muhabirliği hizmetleri. Fotoğrafçılık hizmetleri. Tercüme hizmetleri.",
+      "translation_language": "en",
+      "translation": "Education and training services. Symposium, conference, congress and seminar organization, administration services. Sports, cultural and entertainment services (including ticketing services for cultural and entertainment events such as cinema, sports events, theatre, museums, concerts). Services related to the preparation of publications such as magazines, books, newspapers, etc., and their delivery to the reader (including the provision of the aforementioned services through global communication networks). Film, television and radio program production services. News reporting services, photojournalism services. Photography services. Translation services."
+    }
+  ],
+  "owner": "İREM SULTAN CANGÜVEN",
+  "ownerNative": null,
+  "ownerCountry": "TR",
+  "representative": "HARUN EKİNCİ",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "SOFUDEDE MAH. DİLEK ATLIĞ CAD. ADIN BORAK APT. B BLOK KAT:6/11 Sarıçam Adana",
+        "applicantAddressCountryCode": "TR",
+        "applicantAddressCountryName": "Turkey",
+        "applicantName": "İREM SULTAN CANGÜVEN"
+      }
+    ],
+    "applicationLanguageCode": "tr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education and training services. Symposium, conference, congress and seminar organization, administration services. Sports, cultural and entertainment services (including ticketing services for cultural and entertainment events such as cinema, sports events, theatre, museums, concerts). Services related to the preparation of publications such as magazines, books, newspapers, etc., and their delivery to the reader (including the provision of the aforementioned services through global communication networks). Film, television and radio program production services. News reporting services, photojournalism services. Photography services. Translation services.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Eğitim ve öğretim hizmetleri. Sempozyum, konferans, kongre ve seminer düzenleme, idare hizmetleri. Spor, kültür ve eğlence hizmetleri (sinema, spor karşılaşmaları, tiyatro, müze, konser gibi kültür ve eğlence etkinlikleri için bilet sağlama hizmetleri dahil). Dergi, kitap, gazete v.b.gibi yayınların basıma hazır hale getirilmesi, okuyucuya ulaştırılmasına ilişkin hizmetler (global iletişim ağları vasıtasıyla anılan hizmetlerin sağlanması da dahil). Film, televizyon ve radyo programları yapım hizmetleri. Haber muhabirliği hizmetleri, foto-muhabirliği hizmetleri. Fotoğrafçılık hizmetleri. Tercüme hizmetleri."
+        }
+      ]
+    },
+    "id": "6949ceb0-adcd-4b87-a399-ef250ce3bab2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      }
+    ],
+    "markImageViennaClassification": [
+      "05.13.01",
+      "26.05.01",
+      "26.05.03",
+      "26.05.15",
+      "26.05.22"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "463"
+      }
+    ],
+    "recordLastUpdated": "20250708",
+    "registrationOfficeCode": "TR",
+    "registrationOfficeName": "Turkey",
+    "representatives": [
+      {
+        "representativeAddress": "ESENEVLER MAH. FİLİZLER SOK. A BLOK NO:32 D:3 - ÜMRANİYE/İSTANBUL",
+        "representativeName": "HARUN EKİNCİ"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190719",
+        "applicationNumber": "2019/68580"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290719",
+      "lastPublicationDate": "20200131",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "2019 68580"
+      }
+    },
+    "version": "20250708180951",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "cangüven organizasyon"
+    }
+  },
+  "_uri": "/mark/tr/6949ceb0-adcd-4b87-a399-ef250ce3bab2",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.829Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

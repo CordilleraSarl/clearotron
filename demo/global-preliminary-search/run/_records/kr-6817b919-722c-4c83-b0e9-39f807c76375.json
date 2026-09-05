@@ -1,0 +1,113 @@
+{
+  "uri": "/mark/kr/6817b919-722c-4c83-b0e9-39f807c76375",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "6817b919-722c-4c83-b0e9-39f807c76375",
+  "applicationNumber": "41-2008-0024107",
+  "registrationNumber": "4101941360000",
+  "applicationDate": "2008-09-09",
+  "registrationDate": "2010-02-16",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "Pori",
+  "markTransliteration": "PORI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "광고목적 이외의 레이아웃서비스업,광고문 제외한 문안출판업,광고문이외의 문안작성업,교과서/서적/잡지출판업,교과서출판업,교재출판업,뉴스보도서비스업,동물사육지도업,미용기술지도업,번역업,보도업,사진보도업,서적출판업,수화통역업,신문출판업,악보출판업,어업기술지도업,영농기술지도업,온라인 전자 출판물 제공업{읽기전용},온라인 전자서적 및 잡지출판업{읽기전용},저널출판업,전자 탁상 출판업,점자번역업,정기간행물출판업,조림기술지도업,축산기술지도업,학교기숙사업,학습지출판업,행사개최대행업",
+      "translation_language": "en",
+      "translation": "Textbook publishing, textbook publishing business, textbook publishing business, news report service business, animal breeding education business, beauty technology guidance business, translation business, press coverage, textbook publishing business other than advertisement purpose, editorial publishing business excluding advertisement texts, {Read-only}, online electronic books and magazine publishing {read-only}, journals {publications}, journal publishing business, newspaper publishing business, music publishing business, Publishing industry, electronic tabletop publishing business, Braille translation business, periodical publication business, forestry technology guidance business, livestock technology guidance business, school boarding business, study paper publishing business,"
+    }
+  ],
+  "owner": "Humanworks",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 강남구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Humanworks",
+        "applicantNativeName": "(주)휴먼웍스"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Textbook publishing, textbook publishing business, textbook publishing business, news report service business, animal breeding education business, beauty technology guidance business, translation business, press coverage, textbook publishing business other than advertisement purpose, editorial publishing business excluding advertisement texts, {Read-only}, online electronic books and magazine publishing {read-only}, journals {publications}, journal publishing business, newspaper publishing business, music publishing business, Publishing industry, electronic tabletop publishing business, Braille translation business, periodical publication business, forestry technology guidance business, livestock technology guidance business, school boarding business, study paper publishing business,",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "광고목적 이외의 레이아웃서비스업,광고문 제외한 문안출판업,광고문이외의 문안작성업,교과서/서적/잡지출판업,교과서출판업,교재출판업,뉴스보도서비스업,동물사육지도업,미용기술지도업,번역업,보도업,사진보도업,서적출판업,수화통역업,신문출판업,악보출판업,어업기술지도업,영농기술지도업,온라인 전자 출판물 제공업{읽기전용},온라인 전자서적 및 잡지출판업{읽기전용},저널출판업,전자 탁상 출판업,점자번역업,정기간행물출판업,조림기술지도업,축산기술지도업,학교기숙사업,학습지출판업,행사개최대행업"
+        }
+      ]
+    },
+    "id": "6817b919-722c-4c83-b0e9-39f807c76375",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "04.01.02"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20080909",
+        "applicationNumber": "41-2008-0024107"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20100216",
+        "registrationNumber": "4101941360000"
+      }
+    },
+    "version": "20250625163301",
+    "wordMarkSpecification": {
+      "markTransliteration": "PORI",
+      "markVerbalElementText": "Pori"
+    }
+  },
+  "_uri": "/mark/kr/6817b919-722c-4c83-b0e9-39f807c76375",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:33.544Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}
