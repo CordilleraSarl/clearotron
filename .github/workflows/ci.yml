@@ -57,9 +57,14 @@ on:
   # waits on checks that never start. A dispatch is not a fork event and needs no approval; its check
   # runs land on the same head SHA under the same job names, which is what branch protection matches on.
   #
-  # BOTH JOBS RUN ON A DISPATCH, and that was measured rather than assumed: nothing here is gated on
+  # EVERY JOB RUNS ON A DISPATCH, and that was measured rather than assumed: nothing here is gated on
   # `github.event_name`. On the repository this one grew out of, a dispatch ran one tier alone and made a
   # run that verified nothing — a warning worth checking before building on it, and it does not carry.
+  #
+  # The count moved from two jobs to four with the public cut, and the invariant is what survived, not
+  # the number. `guards` reads a diff and so needs a base; it takes the pull request's when there is one
+  # and `origin/main` when there is not, rather than gating itself on the event and going missing from
+  # exactly the dispatched run the paragraph above exists to make whole.
   workflow_dispatch:
 
 # LEAST PRIVILEGE, and it matters more here than it does on a private repository: a public repository
@@ -136,7 +141,179 @@ jobs:
       # count recorded in this repository, so it works here at whatever size this tree happens to be.
       - run: node scripts/citation-line-check.mjs
 
+      # THE CENSUS IS THE GATE, NOT THE EXIT CODE. It pins per-file test AND assertion counts, and it
+      # exists for the five ways a suite gets smaller while still reporting success: a file deleted, a
+      # file renamed out of the collection glob, a file hollowed out, a file skipped, a file gated
+      # behind an env var nobody sets. A suite that lost 75 tests still exits 0 — that is measured, not
+      # hypothetical, and it is the reason this line is here rather than trusted to the suite.
+      #
+      # `--check` and not a bare run: the script took one flag for a long time and an unrecognised
+      # argument fell through to the dry run, which prints a diff and exits 0 always. Lane gates read
+      # `--check` and believed it, so a line reported as a census gate measured nothing.
+      - run: node scripts/mint-suite-census.mjs --check
+
       # A RELEASE NOTE IS CHECKED WHERE IT IS WRITTEN. The release workflow checks them too, but that is
       # the wrong moment to find out: by then the note is on `main`, the author has moved on, and the
       # correction is a second pull request. Here it is one edit away from the person holding it.
       - run: node scripts/release-notes-lint.mjs
+
+  build-and-verify:
+    name: Build the portal bundle, verify it in a real browser, and scan for secrets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22.23.2'
+          cache: npm
+      - run: npm ci
+
+      # THE BUNDLE IS BUILT BEFORE ANYTHING LOOKS AT IT. Every screen check below loads what this step
+      # writes; in the other order they measure the previous build, or an empty directory, and report
+      # that in the voice of a layout result.
+      - run: npm run build:ui
+
+      # ── TWO SCANS, AND THE SECOND ONE IS NOT A BELT-AND-BRACES REPEAT ───────────────────────────
+      #
+      # gitleaks honours .gitignore, and portal-ui/dist/ is ignored. Measured on this tree: a scan
+      # rooted at the checkout reads the same 67,282,944 bytes whether or not the bundle has been
+      # built, so it NEVER reaches it. One scan of the repository would look like it covered
+      # everything and would silently cover none of the shipped JavaScript — which is the only
+      # artefact here a reader actually loads. So the bundle is scanned by name, after it exists.
+      #
+      # node_modules is ignored too and enters neither scan, so where these steps sit relative to
+      # `npm ci` changes nothing. That was worth measuring rather than assuming: the ordering looks
+      # like it ought to matter.
+      #
+      # A SECURITY RECORD, NOT A PROGRESS BAR. Pinned by version AND by digest — a scanner fetched by
+      # tag is a scanner somebody else can change, and this step's whole value is that its answer can
+      # be trusted. 8.30.1 rather than 8.18.4 because the older build read files in 10,000-byte chunks
+      # and truncated a match that straddled a boundary: a 40-character credential was missed ENTIRELY
+      # and the scan reported clean. That pin cannot move back quietly — an arm in the driver suite
+      # fails on 8.18.4 and passes on 8.30.1, and its name says which.
+      - name: No secret is in the tree or in the built bundle
+        env:
+          GITLEAKS_VERSION: '8.30.1'
+          GITLEAKS_SHA256: '551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb'
+        run: |
+          set -euo pipefail
+          curl -sSfL -o gitleaks.tgz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "${GITLEAKS_SHA256}  gitleaks.tgz" | sha256sum -c -
+          tar -xzf gitleaks.tgz gitleaks
+          ./gitleaks version
+
+          # A SCAN OVER NOTHING EXITS 0. That is the shape in which a failed checkout or an unbuilt
+          # bundle reports clean, so each count is the check and the scan is what it enables.
+          TRACKED=$(git ls-files | wc -l)
+          BUNDLE=$(find portal-ui/dist -type f | wc -l)
+          echo "scanning $TRACKED tracked file(s) and $BUNDLE built bundle file(s)"
+          if [ "$TRACKED" -eq 0 ]; then
+            echo "::error::no tracked files, so the tree was not scanned."
+            exit 1
+          fi
+          if [ "$BUNDLE" -eq 0 ]; then
+            echo "::error::portal-ui/dist is empty, so the bundle was not scanned."
+            exit 1
+          fi
+          ./gitleaks dir . --config .gitleaks.toml --redact --no-banner
+          ./gitleaks dir portal-ui/dist --config .gitleaks.toml --redact --no-banner
+          rm -f gitleaks gitleaks.tgz
+
+      # ── THE ONLY CHECKS IN THIS REPOSITORY THAT CAN SEE A LAYOUT ────────────────────────────────
+      #
+      # `scripts/` is not an npm workspace, so `npm test` and `npm run test:full` never reach these
+      # files — this job is the whole of their coverage. Every other test in this tree asserts on
+      # strings, and a string assertion cannot see a card that overflowed, a header that stopped
+      # sticking, a frame two pixels shorter than its contents, or a control meant to be clicked being
+      # printed onto paper.
+      #
+      # They spawn `google-chrome`, which ubuntu-latest ships, headless and with no sandbox. Each leads
+      # a process group and reaps it on every exit path it can observe, so a cancelled job does not
+      # leave a browser running on the runner.
+      #
+      # driver/test/browser-check-membership.test.mjs asserts that every `scripts/*-check.mjs` is either
+      # invoked here or declared there as one that cannot run in CI, with the reason it cannot. A check
+      # dropped from this list without an exemption to replace it turns that arm red instead of going
+      # quiet — which is the whole point, because a check that stops running looks exactly like a check
+      # that passes.
+
+      # Does a delivered report lay out inside the portal's iframe? `--fixture-pool` needs no
+      # deployment: it renders this tree's own fixture rather than reaching for a box.
+      - run: node scripts/render-check.mjs --fixture-pool
+
+      # Does the browser accept the sandbox we think we wrote? It reads back the attributes Chrome
+      # actually kept, rather than the ones the source sets.
+      - run: node scripts/report-frame-check.mjs
+
+      - run: node scripts/home-render-check.mjs
+      - run: node scripts/clearances-render-check.mjs
+      - run: node scripts/composer-render-check.mjs
+      - run: node scripts/ai-page-render-check.mjs
+      - run: node scripts/portal-lifecycle-check.mjs
+
+      # ARRIVED WITH THE PORTAL-MAJORS MERGE AND RAN NOWHERE. Every other check above drives a screen
+      # once, on a fresh document; this one leaves a screen and comes back, and COUNTS the requests the
+      # remount issues. The defect it is built for is a redundant request against a 120/min per-person
+      # budget — a screen that fetches twice paints perfectly, so no paint check and no human can see it.
+      # It was committed with no invocation, which is the same failure one level up: an instrument that
+      # exists and never runs reports nothing and reads as coverage. browser-check-membership caught it
+      # the moment that arm came back onto the tree.
+      - run: node scripts/revisit-render-check.mjs
+
+      # Every relative markdown link in the tracked tree resolves to something on disk. No browser, but
+      # the same family: a broken link in the docs is invisible to every other check in this file.
+      - run: node scripts/markdown-link-check.mjs
+
+      # WHAT A STRANGER INSTALLS IS COMPLETE. The release workflow asks this of the artefact it is about
+      # to publish, which is the wrong moment to hear the answer: by then the file list has changed, the
+      # author has moved on, and the correction is a second pull request. Asked here it reaches the
+      # person still holding the change.
+      # `--pack-destination` does NOT create the directory it is given: npm opens the tarball path for
+      # writing and fails ENOENT if the parent is missing. A fresh checkout never has ./packed, so this
+      # step failed on its first real run — ported from the private tree, where the directory happened
+      # to exist, and never exercised until here. `mkdir -p` and nothing else.
+      - name: What a stranger installs is complete
+        run: |
+          set -euo pipefail
+          mkdir -p ./packed
+          TARBALL=$(npm pack --pack-destination ./packed | tail -1)
+          node scripts/release-completeness-check.mjs --tarball "./packed/${TARBALL}"
+
+  guards:
+    name: The pattern guards
+    runs-on: ubuntu-latest
+    steps:
+      # THE WHOLE HISTORY, and it is not caution. The default shallow fetch does not carry the base
+      # commit, so `git diff base...HEAD` fails to resolve it — and the way that fails is the shape this
+      # repository cares about: an unresolvable base is an error, but a guard wired to swallow it would
+      # report a clean diff over a change it never read.
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      # AND `origin/main` HAS TO BE IN THE CLONE, which `fetch-depth: 0` does not by itself promise.
+      # Depth is how MUCH history is fetched; the refspec decides WHICH refs come with it, and checkout
+      # builds that refspec from the ref it was asked for. On a dispatch that ref is
+      # `changeset-release/main` — the version branch, the one case this job was ungated to cover — so
+      # main need not arrive at all, and `git diff origin/main...HEAD` would exit 2 on exactly the run
+      # the ungating was for. Fetched by name instead of reasoned about: this is one network call, it
+      # fails loudly if main is unreachable, and it makes the question moot on every event.
+      - name: Fetch main, the base the guard falls back to
+        run: git fetch --no-tags --prune origin +refs/heads/main:refs/remotes/origin/main
+
+      # No `npm ci`. This guard reads git and nothing else, so it answers in seconds and gives a
+      # contributor the correction while they are still holding the change.
+      - name: No bare reference is added in a comment or in prose
+        # THE BASE, WRITTEN OUT RATHER THAN LEFT TO FALL THROUGH. A pull request carries the commit it
+        # was opened against, and that is the only base that answers "what did this change add". Every
+        # other event carries none, and the expression then renders the empty string.
+        #
+        # An empty `--base` does NOT fail: measured, the script reads it as absent and uses its own
+        # `origin/main` default, printing `read N added line(s) against origin/main`. So the fallback
+        # here changes no behaviour — it moves the choice to where a reader of this file can see it,
+        # instead of leaving an empty argument to be silently rewritten one layer down. On a dispatch
+        # `origin/main` is the version branch's real base; on a push to main it resolves to HEAD, and
+        # the guard prints a zero-line read rather than a clean verdict on a change it never had.
+        run: node scripts/added-reference-check.mjs --base "${{ github.event.pull_request.base.sha || 'origin/main' }}"

@@ -149,6 +149,27 @@ export function staleDeclarations(problems, declared = DECLARED_LS_PROBLEMS) {
 }
 
 /** Every production package, deduped by name@version, with what its own metadata says. */
+
+/**
+ * The directory a dependency is actually installed in: npm's own `path` when it gave one, then the root
+ * `node_modules`, then each workspace's. Returns the first that carries a package.json, and the root
+ * candidate when none does — so the caller's read fails exactly as it did before rather than silently
+ * resolving somewhere unrelated.
+ */
+function resolveInstalled(root, name, path) {
+  const candidates = [];
+  if (path) candidates.push(path);
+  candidates.push(join(root, "node_modules", name));
+  try {
+    const rootPkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+    for (const w of rootPkg.workspaces ?? []) candidates.push(join(root, w, "node_modules", name));
+  } catch { /* no workspaces to search */ }
+  for (const c of candidates) {
+    try { if (existsSync(join(c, "package.json"))) return c; } catch { /* next */ }
+  }
+  return join(root, "node_modules", name);
+}
+
 export function collect(root = ROOT, tree = npmTree(root)) {
   const overbroad = overbroadDeclarations();
   if (overbroad.length) {
@@ -203,7 +224,23 @@ export function collect(root = ROOT, tree = npmTree(root)) {
     // It is not distributed, so it carries no attribution obligation; recorded rather than dropped,
     // because a name silently missing from this file is indistinguishable from one never declared.
     if (!version) { rows.push({ name, version: null, installed: false, licence: null, repository: null, textFile: null, text: null }); continue; }
-    const dir = path && existsSync(path) ? path : join(root, "node_modules", name);
+    // WHERE A PACKAGE ACTUALLY IS, not where the root would put it.
+    //
+    // `npm ls` reports a `path` for most rows and NONE for some — a workspace-local install is one such
+    // case. The fallback used to be the root `node_modules` alone, so a dependency installed under a
+    // WORKSPACE resolved to a directory that does not exist: no package.json, no licence field, no
+    // LICENCE file, and the arm below then reported a perfectly-licensed package as shipping without one.
+    //
+    // Measured when React moved: react@19.2.8, react-dom@19.2.8 and scheduler@0.27.0 all declare
+    // `"license": "MIT"` and ship a LICENSE file, and all three were reported unlicensed purely because
+    // npm gave no path and they live in portal-ui/node_modules. That is an ABSENCE read as a finding, on
+    // the one guard where a false positive is most expensive: it accuses a dependency of being all
+    // rights reserved against a repository that ships AGPL-3.0-only.
+    //
+    // ✕ THIS DOES NOT WEAKEN THE GUARD. It only looks in more of the places a package is legitimately
+    // installed. A package that is genuinely unlicensed is still found and still fails, because it is
+    // found and read — the arm's own fixture (`buffers@0.1.1`, no field and no file) is unaffected.
+    const dir = resolveInstalled(root, name, path);
     let pkg = {};
     try { pkg = JSON.parse(readFileSync(join(dir, "package.json"), "utf8")); } catch { /* recorded below */ }
     let text = null, textFile = null;
