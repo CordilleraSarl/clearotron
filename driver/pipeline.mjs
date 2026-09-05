@@ -98,7 +98,7 @@ import { buildAuditMd, parseSpineFindingBlocks } from "./publish/audit-from-spin
 import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // — the audit stores every live in-scope record
 import { lastAcceptedMatterFrame } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed
 import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";   // — the stamp the late lanes never met
-import { slimLine } from "./hit-list.mjs";   // — the list the run works from
+import { slimLine, crowdLine } from "./hit-list.mjs";   // — the list the run works from; crowds ride it as a sibling array (tracker issue 95)
 import { mintCrossCheckDoubts, mintContradictionDoubts, stitchDoubts, applyClosure } from "./doubt-ledger.mjs";   // doubt-stitch + doubt-closure (2026-07-22)
 // Conversion 6: the two line-form parsers are no longer on the live path — the seat sends typed
 // rows and the driver applies THOSE. `parseClosureLines`/`parseAskClosureLines` are still exported and
@@ -696,10 +696,31 @@ function deriveHitList(ctx, band) {
     // as a fallback so a provider that promotes the field is not silently ignored.
     const lines = (band?.enumerated ?? []).map((r) =>
       slimLine(r, r?.screen?.mark_transliteration ?? r?.mark_transliteration ?? null));
+    // ── CROWDS RIDE BESIDE THE LINES (Option A, ruled on tracker issue 95) ────────────────────────
+    //
+    // A crowd is a zone that could NOT be enumerated. Without it on the list, `band_lookup` answering
+    // from the list returns nothing for a crowded zone — and nothing is indistinguishable from
+    // "searched and clean". That is the silent-clean defect the whole programme exists to remove, so
+    // the crowds land BEFORE the downstream swap can drop the band read.
+    //
+    // Written ALWAYS, empty when the run had none: an absent key means a list minted before crowds
+    // rode, an empty array means this run had no crowd. Different facts, stated differently.
+    //
+    // ✕ WHAT THE SWAP STILL HAS TO CHECK BEFORE IT DROPS A BAND READ. `sample`, `term_counts` and
+    // `class_counts` are deliberately NOT on the list — the first two are 82% of crowd bytes, and the
+    // ruled field set excludes all three. Their consumers (crowd-context.mjs, coverage-ledger.mjs)
+    // read register-named-band.json, which keeps being written, so nothing breaks today. But a swap
+    // that repoints one of those readers at the list would silently lose the per-term and per-class
+    // truth — named-band.mjs's own note says dropping class_counts hides WHICH class leg stayed open.
+    // Census those three keys' readers before repointing anything, not after.
+    const crowds = (band?.crowds ?? []).map(crowdLine);
     const tmp = P.registerHitList + ".tmp";
-    writeFileSync(tmp, JSON.stringify({ schema_version: 1, lines }, null, 2) + "\n");
+    writeFileSync(tmp, JSON.stringify({ schema_version: 1, lines, crowds }, null, 2) + "\n");
     renameSync(tmp, P.registerHitList);
-    runLog(P.runDir, { event: "hit-list-minted", lines: lines.length,
+    runLog(P.runDir, { event: "hit-list-minted", lines: lines.length, crowds: crowds.length,
+      // a crowd whose count could not be taken is not a crowd that found nothing; the receipt says
+      // how many of each, so a reader diagnosing coverage does not have to open the list to find out.
+      crowds_uncounted: crowds.filter((c) => c.total_hits === null).length,
       with_reading: lines.filter((l) => l.read).length });
     return lines;
   } catch (e) {
