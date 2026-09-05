@@ -21,7 +21,7 @@ import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { findings, BANNED_WORDS } from "../../scripts/changelog-plain-language.mjs";
-import { refusals as publishRefusals, WORKFLOW, CREDENTIAL_TOKENS } from "../../scripts/release-publish-guard.mjs";
+import { refusals as publishRefusals, WORKFLOW, CREDENTIAL_TOKENS, REPOSITORY } from "../../scripts/release-publish-guard.mjs";
 import { distTag, isPrerelease, preModeFrom, STABLE, UNNAMED_PRERELEASE } from "../../scripts/release-dist-tag.mjs";
 import { cutDecision, versionAtHead } from "../../scripts/release-cut-decision.mjs";
 import { checksVerdict, waitForChecks, RUNNING, NOTHING_STARTED, WAITING_FOR_A_PERSON } from "../../scripts/release-version-pr-checks.mjs";
@@ -664,4 +664,88 @@ test("tracker 97 a version that merged itself still publishes, because that merg
   const scheduleArm = gate.indexOf('"schedule"');
   assert.ok(dispatchArm > -1 && scheduleArm > -1 && gate.indexOf("dry_flag=--dry-run") < scheduleArm,
     "the dry-run flag is set on a path that includes the cron, which would make every scheduled release a rehearsal");
+});
+
+test("tracker 97 the action and the CLI agree about what a pre-release has already consumed", () => {
+  // MEASURED 2026-09-05. `changesets/action@v1` decides which notes a pre-release has consumed by reading
+  // `preState.changesets`. `@changesets/cli@3.0.1` does not write that key — its `enterPre` writes
+  // `{mode, tag}` and nothing else, and its `migratePreState` deletes the key and MOVES consumed notes
+  // into `.changeset/pre/`. So on the first push after a pre-release cut, `@v1` saw seven notes it
+  // believed were pending and its reader treated the leftover directory as an old-format changeset,
+  // opening a `changes.md` that has never existed there. The version job died on that ENOENT and took
+  // the publish with it. `@v2` filters on `!id.startsWith("pre/")` instead.
+  const workflow = read(WORKFLOW);
+  // COMMENTS DROPPED FIRST, and this file has now made the same mistake four times in a day: the
+  // workflow explains each rename in prose beside the code, so an arm reading the whole file passes on
+  // its own explanation and reports a change that is not there.
+  const executable = workflow.split("\n").filter((l) => !/^\s*#/.test(l)).join("\n");
+
+  // PINNED TO A COMMIT. `v1` and `v2` are BRANCHES on that repository — there is no tag `v1` at all — so
+  // a floating ref is whatever was last pushed to it, on the step that opens a pull request with a token.
+  const pin = /uses: changesets\/action@([0-9a-f]{40})\b/.exec(executable);
+  assert.ok(pin, "the changesets action is not pinned to a commit; `@v1`/`@v2` are branches, not tags");
+  assert.ok(!/uses: changesets\/action@v\d/.test(executable), "a floating action ref came back");
+
+  // THE INPUT AND OUTPUT NAMES MOVED WITH THE VERSION, and v2 shims the old input spellings — so a
+  // workflow can be on v2, read correctly, and still say `version:`, which teaches the next reader that
+  // the version did not matter. The output has no shim: `pullRequestNumber` is simply empty on v2, and
+  // an empty number makes both steps that depend on it skip in silence.
+  assert.ok(!/pullRequestNumber/.test(executable),
+    "the workflow still reads `pullRequestNumber`, which is empty on v2 — both steps that gate on it "
+    + "would skip silently, and the version pull request would never merge itself");
+  const uses = (name) => assert.match(executable, new RegExp(`\\b${name}:`), `the v2 input \`${name}\` is not used`);
+  for (const input of ["version-script", "pr-title", "commit-message"]) uses(input);
+  assert.equal((executable.match(/steps\.changesets\.outputs\.pr-number/g) ?? []).length, 4,
+    "the renamed output is not read at every site that gated on the old one");
+
+  // One variable at a time: v2's new default pushes through the GitHub API. Keeping the CLI is the same
+  // behaviour v1 had, and it is stated rather than left to a default that changed under us.
+  assert.match(executable, /push-with-git-cli: true/,
+    "the push method is left to v2's new default, which is a second change riding on this one");
+});
+
+test("tracker 97 the manifest names the repository provenance will be attested for", () => {
+  // MEASURED 2026-09-05, at the most expensive moment available. The OIDC exchange succeeded, provenance
+  // was generated, the tarball was built and scanned and checked — and the registry refused the PUT:
+  //
+  //   npm error 422 Unprocessable Entity - PUT https://registry.npmjs.org/clearotron
+  //   Error verifying sigstore provenance bundle: Failed to validate repository information:
+  //   package.json: "repository.url" is "", expected to match "https://github.com/CordilleraSarl/clearotron"
+  //
+  // `--provenance` makes npm attest the repository the build came from, and the registry checks that
+  // attestation against the manifest. The field was simply absent, and nothing anywhere looked at it.
+  const pkg = rootPkg();
+  const workflow = read(WORKFLOW);
+
+  assert.ok(pkg.repository, "the root package names no repository, and the registry refuses a provenance "
+    + "bundle it cannot match against the manifest");
+  const url = typeof pkg.repository === "string" ? pkg.repository : pkg.repository.url;
+  assert.ok(url, "`repository` is present but names no url");
+  assert.equal(/github\.com[/:]([^/]+\/[^/.]+)/.exec(url)?.[1], REPOSITORY,
+    "the manifest's repository is not the one the workflow publishes from");
+
+  // The workflow gates on the same repository. Two spellings of one fact drift; this asserts they agree.
+  assert.ok(workflow.includes(`github.repository == '${REPOSITORY}'`),
+    "the workflow's repository guard and the manifest's repository no longer name the same thing");
+
+  // THE GUARD REFUSES EACH SHAPE, and refuses them BEFORE anything is built rather than after
+  // everything is. Driven, not asserted: each of these is a manifest the registry would 422.
+  const withField = publishRefusals({ workflow, rootPkg: pkg });
+  assert.deepEqual(withField, [], withField.join("\n"));
+  const { repository, ...absent } = pkg;
+  assert.match(publishRefusals({ workflow, rootPkg: absent }).join("\n"), /names no `repository.url`/);
+  assert.match(
+    publishRefusals({ workflow, rootPkg: { ...pkg, repository: { type: "git", url: "git+https://github.com/someone/else.git" } } }).join("\n"),
+    /names someone\/else/);
+  assert.match(
+    publishRefusals({ workflow, rootPkg: { ...pkg, repository: { type: "git", url: "" } } }).join("\n"),
+    /names no `repository.url`/);
+  // npm accepts the bare-string form too, and a guard that refused it would refuse a correct manifest.
+  assert.deepEqual(publishRefusals({ workflow, rootPkg: { ...pkg, repository: `https://github.com/${REPOSITORY}` } }), []);
+  // As do the `.git` suffix and the ssh spelling: the comparison is on owner/name, not on the string.
+  assert.deepEqual(publishRefusals({ workflow, rootPkg: { ...pkg, repository: { type: "git", url: `git@github.com:${REPOSITORY}.git` } } }), []);
+
+  // And what a reader of the package page gets, which is the other half of the same field.
+  assert.match(pkg.homepage ?? "", new RegExp(REPOSITORY), "the package page links nowhere");
+  assert.match(pkg.bugs?.url ?? "", new RegExp(REPOSITORY), "the package page offers nowhere to report a bug");
 });
