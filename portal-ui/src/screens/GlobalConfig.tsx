@@ -8,16 +8,19 @@
 // sends someone to go switch on something already running, or to stop looking for a cause they have
 // already found.
 //
-// Two things protect it. Every row is served by the process that is authoritative for it — the engine's
-// settings from a snapshot that engine writes, and the portal's own door read live by the portal, which
-// is the one row this page reads from its own environment (, ruled 2026-08-21). And every "I cannot
-// tell" is said in words rather than rendered as an empty list — see the notices below, which are the
-// whole design.
+// Two things protect it. Every row is served by the process that is authoritative for it, and since the
+// owner's 2026-09-05 ruling that is this deployment READ LIVE — the page shows current configuration,
+// always, and what the last run recorded is a secondary row whose job is to name any field it disagrees
+// with. (It reads live because the portal shares the engine's environment: one configuration per server
+// box, owner ruling 2026-08-26. It did not always, and the prose here said so for longer than it was
+// true.) And every "I cannot tell" is said in words rather than rendered as an empty list — see the
+// notices below, which are the whole design.
 //
-// THE TWO SOURCES ARE VISIBLY SEPARATE, which is why Sign-in sits ABOVE the notice rather than under it.
-// That notice says everything on the page was written by the search engine; it is now scoped to what
-// follows it, because it would be false about the sign-in row and this page cannot afford a sentence
-// that is nearly true.
+// THE SOURCES ARE VISIBLY SEPARATE, which is why Sign-in sits ABOVE the rest rather than among it: it is
+// the portal's own door, and the rows below it describe the engine's configuration. The page names which
+// reading it is showing rather than leaving a reader to assume — `source: "live"` is the answer and
+// `"capture"` says so out loud, because presenting an old reading as current fact without naming it is
+// precisely the defect the 2026-09-05 ruling was made about.
 //
 // ── WHAT THIS PAGE DELIBERATELY DOES NOT SHOW ───────────────────────────────────────────────
 //
@@ -82,12 +85,12 @@ export function GlobalConfig({ ctx }: { readonly ctx: ShellContext }) {
         </Group>
 
         <Group title="Engine">
-          {v.engine ? <Engine engine={v.engine} /> : <NotRecorded what="which engine is running" />}
+          {v.engine ? <Engine engine={v.engine} /> : <NotRecorded what="which engine is running" source={v.source} />}
         </Group>
 
         <Group title="Providers">
           {v.providers === null ? (
-            <NotRecorded what="which providers are configured" />
+            <NotRecorded what="which providers are configured" source={v.source} />
           ) : v.providers.length === 0 ? (
             // An empty ARRAY is not reachable from the writer — the inventory is built from the driver's
             // tables, which always hold a register row and at least one research and one search adapter.
@@ -103,27 +106,47 @@ export function GlobalConfig({ ctx }: { readonly ctx: ShellContext }) {
           )}
         </Group>
 
-        {/* ONE LINE, AT THE BOTTOM ('s sibling,). The paragraph that
-            stood at the top explained the plumbing — that this service cannot read the engine's settings
-            — which is a fact about our architecture and not one the reader can act on.
-            WHAT "UPDATED" MEANS, so nobody re-opens it: `capturedAt` is stamped when the ENGINE writes
-            its snapshot (driver/flag-snapshot.mjs, unconditional write, fresh clock every time), and that
-            happens at engine start and after every drain — NOT when a setting changes. So it means "this
-            page's information was refreshed at", and it moves with every run.
-            The stale warning travels WITH it rather than staying at the top: it is the one sentence on
-            the page telling a reader the values may be wrong, and it is unreadable separated from the
-            timestamp it is about. */}
-        {v.capturedAt || v.stale ? (
+        {/* WHAT THIS PAGE IS SHOWING, AND WHAT THE LAST RUN SAW — owner ruling 2026-09-05 (tracker
+            issue 170): the page shows LIVE configuration, always, and the age banner is retired.
+
+            THE BANNER WENT BECAUSE IT ANSWERED THE WRONG QUESTION. It said "this snapshot is more than a
+            day old", which a reader cannot act on, and it fired on age alone — so a box being configured,
+            which writes fresh captures and is exactly where the values drift, never triggered it. The
+            live incident was caught only because the capture happened to be 26 hours old. An hour earlier
+            the same wrong answer would have shown in silence.
+
+            What replaces it says which fields actually differ, at any age, or nothing at all. */}
+        {v.source === 'capture' ? (
           <div style={{ marginTop: 20, paddingTop: 12, borderTop: '1px solid var(--border-hairline)' }}>
-            {v.capturedAt ? (
-              <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>
-                Updated <span className="mono">{v.capturedAt}</span>.
-              </p>
+            <p style={{ margin: 0, color: 'var(--tone-medium)', fontSize: 13 }}>
+              This is what the last run recorded, not a live reading of this deployment.
+            </p>
+          </div>
+        ) : null}
+
+        {v.lastRun ? (
+          <div style={{ marginTop: 20, paddingTop: 12, borderTop: '1px solid var(--border-hairline)' }}>
+            {/* The disagreement is the point, so it leads. The date is context for it and follows. */}
+            {v.lastRun.disagrees && v.lastRun.disagrees.length > 0 ? (
+              <>
+                <p style={{ margin: '0 0 6px', color: 'var(--tone-medium)', fontSize: 13 }}>
+                  The last run did not run under this configuration:
+                </p>
+                <ul style={{ margin: '0 0 8px', paddingLeft: 18, color: 'var(--tone-medium)', fontSize: 13 }}>
+                  {v.lastRun.disagrees.map((d) => (
+                    <li key={d.what} style={{ marginBottom: 2 }}>
+                      {/* Both sides named. "Something differs" sends a reader to ssh; naming the value on
+                          each side is a sentence they can act on without leaving the page. */}
+                      {d.what}: the last run saw <span className="mono">{d.capture ?? 'nothing'}</span>,
+                      {' '}this deployment is configured for <span className="mono">{d.live ?? 'nothing'}</span>.
+                    </li>
+                  ))}
+                </ul>
+              </>
             ) : null}
-            {v.stale ? (
-              <p style={{ margin: v.capturedAt ? '6px 0 0' : 0, color: 'var(--tone-medium)', fontSize: 13 }}>
-                This snapshot is more than a day old. The values on this page are the last known state
-                and may no longer match the engine.
+            {v.lastRun.capturedAt ? (
+              <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>
+                Last run recorded its configuration at <span className="mono">{v.lastRun.capturedAt}</span>.
               </p>
             ) : null}
           </div>
@@ -141,10 +164,18 @@ export function GlobalConfig({ ctx }: { readonly ctx: ShellContext }) {
  * configured", the exact inverse of the fact, on the one page whose value is that it is believed. An
  * instance with nothing configured sends rows, each of them saying so.
  */
-const NotRecorded = ({ what }: { readonly what: string }) => (
+//
+// AND THE REMEDY DEPENDS ON WHICH READING FAILED (tracker issue 170). Since the page answers LIVE, a
+// missing field usually is not an old snapshot at all — it is this deployment's own posture failing to
+// derive, and "it will say after the next run" would send a reader to wait for something that will not
+// help. The capture wording survives for the branch it is still true of.
+const NotRecorded = ({ what, source }: { readonly what: string; readonly source: FlagView['source'] }) => (
   <div style={{ fontSize: 13, color: 'var(--text-muted)', padding: '10px 13px' }}>
-    This snapshot does not record {what}. It was written by an earlier version of the engine; it will
-    say after the next run on this instance.
+    {source === 'capture'
+      ? <>This capture does not record {what}. It was written by an earlier version of the engine; it will
+        say after the next run on this instance.</>
+      : <>This deployment did not report {what}. That is a gap in what this service could read just now,
+        not a statement that nothing is configured.</>}
   </div>
 )
 

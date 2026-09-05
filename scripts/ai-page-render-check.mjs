@@ -145,7 +145,26 @@ const { result: targets } = await send('Target.getTargets')
 const page = targets.targetInfos.find((t) => t.type === 'page')
 const { result: sess } = await send('Target.attachToTarget', { targetId: page.targetId, flatten: true })
 const sessionId = sess.sessionId
+
 const cmd = (method, params = {}) => new Promise((r) => { const i = ++id; pending.set(i, r); ws.send(JSON.stringify({ id: i, sessionId, method, params })) })
+
+// GRANT THE CLIPBOARD, RATHER THAN MEASURING THE DEGRADED PATH FOREVER.
+//
+// This was written asserting that headless Chrome grants clipboard writes here. It does not — measured,
+// after the first run came back with every `copied` state false and every panel empty. Left alone, the
+// instrument would have exercised only the browser-refused branch: the exception, on every deck, while
+// claiming to check the page a reader actually meets.
+//
+// So the permission is granted explicitly and the ordinary path is what gets driven. The refused branch
+// still has arms; it simply is not the only world this file can see.
+await cmd('Browser.grantPermissions', {
+  origin,
+  permissions: ['clipboardReadWrite', 'clipboardSanitizedWrite'],
+}).catch(() => {});
+// AND THE DOCUMENT MUST BE FOCUSED. A clipboard write needs a focused document as well as the
+// permission, which is why granting alone left every press on the refused path. Found independently by
+// role-e2e driving this page and by this file's first run coming back with every `copied` false.
+await cmd('Page.bringToFront').catch(() => {});
 const evalIn = async (expr) => (await cmd('Runtime.evaluate', { expression: expr, awaitPromise: true, returnByValue: true })).result?.result?.value
 
 // ── The probes ───────────────────────────────────────────────────────────────────────────────────
@@ -163,12 +182,32 @@ const arrivalProbe = (expect) => `(async () => {
   const screen = document.querySelector('.screen')
   if (!screen) return { fatal: 'the page did not render a .screen at all' }
   const text = flat(screen.innerText)
-  const buttons = [...screen.querySelectorAll('button')].map((b) => b.innerText.trim()).filter((t) => /^Connect /.test(t))
+  const dests = [...screen.querySelectorAll('button.ai-dest')]
   return {
-    buttonNames: buttons.map((t) => t.replace(/^Connect\\s+/, '')),
-    absencesMissing: EXPECT.absent.filter((a) =>
-      !(text.includes(a.name + ' — ') && text.toLowerCase().includes(flat(a.reason).toLowerCase()))
-    ).map((a) => a.name),
+    // ANTI-VACUITY FIRST, and it is not decoration. Every assertion below this line is about something
+    // being ABSENT — no banned word, no unserved row, no credential, nothing expanded — and a deck that
+    // failed to render satisfies all of them perfectly. The length is asserted before the absences.
+    renderedChars: text.length,
+    destNames: dests.map((d) => flat(d.querySelector('.ai-dest-name')?.childNodes[0]?.textContent ?? '')),
+    destCount: dests.length,
+    // RULING 3: an unserved row does not render for a client at all. Checked by the OPERATOR-ONLY
+    // wording rather than by name, because one product legitimately appears on two routes and a
+    // name-based test could not tell a served Claude from an unserved one.
+    operatorWordingOnPage: /incomplete|install it again/i.test(text),
+    questionShown: !!screen.querySelector('.ai-where-q'),
+    // TWO CONTROLS IN ONE GROUP MUST BE TELLABLE APART. Every other check on this page asks about ROWS,
+    // and the rows are correct for whichever segment happens to be selected — so a group offering the
+    // same words twice passes everything and is unreadable to a person. Suggested by role-e2e after
+    // driving the staff decks and finding exactly that.
+    segLabels: [...screen.querySelectorAll('.ai-seg-btn')].map((b) => flat(b.innerText)),
+    // Nothing is expanded on arrival: the slot holds its empty line, not a panel.
+    panelsOnArrival: [...screen.querySelectorAll('.ai-panel')].length,
+    slotPresent: !!screen.querySelector('.ai-slot'),
+    // THE SLOT'S HEIGHT BEFORE ANYTHING IS SELECTED, which is the only thing that makes "reserved" mean
+    // anything. Asserting that nothing above the panel moves is VACUOUS on this layout — the panel is
+    // the last element, so nothing above it can move whether or not space was reserved. Measured after
+    // planting min-height:0 and watching the whole battery stay green.
+    slotHeightOnArrival: Math.round(screen.querySelector('.ai-slot')?.getBoundingClientRect().height ?? 0),
     expandedPres: [...screen.querySelectorAll('pre')].length,
     bannedLines: screen.innerText.split('\\n').map(flat).filter((l) => /\\b(MCP|connector|token|scope|address|key)\\b/i.test(l)),
     keyOnPage: text.includes(EXPECT.key),
@@ -177,55 +216,99 @@ const arrivalProbe = (expect) => `(async () => {
   }
 })()`
 
-const pressProbe = (name, expect) => `(async () => {
+// BY ID, NOT BY NAME. The cowork/claude merge means one product legitimately appears on two routes
+// under one name — "Claude · app, web, and Cowork" and "Claude · app, on this computer" — so a
+// name-based lookup silently picks whichever came first. It picked the stdio row on the first run while
+// the arm believed it was pressing the web one.
+const readProbe = (id, expect) => `(async () => {
   const EXPECT = ${JSON.stringify(expect)}
   const flat = (s) => (s ?? '').replace(/\\s+/g, ' ').trim()
   const screen = document.querySelector('.screen')
-  const button = [...screen.querySelectorAll('button')].find((b) => b.innerText.trim() === 'Connect ' + ${JSON.stringify(name)})
-  if (!button) return { fatal: 'no button named Connect ' + ${JSON.stringify(name)} }
-  button.click()
-  await new Promise((r) => setTimeout(r, 700))
-  const row = button.parentElement
-  const rowText = flat(row.innerText)
-  // Refs tracker issue 2143 — the command is BEHIND A FOLD now, so what a press shows and what the
-  // reader can still reach are two different questions and both get asked. \`innerText\` is the right
-  // instrument for the first: it reports what is RENDERED, so a closed <details> contributes nothing.
-  const fold = row.querySelector('details.ai-advanced')
-  const steps = [...row.querySelectorAll('ol.ai-steps li')].map((li) => flat(li.innerText))
-  const commandVisible = flat(rowText).includes(flat(EXPECT.command ?? '\u0000'))
-  if (fold) fold.open = true
-  await new Promise((r) => setTimeout(r, 120))
-  const commandInFold = EXPECT.command
-    ? flat(row.querySelector('details.ai-advanced pre')?.innerText ?? '').includes(flat(EXPECT.command))
-    : null
-  if (fold) fold.open = false
-  // THE TOGGLE, measured at the end so nothing above is disturbed by it.
-  button.click()
-  await new Promise((r) => setTimeout(r, 400))
-  const closedOnSecondPress = !row.querySelector('.ai-open')
+  const rows = [...screen.querySelectorAll('button.ai-dest')]
+  const row = rows.find((d) => d.getAttribute('data-id') === ${JSON.stringify(id)})
+  if (!row) return { fatal: 'the pressed row vanished: ' + ${JSON.stringify(id)} }
+  const movedAfter = [...screen.querySelectorAll('h1, h2, .ai-can li, button.ai-dest')]
+    .map((el) => Math.round(el.getBoundingClientRect().top))
+  const panel = screen.querySelector('.ai-panel')
+  const steps = [...screen.querySelectorAll('.ai-panel-steps li')].map((li) => flat(li.innerText))
   return {
-    rowText,
+    movedAfter,
+    panelFor: panel?.getAttribute('data-for') ?? null,
+    panelCount: [...screen.querySelectorAll('.ai-panel')].length,
+    copiedOnPressed: row.hasAttribute('data-copied'),
+    copiedElsewhere: rows.filter((d) => d !== row && d.hasAttribute('data-copied')).length,
+    selectedElsewhere: rows.filter((d) => d !== row && d.hasAttribute('data-selected')).length,
     steps,
-    // ── Refs tracker issue 2143 — A STEP MAY NOT POINT AT SOMETHING THAT IS NOT THERE ──────────────
-    // These steps were written for a surface that rendered the address and the key underneath them.
-    // This page renders neither: the command is folded and the credential goes to the clipboard and
-    // never to the DOM. So a step saying "below" is an instruction to look at nothing, which is the
-    // lawyer-test failure this issue was filed for — and the kind a string assertion never sees.
-    // The word boundary is DOUBLE-escaped, and it has to be: this whole probe is a template literal, so
-    // a single backslash-b is the BACKSPACE escape. Written singly the pattern silently becomes a
-    // control character that matches nothing, and the arm passes every tree — which is how it was
-    // written first, and what planting a bad step caught.
     stepsPointingNowhere: steps.filter((l) => /\\bbelow\\b/.test(l)),
-    commandVisibleOnPress: EXPECT.command ? commandVisible : null,
-    commandInFold,
-    closedOnSecondPress,
-    said: /Copied\\. Paste it into /.test(rowText),
-    revealed: rowText.includes(EXPECT.key),
-    oneTime: rowText.includes('will not be shown again'),
+    stampShown: !!screen.querySelector('.ai-panel-stamp'),
+    stampDated: /Checked \\d{4}-\\d{2}-\\d{2}/.test(flat(screen.querySelector('.ai-panel-stamp')?.innerText ?? '')),
+    landedShown: /On your clipboard now/.test(flat(panel?.innerText ?? '')),
     keyAnywhere: flat(screen.innerText).includes(EXPECT.key),
-    addressShown: rowText.includes(EXPECT.address),
+    maskedShown: /••••/.test(flat(panel?.innerText ?? '')),
+    refusedPath: /will not be shown again/.test(flat(screen.innerText)),
   }
 })()`
+
+const pressProbe = (id, name, expect) => `(async () => {
+  const EXPECT = ${JSON.stringify(expect)}
+  const flat = (s) => (s ?? '').replace(/\\s+/g, ' ').trim()
+  const screen = document.querySelector('.screen')
+  const rows = [...screen.querySelectorAll('button.ai-dest')]
+  const row = rows.find((d) => d.getAttribute('data-id') === ${JSON.stringify(id)})
+  if (!row) return { fatal: 'no destination row with id ' + ${JSON.stringify(id)} + ' (rows: ' + rows.map((d) => d.getAttribute('data-id')).join(', ') + ')' }
+
+  // THE STRUCTURAL CLAIM IS A MEASUREMENT, NOT AN OPINION. The owner met the old page as "new links
+  // open and move shit around", and single-select plus a reserved slot is the mechanism that answers it.
+  // So the position of everything above the slot is recorded BEFORE the press and compared after.
+  const above = [...screen.querySelectorAll('h1, h2, .ai-can li, button.ai-dest')]
+    .map((el) => Math.round(el.getBoundingClientRect().top))
+
+  // NO row.click() HERE. A scripted click carries no USER ACTIVATION, and navigator.clipboard requires
+  // it — so a synthetic press always took the browser-refused branch and this file was measuring the
+  // exception on every deck while claiming to check the page a reader meets. Granting the permission was
+  // not enough; activation is a separate gate. The caller dispatches a real mouse press at these
+  // coordinates through Input.dispatchMouseEvent, and this probe is split around it.
+  const box = row.getBoundingClientRect()
+  window.__aiPress = { x: Math.round(box.left + box.width / 2), y: Math.round(box.top + box.height / 2) }
+  return { locate: true, x: window.__aiPress.x, y: window.__aiPress.y, above }
+
+  const movedAfter = [...screen.querySelectorAll('h1, h2, .ai-can li, button.ai-dest')]
+    .map((el) => Math.round(el.getBoundingClientRect().top))
+  const shifted = above.length === movedAfter.length
+    ? above.filter((t, i) => Math.abs(t - movedAfter[i]) > 1).length
+    : -1
+
+  const panel = screen.querySelector('.ai-panel')
+  const steps = [...screen.querySelectorAll('.ai-panel-steps li')].map((li) => flat(li.innerText))
+  return {
+    shifted,
+    panelFor: panel?.getAttribute('data-for') ?? null,
+    panelCount: [...screen.querySelectorAll('.ai-panel')].length,
+    // A press marks the row it was made on and no other.
+    copiedOnPressed: row.hasAttribute('data-copied'),
+    copiedElsewhere: rows.filter((d) => d !== row && d.hasAttribute('data-copied')).length,
+    selectedElsewhere: rows.filter((d) => d !== row && d.hasAttribute('data-selected')).length,
+    steps,
+    // A STEP MAY NOT POINT AT SOMETHING THAT IS NOT THERE. These steps were written for a surface that
+    // rendered the address and the credential underneath them; this page renders neither. A step saying
+    // "below" is an instruction to look at nothing. The word boundary is DOUBLE-escaped deliberately:
+    // this probe is a template literal, so a single backslash-b is the BACKSPACE escape and the pattern
+    // would silently match nothing — which is how it was written first.
+    stepsPointingNowhere: steps.filter((l) => /\\bbelow\\b/.test(l)),
+    stampShown: !!screen.querySelector('.ai-panel-stamp'),
+    stampDated: /Checked \\d{4}-\\d{2}-\\d{2}/.test(flat(screen.querySelector('.ai-panel-stamp')?.innerText ?? '')),
+    landedShown: /On your clipboard now/.test(flat(panel?.innerText ?? '')),
+    // THE CREDENTIAL IS IN THE DOM ONLY ON THE CLIPBOARD-REFUSED PATH. Headless Chrome grants the
+    // clipboard here, so this must be false on every deck; the masked proof line is not the credential.
+    keyAnywhere: flat(screen.innerText).includes(EXPECT.key),
+    maskedShown: /••••/.test(flat(panel?.innerText ?? '')),
+  }
+})()`
+
+// The segment labels, as the page renders them. MIRRORED, and pinned by the arm at the end of this file
+// so the two cannot drift silently — a stale label here would make the route switch a no-op and every
+// address press would quietly test the wrong row.
+const WHERE_LABEL = { disk: 'On this computer', either: 'On this computer', 'public-http': 'Somewhere else' }
 
 let failures = 0
 const ok = (cond, msg) => { if (!cond) { failures++; console.error(`  ✗ ${msg}`) } else console.log(`  ✓ ${msg}`) }
@@ -235,6 +318,31 @@ const sameMembers = (a, b) => a.length === b.length && [...a].sort().every((v, i
 // be green about nothing, which is this repository's oldest trap.
 let commandPresses = 0
 let addressPresses = 0
+// HOW MANY PRESSES ACTUALLY REACHED THE CLIPBOARD, across every deck.
+//
+// This job can go green while asserting only the EXCEPTION, and that is not hypothetical — it is how
+// this file behaved until the press was made a real mouse event. Lose the clipboard and every press
+// quietly takes the browser-refused branch, where showing the credential is CORRECT by design; the
+// battery then passes forever while never once checking the page a reader actually meets.
+//
+// WHY IT FAILED IS NOT ESTABLISHED, AND SAYING SO IS THE POINT OF THIS PARAGRAPH.
+//
+// The first run of this rebuilt battery came back with every `copied` false and every panel empty. Three
+// things were then changed together — a granted clipboard permission, a focused document, and a real
+// Input.dispatchMouseEvent press instead of a scripted click — and it passed. Two confident explanations
+// were written here in turn, and PLANTING KILLED BOTH: removing Page.bringToFront changes nothing,
+// removing Browser.grantPermissions changes nothing, and reverting to a scripted `.click()` changes
+// nothing. Four presses reach the clipboard in all three.
+//
+// So the cause is unknown. It may have been a fourth thing that moved in the same edit, or something
+// about the first run's profile. All three preconditions stay, because none costs anything and a runner
+// is not this box — but none of them is written down here as the fix, because that would be a cause
+// asserted from no observation, which is the defect this whole file exists to catch.
+//
+// So the successful path is counted, and zero is an ENVIRONMENT failure rather than a page regression.
+// Named that way because the symptom is indistinguishable from a pass and the cause is not in the diff.
+let clipboardReached = 0
+let clipboardRefused = 0
 
 const out = {}
 for (const state of Object.keys(STATES)) {
@@ -254,74 +362,163 @@ for (const state of Object.keys(STATES)) {
   console.log(`\n${state}:`)
   if (r?.fatal) { failures++; console.error(`  ✗ ${r.fatal}`); continue }
 
+  // ANTI-VACUITY BEFORE EVERY ABSENCE. Most of what follows asserts that something is NOT on the page,
+  // and a deck that rendered nothing satisfies all of it. Four of us hit exactly this shape today on
+  // four different surfaces, so it is checked first and by measurement rather than by eye.
   ok(r.heading, 'the page rendered at all')
-  ok(sameMembers(r.buttonNames, served.map((o) => o.name)),
-    `a button renders EXACTLY for each assistant this deck serves (saw ${JSON.stringify(r.buttonNames)}; `
-    + `the resolver says ${JSON.stringify(served.map((o) => o.name))})`)
-  ok(r.absencesMissing.length === 0,
-    `every assistant this deck cannot serve is named with its reason (missing: ${JSON.stringify(r.absencesMissing)})`)
+  ok(r.renderedChars > 400, `the deck rendered real text (${r.renderedChars} chars) — every absence below is worthless without this`)
+
+  // ── THE ASSERTION THAT REPLACED "A BUTTON PER ASSISTANT" ────────────────────────────────────────
+  // That one died with the button grid, and it is replaced rather than deleted (the brief's own
+  // instruction). What survives is the property it protected: the page shows exactly what the resolver
+  // says this deployment serves — no silent drop, and nothing invented.
+  //
+  // Grouped by route now, so the arriving deck shows the DEFAULT route's rows: the one that needs
+  // nothing leads where the deployment has it.
+  // `either` is not a place — a generic row accepts both, so it belongs to whichever the reader picks.
+  // Mirrors the page's own placesOf/servesPlace, and the label arm below is what keeps the two honest.
+  const routes = [...new Set(served.map((o) => o.route ?? 'public-http'))].filter((r) => r !== 'either')
+  const places = routes.length ? routes : (served.length ? ['disk'] : [])
+  const lead = places.includes('disk') ? 'disk' : places[0]
+  const onLead = served.filter((o) => (o.route ?? 'public-http') === lead || (o.route ?? '') === 'either')
+  ok(sameMembers(r.destNames, onLead.map((o) => o.name)),
+    `a destination renders EXACTLY for each assistant this deck serves on the leading route `
+    + `(saw ${JSON.stringify(r.destNames)}; the resolver says ${JSON.stringify(onLead.map((o) => o.name))})`)
+
+  // ── RULING 3, AND IT IS THE HIGHEST-VALUE LINE IN THIS FILE ─────────────────────────────────────
+  // On a healthy hosted install three rows resolve unserved carrying "this copy of the software is
+  // incomplete… whoever installed it will need to install it again". That is the operator's case reused
+  // for a reader with no shell, and a paying client read it as their software being broken. It must not
+  // reach a client by any surface, so this checks the WORDING rather than the row: one product appears
+  // on two routes, and a name-based check could not tell a served Claude from an unserved one.
+  ok(!r.operatorWordingOnPage,
+    'the operator-only "incomplete / install it again" wording stays off a reader\'s page '
+    + `(present: ${r.operatorWordingOnPage}) — a client reading it was the defect the redesign retires`)
+  ok(r.destCount === onLead.length,
+    `no extra row rendered beyond what the resolver serves (${r.destCount} rendered, ${onLead.length} served)`)
+
+  // ── THE PAGE ASKS AS MANY QUESTIONS AS THE DEPLOYMENT LEAVES OPEN ───────────────────────────────
+  ok(r.questionShown === (places.length > 1),
+    `the "where does your assistant run?" question renders iff the served offers span more than one `
+    + `place (places: ${JSON.stringify(places)}, question shown: ${r.questionShown})`)
+  // AND ITS ANSWERS MUST BE DISTINGUISHABLE. A group answering one question with the same words twice is
+  // unreadable to a person while every row-level check passes, because the rows are right for whichever
+  // one is selected. This is "a name is not an identifier" applied to what a reader sees.
+  ok(new Set(r.segLabels).size === r.segLabels.length,
+    `the answers to one question are distinct (saw ${JSON.stringify(r.segLabels)})`)
+  ok(r.segLabels.length === (places.length > 1 ? places.length : 0),
+    `one control per place, and none for a place that does not exist (${r.segLabels.length} control(s), ${places.length} place(s))`)
+
+  ok(r.panelsOnArrival === 0, `nothing is expanded on arrival (saw ${r.panelsOnArrival} panel(s))`)
+  // The slot exists only where there is something to select. A deployment serving nothing renders one
+  // sentence and no control, so requiring a slot there would fail the honest state.
+  ok(r.slotPresent === (served.length > 0),
+    `the reserved slot renders iff this deck has something to pick (served: ${served.length}, slot: ${r.slotPresent})`)
+  // AND IT RESERVES SPACE WHILE EMPTY. This is the assertion that actually holds the design: a slot with
+  // no height is not reserved, it just happens to sit below everything. 120px is well under the panel's
+  // real size and well above an empty box, so it fails on a removed reservation and not on a reflow.
+  if (r.slotPresent) {
+    ok(r.slotHeightOnArrival >= 120,
+      `the slot reserves space before anything is picked (${r.slotHeightOnArrival}px) — without it the `
+      + 'page grows under the reader when they select, which is the reflow this redesign removes')
+  }
   ok(r.expandedPres === 0, `nothing is expanded on arrival (saw ${r.expandedPres} open block(s))`)
   ok(r.bannedLines.length === 0,
     `none of the six banned words reaches the arriving reader — from either side of the wire (saw ${JSON.stringify(r.bannedLines)})`)
   ok(!r.keyOnPage, 'no credential is on the page before any press')
   ok(r.helpLink, 'the one link to the by-hand instructions is on the page')
 
-  // ── A local press: the assistant's own line appears, and NOTHING is minted. ─────────────────────
-  const local = served.find((o) => o.command)
-  if (local) {
-    commandPresses++
-    const p = await evalIn(pressProbe(local.name, { command: local.command, key: MINTED.key, address: MINTED.address }))
-    out[state][`press ${local.name}`] = p
-    if (p?.fatal) { failures++; console.error(`  ✗ ${p.fatal}`) } else {
-      // ── item 1 — WHAT A PRESS SHOWS CHANGED, so this arm changed with it ──
-      // It used to require the command in a <pre> on press. The owner ruled that out: "The page must
-      // lead each vendor with the path that vendor's UI user actually takes; a CLI command is at most a
-      // collapsed 'advanced' detail." So the assertion inverts — the command must NOT be what a press
-      // shows — and two new ones stop that inversion from being a loss: the vendor's own steps have to
-      // arrive in its place, and the command has to still be there, correct, one tap away.
-      ok(p.steps.length > 0, `pressing "${local.name}" shows that assistant's own steps, not a command`)
-      ok(p.commandVisibleOnPress === false,
-        `pressing "${local.name}" puts no raw command in front of the reader (the owner's item 1)`)
-      ok(p.commandInFold === true,
-        `and the command is still reachable and correct one tap into Advanced — demoted, not lost`)
-      ok(p.stepsPointingNowhere.length === 0,
-        `a step tells the reader to look "below" at something this page does not render: ${JSON.stringify(p.stepsPointingNowhere)}`)
-      ok(p.closedOnSecondPress === true,
-        `a second press on "${local.name}" closes it again (the owner's item 3)`)
-      ok(!p.keyAnywhere, 'and no credential is anywhere on the page')
-      ok(mints === 0, `and the key-minting endpoint was never called (saw ${mints} mint(s) — the local route needs no server)`)
+  // ── A PRESS, AND THE STRUCTURAL CLAIM THAT COMES WITH IT ───────────────────────────────────────
+  //
+  // Every press on every deck asserts the same three things, because they are the rebuild's whole
+  // promise: nothing above the panel moves, the pressed row is the confirmation, and no other row
+  // claims to be. The route-specific arms follow.
+  const pressArm = async (offer, kind) => {
+    const before = mints
+    // THE ROW MAY NOT BE ON THE ROUTE THE DECK IS SHOWING. Grouping means only the leading route's rows
+    // render, so an address offer on a staff deck sits behind the question until it is answered. Pressing
+    // the segment first is not a workaround — it is the path a staff reader takes, and it exercises the
+    // question this page asks.
+    await evalIn(`(async () => {
+      const want = ${JSON.stringify(WHERE_LABEL[offer.route ?? 'public-http'] ?? 'Somewhere else')}
+      const seg = [...document.querySelectorAll('.ai-seg-btn')].find((b) => b.innerText.trim() === want)
+      if (seg && !seg.hasAttribute('data-on')) { seg.click(); await new Promise((r) => setTimeout(r, 250)) }
+      return true
+    })()`)
+    const loc = await evalIn(pressProbe(offer.id, offer.name, { command: offer.command, key: MINTED.key, address: MINTED.address }))
+    if (loc?.fatal) { failures++; console.error(`  ✗ ${loc.fatal}`); return }
+
+    // A REAL MOUSE PRESS, so the page gets user activation and the clipboard is actually reachable.
+    for (const type of ['mousePressed', 'mouseReleased']) {
+      await cmd('Input.dispatchMouseEvent', { type, x: loc.x, y: loc.y, button: 'left', clickCount: 1 })
+    }
+    await new Promise((r) => setTimeout(r, 800))
+
+    const p = await evalIn(readProbe(offer.id, { key: MINTED.key }))
+    out[state][`press ${offer.name}`] = p
+    if (p?.fatal) { failures++; console.error(`  ✗ ${p.fatal}`); return }
+    p.shifted = loc.above.length === p.movedAfter.length
+      ? loc.above.filter((t, i) => Math.abs(t - p.movedAfter[i]) > 1).length
+      : -1
+
+    // THE CLAIM THE OWNER MADE THE COMPLAINT ABOUT — "new links open and move shit around" — measured
+    // as pixels rather than asserted as a design intent. Every heading, bullet and destination row is
+    // recorded before the press and compared after; a single one moving is a failure.
+    ok(p.shifted === 0,
+      `nothing above the panel moved when "${offer.name}" was pressed (${p.shifted} element(s) shifted)`);
+    ok(p.panelCount <= 1, `at most one panel is open at a time (saw ${p.panelCount}) — single-select is the mechanism`)
+    ok(p.panelFor === offer.id, `the panel that opened is the one pressed (saw ${p.panelFor}, expected ${offer.id})`)
+
+    // The pressed control IS the confirmation, and only the pressed one.
+    if (p.refusedPath) clipboardRefused += 1; else clipboardReached += 1
+    ok(p.copiedOnPressed,
+      `the pressed row IS the confirmation for "${offer.name}" (marked: ${p.copiedOnPressed}, refused-clipboard path: ${p.refusedPath})`)
+    ok(p.copiedElsewhere === 0, `and no other row claims to have been copied (${p.copiedElsewhere} did)`)
+    ok(p.selectedElsewhere === 0, `and no other row is still selected (${p.selectedElsewhere} were) — the list is single-select`)
+
+    ok(p.steps.length > 0, `pressing "${offer.name}" shows that assistant's own steps`)
+    ok(p.stepsPointingNowhere.length === 0,
+      `no step points the reader "below" at something this page does not render: ${JSON.stringify(p.stepsPointingNowhere)}`)
+
+    // A DRIVEN ROW CARRIES A DATE AND AN UNDRIVEN ONE MUST NOT. A stamp defaulted onto steps nobody
+    // opened would be this product's own defect class wearing the costume of evidence.
+    ok(p.stampShown, `the panel for "${offer.name}" says whether anybody has driven these steps`)
+    ok(p.stampDated === Boolean(offer.verifiedOn),
+      `the dated stamp is shown iff the resolver's row was driven (row says ${JSON.stringify(offer.verifiedOn ?? null)}, panel dated: ${p.stampDated})`)
+
+    if (kind === 'local') {
+      ok(mints === before, `the local route needs no server, but ${mints - before} mint(s) were made`)
+      ok(!p.keyAnywhere, 'no credential is anywhere on the page after a local press')
+    } else {
+      ok(mints === before + 1, `pressing "${offer.name}" mints exactly once (saw ${mints - before})`)
+      ok(p.landedShown, 'the panel says what landed on the clipboard, so the press has visible proof')
+      // THE CREDENTIAL IS IN THE DOM ONLY ON THE CLIPBOARD-REFUSED PATH. Headless Chrome grants the
+      // clipboard, so the refused path is unreachable here and the credential must be absent — while the
+      // MASKED proof line is present. Both are asserted: "no key" alone would pass a panel that showed
+      // nothing at all, which is the shape this file has been bitten by before.
+      ok(!p.keyAnywhere, 'the clipboard took the credential and it is nowhere on the page')
+      ok(p.maskedShown, 'and it is MASKED — proof of the copy, never the credential itself')
     }
   }
 
-  // ── An address press: minted once, and the credential's whereabouts match what the page said. ───
+  const local = served.find((o) => o.command)
+  if (local) { commandPresses++; await pressArm(local, 'local') }
+
   const addressed = served.find((o) => !o.command)
-  if (addressed) {
-    addressPresses++
-    const before = mints
-    const p = await evalIn(pressProbe(addressed.name, { command: null, key: MINTED.key, address: MINTED.address }))
-    out[state][`press ${addressed.name}`] = p
-    if (p?.fatal) { failures++; console.error(`  ✗ ${p.fatal}`) } else {
-      ok(mints === before + 1, `pressing "${addressed.name}" mints exactly once (saw ${mints - before})`)
-      ok(p.said || p.revealed, 'the press leaves the reader looking at a next step — copied-and-told, or the degraded reveal')
-      // ── THE SAME QUESTIONS AS THE COMMAND ROUTE, because they were asked of one kind only ────────
-      // The steps and the toggle arrived tested for the branch that has a command and untested for the
-      // branch that does not — so the assistants whose steps name a vendor's own settings screen, the
-      // ones this rework is actually for, were never pressed by an arm at all.
-      ok(p.steps.length > 0, `pressing "${addressed.name}" shows that assistant's own steps`)
-      ok(p.stepsPointingNowhere.length === 0,
-        `a step tells the reader to look "below" at something this page does not render: ${JSON.stringify(p.stepsPointingNowhere)}`)
-      ok(p.closedOnSecondPress === true, `a second press on "${addressed.name}" closes it again`)
-      if (p.revealed) {
-        // The browser refused the clipboard, so this is the sanctioned one-time reveal — it must say so.
-        ok(p.oneTime, 'the degraded reveal says the credential will not be shown again')
-        ok(p.addressShown, 'and carries both lines the reader must paste')
-      } else {
-        // The clipboard took it, so the ruling holds in full: the credential is NOWHERE in the DOM.
-        ok(!p.keyAnywhere, 'the clipboard took the credential and it is nowhere on the page')
-      }
-    }
-  }
+  if (addressed) { addressPresses++; await pressArm(addressed, 'address') }
 }
+
+
+// THE ANTI-VACUITY GUARD FOR THE WHOLE BATTERY. Raised by role-e2e as the symptom to watch for once CI
+// began running this job: "if it ever goes green with every `copied` false, that is the symptom, not a
+// page regression." Written as a check rather than left as a caution, because a caution in a message is
+// not read by whoever meets the green job eighteen months from now.
+ok(clipboardReached > 0,
+  `at least one press reached the clipboard (${clipboardReached} reached, ${clipboardRefused} refused). `
+  + 'Zero means this browser stopped granting the clipboard, and the battery has then been asserting '
+  + 'the refused fallback on every deck while looking exactly like a pass. That is an environment '
+  + 'failure rather than a page regression, and the cause has never been pinned down — see the note by '
+  + 'clipboardReached, which records three plants that each failed to reproduce it.')
 
 ok(commandPresses > 0, `at least one deck exercised the local-command press (saw ${commandPresses})`)
 ok(addressPresses > 0, `at least one deck exercised the address press (saw ${addressPresses})`)

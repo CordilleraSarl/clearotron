@@ -75,6 +75,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-capture-that-stopped-describing-the-box-says-so.test.mjs": {
+          "tests": 12,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
         "a-case-law-gap-names-the-right-reason.test.mjs": {
           "tests": 8,
           "asserts": 27,
@@ -791,7 +797,7 @@
         },
         "browser-check-membership.test.mjs": {
           "tests": 4,
-          "asserts": 10,
+          "asserts": 12,
           "skips": 4,
           "todos": 0
         },
@@ -2591,7 +2597,7 @@
         },
         "portal-config-view.test.mjs": {
           "tests": 33,
-          "asserts": 84,
+          "asserts": 85,
           "skips": 0,
           "todos": 0
         },
@@ -2645,7 +2651,7 @@
         },
         "portal-service.test.mjs": {
           "tests": 116,
-          "asserts": 618,
+          "asserts": 621,
           "skips": 0,
           "todos": 0
         },
@@ -4059,6 +4065,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-executable-bits-survive-the-cut.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
+          "skips": 3,
+          "todos": 0
+        },
         "the-family-tag-is-writable-and-sweeps-contains.test.mjs": {
           "tests": 4,
           "asserts": 8,
@@ -4634,6 +4646,12 @@
     "mcp-server": {
       "ext": "mjs",
       "perFile": {
+        "a-memo-survives-the-door-it-arrives-through.test.mjs": {
+          "tests": 5,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "account-audit-chain.test.mjs": {
           "tests": 10,
           "asserts": 46,
@@ -5144,8 +5162,8 @@
           "todos": 0
         },
         "useYourAI.test.ts": {
-          "tests": 9,
-          "asserts": 25,
+          "tests": 12,
+          "asserts": 33,
           "skips": 0,
           "todos": 0
         },

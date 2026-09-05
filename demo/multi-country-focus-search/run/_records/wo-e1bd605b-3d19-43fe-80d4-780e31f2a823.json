@@ -1,0 +1,393 @@
+{
+  "uri": "/mark/wo/e1bd605b-3d19-43fe-80d4-780e31f2a823",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "e1bd605b-3d19-43fe-80d4-780e31f2a823",
+  "applicationNumber": null,
+  "registrationNumber": "1033901",
+  "applicationDate": null,
+  "registrationDate": "2010-01-19",
+  "expiryDate": "2030-01-19",
+  "renewalDate": "2020-01-19",
+  "lastPublicationDate": "2020-02-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "invisalign",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    41,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software, namely, digital imaging software used to depict tooth movement and propose treatment plans; computer software used for the creation of individually customized courses of orthodontic treatment; computer software used to provide, track and modify proposed courses of orthodontic treatment and patient data related thereto.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "en",
+      "description": "Dental apparatus, namely, orthodontic appliances, orthodontic devices and braces for use in straightening teeth and treating malocclusions; parts of dental and orthodontic, periodontic, pedodontics, prosthodontics and endodontic apparatus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Training in the field of dentistry and orthodontic.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Consultation services in the fields of selection, application and use of computer hardware and software systems; dental research laboratory services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "en",
+      "description": "Orthodontic and dentistry services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciels informatiques, à savoir logiciels d'imagerie numérique utilisés pour illustrer les mouvements des dents et proposer des plans de traitement; logiciels utilisés pour la création de modalités de traitement individuelles et personnalisées en matière d'orthodontie; logiciels informatiques utilisés pour fournir, suivre et modifier les modalités d'un traitement d'orthodontie, ainsi que les données des patients s'y rapportant.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "fr",
+      "description": "Appareils dentaires, à savoir appareils orthodontiques, appareils et dispositifs orthodontiques utilisés pour redresser les dents et traiter les malocclusions; parties d'appareils dentaires et d'orthodontie, de parodontie, de pédodontie, de prosthodontie et d'endodontie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Formation dans le domaine de l'art dentaire et de l'orthodontie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services de consultation dans les domaines du choix, de l'application et de l'utilisation de matériel informatique et de systèmes de logiciels; services de laboratoires de recherche dans le domaine dentaire.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "fr",
+      "description": "Services dentaires et orthodontiques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software, a saber, software de diagnóstico por imágenes para representar el movimiento de los dientes y proponer planes de tratamiento; software de creación de cursos personalizados de tratamientos ortodóncicos; software para proporcionar, hacer un seguimiento y modificar los cursos propuesto de tratamientos ortodóncicos y los datos de los pacientes de éstos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "es",
+      "description": "Aparatos dentales, a saber, instrumentos ortodóncicos, dispositivos y aparatos ortodóncicos para enderezar dientes y tratar maloclusiones; partes de aparatos dentales, ortodóncicos, periodónticos y pedodónticos, endodoncias y prótesis dentales.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Formación en el ámbito de la odontología y la ortodoncia.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios de consultoría sobre la selección, aplicación y uso de equipos informáticos y sistemas de software; servicios de laboratorio de investigación dental.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "es",
+      "description": "Servicios de odontología y ortodoncia.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Merkenbureau Knijff & Partners B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20091006",
+      "priorityNumber": "1189588"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20091006",
+          "basicApplicationNumber": "1189588"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "BX",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20100111",
+          "basicRegistrationNumber": "870866"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CH",
+      "CN",
+      "KR",
+      "SG",
+      "TR",
+      "RU",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2820 Orchard Parkway San Jose CA 95134",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20091006",
+            "basicApplicationNumber": "1189588"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "BX",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20100111",
+            "basicRegistrationNumber": "870866"
+          }
+        ]
+      }
+    ],
+    "cmMarkImageEUclassification": [
+      "05.05.19"
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CH",
+      "CN",
+      "KR",
+      "SG",
+      "TR",
+      "RU",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software, namely, digital imaging software used to depict tooth movement and propose treatment plans; computer software used for the creation of individually customized courses of orthodontic treatment; computer software used to provide, track and modify proposed courses of orthodontic treatment and patient data related thereto."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Dental apparatus, namely, orthodontic appliances, orthodontic devices and braces for use in straightening teeth and treating malocclusions; parts of dental and orthodontic, periodontic, pedodontics, prosthodontics and endodontic apparatus."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Training in the field of dentistry and orthodontic."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Consultation services in the fields of selection, application and use of computer hardware and software systems; dental research laboratory services."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Orthodontic and dentistry services."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciels informatiques, à savoir logiciels d'imagerie numérique utilisés pour illustrer les mouvements des dents et proposer des plans de traitement; logiciels utilisés pour la création de modalités de traitement individuelles et personnalisées en matière d'orthodontie; logiciels informatiques utilisés pour fournir, suivre et modifier les modalités d'un traitement d'orthodontie, ainsi que les données des patients s'y rapportant."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Appareils dentaires, à savoir appareils orthodontiques, appareils et dispositifs orthodontiques utilisés pour redresser les dents et traiter les malocclusions; parties d'appareils dentaires et d'orthodontie, de parodontie, de pédodontie, de prosthodontie et d'endodontie."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Formation dans le domaine de l'art dentaire et de l'orthodontie."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de consultation dans les domaines du choix, de l'application et de l'utilisation de matériel informatique et de systèmes de logiciels; services de laboratoires de recherche dans le domaine dentaire."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services dentaires et orthodontiques."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software, a saber, software de diagnóstico por imágenes para representar el movimiento de los dientes y proponer planes de tratamiento; software de creación de cursos personalizados de tratamientos ortodóncicos; software para proporcionar, hacer un seguimiento y modificar los cursos propuesto de tratamientos ortodóncicos y los datos de los pacientes de éstos."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aparatos dentales, a saber, instrumentos ortodóncicos, dispositivos y aparatos ortodóncicos para enderezar dientes y tratar maloclusiones; partes de aparatos dentales, ortodóncicos, periodónticos y pedodónticos, endodoncias y prótesis dentales."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Formación en el ámbito de la odontología y la ortodoncia."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de consultoría sobre la selección, aplicación y uso de equipos informáticos y sistemas de software; servicios de laboratorio de investigación dental."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de odontología y ortodoncia."
+        }
+      ]
+    },
+    "id": "e1bd605b-3d19-43fe-80d4-780e31f2a823",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "05.05",
+      "26.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20091006",
+        "priorityNumber": "1189588"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "04"
+      }
+    ],
+    "recordLastUpdated": "20250803",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "Postbus 5054 NL-1380 GB Weesp",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "Merkenbureau Knijff & Partners B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300119",
+      "lastPublicationDate": "20200206",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20100119",
+        "registrationNumber": "1033901"
+      },
+      "renewalDate": "20200119",
+      "renewalPublishedDate": "20200206"
+    },
+    "version": "20250803020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "invisalign"
+    }
+  },
+  "_uri": "/mark/wo/e1bd605b-3d19-43fe-80d4-780e31f2a823",
+  "_receipt": {
+    "fetched_at": "2026-09-02T18:22:13.128Z",
+    "context": "prelim-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

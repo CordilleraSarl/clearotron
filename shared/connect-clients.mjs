@@ -123,51 +123,49 @@ export const CONNECT_CLIENTS = Object.freeze([
     ],
   },
   {
-    id: "claude-desktop", name: "Claude Desktop", accepts: "stdio", stdioShape: "desktop-json",
+    // NOT A SEPARATE PRODUCT (tracker issue 147; owner: "there is no such thing as desktop"). This is
+    // Claude reached the way that runs on the reader's own machine, so it carries Claude's name and says
+    // which way it is in the sub-label. The `desktop-json` stdio shape is unchanged — what moved is what
+    // a reader is told this is, not how it connects.
+    id: "claude-desktop", name: "Claude", sub: "app, on this computer", accepts: "stdio", stdioShape: "desktop-json",
     steps: () => [
       "Paste it into Claude Desktop's own settings file — Advanced, under these steps, names the file",
       "Restart Claude Desktop, and this service appears in its tools",
     ],
   },
 
-  // ── Speaks HTTP. Runs on the reader's machine and connects from the vendor's cloud anyway. ──────
+  // ── Speaks HTTP. Connects from the vendor's own servers. ────────────────────────────────────────
   //
-  // THE STEPS BELOW WERE DRIVEN, NOT RECALLED (tracker issue 148, and the connect walkthrough on 130).
-  // This row used to end "Choose API key, and paste the second line we copied" — and there is no API
-  // key control in that dialog. The owner connected Cowork on 2026-09-04 by pasting the address,
-  // setting Authentication to None, and adding an `Authorization: Bearer <key>` request header. A
-  // client following the old third step went looking for a box that is not the way in, on the page
+  // ONE ROW, BECAUSE IT IS ONE APP (tracker issue 147, owner ruling in session: "you know its just ONE
+  // APP on a laptop which has cowork and code in it and claude is what its called"). `cowork` was a
+  // separate row here and is merged in; the sub-label carries where it is met, which is a fact about the
+  // reader's screen rather than about our software.
+  //
+  // THE STEPS BELOW WERE DRIVEN, NOT RECALLED, and the merge is what settles which of two contradictory
+  // sequences survives. This row previously said "Connect, then sign in when the browser opens" — nobody
+  // ever drove that. The cowork row said something different and somebody had: the owner connected on
+  // 2026-09-04 by pasting the address, setting Authentication to None, and adding an
+  // `Authorization: Bearer <key>` request header. Both rows described the same app reaching the same
+  // door — `accepts: "http"`, one `public-http` offer, same address, same press — so they were never two
+  // routes to keep apart. They were one app described twice, and only one description was observed.
+  //
+  // The earlier defect in the same class, kept here because it is the reason the rule exists: the row
+  // used to end "Choose API key, and paste the second line we copied", and there is no API key control
+  // in that dialog. A client following it went looking for a box that is not the way in, on the page
   // whose entire job is to get them connected.
   //
-  // The class this belongs to is "the connector table asserts vendor behaviour from no observation",
-  // and cowork was its second instance — the row also had this product classified as running on the
-  // reader's machine when it connects from the vendor's cloud. So the wording is the one that was
-  // observed, and the warning goes with it: Claude tags the server "Always required · Detected"
-  // because it probes and infers OAuth. `None` is still correct despite the orange box, and a reader
-  // who is not told that will assume they have done it wrong.
+  // The warning travels with the steps and is not optional: Claude tags the server "Always required ·
+  // Detected" because it probes and infers OAuth. `None` is still correct despite the orange box, and a
+  // reader who is not told that will assume they have done it wrong.
   {
-    id: "cowork", name: "Cowork", accepts: "http",
+    id: "claude", name: "Claude", sub: "app, web, and Cowork", accepts: "http",
+    verifiedOn: "2026-09-04", by: "owner",
     steps: ({ address }) => [
       "Settings → Connectors → Add custom connector",
       `Paste ${address ?? "the first of the two lines we copied"}`,
       "Set Authentication to None",
       "Add a request header: Authorization = Bearer, then the second line we copied",
       "Add. If it warns that authentication is required, that is its own guess — None is correct here",
-    ],
-  },
-
-  // ── Connects from the vendor's own servers. Same requirement as Cowork above, for the same reason. ─
-  //
-  // Claude's and ChatGPT's FIRST STEP is also the delivered report's own words. `portal-ui/test/
-  // assistants.test.ts` joins them to `driver/publish/render.mjs`, so a reader who set up from a report
-  // and a reader who set up from the portal follow the same instructions. Changing either first line
-  // reds that test on purpose.
-  {
-    id: "claude", name: "Claude", accepts: "http",
-    steps: ({ address, operator }) => [
-      "Settings → Connectors → Add custom connector",
-      `Paste ${address ?? "the first of the two lines we copied"}`,
-      `Connect, then sign in when the browser opens (${operator} email)`,
     ],
   },
   {
@@ -213,9 +211,27 @@ export const CONNECT_CLIENTS = Object.freeze([
  *
  * A stub that restates a wire is a second author for one shape. This is the shape; both callers ask.
  */
+// `sub`, `verifiedOn` and `by` ride only where the ROW carries them, and absent means absent rather than
+// null (tracker issue 147). Two of the three are load-bearing on the page:
+//
+//   • `sub` is how one app can appear once per route without two rows claiming to be two products —
+//     "Claude · app, web, and Cowork" and "Claude · app, on this computer" are one product met two ways.
+//   • `verifiedOn`/`by` are what let the page show "✓ Checked <date>" on a row somebody actually drove
+//     and NO stamp on one nobody did. A stamp defaulted onto an undriven row would be the file's own
+//     defect class — asserting vendor behaviour from no observation — dressed up as evidence.
+//
+// So a row without them sends no key at all, and the page has nothing to render rather than something
+// empty to render badly.
 export const offersForWire = (offers) =>
-  offers.map(({ client, steps, ...rest }) =>
-    ({ id: client.id, name: client.name, steps: Array.isArray(steps) ? steps : [], ...rest }));
+  offers.map(({ client, steps, ...rest }) => ({
+    id: client.id,
+    name: client.name,
+    ...(client.sub ? { sub: client.sub } : {}),
+    ...(client.verifiedOn ? { verifiedOn: client.verifiedOn } : {}),
+    ...(client.by ? { by: client.by } : {}),
+    steps: Array.isArray(steps) ? steps : [],
+    ...rest,
+  }));
 
 /** The client by id, or null. */
 export const clientById = (id) => CONNECT_CLIENTS.find((c) => c.id === String(id ?? "").trim()) ?? null;

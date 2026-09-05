@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/kr/473986aa-7497-4f13-9fda-df14ba55e4cf",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "473986aa-7497-4f13-9fda-df14ba55e4cf",
+  "applicationNumber": "40-2010-0039846",
+  "registrationNumber": "4008923640000",
+  "applicationDate": "2010-07-30",
+  "registrationDate": "2011-12-01",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "iOC",
+  "markTransliteration": "IOC",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "치열교정분야에서 사용되는 3차원 디지털이미지 캡춰 용도의 컴퓨터 소프트웨어/컴퓨터 하드웨어 그리고 인트라 오랄 스캐너로 구성된 디지털 임프레션 시스템 3",
+      "translation_language": "en",
+      "translation": "Digital Impression System 3 consisting of computer software/computer hardware for capturing 3D digital images used in orthodontics and intraoral scanners"
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "정홍식 (Jeong Hong Sik)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미국 캘리포니아 산 호세 오차드 파크웨이",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc.",
+        "applicantNativeName": "얼라인 테크널러지, 인크."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Digital Impression System 3 consisting of computer software/computer hardware for capturing 3D digital images used in orthodontics and intraoral scanners",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치열교정분야에서 사용되는 3차원 디지털이미지 캡춰 용도의 컴퓨터 소프트웨어/컴퓨터 하드웨어 그리고 인트라 오랄 스캐너로 구성된 디지털 임프레션 시스템 3"
+        }
+      ]
+    },
+    "id": "473986aa-7497-4f13-9fda-df14ba55e4cf",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.01.06",
+      "27.05.19",
+      "27.09.15"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "F Shinduk Bldg., Gangnam-daero, Seocho-gu, Seoul,(Nawoo Patent & Law Firm)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "정홍식 (Jeong Hong Sik)"
+      },
+      {
+        "representativeAddress": "F Shinduk Bldg., Gangnam-daero, Seocho-gu, Seoul,(NAWOOPAT)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김태헌 (KIM, Tae Hun)"
+      },
+      {
+        "representativeAddress": "# Metro the O ville, Baekbum-ro Mapo-gu, Seoul, Korea(HS TRADEMARK&PATENT OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "이현수 (HYUN SHU LEE)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20100730",
+        "applicationNumber": "40-2010-0039846"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20111201",
+        "registrationNumber": "4008923640000"
+      }
+    },
+    "version": "20250625165528",
+    "wordMarkSpecification": {
+      "markTransliteration": "IOC",
+      "markVerbalElementText": "iOC"
+    }
+  },
+  "_uri": "/mark/kr/473986aa-7497-4f13-9fda-df14ba55e4cf",
+  "_receipt": {
+    "fetched_at": "2026-09-02T18:22:13.133Z",
+    "context": "prelim-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

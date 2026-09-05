@@ -1,0 +1,185 @@
+{
+  "uri": "/mark/kr/169f7771-8a98-441f-85c5-29f844cec62d",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "169f7771-8a98-441f-85c5-29f844cec62d",
+  "applicationNumber": "45-2007-0002817",
+  "registrationNumber": "4500257130000",
+  "applicationDate": "2007-07-12",
+  "registrationDate": "2008-12-15",
+  "expiryDate": "2028-12-15",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ALIGNTECH",
+  "markTransliteration": "ALIGNTECH",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    41,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "소프트웨어",
+      "translation_language": "en",
+      "translation": "software"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "치과분야의 훈련업,치아교정분야의 훈련업",
+      "translation_language": "en",
+      "translation": "Training in dental field, training in orthodontics"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "컴퓨터 하드웨어 및 소프트웨어 시스템의 디자인/선택/수행/사용에 관한 자문업",
+      "translation_language": "en",
+      "translation": "Advice on the design/selection/performance/use of computer hardware and software systems"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "ko",
+      "description": "의료업,치과업,치아교정업",
+      "translation_language": "en",
+      "translation": "Medical, Dental, Orthodontics"
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "김창세 (Chang Se Kim)",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20070315",
+      "priorityNumber": "77/131922"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미국 캘리포니아 산 호세 오차드 파크웨이",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc.",
+        "applicantNativeName": "얼라인 테크널러지, 인크."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "software",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "소프트웨어"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Training in dental field, training in orthodontics",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치과분야의 훈련업,치아교정분야의 훈련업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advice on the design/selection/performance/use of computer hardware and software systems",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "컴퓨터 하드웨어 및 소프트웨어 시스템의 디자인/선택/수행/사용에 관한 자문업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Medical, Dental, Orthodontics",
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "의료업,치과업,치아교정업"
+        }
+      ]
+    },
+    "id": "169f7771-8a98-441f-85c5-29f844cec62d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20070315",
+        "priorityNumber": "77/131922"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Dongwon F&B Building, Mabang-Ro, Seocho-Ku, Seoul Korea(FirstLaw P.C.)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김창세 (Chang Se Kim)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20070712",
+        "applicationNumber": "45-2007-0002817"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20281215",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20081215",
+        "registrationNumber": "4500257130000"
+      }
+    },
+    "version": "20250625162155",
+    "wordMarkSpecification": {
+      "markTransliteration": "ALIGNTECH",
+      "markVerbalElementText": "ALIGNTECH"
+    }
+  },
+  "_uri": "/mark/kr/169f7771-8a98-441f-85c5-29f844cec62d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T18:22:13.133Z",
+    "context": "prelim-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

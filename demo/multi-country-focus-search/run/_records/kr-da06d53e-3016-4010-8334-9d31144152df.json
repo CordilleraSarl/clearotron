@@ -1,0 +1,203 @@
+{
+  "uri": "/mark/kr/da06d53e-3016-4010-8334-9d31144152df",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "da06d53e-3016-4010-8334-9d31144152df",
+  "applicationNumber": "40-2017-0054921",
+  "registrationNumber": "4013318220000",
+  "applicationDate": "2017-04-28",
+  "registrationDate": "2018-02-19",
+  "expiryDate": "2028-02-19",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-02-23",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MADE TO MOVE",
+  "markTransliteration": "MADE TO MOVE",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    41,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "개별 맞춤형 치아교정치료과정 생성용 컴퓨터소프트웨어,개인의 치아상태평가 및 치아교정 치료계획에 사용되는 치과전문가용 소프트웨어,제안된 치아교정치료의 과정 및 관련된 환자데이터의 제공/추적/수정용 컴퓨터소프트웨어,치과 및 치아교정 치료서비스 제공용 소프트웨어,치아 및 턱의 3d모형 준비용 컴퓨터소프트웨어 3d,치아/턱 움직임 및 제안된 치료플랜 표현용 디지털 영상 소프트웨어,컴퓨터소프트웨어,휴대용 이동식 전자기기용 컴퓨터소프트웨어 애플리케이션",
+      "translation_language": "en",
+      "translation": "Computer software for creating individual customized orthodontic treatment courses, software for dental professionals used for individual dental condition evaluation and orthodontic treatment plan, computer software for providing/tracking/correcting the proposed orthodontic treatment process and related patient data, Software for providing dental and orthodontic treatment services, computer software for preparing 3D models of teeth and jaws 3D, digital imaging software for tooth/jaw movement and expression of the proposed treatment plan, computer software, computer software applications for portable mobile electronic devices"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "ko",
+      "description": "소아치과 장치용 부품 및 부속품,치과보철 장치용 부품 및 부속품,치과용 장치 부품 및 부속품,치내요법 장치용 부품 및 부속품,치아교정 및 부정교합 치료용 치열교정장치,치열교정 장치용 부품 및 부속품,치주과 장치용 부품 및 부속품",
+      "translation_language": "en",
+      "translation": "Parts and accessories for pediatric dental devices, parts and accessories for dental prosthetic devices, parts and accessories for dental devices, parts and accessories for endodontics, orthodontic devices for orthodontic and malocclusion treatment, parts and accessories for orthodontic devices, Parts and accessories for periodontal devices"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "치과 및 치아교정 분야의 훈련업",
+      "translation_language": "en",
+      "translation": "Training business in the field of dentistry and orthodontics"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "치아교정 및 치과치료 서비스 제공용 관련 내려받기 불가능한 소프트웨어 온라인 임시사용 제공업,치아교정 및 치과치료 서비스 제공용 소프트웨어 관련 애플리케이션 서비스 제공서비스업",
+      "translation_language": "en",
+      "translation": "Provision of temporary online use of non-downloadable software related to the provision of orthodontic and dental treatment services, and application service related to software for provision of orthodontic and dental treatment services"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "ko",
+      "description": "치과 및 치아교정 분야의 상담업,치과서비스업,치아교정업",
+      "translation_language": "en",
+      "translation": "Consultation business in the field of dentistry and orthodontics, dental service business, orthodontics business"
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "제일특허법인(유) (FirstLaw P.C.)",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20161028",
+      "priorityNumber": "87/219,492"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미국 캘리포니아 산 호세 오차드 파크웨이",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc.",
+        "applicantNativeName": "얼라인 테크널러지, 인크."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software for creating individual customized orthodontic treatment courses, software for dental professionals used for individual dental condition evaluation and orthodontic treatment plan, computer software for providing/tracking/correcting the proposed orthodontic treatment process and related patient data, Software for providing dental and orthodontic treatment services, computer software for preparing 3D models of teeth and jaws 3D, digital imaging software for tooth/jaw movement and expression of the proposed treatment plan, computer software, computer software applications for portable mobile electronic devices",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "개별 맞춤형 치아교정치료과정 생성용 컴퓨터소프트웨어,개인의 치아상태평가 및 치아교정 치료계획에 사용되는 치과전문가용 소프트웨어,제안된 치아교정치료의 과정 및 관련된 환자데이터의 제공/추적/수정용 컴퓨터소프트웨어,치과 및 치아교정 치료서비스 제공용 소프트웨어,치아 및 턱의 3d모형 준비용 컴퓨터소프트웨어 3d,치아/턱 움직임 및 제안된 치료플랜 표현용 디지털 영상 소프트웨어,컴퓨터소프트웨어,휴대용 이동식 전자기기용 컴퓨터소프트웨어 애플리케이션"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Parts and accessories for pediatric dental devices, parts and accessories for dental prosthetic devices, parts and accessories for dental devices, parts and accessories for endodontics, orthodontic devices for orthodontic and malocclusion treatment, parts and accessories for orthodontic devices, Parts and accessories for periodontal devices",
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "소아치과 장치용 부품 및 부속품,치과보철 장치용 부품 및 부속품,치과용 장치 부품 및 부속품,치내요법 장치용 부품 및 부속품,치아교정 및 부정교합 치료용 치열교정장치,치열교정 장치용 부품 및 부속품,치주과 장치용 부품 및 부속품"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Training business in the field of dentistry and orthodontics",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치과 및 치아교정 분야의 훈련업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provision of temporary online use of non-downloadable software related to the provision of orthodontic and dental treatment services, and application service related to software for provision of orthodontic and dental treatment services",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치아교정 및 치과치료 서비스 제공용 관련 내려받기 불가능한 소프트웨어 온라인 임시사용 제공업,치아교정 및 치과치료 서비스 제공용 소프트웨어 관련 애플리케이션 서비스 제공서비스업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Consultation business in the field of dentistry and orthodontics, dental service business, orthodontics business",
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치과 및 치아교정 분야의 상담업,치과서비스업,치아교정업"
+        }
+      ]
+    },
+    "id": "da06d53e-3016-4010-8334-9d31144152df",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20161028",
+        "priorityNumber": "87/219,492"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Dongwon F&B Building, Mabang-Ro, Seocho-Ku, Seoul Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "제일특허법인(유) (FirstLaw P.C.)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170428",
+        "applicationNumber": "40-2017-0054921"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280219",
+      "lastPublicationDate": "20180223",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20180219",
+        "registrationNumber": "4013318220000"
+      }
+    },
+    "version": "20250625182220",
+    "wordMarkSpecification": {
+      "markTransliteration": "MADE TO MOVE",
+      "markVerbalElementText": "MADE TO MOVE"
+    }
+  },
+  "_uri": "/mark/kr/da06d53e-3016-4010-8334-9d31144152df",
+  "_receipt": {
+    "fetched_at": "2026-09-02T18:22:13.131Z",
+    "context": "prelim-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

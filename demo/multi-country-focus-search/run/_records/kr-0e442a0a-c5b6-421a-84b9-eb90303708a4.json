@@ -1,0 +1,204 @@
+{
+  "uri": "/mark/kr/0e442a0a-c5b6-421a-84b9-eb90303708a4",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "0e442a0a-c5b6-421a-84b9-eb90303708a4",
+  "applicationNumber": "45-2010-0000354",
+  "registrationNumber": "4500344010000",
+  "applicationDate": "2010-01-28",
+  "registrationDate": "2011-04-14",
+  "expiryDate": "2031-04-14",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "인비절라인",
+  "markTransliteration": "INVISALIGN",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    40,
+    41,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "소프트웨어",
+      "translation_language": "en",
+      "translation": "software"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "ko",
+      "description": "치과/치아 교정/치주/소아치과/치과 보철/치아 신경치료 장치용 부품,치과용 가공치,치과용 거울,치과용 광택기구,치과용 드릴,치과용 디스펜싱 건,치과용 리테이너,치과용 바이트 트레이,치과용 박판,치과용 버,치과용 보철기구,치과용 브릿지,치과용 연결장치,치과용 온레이,치과용 인레이,치과용 임프레션 트레이,치과용 임플란트,치과용 장치,치과용 증량농도 측정기,치과용 집게,치과용 치관,치과용 클립,치과용 픽,치아 정렬 및 부정교합 치료용 치아교정기구 및 치열교정기,치아교정장치,치열교정장치의 보관/세정/운반용 특수 용기",
+      "translation_language": "en",
+      "translation": "Dental / Orthodontic / Periodontal / Pediatric dentistry / Dental prosthetics / Dental nerve treatment device parts, dental processing teeth, dental mirrors, dental polishers, dental drills, dental dispensing guns, dental retainers, dental bites Trays, dental plates, dental burs, dental prosthetics, dental bridges, dental connectors, dental onlays, dental inlays, dental impression trays, dental implants, dental devices, dental extensions Measuring instruments, dental tongs, dental crowns, dental clips, dental picks, orthodontic appliances for the treatment of alignment and malocclusion, and special containers for storage/cleaning/transportation of orthodontic appliances, orthodontic appliances, orthodontic appliances"
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "ko",
+      "description": "치기공업,치아교정기 주문제작업",
+      "translation_language": "en",
+      "translation": "Dental industry, order-made work for tooth braces"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "치과 및 치과교정 분야의 훈련업",
+      "translation_language": "en",
+      "translation": "Training in dentistry and orthodontics"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "컴퓨터 하드웨어 및 소프트웨어 시스템 디자인/선택/수행/사용 분야에 관한 서비스업",
+      "translation_language": "en",
+      "translation": "Services related to computer hardware and software system design / selection / performance / use"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "ko",
+      "description": "의료업,치과업,치아교정업",
+      "translation_language": "en",
+      "translation": "Medical, Dental, Orthodontics"
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "제일특허법인(유) (FirstLaw P.C.)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미국 캘리포니아 산 호세 오차드 파크웨이",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc.",
+        "applicantNativeName": "얼라인 테크널러지, 인크."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "software",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "소프트웨어"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dental / Orthodontic / Periodontal / Pediatric dentistry / Dental prosthetics / Dental nerve treatment device parts, dental processing teeth, dental mirrors, dental polishers, dental drills, dental dispensing guns, dental retainers, dental bites Trays, dental plates, dental burs, dental prosthetics, dental bridges, dental connectors, dental onlays, dental inlays, dental impression trays, dental implants, dental devices, dental extensions Measuring instruments, dental tongs, dental crowns, dental clips, dental picks, orthodontic appliances for the treatment of alignment and malocclusion, and special containers for storage/cleaning/transportation of orthodontic appliances, orthodontic appliances, orthodontic appliances",
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치과/치아 교정/치주/소아치과/치과 보철/치아 신경치료 장치용 부품,치과용 가공치,치과용 거울,치과용 광택기구,치과용 드릴,치과용 디스펜싱 건,치과용 리테이너,치과용 바이트 트레이,치과용 박판,치과용 버,치과용 보철기구,치과용 브릿지,치과용 연결장치,치과용 온레이,치과용 인레이,치과용 임프레션 트레이,치과용 임플란트,치과용 장치,치과용 증량농도 측정기,치과용 집게,치과용 치관,치과용 클립,치과용 픽,치아 정렬 및 부정교합 치료용 치아교정기구 및 치열교정기,치아교정장치,치열교정장치의 보관/세정/운반용 특수 용기"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dental industry, order-made work for tooth braces",
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치기공업,치아교정기 주문제작업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Training in dentistry and orthodontics",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치과 및 치과교정 분야의 훈련업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Services related to computer hardware and software system design / selection / performance / use",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "컴퓨터 하드웨어 및 소프트웨어 시스템 디자인/선택/수행/사용 분야에 관한 서비스업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Medical, Dental, Orthodontics",
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "의료업,치과업,치아교정업"
+        }
+      ]
+    },
+    "id": "0e442a0a-c5b6-421a-84b9-eb90303708a4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Dongwon F&B Building, Mabang-Ro, Seocho-Ku, Seoul Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "제일특허법인(유) (FirstLaw P.C.)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20100128",
+        "applicationNumber": "45-2010-0000354"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310414",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20110414",
+        "registrationNumber": "4500344010000"
+      }
+    },
+    "version": "20250625164751",
+    "wordMarkSpecification": {
+      "markTransliteration": "INVISALIGN",
+      "markVerbalElementText": "인비절라인"
+    }
+  },
+  "_uri": "/mark/kr/0e442a0a-c5b6-421a-84b9-eb90303708a4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T18:22:13.131Z",
+    "context": "prelim-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

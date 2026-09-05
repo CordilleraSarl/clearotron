@@ -1,0 +1,208 @@
+{
+  "uri": "/mark/kr/8d9fedc0-359d-4b13-ab81-f684b1ec2ab4",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "8d9fedc0-359d-4b13-ab81-f684b1ec2ab4",
+  "applicationNumber": "40-2020-0229035",
+  "registrationNumber": "4018808900000",
+  "applicationDate": "2020-12-15",
+  "registrationDate": "2022-06-21",
+  "expiryDate": "2032-06-21",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-06-24",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ADAPT by align",
+  "markTransliteration": "ADAPT by align",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    41,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "실시간 치과 치료 계획용 사용자 인터페이스를 제공하는 내려받기 가능한 컴퓨터 소프트웨어,치과 치료 계획용 모바일 애플리케이션 형태의 내려받기 가능한 소프트웨어(치아/턱의 움직임 및 제안된 치과 치료 플랜 표현용 디지털 이미징 모바일 소프트웨어 애플리케이션,,치아 부정교합의 특징 및 중증도 분류용 모바일 애플리케이션 형태의 내려받기 가능한 소프트웨어",
+      "translation_language": "en",
+      "translation": "Downloadable computer software that provides a user interface for real-time dental treatment planning, downloadable software in the form of a mobile application for dental treatment planning (tooth/jaw movement and digital imaging mobile software application for expression of the proposed dental treatment plan, teeth Downloadable software in the form of a mobile application for classification of malocclusion characteristics and severity"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ko",
+      "description": "광고 및 판촉 관련 정보제공업,광고/홍보/마케팅/판촉업,기업 경영 및 정보제공업,마케팅 보고서 준비업,사업 개발 보고서 준비업,사업 목적의 고객 포상 프로그램 수립 및 관리 관련 사업 자문업,사업 목적의 인센티브/충성도/보상 전략 관련 자문 및 정보제공업,사업 보고서 준비업,사업자문업(사업경영 자문업을 포함,,사업정보제공업,상업정보제공업,치과 및 치아교정 실습 개발 및 관리 관련 사업자문업,치과/치아교정/구강의학 분야의 의사 추천업,판매 및 홍보용 인센티브/충성도/보상 전략 조직/운영 및 감독업",
+      "translation_language": "en",
+      "translation": "Advertising and promotion-related information providing business, advertising/PR/marketing/promotional business, corporate management and information provision business, marketing report preparation business, business development report preparation business, business advisory business related to establishment and management of customer reward programs for business purposes, business incentives /Loyalty/reward strategy related advisory and information provider, business report preparation business, business advisory business (including business management advisory business, business information provider, commercial information provider, dental and orthodontic practice development and management related business advisory business, dental/orthodontics /Oral medicine field doctor recommendation business, sales and promotion incentives/loyalty/reward strategy organization/operation and supervision"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "치과 및 치열 교정 분야 훈련업,치과 및 치열 교정 실습 개발 및 홍보 분야 훈련업",
+      "translation_language": "en",
+      "translation": "Training business in the field of dentistry and orthodontics, training in the field of development and promotion of dental and orthodontics practice"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "의사/환자/예비환자 간의 인스턴트 메시징용 컴퓨터 소프트웨어 설계 및 개발업,치열 교정 및 치과 치료 서비스 제공용 소프트웨어가 수록된 애플리케이션 서비스제공업",
+      "translation_language": "en",
+      "translation": "Design and development of computer software for instant messaging between doctors/patients/prospective patients, and application service provider including software for orthodontic and dental treatment services"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "ko",
+      "description": "개인용 치아교정 치료 계획의 설계 및 제작업,치과 및 치아 교정 기술/재료/제품 관련 자문업 및 정보제공업,치과 및 치아교정 관리 분야의 상담업,치과서비스업,치아교정/치내요법/소아치과/치주병학/치아 복원치료 관련 자문업 및 상담업(인터넷 또는 엑스트라넷을 통한 온라인 서비스 제공을 포함하는 것임,,치아교정업",
+      "translation_language": "en",
+      "translation": "Design and manufacture of personal orthodontic treatment plans, consulting business and information provision business related to dental and orthodontic technology/materials/products, consultation business in the field of dentistry and orthodontics management, dental service business, orthodontics/dental therapy/pediatric dentistry/periodontics/ Consulting business and counseling business related to dental restoration treatment"
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "제일특허법인(유) (FirstLaw P.C.)",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20201012",
+      "priorityNumber": "90/249,319"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미국 캘리포니아 산 호세 오차드 파크웨이",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc.",
+        "applicantNativeName": "얼라인 테크널러지, 인크."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Downloadable computer software that provides a user interface for real-time dental treatment planning, downloadable software in the form of a mobile application for dental treatment planning (tooth/jaw movement and digital imaging mobile software application for expression of the proposed dental treatment plan, teeth Downloadable software in the form of a mobile application for classification of malocclusion characteristics and severity",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "실시간 치과 치료 계획용 사용자 인터페이스를 제공하는 내려받기 가능한 컴퓨터 소프트웨어,치과 치료 계획용 모바일 애플리케이션 형태의 내려받기 가능한 소프트웨어(치아/턱의 움직임 및 제안된 치과 치료 플랜 표현용 디지털 이미징 모바일 소프트웨어 애플리케이션,,치아 부정교합의 특징 및 중증도 분류용 모바일 애플리케이션 형태의 내려받기 가능한 소프트웨어"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising and promotion-related information providing business, advertising/PR/marketing/promotional business, corporate management and information provision business, marketing report preparation business, business development report preparation business, business advisory business related to establishment and management of customer reward programs for business purposes, business incentives /Loyalty/reward strategy related advisory and information provider, business report preparation business, business advisory business (including business management advisory business, business information provider, commercial information provider, dental and orthodontic practice development and management related business advisory business, dental/orthodontics /Oral medicine field doctor recommendation business, sales and promotion incentives/loyalty/reward strategy organization/operation and supervision",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "광고 및 판촉 관련 정보제공업,광고/홍보/마케팅/판촉업,기업 경영 및 정보제공업,마케팅 보고서 준비업,사업 개발 보고서 준비업,사업 목적의 고객 포상 프로그램 수립 및 관리 관련 사업 자문업,사업 목적의 인센티브/충성도/보상 전략 관련 자문 및 정보제공업,사업 보고서 준비업,사업자문업(사업경영 자문업을 포함,,사업정보제공업,상업정보제공업,치과 및 치아교정 실습 개발 및 관리 관련 사업자문업,치과/치아교정/구강의학 분야의 의사 추천업,판매 및 홍보용 인센티브/충성도/보상 전략 조직/운영 및 감독업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Training business in the field of dentistry and orthodontics, training in the field of development and promotion of dental and orthodontics practice",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치과 및 치열 교정 분야 훈련업,치과 및 치열 교정 실습 개발 및 홍보 분야 훈련업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Design and development of computer software for instant messaging between doctors/patients/prospective patients, and application service provider including software for orthodontic and dental treatment services",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "의사/환자/예비환자 간의 인스턴트 메시징용 컴퓨터 소프트웨어 설계 및 개발업,치열 교정 및 치과 치료 서비스 제공용 소프트웨어가 수록된 애플리케이션 서비스제공업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Design and manufacture of personal orthodontic treatment plans, consulting business and information provision business related to dental and orthodontic technology/materials/products, consultation business in the field of dentistry and orthodontics management, dental service business, orthodontics/dental therapy/pediatric dentistry/periodontics/ Consulting business and counseling business related to dental restoration treatment",
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "개인용 치아교정 치료 계획의 설계 및 제작업,치과 및 치아 교정 기술/재료/제품 관련 자문업 및 정보제공업,치과 및 치아교정 관리 분야의 상담업,치과서비스업,치아교정/치내요법/소아치과/치주병학/치아 복원치료 관련 자문업 및 상담업(인터넷 또는 엑스트라넷을 통한 온라인 서비스 제공을 포함하는 것임,,치아교정업"
+        }
+      ]
+    },
+    "id": "8d9fedc0-359d-4b13-ab81-f684b1ec2ab4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.01.03",
+      "27.05.07",
+      "27.09.09"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20201012",
+        "priorityNumber": "90/249,319"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Dongwon F&B Building, Mabang-Ro, Seocho-Ku, Seoul Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "제일특허법인(유) (FirstLaw P.C.)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20201215",
+        "applicationNumber": "40-2020-0229035"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320621",
+      "lastPublicationDate": "20220624",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20220621",
+        "registrationNumber": "4018808900000"
+      }
+    },
+    "version": "20250625205340",
+    "wordMarkSpecification": {
+      "markTransliteration": "ADAPT by align",
+      "markVerbalElementText": "ADAPT by align"
+    }
+  },
+  "_uri": "/mark/kr/8d9fedc0-359d-4b13-ab81-f684b1ec2ab4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T18:22:13.133Z",
+    "context": "prelim-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}
