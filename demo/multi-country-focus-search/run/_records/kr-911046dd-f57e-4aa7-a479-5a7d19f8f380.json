@@ -1,0 +1,202 @@
+{
+  "uri": "/mark/kr/911046dd-f57e-4aa7-a479-5a7d19f8f380",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "911046dd-f57e-4aa7-a479-5a7d19f8f380",
+  "applicationNumber": "45-2014-0010023",
+  "registrationNumber": "4500611100000",
+  "applicationDate": "2014-12-11",
+  "registrationDate": "2015-12-09",
+  "expiryDate": "2035-12-09",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SMARTSTAGE",
+  "markTransliteration": "SMARTSTAGE",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    40,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "내려받기 가능한 컴퓨터 소프트웨어, 컴퓨터 워크스테이션(치아교정기구 및 치과용 보철기구의 디자인/환자치료를 관찰하는 용도의 의료용 이미지를 처리 및 전시하는 것임)",
+      "translation_language": "en",
+      "translation": "Downloadable computer software, computer workstations (processing and displaying medical images for the purpose of observing the design / patient treatment of dental orthodontics and dental prostheses)"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "ko",
+      "description": "가공치, 보철기구, 스캔카메라(의료용 이미지를 포착하는 것임), 외과수술용/의료용 기기, 외과수술용/의료용 기구 및 장치, 외과수술용/의료용 보철물, 의료용 봉합재료, 의료용 치과재료, 인공재료 이식물, 치과용 광택기구 , 치과용 디스펜싱 건 , 치과용 인레이 , 치과용 증량농도측정기 , 치과용 거울, 치과용 기계 및 기구(교정치료/치아보존과 관련한 것임), 치과용 기기, 치과용 드릴, 치과용 디지털 교정스캔장비, 치과용 리테이너, 치과용 바이트 트레이 , 치과용 버 , 치과용 브릿지, 치과용 연결장치, 치과용 온레이 , 치과용 이식물, 치과용 집게, 치과용 치관, 치과용 클립, 치과용 픽 , 치과용/치아교정용 기구 및 장치, 치과용/치아교정용 기기, 치과용/치아교정용 보철물, 치아 정렬 및 부정교합 치료용 치아교정기구, 치아 정렬 및 부정교합 치료용 치열교정기, 치아교정용 얼라이너 /리테이너 가공재료, 치열교정장치의 보관/세정/운반용 특수 용기, 컴퓨터 소프트웨어 및 컴퓨터 하드웨어로 구성된 디지털 의치 시스템 장치(치아교정 분야에서 3차원 디지털 이미지를 위한 중앙처리 장치/기억저장 드라이브 모니터/구강 스캐너로 구성된 것임,",
+      "translation_language": "en",
+      "translation": "Machining teeth, prosthetic devices, scanning cameras (capturing medical images), surgical/medical devices, surgical/medical instruments and devices, surgical/medical prosthesis, medical suture materials, medical dental materials, artificial material implants, dental polishing devices, dental dispensing guns, dental inlays, dental intensifier density meters, dental mirrors, dental machines, and Appliances (related to orthodontic treatment/tooth preservation), dental instruments, dental drills, dental digital orthodontic scanning equipment, dental retainers, dental bite trays, dental burs, dental bridges, dental connectors, dental onlays, dental implants, dental forceps, dental crowns, dental clips, dental picks, dental/orthodontic instruments and devices, dental/orthodontic devices, Dental/orthodontic prosthesis, orthodontic appliance for tooth alignment and malocclusion treatment, orthodontic appliance for tooth alignment and malocclusion treatment, aligner/retainer processing material for orthodontic treatment, special container for storage/cleaning/transportation of orthodontic appliance, digital denture system device consisting of computer software and computer hardware (consisting of central processing unit/memory storage drive monitor/oral scanner for 3D digital image in orthodontic field,"
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "ko",
+      "description": "치과 기공사 서비스업, 치과이식물 표면처리 및 치과용 인레이/치관 및 치교의 표면처리업 , 치과이식물 표면처리 및 코팅처리업 , 치과이식물을 위한 재료처리업 , 치기공업(치아 변형 바로잡기 및 부정교합 치료를 위한 교정장치의 설계/생산하는 것임), 치기공업(치아 복구/교정 치료를 위한 치아 및 치열 모형을 제작하는 것임), 치기공업, 치열교정장치 및 보철기구의 맞춤식 제조 서비스업",
+      "translation_language": "en",
+      "translation": "Dental technician service industry, dental implant surface treatment and dental inlay/tooth crown and dental bridge surface treatment industry, dental implant surface treatment and coating processing industry, material processing industry for dental implants, dental engineering industry (designing/producing orthodontic devices for correcting tooth deformation and malocclusion treatment), dental engineering industry (manufacturing models of teeth and dentition for tooth restoration/orthodontic treatment), dental engineering industry, orthodontic equipment and Customized manufacturing service of prosthetic devices"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "내려받기 불가능한 소프트웨어 애플리케이션 제공업(웹애플리케이션 호스팅서비스임, , 데이터처리프로그램개발업",
+      "translation_language": "en",
+      "translation": "Business providing software applications that cannot be downloaded (web application hosting service, data processing program development business)"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "ko",
+      "description": "의료업, 치과 및 치열교정 관련 상담업 , 치과업, 치아교정업",
+      "translation_language": "en",
+      "translation": "Medical industry, dentistry and orthodontics-related consultation, dentistry, orthodontics industry"
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "제일특허법인(유) (FirstLaw P.C.)",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20140612",
+      "priorityNumber": "86/308,522"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미국 캘리포니아 ** 산 호세 오차드 파크웨이 *",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc.",
+        "applicantNativeName": "얼라인 테크널러지, 인크."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Downloadable computer software, computer workstations (processing and displaying medical images for the purpose of observing the design / patient treatment of dental orthodontics and dental prostheses)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "내려받기 가능한 컴퓨터 소프트웨어, 컴퓨터 워크스테이션(치아교정기구 및 치과용 보철기구의 디자인/환자치료를 관찰하는 용도의 의료용 이미지를 처리 및 전시하는 것임)"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Machining teeth, prosthetic devices, scanning cameras (capturing medical images), surgical/medical devices, surgical/medical instruments and devices, surgical/medical prosthesis, medical suture materials, medical dental materials, artificial material implants, dental polishing devices, dental dispensing guns, dental inlays, dental intensifier density meters, dental mirrors, dental machines, and Appliances (related to orthodontic treatment/tooth preservation), dental instruments, dental drills, dental digital orthodontic scanning equipment, dental retainers, dental bite trays, dental burs, dental bridges, dental connectors, dental onlays, dental implants, dental forceps, dental crowns, dental clips, dental picks, dental/orthodontic instruments and devices, dental/orthodontic devices, Dental/orthodontic prosthesis, orthodontic appliance for tooth alignment and malocclusion treatment, orthodontic appliance for tooth alignment and malocclusion treatment, aligner/retainer processing material for orthodontic treatment, special container for storage/cleaning/transportation of orthodontic appliance, digital denture system device consisting of computer software and computer hardware (consisting of central processing unit/memory storage drive monitor/oral scanner for 3D digital image in orthodontic field,",
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "가공치, 보철기구, 스캔카메라(의료용 이미지를 포착하는 것임), 외과수술용/의료용 기기, 외과수술용/의료용 기구 및 장치, 외과수술용/의료용 보철물, 의료용 봉합재료, 의료용 치과재료, 인공재료 이식물, 치과용 광택기구 , 치과용 디스펜싱 건 , 치과용 인레이 , 치과용 증량농도측정기 , 치과용 거울, 치과용 기계 및 기구(교정치료/치아보존과 관련한 것임), 치과용 기기, 치과용 드릴, 치과용 디지털 교정스캔장비, 치과용 리테이너, 치과용 바이트 트레이 , 치과용 버 , 치과용 브릿지, 치과용 연결장치, 치과용 온레이 , 치과용 이식물, 치과용 집게, 치과용 치관, 치과용 클립, 치과용 픽 , 치과용/치아교정용 기구 및 장치, 치과용/치아교정용 기기, 치과용/치아교정용 보철물, 치아 정렬 및 부정교합 치료용 치아교정기구, 치아 정렬 및 부정교합 치료용 치열교정기, 치아교정용 얼라이너 /리테이너 가공재료, 치열교정장치의 보관/세정/운반용 특수 용기, 컴퓨터 소프트웨어 및 컴퓨터 하드웨어로 구성된 디지털 의치 시스템 장치(치아교정 분야에서 3차원 디지털 이미지를 위한 중앙처리 장치/기억저장 드라이브 모니터/구강 스캐너로 구성된 것임,"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dental technician service industry, dental implant surface treatment and dental inlay/tooth crown and dental bridge surface treatment industry, dental implant surface treatment and coating processing industry, material processing industry for dental implants, dental engineering industry (designing/producing orthodontic devices for correcting tooth deformation and malocclusion treatment), dental engineering industry (manufacturing models of teeth and dentition for tooth restoration/orthodontic treatment), dental engineering industry, orthodontic equipment and Customized manufacturing service of prosthetic devices",
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치과 기공사 서비스업, 치과이식물 표면처리 및 치과용 인레이/치관 및 치교의 표면처리업 , 치과이식물 표면처리 및 코팅처리업 , 치과이식물을 위한 재료처리업 , 치기공업(치아 변형 바로잡기 및 부정교합 치료를 위한 교정장치의 설계/생산하는 것임), 치기공업(치아 복구/교정 치료를 위한 치아 및 치열 모형을 제작하는 것임), 치기공업, 치열교정장치 및 보철기구의 맞춤식 제조 서비스업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Business providing software applications that cannot be downloaded (web application hosting service, data processing program development business)",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "내려받기 불가능한 소프트웨어 애플리케이션 제공업(웹애플리케이션 호스팅서비스임, , 데이터처리프로그램개발업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Medical industry, dentistry and orthodontics-related consultation, dentistry, orthodontics industry",
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "의료업, 치과 및 치열교정 관련 상담업 , 치과업, 치아교정업"
+        }
+      ]
+    },
+    "id": "911046dd-f57e-4aa7-a479-5a7d19f8f380",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20140612",
+        "priorityNumber": "86/308,522"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Dongwon F&B Building, ** Mabang-Ro, Seocho-Ku, Seoul ** Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "제일특허법인(유) (FirstLaw P.C.)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20141211",
+        "applicationNumber": "45-2014-0010023"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20351209",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20151209",
+        "registrationNumber": "4500611100000"
+      }
+    },
+    "version": "20260109020942",
+    "wordMarkSpecification": {
+      "markTransliteration": "SMARTSTAGE",
+      "markVerbalElementText": "SMARTSTAGE"
+    }
+  },
+  "_uri": "/mark/kr/911046dd-f57e-4aa7-a479-5a7d19f8f380",
+  "_receipt": {
+    "fetched_at": "2026-09-02T18:22:13.132Z",
+    "context": "prelim-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

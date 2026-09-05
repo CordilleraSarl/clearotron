@@ -1,0 +1,204 @@
+{
+  "uri": "/mark/kr/7210471a-50ef-4f0b-9938-b19a4a7f6c64",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "7210471a-50ef-4f0b-9938-b19a4a7f6c64",
+  "applicationNumber": "45-2011-0005111",
+  "registrationNumber": "4500450060000",
+  "applicationDate": "2011-11-08",
+  "registrationDate": "2013-06-04",
+  "expiryDate": "2033-06-04",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ITERO",
+  "markTransliteration": "ITERO",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    40,
+    41,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "컴퓨터 소프트웨어, 디지털 이미지 소프트웨어(치아 및 턱의 움직임과 제안된 치료계획을 묘사하는 데에 사용되는 것임), 컴퓨터 스캐닝 소프트웨어, 치과 의치용 디지털 소프트웨어 , 컴퓨터 소프트웨어(치아 및 턱의 3차원 디지털 모형을 준비하는 데에 사용되는 것임), 원격 진료시스템 장치(컴퓨터 소프트웨어/컴퓨터 하드웨어/펌웨어/구강내부 스캔카메라로 구성되는 것으로 치아교정 분야에서 사용되는 무선통신망을 이용한 의료용 디지털 이미지 캡쳐/저장/검색/전송하는 데에 사용되는 것임, , 컴퓨터 소프트웨어(개인 맞춤형 치아교정 치료과정을 제작하는 데에 사용되는 것임), 컴퓨터 소프트웨어(제안된 치아교정 치료과정 및 환자 기록을 제공/추적/수정하는 데에 사용되는 것임), 치과 전문의용 소프트웨어(개인 치열평가/치아교정치료계획/치아복원/치관 준비 및 교정/치과 복원치료에 사용되는 것임,",
+      "translation_language": "en",
+      "translation": "Computer software, digital imaging software (which is used to depict tooth and jaw movements and proposed treatment plans), computer scanning software, digital software for dental dentures, computer software (to prepare three-dimensional digital models of teeth and jaws)), a telemedicine system device (composed of computer software/computer hardware/firmware/intraoral scan camera, which captures/stores/searches/transmits medical digital images using a wireless communication network used in the orthodontic field), computer software (used to create personalized orthodontic treatment procedures), computer software (used to provide/track/modify proposed orthodontic treatment procedures and patient records)), dental professional software (used for personal orthodontic evaluation/orthodontic treatment plan/tooth restoration/crown preparation and orthodontic/orthodontic restoration treatment,"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "ko",
+      "description": "치과용 기계 및 기구(교정치료/치아보존과 관련한 것임), 치과용 치관/브릿지/인레이 /온레이 /임플란트, 치과용 장치 및 기구, 치아교정기구, 치열교정장치의 보관/세정/운반용 특수 용기, 치과용 도구/집게/드릴/광택기구 /버 /증량농도 측정기 / 디스펜싱 건 /바이트 트레이 /픽 /클립/치과용 거울, 치과용 연결장치 /리테이너 /가공치 /보철기구, 치아 정렬 및 부정교합 치료용 치아교정기구 및 치열교정기 , 치과/치아 교정/장치용 부품, 치열교정용 기계 및 기구, 디지털 교정스캔장비, 스캔카메라(의료용 이미지를 포착하는 것임), 컴퓨터 워크스테이션(치아교정기구 및 치과용 보철기구의 디자인/환자치료를 관찰하는 용도의 의료용 이미지를 처리 및 전시하는 것임), 컴퓨터 소프트웨어 및 컴퓨터 하드웨어로 구성된 디지털 의치 시스템 장치(치아교정 분야에서 3차원 디지털 이미지를 위한 중앙처리 장치/기억저장 드라이브 모니터/구강 스캐너로 구성된 것임, , 외과수술용 기기, 의료기기(치과용은 제외), 치과용 장치, 치아교정용 장치, 의치",
+      "translation_language": "en",
+      "translation": "Dental machines and instruments (related to orthodontic treatment/tooth preservation), dental crowns/bridges/inlays/onlays/implants, dental devices and instruments, orthodontic instruments, special containers for storage/cleaning/transportation of orthodontic appliances, dental tool/tongs/drill/polishing device/burr/extending concentration meter/dispensing gun/bite tray/pick/clip/dental mirror, dental connector/retainer/machined tooth/prosthetic appliance, tooth alignment and malocclusion Therapeutic orthodontic appliances and orthodontic appliances, parts for dental/orthodontic appliances, orthodontic machines and appliances, digital orthodontic scanning equipment, scanning cameras (to capture medical images), computer workstations (orthodontic appliances and dentistry) Digital denture system device composed of computer software and computer hardware (central processing unit/memory for 3D digital image in orthodontic field) Consists of a storage drive monitor/oral scanner,, Surgical instruments, Medical instruments (except for dental use), Dental units, Orthodontic units, Dentures."
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "ko",
+      "description": "치열교정장치 및 보철기구의 맞춤식 제조업, 치기공업, 치과 기공사 서비스업, 치기공업(치아 변형 바로잡기 및 부정교합 치료를 위한 교정장치의 설계/생산하는 것임), 치기공업(치아 복구/교정 치료를 위한 치아 및 치열 모형을 제작하는 것임)",
+      "translation_language": "en",
+      "translation": "Customized manufacturing of orthodontic appliances and prosthetics, dental work, dental technician services, dental work (designing and producing orthodontic devices for correcting tooth deformity and malocclusion), dental work (for tooth restoration / orthodontic treatment) Tooth and orthodontics)"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "치과 및 치아교정 분야의 훈련업, 치열교정장치 사용 훈련업, 치아교정 소프트웨어 사용 훈련업, 치아교정 전문의 및 치의학 전문직 종사자의 디지털 이미지 소프트웨어 사용에 관한교육업 및 훈련업 , 훈련/세미나/회의/강좌/지도/워크샵/강의/학술 토론회의 준비 및 진행업(외과수술/의료/치과/치아교정 기술/치아교정기구 및 장치에 관한 것임)",
+      "translation_language": "en",
+      "translation": "Training in the field of dentistry and orthodontics, training in orthodontic appliance use, training in orthodontic software use, education and training on the use of digital image software by orthodontists and dental professionals, training/seminar/meeting/ Preparation and conduct of lectures/instructions/workshops/lectures/academic discussions (relating to surgery/medical/dental/orthodontic technology/orthodontic instruments and devices)"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "컴퓨터 하드웨어 및 소프트웨어 시스템의 디자인업, 컴퓨터 하드웨어 및 소프트웨어 시스템의 실행업, 컴퓨터 하드웨어 및 소프트웨어 관련 자문업, 컴퓨터 하드웨어 및 소프트웨어 시스템 선택/수행/사용 분야에 관한 상담업, 치아 및 치열의 교정 모델의 3d 컴퓨터 이미지를 위한 컴퓨터 이용 설계업, 치아 및 치열 모형 이미지의 컴퓨터 이용 설계업, 치과 및 치아교정용 디지털 이미지의 전자 저장 및 복구업",
+      "translation_language": "en",
+      "translation": "3d computer images of the design work of computer hardware and software systems, the execution of computer hardware and software systems, the consulting work on computer hardware and software, the consultation on computer hardware and software systems selection, implementation and use, and the orthodontic model of teeth and orthodontics Computer-aided design for dental, computer-aided design of dental and orthodontic images, electronic storage and retrieval of digital images for dental and orthodontics"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "ko",
+      "description": "치과업, 의료업, 치아교정업, 치아교정 및 치과서비스업, 치과/치아교정/치주병/치내요법/소아치과 서비스 및 치료업, 개인용 치아교정 치료 계획의 설계 및 제작업, 치과/치아교정 관련 상담업, 치아/치아교정 기술/치아교정 재료/치아교정 제품 관련 자문 및 정보제공업, 치아교정/치내요법/소아치과/치주병/치아복구치료법 관련 자문 및 상담업(인터넷/엑스트라넷을 통한 온라인 서비스 제공을 포함, , 치과 분야의 컴퓨터 이용 모형제작업(치과의사에게 의치 및 연구 주조물을 위해 치과용 모델 이미지의 3d 컴퓨터 형상을 제공하는 것임, , 컴퓨터 이용 모형제작업(치과/치아 복원/치관 준비 및 교정/치과 복원치료를 위한 것임,",
+      "translation_language": "en",
+      "translation": "Dental, medical, orthodontic, orthodontic and dental service, dental/orthodontic/periodontal disease/endodontic/pediatric dental service and treatment, design and manufacturing of personal orthodontic treatment plan, dental/orthodontic related consultation, dental/orthodontic technology/orthodontic material/orthodontic product related advice and information provider, orthodontic/endodontic/pediatric dentistry/periodontal disease/tooth restoration treatment related advice and consulting business (online service provided through internet/extranet Including,, computer-aided modeling in the dental field (providing dentists 3d computer geometry of dental model images for dentures and research castings,, computer-aided modeling (dental/tooth restoration/crown preparation and correction) /It is for dental restoration treatment,"
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "제일특허법인(유) (FirstLaw P.C.)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미국 캘리포니아 산 호세 오차드 파크웨이",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc.",
+        "applicantNativeName": "얼라인 테크널러지, 인크."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software, digital imaging software (which is used to depict tooth and jaw movements and proposed treatment plans), computer scanning software, digital software for dental dentures, computer software (to prepare three-dimensional digital models of teeth and jaws)), a telemedicine system device (composed of computer software/computer hardware/firmware/intraoral scan camera, which captures/stores/searches/transmits medical digital images using a wireless communication network used in the orthodontic field), computer software (used to create personalized orthodontic treatment procedures), computer software (used to provide/track/modify proposed orthodontic treatment procedures and patient records)), dental professional software (used for personal orthodontic evaluation/orthodontic treatment plan/tooth restoration/crown preparation and orthodontic/orthodontic restoration treatment,",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "컴퓨터 소프트웨어, 디지털 이미지 소프트웨어(치아 및 턱의 움직임과 제안된 치료계획을 묘사하는 데에 사용되는 것임), 컴퓨터 스캐닝 소프트웨어, 치과 의치용 디지털 소프트웨어 , 컴퓨터 소프트웨어(치아 및 턱의 3차원 디지털 모형을 준비하는 데에 사용되는 것임), 원격 진료시스템 장치(컴퓨터 소프트웨어/컴퓨터 하드웨어/펌웨어/구강내부 스캔카메라로 구성되는 것으로 치아교정 분야에서 사용되는 무선통신망을 이용한 의료용 디지털 이미지 캡쳐/저장/검색/전송하는 데에 사용되는 것임, , 컴퓨터 소프트웨어(개인 맞춤형 치아교정 치료과정을 제작하는 데에 사용되는 것임), 컴퓨터 소프트웨어(제안된 치아교정 치료과정 및 환자 기록을 제공/추적/수정하는 데에 사용되는 것임), 치과 전문의용 소프트웨어(개인 치열평가/치아교정치료계획/치아복원/치관 준비 및 교정/치과 복원치료에 사용되는 것임,"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dental machines and instruments (related to orthodontic treatment/tooth preservation), dental crowns/bridges/inlays/onlays/implants, dental devices and instruments, orthodontic instruments, special containers for storage/cleaning/transportation of orthodontic appliances, dental tool/tongs/drill/polishing device/burr/extending concentration meter/dispensing gun/bite tray/pick/clip/dental mirror, dental connector/retainer/machined tooth/prosthetic appliance, tooth alignment and malocclusion Therapeutic orthodontic appliances and orthodontic appliances, parts for dental/orthodontic appliances, orthodontic machines and appliances, digital orthodontic scanning equipment, scanning cameras (to capture medical images), computer workstations (orthodontic appliances and dentistry) Digital denture system device composed of computer software and computer hardware (central processing unit/memory for 3D digital image in orthodontic field) Consists of a storage drive monitor/oral scanner,, Surgical instruments, Medical instruments (except for dental use), Dental units, Orthodontic units, Dentures.",
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치과용 기계 및 기구(교정치료/치아보존과 관련한 것임), 치과용 치관/브릿지/인레이 /온레이 /임플란트, 치과용 장치 및 기구, 치아교정기구, 치열교정장치의 보관/세정/운반용 특수 용기, 치과용 도구/집게/드릴/광택기구 /버 /증량농도 측정기 / 디스펜싱 건 /바이트 트레이 /픽 /클립/치과용 거울, 치과용 연결장치 /리테이너 /가공치 /보철기구, 치아 정렬 및 부정교합 치료용 치아교정기구 및 치열교정기 , 치과/치아 교정/장치용 부품, 치열교정용 기계 및 기구, 디지털 교정스캔장비, 스캔카메라(의료용 이미지를 포착하는 것임), 컴퓨터 워크스테이션(치아교정기구 및 치과용 보철기구의 디자인/환자치료를 관찰하는 용도의 의료용 이미지를 처리 및 전시하는 것임), 컴퓨터 소프트웨어 및 컴퓨터 하드웨어로 구성된 디지털 의치 시스템 장치(치아교정 분야에서 3차원 디지털 이미지를 위한 중앙처리 장치/기억저장 드라이브 모니터/구강 스캐너로 구성된 것임, , 외과수술용 기기, 의료기기(치과용은 제외), 치과용 장치, 치아교정용 장치, 의치"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Customized manufacturing of orthodontic appliances and prosthetics, dental work, dental technician services, dental work (designing and producing orthodontic devices for correcting tooth deformity and malocclusion), dental work (for tooth restoration / orthodontic treatment) Tooth and orthodontics)",
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치열교정장치 및 보철기구의 맞춤식 제조업, 치기공업, 치과 기공사 서비스업, 치기공업(치아 변형 바로잡기 및 부정교합 치료를 위한 교정장치의 설계/생산하는 것임), 치기공업(치아 복구/교정 치료를 위한 치아 및 치열 모형을 제작하는 것임)"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Training in the field of dentistry and orthodontics, training in orthodontic appliance use, training in orthodontic software use, education and training on the use of digital image software by orthodontists and dental professionals, training/seminar/meeting/ Preparation and conduct of lectures/instructions/workshops/lectures/academic discussions (relating to surgery/medical/dental/orthodontic technology/orthodontic instruments and devices)",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치과 및 치아교정 분야의 훈련업, 치열교정장치 사용 훈련업, 치아교정 소프트웨어 사용 훈련업, 치아교정 전문의 및 치의학 전문직 종사자의 디지털 이미지 소프트웨어 사용에 관한교육업 및 훈련업 , 훈련/세미나/회의/강좌/지도/워크샵/강의/학술 토론회의 준비 및 진행업(외과수술/의료/치과/치아교정 기술/치아교정기구 및 장치에 관한 것임)"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "3d computer images of the design work of computer hardware and software systems, the execution of computer hardware and software systems, the consulting work on computer hardware and software, the consultation on computer hardware and software systems selection, implementation and use, and the orthodontic model of teeth and orthodontics Computer-aided design for dental, computer-aided design of dental and orthodontic images, electronic storage and retrieval of digital images for dental and orthodontics",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "컴퓨터 하드웨어 및 소프트웨어 시스템의 디자인업, 컴퓨터 하드웨어 및 소프트웨어 시스템의 실행업, 컴퓨터 하드웨어 및 소프트웨어 관련 자문업, 컴퓨터 하드웨어 및 소프트웨어 시스템 선택/수행/사용 분야에 관한 상담업, 치아 및 치열의 교정 모델의 3d 컴퓨터 이미지를 위한 컴퓨터 이용 설계업, 치아 및 치열 모형 이미지의 컴퓨터 이용 설계업, 치과 및 치아교정용 디지털 이미지의 전자 저장 및 복구업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dental, medical, orthodontic, orthodontic and dental service, dental/orthodontic/periodontal disease/endodontic/pediatric dental service and treatment, design and manufacturing of personal orthodontic treatment plan, dental/orthodontic related consultation, dental/orthodontic technology/orthodontic material/orthodontic product related advice and information provider, orthodontic/endodontic/pediatric dentistry/periodontal disease/tooth restoration treatment related advice and consulting business (online service provided through internet/extranet Including,, computer-aided modeling in the dental field (providing dentists 3d computer geometry of dental model images for dentures and research castings,, computer-aided modeling (dental/tooth restoration/crown preparation and correction) /It is for dental restoration treatment,",
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치과업, 의료업, 치아교정업, 치아교정 및 치과서비스업, 치과/치아교정/치주병/치내요법/소아치과 서비스 및 치료업, 개인용 치아교정 치료 계획의 설계 및 제작업, 치과/치아교정 관련 상담업, 치아/치아교정 기술/치아교정 재료/치아교정 제품 관련 자문 및 정보제공업, 치아교정/치내요법/소아치과/치주병/치아복구치료법 관련 자문 및 상담업(인터넷/엑스트라넷을 통한 온라인 서비스 제공을 포함, , 치과 분야의 컴퓨터 이용 모형제작업(치과의사에게 의치 및 연구 주조물을 위해 치과용 모델 이미지의 3d 컴퓨터 형상을 제공하는 것임, , 컴퓨터 이용 모형제작업(치과/치아 복원/치관 준비 및 교정/치과 복원치료를 위한 것임,"
+        }
+      ]
+    },
+    "id": "7210471a-50ef-4f0b-9938-b19a4a7f6c64",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Dongwon F&B Building, Mabang-Ro, Seocho-Ku, Seoul Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "제일특허법인(유) (FirstLaw P.C.)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20111108",
+        "applicationNumber": "45-2011-0005111"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330604",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20130604",
+        "registrationNumber": "4500450060000"
+      }
+    },
+    "version": "20250625171049",
+    "wordMarkSpecification": {
+      "markTransliteration": "ITERO",
+      "markVerbalElementText": "ITERO"
+    }
+  },
+  "_uri": "/mark/kr/7210471a-50ef-4f0b-9938-b19a4a7f6c64",
+  "_receipt": {
+    "fetched_at": "2026-09-02T18:22:13.132Z",
+    "context": "prelim-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

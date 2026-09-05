@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/kr/08b5ef34-54d6-4291-b57d-b4e4a47a4446",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "08b5ef34-54d6-4291-b57d-b4e4a47a4446",
+  "applicationNumber": "40-2022-0178096",
+  "registrationNumber": null,
+  "applicationDate": "2022-09-28",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "얼라인웍스",
+  "markTransliteration": "Align Works",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "교육업, 교육적 목적의 세미나 준비/진행업, 문화적 또는 교육적 목적의 세미나/훈련워크샵/전시회 조직/준비/진행업, 문화적 목적의 세미나/교육워크샵/회의/콜로키엄/원격학습강의 준비 및 진행업, 온라인 통신학습업, 원격 교육업, 인쇄물 출판업, 인터넷교육강좌업, 인터넷상의 전자식 형태의 인쇄물 출판업, 인터넷을 통한 평생교육 관련 정보제공업, 직업 상담 및 코칭업(훈련 및 교육자문업), 직업교육 및 훈련업, 직업교육훈련지도업, 직업스킬훈련업, 직업훈련업, 커리어 및 직업 훈련업, 컴퓨터 교육 훈련업, 컴퓨터 데이터베이스 학원업, 컴퓨터 소프트웨어 학원업, 훈련세미나 진행업",
+      "translation_language": "en",
+      "translation": "Education, preparation/conduct of seminars for educational purposes, organization/preparation/implementation of seminars/training workshops/exhibitions for cultural or educational purposes, preparation and conduct of seminars/educational workshops/conferences/colloquiums/distance learning lectures for cultural purposes, online correspondence learning, distance education, print publishing, Internet education lectures, publishing of printed materials in electronic format on the Internet, provision of information related to lifelong education through the Internet, career counseling and coaching (training and educational advisory service), vocational education and training, vocational education and training guidance, vocational skill training, vocational training, career and vocational training, computer education and training, computer database academy, computer software academy, training seminar conducting business."
+    }
+  ],
+  "owner": "Align Works Corp.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "구영회 (Koo, Young Hoi)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기 평택시",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Align Works Corp.",
+        "applicantNativeName": "주식회사 얼라인웍스"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education, preparation/conduct of seminars for educational purposes, organization/preparation/implementation of seminars/training workshops/exhibitions for cultural or educational purposes, preparation and conduct of seminars/educational workshops/conferences/colloquiums/distance learning lectures for cultural purposes, online correspondence learning, distance education, print publishing, Internet education lectures, publishing of printed materials in electronic format on the Internet, provision of information related to lifelong education through the Internet, career counseling and coaching (training and educational advisory service), vocational education and training, vocational education and training guidance, vocational skill training, vocational training, career and vocational training, computer education and training, computer database academy, computer software academy, training seminar conducting business.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "교육업, 교육적 목적의 세미나 준비/진행업, 문화적 또는 교육적 목적의 세미나/훈련워크샵/전시회 조직/준비/진행업, 문화적 목적의 세미나/교육워크샵/회의/콜로키엄/원격학습강의 준비 및 진행업, 온라인 통신학습업, 원격 교육업, 인쇄물 출판업, 인터넷교육강좌업, 인터넷상의 전자식 형태의 인쇄물 출판업, 인터넷을 통한 평생교육 관련 정보제공업, 직업 상담 및 코칭업(훈련 및 교육자문업), 직업교육 및 훈련업, 직업교육훈련지도업, 직업스킬훈련업, 직업훈련업, 커리어 및 직업 훈련업, 컴퓨터 교육 훈련업, 컴퓨터 데이터베이스 학원업, 컴퓨터 소프트웨어 학원업, 훈련세미나 진행업"
+        }
+      ]
+    },
+    "id": "08b5ef34-54d6-4291-b57d-b4e4a47a4446",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260617",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "경남 창원시 성산구 용지로번길 ** (용호동) **층 *호(마크인포특허법률사무소)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "구영회 (Koo, Young Hoi)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20220928",
+        "applicationNumber": "40-2022-0178096"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260617021603",
+    "wordMarkSpecification": {
+      "markTransliteration": "Align Works",
+      "markVerbalElementText": "얼라인웍스"
+    }
+  },
+  "_uri": "/mark/kr/08b5ef34-54d6-4291-b57d-b4e4a47a4446",
+  "_receipt": {
+    "fetched_at": "2026-09-02T18:22:13.133Z",
+    "context": "prelim-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

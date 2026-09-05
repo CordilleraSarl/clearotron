@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/kr/09eaf332-4d5b-44a1-b931-7a48cd4eee8c",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "09eaf332-4d5b-44a1-b931-7a48cd4eee8c",
+  "applicationNumber": "40-2026-0015997",
+  "registrationNumber": null,
+  "applicationDate": "2026-01-23",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "INVISAGUARD",
+  "markTransliteration": "INVISAGUARD",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "스포츠용 마우스가드 , 운동용 마우스가드",
+      "translation_language": "en",
+      "translation": "Mouthguard for sports, mouthguard for exercise"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "ko",
+      "description": "의료용 마우스가드",
+      "translation_language": "en",
+      "translation": "Medical mouse guard"
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "제일특허법인(유) (FirstLaw P.C.)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미국 캘리포니아 ** 산 호세 오차드 파크웨이 *",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc.",
+        "applicantNativeName": "얼라인 테크널러지, 인크."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Mouthguard for sports, mouthguard for exercise",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "스포츠용 마우스가드 , 운동용 마우스가드"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Medical mouse guard",
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "의료용 마우스가드"
+        }
+      ]
+    },
+    "id": "09eaf332-4d5b-44a1-b931-7a48cd4eee8c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260818",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 서초구 마방로 ** (양재동, 동원F&B빌딩)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "제일특허법인(유) (FirstLaw P.C.)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260123",
+        "applicationNumber": "40-2026-0015997"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLIED"
+    },
+    "version": "20260818020438",
+    "wordMarkSpecification": {
+      "markTransliteration": "INVISAGUARD",
+      "markVerbalElementText": "INVISAGUARD"
+    }
+  },
+  "_uri": "/mark/kr/09eaf332-4d5b-44a1-b931-7a48cd4eee8c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T18:22:13.131Z",
+    "context": "prelim-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

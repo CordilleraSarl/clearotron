@@ -1,0 +1,202 @@
+{
+  "uri": "/mark/kr/7adadc2c-5cc5-40dd-89c1-0f09c59272c1",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "7adadc2c-5cc5-40dd-89c1-0f09c59272c1",
+  "applicationNumber": "45-2014-0009472",
+  "registrationNumber": "4500579840000",
+  "applicationDate": "2014-11-25",
+  "registrationDate": "2015-08-03",
+  "expiryDate": "2035-08-03",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ITERO ELEMENT",
+  "markTransliteration": "ITERO ELEMENT",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    40,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "데이터처리장치, 컴퓨터 소프트웨어, 컴퓨터 이용 모델링 프로그램 , 컴퓨터",
+      "translation_language": "en",
+      "translation": "Data treatment device, computer software, computer usage modeling program, computer"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "ko",
+      "description": "구강내부 스캐닝 카메라(의료용 디지털 이미지의 포착/저장/검색 및 통신매체로의 전송용임, , 스캐닝 카메라(의료용 이미지 포착용임), 외과용 기기, 의료기기, 치과용 기기, 치아교정기계기구 , 컴퓨터용 워크스테이션(포착된 의료용 이미지의 처리 및 표시용임)",
+      "translation_language": "en",
+      "translation": "Oral scanning cameras (transmission of medical digital images of digital images and transmission to transmission to the media, scanning cameras (medical image capture), surgical devices, medical devices, dental devices, dental mechanical instruments, computer workstations (processing and displaying medical images)"
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "ko",
+      "description": "치기공업",
+      "translation_language": "en",
+      "translation": "Stroke"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "의료업 및 치과업 분야의 데이터처리업",
+      "translation_language": "en",
+      "translation": "Data processing business in the medical and dental industries"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "ko",
+      "description": "의료업, 치과업, 치아교정업",
+      "translation_language": "en",
+      "translation": "Medical, dental business, dental correction industry"
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "제일특허법인(유) (FirstLaw P.C.)",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20140606",
+      "priorityNumber": "86/302,950"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미국 캘리포니아 ** 산 호세 오차드 파크웨이 *",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc.",
+        "applicantNativeName": "얼라인 테크널러지, 인크."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Data treatment device, computer software, computer usage modeling program, computer",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "데이터처리장치, 컴퓨터 소프트웨어, 컴퓨터 이용 모델링 프로그램 , 컴퓨터"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Oral scanning cameras (transmission of medical digital images of digital images and transmission to transmission to the media, scanning cameras (medical image capture), surgical devices, medical devices, dental devices, dental mechanical instruments, computer workstations (processing and displaying medical images)",
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "구강내부 스캐닝 카메라(의료용 디지털 이미지의 포착/저장/검색 및 통신매체로의 전송용임, , 스캐닝 카메라(의료용 이미지 포착용임), 외과용 기기, 의료기기, 치과용 기기, 치아교정기계기구 , 컴퓨터용 워크스테이션(포착된 의료용 이미지의 처리 및 표시용임)"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Stroke",
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치기공업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Data processing business in the medical and dental industries",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "의료업 및 치과업 분야의 데이터처리업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Medical, dental business, dental correction industry",
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "의료업, 치과업, 치아교정업"
+        }
+      ]
+    },
+    "id": "7adadc2c-5cc5-40dd-89c1-0f09c59272c1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20140606",
+        "priorityNumber": "86/302,950"
+      }
+    ],
+    "recordLastUpdated": "20250924",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Dongwon F&B Building, ** Mabang-Ro, Seocho-Ku, Seoul ** Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "제일특허법인(유) (FirstLaw P.C.)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20141125",
+        "applicationNumber": "45-2014-0009472"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350803",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20150803",
+        "registrationNumber": "4500579840000"
+      }
+    },
+    "version": "20250924020246",
+    "wordMarkSpecification": {
+      "markTransliteration": "ITERO ELEMENT",
+      "markVerbalElementText": "ITERO ELEMENT"
+    }
+  },
+  "_uri": "/mark/kr/7adadc2c-5cc5-40dd-89c1-0f09c59272c1",
+  "_receipt": {
+    "fetched_at": "2026-09-02T18:22:13.132Z",
+    "context": "prelim-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

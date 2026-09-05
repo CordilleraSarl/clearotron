@@ -1,5 +1,5 @@
 {
-  "ts": "2026-08-11T09:04:25.211Z",
+  "ts": "2026-09-02T19:51:48.473Z",
   "inputs": {
     "narrative": true,
     "report": true,
@@ -11,183 +11,18 @@
     "findings": true
   },
   "engagement": {
-    "total": 10,
+    "total": 0,
     "blandCount": 0,
     "bland": [],
-    "receipts": [
-      {
-        "finding": "Finding 1 — qori — Firepay Merchant Services",
-        "composite": null,
-        "citesOwnAnchor": true,
-        "anchorsHit": [
-          "qori",
-          "firepay",
-          "merchant",
-          "services",
-          "venqori",
-          "single",
-          "line",
-          "with",
-          "water",
-          "compliance",
-          "software",
-          "service",
-          "confirmed",
-          "class-mention"
-        ]
-      },
-      {
-        "finding": "Finding 2 — VENTURI — Ridgemount Technologies Limited",
-        "composite": null,
-        "citesOwnAnchor": true,
-        "anchorsHit": [
-          "ridgemount",
-          "technologies",
-          "limited",
-          "venqori",
-          "with",
-          "confirmed",
-          "class-mention"
-        ]
-      },
-      {
-        "finding": "Finding 3 — VENTURI — Jörg Wollesen",
-        "composite": null,
-        "citesOwnAnchor": true,
-        "anchorsHit": [
-          "wollesen",
-          "services",
-          "training",
-          "water",
-          "compliance",
-          "class-mention"
-        ]
-      },
-      {
-        "finding": "Finding 4 — VENTURI — Gildo-Pierre Pallanca-Pastor",
-        "composite": null,
-        "citesOwnAnchor": true,
-        "anchorsHit": [
-          "gildo",
-          "pierre",
-          "pallanca",
-          "pastor",
-          "confirmed",
-          "class-mention"
-        ]
-      },
-      {
-        "finding": "Finding 5 — QORIA — Qoria Holdings Pty Ltd",
-        "composite": null,
-        "citesOwnAnchor": true,
-        "anchorsHit": [
-          "qoria",
-          "holdings",
-          "qori",
-          "operating",
-          "group",
-          "online",
-          "software",
-          "with",
-          "venqori",
-          "confirmed",
-          "class-mention"
-        ]
-      },
-      {
-        "finding": "Finding 6 — QUORI — Quori Pte. Ltd",
-        "composite": null,
-        "citesOwnAnchor": true,
-        "anchorsHit": [
-          "quori",
-          "qori",
-          "software",
-          "venqori",
-          "training",
-          "line",
-          "analytics",
-          "water",
-          "quality",
-          "confirmed",
-          "class-mention"
-        ]
-      },
-      {
-        "finding": "Finding 7 — VENARI — Asociación Interprofesional de la Carne de Caza (ASICCAZA)",
-        "composite": null,
-        "citesOwnAnchor": true,
-        "anchorsHit": [
-          "asociaci",
-          "interprofesional",
-          "carne",
-          "caza",
-          "asiccaza",
-          "services",
-          "online",
-          "training",
-          "with",
-          "water",
-          "confirmed",
-          "class-mention"
-        ]
-      },
-      {
-        "finding": "Finding 8 — VENTORIX — Shenzhen Dongfang Qingsen Technology Co.",
-        "composite": null,
-        "citesOwnAnchor": true,
-        "anchorsHit": [
-          "shenzhen",
-          "dongfang",
-          "qingsen",
-          "technology",
-          "with",
-          "monitoring",
-          "software",
-          "line",
-          "water",
-          "confirmed",
-          "class-mention"
-        ]
-      },
-      {
-        "finding": "Finding 9 — EVENTORI — WIREMIND SAS",
-        "composite": null,
-        "citesOwnAnchor": true,
-        "anchorsHit": [
-          "wiremind",
-          "venqori",
-          "analytics",
-          "water",
-          "compliance",
-          "confirmed",
-          "class-mention"
-        ]
-      },
-      {
-        "finding": "Finding 10 — VENTURI (venturi.io) — unregistered, common law",
-        "composite": null,
-        "citesOwnAnchor": true,
-        "anchorsHit": [
-          "services",
-          "monitoring",
-          "water",
-          "quality",
-          "environmental",
-          "compliance",
-          "operating",
-          "entity",
-          "confirmed"
-        ]
-      }
-    ]
+    "receipts": []
   },
   "ruleShape": [],
   "reviewerCoherence": [],
   "tripwires": {
     "recallFloor": [],
     "reviewFreshness": {
-      "pass": false,
-      "detail": "the review brought in no input the run had not already produced — re-reading the same files can only show they agree with themselves; it cannot surface what the run missed (no fresh probe / no new record cited)"
+      "pass": true,
+      "detail": ""
     },
     "seedNeutrality": [],
     "probativeGrading": [],
@@ -200,21 +35,175 @@
     "unresolvedDisagreements": [],
     "orphanFindings": [],
     "crosscheckMissing": [],
-    "recallRegression": [],
+    "recallRegression": [
+      {
+        "uri": "/mark/gb/c3154106-158a-4756-b8f6-116bc310172f",
+        "mark_text": "VENCORA",
+        "classes": null,
+        "owner": "Vencora UK Limited",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/gb/c3154106-158a-4756-b8f6-116bc310172f (\"VENCORA\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/em/dc47debd-f2b2-44d5-aa83-50743a2cc274",
+        "mark_text": "VENCORA",
+        "classes": null,
+        "owner": "Vencora UK Limited",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/em/dc47debd-f2b2-44d5-aa83-50743a2cc274 (\"VENCORA\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/cn/817a4fcd-a0f3-4048-b0de-2d9b598ca7f5",
+        "mark_text": "Ｖｅｎｋｕｒｉ",
+        "classes": null,
+        "owner": "YIWU TENGDING UMBRELLA CO., LTD.",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/cn/817a4fcd-a0f3-4048-b0de-2d9b598ca7f5 (\"Ｖｅｎｋｕｒｉ\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/wo/9a9d3dd9-5014-4ce1-b2bd-5a73c93cfc13",
+        "mark_text": "VENCORE",
+        "classes": null,
+        "owner": "Symetri AB",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/wo/9a9d3dd9-5014-4ce1-b2bd-5a73c93cfc13 (\"VENCORE\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/em/481679a2-c6f6-4b6f-8aa4-1e49414b5140",
+        "mark_text": "VENCORE",
+        "classes": null,
+        "owner": "Symetri AB",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/em/481679a2-c6f6-4b6f-8aa4-1e49414b5140 (\"VENCORE\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/us/5a9e5373-b07e-43c9-88c1-a73fb2b61cfd",
+        "mark_text": "VENCORE",
+        "classes": null,
+        "owner": "Symetri AB",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/us/5a9e5373-b07e-43c9-88c1-a73fb2b61cfd (\"VENCORE\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/wo/f99ca2ce-9b6b-41ac-9318-90a66bfad14b",
+        "mark_text": "QORIA",
+        "classes": null,
+        "owner": "Qoria Holdings Pty Ltd",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/wo/f99ca2ce-9b6b-41ac-9318-90a66bfad14b (\"QORIA\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/gb/2ca515f3-ff9f-41d2-8529-1ef0f31a93d7",
+        "mark_text": "QORIA",
+        "classes": null,
+        "owner": "Qoria Holdings Pty Ltd",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/gb/2ca515f3-ff9f-41d2-8529-1ef0f31a93d7 (\"QORIA\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/us/7eef08b1-676c-48ed-9520-92dde1da3ae1",
+        "mark_text": "QORIA",
+        "classes": null,
+        "owner": "Qoria Holdings Pty Ltd",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/us/7eef08b1-676c-48ed-9520-92dde1da3ae1 (\"QORIA\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/em/539c21aa-9d8f-438b-b140-23a16d4b4660",
+        "mark_text": "qori",
+        "classes": null,
+        "owner": "Firepay Merchant Services",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/em/539c21aa-9d8f-438b-b140-23a16d4b4660 (\"qori\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/em/7a0fb9c1-6534-4467-8838-23a937da8e53",
+        "mark_text": "QORI",
+        "classes": null,
+        "owner": "InCert",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/em/7a0fb9c1-6534-4467-8838-23a937da8e53 (\"QORI\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/gb/8cbb976f-cfe1-4cf1-bbd7-4d3d1a211b28",
+        "mark_text": "VenQ",
+        "classes": null,
+        "owner": "LRG CONSULTANTS LIMITED",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/gb/8cbb976f-cfe1-4cf1-bbd7-4d3d1a211b28 (\"VenQ\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/us/6500c73f-7f2e-41df-9a5b-a59256a128ca",
+        "mark_text": "VENTURI",
+        "classes": null,
+        "owner": "State Street Bank and Trust Company",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/us/6500c73f-7f2e-41df-9a5b-a59256a128ca (\"VENTURI\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/em/0d26b878-e587-4338-9236-1b49ed67f113",
+        "mark_text": "VENTURI",
+        "classes": null,
+        "owner": "State Street Bank and Trust Company",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/em/0d26b878-e587-4338-9236-1b49ed67f113 (\"VENTURI\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/gb/e0fbde90-93fe-4d6f-8aea-009e07e6577e",
+        "mark_text": "VENTURI",
+        "classes": null,
+        "owner": "State Street Bank and Trust Company",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/gb/e0fbde90-93fe-4d6f-8aea-009e07e6577e (\"VENTURI\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/br/1ac5cfcf-0d54-4c62-bbbb-96803a302f9c",
+        "mark_text": "VENTORI",
+        "classes": null,
+        "owner": "VENTORI ACESSORIOS LTDA - ME.",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/br/1ac5cfcf-0d54-4c62-bbbb-96803a302f9c (\"VENTORI\") was neither carried as a finding nor justified against its fetched record this run"
+      }
+    ],
     "deadlineCarry": [],
     "documentGrowth": [
       {
         "stage": "common-law-half:a",
         "trigger": "frame-reopen",
-        "before": 18654,
-        "after": 26152,
-        "growthBytes": 7498,
-        "growthPct": 40
+        "before": 19391,
+        "after": 39751,
+        "growthBytes": 20360,
+        "growthPct": 105
+      },
+      {
+        "stage": "register-unit:primary-sweep",
+        "trigger": "envelope",
+        "before": 947,
+        "after": 1407,
+        "growthBytes": 460,
+        "growthPct": 49
       }
     ]
   },
   "tripFlags": [
-    "document-growth: common-law-half:a grew 40% (18654 → 26152 bytes) under trigger \"frame-reopen\" — a repair defends or corrects, it does not add; review what the pass appended"
+    "recall-regression: prior-confirmed live registered conflict /mark/gb/c3154106-158a-4756-b8f6-116bc310172f (\"VENCORA\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/em/dc47debd-f2b2-44d5-aa83-50743a2cc274 (\"VENCORA\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/cn/817a4fcd-a0f3-4048-b0de-2d9b598ca7f5 (\"Ｖｅｎｋｕｒｉ\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/wo/9a9d3dd9-5014-4ce1-b2bd-5a73c93cfc13 (\"VENCORE\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/em/481679a2-c6f6-4b6f-8aa4-1e49414b5140 (\"VENCORE\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/us/5a9e5373-b07e-43c9-88c1-a73fb2b61cfd (\"VENCORE\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/wo/f99ca2ce-9b6b-41ac-9318-90a66bfad14b (\"QORIA\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/gb/2ca515f3-ff9f-41d2-8529-1ef0f31a93d7 (\"QORIA\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/us/7eef08b1-676c-48ed-9520-92dde1da3ae1 (\"QORIA\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/em/539c21aa-9d8f-438b-b140-23a16d4b4660 (\"qori\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/em/7a0fb9c1-6534-4467-8838-23a937da8e53 (\"QORI\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/gb/8cbb976f-cfe1-4cf1-bbd7-4d3d1a211b28 (\"VenQ\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/us/6500c73f-7f2e-41df-9a5b-a59256a128ca (\"VENTURI\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/em/0d26b878-e587-4338-9236-1b49ed67f113 (\"VENTURI\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/gb/e0fbde90-93fe-4d6f-8aea-009e07e6577e (\"VENTURI\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/br/1ac5cfcf-0d54-4c62-bbbb-96803a302f9c (\"VENTORI\") was neither carried as a finding nor justified against its fetched record this run",
+    "document-growth: common-law-half:a grew 105% (19391 → 39751 bytes) under trigger \"frame-reopen\" — a repair defends or corrects, it does not add; review what the pass appended",
+    "document-growth: register-unit:primary-sweep grew 49% (947 → 1407 bytes) under trigger \"envelope\" — a repair defends or corrects, it does not add; review what the pass appended"
   ],
   "registryCorrections": []
 }

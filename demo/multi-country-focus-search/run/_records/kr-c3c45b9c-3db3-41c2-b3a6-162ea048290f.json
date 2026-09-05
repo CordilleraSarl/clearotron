@@ -1,0 +1,201 @@
+{
+  "uri": "/mark/kr/c3c45b9c-3db3-41c2-b3a6-162ea048290f",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "c3c45b9c-3db3-41c2-b3a6-162ea048290f",
+  "applicationNumber": "45-2008-0000723",
+  "registrationNumber": "4500266050000",
+  "applicationDate": "2008-02-19",
+  "registrationDate": "2009-02-24",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    41,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "소프트웨어",
+      "translation_language": "en",
+      "translation": "software"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "ko",
+      "description": "치과/치아 교정/치주/소아치과/치과 보철/치아 신경치료 장치용 부품,치과용 가공치,치과용 거울,치과용 광택기구,치과용 드릴,치과용 디스펜싱 건,치과용 리테이너,치과용 바이트 트레이,치과용 박판,치과용 버,치과용 보철기구,치과용 브릿지,치과용 연결장치,치과용 온레이,치과용 인레이,치과용 임프레션 트레이,치과용 임플란트,치과용 장치,치과용 증량농도 측정기,치과용 집게,치과용 치관,치과용 클립,치과용 픽,치아 강화 및 부정교합 치료용 치아교정기구 및 치열교정기,치아용 장치 및 치아교정장치의 보관/세정/운반용 용기,플라스틱제 치아교정장치",
+      "translation_language": "en",
+      "translation": "Dental / Orthodontic / Periodontal / Pediatric / Dental Prosthesis / Dental Neurotreatment Device Parts, Dental Processed Teeth, Dental Mirror, Dental Polishing Equipment, Dental Drill, Dental Dispensing Gun, Dental Retainer, Dental Bite Tray, dental sheet, dental bur, dental prosthesis, dental bridge, dental connector, dental onlay, dental inlay, dental impression tray, dental implant, dental device, dental increased concentration Measuring instruments, dental tongs, dental crowns, dental clips, dental picks, orthodontic instruments and orthodontics for reinforcing teeth and malocclusion treatment, containers for storage/cleaning/transport of dental devices and orthodontic devices, plastic teeth Calibration device"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "디지탈 이미징 소프트웨어 사용에 관한 치과교정의사들 및 치과의사들의 교육훈련업,치과 및 치과교정기술/치과 및 치과교정기구/치과 및 치과교정장치/치과 및 치과교정기계와 관련한 교육훈련/세미나/회의/워크샵/강의/심포지엄 준비 및 진행업,치과교정관련 소프트웨어의 사용에 관한 교육훈련업,치과교정기구 사용에 관한 교육훈련업,치과교정분야의 교육훈련업,치과분야의 교육지도업,치과분야의 교육훈련업,치과의술분야의 교육훈련업",
+      "translation_language": "en",
+      "translation": "Education and training of orthodontists and dentists on the use of digital imaging software, dentistry and orthodontic technology/dental and orthodontic equipment/dental and orthodontic devices/educational and training related to dentistry and orthodontic machines/seminar/meeting/ Preparing and conducting workshops/lectures/symposiums, education and training on the use of orthodontic software, education and training on the use of orthodontic instruments, education and training in the field of dental orthodontics, education and guidance in the field of dentistry, Education and training business, education and training in the field of dentistry"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "인터넷 및 엑스트라넷 을 통해 온라인으로 의료과학관련 상담자문업,인터넷 및 엑스트라넷 을 통해 온라인으로 의료과학관련 정보제공업,치과교정/치아신경치료/ 소아치과/ 치주염 의료과학 관련 상담자문업,치과분야의 연구 및 상담업,컴퓨터 하드웨어 및 소프트웨어 시스템의 디자인/선택/실행/사용 분야에 관한 상담자문업",
+      "translation_language": "en",
+      "translation": "Medical science-related consulting service online through the Internet and extranet, medical science-related information provision business online through the Internet and extranet, dental orthodontics/dental nerve treatment/pediatric dentistry/ periodontitis medical science-related consulting consulting service Counseling business, consulting and consulting business on the field of design/selection/execution/use of computer hardware and software systems"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "ko",
+      "description": "의료업,치과업,치아교정업",
+      "translation_language": "en",
+      "translation": "Medical, Dental, Orthodontics"
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "김창세 (Chang Se Kim)",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20070823",
+      "priorityNumber": "77/262,697"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미국 캘리포니아 산 호세 오차드 파크웨이",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc.",
+        "applicantNativeName": "얼라인 테크널러지, 인크."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "software",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "소프트웨어"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dental / Orthodontic / Periodontal / Pediatric / Dental Prosthesis / Dental Neurotreatment Device Parts, Dental Processed Teeth, Dental Mirror, Dental Polishing Equipment, Dental Drill, Dental Dispensing Gun, Dental Retainer, Dental Bite Tray, dental sheet, dental bur, dental prosthesis, dental bridge, dental connector, dental onlay, dental inlay, dental impression tray, dental implant, dental device, dental increased concentration Measuring instruments, dental tongs, dental crowns, dental clips, dental picks, orthodontic instruments and orthodontics for reinforcing teeth and malocclusion treatment, containers for storage/cleaning/transport of dental devices and orthodontic devices, plastic teeth Calibration device",
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치과/치아 교정/치주/소아치과/치과 보철/치아 신경치료 장치용 부품,치과용 가공치,치과용 거울,치과용 광택기구,치과용 드릴,치과용 디스펜싱 건,치과용 리테이너,치과용 바이트 트레이,치과용 박판,치과용 버,치과용 보철기구,치과용 브릿지,치과용 연결장치,치과용 온레이,치과용 인레이,치과용 임프레션 트레이,치과용 임플란트,치과용 장치,치과용 증량농도 측정기,치과용 집게,치과용 치관,치과용 클립,치과용 픽,치아 강화 및 부정교합 치료용 치아교정기구 및 치열교정기,치아용 장치 및 치아교정장치의 보관/세정/운반용 용기,플라스틱제 치아교정장치"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education and training of orthodontists and dentists on the use of digital imaging software, dentistry and orthodontic technology/dental and orthodontic equipment/dental and orthodontic devices/educational and training related to dentistry and orthodontic machines/seminar/meeting/ Preparing and conducting workshops/lectures/symposiums, education and training on the use of orthodontic software, education and training on the use of orthodontic instruments, education and training in the field of dental orthodontics, education and guidance in the field of dentistry, Education and training business, education and training in the field of dentistry",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "디지탈 이미징 소프트웨어 사용에 관한 치과교정의사들 및 치과의사들의 교육훈련업,치과 및 치과교정기술/치과 및 치과교정기구/치과 및 치과교정장치/치과 및 치과교정기계와 관련한 교육훈련/세미나/회의/워크샵/강의/심포지엄 준비 및 진행업,치과교정관련 소프트웨어의 사용에 관한 교육훈련업,치과교정기구 사용에 관한 교육훈련업,치과교정분야의 교육훈련업,치과분야의 교육지도업,치과분야의 교육훈련업,치과의술분야의 교육훈련업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Medical science-related consulting service online through the Internet and extranet, medical science-related information provision business online through the Internet and extranet, dental orthodontics/dental nerve treatment/pediatric dentistry/ periodontitis medical science-related consulting consulting service Counseling business, consulting and consulting business on the field of design/selection/execution/use of computer hardware and software systems",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "인터넷 및 엑스트라넷 을 통해 온라인으로 의료과학관련 상담자문업,인터넷 및 엑스트라넷 을 통해 온라인으로 의료과학관련 정보제공업,치과교정/치아신경치료/ 소아치과/ 치주염 의료과학 관련 상담자문업,치과분야의 연구 및 상담업,컴퓨터 하드웨어 및 소프트웨어 시스템의 디자인/선택/실행/사용 분야에 관한 상담자문업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Medical, Dental, Orthodontics",
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "의료업,치과업,치아교정업"
+        }
+      ]
+    },
+    "id": "c3c45b9c-3db3-41c2-b3a6-162ea048290f",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN ONLY",
+    "markImageViennaClassification": [
+      "26.04.09",
+      "26.04.10"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20070823",
+        "priorityNumber": "77/262,697"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Dongwon F&B Building, Mabang-Ro, Seocho-Ku, Seoul Korea(FirstLaw P.C.)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김창세 (Chang Se Kim)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20080219",
+        "applicationNumber": "45-2008-0000723"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20090224",
+        "registrationNumber": "4500266050000"
+      }
+    },
+    "version": "20250625162521"
+  },
+  "_uri": "/mark/kr/c3c45b9c-3db3-41c2-b3a6-162ea048290f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T18:22:13.132Z",
+    "context": "prelim-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}
