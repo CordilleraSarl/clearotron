@@ -2,4 +2,4 @@
 "prelim-driver": patch
 ---
 
-Checking a settings file now reports on the file you named, rather than on the one this machine happens to use.
+Fixed: Checking a settings file now reports on the file you named, not the one this machine happens to use.

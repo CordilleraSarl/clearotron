@@ -2,4 +2,4 @@
 "trademark-oauth-mcp-bridge": patch
 ---
 
-Following the case-law sign-in instructions now produces a credential that keeps working after its first renewal, and the instructions verify that rather than only the sign-in.
+Fixed: The case-law sign-in instructions now produce a credential that survives its first renewal, and verify that it does.
