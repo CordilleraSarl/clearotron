@@ -14,7 +14,7 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync, readdirSync, existsSync, statSync, rmSync, readFileSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname, relative } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { wrapProse, proseWidth, composeEnvBody } from "../../bin/onboard.mjs";
 import { preflightSkillsStore } from "../skills-store-provenance.mjs";
@@ -343,28 +343,52 @@ test("readEnvFile reports what the ENGINE'S loader would apply, not what a secon
 });
 
 test("tracker issue 179 — readEnvFile reads THE FILE IT IS GIVEN, on any machine", () => {
-  // THE HALF THAT WAS MISSED, and the reason it was missed is the point of this arm.
+  // ── WHY THIS SPAWNS, WHEN EVERY OTHER GUARD TODAY INJECTED ────────────────────────────────────────
   //
-  // The first cut of 179 pinned `home` in the arm and stopped there. It did not: `readEnvFile` asked the
-  // loader for a file by handing it `repoRoot: dirname(path)` and letting resolution find its way back —
-  // which it did only through the LEGACY fallback, and only while the reader had no
-  // `~/.config/clearotron/.env`. On a box with one, `readEnvFile(anything)` returned THAT file.
+  // Injection cannot catch this one, and finding that out took two wrong guards.
   //
-  // Every existing arm for this is machine-dependent: they go red on a developer's box and green on a
-  // fresh one, so the suite said fine for as long as nobody testing had configured an install. This one
-  // MAKES the condition instead of waiting to meet it — a home that has a file, and a request for a
-  // different file — so it fails on any machine if the inference comes back.
+  // The first tested `loadEnvLocal` and never called `readEnvFile` at all, so the caller could go back
+  // to inferring a directory and it stayed green. The second gave `readEnvFile` an injectable `home` —
+  // the pattern that made the drain check and the connect failure drivable — and it ALSO stayed green,
+  // because the regression IS the caller dropping what it was handed. An argument the caller stops
+  // passing cannot be planted through.
+  //
+  // `HOME` is the one lever the caller cannot drop: `homedir()` reads it whatever the call site does. So
+  // the arm spawns a child with a planted HOME containing a settings file, asks `readEnvFile` for a
+  // DIFFERENT file there, and reads back which one it answered about. That fails on any machine, with
+  // the caller reverted or the loader reverted, which is the property the other two only claimed.
   const home = mkdtempSync(join(tmpdir(), "onboard-realhome-"));
   const asked = mkdtempSync(join(tmpdir(), "onboard-asked-"));
+  try {
+    mkdirSync(join(home, ".config", "clearotron"), { recursive: true });
+    writeFileSync(join(home, ".config", "clearotron", ".env"), "FROM_THE_HOME_FILE=1\n");
+    writeFileSync(join(asked, ".env"), "FROM_THE_FILE_ASKED_FOR=1\n");
+
+    const out = execFileSync(process.execPath, ["--input-type=module", "-e",
+      `import { readEnvFile } from ${JSON.stringify(pathToFileURL(join(REPO, "bin", "onboard.mjs")).href)};`
+      + `console.log(JSON.stringify(Object.keys(readEnvFile(${JSON.stringify(join(asked, ".env"))}))));`,
+    ], { encoding: "utf8", env: { ...process.env, HOME: home }, stdio: ["ignore", "pipe", "pipe"] });
+
+    assert.deepEqual(JSON.parse(out.trim()), ["FROM_THE_FILE_ASKED_FOR"],
+      "readEnvFile was given one path and answered about another — it is inferring a directory and "
+      + "reaching this machine's own settings file instead of the file it was asked for");
+  } finally {
+    rmSync(home, { recursive: true, force: true });
+    rmSync(asked, { recursive: true, force: true });
+  }
+});
+
+test("tracker issue 179 — the loader honours a file it is handed, whatever the home says", () => {
+  // The loader's own contract, held separately: two promises, and either can break without the other.
+  const home = mkdtempSync(join(tmpdir(), "onboard-loaderhome-"));
+  const asked = mkdtempSync(join(tmpdir(), "onboard-loaderasked-"));
   mkdirSync(join(home, ".config", "clearotron"), { recursive: true });
   writeFileSync(join(home, ".config", "clearotron", ".env"), "FROM_THE_HOME_FILE=1\n");
   writeFileSync(join(asked, ".env"), "FROM_THE_FILE_ASKED_FOR=1\n");
-
   const seen = {};
   loadEnvLocal({ env: seen, file: join(asked, ".env"), home, note: () => {} });
   assert.deepEqual(Object.keys(seen), ["FROM_THE_FILE_ASKED_FOR"],
-    "the loader was told a file outright and read a different one — the resolution ran anyway");
-
+    "the loader was told a file outright and read a different one");
   rmSync(home, { recursive: true, force: true });
   rmSync(asked, { recursive: true, force: true });
 });
