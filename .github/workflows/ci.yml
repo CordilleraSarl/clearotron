@@ -279,6 +279,16 @@ jobs:
         with:
           fetch-depth: 0
 
+      # AND `origin/main` HAS TO BE IN THE CLONE, which `fetch-depth: 0` does not by itself promise.
+      # Depth is how MUCH history is fetched; the refspec decides WHICH refs come with it, and checkout
+      # builds that refspec from the ref it was asked for. On a dispatch that ref is
+      # `changeset-release/main` — the version branch, the one case this job was ungated to cover — so
+      # main need not arrive at all, and `git diff origin/main...HEAD` would exit 2 on exactly the run
+      # the ungating was for. Fetched by name instead of reasoned about: this is one network call, it
+      # fails loudly if main is unreachable, and it makes the question moot on every event.
+      - name: Fetch main, the base the guard falls back to
+        run: git fetch --no-tags --prune origin +refs/heads/main:refs/remotes/origin/main
+
       # No `npm ci`. This guard reads git and nothing else, so it answers in seconds and gives a
       # contributor the correction while they are still holding the change.
       - name: No bare reference is added in a comment or in prose
@@ -290,6 +300,6 @@ jobs:
         # `origin/main` default, printing `read N added line(s) against origin/main`. So the fallback
         # here changes no behaviour — it moves the choice to where a reader of this file can see it,
         # instead of leaving an empty argument to be silently rewritten one layer down. On a dispatch
-        # `origin/main` is the branch's real base; on a push to main it resolves to HEAD, and the guard
-        # prints a zero-line read rather than a clean verdict on a change it never had.
+        # `origin/main` is the version branch's real base; on a push to main it resolves to HEAD, and
+        # the guard prints a zero-line read rather than a clean verdict on a change it never had.
         run: node scripts/added-reference-check.mjs --base "${{ github.event.pull_request.base.sha || 'origin/main' }}"
