@@ -61,15 +61,13 @@ const CANNOT_RUN_IN_CI = [
       + "and the commit they were started from. CI has no deployment; pointed at one it would be "
       + "asserting about the last box someone happened to name.",
   },
-  {
-    path: "scripts/deploy-drift-check.mjs",
-    why: "it compares a BOX'S DEPLOYED COPY of the deploy script against the tracked one (#1381). CI has "
-      + "no deployed copy — there is no `~<service-account>/deploy-test.sh` on a runner — so the only "
-      + "answer it could give there is its `unreadable` state, every time. That state exists to mean "
-      + "'drift is unknown and nobody looked', and a check wired to report it unconditionally would "
-      + "teach every reader to ignore the one word that matters. It runs from the deploy itself, which "
-      + "is the only place the question has an answer.",
-  },
+  // THE DEPLOY-DRIFT ENTRY IS GONE BECAUSE THE CHECK IS NOT ON THIS TREE — WITHHELD, NOT RETIRED.
+  // It asks a box whether its deployed copy of the deploy script matches the tracked one, so it belongs
+  // with the ops scripts in the configuration repository rather than in a public product tree, and that
+  // is where the cut left it. Deleting the entry is what this file's staleness arm demands: an exemption
+  // naming a file nobody can open is an exemption nobody can retire. Recording WHY here, because the
+  // deletion on its own reads as "somebody decided that check was unnecessary", which is not what
+  // happened and would be the wrong thing for the next reader to conclude.
   {
     path: "scripts/merge-presence-check.mjs",
     why: "it re-states a merge against the tree AFTER the merge, over a range of commits that does not "
