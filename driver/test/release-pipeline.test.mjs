@@ -525,6 +525,33 @@ test("tracker 97 the pipeline asks whether the version pull request's checks sta
   assert.match(merge, /--body "\$NOTES"/, "the auto-merge leaves the body to GitHub, which composes it from the pull request");
   assert.ok(!/\(#\$?\{?\w*\}?\)/.test(merge), "a `(#N)` shape appeared in the message the workflow writes");
 
+  // THE VERSION PULL REQUEST CHECKS ITSELF. Its author is `github-actions[bot]`, and every fork-approval
+  // policy this repository has tried counts that as a contributor needing approval — it parked four
+  // times in one day, producing ZERO check runs each time, so auto-merge waited on checks that never
+  // started. A dispatch is not a fork event and needs no approval.
+  assert.match(workflow, /gh workflow run ci\.yml --ref changeset-release\//,
+    "the version pull request no longer dispatches its own checks, so it waits for somebody to approve them");
+  assert.match(workflow, /actions: write/,
+    "the version job cannot dispatch a workflow without `actions: write` — and note this IS a permission "
+    + "a job may request, unlike the `administration` scope that made this file unparseable");
+  // The dispatch has to come BEFORE the assertion that checks started, or the guard refuses the pull
+  // request it was about to fix.
+  const dispatchesCi = lines.findIndex((l) => /gh workflow run ci\.yml/.test(l));
+  const asks2 = lines.findIndex((l) => /release-version-pr-checks\.mjs/.test(l) && /run:/.test(l));
+  assert.ok(dispatchesCi > -1 && asks2 > dispatchesCi,
+    "the checks-started assertion runs before the dispatch that creates them");
+
+  // AND THE DISPATCHED WORKFLOW MUST ACCEPT ONE. A dispatch of a workflow with no `workflow_dispatch`
+  // trigger fails the step; a dispatch of one that gates jobs on the event runs a subset and satisfies
+  // nothing. Both jobs here are ungated, and their names are the two contexts protection requires.
+  const ci = read(".github/workflows/ci.yml");
+  assert.match(ci, /^  workflow_dispatch:$/m, "ci.yml no longer accepts a dispatch, so the version pull request cannot check itself");
+  // Comments dropped, for the fifth time in this file: ci.yml now EXPLAINS in prose that its jobs are
+  // ungated, and an arm reading the whole file refuses the sentence saying the thing it wants.
+  const ciExecutable = ci.split("\n").filter((l) => !/^\s*#/.test(l)).join("\n");
+  assert.ok(!/github\.event_name/.test(ciExecutable),
+    "a job in ci.yml is now gated on the event, so a dispatched run may not produce every required check");
+
   const auto = lines.findIndex((l) => /gh pr merge/.test(l));
   const asks = lines.findIndex((l) => /release-version-pr-checks\.mjs/.test(l) && /run:/.test(l));
   assert.ok(auto > -1 && asks > auto,
@@ -655,13 +682,17 @@ test("tracker 97 a version that merged itself still publishes, because that merg
   assert.match(workflow, /^\s*schedule:$/m, "the cron that notices a self-merged cut is gone, so a version "
     + "that merges itself sits on main unpublished for ever");
   assert.match(workflow, /cron: '\*\/5 \* \* \* \*'/, "the cron interval changed — deliberate or not, say so here");
-  // AND IT SAYS IT IS UNPROVEN. As of 2026-09-05 this schedule has never fired on this repository, and a
-  // reader who assumes it works will design around a recovery that has never happened. When somebody
-  // sees a `schedule` run publish, they delete this sentence — and this arm tells them it is theirs to
-  // delete rather than leaving a stale warning in the file for ever.
-  assert.match(workflow, /NEVER FIRED ON THIS REPOSITORY/,
-    "the workflow no longer records that its cron is unproven — if that is because it has now fired, say "
-    + "so with the run, and remove this assertion in the same change");
+  // IT HAS FIRED NOW, and the arm changed with the fact rather than outliving it. The previous version
+  // asserted the workflow still said the cron had NEVER fired, and said in its own message that the
+  // sentence was the reader's to replace once they had seen a scheduled run. Run 33973623236 is that
+  // run. What the file must keep saying is the part that is still true and still surprising: it fired
+  // once and then not again for an hour, so it is a floor rather than a clock.
+  assert.match(workflow, /33973623236/, "the workflow no longer cites the scheduled run that proves the cron works");
+  assert.match(workflow, /floor, not a clock/,
+    "the workflow no longer warns that the cron is unpunctual — a reader will design around it as though "
+    + "`*/5` meant every five minutes, and a cut version may wait an hour");
+  assert.ok(!/NEVER FIRED ON THIS REPOSITORY/.test(workflow),
+    "the workflow still says the cron has never fired, which stopped being true at 15:03Z on 2026-09-05");
 
   // The reason has to travel WITH it, or the next reader deletes a cron that looks like polling for
   // nothing. This asserts the explanation is present, not merely the trigger.
@@ -736,8 +767,11 @@ test("tracker 97 the action and the CLI agree about what a pre-release has alrea
     + "would skip silently, and the version pull request would never merge itself");
   const uses = (name) => assert.match(executable, new RegExp(`\\b${name}:`), `the v2 input \`${name}\` is not used`);
   for (const input of ["version-script", "pr-title", "commit-message"]) uses(input);
-  assert.equal((executable.match(/steps\.changesets\.outputs\.pr-number/g) ?? []).length, 4,
-    "the renamed output is not read at every site that gated on the old one");
+  // COUNTED FROM THE FILE, not typed: a step added later that gates on this output would otherwise make
+  // a correct workflow fail a number nobody remembered to bump. What matters is that NO site reads the
+  // old name, which the assertion above already fixes; this one only proves the new name is in use.
+  assert.ok((executable.match(/steps\.changesets\.outputs\.pr-number/g) ?? []).length >= 4,
+    "fewer sites read the renamed output than the four that gated on the old one");
 
   // One variable at a time: v2's new default pushes through the GitHub API. Keeping the CLI is the same
   // behaviour v1 had, and it is stated rather than left to a default that changed under us.
