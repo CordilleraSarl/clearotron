@@ -9,10 +9,22 @@
 //
 // ── THE FLAG PART ───────────────────────────────────────────────────────────────────────────────────
 //
-// This reads the snapshot, NOT process.env. portal-service's unit deliberately carries no environment
-// file, so every switch reads as unset here and a page built on process.env would confidently report
-// "everything is off" on a box where everything is on. That is the whole reason flag-snapshot.mjs
-// exists; a config page that got it wrong would be worse than no page, because it would be believed.
+// This RENDERS the snapshot, NOT process.env, and that is still the rule — but the reason written here
+// until tracker issue 170 was measurably out of date, so it is restated rather than repeated. It said
+// "portal-service's unit deliberately carries no environment file". It does:
+// `driver/systemd/clearotron-portal.service` carries `EnvironmentFile=%h/.env`, and sets
+// `CLEAROTRON_NO_ENV_FILE=1` precisely because systemd has already supplied it.
+//
+// The rule survives its old justification because the real one is better. The snapshot records what the
+// ENGINE saw when it last ran; the environment records what this deployment is configured for NOW. On a
+// healthy box they agree, and rendering either would look identical. When they disagree, only one of
+// them is what the searches actually ran under — and that is the snapshot. A page that quietly switched
+// to env would stop being a record of what happened and become a second copy of the configuration,
+// which is the one thing nobody needs a page for.
+//
+// So the environment is read for exactly one purpose: to say THAT they disagree, and which fields.
+// Never to supply a value. `postureDisagreement` in flag-snapshot.mjs is that comparison and it is pure;
+// this module hands it both sides.
 //
 // Each flag is labelled with HOW ITS ABSENCE IS FELT, from the snapshot's own `effect` field rather
 // than from a second list here:
@@ -31,7 +43,7 @@
 
 import { statSync, openSync, readSync, closeSync } from "node:fs";
 
-import { readFlagSnapshot, isStale, engineFor, providersFor } from "./flag-snapshot.mjs";
+import { readFlagSnapshot, isStale, engineFor, providersFor, postureDisagreement } from "./flag-snapshot.mjs";
 import { engineMode } from "./config-inventory.mjs";   // — the mode is DERIVED at read time, never stored
 
 /**
@@ -41,7 +53,7 @@ import { engineMode } from "./config-inventory.mjs";   // — the mode is DERIVE
  * facts and only one of them is true; a page that renders unknown as off invites someone to go turn on
  * things that are already running.
  */
-export function flagView(poolRoot, { now = Date.now() } = {}) {
+export function flagView(poolRoot, { now = Date.now(), live = null } = {}) {
   const snap = readFlagSnapshot(poolRoot);
   if (!snap) {
     return {
@@ -62,6 +74,9 @@ export function flagView(poolRoot, { now = Date.now() } = {}) {
       engineMode: null,
       capturedAt: null,
       stale: true,
+      // NULL, not `[]`. There is no capture, so nothing was compared — and `[]` is the value that
+      // means "compared, and they agree", which is the opposite of what this branch knows.
+      disagrees: null,
     };
   }
   const flags = Object.entries(snap.flags ?? {}).map(([name, f]) => ({
@@ -93,6 +108,12 @@ export function flagView(poolRoot, { now = Date.now() } = {}) {
     // Staleness is REPORTED, never acted on. A stale snapshot's values are still the last known truth,
     // and refusing to use them would be the fail-closed behaviour this whole design avoids.
     stale: isStale(snap, { now }),
+    // AND AGE IS NO LONGER THE ONLY SIGNAL (tracker issue 170). `stale` answers "is this old"; this
+    // answers "is this WRONG", which is the question that was going unasked on exactly the boxes where
+    // it mattered — one being configured runs nothing, so its capture never ages into a warning while
+    // its contents drift. `null` when the caller supplied no live posture to compare against, which is
+    // every caller that only wants the values.
+    disagrees: live ? postureDisagreement(snap, live) : null,
   };
 }
 

@@ -61,8 +61,12 @@ Environment=CLEAROTRON_NO_ENV_FILE=1
 # unit never started, on a host nobody is watching.
 # runner.mjs claims each queued job atomically, runs the pipeline, marks .done/.failed.
 ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/runner.mjs
-# Refresh the portal's flag snapshot after every drain, from THIS unit precisely because it has the
-# engine EnvironmentFile — the portal deliberately has none (AUD-shadowing rule) and reads the file.
+# Refresh the portal's flag snapshot after every drain, from THIS unit because it has the engine
+# EnvironmentFile. The clause that used to sit here — "the portal deliberately has none (AUD-shadowing
+# rule)" — is out of date: the owner's 2026-08-26 "one configuration per server box" ruling gave every
+# unit the same `EnvironmentFile=%h/.env` and removed the second source of truth the AUD protection
+# defended against. The portal and worker units now refresh it at start too (tracker issue 170); a drain
+# is still worth refreshing after, because a run is when the engine's own posture is most recently proven.
 # A snapshot that only refreshes when somebody remembers eventually describes a configuration nobody
 # is running (flag-snapshot.mjs header). `-` prefix: a snapshot failure must never fail the drain.
 ExecStartPost=-/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/flag-snapshot.mjs

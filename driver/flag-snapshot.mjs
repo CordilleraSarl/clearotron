@@ -270,6 +270,77 @@ export function postureDelta(snapshot, expected = PRODUCTION_POSTURE) {
   return rows;
 }
 
+/**
+ * WHERE THIS CAPTURE DISAGREES WITH THE DEPLOYMENT READING IT.
+ *
+ * `postureDelta` above answers a different question — how a snapshot differs from PRODUCTION, against a
+ * hardcoded expectation. This answers how it differs from the box it is being read on, which is the
+ * question a staff member actually has in front of the capability page.
+ *
+ * WHY AN AGE IS NOT THE GUARD IT LOOKS LIKE (tracker issue 170). The snapshot's only writers were a run
+ * and the launcher, so a deployment being CONFIGURED — which runs nothing by definition — holds a
+ * capture that is stale for exactly as long as somebody is working on it, which is exactly when they
+ * are looking at the page. Found live: the register provider was moved from signa to clarivate and every
+ * service restarted onto it, and the page still said Signa. It was 26 hours old, so a banner happened to
+ * appear and the owner asked. An hour earlier the same page would have shown the same wrong answer in
+ * silence. "This capture says signa; this deployment is configured for clarivate" is actionable; "26
+ * hours old" is not, and on a busy box it never fires at all.
+ *
+ * PURE, and it takes both sides as snapshots rather than reading anything: the caller decides what
+ * "live" means, and a comparison that read its own second operand could not be tested against a
+ * disagreement that does not exist on the machine running the test.
+ *
+ * Returns `[]` when they agree, one row per disagreeing field, and `null` when either side is missing —
+ * which is NOT agreement. An absent capture and an agreeing capture are different facts and the caller
+ * renders them differently.
+ */
+export function postureDisagreement(snapshot, live) {
+  if (!snapshot || typeof snapshot !== "object") return null;
+  if (!live || typeof live !== "object") return null;
+  const rows = [];
+  // HOW MANY FIELDS THIS COMPARISON COULD ACTUALLY SEE. Without it an empty result means two different
+  // things — "five fields checked, all agree" and "nothing was comparable" — and they render the same.
+  // That is the defect `postureDelta` already carries a row for one function above, and it arrives here
+  // by the same route: a capture written before a field existed is SILENT about it, not agreeing.
+  let compared = 0;
+  const differ = (what, a, b, effect) => {
+    // Absent on EITHER side is not a disagreement. A capture written before a field existed does not
+    // disagree with a deployment that has it — it is silent about it, and reporting silence as conflict
+    // would light this page up on every box the moment a new field ships.
+    if (a === undefined || a === null || b === undefined || b === null) return;
+    compared += 1;
+    if (a !== b) rows.push({ what, capture: a, live: b, effect });
+  };
+
+  differ("register provider", snapshot.register?.provider ?? null, live.register?.provider ?? null,
+    "the capture and this deployment name different registers — searches run against the deployment's, and this page is describing the other one");
+  differ("engine", snapshot.engine?.id ?? null, live.engine?.id ?? null,
+    "silent-output-change — a different engine answers differently and nobody is told");
+  differ("billing mode", snapshot.engine?.billing?.mode ?? null, live.engine?.billing?.mode ?? null,
+    "what a run costs, and who it is billed to");
+
+  // Flags: compare only names BOTH sides declare, for the same reason `differ` skips absent values —
+  // a build that adds a flag must not read as every older capture disagreeing with it.
+  for (const [name, f] of Object.entries(snapshot.flags ?? {})) {
+    const here = live.flags?.[name];
+    if (!here) continue;
+    differ(`flag ${name}`, f.on === true, here.on === true, f.effect ?? EFFECT[name] ?? null);
+  }
+
+  differ("EUIPO environment", snapshot.euipo?.environment ?? null, live.euipo?.environment ?? null,
+    "silent-output-change — sandbox and production answer differently and nobody is told");
+
+  // NOTHING COMPARABLE IS NOT AGREEMENT, and it must not return the same `[]` that agreement does.
+  // A caller reading a bare empty array would tell a staff member this capture matches their box when
+  // what happened is that no field on it could be checked at all.
+  if (compared === 0) {
+    return [{ what: "the comparison itself", capture: null, live: null,
+      effect: "no field on this capture could be compared with this deployment — it predates every "
+        + "field this check knows how to read, so it is not evidence that they agree" }];
+  }
+  return rows;
+}
+
 /** Where the snapshot lives. Beside the pool, so it shares the pool's lifecycle and backup. */
 export function snapshotPath(poolRoot) {
   return join(poolRoot, "_state", "prelim-flag-snapshot.json");
@@ -426,6 +497,34 @@ export function isStale(snapshot, { now, maxAgeMs = 24 * 60 * 60 * 1000 }) {
 // name, no snapshot was written, and the portal's configuration page answered "cannot be read from
 // here" for exactly the first-time visitor the paragraph below names. Defaults keep every existing
 // caller reading `process.env` and `config.poolRoot` as before.
+/**
+ * THIS DEPLOYMENT'S POSTURE, DERIVED AND NOT WRITTEN.
+ *
+ * Exactly the derivation `writeFlagSnapshot` performs, minus the write — factored out so the capability
+ * page's disagreement check and the writer cannot drift into two answers about what "live" means. A
+ * second copy of this derivation would be a second authority on the deployment's configuration, which is
+ * the class of defect the snapshot exists to remove rather than to add to.
+ *
+ * Callable from the portal because the portal HAS the engine environment: one configuration per server
+ * box, owner ruling 2026-08-26, `EnvironmentFile=%h/.env` on every unit. Its result is for COMPARISON
+ * only — see portal-config-view.mjs on why the page still renders the capture and never this.
+ */
+export async function livePosture({ env = process.env } = {}) {
+  const { warnRetiredEnv } = await import("../shared/env-aliases.mjs");
+  warnRetiredEnv();
+  const { REGISTER_PROVIDER } = await import("./driver.config.mjs");
+  const { capabilitiesFor } = await import("./register-capabilities.mjs");
+  const canCount = (() => { try { return capabilitiesFor(REGISTER_PROVIDER).countProbe !== "none"; } catch { return null; } })();
+  const { coveredTerritoryNames } = await import("./register-coverage.mjs");
+  const territories = await (async () => { try { return await coveredTerritoryNames(capabilitiesFor(REGISTER_PROVIDER)); } catch { return undefined; } })();
+  const { engineInventory, providerInventory } = await import("./config-inventory.mjs");
+  return buildFlagSnapshot(env, {
+    capturedAt: new Date().toISOString(), registerProvider: REGISTER_PROVIDER, registerCanCount: canCount,
+    registerTerritories: territories,
+    engine: engineInventory(env), providers: providerInventory(env),
+  });
+}
+
 export async function writeFlagSnapshot({ quiet = false, env = process.env, poolRoot = null } = {}) {
   // ── — THE NAMES AN INSTALLER ACTUALLY TYPES, TRANSLATED BEFORE ANYTHING CAPTURES THEM ────────
   //
@@ -460,30 +559,13 @@ export async function writeFlagSnapshot({ quiet = false, env = process.env, pool
   // BEFORE driver.config, and that ordering is load-bearing: `REGISTER_PROVIDER` is a module-top capture
   // (REGISTER_PROVIDER declared in driver.config.mjs), so a translation applied after this import
   // would report success and change nothing — the failure env-local's own header measures.
-  const { warnRetiredEnv } = await import("../shared/env-aliases.mjs");
-  warnRetiredEnv();
-  const { config, REGISTER_PROVIDER } = await import("./driver.config.mjs");
-  const { capabilitiesFor } = await import("./register-capabilities.mjs");
-  // An unknown provider id throws loudly in capabilitiesFor — here that would take down the snapshot
-  // writer over a question that is not its business, so it degrades to "unknown" (= leave BUILT alone).
-  const canCount = (() => { try { return capabilitiesFor(REGISTER_PROVIDER).countProbe !== "none"; } catch { return null; } })();
-  // Same degradation as canCount and for the same reason: an unknown provider id throws loudly in
-  // capabilitiesFor, and taking down the snapshot writer over that would be a bigger outage than the
-  // question is worth. `undefined` here means the field is OMITTED, which every reader fails open on.
-  const { coveredTerritoryNames } = await import("./register-coverage.mjs");
-  const territories = await (async () => { try { return await coveredTerritoryNames(capabilitiesFor(REGISTER_PROVIDER)); } catch { return undefined; } })();
-  // — engine identity and the provider inventory. UNCAUGHT, unlike the two degradations above,
-  // and for the opposite reason: those answer a question that is not the snapshot's business, whereas a
-  // throw here would write a snapshot MISSING these blocks, which every reader is required to render as
-  // "this snapshot predates provider reporting". That would be false — it did not predate it, the
-  // derivation failed — and a false explanation is worse than no snapshot, which reads honestly as
-  // "configuration cannot be read from here".
-  const { engineInventory, providerInventory } = await import("./config-inventory.mjs");
-  const snap = buildFlagSnapshot(env, {
-    capturedAt: new Date().toISOString(), registerProvider: REGISTER_PROVIDER, registerCanCount: canCount,
-    registerTerritories: territories,
-    engine: engineInventory(env), providers: providerInventory(env),
-  });
+  const { config } = await import("./driver.config.mjs");
+  // THE DERIVATION LIVES IN `livePosture`, and this calls it rather than repeating it. Everything the
+  // long comment above describes — the ordering against driver.config's module-top capture, the two
+  // degradations on an unknown provider id, the deliberately UNCAUGHT engine/provider inventories — is
+  // in that function and applies unchanged here. Two copies of it would be two answers to "what is this
+  // deployment configured for", which is precisely the condition this file exists to detect.
+  const snap = await livePosture({ env });
   // `??` and not `||`: `config.poolRoot` THROWS by name when unset, so the short-circuit is what
   // keeps a caller that supplied its own pool from paying for the getter's refusal.
   const path = snapshotPath(poolRoot ?? config.poolRoot);
