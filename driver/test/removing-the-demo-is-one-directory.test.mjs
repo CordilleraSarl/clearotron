@@ -20,6 +20,9 @@ import { childEnv, installPaths } from "../../bin/start.mjs";
 import { denylistFor } from "../../shared/client-door.mjs";
 import { credentialPathFor } from "../portal-local-auth.mjs";
 
+// `/srv/...` RATHER THAN `/home/...` IN EVERY FIXTURE PATH. A corpus guard refuses an executable line
+// naming a specific account's home directory, and it walks the tree itself — so it is reached by no
+// derivation from this change's files and only fires on a full run. It cost this branch one.
 const ports = { portal: 1, mcp: 2, client: 3 };
 const demoEnv = (base) => childEnv({
   ports, paths: installPaths(base), user: "someone@example.com", staffDomains: [],
@@ -27,7 +30,7 @@ const demoEnv = (base) => childEnv({
 });
 
 test("94 everything a demo writes is inside the directory it says to remove", () => {
-  const base = "/home/stranger/trademark-demo";
+  const base = "/srv/stranger/trademark-demo";
   const env = demoEnv(base);
   // Every value in the demo's child environment that names a FILE must be under the base. Read as a
   // population rather than one key at a time: the credential was fixed this way once already, and the
@@ -42,7 +45,7 @@ test("94 everything a demo writes is inside the directory it says to remove", ()
 });
 
 test("94 the revocation list is the demo's own, and only the demo's", () => {
-  const base = "/home/stranger/trademark-demo";
+  const base = "/srv/stranger/trademark-demo";
   // The CLIENT door is where account keys live, and where this key is composed.
   assert.equal(demoEnv(base).client.TRADEMARK_MCP_TOKEN_DENYLIST, join(base, "token-denylist"));
 
@@ -53,10 +56,10 @@ test("94 the revocation list is the demo's own, and only the demo's", () => {
   assert.equal(installPaths(base).denylist, undefined,
     "installPaths grew a denylist key — that moves every existing install's revocation list");
   const live = childEnv({
-    ports, paths: installPaths("/home/op/trademark"), user: "op@example.com", staffDomains: [],
+    ports, paths: installPaths("/srv/operator/trademark"), user: "op@example.com", staffDomains: [],
     portalSecret: "s", tokenSecret: "t", opsToken: "v1.x.y", demo: false, env: {},
   });
-  assert.ok(!String(live.client?.TRADEMARK_MCP_TOKEN_DENYLIST ?? "").startsWith("/home/op/trademark/"),
+  assert.ok(!String(live.client?.TRADEMARK_MCP_TOKEN_DENYLIST ?? "").startsWith("/srv/operator/trademark/"),
     "a non-demo install's revocation list moved into its base");
 });
 
@@ -65,11 +68,11 @@ test("94 the passphrase decision asks about the file the portal will use", () =>
   // SHARED default while handing the portal a different file. On any machine that already had one, a
   // demo minted nothing and the portal then said the passphrase "was minted on an earlier start and is
   // NOT reprinted" — over an empty credential file, to a visitor who could not sign in.
-  const base = "/home/stranger/trademark-demo";
+  const base = "/srv/stranger/trademark-demo";
   const env = demoEnv(base);
   assert.equal(credentialPathFor(env.portal), join(base, "portal-local-credential.json"),
     "the portal's own environment does not name the credential the mint decision must ask about");
-  assert.notEqual(credentialPathFor(env.portal), credentialPathFor({}, "/home/stranger"),
+  assert.notEqual(credentialPathFor(env.portal), credentialPathFor({}, "/srv/stranger"),
     "the demo's credential and the shared default are the same file — then this arm proves nothing");
 });
 
@@ -94,6 +97,6 @@ test("94 the revocation list's path is composed once, so the door and the superv
     + "nobody reads. It has one owner, `shared/client-door.mjs`.");
 
   // The resolver itself still answers both questions.
-  assert.equal(denylistFor({ paths: installPaths("/home/s/trademark-demo"), demo: true }), "/home/s/trademark-demo/token-denylist");
-  assert.notEqual(denylistFor({ paths: installPaths("/home/op/trademark"), demo: false, env: {}, home: "/home/op" }), "/home/op/trademark/token-denylist");
+  assert.equal(denylistFor({ paths: installPaths("/srv/example/trademark-demo"), demo: true }), "/srv/example/trademark-demo/token-denylist");
+  assert.notEqual(denylistFor({ paths: installPaths("/srv/operator/trademark"), demo: false, env: {}, home: "/srv/operator" }), "/srv/operator/trademark/token-denylist");
 });
