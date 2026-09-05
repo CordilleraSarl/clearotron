@@ -189,17 +189,22 @@ export function findings(text, {
       add(i, "a file name means nothing to somebody who has never opened this repository", m[0]);
     }
     // A path, judged by WHOSE it is. The reader's own — `~/.config/clearotron/` — is the note's job to
-    // give them. Ours — `driver/test/…`, `scripts/…` — means nothing to somebody who has never opened
-    // this repository. A path the user documentation already shows is theirs by definition.
+    // give them. Ours is not, and "ours" is wider than this repository's directory names: an absolute
+    // path into a server's filesystem is our deployment, not their machine.
+    //
+    // WHAT COUNTS AS A PATH AT ALL is deliberately narrow, because `and/or` is not one. A token qualifies
+    // when it opens with `~`, `/`, `./` or `../`, when its first segment is one of our own directories,
+    // or when a segment carries a dot. Ordinary prose with a slash in it does not.
     for (const m of line.matchAll(/(?:^|[\s`(])((?:~|\.{1,2})?\/?[\w.~-]+(?:\/[\w.~-]+)+\/?)/g)) {
       const path = m[1];
       if (/^https?:/.test(path)) continue;
+      const segments = path.replace(/^[~./]+/, "").split("/").filter(Boolean);
+      const looksLikePath = /^[~./]/.test(path) || sourceDirs.has(segments[0]) || segments.some((x) => x.includes("."));
+      if (!looksLikePath) continue;
       if (path.startsWith("~")) continue;                       // the reader's own home
       if (docs.includes(path)) continue;                        // the user documentation shows it
-      const first = path.replace(/^[./]+/, "").split("/")[0];
-      if (sourceDirs.has(first)) {
-        add(i, "a path into our source tree means nothing to somebody who has never opened this repository", path);
-      }
+      add(i, "a file path that is ours rather than the reader's means nothing to somebody who has never "
+        + "opened this repository", path);
     }
     for (const m of line.matchAll(/--[a-z][a-z0-9-]+/g)) {
       if (!flags.has(m[0])) add(i, "a flag the user documentation never shows is a flag the reader cannot use", m[0]);

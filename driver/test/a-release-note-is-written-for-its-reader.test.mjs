@@ -51,6 +51,15 @@ test("tracker 97 the lint refuses each thing the contract bans, and passes a not
   assert.deepEqual(offences("Fixed: release-version.mjs writes it now."), ["release-version.mjs"]);
   assert.deepEqual(offences("Fixed: The walk in driver/engine now covers everything."), ["driver/engine"]);
   assert.deepEqual(offences("Fixed: Settings now live in `~/.config/clearotron/` and survive an upgrade."), []);
+  // ISOLATED FROM THE DOCUMENTED-PATH RULE. `~/.config/clearotron/` is also shown in INSTALL.md, so it
+  // would pass by that route even if the reader's-home rule were deleted — a plant against that rule was
+  // inert until this line existed. This path is in no document, so only the `~` rule can allow it.
+  assert.deepEqual(offences("Fixed: Reports are written to `~/Documents/clearance-reports/` by default."), []);
+  // OURS IS WIDER THAN OUR DIRECTORY NAMES: an absolute path into a server's filesystem is our
+  // deployment, not the reader's machine.
+  assert.deepEqual(offences("For operators: Runs are kept in /var/lib/clearotron/pool now."), ["/var/lib/clearotron/pool"]);
+  // And ordinary prose with a slash in it is not a path. A guard that refused this would be deleted.
+  assert.deepEqual(offences("Fixed: The demo accepts a knockout and/or a clearance without complaint."), []);
   assert.deepEqual(offences("New: See https://github.com/CordilleraSarl/clearotron for the source."), []);
 
   // A flag the user documentation never shows.
