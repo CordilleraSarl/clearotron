@@ -123,9 +123,26 @@ function alreadyApplied(step) {
  * about the bus. Anything else gets the command to read the real one, which is the honest answer when
  * this process cannot diagnose it.
  */
+/**
+ * Does this failure say the SESSION BUS is missing, rather than anything about the unit?
+ *
+ * ONE AUTHORITY, because two readers now ask it (tracker issue 130, criterion 3). The failure text
+ * below offers the bus remedy on a yes, and the health reader refuses to translate a yes into "the door
+ * is not open" — that mistranslation is the defect, and a second copy of this test is how the two would
+ * come to disagree about which failures are bus failures.
+ */
+export function looksLikeBusFailure(said) {
+  return /Failed to connect to( the)? bus|DBUS_SESSION_BUS_ADDRESS|XDG_RUNTIME_DIR|No medium found/i.test(String(said ?? ""));
+}
+
+/** What a failed `systemctl` said, preferring its own stderr over Node's wrapper message. */
+export function systemdSaid(e) {
+  return `${e?.stderr ?? ""}`.trim() || `${e?.message ?? e}`.trim();
+}
+
 export function systemdFailure(e, { step, unit = null } = {}) {
-  const said = `${e?.stderr ?? ""}`.trim() || `${e?.message ?? e}`.trim();
-  const looksLikeBus = /Failed to connect to( the)? bus|DBUS_SESSION_BUS_ADDRESS|XDG_RUNTIME_DIR|No medium found/i.test(said);
+  const said = systemdSaid(e);
+  const looksLikeBus = looksLikeBusFailure(said);
   const remedy = looksLikeBus
     ? busRemedy()
     : `That is not a missing session bus, so the two exports will not help. Read what systemd itself says:\n`
@@ -239,13 +256,12 @@ function portOwnerOf(port, bound) {
   // Something holds it. Ask systemd whether the holder is our own door, rather than inferring from the
   // port number — the port answering was never proof of whose process it is, which is the whole lesson
   // of the incident this check was written for.
-  let state;
-  try {
-    const out = execFileSync("systemctl",
-      ["--user", "show", CLIENT_DOOR_UNIT, "-p", "ActiveState", "-p", "SubState"],
-      { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
-    state = Object.fromEntries(out.trim().split("\n").map((l) => l.split("=")));
-  } catch { return "unknown"; }
+  const { fields: state, error } = showUnit(CLIENT_DOOR_UNIT, ["ActiveState", "SubState"]);
+  // "unknown" IS this function's could-not-look and it keeps that meaning here: the caller already
+  // treats it as "do not decide", which is the right answer whether the bus was missing or systemd
+  // simply had nothing to say. What changed is that it is no longer reached by a shell that HAD a
+  // derivable bus and was never given it.
+  if (error) return "unknown";
   if (!state || state.ActiveState === undefined) return "unknown";
   const up = state.ActiveState === "active" && state.SubState === "running";
   if (!up) return "stranger";
@@ -256,6 +272,33 @@ function portOwnerOf(port, bound) {
   const configured = clientDoorPort(running.env);
   if (!running.known) return "unknown";
   return configured === port ? "ours" : "stranger";
+}
+
+/**
+ * Read properties off a user unit — the ONE place this file asks systemd anything read-only.
+ *
+ * ── WHY IT EXISTS (tracker issue 130, criterion 3) ───────────────────────────────────────────────────
+ *
+ * Two readers here called `systemctl --user show` directly and neither did what the WRITERS in this
+ * same file already do: neither passed `userBusEnv()`, so both failed in exactly the shell tracker issue
+ * 121 was filed about, and neither captured stderr, so systemd's own "Failed to connect to bus" went
+ * straight past the reader with no remedy beside it.
+ *
+ * The writers were fixed and these were missed, which made the product WORSE on this path rather than
+ * better: the message used to name systemd and now it named the door. Driven on a real box by the test
+ * lane — the door was `active` and `connect` said it was not open.
+ *
+ * `error` is carried out rather than swallowed, so each caller decides what its own could-not-look
+ * means. Collapsing that into the caller's ordinary negative answer is the entire defect.
+ */
+export function showUnit(name, props, { run = execFileSync } = {}) {
+  const args = ["--user", "show", name];
+  for (const p of props) args.push("-p", p);
+  try {
+    const out = run("systemctl", args,
+      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], env: userBusEnv() });
+    return { fields: Object.fromEntries(out.trim().split("\n").map((l) => l.split("="))), error: null };
+  } catch (e) { return { fields: null, error: e }; }
 }
 
 /** A blocking pause, so the health check below asks about a door that has had time to fail. */
@@ -288,15 +331,25 @@ const settle = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0,
  * with `CLIENT_DOOR_UNIT` — a `Type=simple` door. If a second caller ever passes a member of
  * `SERVER_INSTALL_SET`, this needs the unit's declared type, not this default.
  */
-function unitIsHealthy(name) {
-  settle(3000);
-  try {
-    const out = execFileSync("systemctl",
-      ["--user", "show", name, "-p", "ActiveState", "-p", "SubState", "-p", "NRestarts"],
-      { encoding: "utf8" });
-    const f = Object.fromEntries(out.trim().split("\n").map((l) => l.split("=")));
-    return unitHealthVerdict({ activeState: f.ActiveState, subState: f.SubState, nRestarts: f.NRestarts }).ok;
-  } catch { return false; }
+export function unitIsHealthy(name, { show = showUnit, pause = settle } = {}) {
+  pause(3000);
+  const { fields: f, error } = show(name, ["ActiveState", "SubState", "NRestarts"]);
+  if (error) {
+    // ── A BUS THAT COULD NOT BE REACHED IS NOT A DOOR THAT IS DOWN (tracker issue 130) ────────────
+    //
+    // Returning false here is what made the operator worse off than before tracker issue 121's fix.
+    // The caller renders false as "the door is not open, so no key was issued" — a confident, wrong,
+    // client-facing sentence about a door that is `active`, with the real cause discarded. And it is
+    // reachable on the ordinary path: a box whose door is already installed and running never calls
+    // daemon-reload or enable, so THESE two reads are the only things that touch the bus, and the
+    // writers' remedy never fires.
+    //
+    // So a bus failure is raised with the remedy the writers already give, and everything else keeps
+    // the old answer — a unit systemd knows about and calls dead is genuinely not healthy.
+    if (looksLikeBusFailure(systemdSaid(error))) throw systemdFailure(error, { step: "health-check", unit: name });
+    return false;
+  }
+  return unitHealthVerdict({ activeState: f.ActiveState, subState: f.SubState, nRestarts: f.NRestarts }).ok;
 }
 
 /** Turn the door on. Only reached because the chosen assistant cannot work without it. */
