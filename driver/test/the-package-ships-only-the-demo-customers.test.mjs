@@ -18,7 +18,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
+import { mkdtempSync, readdirSync, rmSync } from "node:fs";
 import { join, dirname } from "node:path";
+import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
@@ -58,5 +60,34 @@ test("94/F13 the package's customer roster is the two accounts a reader is meant
   // The two that DO ship are proved present rather than inferred from the absence of the others.
   for (const name of SHIPPED_ACCOUNTS) {
     assert.ok(files.includes(`driver/profiles/${name}`), `the package does not carry ${name}, so a reader has no account at all`);
+  }
+});
+
+
+test("94/F13 and the artifact itself carries none of them", { timeout: 300_000 }, () => {
+  // THE ARM ABOVE ASKS NPM WHAT IT WOULD PACK. This one packs. The three exclusions are three separate
+  // `files[]` patterns — the accounts, the saved projects, the saved search recipes — and nothing
+  // compares them to each other; the only thing that can say whether all three held is the tarball a
+  // reader downloads. A dry run and a pack agreeing is worth having as two measurements; a dry run
+  // alone is a claim about the intent of a list.
+  const out = mkdtempSync(join(tmpdir(), "roster-pack-"));
+  try {
+    execFileSync("npm", ["pack", "--pack-destination", out], { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+    const tarballs = readdirSync(out).filter((f) => f.endsWith(".tgz"));
+    assert.equal(tarballs.length, 1, `expected exactly one tarball, got: ${tarballs.join(", ") || "none"}`);
+    const entries = execFileSync("tar", ["-tzf", join(out, tarballs[0])], { encoding: "utf8" })
+      .split("\n").filter(Boolean).map((p) => p.replace(/^package\//, ""));
+    // A TARBALL THAT LISTED NOTHING WOULD SATISFY EVERY LINE BELOW.
+    nonEmpty(entries, "the entries in the packed tarball");
+
+    for (const name of FIXTURES_ONLY) {
+      const leaked = entries.filter((p) => p.split("/").some((seg) => seg === name || seg.startsWith(`${name}.`)));
+      assert.deepEqual(leaked, [], `the tarball a reader downloads carries ${name}: ${leaked.join(", ")}`);
+    }
+    for (const name of SHIPPED_ACCOUNTS) {
+      assert.ok(entries.includes(`driver/profiles/${name}`), `the tarball does not carry ${name}`);
+    }
+  } finally {
+    rmSync(out, { recursive: true, force: true });
   }
 });
