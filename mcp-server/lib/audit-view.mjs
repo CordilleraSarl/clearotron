@@ -256,8 +256,21 @@ export function accountTimeline(result, { brandName = "The firm" } = {}) {
 // client's own wait; a token count is a fact about our bill. Neither is a spend control — the owner ruled
 // those out and none is added here; this is the same cost/chain line the audit reads draw, applied to the
 // one tool that would otherwise walk straight through it.
-const PLAN_FIELDS = ["runnable", "reason", "runId", "stage", "axis", "change", "completeness",
-  "affectsFinalReport", "downstreamNotRecomputed", "externalCalls", "honestyNote", "confirmationToken", "next"];
+//
+// THE MEMO KIND ADDS THREE, AND LEAVING THEM OUT BROKE IT SILENTLY (tracker issue 132). This list is
+// default-deny, so a plan kind whose fields nobody added here arrives stripped rather than refused. A
+// memo plan was composed correctly and reached a client missing `kind` (so it could not be told from a
+// stage plan), `assumption` (so it did not say what it was about) and `parentUntouched` (so it did not
+// say the report and its archive are not modified) — and that last one is the whole safety case for
+// offering this on a DELIVERED report. Measured by driving a memo plan through this function, not read.
+//
+// All three are disclosable on the same reasoning the rest of this list already uses. `kind` is a fact
+// about the client's own request; `assumption` is the client's own words reflected back, exactly as
+// `instructions` already is in ASKED_FIELDS below; `parentUntouched` is our own fixed sentence and
+// discloses nothing about the run.
+const PLAN_FIELDS = ["runnable", "reason", "runId", "kind", "stage", "axis", "assumption", "change", "completeness",
+  "affectsFinalReport", "downstreamNotRecomputed", "externalCalls", "parentUntouched", "honestyNote",
+  "confirmationToken", "next"];
 
 export function accountWhatIfPlan(result) {
   if (!result || typeof result !== "object") return result;

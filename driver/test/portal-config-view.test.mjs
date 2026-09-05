@@ -66,15 +66,24 @@ test("a missing snapshot is UNAVAILABLE, never 'everything off'", () => {
   assert.ok(!/off/i.test(v.note.replace(/switched on/gi, "")), "the note must not read as 'off'");
 });
 
-test("staleness is reported, and a stale snapshot is still the last known truth", () => {
-  const v = flagView(pool(ENGINE_ENV, "2026-07-01T00:00:00Z"), { now: NOW });
-  assert.equal(v.stale, true);
-  assert.equal(v.available, true, "a stale snapshot is still the last known truth");
-  // The old arm here was `flags.length > 0`. item 8 deleted every flag, so that would now assert
-  // the opposite of the truth. What staleness is ABOUT is unchanged and is what this checks instead:
-  // the three states — read, stale, unreadable — stay distinct even when there is nothing to render.
+test("an OLD capture is still readable, and its age is no longer a verdict on it", () => {
+  // THIS ARM USED TO ASSERT `v.stale === true`, and the age banner it belonged to is retired — owner
+  // ruling 2026-09-05 (tracker issue 170): "the global configuration page shows LIVE configuration,
+  // always. No run-time snapshot as the source of truth."
+  //
+  // What the arm was FOR survives and is what it checks now: old is not the same as unreadable, and the
+  // states must stay distinct even when there is nothing to render. What it may no longer do is treat
+  // age as evidence of wrongness — the page answers live, and whether the capture still describes the
+  // box is answered by comparison, in the arms in
+  // `a-capture-that-stopped-describing-the-box-says-so.test.mjs`.
+  const v = flagView(pool(ENGINE_ENV, "2026-07-01T00:00:00Z"));
+  assert.equal(v.available, true, "an old capture is still the last known truth when there is nothing live");
+  assert.equal(v.source, "capture", "and the page says which reading it gave rather than implying live");
+  assert.equal(v.lastRun.capturedAt, "2026-07-01T00:00:00Z", "the date is still reported — as a fact, not a warning");
   assert.deepEqual(v.flags, []);
-  assert.notEqual(v.available, false, "stale is not the same as unavailable — that distinction is the point");
+  assert.ok(!("stale" in v),
+    "the age verdict is retired; leaving the field behind would let a page keep rendering the banner "
+    + "the ruling removed");
 });
 
 // ──: the engine and provider rows, and the hop that must not collapse them ────────────────────

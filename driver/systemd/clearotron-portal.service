@@ -37,6 +37,18 @@ Environment=CLEAROTRON_NO_ENV_FILE=1
 # NO WorkingDirectory=, deliberately — systemd does not expand variables there, only in ExecStart
 # arguments, and nothing here reads the working directory: the code finds itself from its own file URL.
 ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/portal-service.mjs
+# ── REFRESH THE CAPABILITY PAGE'S CAPTURE AT EVERY START (tracker issue 170) ─────────────────────────
+# The capability page renders `pool/_state/prelim-flag-snapshot.json`, and until this line its only
+# writers were a RUN and the `clearotron start` launcher. A hosted box runs neither: these units are the
+# entrypoint, and a deployment being CONFIGURED runs nothing by definition. So the page reported the old
+# configuration as current fact for exactly as long as somebody was working on the configuration, which
+# is exactly when they were reading it. Measured live 2026-09-05: the register was moved to clarivate and
+# every service restarted, and the page still said Signa.
+#
+# This unit can write it because it carries `EnvironmentFile=%h/.env` — one configuration per server box,
+# owner ruling 2026-08-26, which removed the second source of truth rather than defending against it.
+# `-` prefix: a snapshot is a diagnostic surface, and failing to write one must never fail the service.
+ExecStartPost=-/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/flag-snapshot.mjs
 Restart=on-failure
 RestartSec=10
 
