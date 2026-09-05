@@ -119,6 +119,9 @@ test("tracker issue 115 — every production package npm resolves has a notices 
   try {
     raw = execFileSync("npm", ["ls", "--omit=dev", "--all", "--json"], {
       cwd: REPO, encoding: "utf8", maxBuffer: 128 * 1024 * 1024, stdio: ["ignore", "pipe", "ignore"],
+      // SEALED: `ls` answers from the installed tree on disk and needs no registry, but npm reaches for
+      // one anyway — and that reach can BLOCK rather than fail, which is a hang instead of a red.
+      env: { ...process.env, npm_config_offline: "true" },
     });
   } catch (e) {
     // npm exits non-zero for any tree problem while still printing the whole tree.
