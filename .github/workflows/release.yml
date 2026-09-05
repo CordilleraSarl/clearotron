@@ -182,9 +182,11 @@ jobs:
               ;;
           esac
           DIST_TAG=$(node scripts/release-dist-tag.mjs "$VERSION")
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "dist_tag=$DIST_TAG" >> "$GITHUB_OUTPUT"
-          echo "tarball=release-artefacts/clearotron-$VERSION.tgz" >> "$GITHUB_OUTPUT"
+          {
+            echo "version=$VERSION"
+            echo "dist_tag=$DIST_TAG"
+            echo "tarball=release-artefacts/clearotron-$VERSION.tgz"
+          } >> "$GITHUB_OUTPUT"
           echo "Publishing clearotron@$VERSION to the \`$DIST_TAG\` channel."
 
       # The bundle is built, not committed, so a pack that runs before this ships a portal with nothing
