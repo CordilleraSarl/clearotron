@@ -131,12 +131,28 @@ export const CONNECT_CLIENTS = Object.freeze([
   },
 
   // ── Speaks HTTP. Runs on the reader's machine and connects from the vendor's cloud anyway. ──────
+  //
+  // THE STEPS BELOW WERE DRIVEN, NOT RECALLED (tracker issue 148, and the connect walkthrough on 130).
+  // This row used to end "Choose API key, and paste the second line we copied" — and there is no API
+  // key control in that dialog. The owner connected Cowork on 2026-09-04 by pasting the address,
+  // setting Authentication to None, and adding an `Authorization: Bearer <key>` request header. A
+  // client following the old third step went looking for a box that is not the way in, on the page
+  // whose entire job is to get them connected.
+  //
+  // The class this belongs to is "the connector table asserts vendor behaviour from no observation",
+  // and cowork was its second instance — the row also had this product classified as running on the
+  // reader's machine when it connects from the vendor's cloud. So the wording is the one that was
+  // observed, and the warning goes with it: Claude tags the server "Always required · Detected"
+  // because it probes and infers OAuth. `None` is still correct despite the orange box, and a reader
+  // who is not told that will assume they have done it wrong.
   {
     id: "cowork", name: "Cowork", accepts: "http",
     steps: ({ address }) => [
       "Settings → Connectors → Add custom connector",
       `Paste ${address ?? "the first of the two lines we copied"}`,
-      "Choose API key, and paste the second line we copied",
+      "Set Authentication to None",
+      "Add a request header: Authorization = Bearer, then the second line we copied",
+      "Add. If it warns that authentication is required, that is its own guess — None is correct here",
     ],
   },
 
@@ -163,10 +179,15 @@ export const CONNECT_CLIENTS = Object.freeze([
     ],
   },
   {
+    // UNDRIVEN, AND WORDED LIKE IT (tracker issue 148; the owner drives this vendor himself this
+    // week and the dated stamp appears then). The old second step named "API Key" as the control to
+    // choose — the same assertion-from-no-observation that made the cowork row send clients hunting
+    // for a box that is not the way in. Two lines and a place to put each is what we actually know.
     id: "perplexity", name: "Perplexity", accepts: "http",
     steps: ({ address }) => [
       "Settings → Connectors → Add connector, choose a custom MCP server",
-      `Paste ${address ?? "the first line we copied"}, choose API Key, and paste the second`,
+      `Paste ${address ?? "the first line we copied"} as the server address`,
+      "Give it the second line we copied as the credential, wherever it asks for one",
     ],
   },
 
