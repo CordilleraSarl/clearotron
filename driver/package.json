@@ -2,7 +2,7 @@
   "name": "prelim-driver",
   "private": true,
   "type": "module",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "AGPL-3.0-only",
   "description": "Deterministic driver for the trademark clearance workflow: orchestration in code (fan-out, fan-in barrier, gating, retries); the model does judgment leaves only, through a reasoning CLI spawned per stage.",
   "engines": {
