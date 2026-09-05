@@ -163,11 +163,35 @@ export function collect(root = ROOT, tree = npmTree(root)) {
       + "this file has not been looked at:\n  " + undeclared.join("\n  ")
       + "\n\nFix the tree, or declare it in DECLARED_LS_PROBLEMS with the reason it is allowed.");
   }
+  // ── ONE PACKAGE, SEVERAL NODES, AND ONLY ONE OF THEM CARRIES THE CHILDREN ──────────────────────
+  //
+  // This walk used to dedupe the TRAVERSAL and the ROWS with one `seen` check: the first time a
+  // `name@version` appeared it was recorded and descended into, and every later occurrence was
+  // skipped. npm's tree does not cooperate with that. A hoisted package appears more than once, and
+  // the occurrences are NOT equivalent — the deduped ones are stubs with no `dependencies` at all,
+  // and which one you meet first is an ordering accident.
+  //
+  // Measured on this tree (tracker issue 115): `ajv@8.20.0` appears twice under
+  // `@modelcontextprotocol/sdk` — first as a stub with 0 children, then with 4. The stub was met
+  // first, so `ajv` got its row and its ENTIRE SUBTREE was never walked. `fast-uri` is one of those
+  // four children, which is how a production dependency came to ship with no licence recorded.
+  //
+  // So the omission was never about `fast-uri`: it is every transitive dependency of any package
+  // whose stub occurrence happens to sort first. Rows still dedupe by `name@version` — a package is
+  // attributed once — but DESCENT now follows the occurrence that actually has children.
   const seen = new Map();
+  const descended = new Set();
   (function walk(node) {
     for (const [name, d] of Object.entries(node.dependencies ?? {})) {
       const key = `${name}@${d.version}`;
-      if (!seen.has(key)) { seen.set(key, { name, version: d.version, path: d.path ?? null }); walk(d); }
+      // Prefer an occurrence that carries a real path: a stub's is often absent, and the path is
+      // where the licence text is read from.
+      const prior = seen.get(key);
+      if (!prior) seen.set(key, { name, version: d.version, path: d.path ?? null });
+      else if (!prior.path && d.path) prior.path = d.path;
+      // Descend once per package, through the occurrence that has children. `descended` is also the
+      // cycle guard — npm can and does emit cyclic trees.
+      if (Object.keys(d.dependencies ?? {}).length && !descended.has(key)) { descended.add(key); walk(d); }
     }
   })(tree);
 

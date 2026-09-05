@@ -8,9 +8,17 @@ node_modules
 *.log
 .DS_Store
 
-# portal-ui/dist is COMMITTED on purpose: a deploy pulls and restarts, it never builds, so the pull
-# has to bring the bundle with it. Ignoring dist/ here would make every deploy serve a stale UI with
-# no error at all. Do not add it. See portal-ui/vite.config.ts for the full reasoning.
+# portal-ui/dist IS IGNORED, and the note that used to sit here said the opposite (tracker issue 160).
+# It read "COMMITTED on purpose … Do not add it", describing a deploy that pulls and restarts and never
+# builds. That is not this tree: `git ls-files portal-ui/dist` is empty, and has been since the public
+# cut. The bundle now reaches a deployment two ways, neither of them a commit — a packaged install
+# ships it inside the tarball, and a source checkout builds it (`clearotron update` and
+# `clearotron start` now rebuild it when it is older than its sources).
+#
+# Left untracked but NOT ignored, the first contributor to build the UI and run `git add -A` commits
+# 600KB of build output into a pull request. That happened while writing this change. Ignoring it is
+# what makes "the bundle is not tracked" a property of the repository rather than of everyone's care.
+portal-ui/dist/
 
 # The local US register (#547) and the bulk archives it is built from. A full build reads 41.5 GB
 # across two products — the 1884→ annual backfile and the dailies since 2025 — and takes hours, not

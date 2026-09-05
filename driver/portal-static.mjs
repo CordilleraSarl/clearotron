@@ -11,10 +11,12 @@
 //    browser has no way to tell the app that a module failed to load. Assets are cheap, static and
 //    identical for every user; they are not what a limiter is for.
 //
-// 2. A MISSING BUNDLE IS A LOUD 503, NEVER A BLANK PAGE. portal-ui/dist is committed to git precisely so
-//    it cannot go silently missing, but if it ever does — a bad rsync, a partial checkout — the failure
-//    has to name itself. The API keeps answering 200 the whole time, so a curl of /portal/health during a
-//    deploy tells you nothing about whether the UI is there. `ui` on /portal/health does.
+// 2. A MISSING BUNDLE IS A LOUD 503, NEVER A BLANK PAGE. This used to say portal-ui/dist is committed
+//    to git "precisely so it cannot go silently missing". It is not tracked at all, and never has been
+//    on the public tree — so the bundle CAN go missing, by the most ordinary route there is: a source
+//    checkout nobody has built yet. That makes the 503 more load-bearing than the old reasoning
+//    claimed, not less. The API keeps answering 200 the whole time, so a curl of /portal/health during
+//    a deploy tells you nothing about whether the UI is there. `ui` on /portal/health does.
 
 import { createHash } from "node:crypto";
 import { readFileSync, statSync } from "node:fs";

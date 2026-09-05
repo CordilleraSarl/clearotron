@@ -4340,10 +4340,16 @@ const PORT = PORT_CHOICE.port;
     };
   })();
 
-  // portal-ui/dist is COMMITTED to git, so a missing bundle means a bad checkout rather than a skipped
-  // build. Not fatal on purpose: the API is independently useful (the MCP face, the connector, a
-  // debugging curl), and taking the whole service down over a UI asset would turn a cosmetic failure
-  // into an outage. It is loud instead — 503 with the reason, and `ui` on /portal/health.
+  // portal-ui/dist is NOT tracked (`git ls-files portal-ui/dist` is empty), and this comment used to
+  // say the opposite — the 503's whole justification rested on it. What a missing bundle means depends
+  // on the route: on a PACKAGED install the bundle ships inside the tarball, so absent means a broken
+  // package; on a SOURCE checkout it has simply never been built, which is the ordinary first-run
+  // state and why the message names the build command. The freshness verdict twenty lines below
+  // (tracker issue 160) has always had this right.
+  //
+  // Not fatal on purpose: the API is independently useful (the MCP face, the connector, a debugging
+  // curl), and taking the whole service down over a UI asset would turn a cosmetic failure into an
+  // outage. It is loud instead — 503 with the reason, and `ui` on /portal/health.
   const distDir = pathResolve(HERE, "..", "portal-ui", "dist");
   const staticHandler = makeStaticHandler({ distDir });
   if (!staticHandler.present()) log(`WARNING: no UI bundle at ${distDir} — /portal will answer 503 until it is restored`);
