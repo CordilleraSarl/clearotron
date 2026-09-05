@@ -503,7 +503,15 @@ test("tracker 97 the pipeline asks whether the version pull request's checks sta
   // is the only one that carries `action_required`. The step would fail loudly rather than pass
   // vacuously, but it would fail on every push, and only on main.
   const versionJob = workflow.slice(workflow.indexOf("  version:"), workflow.indexOf("  publish:"));
-  for (const scope of ["checks: read", "actions: read", "administration: read"]) {
+  // AND NOT `administration: read`, which is not a permission a job may request. Asking for it does not
+  // fail the job — GitHub refuses to parse the whole workflow, and reports it as a run named after the
+  // file with no jobs and no log. On main that would have stopped every release with nothing legible to
+  // say why. The policy read is best-effort instead, and fails soft.
+  const executableJob = versionJob.split("\n").filter((l) => !/^\s*#/.test(l)).join("\n");
+  assert.ok(!/administration:/.test(executableJob),
+    "the version job asks for `administration` scope, which GitHub does not accept in a job's "
+    + "permissions — the whole workflow becomes unparseable and stops running");
+  for (const scope of ["checks: read", "actions: read"]) {
     assert.ok(versionJob.includes(scope),
       `the version job does not grant \`${scope}\`, so the step that reads whether its checks started `
       + "gets a 403 — and naming any permission sets every unnamed one to `none`");

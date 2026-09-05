@@ -91,12 +91,18 @@ jobs:
       # `actions/runs`, which is the only surface that carries `action_required`.
       checks: read
       actions: read
-      # For one sentence, and it earns it: when the version pull request parks on an approval, the guard
-      # reads the repository's CURRENT fork-pull-request approval policy and names it. That setting was
-      # changed three times in one day; a guard quoting a remembered value sends the next reader to check
-      # something that has already moved. The read fails soft, so losing this scope costs the sentence
-      # and nothing else.
-      administration: read
+      #
+      # THERE IS NO `administration: read` HERE AND THERE CANNOT BE. The guard reads the repository's
+      # current fork-pull-request approval policy so it can NAME the setting rather than quote a
+      # remembered one — and that endpoint wants repository-administration scope, which is not one of the
+      # permissions a job may request. Adding it does not fail the job: GitHub refuses to PARSE THE WHOLE
+      # WORKFLOW, and says so as a run named after this file with no jobs and no log. Measured
+      # 2026-09-05, on a branch, which is the only reason it was not measured on main with the release
+      # stopped and nothing legible to say why.
+      #
+      # So the policy read is best-effort by design. It fails soft and the finding says the policy could
+      # not be read from here and names it as the setting to look at, which is still better than a value
+      # this file remembers and the repository has changed.
     outputs:
       cut: ${{ steps.cut.outputs.cut }}
       version: ${{ steps.cut.outputs.version }}
