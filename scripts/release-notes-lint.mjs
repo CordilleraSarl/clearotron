@@ -79,6 +79,35 @@ export function userDocs(root = ROOT) {
     .join("\n");
 }
 
+/**
+ * Every package name `changeset version` will accept, read off the workspace list.
+ *
+ * MEASURED 2026-09-05: ten notes named the ROOT package, `clearotron`. `changeset version` refuses that
+ * — the root is not one of the workspaces — and it refuses it on MAIN, after the merge, in the release
+ * job, which is the worst place available to find out. A note naming a package that does not exist is
+ * decidable the moment it is written, so it is decided then.
+ *
+ * The root is deliberately absent from this set even though it is the package a user installs: the four
+ * workspaces are a fixed group and `scripts/release-version.mjs` carries their number to the root. A note
+ * against the root is a note nothing will ever version.
+ */
+export function workspaceNames(root = ROOT) {
+  const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+  const out = new Set();
+  for (const w of pkg.workspaces ?? []) {
+    const p = join(root, w, "package.json");
+    if (existsSync(p)) out.add(JSON.parse(readFileSync(p, "utf8")).name);
+  }
+  return out;
+}
+
+/** The packages a note names, in its frontmatter. */
+export function packagesIn(text) {
+  const m = /^---\n([\s\S]*?)\n---/.exec(String(text ?? ""));
+  if (!m) return [];
+  return [...m[1].matchAll(/^\s*"?([^":\n]+)"?\s*:/gm)].map((x) => x[1].trim()).filter(Boolean);
+}
+
 /** The note's text, without its frontmatter. */
 export function bodyOf(text) {
   const s = String(text ?? "");
@@ -107,11 +136,29 @@ export function findings(text, {
   flags = documentedFlags(),
   sourceDirs = sourceDirectories(),
   docs = userDocs(),
+  packages = workspaceNames(),
 } = {}) {
   const out = [];
   const lines = String(text ?? "").split("\n");
   const bodyStart = lines.findIndex((l, i) => i > 0 && l.trim() === "---") + 1;
   const add = (i, rule, offending) => out.push({ line: i + 1, rule, offending });
+
+  // The frontmatter, before anything about the prose: a note naming a package that does not exist never
+  // reaches the changelog at all, so its wording is the second question.
+  const named = packagesIn(text);
+  if (!named.length) {
+    out.push({ line: 1, rule: "a note names no package, so nothing would ever version for it", offending: file });
+  }
+  for (const name of named) {
+    if (!packages.has(name)) {
+      out.push({
+        line: 2,
+        rule: `\`${name}\` is not one of this repository's workspace packages, and \`changeset version\` `
+          + `refuses it — on main, after the merge. The workspaces are ${[...packages].sort().join(", ")}`,
+        offending: name,
+      });
+    }
+  }
 
   const body = bodyOf(text);
   if (!body) {
