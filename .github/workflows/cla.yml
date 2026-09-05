@@ -21,6 +21,22 @@
 # The check is only a GATE if the branch protection rule requires it. That is a repository setting, not
 # a file, so it cannot be asserted here: until "CLA" is a required status check on the default branch,
 # this workflow reports and does not block. Whoever turns branch protection on should add it.
+#
+# ── THE SIGNATURE BRANCH IS A PREREQUISITE, AND THE ACTION DOES NOT CREATE IT ────────────────────────
+#
+# `cla-signatures` below must already exist. Reading its own source at the pinned SHA: it stores
+# signatures through the repository contents API, which writes to a branch and never makes one, and no
+# file in the action creates a ref. Its recovery path for a missing signatures file is also unreachable
+# here — it tests `error.status === "404"` against a status octokit reports as a NUMBER, so a first run
+# with nothing to read raises "Could not retrieve repository contents" instead.
+#
+# So a repository without the branch does not fall back to reporting nothing. It fails the workflow on
+# every pull request from the day this lands, which is worse than having no check at all.
+#
+# The branch was created as an ORPHAN (no parent, so it carries none of the product's history) holding
+# `signatures/cla.json` = `{"signedContributors":[]}` — the same content the action seeds itself. Nothing
+# in a checkout depends on it and it is not merged anywhere. If it is ever deleted, this workflow starts
+# failing and this note is the reason why.
 
 name: CLA
 
