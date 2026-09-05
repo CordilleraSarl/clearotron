@@ -318,6 +318,23 @@ const sameMembers = (a, b) => a.length === b.length && [...a].sort().every((v, i
 // be green about nothing, which is this repository's oldest trap.
 let commandPresses = 0
 let addressPresses = 0
+// HOW MANY PRESSES ACTUALLY REACHED THE CLIPBOARD, across every deck.
+//
+// This job can go green while asserting only the EXCEPTION, and that is not hypothetical — it is how
+// this file behaved until the press was made a real mouse event. Lose the clipboard and every press
+// quietly takes the browser-refused branch, where showing the credential is CORRECT by design; the
+// battery then passes forever while never once checking the page a reader actually meets.
+//
+// WHICH OF THE THREE PRECONDITIONS IS LOAD-BEARING, measured by planting each rather than assumed:
+// removing Page.bringToFront changed nothing here, and removing Browser.grantPermissions changed
+// nothing either — 4 presses still reached the clipboard both times. USER ACTIVATION is the one that
+// matters: with a real Input.dispatchMouseEvent press, Chrome allows the write on its own. The other two
+// stay because a runner is not this box and neither costs anything, but do not read them as the fix.
+//
+// So the successful path is counted, and zero is an ENVIRONMENT failure rather than a page regression.
+// Named that way because the symptom is indistinguishable from a pass and the cause is not in the diff.
+let clipboardReached = 0
+let clipboardRefused = 0
 
 const out = {}
 for (const state of Object.keys(STATES)) {
@@ -445,6 +462,7 @@ for (const state of Object.keys(STATES)) {
     ok(p.panelFor === offer.id, `the panel that opened is the one pressed (saw ${p.panelFor}, expected ${offer.id})`)
 
     // The pressed control IS the confirmation, and only the pressed one.
+    if (p.refusedPath) clipboardRefused += 1; else clipboardReached += 1
     ok(p.copiedOnPressed,
       `the pressed row IS the confirmation for "${offer.name}" (marked: ${p.copiedOnPressed}, refused-clipboard path: ${p.refusedPath})`)
     ok(p.copiedElsewhere === 0, `and no other row claims to have been copied (${p.copiedElsewhere} did)`)
@@ -482,6 +500,17 @@ for (const state of Object.keys(STATES)) {
   if (addressed) { addressPresses++; await pressArm(addressed, 'address') }
 }
 
+
+// THE ANTI-VACUITY GUARD FOR THE WHOLE BATTERY. Raised by role-e2e as the symptom to watch for once CI
+// began running this job: "if it ever goes green with every `copied` false, that is the symptom, not a
+// page regression." Written as a check rather than left as a caution, because a caution in a message is
+// not read by whoever meets the green job eighteen months from now.
+ok(clipboardReached > 0,
+  `at least one press reached the clipboard (${clipboardReached} reached, ${clipboardRefused} refused). `
+  + 'Zero means this browser lost USER ACTIVATION — the real mouse press below is what earns the '
+  + 'clipboard, not the permission grant — and the battery has been asserting the refused fallback on '
+  + 'every deck while looking exactly like a pass. That is an environment failure, not a page '
+  + 'regression: check Input.dispatchMouseEvent before reading anything into the page.')
 
 ok(commandPresses > 0, `at least one deck exercised the local-command press (saw ${commandPresses})`)
 ok(addressPresses > 0, `at least one deck exercised the address press (saw ${addressPresses})`)
