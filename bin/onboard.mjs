@@ -2940,6 +2940,12 @@ try {
 
   // 9 ── write, atomically
   say("\n  Writing configuration");
+  // THE DIRECTORY MAY NOT EXIST, and on a fresh machine it does not. `.env` now lives under
+  // `~/.config/clearotron/` (tracker issue 140), which nothing else creates — and the failure without
+  // this line lands on the temporary file below, so it reads as a permissions problem writing `.env`
+  // rather than a missing folder. Mode 700: the file inside is 600 and holds credentials, so a
+  // world-readable directory around it advertises that it is there.
+  mkdirSync(dirname(ENV_PATH), { recursive: true, mode: 0o700 });
   if (existsSync(ENV_PATH)) {
     copyFileSync(ENV_PATH, `${ENV_PATH}.bak`);
     chmodSync(`${ENV_PATH}.bak`, 0o600);
