@@ -119,8 +119,14 @@ jobs:
           || needs.version.outputs.cut == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # The registry's trusted publisher is registered against this environment name. Renaming it makes
-    # npm refuse the publish. It holds no secrets, and must not be given any.
+    # THIS NAME CARRIES TWO THINGS, AND LOSING IT LOSES BOTH. The registry's trusted publisher is
+    # registered against it, so renaming it makes npm refuse the publish — and the environment is where
+    # the owner's approval gate lives: a required reviewer plus a protected-branches policy, added after
+    # this job started once on a version nobody had cut. The job therefore PAUSES in the Actions UI until
+    # he approves it, and cannot run from a pull-request branch at all.
+    #
+    # The environment holds no secrets and must not be given any. The approval is a person, not a
+    # credential; no agent approves that deployment.
     environment: npm
     permissions:
       contents: write     # the tag and the GitHub release
