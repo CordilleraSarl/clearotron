@@ -141,8 +141,13 @@ test('THE PANEL CANNOT PUSH THE PAGE — the slot reserves height whether or not
   // stylesheet that stopped reserving anything.
   const css = readFileSync(new URL('../src/base.css', import.meta.url), 'utf8')
   const slot = css.slice(css.indexOf('.ai-slot {'), css.indexOf('}', css.indexOf('.ai-slot {')))
-  assert.match(slot, /min-height:\s*\d+px/,
-    'the slot no longer reserves a minimum height, so selecting a destination moves everything above it')
+  // A POSITIVE height. `\d+px` matches `0px`, so the first spelling of this passed a slot that reserved
+  // nothing — found by planting min-height:0 and watching both this arm and the browser battery stay
+  // green. The number is what makes "reserved" mean anything.
+  const px = Number(slot.match(/min-height:\s*(\d+)px/)?.[1] ?? 0)
+  assert.ok(px >= 120,
+    `the slot reserves ${px}px, which is not enough to hold a panel — selecting a destination then grows `
+    + 'the page under the reader, which is the reflow this redesign removes')
 })
 
 test('THE COPIED LABEL COSTS ZERO LAYOUT — both labels occupy one reserved cell, in every row', () => {

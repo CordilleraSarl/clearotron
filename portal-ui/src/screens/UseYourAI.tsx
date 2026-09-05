@@ -118,6 +118,9 @@ function Destination({
       className="ai-dest"
       // ONE SOURCE for the state a check reads and the state the CSS paints, so a green assertion and a
       // green-looking row cannot disagree with each other.
+      // THE ID, ON THE ELEMENT. One product can legitimately appear under one name on two routes, so a
+      // name is not an identifier here and anything selecting by one picks whichever came first.
+      data-id={offer.id}
       data-selected={selected ? '' : undefined}
       data-copied={copied ? '' : undefined}
       aria-pressed={selected}
