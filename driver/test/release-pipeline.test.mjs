@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker 2055 — the release pipeline, held at the four places it can fail silently:
+// tracker issue 97 — the release pipeline, held at the four places it can fail silently:
 //   · it acquires a way to publish that is not the one the owner authorised
 //   · a pre-release lands on `latest` and becomes what every new user installs
 //   · a package ships with a demo or the portal bundle missing, and npm accepts it
@@ -45,7 +45,7 @@ function completeTree() {
   return dir;
 }
 
-test("2055 the release pipeline publishes the way it was authorised to, and the check that says so can fail", () => {
+test("tracker 97 the release pipeline publishes the way it was authorised to, and the check that says so can fail", () => {
   assert.deepEqual(publishRefusals({ workflow: read(WORKFLOW), rootPkg: rootPkg() }), [],
     "the release pipeline as shipped does not satisfy its own guard");
 
@@ -79,7 +79,7 @@ test("2055 the release pipeline publishes the way it was authorised to, and the 
     "the guard passed a root package that has lost prepublishOnly");
 });
 
-test("2055 the guard reads the workflow's PROSE without refusing on it", () => {
+test("tracker 97 the guard reads the workflow's PROSE without refusing on it", () => {
   // The workflow explains what it must never carry, and this guard's own file names every credential
   // spelling in its comments. A scanner that reads its own prose as a finding refuses the thing it is
   // describing — which is how an audit of this same class was bitten before.
@@ -89,7 +89,7 @@ test("2055 the guard reads the workflow's PROSE without refusing on it", () => {
     "a comment naming what is forbidden was read as the forbidden thing");
 });
 
-test("2055 the shipped workflow publishes on a channel it derived, never a defaulted one", () => {
+test("tracker 97 the shipped workflow publishes on a channel it derived, never a defaulted one", () => {
   const workflow = read(WORKFLOW);
   const publishLine = workflow.split("\n").find((l) => /^\s*run:\s*npm publish\b/.test(l.trim()) || /-\s*run:\s*npm publish\b/.test(l));
   assert.ok(publishLine, "the workflow no longer has a publish command on one line — the guard reads it line by line");
@@ -101,7 +101,7 @@ test("2055 the shipped workflow publishes on a channel it derived, never a defau
     "npm's trusted publisher names this workflow file; renaming it breaks the publish, not a test");
 });
 
-test("2055 a pre-release goes to its own channel, and a stable one to latest", () => {
+test("tracker 97 a pre-release goes to its own channel, and a stable one to latest", () => {
   assert.equal(distTag("0.1.1"), STABLE);
   assert.equal(distTag("1.0.0"), STABLE);
   assert.equal(distTag("0.1.1-beta.0"), "beta");
@@ -124,7 +124,7 @@ test("2055 a pre-release goes to its own channel, and a stable one to latest", (
   }
 });
 
-test("2055 an incomplete package is refused, one broken thing at a time", () => {
+test("tracker 97 an incomplete package is refused, one broken thing at a time", () => {
   const dir = completeTree();
   try {
     assert.deepEqual(completenessRefusals(dir), [], "a complete tree was refused");
@@ -167,7 +167,7 @@ test("2055 an incomplete package is refused, one broken thing at a time", () => 
   }
 });
 
-test("2055 a tarball that is not there is a could-not-look, never a pass", () => {
+test("tracker 97 a tarball that is not there is a could-not-look, never a pass", () => {
   const script = join(ROOT, "scripts", "release-completeness-check.mjs");
   let code = 0;
   try {
@@ -179,7 +179,7 @@ test("2055 a tarball that is not there is a could-not-look, never a pass", () =>
     + "failed and the scan reported clean");
 });
 
-test("2055 the GitHub release says what the changelog says, and stays silent when there is nothing to say", () => {
+test("tracker 97 the GitHub release says what the changelog says, and stays silent when there is nothing to say", () => {
   const changelog = "# Changelog\n\nWhat changed.\n\n## 0.2.0\n\n- A clearance now names the registers it searched.\n\n## 0.1.0\n\n- The first release.\n";
   assert.equal(notesFor("0.2.0", changelog), "- A clearance now names the registers it searched.");
   // The LAST section of the file, which is the one a "to the next heading or end of file" lookahead
@@ -188,7 +188,7 @@ test("2055 the GitHub release says what the changelog says, and stays silent whe
   assert.equal(notesFor("9.9.9", changelog), "", "a version with no section must return empty, not the whole file");
 });
 
-test("2055 the plain-language gate refuses each kind it exists to refuse", () => {
+test("tracker 97 the plain-language gate refuses each kind it exists to refuse", () => {
   nonEmpty(BANNED_WORDS, "the banned-word list");
   assert.deepEqual(findings("- A clearance now says which registers it searched, so an empty result reads "
     + "differently from a search that never ran."), [],

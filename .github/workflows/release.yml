@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 #
-# tracker 2055 — a merged pull request becomes a release without anybody typing commands on a laptop.
+# tracker issue 97 — a merged pull request becomes a release without anybody typing commands on a laptop.
 #
 # TWO ACTS, AND ONLY ONE OF THEM IS A PERSON'S. Every user-visible pull request leaves a note in
 # `.changeset/`. This workflow keeps a standing pull request that turns those notes into the next version
@@ -224,7 +224,7 @@ jobs:
       - name: What a stranger installs is complete
         run: node scripts/release-completeness-check.mjs --tarball "${{ steps.what.outputs.tarball }}"
 
-      # PROPERTY 2, PROVED RATHER THAN ASSERTED (2055: "prove the beta-to-stable promotion moves no
+      # PROPERTY 2, PROVED RATHER THAN ASSERTED (tracker issue 97: "prove the beta-to-stable promotion moves no
       # bytes; compare the artefacts, do not assert it from the configuration"). A promotion that rebuilt
       # would produce a different digest here, and two runs can be compared by anyone reading them.
       - name: Record the artefact digest, so a promotion can be shown to move no bytes
