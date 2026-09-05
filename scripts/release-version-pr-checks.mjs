@@ -51,35 +51,6 @@ const ACTION_REQUIRED = "action_required";
 const parked = (r) => r?.status === ACTION_REQUIRED || r?.conclusion === ACTION_REQUIRED;
 const nameOf = (r) => r?.name ?? "(unnamed)";
 
-/**
- * Two runs of the SAME workflow. By id where the surface carries one, by displayed name otherwise —
- * a name is what a hand-written fixture has, and the id is what a rename cannot break.
- */
-const sameWorkflow = (a, b) => (a?.workflowId != null && b?.workflowId != null)
-  ? a.workflowId === b.workflowId
-  : nameOf(a) === nameOf(b);
-
-/**
- * Is this parked run's work already being done by another run of the same workflow on this commit?
- *
- * THE PARK IS REAL AND IT IS INERT, AND ONLY THE SECOND HALF IS NEW. The version job dispatches
- * `ci.yml` on the version branch precisely because the `pull_request` run for that branch parks: a
- * dispatch is not a fork event and needs no approval. Both runs are the same workflow, so they publish
- * the same check names on the same commit, which is what branch protection matches on. Auto-merge is
- * therefore satisfied by the dispatched run while the parked one sits there forever, producing nothing.
- *
- * WITHOUT THIS THE GUARD REFUSES THE MECHANISM IT WAS BUILT TO SERVE. Measured on run 33978047936,
- * 2026-09-05: the dispatch had already created run 33978067528 and its first required check had gone
- * green, and this script still reported "waiting for somebody to approve it" because the parked run was
- * on the same commit. It read a true fact and drew a false conclusion from it.
- *
- * A PARK BESIDE AN UNRELATED GREEN RUN IS STILL A REFUSAL, which is the case this must not weaken: a
- * parked `Release` beside a green `CI` means nothing is producing `Release`'s contexts and auto-merge
- * waits for them forever. The question is not "is something else running" — it is "is something else
- * running THIS", and only the second one is evidence.
- */
-const supersededBy = (run, runs) => runs.some((o) => o !== run && !parked(o) && sameWorkflow(o, run));
-
 /** What the sentence says about the policy, given whatever could be read about it. */
 const policySentence = (policy) => policy
   ? `The repository's fork-pull-request approval policy is currently \`${policy}\`, and it counts `
@@ -99,10 +70,7 @@ const policySentence = (policy) => policy
  * useless, and it sends the next reader to look for a broken trigger.
  */
 export function checksVerdict({ checkRuns = [], workflowRuns = [], policy = null } = {}) {
-  const blocked = [
-    ...workflowRuns.filter((r) => parked(r) && !supersededBy(r, workflowRuns)),
-    ...checkRuns.filter(parked),
-  ].map(nameOf);
+  const blocked = [...workflowRuns, ...checkRuns].filter(parked).map(nameOf);
   if (blocked.length) {
     return {
       state: WAITING_FOR_A_PERSON,
@@ -167,10 +135,8 @@ export function approvalPolicy(repo, api = gh) {
 export function surfacesFor(repo, sha, api = gh) {
   const checkRuns = (api([`repos/${repo}/commits/${sha}/check-runs`]).check_runs ?? [])
     .map((r) => ({ name: r.name, status: r.status, conclusion: r.conclusion }));
-  // `workflow_id` travels because a parked run and the run superseding it are the same workflow under
-  // two events, and an id says so where a display name only suggests it.
   const workflowRuns = (api([`repos/${repo}/actions/runs?head_sha=${sha}`]).workflow_runs ?? [])
-    .map((r) => ({ name: r.name, status: r.status, conclusion: r.conclusion, workflowId: r.workflow_id }));
+    .map((r) => ({ name: r.name, status: r.status, conclusion: r.conclusion }));
   return { checkRuns, workflowRuns };
 }
 
