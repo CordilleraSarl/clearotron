@@ -35,7 +35,14 @@ import { PRODUCTS } from "../products.mjs";
 
 const withCreds = (enrolled) => {
   const dir = mkdtempSync(join(tmpdir(), "caselaw-creds-"));
-  for (const id of enrolled) writeFileSync(join(dir, `${id}.json`), "{}");
+  // A CREDENTIAL, NOT AN EMPTY FILE. This wrote `"{}"`, which modelled enrolment as "a file exists" —
+  // the very test tracker issue 173 replaced, because a zero-byte or contentless file read as an
+  // enrolled source and made a delivered report disclose an outage that never happened. What a
+  // one-time OAuth exchange actually writes is a token pair, and `tokens.refresh_token` is the part
+  // that makes the credential usable, so that is what a fixture standing in for one has to carry.
+  for (const id of enrolled) {
+    writeFileSync(join(dir, `${id}.json`), JSON.stringify({ tokens: { access_token: "fixture", refresh_token: "fixture" } }));
+  }
   return { OAUTH_BRIDGE_CREDS_DIR: dir };
 };
 
@@ -165,9 +172,32 @@ test("2087 arm 6 — doctor and install both name it, and install still collects
   // onboard-wizard.test.mjs, and the first symptom is a doctor that fails rather than reports.
   const section = onboard.slice(onboard.indexOf('say("\\n  Case law and other capabilities")'));
   const body = section.slice(0, section.indexOf("issue 1891"));
-  assert.ok(!/\bproblem\(/.test(body),
-    "the case-law section calls problem(), so `clearotron doctor` now exits non-zero on every install "
-    + "that has not enrolled a source — which is the normal state of a fresh one");
+  // THE PROPERTY, DRIVEN — not "does the word `problem(` appear in this slice".
+  //
+  // That grep was the arm until tracker issue 173, and it was a proxy: it protected the exit contract
+  // by forbidding a CALL, and the contract is about a STATE. 173 added a third case the original two
+  // could not express — a credential that is PRESENT and cannot work — which is a misconfiguration and
+  // must exit non-zero, while an absence must still exit 0. Under the old grep those two are the same
+  // fact, so keeping it would have meant either losing the new state or lying about the old one.
+  //
+  // So the absence is driven through the real inventory instead. A fresh machine reaches `problem()`
+  // only if a row comes back `unusable`, and on an empty credentials directory none can.
+  const fresh = mkdtempSync(join(tmpdir(), "caselaw-fresh-"));
+  const freshRows = caseLawInventory({ OAUTH_BRIDGE_CREDS_DIR: fresh }).filter((r) => r.enrolment === "oauth");
+  assert.ok(freshRows.length >= 2, "the fresh-machine case is not being driven");
+  for (const r of freshRows) {
+    assert.equal(r.credential?.state, "absent",
+      `${r.providerLabel} reads as ${r.credential?.state} on a machine that has enrolled nothing — `
+      + "which would take doctor to rc 1 for being fresh");
+    assert.notEqual(r.credential?.state, "unusable");
+  }
+  // And the ONLY problem() the section may carry is the one that new state gates. A second, ungated
+  // call is the regression this arm has always been about.
+  const problemCalls = body.match(/\bproblem\(/g) ?? [];
+  assert.equal(problemCalls.length, 1,
+    "the case-law section has a problem() call that is not the unusable-credential one");
+  assert.match(body, /credential\?\.state === "unusable"\) problem\(/,
+    "the section's problem() is not gated on an unusable credential, so an absence can reach it");
   assert.match(body, /\bwarn\(/, "and it must still say it out loud rather than passing in silence");
   // Anti-vacuity: the slice must actually be the section, not an empty string that passes both above.
   assert.ok(body.length > 400 && body.includes("caseLawInventory"),

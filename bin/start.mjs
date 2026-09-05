@@ -6,7 +6,8 @@
 //   npx clearotron start                  start the portal and the trigger lane; print one URL
 //   npx clearotron start --user you@host  the one address that signs in (persisted; asked for once)
 //   npx clearotron start --base <dir>     where this install keeps its data (default ~/trademark)
-//   npx clearotron start --port <n>       the portal's port (default 18802)
+//   npx clearotron start --port <n>       the portal's port (default 18802); the engine door takes
+//                                        n+1 and the client door n+2 unless each is set explicitly
 //   npx clearotron start --demo           the demo posture: own data directory, nothing persisted
 //   npx clearotron start --no-worker      do not drain the queue here; run the worker yourself
 //   npx clearotron start --help
@@ -103,7 +104,7 @@ async function runTables() {
   const { PROVIDERS } = await import("./onboard.mjs");
   return { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: RUN_DEFAULT_ENGINE };
 }
-import { spawn, execFileSync } from "node:child_process";
+import { spawn, spawnSync, execFileSync } from "node:child_process";
 import { storeInRepo, storeOutsideRepoMessage } from "../shared/store-in-repo.mjs";   //
 import { stdioConnectOffer } from "../shared/stdio-connect.mjs";
 import { mergeEnvFile } from "../shared/env-file-merge.mjs";
@@ -126,6 +127,7 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-p
 import { productIdentity } from "../shared/product-identity.mjs";   // AGPL §13 — one answer, three surfaces
 import { pinEnvAll } from "../shared/env-aliases.mjs";   // — a pin that names one spelling has set nothing that wins
 import { BRAND } from "../shared/brand.mjs";   // — the installer's own name, from the tenant seam
+import { rebuildIfStale } from "../shared/bundle-rebuild.mjs";   // tracker issue 160 — never serve a bundle older than its sources
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
@@ -191,6 +193,36 @@ export function resolvePorts(env = {}) {
   // default and shared/client-door.mjs states it; the literal is not repeated, it is imported.
   return { portal: one("PORTAL_SERVICE_PORT", 18802), mcp: one("TRADEMARK_MCP_HTTP_PORT", 18790),
     client: one("CLIENT_MCP_HTTP_PORT", clientDoorPort({})) };
+}
+
+/**
+ * Apply `--port <n>` to the three doors — tracker issue 166.
+ *
+ * PURE, AND EXPORTED, because the inline version of this could only be tested by spawning a supervisor
+ * and reading `ss`. The defect it fixes was found by a reader watching a log line, which is exactly
+ * the evidence a unit arm should not need.
+ *
+ * Returns a new ports object; throws (never exits) so the CLI keeps ownership of how a bad value is
+ * reported. An explicitly-set variable is left alone — see the call site for why.
+ */
+export function portsForFlag(portFlag, ports, env = {}) {
+  if (portFlag === undefined || portFlag === null || portFlag === "") return { ...ports };
+  const n = Number(portFlag);
+  if (!Number.isInteger(n) || n < 1 || n > 65535) {
+    throw new Error(`--port ${portFlag} is not a port number (1–65535).`);
+  }
+  if (n > 65533) {
+    throw new Error(`--port ${n} leaves no room for the two doors that follow it (${n + 1}, ${n + 2}). `
+      + `Choose a port at or below 65533, or set PORTAL_SERVICE_PORT, TRADEMARK_MCP_HTTP_PORT and `
+      + `CLIENT_MCP_HTTP_PORT individually.`);
+  }
+  const explicit = (name) => String(env[name] ?? "").trim() !== "";
+  return {
+    ...ports,
+    portal: n,
+    mcp: explicit("TRADEMARK_MCP_HTTP_PORT") ? ports.mcp : n + 1,
+    client: explicit("CLIENT_MCP_HTTP_PORT") ? ports.client : n + 2,
+  };
 }
 
 /**
@@ -652,12 +684,40 @@ if (isMain) {
   // bound anywhere else in any mode. Sign-in is untouched — the demo signs in like any first start, and
   // the portal mints and prints its passphrase exactly as it does for a real one.
   const DEMO = argv.includes("--demo");
+  // ── `--port` MOVES EVERY DOOR IT OPENS (tracker issue 166) ───────────────────────────────────────
+  //
+  // It used to move ONE of the three. `resolvePorts` reads three independent variables with three
+  // fixed defaults, and this line set only the portal's — so `demo --port 18860` put the portal on
+  // 18860 and opened the engine door on 18790 and the client door on 18811 anyway. Those two numbers
+  // are `clearotron start`'s OWN defaults, so a demo beside a real install either collided with it, or
+  // — measured on the 0.1.1 stranger drive, with the install stopped for an upgrade — silently TOOK
+  // its ports, and the install could not come back up until the demo stopped.
+  //
+  // A reader running `demo` to look at a sample report is the one person who does not yet know the
+  // product opens three doors. So the flag now covers what it appears to cover: n, n+1, n+2.
+  //
+  // AN EXPLICIT VARIABLE STILL WINS. Somebody who set `TRADEMARK_MCP_HTTP_PORT` chose that number;
+  // the flag is a convenience over the defaults, not an override of a decision. Driven in the issue:
+  // with all three exported, the demo already came up correctly — that path must not change.
   const portFlag = flag("--port");
   if (portFlag) {
-    const n = Number(portFlag);
-    if (!Number.isInteger(n) || n < 1 || n > 65535) fatal(`--port ${portFlag} is not a port number (1–65535).`);
-    ports.portal = n;
+    let moved;
+    try { moved = portsForFlag(portFlag, ports, process.env); }
+    catch (e) { fatal(e.message); }
+    Object.assign(ports, moved);
   }
+
+  // ── A BUNDLE OLDER THAN ITS SOURCES IS REBUILT, NOT SERVED (tracker issue 160) ───────────────────
+  //
+  // Only reachable on a source checkout: `portal-ui/dist` is untracked there, so a `git pull` that
+  // changed `portal-ui/src` leaves the bundle behind and every surface still reads healthy. A packaged
+  // install ships the bundle with the sources and never enters the `stale` branch at all.
+  //
+  // Before anything is served, so the screen a reader gets is the one their tree describes.
+  rebuildIfStale({
+    repo: REPO, say,
+    run: (cmd, args) => spawnSync(cmd, args, { cwd: REPO, stdio: "inherit", shell: process.platform === "win32" }).status ?? 1,
+  });
 
   // Nobody is asked for this. A local install has one user, this machine already knows their name, and
   // the address never leaves the machine — `--user` is there for a reader who wants their real one, and

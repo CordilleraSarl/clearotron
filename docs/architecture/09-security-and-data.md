@@ -219,7 +219,7 @@ today — flag for the buyer's compliance review.
 
 ## Supply chain and dependency posture
 
-- The driver has **three** production npm dependencies (`@anthropic-ai/sdk`, `exceljs`, `undici`),
+- The driver has **two** production npm dependencies (`exceljs`, `undici`),
   and the engine-local gather MCP servers add none: each is ~130 lines over a shared 120-line stdio
   scaffolding (`driver/engine/mcp/stdio-server.mjs`) with no MCP SDK. The artifacts read layer does
   use the SDK (`@modelcontextprotocol/sdk`, `jose`). Small surface by design.

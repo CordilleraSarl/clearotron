@@ -44,7 +44,7 @@ import {
 } from "./driver.config.mjs";
 import { resolveAuthMode } from "./engine/auth.mjs";
 import { CASELAW_BRIDGES } from "./engine/mcp/gather-config.mjs";   // — the list that decides what is spawned
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { homedir } from "node:os";
 
@@ -278,11 +278,60 @@ const CASELAW_SITES = Object.freeze({
  * NAMES AND STATES, NEVER VALUES, exactly as the rest of this file: the existence of a token file, never
  * a byte of it.
  */
+/**
+ * Is this credential file something the bridge could actually use? — tracker issue 173.
+ *
+ * `existsSync` was the whole test, and a zero-byte file therefore reported as an enrolled case-law
+ * source. That is not merely an operator-facing inaccuracy: `driver/case-law-sources.mjs` hands the
+ * clearance stage "enrolled on this deployment; if it fails at run time that IS an outage and you
+ * report it as one", so a garbage file makes a DELIVERED REPORT disclose an infrastructure outage that
+ * never happened, for a source the deployment does not have. That is the exact wrong disclosure
+ * case-law-sources.mjs was written to eliminate, reached from the other side.
+ *
+ * FOUR STATES, BECAUSE THERE ARE FOUR AND NOT TWO:
+ *   absent      no file. Never enrolled — the honest, common, fine case.
+ *   usable      parses, and carries the refresh token the bridge signs in with.
+ *   unusable    present and cannot work: unparseable, or no `tokens.refresh_token`.
+ *   unreadable  we could not look — a permission error, an I/O error. NEVER "enrolled" and never
+ *               "not set up": an absence of evidence is not evidence of absence, and this check exists
+ *               precisely because something invisible was being read as fine.
+ *
+ * NAMES AND STATES, NEVER VALUES — the rule the rest of this file keeps, kept here. Nothing below
+ * prints, logs, returns or interpolates a byte of a token. It asks whether the JSON parses and whether
+ * a key is present, which needs no value to leave this function. `expiry` is deliberately NOT a
+ * usability test: an expired ACCESS token is the normal resting state of a working credential — the
+ * bridge refreshes it on the next call — so failing on it would report every healthy enrolment as
+ * broken. The refresh token is what enrolment actually is.
+ */
+export function credentialState(tokenFile) {
+  let raw;
+  try {
+    if (!existsSync(tokenFile)) return { state: "absent", why: null };
+    // A directory where a file is expected reads as present to existsSync and throws on read. That is
+    // a could-not-look, not an absence.
+    if (statSync(tokenFile).isDirectory()) return { state: "unusable", why: "it is a directory, not a credential file" };
+    raw = readFileSync(tokenFile, "utf8");
+  } catch (e) {
+    return { state: "unreadable", why: `it could not be read (${e.code || e.message})` };
+  }
+  if (raw.trim() === "") return { state: "unusable", why: "the file is empty" };
+  let parsed;
+  try { parsed = JSON.parse(raw); }
+  catch { return { state: "unusable", why: "the file is not valid JSON" }; }
+  if (!parsed || typeof parsed !== "object") return { state: "unusable", why: "the file does not hold a credential object" };
+  const refresh = parsed.tokens?.refresh_token;
+  if (typeof refresh !== "string" || refresh === "") {
+    return { state: "unusable", why: "it carries no refresh token, so the bridge cannot sign in" };
+  }
+  return { state: "usable", why: null };
+}
+
 export function caseLawInventory(env = process.env) {
   const credsDir = env.OAUTH_BRIDGE_CREDS_DIR || join(homedir(), ".config", "trademark-oauth-mcp");
   const rows = CASELAW_BRIDGES.map((id) => {
     const tokenFile = join(credsDir, `${id}.json`);
-    const configured = existsSync(tokenFile);
+    const credential = credentialState(tokenFile);
+    const configured = credential.state === "usable";
     return {
       key: "caselaw",
       label: "Case law and oppositions",
@@ -298,6 +347,12 @@ export function caseLawInventory(env = process.env) {
       // in to from one that is simply part of the build.
       enrolment: "oauth",
       configured,
+      // THE THIRD STATE, WHICH `configured` CANNOT HOLD (tracker issue 173). `configured` is a boolean
+      // and the world has three cases in it: never enrolled, enrolled and usable, enrolled and NOT
+      // usable. Collapsing the third into either of the others is the defect — into the first it
+      // reads as "not set up" and hides a credential the operator believes in; into the second it
+      // instructs the report to disclose an OUTAGE for a source this deployment does not really have.
+      credential,
       // NOT a variable to set, and saying "set OAUTH_BRIDGE_CREDS_DIR" would be the exact defect
       // ADR-0003 refused: a name that configures nothing. The missing thing is a one-time sign-in.
       missing: [],
@@ -305,8 +360,20 @@ export function caseLawInventory(env = process.env) {
       // is enrolled by the documented one-time OAuth exchange in providers/oauth-mcp-bridge/README.md,
       // which ends by writing the file named here. A printed command that does not exist is its own
       // defect, and it is the one this row would most easily introduce.
+      // A PRESENT-BUT-BROKEN CREDENTIAL IS NOT "NOT SET UP", AND SAYING SO SENDS THE OPERATOR THE
+      // WRONG WAY. They did the one-time sign-in; telling them to do it again without saying what is
+      // wrong with the file they already have is how the last hour of this gets spent.
       remedy: configured
         ? null
+        : credential.state === "unusable"
+        ? `Enrolled, but the credential cannot be used: ${credential.why}. The file is ${tokenFile}. `
+          + `Re-run the one-time OAuth sign-in in providers/oauth-mcp-bridge/README.md to replace it. `
+          + `Until then this source is treated as one this deployment does NOT have, and a report `
+          + `discloses the gap rather than blaming an outage.`
+        : credential.state === "unreadable"
+        ? `Could not be checked: ${credential.why}. The file is ${tokenFile}. This is not a report that `
+          + `the source is missing and not that it works — fix the permissions or the disk error and `
+          + `run this again.`
         : `Not set up. It is a one-time OAuth sign-in rather than a variable to set: `
           + (CASELAW_SITES[id]
               ? `create an account at ${CASELAW_SITES[id]}, then follow `

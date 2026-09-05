@@ -28,7 +28,7 @@ import { checksVerdict, waitForChecks, RUNNING, NOTHING_STARTED, WAITING_FOR_A_P
 import { refusals as completenessRefusals } from "../../scripts/release-completeness-check.mjs";
 import { notesFor } from "../../scripts/release-notes-for.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
-import { assembleRoot, writeRootChangelog } from "../../scripts/release-version.mjs";
+import { assembleRoot, writeRootChangelog, group } from "../../scripts/release-version.mjs";
 import { unreachableBareSites, sentenceFor } from "../../shared/root-doc-commands.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
@@ -56,6 +56,10 @@ function completeTree() {
     writeFileSync(join(dir, "demo", child, "meta.json"), "{}");
     writeFileSync(join(dir, "demo", child, "run", entry), "x");
   }
+  // The licence record is part of a complete package now — see the notices arms. Written at the floor so
+  // an arm about something else does not fail for this reason.
+  writeFileSync(join(dir, "THIRD-PARTY-NOTICES.md"),
+    Array.from({ length: 200 }, (_, i) => `## package-${i}`).join("\n"));
   mkdirSync(join(dir, "portal-ui", "dist", "assets"), { recursive: true });
   writeFileSync(join(dir, "portal-ui", "dist", "index.html"), "<!doctype html>");
   writeFileSync(join(dir, "portal-ui", "dist", "assets", "index-abc123.js"), "//");
@@ -307,21 +311,24 @@ test("tracker 97 the GitHub release says what the changelog says, and stays sile
   const dir = mkdtempSync(join(tmpdir(), "release-notes-"));
   let changelog;
   try {
-    writeRootChangelog({ version: "0.1.0", bullets: ["The first release."] }, dir);
-    const p = writeRootChangelog({ version: "0.2.0", bullets: ["A clearance now names the registers it searched."] }, dir);
+    writeRootChangelog({ version: "0.1.0", ...group(["New: The first release."]) }, dir);
+    const p = writeRootChangelog({ version: "0.2.0", ...group(["Fixed: A clearance now names the registers it searched."]) }, dir);
     changelog = readFileSync(p, "utf8");
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
   assert.match(changelog, /npm install -g clearotron/, "the fixture is no longer what the pipeline writes");
-  assert.equal(notesFor("0.2.0", changelog), "- A clearance now names the registers it searched.");
+  // THE RELEASE BODY CARRIES THE GROUPING, because it is the same text as the changelog section — the
+  // owner's ruling is that both are generated from the notes and grouped New / Fixed / For operators.
+  assert.equal(notesFor("0.2.0", changelog),
+    "### Fixed\n\n- A clearance now names the registers it searched.");
   // THE HEAD IS NOT RELEASE NOTES. It sits above every version heading, and a reader of the releases page
   // has already installed — telling them how again, inside the notes for one version, is noise.
   assert.ok(!notesFor("0.2.0", changelog).includes("npm install -g"),
     "the changelog's head is bleeding into the GitHub release body");
   // The LAST section of the file, which is the one a "to the next heading or end of file" lookahead
   // silently returns nothing for.
-  assert.equal(notesFor("0.1.0", changelog), "- The first release.");
+  assert.equal(notesFor("0.1.0", changelog), "### New\n\n- The first release.");
   assert.equal(notesFor("9.9.9", changelog), "", "a version with no section must return empty, not the whole file");
 });
 
@@ -403,14 +410,24 @@ test("tracker 97 a version pull request whose checks never started is a refusal,
   // a parked run publishes none. A guard that only asked "is the check-run count above zero" would call
   // this "nothing started" — true, useless, and it sends the next reader hunting a broken trigger
   // instead of a policy setting. `action_required` is read FIRST, and off the surface that carries it.
-  const parkedAlone = checksVerdict({
+  const parkedAlone_input = {
     checkRuns: [],
     workflowRuns: [{ name: "CI", status: "action_required", conclusion: null }],
-  });
+  };
+  const parkedAlone = checksVerdict(parkedAlone_input);
   assert.equal(parkedAlone.state, WAITING_FOR_A_PERSON);
   assert.notEqual(parkedAlone.state, NOTHING_STARTED);
   assert.deepEqual(parkedAlone.blocked, ["CI"]);
   assert.match(parkedAlone.reason, /fork-pull-request approval policy/);
+
+  // THE POLICY IS READ, NOT REMEMBERED. It was changed three times on 2026-09-05 — all external
+  // contributors, then first-time contributors, then first-time contributors new to GitHub — and the bot
+  // parked under two of them. A guard naming a stale value sends the next reader to check a setting that
+  // has already moved, which is worse than naming none.
+  assert.match(checksVerdict({ ...parkedAlone_input, policy: "first_time_contributors_new_to_github" }).reason,
+    /currently `first_time_contributors_new_to_github`/);
+  // And when it cannot be read, it says so rather than quoting a value it does not have.
+  assert.match(parkedAlone.reason, /could not be read from here/);
 
   // And parked BESIDE green ones — the second run of a two-workflow repository — is still a refusal.
   // This is the member a count-based arm passes cleanly: the count is not zero.
@@ -486,12 +503,29 @@ test("tracker 97 the pipeline asks whether the version pull request's checks sta
   // is the only one that carries `action_required`. The step would fail loudly rather than pass
   // vacuously, but it would fail on every push, and only on main.
   const versionJob = workflow.slice(workflow.indexOf("  version:"), workflow.indexOf("  publish:"));
+  // AND NOT `administration: read`, which is not a permission a job may request. Asking for it does not
+  // fail the job — GitHub refuses to parse the whole workflow, and reports it as a run named after the
+  // file with no jobs and no log. On main that would have stopped every release with nothing legible to
+  // say why. The policy read is best-effort instead, and fails soft.
+  const executableJob = versionJob.split("\n").filter((l) => !/^\s*#/.test(l)).join("\n");
+  assert.ok(!/administration:/.test(executableJob),
+    "the version job asks for `administration` scope, which GitHub does not accept in a job's "
+    + "permissions — the whole workflow becomes unparseable and stops running");
   for (const scope of ["checks: read", "actions: read"]) {
     assert.ok(versionJob.includes(scope),
       `the version job does not grant \`${scope}\`, so the step that reads whether its checks started `
       + "gets a 403 — and naming any permission sets every unnamed one to `none`");
   }
-  const auto = lines.findIndex((l) => /gh pr merge .*--auto/.test(l));
+  // THE AUTO-MERGE WRITES ITS OWN MESSAGE. Left to GitHub's default, the squash headline gains `(#23)` —
+  // the bare `#NNN` this project bans from commit messages, put into public history by our own
+  // automation. Measured on the first version pull request that merged itself.
+  const merge = workflow.slice(workflow.indexOf("gh pr merge"), workflow.indexOf("The checks it waits for"));
+  assert.match(merge, /--subject "Release \$VERSION"/,
+    "the auto-merge takes GitHub's default headline, which appends `(#N)` to it");
+  assert.match(merge, /--body "\$NOTES"/, "the auto-merge leaves the body to GitHub, which composes it from the pull request");
+  assert.ok(!/\(#\$?\{?\w*\}?\)/.test(merge), "a `(#N)` shape appeared in the message the workflow writes");
+
+  const auto = lines.findIndex((l) => /gh pr merge/.test(l));
   const asks = lines.findIndex((l) => /release-version-pr-checks\.mjs/.test(l) && /run:/.test(l));
   assert.ok(auto > -1 && asks > auto,
     "the checks assertion no longer follows the auto-merge it exists to protect");
@@ -557,7 +591,7 @@ test("tracker 97 the changelog the pipeline writes is a root document its own re
       "`clearotron doctor` now says how long the portal key has left and refuses when it has lapsed.",
       "Asking the demo for a search it has no example of now explains what happened.",
     ];
-    const p1 = writeRootChangelog({ version: "0.1.1-beta.0", bullets: notes }, dir);
+    const p1 = writeRootChangelog({ version: "0.1.1-beta.0", ...group(notes.map((n) => `Fixed: ${n}`)) }, dir);
     const first = readFileSync(p1, "utf8");
     assert.deepEqual(unreachableBareSites([{ file: "CHANGELOG.md", text: first }]).map(sentenceFor), [],
       "the generated changelog shows a command its own reader cannot run, and it fails on the version "
@@ -566,7 +600,7 @@ test("tracker 97 the changelog the pipeline writes is a root document its own re
     // A SECOND RELEASE KEEPS ONE HEAD. The head used to be stripped by matching its exact text, so
     // editing it would have left the old one buried above the new — and the install line would then sit
     // BELOW a version section, protecting nothing above it.
-    const p2 = writeRootChangelog({ version: "0.1.2", bullets: ["`clearotron demo` runs a shorter example."] }, dir);
+    const p2 = writeRootChangelog({ version: "0.1.2", ...group(["Fixed: `clearotron demo` runs a shorter example."]) }, dir);
     const second = readFileSync(p2, "utf8");
     assert.equal((second.match(/^# Changelog$/gm) ?? []).length, 1, "the changelog grew a second title");
     assert.equal((second.match(/npm install -g clearotron/g) ?? []).length, 1,
@@ -590,17 +624,17 @@ test("tracker 97 the release note a customer reads is the sentence, not the comm
   try {
     mkdirSync(join(dir, "driver"), { recursive: true });
     writeFileSync(join(dir, "driver", "CHANGELOG.md"),
-      "# prelim-driver\n\n## 0.1.1-beta.0\n\n- f7c1570: The demo offers the two example accounts it ships with.\n"
-      + "- 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b: A clearance now names the registers it searched.\n");
-    const { bullets } = assembleRoot("0.1.1-beta.0", dir);
-    assert.deepEqual(bullets, [
+      "# prelim-driver\n\n## 0.1.1-beta.0\n\n- f7c1570: Fixed: The demo offers the two example accounts it ships with.\n"
+      + "- 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b: Fixed: A clearance now names the registers it searched.\n");
+    const { groups } = assembleRoot("0.1.1-beta.0", dir);
+    assert.deepEqual(groups.Fixed, [
       "The demo offers the two example accounts it ships with.",
       "A clearance now names the registers it searched.",
     ]);
     // A sentence that merely CONTAINS a colon keeps every word of itself.
     writeFileSync(join(dir, "driver", "CHANGELOG.md"),
-      "# prelim-driver\n\n## 0.2.0\n\n- Removing the demo is one directory again: nothing it writes lands outside it.\n");
-    assert.deepEqual(assembleRoot("0.2.0", dir).bullets,
+      "# prelim-driver\n\n## 0.2.0\n\n- Fixed: Removing the demo is one directory again: nothing it writes lands outside it.\n");
+    assert.deepEqual(assembleRoot("0.2.0", dir).groups.Fixed,
       ["Removing the demo is one directory again: nothing it writes lands outside it."]);
   } finally {
     rmSync(dir, { recursive: true, force: true });
@@ -621,6 +655,13 @@ test("tracker 97 a version that merged itself still publishes, because that merg
   assert.match(workflow, /^\s*schedule:$/m, "the cron that notices a self-merged cut is gone, so a version "
     + "that merges itself sits on main unpublished for ever");
   assert.match(workflow, /cron: '\*\/5 \* \* \* \*'/, "the cron interval changed — deliberate or not, say so here");
+  // AND IT SAYS IT IS UNPROVEN. As of 2026-09-05 this schedule has never fired on this repository, and a
+  // reader who assumes it works will design around a recovery that has never happened. When somebody
+  // sees a `schedule` run publish, they delete this sentence — and this arm tells them it is theirs to
+  // delete rather than leaving a stale warning in the file for ever.
+  assert.match(workflow, /NEVER FIRED ON THIS REPOSITORY/,
+    "the workflow no longer records that its cron is unproven — if that is because it has now fired, say "
+    + "so with the run, and remove this assertion in the same change");
 
   // The reason has to travel WITH it, or the next reader deletes a cron that looks like polling for
   // nothing. This asserts the explanation is present, not merely the trigger.

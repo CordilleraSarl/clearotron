@@ -279,24 +279,18 @@ export const DOC_CONSTANTS = [
     doc: "INSTALL.md",
     pattern: /# TRADEMARK_MCP_HTTP_PORT=(\d+)/,
   },
-  {
-    constant: "TRADEMARK_MCP_HTTP_PORT default",
-    source: { file: "bin/start.mjs", symbol: "resolvePorts({}).mcp" },
-    expected: () => DERIVED.mcpPort,
-    // step 2 — the row moved. `.env.example` now carries the setup population only; the ports are
-    // an operator's concern and live in the deployment reference. The binding follows the ROW, not the
-    // filename it used to sit under, and this guard is what noticed the move rather than letting the
-    // restatement quietly stop existing.
-    doc: ".env.deployment.example",
-    pattern: /^TRADEMARK_MCP_HTTP_PORT=(\d+)/m,
-  },
-  {
-    constant: "TRADEMARK_MCP_HTTP_PORT default",
-    source: { file: "bin/start.mjs", symbol: "resolvePorts({}).mcp" },
-    expected: () => DERIVED.mcpPort,
-    doc: ".env.prod.example",
-    pattern: /^TRADEMARK_MCP_HTTP_PORT=(\d+)/m,
-  },
+  // ── TWO BINDINGS REMOVED: THEIR DOCUMENTS ARE NOT ON THIS TREE (tracker issue 83) ────────────────
+  //
+  // `.env.deployment.example` and `.env.prod.example` each carried a `TRADEMARK_MCP_HTTP_PORT default`
+  // binding. Both files are withheld from the public tree by the cut, so on this tree the bindings
+  // named documents that do not exist — a restatement guard pointed at nothing, which is the failure
+  // it was written to catch, one level up.
+  //
+  // Removing them loses no coverage, and that was measured rather than assumed: the same constant is
+  // still bound in seven places that ARE here — INSTALL.md twice, docs/CLIENT-MCP.md,
+  // docs/architecture/05-config-governance.md, docs/architecture/09-security-and-data.md and
+  // mcp-server/remote/REMOTE-SETUP.md twice. If the deployment reference returns to a tree that reads
+  // this file, its binding comes back with it.
   // Six more copies, found by sweeping every markdown occurrence rather than fixing the one the issue
   // named. That sweep is the whole lesson: the figure a single-instance fix walks past is the
   // one that goes on reading as current. All six were already CORRECT the day they were bound — this

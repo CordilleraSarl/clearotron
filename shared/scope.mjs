@@ -229,7 +229,17 @@ export const TOOL_SCOPES = {
   // prior run's TOKEN COUNTS as its cost prior; lib/audit-view.mjs keeps the wall time and the honesty
   // note and drops the other two. The enqueue acknowledgement is projected for the same reason every
   // client-reachable result is — so a field added to it later cannot arrive unruled.
-  what_if_plan: { write: true, accountSafe: true, present: "project" },
+  //
+  // `readOnly` IS SET HERE BECAUSE `write` IS THE WRONG ANSWER FOR THIS ONE TOOL (tracker issue 148).
+  // The MCP `readOnlyHint` annotation is derived from `write` so there is one source of truth and not
+  // two names for one fact — but the paragraph above says plainly that `write: true` sits on
+  // what_if_plan for the OPS ALLOWLIST's sake, not because it mutates or spends. Deriving the hint
+  // straight from it would make an assistant prompt for permission before a dry run that changes
+  // nothing and costs nothing, which is the friction this annotation exists to remove.
+  //
+  // So the exception is declared in the table rather than in a second list somewhere else, and it is
+  // the ONLY one: `readOnlyFor` falls through to `!write` for every other tool.
+  what_if_plan: { write: true, readOnly: true, accountSafe: true, present: "project" },
   what_if_run: { write: true, accountSafe: true, present: "project" },
   // A pure read of a queued experiment's state, addressed by its run — so the dispatch chokepoint's
   // account gate covers it. Not `write`: it settles nothing and spends nothing.
@@ -252,6 +262,28 @@ export const TOOL_SCOPES = {
 // (narrative, audit, run.jsonl, skepticFlags, lisaEyeReview, matterContext, caseLaw, register axes,
 // status.json, …) is internal and stays sealed from a user token.
 // Exported so the server's Resources surface (ListResources/ReadResource) gates to the SAME set.
+/**
+ * Does this tool only READ? — the source of MCP's `readOnlyHint` annotation (tracker issue 148).
+ *
+ * WHY IT IS DERIVED. Without annotations a client cannot tell `brief` from `start_run`, so it asks
+ * before every call — the owner, driving the ops connector: "it prompts all the time." The cost is not
+ * the friction; it is the habit. A user who approves twenty reads in a row learns to approve
+ * `start_run`, which spends real money, without reading it.
+ *
+ * WHY IT IS NOT A SECOND LIST. `write` already decides who may call each tool, so a hand-kept second
+ * table of read-only names would desynchronise the moment one was edited — and this one governs both
+ * what prompts AND what an ops token may reach. One table, one edit.
+ *
+ * The single explicit `readOnly` override is on what_if_plan and carries its reason at the entry.
+ * An unknown tool answers `false`: refusing to claim a tool is safe is the right way to be wrong.
+ */
+export function readOnlyFor(toolName) {
+  const rule = TOOL_SCOPES[toolName];
+  if (!rule) return false;
+  if (typeof rule.readOnly === "boolean") return rule.readOnly;
+  return !rule.write;
+}
+
 export const USER_ARTIFACTS = new Set(["report"]);
 
 // ---- THE AUDIT CHAIN, OPENED TO A CLIENT ACCOUNT (owner ruling 2026-08-27) -----------------------
