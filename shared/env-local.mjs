@@ -268,13 +268,15 @@ const realOrSelf = (p) => { try { return realpathSync(p); } catch { return p; } 
 const SHELL_EXPANSION = /\$\{?[A-Za-z_][A-Za-z0-9_]*\}?/;
 
 /**
- * ── WHERE THIS INSTALL'S `.env` LIVES —, awaiting the ruling on 2177 ─────────
+ * ── WHERE THIS INSTALL'S `.env` LIVES — ruled, 2026-09-05 ────────────────────────────────────────────
  *
- * NOTHING IS DECIDED HERE, AND THAT IS THE POINT. On a packaged install the wizard writes `.env` to the
- * package root, which is `<project>/node_modules/clearotron` — a directory npm owns and any `npm install`
- * in that project may replace, destroying the configuration silently. Where it should live instead is a
- * product decision with three measured candidates and real costs on each; it is the owner's call on
- * and it is deliberately NOT taken in this file.
+ * `~/.config/clearotron/.env`. The owner's decision, recorded on tracker issue 140, taken from the three
+ * candidates below.
+ *
+ * WHAT IT FIXES. On a packaged install the wizard wrote `.env` to the package root, which is
+ * `<project>/node_modules/clearotron` — a directory npm owns — so the documented upgrade replaced the
+ * tree and took the operator's configuration with it, credentials included, while every command went on
+ * exiting 0. The chosen location survives both an npm install and the deletion of the project.
  *
  * What this file does is make the answer ONE LINE. Before it, nine sites each computed the path
  * themselves — four on the package root, five on `~/.env` — and a move that changed the writer without
@@ -307,7 +309,18 @@ const SHELL_EXPANSION = /\$\{?[A-Za-z_][A-Za-z0-9_]*\}?/;
  * and it reads the same resolver — so the pair it compares follows the flip. That is the check Grogu
  * named as part of the work rather than an afterthought; it is wired, not left.
  */
-export const ENV_LOCAL_LOCATION = "package-root";
+export const ENV_LOCAL_LOCATION = "xdg-config";
+
+/**
+ * Where it used to live, and where an install configured before the move still has it.
+ *
+ * READ-ONLY AND TRANSITIONAL. Nothing writes here any more. It exists because the flip above would
+ * otherwise take an operator's configuration away from them on an ordinary upgrade — the resolver would
+ * start naming a file that does not exist, every command would exit 0, and the run would behave as if
+ * nothing had ever been configured. That is the same silent failure the move exists to end, pointed the
+ * other way.
+ */
+export const LEGACY_ENV_LOCAL_LOCATION = "package-root";
 
 /**
  * The path `.env` is read from and written to, for every site on the CLI's side of the split.
@@ -341,6 +354,27 @@ export function isCliEntry(argv1, repoRoot = REPO_ROOT) {
 }
 
 /**
+ * The `.env` this install is actually configured by: the one in force, or the old one while it is still
+ * where an install configured before the move left it.
+ *
+ * ONE ANSWER, FOR EVERY READER. The loader reads it, `doctor` reports it, `--check` says which source a
+ * value came from. Before this existed each of them composed its own path, and the move made them
+ * disagree: the loader read the old file and applied it while doctor, asking about the new one, told the
+ * operator they had no configuration at all. Two surfaces, one tree, opposite answers — the same defect
+ * this release fixes on the portal's health route.
+ *
+ * ✕ NOT A WRITE PATH. Whatever writes `.env` writes it where the ruling put it, which is `envLocalPath`
+ * with no fallback; a writer that followed the file backwards would keep an install in the directory npm
+ * replaces forever.
+ */
+export function activeEnvPath({ repoRoot = REPO_ROOT, home = homedir(), location = ENV_LOCAL_LOCATION } = {}) {
+  const inForce = envLocalPath({ repoRoot, home, location });
+  const legacy = envLocalPath({ repoRoot, home, location: LEGACY_ENV_LOCAL_LOCATION });
+  if (inForce === legacy) return inForce;
+  return existsSync(inForce) || !existsSync(legacy) ? inForce : legacy;
+}
+
+/**
  * Apply `<repo>/.env` to `env`, and report what happened.
  *
  * THE ENVIRONMENT ALWAYS WINS: a name already present in `env` is left alone, including when its value
@@ -351,13 +385,23 @@ export function isCliEntry(argv1, repoRoot = REPO_ROOT) {
  * logged: this file is where the credentials are.
  */
 export function loadEnvLocal({ env = process.env, repoRoot = REPO_ROOT, note = defaultNote,
-                              location = ENV_LOCAL_LOCATION } = {}) {
+                              home = homedir(), location = ENV_LOCAL_LOCATION } = {}) {
+  // `home` is here for the same reason as `location`, and it was missing: the chosen candidate resolves
+  // under the home directory, so without it every arm about the file in force would be driven against
+  // the developer's own `~/.config/clearotron/.env` — reading a real machine's state and calling it a
+  // result. It is not a knob either; no caller passes it.
+  //
   // `location` is here SO AN ARM CAN DRIVE A CANDIDATE NOBODY HAS CHOSEN. Today every candidate but one
   // is unreachable, and `package-root` happens to resolve to the same string the nine sites used to
   // compose by hand — so an arm asserting that the reader follows the resolver would be true by
   // construction and would keep being true after a flip broke it. It is not a knob: no caller passes it,
   // and the note on ENV_LOCAL_LOCATION above says why it must not become one.
-  const path = envLocalPath({ repoRoot, location });
+  // AN INSTALL CONFIGURED BEFORE THE MOVE KEEPS WORKING, and is told once where to put the file. The
+  // old location is read, never written: copying it here would put a second copy of somebody's
+  // credentials on disk without being asked, and leaving both in place is how two files disagree.
+  const inForce = envLocalPath({ repoRoot, home, location });
+  const path = activeEnvPath({ repoRoot, home, location });
+  const fromLegacy = path !== inForce;
   if (optedOut(env)) return { path, applied: [], skipped: [], reason: "opted-out" };
   if (serviceManaged(env)) {
     // Loud ONLY when there is a file to ignore. A service with no .env beside it is the normal case on
@@ -403,6 +447,9 @@ export function loadEnvLocal({ env = process.env, repoRoot = REPO_ROOT, note = d
 
   // Loud, once, on stderr, naming the file and the KEYS — so a run that behaves unexpectedly can be
   // traced to the file that configured it without anyone having to guess whether it was read.
+  if (fromLegacy) note(`[env-local] ${path} is where this install's configuration used to live. It is read `
+    + `for now and nothing writes there any more: an ordinary \`npm install\` in that project deletes it. `
+    + `Move it to ${envLocalPath({ repoRoot, home, location })} — same file, same contents — and this stops.\n`);
   if (applied.length) note(`[env-local] applied ${applied.length} variable${applied.length === 1 ? "" : "s"} from ${path}: ${applied.join(", ")}${skipped.length ? ` (${skipped.length} already in the environment, left alone: ${skipped.join(", ")})` : ""}\n`);
   else if (skipped.length) note(`[env-local] ${path} read; every variable in it was already in the environment — nothing applied\n`);
   return { path, applied, skipped, reason: "read" };

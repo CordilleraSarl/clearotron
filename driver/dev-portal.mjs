@@ -256,7 +256,7 @@ function cockpitHtml() {
   <label>Classes (comma)</label><input name="classes" placeholder="9,42">
   <label>Goods / services</label><textarea name="goods"></textarea>
   <label>Customer (applicant)</label><input name="customer">
-  <label>Profile key</label><input name="profile" placeholder="aurora | zephyr | petcary | (blank = generic)">
+  <label>Profile key</label><input name="profile" placeholder="demo-brand-owner | (blank = generic)">
   <label>Forwarder *</label><input name="forwarder" placeholder="dev" required>
   <label>Instructions (verbatim)</label><textarea name="instructions"></textarea>
   <label><input type="checkbox" name="dupOverride" style="width:auto"> dupOverride (confirmed re-run)</label>
@@ -265,7 +265,7 @@ function cockpitHtml() {
 <section><h2>Runs <button onclick="loadRuns()" style="float:right;margin:0;padding:2px 10px">refresh</button></h2><div id="runs">loading…</div></section>
 <section><h2>Outbox events <button onclick="loadOutbox()" style="float:right;margin:0;padding:2px 10px">refresh</button></h2><div id="outbox">loading…</div></section>
 <section><h2>Searches (saved + built-in) <button onclick="loadSearches()" style="float:right;margin:0;padding:2px 10px">refresh</button></h2>
- <label>Customer</label><input id="s_cust" value="aurora" placeholder="aurora | zephyr | petcary">
+ <label>Customer</label><input id="s_cust" value="demo-brand-owner" placeholder="demo-brand-owner | generic">
  <div id="searches" style="margin-top:8px">loading…</div></section>
 <section><h2>Compose a saved search</h2>
  <form id="sf">

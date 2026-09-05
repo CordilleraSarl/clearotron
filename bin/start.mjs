@@ -111,7 +111,7 @@ import { SERVER_INSTALL_SET, unitsToRestartOnRefresh, unitHealthVerdict } from "
 // — the door --background now INSTALLS, and the one authority for the settings
 // it refuses to start without. (Until 2026-09-03 this import read "the one unit --background may
 // tolerate and never manage"; settled point 2 superseded that.)
-import { defaultDenylistPath, denylistPathFor, ensureDenylistFile, CLIENT_DOOR_UNIT, enablePlan, clientDoorPort } from "../shared/client-door.mjs";
+import { defaultDenylistPath, denylistPathFor, denylistFor, ensureDenylistFile, CLIENT_DOOR_UNIT, enablePlan, clientDoorPort } from "../shared/client-door.mjs";   // — one owner for the revocation list's path
 import { createServer } from "node:net";
 import { listenErrorMessage } from "../shared/listen.mjs";
 import { chmodSync, copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
@@ -142,6 +142,28 @@ export const SERVER_UNITS = Object.freeze([
  * depend on whether a service happened to be running, which is the kind of moving answer that produced
  * the defect above. It is also one fewer subprocess in a command that is about to spawn two.
  */
+/**
+ * Names in the units' `~/.env` that THIS FILE mints, and therefore rewrites on every background start.
+ *
+ * The list is the policy, and it is short on purpose. Add-only is right for every value the launcher
+ * merely collects — an operator's credentials and paths — and a launcher that rewrote those is a
+ * launcher that can lose them. It is wrong for every value the launcher generates, because a minted
+ * value written once ages to expiry on a working server while every start goes on reporting success.
+ */
+export const LAUNCHER_MINTED = Object.freeze(["PORTAL_OPS_TOKEN"]);
+
+/**
+ * The units' `~/.env`, after a background start: collected values added once, minted values re-minted.
+ *
+ * Extracted so the policy can be DRIVEN rather than read. The background path itself cannot be run in
+ * the suite — it installs and starts systemd units — so without this the only arm possible would be one
+ * that reads this file's source and reasons about it, and reverting the call site would leave every arm
+ * green. It did, once, before this existed.
+ */
+export function homeEnvUpdate(homeText, union) {
+  return mergeEnvFile(homeText, union, { refresh: LAUNCHER_MINTED });
+}
+
 export function installedUnits(dir = UNIT_DIR, exists = existsSync) {
   return SERVER_UNITS.filter((u) => exists(join(dir, u)));
 }
@@ -407,7 +429,16 @@ export function childEnv({ ports, paths, user, staffDomains, portalSecret, token
       // while every other child inherited the operator's TRADEMARK_MCP_TOKEN_DENYLIST. An operator who
       // placed the list themselves therefore revoked at the staff door and not at the client door,
       // which is where account keys live, and `key issue` named the staff door's file to them.
-      TRADEMARK_MCP_TOKEN_DENYLIST: paths.denylist ?? denylistPathFor(env, homedir()),
+      // AND A DEMO'S REVOCATION LIST LIVES IN THE DEMO'S OWN BASE, for the same reason its sign-in
+      // credential does: "removing it later is one directory" is a promise the demo prints, and a
+      // stranger's run — driven under a wiped home — left this file behind at
+      // `~/.config/clearotron/token-denylist` after `rm -rf` of the base.
+      //
+      // ✕ DEMO ONLY, AND NOT VIA `installPaths`. The fall-through below is what a real install needs:
+      // the operator's own setting, or the shared default. Giving every install a list inside its base
+      // would MOVE a live one — entries in the old file stop being read, and a revoked key answers
+      // again. A demo has no revocations to lose, which is what makes it the safe exception.
+      TRADEMARK_MCP_TOKEN_DENYLIST: denylistFor({ paths, demo, env, home: homedir() }),
     },
     portal: {
       ...shared,
@@ -764,7 +795,9 @@ if (isMain) {
   // and created nothing, so one of the two doors stood outside a guard the other one had. Same helper
   // now, so a third door cannot be added outside it either.
   {
-    const denylist = paths.denylist ?? denylistPathFor(process.env, homedir());
+    // THE SAME ANSWER THE DOOR IS GIVEN. This used to compose its own, so a demo's door was told one
+    // file and this created another — and the one a stranger found on disk afterwards was this one.
+    const denylist = denylistFor({ paths, demo: DEMO, env: process.env, home: homedir() });
     try {
       const r = ensureDenylistFile(denylist, {
         exists: existsSync,
@@ -841,7 +874,11 @@ if (isMain) {
   } else try {
     const { seedPool } = await import("../driver/publish/seed-pool.mjs");
     const { republishRun } = await import("../driver/publish/report-registry.mjs");
-    const seed = await seedPool({ pool: paths.pool, examplesDir: join(REPO, "demo"), republish: republishRun });
+    // SEEDED FROM A COPY, for the reason the player publishes from one: republishing writes a receipt
+    // into the run directory it reads, and `demo/` is tracked. This is the path a reader actually takes
+    // — `clearotron demo` hands over to this — so fixing the player alone left the defect where it was.
+    const { publishSource } = await import("../driver/demo-container.mjs");
+    const seed = await seedPool({ pool: paths.pool, examplesDir: publishSource(join(REPO, "demo"), { repoRoot: REPO }), republish: republishRun });
     if (seed.seeded.length) {
       say(`  seeded         ${seed.seeded.length} example report(s) into ${paths.pool}`);
       // THE LABEL. is delivered: the report now carries the owner's own sample sentence on its
@@ -874,7 +911,14 @@ if (isMain) {
     // TWO walls, by construction. The key names the verbs it may use and the accounts it may start for,
     // so the portal's own principal check is not the only thing bounding a trigger. Capped to the roster
     // THIS install can see — the same list the face validates `profileKey` against, so the cap and the
-    // validation cannot disagree. Minted fresh every start: never written down, never near expiry.
+    // validation cannot disagree.
+    //
+    // MINTED FRESH EVERY START, AND WHAT THAT IS WORTH DEPENDS ON THE PATH. In the foreground it is
+    // never written down: `childEnv` hands it to the children in memory and it dies with them. The
+    // background path DOES write it down, into `~/.env`, which is the file the units load — so "never
+    // near expiry" is true there only because the merge below re-mints it on every `--background`. It
+    // was not: that merge was add-only, the first start's key stayed, and thirty days later every Start
+    // on a working server stopped.
     opsToken = mintToken({ scope: "ops", sub: "portal", verbs: ["start_run", "stop_run"], accounts: roster.length ? roster : null, ttlSec: 30 * 24 * 3600 });
   } catch (e) { fatal(`could not mint the trigger key (${String(e?.message ?? e)}).`); }
   if (!roster.length) err("  WARNING: no customer profiles were found, so the trigger key is NOT account-capped.");
@@ -1031,12 +1075,21 @@ if (isMain) {
 
     let homeText = "";
     try { homeText = readFileSync(HOME_ENV, "utf8"); } catch (e) { if (e.code !== "ENOENT") fatal(`${HOME_ENV} exists but could not be read (${e.code}).`); }
-    const merged = mergeEnvFile(homeText, union);
-    if (merged.added.length) {
+    // THE TRIGGER KEY IS MINTED HERE, SO IT IS REWRITTEN HERE. Everything else in this union is
+    // collected — the operator's credentials, their paths — and add-only is what stops a launcher from
+    // losing them. The trigger key is the opposite: this process mints it, thirty days at a time, and a
+    // value written once and never again runs down to expiry on a server nobody has touched. When it
+    // lapses every Start stops, and the failure arrives as an upstream refusal that reads like an engine
+    // fault rather than an expired key card.
+    const merged = homeEnvUpdate(homeText, union);
+    if (merged.added.length || merged.refreshed.length) {
       const tmp = `${HOME_ENV}.tmp-${process.pid}`;
       writeFileSync(tmp, merged.text, { mode: 0o600 });
       renameSync(tmp, HOME_ENV);
-      say(`  ✓ ${HOME_ENV} — ${merged.added.length} value(s) added (existing lines untouched)`);
+      const parts = [];
+      if (merged.added.length) parts.push(`${merged.added.length} value(s) added`);
+      if (merged.refreshed.length) parts.push(`${merged.refreshed.join(", ")} re-minted`);
+      say(`  ✓ ${HOME_ENV} — ${parts.join(", ")} (every other line untouched)`);
     } else say(`  ✓ ${HOME_ENV} already carries everything the units need`);
     // ── TWO ENV FILES, AND SAYING SO ( — F33) ──────────────────────────────
     //
@@ -1278,7 +1331,15 @@ if (isMain) {
   // check has to sit on the other side of the thing that mints, and the only way to keep that true is
   // for it to be adjacent to the spawn where a reader can see why.
   const { credentialPathFor: credentialPathBeforeStart, newPassphrase } = await import("../driver/portal-local-auth.mjs");
-  const credentialExisted = existsSync(credentialPathBeforeStart());
+  // ASKED ABOUT THE FILE THE PORTAL WILL ACTUALLY USE, not the shared default. `credentialPathFor`
+  // reads `PORTAL_LOCAL_CREDENTIAL`, and a demo sets it to a file inside its own base — but this call
+  // was made against THIS process's environment, which never carries it. So on any box that already had
+  // `~/.cordillera/portal-local-credential.json` from an earlier install, a demo decided a passphrase
+  // already existed, minted nothing, and the portal then printed "minted on an earlier start and is NOT
+  // reprinted" over a credential file that was empty. The visitor got a sign-in screen they could not
+  // pass — which is the exact failure the demo's own credential path was introduced to prevent, left
+  // half-wired because the mint decision was reading a different file from the mint.
+  const credentialExisted = existsSync(credentialPathBeforeStart(envs.portal));
 
   // ── MINT HERE SO THE SUMMARY CAN PRINT IT ( — F10) ────────────────────────
   //

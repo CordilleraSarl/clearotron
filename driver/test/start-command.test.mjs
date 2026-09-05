@@ -222,8 +222,14 @@ test("#859 the launcher SEEDS THE POOL, and does it through the same publisher t
   // launcher has to follow it. This arm is why that move could not be silent: the seeder walks a
   // CONTAINER of product demos, and a launcher left pointing at examples/ — which no longer holds a
   // frozen run — would seed nothing and serve an empty archive without a word.
-  assert.match(src, /examplesDir:\s*join\(REPO, "demo"\)/,
+  // The container is still `demo/`, and the launcher may WRAP that path — it publishes from a copy now,
+  // because republishing writes a receipt into the directory it reads and `demo/` is tracked (tracker
+  // issue 157). What must not change is which container the samples come from.
+  assert.match(src, /examplesDir:[^,]*join\(REPO, "demo"\)/,
     "the samples must come from the repo's demo/ container, one child per product type");
+  assert.match(src, /examplesDir:\s*publishSource\(/,
+    "the launcher seeds straight out of the tracked container again — a reader who only ran the demo is "
+    + "left with a dirty checkout and an engine reporting engineState: dirty");
   assert.match(src, /republish:\s*republishRun/,
     "the seeder must publish through report-registry's republishRun — the SAME function `npm run example` "
     + "uses, which handles the knockout template as well as the clearance one. A second publish path "

@@ -107,6 +107,7 @@ import { engineCommit } from "./engine-build.mjs";                  // — the S
 import { engineCommitDate, engineProvenance } from "./engine-build.mjs";
 import { classifySkillsStore } from "./skills-store-provenance.mjs";
 import { makeStaticHandler, reportCsp, docCsp } from "./portal-static.mjs";
+import { bundleVerdict, healthUi } from "../shared/bundle-freshness.mjs";   // one definition of a usable bundle, shared with `doctor` (tracker issue 160)
 import { readReport, reportsOf, resolveReportFile, batchSummaryOf } from "./portal-report.mjs";
 import { readArchivedSet, updateArchived } from "./publish/archive-tags.mjs";
 import { readAcks, setAck, withAcks, ACKNOWLEDGEABLE } from "./portal-acks.mjs";
@@ -2932,6 +2933,33 @@ export function makePortalService({
  * whatever token the process was given and reports what it finds, because the posture is a property of
  * the deployment and a comment asserting it would be the exact thing this replaced.
  */
+// ── THE BUNDLE VERDICT, READ FROM DISK AND HELD BRIEFLY ──────────────────────────────────────────────
+//
+// `/portal/health` is polled — by the operator, by the units, by whatever watches the box — and the
+// verdict walks two directory trees and asks git two questions. Recomputing that per request would make
+// a health check the most expensive route the portal serves.
+//
+// HELD FOR TEN SECONDS, WHICH IS SHORT ENOUGH TO BE HONEST. The state it reports changes when somebody
+// pulls or rebuilds — a human act, minutes apart — so a ten-second-old answer is never the difference
+// between an operator seeing this and not. A cache for the life of the process would be: the portal
+// keeps running across a pull, which is exactly the case this exists to catch.
+const BUNDLE_TTL_MS = 10_000;
+let bundleCache = { at: 0, verdict: null, present: null };
+
+export function bundleFreshnessCached(present, { now = Date.now(), ttl = BUNDLE_TTL_MS, repo = INSTALL_ROOT } = {}) {
+  // The presence half is the SERVICE's own answer and is not cached here: it is cheap, it is what
+  // /portal actually does, and a stale "present" would be the one lie this endpoint cannot afford.
+  if (bundleCache.verdict !== null && bundleCache.present === present && now - bundleCache.at < ttl) return bundleCache.verdict;
+  const verdict = bundleVerdict({
+    repo,
+    distDir: pathResolve(repo, "portal-ui", "dist"),
+    srcDir: pathResolve(repo, "portal-ui", "src"),
+    present,
+  });
+  bundleCache = { at: now, verdict, present };
+  return verdict;
+}
+
 export function opsTokenPosture(token, { now = Date.now() } = {}) {
   const none = { readable: false, scope: null, sub: null, verbs: null, accounts: null, accountCapped: false,
     expiresAt: null, daysLeft: null, expired: false, implausibleExp: false };
@@ -3393,9 +3421,22 @@ export function makeHttpHandler({ verify, limiter, service, log = () => {}, devI
         // Null when unset or unrecognised, which is an absence and reads as one. No inference from the
         // account or the path: a guessed box is worse than an unknown one, because it answers wrongly
         // instead of leaving the question open.
+        // ── IS THE BUNDLE THE ONE ITS SOURCES WOULD BUILD? (tracker issue 160) ──────────────────────
+        //
+        // `ui` had two states, present and absent, and no third for *present and older than the sources
+        // it was built from*. On the source route `git pull` can never update `portal-ui/dist` — it is
+        // not tracked — so a pull that changes `portal-ui/src` leaves the built bundle behind, the
+        // portal serves the previous screen, and this endpoint answered `built`, `ok: true` over the
+        // exact tree `clearotron doctor` refuses at rc 1. The operator ran the documented upgrade, it
+        // exited 0, nothing warned, and both surfaces they could check disagreed without saying so.
+        //
+        // The verdict comes from the SAME predicate doctor uses, so the two cannot drift apart again.
+        // `present()` is still the service's own answer to the presence half and is passed in rather
+        // than recomputed, so this cannot disagree with what /portal actually serves.
+        const bundle = staticHandler ? healthUi(bundleFreshnessCached(staticHandler.present())) : { ui: "unwired", ok: true };
         return send(res, 200, {
-          ok: true,
-          ui: staticHandler ? (staticHandler.present() ? "built" : "missing") : "unwired",
+          ok: bundle.ok,
+          ui: bundle.ui,
           box: deploymentBox(),
           engineCommit: engineCommit(),
           engineCommitAt: engineCommitDate(),

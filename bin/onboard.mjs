@@ -73,7 +73,8 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { delimiter } from "node:path";
 import { Writable } from "node:stream";
 
-import { envLocalPath, loadEnvLocal } from "../shared/env-local.mjs";
+import { envLocalPath, activeEnvPath, loadEnvLocal, LEGACY_ENV_LOCAL_LOCATION } from "../shared/env-local.mjs";
+import { bundleFreshness, newestMtimeUnder, distGateInTree, gitStanding } from "../shared/bundle-freshness.mjs";
 import {
   USPTO_ARCHIVE_GB, USPTO_INDEX_GB, USPTO_INGEST_GB_PER_HOUR, USPTO_DAILY_TOPUP_MB,
   usptoBuildHours, usptoProvisionGB,
@@ -110,6 +111,12 @@ function readIfPresent(path) {
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
+// WHAT IS READ IS NOT ALWAYS WHERE THE NEXT WRITE GOES. An install configured before the move (tracker
+// issue 159) still has its file at the old path, and the loader still reads it — so every READ here asks
+// the same resolver the loader asks, or this command reports "no configuration" over a file every other
+// command is applying. Writes stay on ENV_PATH: a writer that followed the file backwards would keep an
+// install in the directory npm replaces forever.
+const READ_ENV_PATH = () => activeEnvPath({ repoRoot: REPO });
 const NODE_FLOOR = 22;
 
 const argv = process.argv.slice(2);
@@ -264,73 +271,10 @@ const prose = (...parts) => { for (const l of wrapProse(parts.join(" "), proseWi
  *
  * @returns {"no-sources"|"unbuilt"|"unversioned"|"guarded"|"tracked-unguarded"|"unmeasured"|"current"|"stale"}
  */
-export function bundleFreshness({ srcPresent, distPresent, isGitCheckout, distTracked, distGated, distMtime, newestSrcMtime }) {
-  // ✕ ABSENT COMES FIRST, AND IT USED TO COME SECOND. The route rows below all describe a bundle that
-  // EXISTS; asking which route we are on before asking whether there is anything to serve meant a tree
-  // with neither a bundle nor sources — a packaged install missing its own dist, and the fixture that
-  // drives doctor's absent-bundle branch — answered "no sources, so the bundle ships with them" and
-  // printed a tick over an empty directory. It lost the one condition that stops /portal rendering,
-  // which is the finding this whole cell exists to carry. Nothing to serve is the strongest fact about
-  // a bundle and it is reported before anything else is decided.
-  if (!distPresent) return "unbuilt";
-  if (!srcPresent) return "no-sources";
-  if (!isGitCheckout) return "unversioned";
-  if (distTracked) return distGated ? "guarded" : "tracked-unguarded";
-  // A COULD-NOT-LOOK IS NOT A PASS, and it is not a stale bundle either. Both trees are here and one of
-  // them read back no timestamp at all — an unreadable directory, or one whose every stat threw. Ticking
-  // would be absence-as-pass on the one branch this cell exists to answer; calling it stale would send an
-  // operator to rebuild a bundle nobody has shown to be old. It is reported as what it is, which is the
-  // same treatment the catch around this whole section already gives a bundle it cannot read.
-  if (!(distMtime > 0) || !(newestSrcMtime > 0)) return "unmeasured";
-  return newestSrcMtime > distMtime ? "stale" : "current";
-}
-
-/** Newest mtime under `dir`, or 0. Best-effort: an unreadable tree answers 0, and 0 makes no claim. */
-function newestMtimeUnder(dir, exists = existsSync) {
-  if (!exists(dir)) return 0;
-  let newest = 0;
-  const walk = (d) => {
-    let entries;
-    try { entries = readdirSync(d, { withFileTypes: true }); } catch { return; }
-    for (const e of entries) {
-      const full = join(d, e.name);
-      if (e.isDirectory()) { walk(full); continue; }
-      try { newest = Math.max(newest, statSync(full).mtimeMs); } catch { /* raced or unreadable */ }
-    }
-  };
-  walk(dir);
-  return newest;
-}
-
-/**
- * Does a workflow IN THIS TREE rebuild the bundle and refuse on a difference?
- *
- * Measured by the gate's own refusal text, not by the presence of `.github/workflows/ci.yml`: a tree can
- * carry a workflow of that name that does something else entirely, and what this cell goes on to claim
- * to the reader is specifically that a difference would be caught. A missing directory answers false,
- * which is the exported tree's state and the correct answer for it.
- */
-function distGateInTree(repo) {
-  const dir = join(repo, ".github", "workflows");
-  let entries;
-  try { entries = readdirSync(dir); } catch { return false; }
-  for (const name of entries) {
-    if (!/\.ya?ml$/.test(name)) continue;
-    try {
-      if (readFileSync(join(dir, name), "utf8").includes("portal-ui/dist does not match a fresh build")) return true;
-    } catch { /* unreadable — it certifies nothing, so it is not the gate */ }
-  }
-  return false;
-}
-
-/** Is `repo` a git checkout, and is `rel` tracked in it? Two questions because they mean different things. */
-function gitStanding(rel, repo) {
-  const git = (args) => {
-    try { execFileSync("git", ["-C", repo, ...args], { stdio: "ignore" }); return true; } catch { return false; }
-  };
-  if (!git(["rev-parse", "--is-inside-work-tree"])) return { isGitCheckout: false, tracked: false };
-  return { isGitCheckout: true, tracked: git(["ls-files", "--error-unmatch", "--", rel]) };
-}
+// `bundleFreshness` and its three readers moved to `shared/bundle-freshness.mjs` when `/portal/health`
+// became a second caller (tracker issue 160): health answered `ui: "built", ok: true` over a tree this
+// command refuses at rc 1, because the two surfaces each had their own idea of what a usable bundle is.
+// One definition, both readers, so they cannot disagree again.
 
 /**
  * The five directories the wizard creates for the data plane, relative to the base it asks for.
@@ -997,7 +941,7 @@ export async function runCheck() {
   const diverged = (() => {
     try {
       return doorDivergence({
-        repoText: readFileSync(ENV_PATH, "utf8"),
+        repoText: readFileSync(READ_ENV_PATH(), "utf8"),
         homeText: readFileSync(join(homedir(), ".env"), "utf8"),
       });
     } catch { return []; }   // one file absent is the ordinary case and says nothing
@@ -1029,7 +973,7 @@ export async function runCheck() {
   // Read the file up here rather than at the `.env` heading below: the engine section is the first that
   // needs `effective()`, and which ENGINE is configured decides which binary variable to check. Reading
   // is not applying — see readEnvFile's header.
-  const fileEnv = readEnvFile(ENV_PATH);
+  const fileEnv = readEnvFile(READ_ENV_PATH());
   // Environment wins over the file (the loader contract), so report the effective value and say which
   // source it came from — a value read from the wrong place is the whole class of bug here.
   // ── CHECK 1 — THE CHECKER READS EVERY SPELLING THE ENGINE ACCEPTS ─────────────────────────
@@ -1243,13 +1187,31 @@ export async function runCheck() {
   }
 
   say("\n  .env");
-  if (!existsSync(ENV_PATH)) {
+  // ── THE FILE MOVED, SO ASK THE SAME QUESTION THE LOADER ASKS (tracker issue 159) ─────────────────
+  //
+  // `.env` now resolves to `~/.config/clearotron/.env`, and an install configured before that ruling has
+  // it at the old path, where the loader still reads it. Doctor reporting "no .env" over a file every
+  // command is reading would be the same defect this bundle fixes on the portal's health route: two
+  // surfaces, one tree, opposite answers.
+  const LEGACY_ENV_PATH = envLocalPath({ repoRoot: REPO, location: LEGACY_ENV_LOCAL_LOCATION });
+  if (!existsSync(ENV_PATH) && LEGACY_ENV_PATH !== ENV_PATH && existsSync(LEGACY_ENV_PATH)) {
+    // A WARNING, NOT A REFUSAL. This install works: the loader reads the old file and says so on every
+    // command. What it is, is one `npm install` away from losing its credentials — actionable in one
+    // move, so it is said loudly and rc stays 0, which is what rc 1 would cost every operator who
+    // configured an install before today.
+    warn(`your configuration is still at ${LEGACY_ENV_PATH}, which is read but no longer written`);
+    info(`npm owns that directory and replaces it on an upgrade, credentials included. Move the file to `
+      + `${ENV_PATH} — same contents — and nothing else changes.`);
+    const mode = statSync(LEGACY_ENV_PATH).mode & 0o777;
+    if (mode & 0o077) warn(`mode ${mode.toString(8)} — it holds credentials; 600 is the mode for that`);
+  } else if (!existsSync(ENV_PATH)) {
     const lost = configurationLostToUpgrade({ envPath: ENV_PATH, installDir: resolve(REPO) });
     if (lost) {
       problem(`no .env at ${ENV_PATH}, and this install's data directories are all present under ${lost.base}`);
       info("an `npm install` in this project replaced the package tree and took the configuration with it — "
         + "npm owns that directory and makes no promise about files written into it. Nothing in "
         + `${lost.base} was touched: the reports, workspaces and queues are all still there.`);
+      info(`it cannot happen again: configuration is written to ${ENV_PATH} now, which no upgrade replaces`);
       info(`re-run \`${invoke("install")}\` to write a new .env — it will ask the same questions, and the `
         + "answers that name those directories are the paths above");
     } else info(`none at ${ENV_PATH} — run: ${invoke("install")}`);
@@ -1586,6 +1548,52 @@ export async function runCheck() {
     // A could-not-look, and it is NOT a pass: the reader learns nothing about whether the portal can
     // render, which is the same position they were in before this section existed.
     blocking(`the portal bundle could not be read — ${e.message} — so whether /portal can render is unknown`);
+  }
+
+  // ── THE TRIGGER KEY, AND THE DEADLINE NOBODY WAS COUNTING (tracker issue 161) ────────────────────
+  //
+  // A `--background` install stores the portal's trigger key in `~/.env`, the file the units load, and
+  // it is minted with a thirty-day life. Nothing counted it down. Thirty days after an install, on a
+  // server nobody has touched, every Start stops — and the portal reports the refusal as an upstream
+  // fault, which reads like a broken engine rather than an expired key card. `doctor` printed nothing
+  // about it at all: no line, no expiry, rc 0.
+  //
+  // READ FROM `~/.env` BY NAME, because that file is deliberately not the one this command loads. The
+  // CLI reads its own `.env`; the units read theirs; the two are disjoint, so `process.env` here would
+  // answer about the wrong file and, on a foreground install, about nothing at all.
+  //
+  // NAMES AND DATES, NEVER THE TOKEN. This output goes to a terminal, into a paste, into an issue.
+  say("\n  Portal trigger key");
+  {
+    const homeEnvPath = join(homedir(), ".env");
+    const stored = existsSync(homeEnvPath) ? (readEnvFile(homeEnvPath).PORTAL_OPS_TOKEN ?? "") : "";
+    if (!stored) {
+      // NOT A PROBLEM, and not a tick either. A foreground install has no stored key by design — the
+      // launcher hands it to the children in memory. Saying which case this is beats silence, which is
+      // what the reader used to get whether or not they had one.
+      info(`none in ${homeEnvPath} — this install runs in the foreground, where the key is minted per start and never stored`);
+    } else {
+      const { opsTokenPosture } = await import("../driver/portal-service.mjs");
+      const posture = opsTokenPosture(stored);
+      if (!posture.readable) {
+        problem(`the trigger key in ${homeEnvPath} cannot be read as one — the portal will refuse every Start with "invalid access key: malformed token"`);
+        info(`re-mint it by running the launcher again: ${invoke("start --background")}`);
+      } else if (posture.expired) {
+        problem(`the trigger key expired ${posture.expiresAt} — every Start is refused, and the portal reports it as an upstream fault`);
+        info(`re-mint it by running the launcher again: ${invoke("start --background")}`);
+      } else if (posture.expiresAt === null) {
+        // An unreadable deadline is not a good one. `implausibleExp` separates a broken claim from none.
+        blocking(`the trigger key in ${homeEnvPath} carries ${posture.implausibleExp ? "an expiry that makes no sense" : "no expiry"}, so how long it has cannot be read`);
+      } else if (posture.daysLeft <= 7) {
+        // REFUSED NEAR IT, not only after. A key with days left is a booked outage: the reader who runs
+        // `doctor` this week can re-mint it in one command; the one who finds out at expiry is reading
+        // an engine fault that is not one.
+        problem(`the trigger key expires in ${posture.daysLeft} day(s), on ${posture.expiresAt}`);
+        info(`re-mint it now, before it lapses: ${invoke("start --background")}`);
+      } else {
+        ok(`the trigger key is good for ${posture.daysLeft} more day(s), until ${posture.expiresAt}`);
+      }
+    }
   }
 
   say("\n  Portal door");
@@ -2940,6 +2948,12 @@ try {
 
   // 9 ── write, atomically
   say("\n  Writing configuration");
+  // THE DIRECTORY MAY NOT EXIST, and on a fresh machine it does not. `.env` now lives under
+  // `~/.config/clearotron/` (tracker issue 140), which nothing else creates — and the failure without
+  // this line lands on the temporary file below, so it reads as a permissions problem writing `.env`
+  // rather than a missing folder. Mode 700: the file inside is 600 and holds credentials, so a
+  // world-readable directory around it advertises that it is there.
+  mkdirSync(dirname(ENV_PATH), { recursive: true, mode: 0o700 });
   if (existsSync(ENV_PATH)) {
     copyFileSync(ENV_PATH, `${ENV_PATH}.bak`);
     chmodSync(`${ENV_PATH}.bak`, 0o600);

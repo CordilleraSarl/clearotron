@@ -207,10 +207,18 @@ not about where it will run — on a packaged tree it refuses, as above.
 
 Runtime configuration is by environment variable, and there are two ways to supply them.
 
-**A `.env` at the repo root**, which the CLI entry points read for themselves — `driver/pipeline.mjs`,
+**A `.env` at `~/.config/clearotron/.env`**, which the CLI entry points read for themselves — `driver/pipeline.mjs`,
 `runner.mjs`, `enqueue.mjs`, `dev-portal.mjs`, `bin/start.mjs`, `bin/uspto-sync.mjs` and both MCP
 servers. Nothing to source and nothing to remember; each command prints one line on stderr naming what
-it read. It is git-ignored. Three things about it are worth knowing before you write one:
+it read. `npx clearotron install` writes it there for you, creating the directory at mode 700.
+
+**It used to live inside the install directory, and that is why it moved.** On a packaged install that
+directory belongs to npm, so an ordinary `npm install -g clearotron` replaced the tree and deleted the
+configuration — credentials included — with every command still exiting 0. If you configured an install
+before this change, the old file is still read and every command tells you once to move it; move it,
+contents unchanged, and the notice stops.
+
+Three more things about it are worth knowing before you write one:
 
 - **The environment always wins.** A name already set in the environment is left alone, empty values
   included — so a `.env` can never overrule the deployment running it, and exporting one variable for
@@ -428,9 +436,11 @@ marketplaces, default classes/jurisdictions, own-brand names to exclude, deliver
 a bespoke risk framework. A job resolves to a profile by the **forwarder's email domain**; if nothing
 matches, the neutral Generic default applies.
 
-- **Bundled with the repo** (`driver/profiles/`): `generic.json` (the Generic default) plus three demo
-  customers — `aurora.json`, `zephyr.json`, `petcary.json` — so you can run and read the machinery
-  immediately. `driver/profiles/README.md` documents every field.
+- **Bundled with the package** (`driver/profiles/`): `generic.json` (the Generic default) and
+  `demo-brand-owner.json`, the account the demo runs as, so you can run and read the machinery
+  immediately. `driver/profiles/README.md` documents every field. (A clone carries three more —
+  `aurora`, `zephyr`, `petcary` — which are fixtures the test suite reads, not accounts to run
+  clearances for. They are excluded from the published package for exactly that reason.)
 - **Your real customers live outside the repo.** Point `CLEAROTRON_CUSTOMERS_DIR` at your own private
   config store and the engine loads *those* accounts instead. **Same engine, different config path** —
   the code carries no customer identities.
@@ -671,7 +681,7 @@ Use the demo to see what this system produces. Use `npx clearotron start` to run
 
 ### What the first start does, once
 
-- Generates `PORTAL_SECRET` and `TRADEMARK_MCP_TOKEN_SECRET` and **appends** them to `<repo>/.env` at
+- Generates `PORTAL_SECRET` and `TRADEMARK_MCP_TOKEN_SECRET` and **appends** them to `~/.config/clearotron/.env` at
   mode 600. Append, never rewrite: that file also holds the credentials `npx clearotron install` collected.
 - Creates `~/trademark/` — `pool/`, `workspace/`, `queue/`, `outbox/`, `locks/`, an empty grants file,
   and a small git repository for saved searches. Same base directory `npx clearotron install` uses, so whichever

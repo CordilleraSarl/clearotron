@@ -35,7 +35,7 @@ import "../shared/env-local.mjs";   // step 4 / — FIRST: this program read a
 // handed it nothing and the read fell through to a default. Proven both ways from one
 // environment: without this import the value is invisible, with it the retired spelling is
 // back-filled. Placed above every other import because a side-effecting import runs in order.
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, statSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, statSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { invoke } from "../shared/invocation.mjs";   // — the printed command is resolved once, for the reader who is actually standing there
 import { join, resolve, dirname, sep } from "node:path";
@@ -43,7 +43,7 @@ import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { BRAND } from "../shared/brand.mjs";   // — the installer's own name, from the tenant seam
 import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
-import { isFrozen, demoChildren } from "../driver/demo-container.mjs";   // — one definition of what a frozen demo is, for the player AND the gate
+import { isFrozen, demoChildren, publishSource } from "../driver/demo-container.mjs";   // — one definition of what a frozen demo is, for the player AND the gate
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -106,6 +106,11 @@ if (!isFrozen(sampleDir)) {
     `Or point at any frozen run:  ${invoke("demo")} --run-dir <dir>`,
   );
 }
+// PUBLISHING WRITES A RECEIPT INTO THE RUN DIRECTORY, and `demo/` is tracked — so a reader who only READ
+// the demo came back to a dirty checkout. `publishSource` is the one definition of that rule, shared with
+// the launcher, which seeds the pool from the same container on every `--demo` start.
+const publishFrom = publishSource(sampleDir, { repoRoot: REPO });
+
 const meta = JSON.parse(readFileSync(join(sampleDir, "meta.json"), "utf8"));
 if (!meta?.runId) die(`example: ${join(sampleDir, "meta.json")} names no runId — it is not a frozen example manifest.`);
 
@@ -177,7 +182,7 @@ let published;
 try {
   // poolUrl "" on purpose: the report's own link block is for a deployment that serves the pool at a
   // public URL. This one is served from this process, at a port picked below.
-  published = await republishRun({ runId: meta.runId, meta, pool: poolRoot, poolUrl: "", runDir: join(sampleDir, "run") });
+  published = await republishRun({ runId: meta.runId, meta, pool: poolRoot, poolUrl: "", runDir: join(publishFrom, "run") });
 } catch (e) {
   die(`demo: replaying the sample failed: ${String(e?.message ?? e)}`);
 }
@@ -230,6 +235,30 @@ if (has("--once")) {
   process.exit(0);
 }
 
+/**
+ * Say so when an EARLIER demo left a file outside the base — and never tell anyone to delete it blind.
+ *
+ * "Removing the demo is one directory" is a promise, and it was not quite true before: 0.1.0 wrote the
+ * sign-in credential to the shared default, `~/.cordillera/portal-local-credential.json`, so a reader
+ * who removed the demo base left a passphrase behind — measured on a wiped machine by the test lane,
+ * against the published 0.1.0 tarball. This tree writes it inside the base, and the revocation list with
+ * it, so the promise holds now. Every install made with 0.1.0 still has the stray copy.
+ *
+ * ✕ NOT AN INSTRUCTION TO DELETE. That path is ALSO where a real, non-demo install keeps the passphrase
+ * for its own portal, and nothing here can tell the two apart. Deleting somebody's live credential to
+ * tidy up after a demo is a worse outcome than the file staying. So it is named, with what it is and
+ * what makes it safe to remove, and the reader decides.
+ */
+function strayFromAnOlderDemo() {
+  const stray = join(homedir(), ".cordillera", "portal-local-credential.json");
+  if (!existsSync(stray)) return;
+  console.log("");
+  console.log(`  One file is not in that directory:  ${stray}`);
+  console.log("  A demo run with 0.1.0 wrote the sign-in passphrase there; this one does not. It is also where");
+  console.log("  a real install keeps its own passphrase, so remove it only if this machine has no other");
+  console.log(`  ${BRAND.product} install.`);
+}
+
 // ── 4. hand over to the real portal ──────────────────────────────────────────────────────────────────
 //
 //. This used to serve driver/dev-portal.mjs, whose own first paragraph says it
@@ -248,6 +277,7 @@ if (flag("--port")) startArgs.push("--port", flag("--port"));
 if (has("--no-open")) startArgs.push("--no-open");
 
 console.log(`  Removing this demo later is one directory:  rm -rf ${demoBase}`);
+strayFromAnOlderDemo();
 console.log("");
 
 const child = spawn(process.execPath, [join(REPO, "bin", "start.mjs"), ...startArgs], {
