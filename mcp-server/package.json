@@ -1,6 +1,6 @@
 {
   "name": "trademark-artifacts-mcp",
-  "version": "0.1.1-beta.1",
+  "version": "0.1.1",
   "license": "AGPL-3.0-only",
   "private": true,
   "description": "MCP server to interrogate prelim trademark-clearance runs — list/read artifacts, trace the full decision flow, telemetry/cost, coverage, single-run search, and a gated single-step what-if. Imports the prelim-driver read-only; touches no driver/template/deploy files.",
