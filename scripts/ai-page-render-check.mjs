@@ -325,11 +325,19 @@ let addressPresses = 0
 // quietly takes the browser-refused branch, where showing the credential is CORRECT by design; the
 // battery then passes forever while never once checking the page a reader actually meets.
 //
-// WHICH OF THE THREE PRECONDITIONS IS LOAD-BEARING, measured by planting each rather than assumed:
-// removing Page.bringToFront changed nothing here, and removing Browser.grantPermissions changed
-// nothing either — 4 presses still reached the clipboard both times. USER ACTIVATION is the one that
-// matters: with a real Input.dispatchMouseEvent press, Chrome allows the write on its own. The other two
-// stay because a runner is not this box and neither costs anything, but do not read them as the fix.
+// WHY IT FAILED IS NOT ESTABLISHED, AND SAYING SO IS THE POINT OF THIS PARAGRAPH.
+//
+// The first run of this rebuilt battery came back with every `copied` false and every panel empty. Three
+// things were then changed together — a granted clipboard permission, a focused document, and a real
+// Input.dispatchMouseEvent press instead of a scripted click — and it passed. Two confident explanations
+// were written here in turn, and PLANTING KILLED BOTH: removing Page.bringToFront changes nothing,
+// removing Browser.grantPermissions changes nothing, and reverting to a scripted `.click()` changes
+// nothing. Four presses reach the clipboard in all three.
+//
+// So the cause is unknown. It may have been a fourth thing that moved in the same edit, or something
+// about the first run's profile. All three preconditions stay, because none costs anything and a runner
+// is not this box — but none of them is written down here as the fix, because that would be a cause
+// asserted from no observation, which is the defect this whole file exists to catch.
 //
 // So the successful path is counted, and zero is an ENVIRONMENT failure rather than a page regression.
 // Named that way because the symptom is indistinguishable from a pass and the cause is not in the diff.
@@ -507,10 +515,10 @@ for (const state of Object.keys(STATES)) {
 // not read by whoever meets the green job eighteen months from now.
 ok(clipboardReached > 0,
   `at least one press reached the clipboard (${clipboardReached} reached, ${clipboardRefused} refused). `
-  + 'Zero means this browser lost USER ACTIVATION — the real mouse press below is what earns the '
-  + 'clipboard, not the permission grant — and the battery has been asserting the refused fallback on '
-  + 'every deck while looking exactly like a pass. That is an environment failure, not a page '
-  + 'regression: check Input.dispatchMouseEvent before reading anything into the page.')
+  + 'Zero means this browser stopped granting the clipboard, and the battery has then been asserting '
+  + 'the refused fallback on every deck while looking exactly like a pass. That is an environment '
+  + 'failure rather than a page regression, and the cause has never been pinned down — see the note by '
+  + 'clipboardReached, which records three plants that each failed to reproduce it.')
 
 ok(commandPresses > 0, `at least one deck exercised the local-command press (saw ${commandPresses})`)
 ok(addressPresses > 0, `at least one deck exercised the address press (saw ${addressPresses})`)
