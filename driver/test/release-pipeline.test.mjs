@@ -22,8 +22,9 @@ import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { findings, BANNED_WORDS } from "../../scripts/changelog-plain-language.mjs";
 import { refusals as publishRefusals, WORKFLOW, CREDENTIAL_TOKENS } from "../../scripts/release-publish-guard.mjs";
-import { distTag, isPrerelease, STABLE, UNNAMED_PRERELEASE } from "../../scripts/release-dist-tag.mjs";
+import { distTag, isPrerelease, preModeFrom, STABLE, UNNAMED_PRERELEASE } from "../../scripts/release-dist-tag.mjs";
 import { cutDecision, versionAtHead } from "../../scripts/release-cut-decision.mjs";
+import { checksVerdict, waitForChecks, RUNNING, NOTHING_STARTED, WAITING_FOR_A_PERSON } from "../../scripts/release-version-pr-checks.mjs";
 import { refusals as completenessRefusals } from "../../scripts/release-completeness-check.mjs";
 import { notesFor } from "../../scripts/release-notes-for.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
@@ -100,6 +101,76 @@ test("tracker 97 the shipped workflow publishes on a channel it derived, never a
   // nothing else in the repository would notice, and the registry refuses the publish when it happens.
   assert.equal(WORKFLOW, ".github/workflows/release.yml",
     "npm's trusted publisher names this workflow file; renaming it breaks the publish, not a test");
+});
+
+test("tracker 97 during the pre-release phase `latest` is the pre-release, and that is a decision", () => {
+  // Owner ruling, 2026-09-05, in his words: "latest has all our fixes." While the repository is in pre
+  // mode every cut publishes as `latest`, so a friendly early user typing `npm i clearotron` gets the
+  // newest build. This arm exists because the same file refuses that outcome OUTSIDE pre mode, and the
+  // two rules are one character apart in the code and opposite in meaning.
+  assert.equal(distTag("0.1.1-beta.0", { preMode: true }), STABLE);
+  assert.equal(distTag("1.0.0-rc.1", { preMode: true }), STABLE);
+  assert.equal(distTag("0.2.0", { preMode: true }), STABLE);
+
+  // And outside it the original rule stands, for the original reason.
+  assert.equal(distTag("1.0.0-rc.1"), "rc");
+  assert.equal(distTag("0.1.1-beta.0"), "beta");
+
+  // AN UNREADABLE VERSION STILL REFUSES IN PRE MODE, and that matters more here rather than less: the
+  // answer would be `latest` for the right reason and by accident.
+  assert.throws(() => distTag("v0.1.1", { preMode: true }), /not a version this can read/);
+
+  // THE GITHUB RELEASE'S FLAG COMES FROM THE VERSION, never from the channel. In pre mode the channel is
+  // `latest` for a version that is very much a pre-release, and deriving the flag from the channel would
+  // mark it stable on the releases page.
+  assert.equal(isPrerelease("0.1.1-beta.0"), true);
+  assert.equal(distTag("0.1.1-beta.0", { preMode: true }), STABLE);
+  assert.equal(isPrerelease("0.1.1"), false);
+
+  // `pre exit` LEAVES THE FILE BEHIND with mode "exit". Reading the file's existence as the answer would
+  // keep publishing stable versions as though they were pre-releases, for ever.
+  assert.equal(preModeFrom('{"mode":"pre","tag":"beta"}'), true);
+  assert.equal(preModeFrom('{"mode":"exit","tag":"beta"}'), false);
+  assert.equal(preModeFrom(null), false);
+  // And a file it cannot read is not "not in pre mode" — that answer publishes silently onto whatever
+  // the version implies.
+  assert.throws(() => preModeFrom("{not json"), /unreadable/);
+});
+
+test("tracker 97 the version pull request merges itself, because main will not take a direct push", () => {
+  // Full automation with no bypass credential. `main` is protected with required checks, so a workflow
+  // pushing the version commit straight to it is a push the protection rejects — and without the bump
+  // landing, the notes stay pending and the next merge tries to publish a version already on the
+  // registry. Auto-merge is what gets it onto the branch through the rules rather than past them.
+  const workflow = read(WORKFLOW);
+  assert.match(workflow, /gh pr merge .*--auto/,
+    "the standing version pull request no longer merges itself — the pipeline deadlocks rather than stopping");
+  // The credential names, whole-word and case-sensitive where they are acronyms. The first draft of this
+  // matched /PAT/i, which is "patch" and "path" — it refused the workflow for containing the word
+  // `--pack-destination`. A guard that fires on ordinary English is a guard people delete.
+  for (const spelling of ["ADMIN_TOKEN", "GH_PAT", "PERSONAL_ACCESS_TOKEN", "BYPASS_TOKEN"]) {
+    assert.ok(!workflow.includes(spelling),
+      `a credential that can write past branch protection appeared in the release workflow (${spelling})`);
+  }
+  // And the guard that reads for credentials generally is still the one that runs first in both jobs.
+  // Counted as INVOCATIONS, not mentions: the file names itself in a comment as well, and an arm that
+  // counts the string goes red the day somebody explains the guard in prose.
+  assert.equal((workflow.match(/run: node scripts\/release-publish-guard\.mjs/g) ?? []).length, 2,
+    "the credential guard no longer runs in both jobs of the release workflow");
+});
+
+test("tracker 97 the branch is checked explicitly, because these guards are the whole gate", () => {
+  // The approval environment is gone by the owner's ruling: nothing human stands between a merge and a
+  // publish. What stands there is this list, so it is asserted as a list.
+  const workflow = read(WORKFLOW);
+  for (const [what, re] of [
+    ["the event", /github\.event_name.*=.*"push"/],
+    ["the repository", /github\.repository == 'CordilleraSarl\/clearotron'/],
+    ["the branch", /refs\/heads\/main\|refs\/tags\/v\*/],
+    ["the version, from the commit", /release-cut-decision\.mjs/],
+  ]) {
+    assert.match(workflow, re, `the publish path no longer checks ${what}`);
+  }
 });
 
 test("tracker 97 a pre-release goes to its own channel, and a stable one to latest", () => {
@@ -243,4 +314,153 @@ test("tracker 97 the published artefact is named as a file, not as a repository"
   assert.ok(publishLine, "the workflow no longer has a publish command to read");
   assert.match(publishLine, /npm publish "\.\//,
     "the tarball is passed to npm without a leading `./`, so npm reads it as a git repository and refuses");
+});
+
+test("tracker 97 a version pull request whose checks never started is a refusal, not a wait", async () => {
+  // MEASURED HERE, 2026-09-05. The fork-approval policy counted `github-actions[bot]` as an external
+  // contributor, so the run for the version pull request was created in `action_required`. The pull
+  // request carried ZERO check runs, auto-merge had nothing to wait for and nothing to refuse on, and
+  // nothing anywhere was red. The version sat unmerged with the release notes still pending.
+
+  // Something is running: the pull request will merge or it will not, and either is an answer.
+  const running = checksVerdict({
+    checkRuns: [{ name: "The offline suites", status: "in_progress", conclusion: null }],
+    workflowRuns: [{ name: "CI", status: "in_progress", conclusion: null }],
+  });
+  assert.equal(running.state, RUNNING);
+
+  // Nothing at all. The empty list that reads as a pass.
+  assert.equal(checksVerdict({ checkRuns: [], workflowRuns: [] }).state, NOTHING_STARTED);
+  assert.equal(checksVerdict({}).state, NOTHING_STARTED);
+
+  // ── THE ARM THAT DECIDES THE DESIGN ──────────────────────────────────────────────────────────────
+  // The shape actually met: a workflow run parked on an approval, and ZERO check runs beside it, because
+  // a parked run publishes none. A guard that only asked "is the check-run count above zero" would call
+  // this "nothing started" — true, useless, and it sends the next reader hunting a broken trigger
+  // instead of a policy setting. `action_required` is read FIRST, and off the surface that carries it.
+  const parkedAlone = checksVerdict({
+    checkRuns: [],
+    workflowRuns: [{ name: "CI", status: "action_required", conclusion: null }],
+  });
+  assert.equal(parkedAlone.state, WAITING_FOR_A_PERSON);
+  assert.notEqual(parkedAlone.state, NOTHING_STARTED);
+  assert.deepEqual(parkedAlone.blocked, ["CI"]);
+  assert.match(parkedAlone.reason, /fork-pull-request approval policy/);
+
+  // And parked BESIDE green ones — the second run of a two-workflow repository — is still a refusal.
+  // This is the member a count-based arm passes cleanly: the count is not zero.
+  const parkedBeside = checksVerdict({
+    checkRuns: [{ name: "Lint", status: "completed", conclusion: "success" }],
+    workflowRuns: [
+      { name: "CI", status: "completed", conclusion: "success" },
+      { name: "Release", status: "completed", conclusion: "action_required" },
+    ],
+  });
+  assert.equal(parkedBeside.state, WAITING_FOR_A_PERSON);
+  assert.deepEqual(parkedBeside.blocked, ["Release"]);
+
+  // A check RUN can carry it too, and the verdict reads both surfaces rather than trusting one.
+  assert.equal(checksVerdict({
+    checkRuns: [{ name: "The offline suites", status: "completed", conclusion: "action_required" }],
+  }).state, WAITING_FOR_A_PERSON);
+});
+
+test("tracker 97 the wait for checks gives up loudly, and never waits out a person", async () => {
+  // A check row can land minutes after the event that fired it. The window is what separates a slow
+  // start from one that is not coming, so the poll has to actually poll — and then actually stop.
+  const slept = [];
+  const sleep = async (ms) => { slept.push(ms); };
+
+  // Nothing, every time: it exhausts the window and returns the refusal rather than hanging.
+  let reads = 0;
+  const never = await waitForChecks({
+    read: () => { reads += 1; return { checkRuns: [], workflowRuns: [] }; },
+    sleep, attempts: 4, everyMs: 15000,
+  });
+  assert.equal(never.state, NOTHING_STARTED);
+  assert.equal(reads, 4, "the poll did not use its whole window before refusing");
+  assert.equal(slept.length, 3, "the poll slept after its last look, which wastes the window's last read");
+
+  // Late, but it arrives: that is a pass, and it is why this waits at all.
+  slept.length = 0;
+  let n = 0;
+  const late = await waitForChecks({
+    read: () => (++n < 3
+      ? { checkRuns: [], workflowRuns: [] }
+      : { checkRuns: [{ name: "CI", status: "queued", conclusion: null }], workflowRuns: [] }),
+    sleep, attempts: 8, everyMs: 15000,
+  });
+  assert.equal(late.state, RUNNING);
+  assert.equal(late.attempts, 3);
+
+  // A PERSON IS NOT WAITED OUT. An approval is resolved by somebody clicking, never by a job sleeping,
+  // so a parked run returns on the first look and burns none of the window.
+  slept.length = 0;
+  const parked = await waitForChecks({
+    read: () => ({ checkRuns: [], workflowRuns: [{ name: "CI", status: "action_required" }] }),
+    sleep, attempts: 8, everyMs: 15000,
+  });
+  assert.equal(parked.state, WAITING_FOR_A_PERSON);
+  assert.equal(parked.attempts, 1);
+  assert.deepEqual(slept, [], "the job slept waiting for an approval that only a person can give");
+
+  // Driving it with no way to look is a could-not-look, not an empty answer.
+  await assert.rejects(() => waitForChecks({ sleep }), /needs a read\(\)/);
+});
+
+test("tracker 97 the pipeline asks whether the version pull request's checks started, and a rehearsal stays a rehearsal", () => {
+  const workflow = read(WORKFLOW);
+  // The auto-merge step and the assertion that its checks exist are a pair: enabling auto-merge without
+  // it is how a pull request waits for ever on a check nobody created.
+  assert.match(workflow, /run: node scripts\/release-version-pr-checks\.mjs/,
+    "the pipeline enables auto-merge without checking that anything will ever run for it to wait on");
+  const lines = workflow.split("\n");
+  const auto = lines.findIndex((l) => /gh pr merge .*--auto/.test(l));
+  const asks = lines.findIndex((l) => /release-version-pr-checks\.mjs/.test(l) && /run:/.test(l));
+  assert.ok(auto > -1 && asks > auto,
+    "the checks assertion no longer follows the auto-merge it exists to protect");
+
+  // THE REHEARSAL. `workflow_dispatch` is forced to --dry-run, and the branch check must not reach it:
+  // a rehearsal that refuses to run anywhere but main rehearses nothing.
+  //
+  // ASSERTED AS NESTING, NOT AS ORDER, and the difference is the whole arm. The first draft of this
+  // checked that the branch case appeared after the `elif push` line — which stays true when the case is
+  // hoisted back out to the top of the step, one indentation level up, where it applies to a dispatch
+  // again. Planted exactly that way, the arm passed. So the closing `fi` is what bounds it: the case has
+  // to sit BETWEEN the push arm and the end of the conditional, and be indented inside it.
+  const dispatch = lines.findIndex((l) => /if \[ "\$\{\{ github\.event_name \}\}" = "workflow_dispatch" \]/.test(l));
+  assert.ok(dispatch > -1, "the rehearsal arm is gone from the publish gate");
+  const indent = (i) => lines[i].length - lines[i].trimStart().length;
+  const opens = indent(dispatch);
+  const push = lines.findIndex((l, i) => i > dispatch && /elif \[ "\$\{\{ github\.event_name \}\}" = "push" \]/.test(l));
+  assert.ok(push > -1, "the push arm of the publish gate is gone");
+  const closes = lines.findIndex((l, i) => i > push && l.trim() === "fi" && indent(i) === opens);
+  assert.ok(closes > -1, "the event conditional in the publish gate no longer closes where it opened");
+  const branchCase = lines.findIndex((l) => /refs\/heads\/main\|refs\/tags\/v\*/.test(l));
+  assert.ok(branchCase > -1, "the explicit branch check is gone");
+  assert.ok(push < branchCase && branchCase < closes,
+    "the branch check no longer sits inside the push arm, so a dispatched rehearsal now fails instead of rehearsing");
+  assert.ok(indent(branchCase) > opens,
+    "the branch check is indented at the conditional's own level, which is outside every arm of it");
+});
+
+test("tracker 97 the workflow does not describe an approval gate it no longer has", () => {
+  // The class, not the instance: a file whose comments contradict its code teaches the next reader to
+  // trust the comment. The `npm` environment kept its NAME — npm's trusted publisher is registered
+  // against it — and lost the reviewer and the protected-branches policy on 2026-09-05. Measured that
+  // day: the repository has zero environments at all.
+  const workflow = read(WORKFLOW);
+  assert.match(workflow, /^\s*environment: npm$/m,
+    "the environment name npm's trusted publisher is registered against is gone; the registry will refuse the publish");
+  for (const stale of [
+    /PAUSES in the Actions UI/,
+    /until\s+#?\s*he approves it/,
+    /required reviewer plus a protected-branches policy, added after/,
+  ]) {
+    assert.ok(!stale.test(workflow),
+      `the workflow still describes the approval gate that was removed: ${stale}`);
+  }
+  // And it says what carries the removed protected-branches half instead of leaving the gap silent.
+  assert.match(workflow, /explicit ref check in the step below is what carries that/,
+    "the workflow no longer says what replaced the environment's protected-branches policy");
 });

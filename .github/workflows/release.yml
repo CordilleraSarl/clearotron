@@ -88,6 +88,7 @@ jobs:
       # `publish:` is absent because changesets publishes workspace packages, and the artefact is the
       # root package, which is not one of them. Publishing is the job below.
       - name: Open or update the standing version pull request
+        id: changesets
         uses: changesets/action@v1
         with:
           version: node scripts/release-version.mjs
@@ -95,6 +96,34 @@ jobs:
           commit: 'Cut a version'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── THE VERSION PULL REQUEST MERGES ITSELF (owner ruling, 2026-09-05) ────────────────────────────
+      #
+      # Full automation during the pre-release phase: a merge carrying release notes cuts a version and
+      # publishes it, with no click anywhere. The version still lands on `main` THROUGH A PULL REQUEST,
+      # which is not ceremony — `main` is protected with required checks, so a workflow pushing the
+      # version commit straight to it is a push the protection rejects. Auto-merge is how the bump gets
+      # onto the branch without a credential that can write past the rules; a token that could do that
+      # could do it for anything.
+      #
+      # WITHOUT THIS THE PIPELINE DEADLOCKS RATHER THAN STOPPING: the bump never lands, the notes stay
+      # pending, and the next merge tries to publish a version that is already on the registry.
+      - name: Let it merge itself once its checks pass
+        if: steps.changesets.outputs.pullRequestNumber != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge "${{ steps.changesets.outputs.pullRequestNumber }}" --squash --auto
+
+      # AND THE CHECKS IT WAITS FOR HAVE TO EXIST. Auto-merge waits for required checks; a check that
+      # never starts is not a check that failed, and the pull request simply sits there. That happened
+      # here on 2026-09-05 — the fork-approval policy counted `github-actions[bot]` as an external
+      # contributor, the run was created in `action_required`, and the pull request carried zero check
+      # runs. Nothing was red. This refuses instead, and says which of the two shapes it found.
+      - name: The checks it waits for actually started
+        if: steps.changesets.outputs.pullRequestNumber != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/release-version-pr-checks.mjs "${{ steps.changesets.outputs.pullRequestNumber }}"
 
       # A VERSION WITH NO TAG HAS NOT BEEN RELEASED — asked of the COMMIT, never of the working tree.
       #
@@ -119,14 +148,20 @@ jobs:
           || needs.version.outputs.cut == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # THIS NAME CARRIES TWO THINGS, AND LOSING IT LOSES BOTH. The registry's trusted publisher is
-    # registered against it, so renaming it makes npm refuse the publish — and the environment is where
-    # the owner's approval gate lives: a required reviewer plus a protected-branches policy, added after
-    # this job started once on a version nobody had cut. The job therefore PAUSES in the Actions UI until
-    # he approves it, and cannot run from a pull-request branch at all.
+    # THIS NAME IS THE REGISTRY'S, AND IT IS ALL IT IS NOW. npm's trusted publisher for this package is
+    # registered against the repository, this workflow's FILENAME and this ENVIRONMENT NAME; renaming any
+    # of the three makes the registry refuse the publish. Nothing else hangs on it.
     #
-    # The environment holds no secrets and must not be given any. The approval is a person, not a
-    # credential; no agent approves that deployment.
+    # IT USED TO CARRY THE APPROVAL GATE, AND NO LONGER DOES. A required reviewer plus a protected-
+    # branches policy lived here, added after this job once started on a version nobody had cut, and the
+    # owner's 2026-09-05 ruling removed both: during the pre-release phase a merge publishes with no
+    # click anywhere. Measured the same day — the repository has zero environments, so this line
+    # re-creates `npm` unprotected on the next run. Its protected-branches half was what stopped a
+    # publish from a pull-request branch; the explicit ref check in the step below is what carries that
+    # now, and it is the reason that check is spelled out rather than left implied.
+    #
+    # The environment holds no secrets and must not be given any: the credential is minted per publish
+    # from the run's OIDC token and never stored.
     environment: npm
     permissions:
       contents: write     # the tag and the GitHub release
@@ -157,18 +192,40 @@ jobs:
       #    hand, and one that disagrees with the manifest ships an artefact nobody can trace back. It
       #    refuses rather than reconciling: two spellings disagreeing means somebody's intention is
       #    unrecorded, and guessing which they meant is how the wrong one wins.
-      #  · the channel is derived from the version, never defaulted. `npm publish` with no `--tag`
-      #    publishes to `latest`, so a beta with no tag becomes what every new user installs.
+      #  · the channel is derived, never defaulted. `npm publish` with no `--tag` publishes to `latest`,
+      #    and a version reaching `latest` by default rather than by decision is the failure. DURING THE
+      #    PRE-RELEASE PHASE `latest` IS the pre-release, by the owner's ruling — "latest has all our
+      #    fixes" — and `beta` is deliberately not also set: npm exchanges its OIDC token inside
+      #    `npm publish` and nowhere else, so a second tag would need a long-lived credential in this
+      #    repository, which is the one thing this design forbids. One publish, one tag.
       - name: What is being published, and whether this run may publish it
         id: what
         run: |
           set -euo pipefail
           VERSION=$(node -p "require('./package.json').version")
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            # A rehearsal, and it stays one on whatever branch it was dispatched from — that is the
+            # point of being able to dispatch it. The branch check below is skipped here BECAUSE the
+            # dry-run flag is already set: a rehearsal that refused to rehearse anywhere but main would
+            # be a rehearsal of nothing.
             echo "This is a rehearsal: the publish step will run with --dry-run."
             echo "dry_flag=--dry-run" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event_name }}" = "push" ]; then
             echo "dry_flag=" >> "$GITHUB_OUTPUT"
+            # ── THE BRANCH, EXPLICITLY, BECAUSE THESE GUARDS ARE NOW THE WHOLE GATE ────────────────────
+            #
+            # There is no human between a merge and a publish any more: the environment's approval gate
+            # is gone by the owner's ruling, and its protected-branches half went with it. What stands
+            # between this repository and the registry is this step — the event, the repository, the
+            # branch, a version read from the commit, and the check that it has not already been
+            # released. A tag push is the other way in and is named as itself.
+            case "${{ github.ref }}" in
+              refs/heads/main|refs/tags/v*) ;;
+              *)
+                echo "::error::A release publishes from main or from a v* tag. This run is on ${{ github.ref }}."
+                exit 1
+                ;;
+            esac
           else
             echo "::error::A release publishes on a push. This run is a ${{ github.event_name }}."
             exit 1
