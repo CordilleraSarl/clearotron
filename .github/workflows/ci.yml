@@ -57,9 +57,14 @@ on:
   # waits on checks that never start. A dispatch is not a fork event and needs no approval; its check
   # runs land on the same head SHA under the same job names, which is what branch protection matches on.
   #
-  # BOTH JOBS RUN ON A DISPATCH, and that was measured rather than assumed: nothing here is gated on
+  # EVERY JOB RUNS ON A DISPATCH, and that was measured rather than assumed: nothing here is gated on
   # `github.event_name`. On the repository this one grew out of, a dispatch ran one tier alone and made a
   # run that verified nothing — a warning worth checking before building on it, and it does not carry.
+  #
+  # The count moved from two jobs to four with the public cut, and the invariant is what survived, not
+  # the number. `guards` reads a diff and so needs a base; it takes the pull request's when there is one
+  # and `origin/main` when there is not, rather than gating itself on the event and going missing from
+  # exactly the dispatched run the paragraph above exists to make whole.
   workflow_dispatch:
 
 # LEAST PRIVILEGE, and it matters more here than it does on a private repository: a public repository
@@ -265,10 +270,6 @@ jobs:
   guards:
     name: The pattern guards
     runs-on: ubuntu-latest
-    # PULL REQUESTS ONLY, because the question is what a CHANGE added and a push to main has no base to
-    # ask it against. Everything reaching main goes through a pull request, so nothing slips past by
-    # taking the other path.
-    if: github.event_name == 'pull_request'
     steps:
       # THE WHOLE HISTORY, and it is not caution. The default shallow fetch does not carry the base
       # commit, so `git diff base...HEAD` fails to resolve it — and the way that fails is the shape this
@@ -281,4 +282,14 @@ jobs:
       # No `npm ci`. This guard reads git and nothing else, so it answers in seconds and gives a
       # contributor the correction while they are still holding the change.
       - name: No bare reference is added in a comment or in prose
-        run: node scripts/added-reference-check.mjs --base "${{ github.event.pull_request.base.sha }}"
+        # THE BASE, WRITTEN OUT RATHER THAN LEFT TO FALL THROUGH. A pull request carries the commit it
+        # was opened against, and that is the only base that answers "what did this change add". Every
+        # other event carries none, and the expression then renders the empty string.
+        #
+        # An empty `--base` does NOT fail: measured, the script reads it as absent and uses its own
+        # `origin/main` default, printing `read N added line(s) against origin/main`. So the fallback
+        # here changes no behaviour — it moves the choice to where a reader of this file can see it,
+        # instead of leaving an empty argument to be silently rewritten one layer down. On a dispatch
+        # `origin/main` is the branch's real base; on a push to main it resolves to HEAD, and the guard
+        # prints a zero-line read rather than a clean verdict on a change it never had.
+        run: node scripts/added-reference-check.mjs --base "${{ github.event.pull_request.base.sha || 'origin/main' }}"
