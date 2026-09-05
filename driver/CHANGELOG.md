@@ -1,5 +1,15 @@
 # prelim-driver
 
+## 0.1.4
+
+### Patch Changes
+
+- 6595180: Fixed: A report now says a case-law source could not be confirmed, rather than saying this installation does not have it.
+- 6595180: For operators: The live-surface check no longer calls a healthy installation broken over a service file the product never shipped.
+- 6595180: Fixed: Connecting an assistant now says what went wrong when it stops part-way, and what it had already changed.
+- 6595180: Fixed: Checking a settings file now reports on the file you named, not the one this machine happens to use.
+- 6595180: For operators: The end-to-end harness now recognises the worker draining queues here, instead of offering to start a second one.
+
 ## 0.1.3
 
 ### Patch Changes
