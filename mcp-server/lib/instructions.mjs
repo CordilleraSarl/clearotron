@@ -44,6 +44,24 @@ import { fileURLToPath } from "node:url";
 const SKILLS = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "skills");
 const SKILL_DIR = Object.freeze({ client: "clearotron-client", account: "clearotron-account", ops: "clearotron-ops" });
 
+// ── A PACK MAY BE MORE THAN ONE FILE (tracker issue 148) ──────────────────────────────────────────
+//
+// The ops SKILL.md tells the assistant twice that delivery "comes back to you as outbox events (see
+// COURIER.md)" — and this reader only ever opened SKILL.md, so from the assistant's side that document
+// did not exist. Driving it, the assistant reported "checking a suspicious reference to a nonexistent
+// skill."
+//
+// SHIPPED RATHER THAN DE-REFERENCED, and that was a judgement rather than the cheaper default. The
+// issue is explicit that deleting the reference might be the right fix, so: COURIER.md is 46 lines
+// naming the delivery loop the ops assistant is supposed to execute — send the packet's body VERBATIM,
+// `mark_sent` is the guard, a retry's `alreadySent` is success. An assistant that cannot read that
+// still has to deliver, and will improvise the routing of a client's report. The reference is correct
+// and the pack was incomplete.
+//
+// EXTRA FILES ARE OPTIONAL BY DESIGN: an audience with none is unchanged, and a listed file that
+// cannot be read leaves the rest of the pack intact rather than blanking the briefing.
+const PACK_EXTRAS = Object.freeze({ ops: ["COURIER.md"] });
+
 /** Drop a leading `---\n…\n---` block. Exported so its behaviour is testable rather than inferred. */
 export function stripFrontmatter(text) {
   const s = String(text ?? "");
@@ -61,6 +79,12 @@ function pack(audience) {
   const dir = SKILL_DIR[audience];
   try { text = dir ? (stripFrontmatter(readFileSync(join(SKILLS, dir, "SKILL.md"), "utf8")).trim() || null) : null; }
   catch { text = null; }   // a missing pack must never stop the server answering — guidance is not auth
+  for (const extra of (dir && text ? PACK_EXTRAS[audience] ?? [] : [])) {
+    try {
+      const more = stripFrontmatter(readFileSync(join(SKILLS, dir, extra), "utf8")).trim();
+      if (more) text += `\n\n${more}`;
+    } catch { /* an unreadable extra leaves the rest of the briefing standing */ }
+  }
   cache.set(audience, text);
   return text;
 }

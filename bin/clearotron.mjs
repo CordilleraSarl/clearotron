@@ -179,6 +179,32 @@ const [verb, ...rest] = process.argv.slice(2);
     if (signal) process.exit(128 + (SIG.signals[signal] ?? 0));
     process.exit(code ?? 0);
   });
+
+  // ── A SIGNAL MUST REACH THE CHILD, BECAUSE THIS IS THE ONLY PID A READER CAN SEE (tracker issue 176) ─
+  //
+  // The header above says this file "spawns and forwards, and does not look at what it is forwarding".
+  // That was written about ARGUMENTS and read as though it covered signals, which it did not.
+  //
+  // `bin/example.mjs` carries the same fix one level down, and the drive that proved it found this one:
+  // killing the visible pid tore down nothing, because the visible pid is THIS shim. Its child survived
+  // and reparented to init with the whole supervisor under it, so the handler down there never got a
+  // signal. Three doors stayed bound on a machine the reader believed they had stopped.
+  //
+  // SIGINT ALONE WAS NEVER THE GAP. A terminal delivers it to the whole foreground process group, so
+  // Ctrl-C already reached the child. `kill <pid>` on a backgrounded command does not — it is delivered
+  // to this process alone, and node's default killed the wrapper instantly. That is the orphan.
+  //
+  // FORWARDED ONCE, THEN THE DEFAULT COMES BACK. Removing the last listener restores node's default
+  // disposition (verified, not assumed), so a second Ctrl-C still kills the shim rather than hanging on
+  // a child that is ignoring the signal. The `exit` handler above still reports the child's status, so
+  // an operator who waits gets the faithful 128+n rather than this process's own death.
+  for (const sig of ["SIGTERM", "SIGINT", "SIGHUP"]) {
+    const forward = () => {
+      process.off(sig, forward);
+      try { child.kill(sig); } catch { /* already gone — nothing to tear down */ }
+    };
+    process.on(sig, forward);
+  }
 }
 
 // RESOLVE BOTH SIDES THROUGH SYMLINKS. `npm install` puts a symlink at node_modules/.bin/clearotron, so

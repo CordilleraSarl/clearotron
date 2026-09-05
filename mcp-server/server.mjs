@@ -47,7 +47,7 @@ import { readCapped, mimeFor } from "./lib/util.mjs";
 import { readEvents, projectTimeline } from "./lib/events.mjs";
 import { tokenize, scoreLine } from "./lib/lexsearch.mjs";
 import { artifactToStage, listArtifactVersions, assertDiffRefsSafe } from "./lib/artifacts.mjs";
-import { authorize, visibleTools, USER_ARTIFACTS, ACCOUNT_ARTIFACTS, accountMayReadArtifact, assertAccountAccess, accountVisible, TOOL_SCOPES } from "./lib/scope.mjs";
+import { authorize, visibleTools, USER_ARTIFACTS, ACCOUNT_ARTIFACTS, accountMayReadArtifact, assertAccountAccess, accountVisible, TOOL_SCOPES, readOnlyFor } from "./lib/scope.mjs";
 // The AUDIT-CHAIN projections (owner ruling 2026-08-27). Imported eagerly: it pulls only scrub.mjs, which
 // this file already loads, so there is nothing here for a lazy import to save.
 import { accountRun, accountTrace, accountTimeline, accountFinding, accountFindingList,
@@ -633,9 +633,24 @@ export function describeForAudience(def, kind) {
   return text ? { ...def, description: text(kind) } : def;
 }
 
+/**
+ * Attach MCP tool annotations — tracker issue 148.
+ *
+ * No tool declared any, so a client could not tell `brief` from `start_run` and asked before every
+ * call. `readOnlyHint` is DERIVED from the scope table's `write` flag (`readOnlyFor`) rather than
+ * hand-maintained here: a second name for one fact desynchronises the moment one is edited, and this
+ * fact already decides who may call the tool at all.
+ *
+ * `destructiveHint` is deliberately NOT set. The SDK's default for a non-read-only tool is the
+ * cautious one, and claiming a write is non-destructive is a promise this table cannot keep.
+ */
+export function withAnnotations(def) {
+  return { ...def, annotations: { readOnlyHint: readOnlyFor(def.name) } };
+}
+
 export function attachHandlers(server, { scope = { kind: "ops", runId: null }, local = true } = {}) {
   const allow = visibleTools({ kind: scope.kind, local });
-  const toolDefs = TOOL_DEFS.filter((d) => allow(d.name)).map((d) => describeForAudience(d, scope.kind));
+  const toolDefs = TOOL_DEFS.filter((d) => allow(d.name)).map((d) => withAnnotations(describeForAudience(d, scope.kind)));
   server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: toolDefs }));
 
   // Prompts are guidance, like the pack: offered to the two client audiences, empty for everyone else.

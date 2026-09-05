@@ -1,7 +1,7 @@
 {
   "name": "clearotron",
   "type": "module",
-  "version": "0.1.1-beta.0",
+  "version": "0.1.1-beta.1",
   "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
@@ -73,7 +73,6 @@
     "globals": "^17.11.0"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.112.5",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "buffers": "file:vendor/buffers",
     "exceljs": "^4.4.0",

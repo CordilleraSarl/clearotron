@@ -508,7 +508,16 @@ test("tracker 97 the pipeline asks whether the version pull request's checks sta
       `the version job does not grant \`${scope}\`, so the step that reads whether its checks started `
       + "gets a 403 — and naming any permission sets every unnamed one to `none`");
   }
-  const auto = lines.findIndex((l) => /gh pr merge .*--auto/.test(l));
+  // THE AUTO-MERGE WRITES ITS OWN MESSAGE. Left to GitHub's default, the squash headline gains `(#23)` —
+  // the bare `#NNN` this project bans from commit messages, put into public history by our own
+  // automation. Measured on the first version pull request that merged itself.
+  const merge = workflow.slice(workflow.indexOf("gh pr merge"), workflow.indexOf("The checks it waits for"));
+  assert.match(merge, /--subject "Release \$VERSION"/,
+    "the auto-merge takes GitHub's default headline, which appends `(#N)` to it");
+  assert.match(merge, /--body "\$NOTES"/, "the auto-merge leaves the body to GitHub, which composes it from the pull request");
+  assert.ok(!/\(#\$?\{?\w*\}?\)/.test(merge), "a `(#N)` shape appeared in the message the workflow writes");
+
+  const auto = lines.findIndex((l) => /gh pr merge/.test(l));
   const asks = lines.findIndex((l) => /release-version-pr-checks\.mjs/.test(l) && /run:/.test(l));
   assert.ok(auto > -1 && asks > auto,
     "the checks assertion no longer follows the auto-merge it exists to protect");
@@ -638,6 +647,13 @@ test("tracker 97 a version that merged itself still publishes, because that merg
   assert.match(workflow, /^\s*schedule:$/m, "the cron that notices a self-merged cut is gone, so a version "
     + "that merges itself sits on main unpublished for ever");
   assert.match(workflow, /cron: '\*\/5 \* \* \* \*'/, "the cron interval changed — deliberate or not, say so here");
+  // AND IT SAYS IT IS UNPROVEN. As of 2026-09-05 this schedule has never fired on this repository, and a
+  // reader who assumes it works will design around a recovery that has never happened. When somebody
+  // sees a `schedule` run publish, they delete this sentence — and this arm tells them it is theirs to
+  // delete rather than leaving a stale warning in the file for ever.
+  assert.match(workflow, /NEVER FIRED ON THIS REPOSITORY/,
+    "the workflow no longer records that its cron is unproven — if that is because it has now fired, say "
+    + "so with the run, and remove this assertion in the same change");
 
   // The reason has to travel WITH it, or the next reader deletes a cron that looks like polling for
   // nothing. This asserts the explanation is present, not merely the trigger.
