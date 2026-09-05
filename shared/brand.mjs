@@ -85,7 +85,7 @@ export const BRAND = {
  * marking only when a profile asked; render-knockout.mjs printed the short one unconditionally, in a
  * hand-rolled array join. Two copies of one firm-wide document marking, and they had already drifted on
  * BOTH the wording and the condition. `shared/brand.mjs` is the module both renderers already import and
- * is explicitly NOT frozen (driver/test/render-frozen.test.mjs:16), so the rule has one home and the
+ * is explicitly NOT frozen — the frozen-renderer guard names it as an exception — so the rule has one home and the
  * frozen renderer pays no extra hash for it.
  *
  * TWO STATES SINCE, and the surviving distinction is still the whole point:
