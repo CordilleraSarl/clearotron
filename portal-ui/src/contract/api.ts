@@ -837,12 +837,36 @@ export type AuthState = {
   readonly missing: readonly string[]
 }
 
+export type Disagreement = {
+  readonly what: string
+  readonly capture: string | null
+  readonly live: string | null
+  readonly effect: string | null
+}
+
+export type LastRun = {
+  readonly capturedAt: string | null
+  readonly disagrees: readonly Disagreement[] | null
+}
+
 export type FlagView = {
   /** False ⇒ no snapshot. NOT the same as "everything off", and never rendered as such. */
   readonly available: boolean
   readonly note: string | null
-  readonly capturedAt: string | null
-  readonly stale: boolean
+  /**
+   * WHICH READING THIS PAGE IS SHOWING. `live` is the deployment's own configuration, read at request
+   * time, and is the answer (owner ruling 2026-09-05). `capture` means the service could not derive a
+   * live posture and this is what the last run recorded — said out loud, because presenting an old
+   * reading as current fact without naming it is the defect that ruling was made about.
+   */
+  readonly source: 'live' | 'capture' | null
+  /**
+   * What the LAST RUN saw, and where it disagrees with the live reading above. Secondary by design.
+   * `disagrees` is `[]` when the last run ran under this same configuration, rows when it did not, and
+   * `null` when nothing was compared — three facts, and the page must not render the third as the first.
+   * `lastRun` itself is null when no run has ever recorded a capture here.
+   */
+  readonly lastRun: LastRun | null
   readonly built: Record<string, unknown> | null
   readonly flags: readonly Flag[]
   /**
@@ -1840,8 +1864,29 @@ export const api = {
     call('/portal/admin/config', (b) => ({
       available: b['available'] === true,
       note: asString(b['note']),
-      capturedAt: asString(b['capturedAt']),
-      stale: b['stale'] === true,
+      source: b['source'] === 'live' ? 'live' : b['source'] === 'capture' ? 'capture' : null,
+      // NOT `asRecord`, for the reason the engine/providers pair below already states: a missing
+      // `lastRun` means no run has ever recorded a capture on this box, and an empty object would render
+      // as a run that recorded nothing. `disagrees` keeps all three of its states across the hop.
+      lastRun: b['lastRun'] != null && typeof b['lastRun'] === 'object' && !Array.isArray(b['lastRun'])
+        ? (() => {
+            const r = b['lastRun'] as Record<string, unknown>
+            return {
+              capturedAt: asString(r['capturedAt']),
+              disagrees: Array.isArray(r['disagrees'])
+                ? (r['disagrees'] as unknown[]).map((d) => {
+                    const x = d as Record<string, unknown>
+                    return {
+                      what: asString(x['what']) ?? '',
+                      capture: asString(x['capture']),
+                      live: asString(x['live']),
+                      effect: asString(x['effect']),
+                    }
+                  })
+                : null,
+            }
+          })()
+        : null,
       built: b['built'] != null ? asRecord(b['built']) : null,
       flags: asArray(b['flags']).map((f) => {
         const r = f as Record<string, unknown>

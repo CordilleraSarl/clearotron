@@ -1,21 +1,28 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The capability page says when its capture no longer describes this deployment (tracker issue 170).
+// The configuration page answers LIVE, and the last run's capture is the secondary row (tracker 170).
 //
-// WHY AN AGE WAS NEVER THE GUARD IT LOOKED LIKE. The snapshot's only writers were a run and the
-// launcher. A deployment being CONFIGURED runs nothing by definition — so its capture is stale for
-// exactly as long as somebody is working on the configuration, which is exactly when they are reading
-// the page. Found live on the production install: the register provider was moved from signa to
-// clarivate and every service restarted onto it, and the page still said Signa. It happened to be 26
-// hours old, so a banner appeared and the owner asked. An hour earlier the same page would have shown
-// the same wrong answer in silence.
+// THE RULING. Owner, 2026-09-05: "the global configuration page shows LIVE configuration, always. No
+// run-time snapshot as the source of truth — I don't see why it needs to take an old snapshot." Age
+// banners go with it.
 //
-// So the two arms this file must carry are the two the issue names, and they pull in opposite
-// directions on purpose:
+// WHY AN AGE WAS NEVER THE GUARD IT LOOKED LIKE, which is what the ruling replaces. The snapshot's only
+// writers were a run and the launcher. A deployment being CONFIGURED runs nothing by definition — so its
+// capture is stale for exactly as long as somebody is working on the configuration, which is exactly when
+// they are reading the page. Found live: the register provider was moved from signa to clarivate and every
+// service restarted onto it, and the page still said Signa. It happened to be 26 hours old, so a banner
+// appeared and the owner asked. An hour earlier the same page would have shown the same wrong answer in
+// silence — the case that needed the warning was the case too fresh to get one.
 //
-//   • a capture that DISAGREES is flagged at ANY age, including under 24 hours;
-//   • a capture that AGREES is not flagged as wrong at any age — old is not the same as wrong, and a
-//     check that cried wrong on every old capture would be turned off within a week.
+// So the page reads live, and the capture keeps one job: naming any field it disagrees with. The arms
+// below pull in opposite directions on purpose:
+//
+//   • a capture that DISAGREES is named at ANY age, including a minute old;
+//   • a capture that AGREES is not reported as wrong at any age — old and wrong are different facts, and
+//     a check that cried wrong on every old capture would be switched off within a week.
+//
+// And each ABSENCE is its own fact: no capture, no live posture, and a capture too old to carry a
+// comparable field are three different answers that must not collapse into one another.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
@@ -52,7 +59,8 @@ test("a capture naming a different register is flagged as disagreeing, and names
   const root = withPool(posture({ registerProvider: "signa" }));
   try {
     const view = flagView(root, { live: posture({ registerProvider: "clarivate" }) });
-    const rows = view.disagrees;
+    assert.equal(view.source, "live", "the page must be answering from the live posture, not the capture");
+    const rows = view.lastRun.disagrees;
     assert.ok(Array.isArray(rows) && rows.length > 0, "the page did not report the disagreement at all");
     const row = rows.find((r) => /register/i.test(r.what));
     assert.ok(row, `no row named the register: ${JSON.stringify(rows)}`);
@@ -70,9 +78,8 @@ test("…and it is flagged at ANY age, including a capture written one minute ag
   const fresh = new Date(Date.now() - 60 * 1000).toISOString();
   const root = withPool(posture({ registerProvider: "signa", capturedAt: fresh }));
   try {
-    const view = flagView(root, { now: Date.now(), live: posture({ registerProvider: "clarivate" }) });
-    assert.equal(view.stale, false, "this arm is not measuring what it claims unless the capture is FRESH");
-    assert.ok(view.disagrees.some((r) => /register/i.test(r.what)),
+    const view = flagView(root, { live: posture({ registerProvider: "clarivate" }) });
+    assert.ok(view.lastRun.disagrees.some((r) => /register/i.test(r.what)),
       "a fresh capture that names the wrong register was reported as fine — which is the live defect");
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
@@ -83,9 +90,9 @@ test("a capture that agrees is old, not wrong — two days on, nothing is flagge
   const agreeing = posture({ capturedAt: twoDays });
   const root = withPool(agreeing);
   try {
-    const view = flagView(root, { now: Date.now(), live: posture() });
-    assert.equal(view.stale, true, "a two-day-old capture must still be described as old");
-    assert.deepEqual(view.disagrees, [],
+    const view = flagView(root, { live: posture() });
+    assert.equal(view.lastRun.capturedAt, twoDays, "the capture's date is still reported, as a fact rather than a warning");
+    assert.deepEqual(view.lastRun.disagrees, [],
       "an agreeing capture was reported as disagreeing because of its age — old and wrong are different "
       + "facts, and a check that conflates them gets switched off");
   } finally { rmSync(root, { recursive: true, force: true }); }
@@ -96,17 +103,22 @@ test("no capture at all reports null, never an empty list", () => {
   const root = withPool(null);
   try {
     const view = flagView(root, { live: posture() });
-    assert.equal(view.available, false);
-    assert.equal(view.disagrees, null,
+    assert.equal(view.available, true, "the page can answer LIVE even with no capture at all — that is the ruling");
+    assert.equal(view.source, "live");
+    assert.equal(view.lastRun, null,
       "`[]` is the value that means 'compared, and they agree'. There is no capture here, so nothing "
       + "was compared, and saying so with the same value would be an absence reading as a pass");
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("a caller that supplies no live posture gets null, not a clean bill of health", () => {
+test("a caller that supplies no live posture says so, rather than passing a capture off as live", () => {
   const root = withPool(posture({ registerProvider: "signa" }));
   try {
-    assert.equal(flagView(root).disagrees, null,
+    const view = flagView(root);
+    assert.equal(view.source, "capture",
+      "a capture was presented without saying which reading it is — the ruling's whole complaint was a "
+      + "page showing an old reading as current fact");
+    assert.equal(view.lastRun.disagrees, null,
       "with nothing to compare against, the honest answer is 'not checked' — and this capture would "
       + "have disagreed, so a `[]` here would be certifying the exact case the issue is about");
   } finally { rmSync(root, { recursive: true, force: true }); }

@@ -43,7 +43,11 @@
 
 import { statSync, openSync, readSync, closeSync } from "node:fs";
 
-import { readFlagSnapshot, isStale, engineFor, providersFor, postureDisagreement } from "./flag-snapshot.mjs";
+import { readFlagSnapshot, engineFor, providersFor, postureDisagreement } from "./flag-snapshot.mjs";
+// `isStale` is deliberately NOT imported any more: the age banner is retired (owner ruling, tracker
+// issue 170). The function stays exported for other readers; this page no longer asks how old a
+// reading is, because the question it was standing in for — does this still describe the box — now has
+// a direct answer in `lastRun.disagrees`.
 import { engineMode } from "./config-inventory.mjs";   // — the mode is DERIVED at read time, never stored
 
 /**
@@ -53,67 +57,91 @@ import { engineMode } from "./config-inventory.mjs";   // — the mode is DERIVE
  * facts and only one of them is true; a page that renders unknown as off invites someone to go turn on
  * things that are already running.
  */
-export function flagView(poolRoot, { now = Date.now(), live = null } = {}) {
-  const snap = readFlagSnapshot(poolRoot);
-  if (!snap) {
-    return {
-      available: false,
-      note: "No configuration snapshot has been written on this instance, so what the engine has switched on cannot be read from here. Searches are unaffected — the portal accepts requests and the engine applies its own settings.",
-      flags: [],
-      built: null,
-      // — stated rather than omitted, so this branch satisfies the same shape as the one below
-      // and a reader cannot tell "no snapshot" from "an older snapshot" by a missing key. Both are
-      // null, both mean THIS CANNOT ANSWER, and neither means "nothing is configured".
-      engine: null,
-      providers: null,
-      // — NULL, NEVER "demo". Inferring a mode from an absent snapshot is the same defect one
-      // level down: "no file" and "no engine" are different facts, and rendering the first as the
-      // second tells a first-time visitor their install is limited when what happened is that nobody
-      // has written a snapshot yet. `bin/start.mjs` writes one at boot, so this branch is the
-      // pre- install and the genuinely unanswerable one.
-      engineMode: null,
-      capturedAt: null,
-      stale: true,
-      // NULL, not `[]`. There is no capture, so nothing was compared — and `[]` is the value that
-      // means "compared, and they agree", which is the opposite of what this branch knows.
-      disagrees: null,
-    };
-  }
-  const flags = Object.entries(snap.flags ?? {}).map(([name, f]) => ({
-    name,
-    on: f.on === true,
-    // "Explicitly off" and "never configured" behave identically and read very differently to somebody
-    // deciding whether something is broken or simply was never switched on.
-    configured: f.set === true,
-    effect: f.effect ?? "unknown",
-    killSwitch: (snap.killSwitches ?? []).includes(name),
-  }));
+// One projection, used for whichever posture is the answer. Extracted when the live posture became that
+// answer, so the LIVE reading and the LAST-RUN capture cannot be shaped differently and quietly invite a
+// reader to compare two things that were built by two rules.
+function postureView(snap) {
   return {
-    available: true,
-    note: null,
-    flags,
+    flags: Object.entries(snap.flags ?? {}).map(([name, f]) => ({
+      name,
+      on: f.on === true,
+      // "Explicitly off" and "never configured" behave identically and read very differently to somebody
+      // deciding whether something is broken or simply was never switched on.
+      configured: f.set === true,
+      effect: f.effect ?? "unknown",
+      killSwitch: (snap.killSwitches ?? []).includes(name),
+    })),
     built: snap.built ?? null,
-    // — what this instance searches with. `null` when the snapshot predates the writer that
-    // records it, which is every snapshot on every box until its driver next drains: the page must say
-    // it cannot tell, NOT that nothing is wired up. An unconfigured instance sends an ARRAY of rows,
-    // each `configured: false` — see flag-snapshot.mjs's engineFor/providersFor for the full argument.
     engine: engineFor(snap),
-    // — DERIVED AT READ TIME from a fact the snapshot already carries (`binaryPresent`), so no
-    // new stored field exists to disagree with the credentials. The ceiling here is honest: this can
-    // tell DEMO from ENGINE-UNPROVEN, and nothing short of a completed probe turn can say READY — the
-    // portal has no engine environment and never spends a turn, so it must not imply one.
     engineMode: engineFor(snap) ? engineMode(engineFor(snap)) : null,
     providers: providersFor(snap),
-    capturedAt: snap.capturedAt ?? null,
-    // Staleness is REPORTED, never acted on. A stale snapshot's values are still the last known truth,
-    // and refusing to use them would be the fail-closed behaviour this whole design avoids.
-    stale: isStale(snap, { now }),
-    // AND AGE IS NO LONGER THE ONLY SIGNAL (tracker issue 170). `stale` answers "is this old"; this
-    // answers "is this WRONG", which is the question that was going unasked on exactly the boxes where
-    // it mattered — one being configured runs nothing, so its capture never ages into a warning while
-    // its contents drift. `null` when the caller supplied no live posture to compare against, which is
-    // every caller that only wants the values.
-    disagrees: live ? postureDisagreement(snap, live) : null,
+  };
+}
+
+/**
+ * The configuration view.
+ *
+ * THE ANSWER IS THE LIVE CONFIGURATION, ALWAYS — owner ruling 2026-09-05, on tracker issue 170:
+ * "the global configuration page shows LIVE configuration, always. No run-time snapshot as the source of
+ * truth — I don't see why it needs to take an old snapshot." Age banners go with it.
+ *
+ * The ruling named a mechanism too — have the page ask the running engine service for its posture,
+ * "the portal does not guess at an environment it does not share". That parenthetical was true when it
+ * was written and is not true now, and the difference is measurable rather than a matter of reading:
+ * `driver/systemd/clearotron-portal.service` carries `EnvironmentFile=%h/.env`, the same file the worker
+ * and driver units take, under the owner's own 2026-08-26 "one configuration per server box" ruling —
+ * which removed the second source of truth the old separation defended against. So the portal shares the
+ * environment and derives the live posture directly, and no new engine endpoint or page-load
+ * cross-service call is introduced. The outcome the ruling asked for is what ships; the mechanism is the
+ * cheaper one its own premise had ruled out.
+ *
+ * WHERE THAT CHOICE IS WEAKER, stated rather than left for someone to find: the portal's environment is
+ * what systemd handed IT at ITS start. A box where the worker was restarted onto new configuration and
+ * the portal was not would have this page report the portal's older answer as live. Asking the engine
+ * door would not have that gap. It is not silent, though — that is exactly the disagreement the last-run
+ * row below names, because the capture is written by the engine at ITS start.
+ *
+ * The capture does not go away; it stops being the answer. It becomes "what the last run saw", and its
+ * job is to name any field on which it disagrees with the live reading.
+ */
+export function flagView(poolRoot, { live = null } = {}) {
+  const snap = readFlagSnapshot(poolRoot);
+
+  // NO LIVE POSTURE IS A DIFFERENT PAGE, NOT A DEGRADED ONE. A caller that supplied none cannot be
+  // answered "live" at all, so this says which reading it is showing rather than presenting a capture
+  // under the heading the ruling reserved for the live answer.
+  if (!live) {
+    if (!snap) {
+      return {
+        available: false,
+        source: null,
+        note: "This deployment's configuration cannot be read from here, and no run has recorded one either.",
+        flags: [], built: null, engine: null, providers: null, engineMode: null,
+        lastRun: null,
+      };
+    }
+    return {
+      available: true,
+      // NAMED, so a reader is never told a capture is the live answer. The ruling's whole complaint was
+      // a page that presented an old reading as current fact without saying which it was.
+      source: "capture",
+      note: "This is what the last run recorded, not a live reading of this deployment.",
+      ...postureView(snap),
+      lastRun: { capturedAt: snap.capturedAt ?? null, disagrees: null },
+    };
+  }
+
+  return {
+    available: true,
+    source: "live",
+    note: null,
+    ...postureView(live),
+    // THE SECONDARY ROW. `disagrees` is `[]` when the last run ran under this same configuration, rows
+    // when it did not, and `null` when there is no capture to compare — three different facts, and the
+    // page must not render the third as the first.
+    lastRun: snap
+      ? { capturedAt: snap.capturedAt ?? null, disagrees: postureDisagreement(snap, live) }
+      : null,
   };
 }
 

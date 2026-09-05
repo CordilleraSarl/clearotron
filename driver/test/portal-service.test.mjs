@@ -1819,13 +1819,31 @@ test("the access surface names the grants file, so 'I want to add someone' has a
   }
 });
 
-test("the config surface reports UNAVAILABLE rather than 'all off' when no snapshot exists", async () => {
-  // The fixture pool has no snapshot. Reporting "everything off" here would send a staff member to go
-  // switch on things that are already running.
+test("the config surface never reports 'all off' from an absence, and names which reading it gave", async () => {
+  // WHAT THIS ARM IS FOR, UNCHANGED: reporting "everything off" from a thing nobody could read would
+  // send a staff member to go switch on what is already running.
+  //
+  // WHAT MOVED (owner ruling 2026-09-05, tracker issue 170): `available` used to mean "a snapshot
+  // exists", and this arm used it as the precondition for "the fixture pool has no snapshot". The page
+  // now answers LIVE, always, so it can be available with no capture at all — the absence of a capture
+  // is reported by `lastRun`, and `source` says which reading the answer is. Asserting `available:
+  // false` here would now be pinning the retired behaviour.
   const { service } = world();
   const r = await service.route("GET", "/portal/admin/config", STAFF, {}, {});
-  assert.equal(r.json.available, false);
-  assert.deepEqual(r.json.flags, []);
+  assert.equal(r.json.lastRun, null, "precondition: this fixture pool genuinely has no capture");
+  assert.ok(r.json.source === "live" || r.json.source === "capture" || r.json.source === null,
+    `the page must say which reading it gave, got ${JSON.stringify(r.json.source)}`);
+  if (!r.json.available) {
+    // Nothing could be read at all — then nothing may be asserted about the switches either.
+    assert.deepEqual(r.json.flags, []);
+    return;
+  }
+  // Available means it read something. Every flag it names must carry whether it was CONFIGURED, which
+  // is what keeps "explicitly off" from rendering identically to "never set" — the original defect.
+  for (const f of r.json.flags) {
+    assert.equal(typeof f.on, "boolean");
+    assert.equal(typeof f.configured, "boolean", `flag ${f.name} does not say whether it was configured`);
+  }
 });
 
 // ── the auth row rides the SAME response, and is read live rather than from the snapshot ────────────
@@ -1859,7 +1877,10 @@ test("#1439 — the auth row survives a MISSING snapshot, because it does not co
   // is the build this criterion exists to prevent.
   const { service } = world();
   const r = await service.route("GET", "/portal/admin/config", STAFF, {}, {});
-  assert.equal(r.json.available, false, "precondition: this fixture genuinely has no snapshot");
+  // The precondition is that there is no CAPTURE — which is what this arm always meant. It used to be
+  // spelled `available === false`, and that spelling stopped meaning it when the page began answering
+  // live (owner ruling 2026-09-05, tracker issue 170): a box with no capture is now perfectly available.
+  assert.equal(r.json.lastRun, null, "precondition: this fixture genuinely has no capture");
   assert.ok(r.json.auth, "the portal's own door is answerable with no snapshot at all");
   assert.equal(typeof r.json.auth.mode, "string");
   assert.ok(r.json.auth.mode.length > 0, "an empty mode would render as a blank row on a running portal");
