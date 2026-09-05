@@ -146,7 +146,31 @@ export const UNIT_INVENTORY = Object.freeze([
       + "was the wrong half of the disagreement.",
   },
   {
-    unit: "profile-service", runsOn: ["prod"], tracked: ["profile-service.service"],
+    // ── `tracked` WAS A CLAIM ABOUT A FILE THAT HAS NEVER EXISTED (tracker issue 175) ──────────────
+    //
+    // This entry named `profile-service.service` as tracked. `git log --all` on that path is empty: it is
+    // not in the tree, not in the tarball, and has never been in this repository's history. So
+    // `live-surface-check` FAILED on a healthy box — the worst kind of red, because it teaches a reader
+    // to scroll past the check that would catch a unit genuinely gone missing.
+    //
+    // THE ROW STAYS, AND DELETING IT WOULD HAVE BEEN THE WRONG FIX. The unit is LIVE ON PRODUCTION, as
+    // the note below has said all along. Removing the entry would make this inventory stop knowing about
+    // something that is running — the same failure it exists to prevent, pointed the other way. What was
+    // false is the `tracked` claim, not the unit.
+    //
+    // Declared the way its siblings are: `tracked: null` with the reason, which this file's own header
+    // calls the sanctioned way to say the repo does not carry one.
+    //
+    // ONE THING THIS DOES NOT SETTLE, left visible rather than decided quietly. The note calls the unit
+    // "generic since tracker issue 1925" — an argument that a placeholder COULD now ship and be compared,
+    // because the reason its siblings cannot (real CF Access values inline) may no longer hold here. That
+    // is a change which ADDS a file, measured against the deployed copy, and it is not this one. Two
+    // prose references in driver/systemd/render-units.mjs also describe this file as though it were in
+    // the tree; they are stale today either way.
+    unit: "profile-service", runsOn: ["prod"], tracked: null,
+    untrackedReason: "the repository has never carried this file — `git log --all` on the path is empty. "
+      + "It deploys from the production box's own copy, in the same CF Access template family as "
+      + "trademark-portal and trademark-ops-mcp. Whether a placeholder should now ship is open: see above.",
     // NO LONGER RESOLVED AT INSTALL. It carried `@CLEAROTRON_CHECKOUT_DIR@` because
     // it loaded no EnvironmentFile and so had no `${VAR}` systemd could expand. The owner's one-config-
     // per-server-box ruling gives it `EnvironmentFile=%h/.env` like every other service, which makes the
