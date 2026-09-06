@@ -15,7 +15,7 @@
 // by the box that ran it and red on the runner. The completeness arms drive synthetic trees instead.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
@@ -122,26 +122,34 @@ test("tracker 97 the shipped workflow publishes on a channel it derived, never a
     "npm's trusted publisher names this workflow file; renaming it breaks the publish, not a test");
 });
 
-test("tracker 97 during the pre-release phase `latest` is the pre-release, and that is a decision", () => {
-  // Owner ruling, 2026-09-05, in his words: "latest has all our fixes." While the repository is in pre
-  // mode every cut publishes as `latest`, so a friendly early user typing `npm i clearotron` gets the
-  // newest build. This arm exists because the same file refuses that outcome OUTSIDE pre mode, and the
-  // two rules are one character apart in the code and opposite in meaning.
-  assert.equal(distTag("0.1.1-beta.0", { preMode: true }), STABLE);
-  assert.equal(distTag("1.0.0-rc.1", { preMode: true }), STABLE);
-  assert.equal(distTag("0.2.0", { preMode: true }), STABLE);
-
-  // And outside it the original rule stands, for the original reason.
-  assert.equal(distTag("1.0.0-rc.1"), "rc");
-  assert.equal(distTag("0.1.1-beta.0"), "beta");
+test("tracker 230 a pre-release goes to `beta` and a stable to `latest` — the channel is the version's", () => {
+  // REPLACES THE 2026-09-05 RULING ("latest has all our fixes"), which was right while nothing installed
+  // the package and wrong once things did: nine versions reached the npm page in two days, three of them
+  // broken, and every one was what a plain `npm install clearotron` handed a stranger.
+  //
+  // `preMode` NO LONGER CHANGES THE ANSWER, and that is the property worth pinning. The override was
+  // deleted rather than inverted: Changesets already produces `0.2.1-beta.0` in pre mode, and the label
+  // is read straight out of it, so the version carries its own channel. Writing `if (preMode) return
+  // BETA` would hardcode a name that `changeset pre enter <tag>` chooses, and the two would disagree the
+  // first time anybody entered pre mode under another name.
+  for (const preMode of [true, false]) {
+    assert.equal(distTag("0.2.1-beta.0", { preMode }), "beta",
+      `a beta reached ${distTag("0.2.1-beta.0", { preMode })} with preMode=${preMode} — a pre-release on `
+      + "`latest` is what a stranger gets from a plain `npm install`");
+    assert.equal(distTag("1.0.0-rc.1", { preMode }), "rc");
+    assert.equal(distTag("0.2.0", { preMode }), STABLE);
+    assert.equal(distTag("0.1.9", { preMode }), STABLE);
+  }
 
   // AN UNREADABLE VERSION STILL REFUSES IN PRE MODE, and that matters more here rather than less: the
   // answer would be `latest` for the right reason and by accident.
   assert.throws(() => distTag("v0.1.1", { preMode: true }), /not a version this can read/);
 
-  // THE GITHUB RELEASE'S FLAG COMES FROM THE VERSION, never from the channel. In pre mode the channel is
-  // `latest` for a version that is very much a pre-release, and deriving the flag from the channel would
-  // mark it stable on the releases page.
+  // THE GITHUB RELEASE'S FLAG COMES FROM THE VERSION, never from the channel — and this matters MORE
+  // under the two-channel rule, not less. While pre mode forced `latest`, deriving the flag from the
+  // channel produced a visibly wrong answer that this arm caught. Now channel and flag agree for a beta,
+  // so the same wrong derivation would give the right answer by coincidence and nothing would notice —
+  // until the first version whose channel is not its channel-shaped label.
   //
   // THE WORKFLOW DID EXACTLY THAT. `PRERELEASE=""; if [ "$DIST_TAG" != "latest" ]` — with the inversion
   // in place, `DIST_TAG` is `latest` for `0.1.1-beta.0`, so the flag was never passed and the first beta
@@ -159,11 +167,14 @@ test("tracker 97 during the pre-release phase `latest` is the pre-release, and t
     + "up as the stable release");
   assert.match(workflow, /PRERELEASE_FLAG" = "true"/, "the flag the step computed is not the one it reads");
 
-  // The member that broke: channel and flag disagreeing, which only happens in pre mode.
-  assert.equal(distTag("0.1.1-beta.0", { preMode: true }), STABLE);
-  assert.equal(isPrerelease("0.1.1-beta.0"), true);
-  assert.notEqual(isPrerelease("0.1.1-beta.0"), distTag("0.1.1-beta.0", { preMode: true }) !== STABLE);
-  assert.equal(isPrerelease("0.1.1"), false);
+  // THE TWO ARE COMPUTED FROM THE VERSION BY DIFFERENT ROUTES, and the arm says so rather than relying
+  // on them disagreeing somewhere. `isPrerelease` reads the version's own suffix; `distTag` reads the
+  // label inside that suffix. They now agree for every ordinary version, which is why the coupling is
+  // asserted here instead of being left to a case that no longer exists.
+  assert.equal(isPrerelease("0.2.1-beta.0"), true);
+  assert.equal(distTag("0.2.1-beta.0", { preMode: true }), "beta");
+  assert.equal(isPrerelease("0.2.0"), false);
+  assert.equal(distTag("0.2.0", { preMode: true }), STABLE);
 
   // AND A VERSION IT CANNOT READ REFUSES rather than answering `false`, which is the unsafe answer: it
   // marks the release stable — the state a reader trusts most — off a string nobody could parse.
@@ -1113,4 +1124,44 @@ test("229 the cut decision is recorded BEFORE the gate that can fail", () => {
   assert.ok(cutAt < gateAt,
     "the cut decision runs after the checks gate again, so a gate failure strands a cut without ever "
     + "asking whether one was sitting there");
+});
+
+// ── 230 · THE CHANNELS ARE ONLY REAL IF A READER CAN FIND THEM ──────────────────────────────────────
+//
+// The mechanism above decides where a version lands. It tells nobody. A stranger typing `npm install
+// clearotron` has no way to know there is a second channel, and — this is the half that bit — no way to
+// know that what they just installed IS the tested one. The pattern is enshrined in the repository, per
+// the ruling, rather than in anybody's memory.
+
+const RELEASES_DOC = join(REPO, "docs", "RELEASES.md");
+
+test("230 the release doc states both install commands and what each channel promises", () => {
+  assert.ok(existsSync(RELEASES_DOC), "docs/RELEASES.md is gone — the doc every other surface points at");
+  const doc = readFileSync(RELEASES_DOC, "utf8");
+  assert.match(doc, /npm install -g clearotron\b(?!@)/, "the stable install command is not in the doc");
+  assert.match(doc, /npm install -g clearotron@beta/, "the beta install command is not in the doc");
+  // WHAT EACH PROMISES, not merely that two exist. "There are two channels" tells a reader nothing they
+  // can decide on; what was proved before each publish is the whole of the decision.
+  assert.match(doc, /clearance run|real clearance/i,
+    "the doc does not say what a stable had to pass, so a reader cannot tell the channels apart");
+  assert.match(doc, /provenance/i, "the doc drops that both channels publish with provenance");
+});
+
+test("230 the two places a reader starts both point at it", () => {
+  // README is where a stranger lands; INSTALL.md is where somebody deploying lands. A channel section in
+  // one and not the other sends half the readers to the wrong default.
+  for (const [name, file] of [["README.md", join(REPO, "README.md")], ["INSTALL.md", join(REPO, "INSTALL.md")]]) {
+    const text = readFileSync(file, "utf8");
+    assert.match(text, /clearotron@beta/, `${name} does not mention the beta channel at all`);
+    assert.match(text, /docs\/RELEASES\.md/, `${name} does not link the release doc, so its summary is the last word and will drift`);
+  }
+});
+
+test("230 the notes contract tells a note's author which reader it is written for", () => {
+  // A note ships to beta readers in minutes and to stable readers when the next stable is cut — so it is
+  // read alongside a fortnight of other notes by somebody deciding whether to upgrade. That is a fact
+  // about who to write for, and it belongs where notes are written.
+  const contract = readFileSync(join(REPO, ".changeset", "README.md"), "utf8");
+  assert.match(contract, /beta/i, "the notes contract does not mention the channel a note reaches first");
+  assert.match(contract, /docs\/RELEASES\.md/, "the contract restates the channels instead of pointing at the one doc");
 });

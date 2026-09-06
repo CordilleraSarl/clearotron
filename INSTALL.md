@@ -111,6 +111,23 @@ Nothing here requires an agent platform or a database — reports are written to
 
 ## 2. Install
 
+### Which version you get
+
+```
+npm install -g clearotron          # stable — the tested one
+npm install -g clearotron@beta     # newest — every merge, minutes after it lands
+```
+
+A **stable** has run a real clearance end to end and had a from-scratch install driven by somebody who has
+never seen the product, before it was published. A **beta** is published automatically on every merge to
+`main`; it built and the suite passed, and nothing has driven a live register through it.
+
+**Upgrade production to stables only.** What each channel promises and how often one is cut:
+**[docs/RELEASES.md](docs/RELEASES.md)**.
+
+The rest of this section is about the two ways a package reaches you, which is a separate question from
+which version it is.
+
 There are two routes in, and they are not variations on one another. **If you were sent a `.tgz` file,
 you want the second one** — the first assumes access to the repository, which a customer does not have.
 
