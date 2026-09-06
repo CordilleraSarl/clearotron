@@ -55,10 +55,36 @@ function driveStart(port, extra = {}) {
   // the third arm checks — but the arms were reading a different collision than the one they set up,
   // and on a runner where 18802 is free they would have read no collision at all.
   if (!("CLEAROTRON_NO_ENV_FILE" in extra)) delete env.CLEAROTRON_NO_ENV_FILE;
+  // AND INVOCATION_ID, which is the same trap wearing a second face. env-local treats that variable as
+  // proof the process was started by systemd and is configured by its EnvironmentFile, so it ignores the
+  // file. Its own note says systemd sets it "and nothing else does" — true of who SETS it, and not of
+  // who has it: any descendant of a unit inherits it, and a GitHub runner's job is a descendant of the
+  // runner agent's unit. So this drive read no .env on CI, took the built-in default port, met no
+  // collision, and three arms failed saying the refusal named a port they did not hold. Locally the
+  // variable is unset and all three passed. A drive standing in for a hand-run CLI must present a
+  // hand-run environment; the one arm that is ABOUT the service-managed path sets it back deliberately.
+  if (!("INVOCATION_ID" in extra)) delete env.INVOCATION_ID;
   const r = spawnSync(process.execPath, [START, "--background"],
     { encoding: "utf8", timeout: 180_000, env });
   return { home, envFile, port, said: `${r.stdout ?? ""}${r.stderr ?? ""}`, code: r.status,
     clean: () => rmSync(home, { recursive: true, force: true }) };
+}
+
+/**
+ * Did this drive's own .env reach the command? Checked BEFORE anything about ports.
+ *
+ * The order is the lesson. When CI ignored the file, the first thing to fail was the port assertion,
+ * and it reported "the refusal named a port this arm did not hold" — true, and useless: it described a
+ * symptom three steps downstream of a drive that never got its configuration. An arm that cannot see
+ * its subject has to say so in those words, or the next reader debugs the wrong thing.
+ */
+function readItsEnvFile(d) {
+  const loader = /\[env-local\] applied \d+ variables? from (\S+):/.exec(d.said);
+  assert.ok(loader,
+    `this drive's .env never reached the command, so nothing below it could be measured — the port it `
+    + `refuses on is a built-in default, not the one this arm held:\n${d.said.slice(0, 700)}`);
+  assert.equal(loader[1], d.envFile, "the command read an env file, but not this drive's");
+  return loader[1];
 }
 
 /** The refusal must be about the port this drive HELD, never a default it fell back to. */
@@ -74,12 +100,8 @@ test("200 the port refusal names the file this command reads, and it is the file
     const d = driveStart(held.port);
     await held.release();
     try {
+      readItsEnvFile(d);
       refusedOurPort(d);
-
-      // The loader's own line, which the issue calls the one thing that made this diagnosable.
-      const loader = /\[env-local\] applied \d+ variables? from (\S+):/.exec(d.said);
-      assert.ok(loader, `no [env-local] line to compare the refusal against:\n${d.said.slice(0, 900)}`);
-      assert.equal(loader[1], d.envFile);
 
       // AGREEMENT. The remedy names a file, and it is that same file — not merely some path.
       const remedy = d.said.split("\n").find((l) => /set PORTAL_SERVICE_PORT=<free port>/.test(l));
@@ -95,6 +117,7 @@ test("200 the refusal says the units' file is NOT the one it reads, so the reade
     const d = driveStart(held.port);
     await held.release();
     try {
+      readItsEnvFile(d);
       refusedOurPort(d);
       assert.match(d.said, /`~\/\.env` is loaded by the installed units and is NOT read here/);
       // Named, so the reader knows which variable the sentence is about.
@@ -108,6 +131,7 @@ test("200 a refused run writes nothing — the probe is before the first state c
     const d = driveStart(held.port);
     await held.release();
     try {
+      readItsEnvFile(d);
       refusedOurPort(d);
       assert.equal(d.code, 1);
       // Nothing but the .env this drive wrote itself, and no unit anywhere under the HOME.
