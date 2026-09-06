@@ -1,0 +1,134 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+//
+// tracker issue 185 — THE REFERENCE STRIP LEFT SENTENCES WITH THEIR SUBJECT REMOVED, AND THE COUNT IS
+// STILL GOING UP.
+//
+// 179 when it was filed. 181 when this arm was written, two days later, with nobody having decided to
+// add any: the strip's shape is what a later edit copies when it edits near one. So the floor below is
+// not a baseline that excuses the backlog — it is the thing that stops it growing while the repair,
+// which is per-sentence and needs a reader, happens at its own pace.
+//
+// WHY A FLOOR AND NOT ZERO. Repairing 181 sentences means saying what each removed reference SAID, and
+// that is 181 judgements about surrounding code, not a sed. An arm asserting zero would be red from the
+// day it landed, and a permanently red arm teaches people to stop reading the suite — which is how this
+// class got to 181 in the first place.
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { SIGNATURES, censusOf, isScannable, RULE_DEFINITIONS } from "../reference-strip-signatures.mjs";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+const TABLE = JSON.parse(readFileSync(join(ROOT, "driver/test/fixtures/reference-strip-backlog.json"), "utf8"));
+
+const tracked = () => {
+  const r = execFileSync("git", ["-C", ROOT, "ls-files"], { encoding: "utf8", maxBuffer: 1 << 28 });
+  return r.split("\n").filter(Boolean);
+};
+const census = () => censusOf(ROOT, tracked(), (f) => readFileSync(join(ROOT, f), "utf8"));
+
+test("185 the reference-strip backlog is a FLOOR — no file may carry more than it is recorded with", () => {
+  const now = census();
+  // An empty corpus reports every absence as a repair. The census in tracker issue 1010 exists for this shape.
+  assert.ok(Object.keys(now.files).length > 0 || TABLE.total === 0,
+    "the census came back empty against a non-empty table — the corpus was not read, and every "
+    + "'repaired' line below would be a file this arm failed to open");
+
+  const grew = [];
+  for (const [f, counts] of Object.entries(now.files)) {
+    const was = TABLE.files[f];
+    if (!was) { grew.push(`${f}: NEW — ${counts.join(" + ")} (this file carried none)`); continue; }
+    counts.forEach((n, i) => { if (n > was[i]) grew.push(`${f}: ${SIGNATURES[i].name} went ${was[i]} → ${n}`); });
+  }
+  assert.deepEqual(grew, [],
+    "the reference strip's two signatures grew. Neither construction occurs in written English, so this "
+    + "is an edit that copied the shape of a broken sentence next to it. Repair the line; do not re-mint "
+    + "the table to absorb it.");
+});
+
+test("185 the table is not stale — a repair is RECORDED, so the backlog cannot quietly stop shrinking", () => {
+  // The other direction, and the one a floor alone misses: repair ten lines, leave the table at 181, and
+  // ten new breaks fit underneath it silently. The table must equal the tree, both ways.
+  const now = census();
+  assert.equal(now.total, TABLE.total,
+    `the committed backlog says ${TABLE.total} and the tree has ${now.total}. Re-mint with `
+    + "`node scripts/mint-reference-strip-backlog.mjs` — after repairing, never instead of it.");
+  assert.deepEqual(now.files, TABLE.files, "the per-file backlog disagrees with the tree; re-mint it");
+
+  // Said out loud every run, because a backlog nobody sees is a backlog nobody finishes.
+  console.error(`[185] ${TABLE.total} unfinished sentence(s) remain, in ${Object.keys(TABLE.files).length} file(s)`);
+});
+
+test("185 the signatures still FIRE — a matcher that stopped matching reports a repaired tree", () => {
+  // The specimens are the real residue shapes, from the issue. If the strip's output is ever re-derived
+  // and these stop matching, this arm says so instead of the census quietly reaching zero.
+  const specimens = [
+    [0, "// 's design ruling — \"above any fold, only a statement, a labelled row\""],
+    [0, "  // 's wording, not a second copy of it. That helper already distinguishes EADDRINUSE"],
+    [0, "# 's sibling. Every recording transport captures the payload"],
+    [1, "// …false ⇒ the pre- section, byte-identical, for every archived run."],
+    [1, "| **Deprecated, honoured for one release.** The pre- names. Unset on every deployed box"],
+  ];
+  for (const [i, line] of specimens) {
+    assert.ok(SIGNATURES[i].re.test(line), `signature ${i} (${SIGNATURES[i].name}) no longer fires on: ${line}`);
+  }
+
+  // ✕ AND THE FALSE-POSITIVE HALF, or this arm is one broad regex away from flagging the whole tree.
+  // Ordinary possessives, and hyphenated `pre-` words that the strip never touched.
+  for (const innocent of [
+    "// the run's own report says so, and it's the only surface a client reads",
+    "// pre-flight checks run before the seat is dispatched",
+    "const preFlight = true;",
+    "// a pre-delivery lint pass",
+  ]) {
+    assert.ok(!SIGNATURES.some((s) => s.re.test(innocent)),
+      `a signature fired on ordinary prose, which is how this arm gets deleted: ${innocent}`);
+  }
+});
+
+test("185 the census COUNTS — driven on a synthetic tree, so it is not trusted on its own word", () => {
+  // The census reads the real repository, where the right answer is whatever it says. Planted, it has to
+  // agree with an answer known in advance. A helper that returned {} would pass every arm above.
+  const fake = {
+    "a.mjs": "// 's one\n// 's two\nreal code\n",
+    "b.md": "renders the pre- section\n",
+    "c.mjs": "// nothing wrong here\n",
+    "d.png": "// 's ignored — not a scannable extension\n",
+  };
+  const got = censusOf("/synthetic", Object.keys(fake), (f) => fake[f]);
+  assert.equal(got.total, 3, `planted 3 breaks across 2 files, census said ${got.total}`);
+  assert.deepEqual(got.files, { "a.mjs": [2, 0], "b.md": [0, 1] });
+  assert.ok(!isScannable("d.png") && !isScannable("portal-ui/dist/x.mjs"),
+    "the scannable filter stopped excluding binaries or generated output");
+});
+
+test("185 the one USER-FACING instance is repaired — documentation, not a comment", () => {
+  // Every other instance is a code comment, read by somebody with the repository open. This one is a row
+  // in the configuration reference, which is what a deploying user reads to decide what to set.
+  const doc = readFileSync(join(ROOT, "docs/architecture/04-configuration-reference.md"), "utf8");
+  const broken = doc.split("\n").filter((l) => SIGNATURES[1].re.test(l));
+  assert.deepEqual(broken, [],
+    "the configuration reference carries an unfinished sentence. This file is user-facing: a reader "
+    + "deciding what to set meets it as documentation that stops mid-clause.");
+});
+
+test("185 the rule's own definition is the ONLY exemption, and every exempt file still exists", () => {
+  // An exemption keyed to a path that has been renamed away stops exempting anything, and the guard then
+  // counts its own specimens as backlog — silently, because the number only goes up by two and nobody
+  // reads a floor that moved. Both directions: the list is exactly these three, and all three are tracked.
+  const tracked = new Set(execFileSync("git", ["-C", ROOT, "ls-files"], { encoding: "utf8", maxBuffer: 1 << 28 })
+    .split("\n").filter(Boolean));
+  for (const f of RULE_DEFINITIONS) {
+    assert.ok(tracked.has(f), `the exemption names ${f}, which this tree does not track — it was renamed `
+      + "or deleted, and the exemption now covers nothing");
+    assert.ok(!isScannable(f), `${f} is exempt by name and the filter still scans it`);
+  }
+  // No path outside the rule's own three files may be exempted. An exemption list is one edit away from
+  // being where inconvenient files go.
+  assert.equal(RULE_DEFINITIONS.length, 3,
+    "the exemption list grew. It covers the files that DEFINE the signatures and nothing else; a file "
+    + "that merely carries residue belongs in the backlog, where it is counted and visible.");
+});

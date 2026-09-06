@@ -1,5 +1,17 @@
 # prelim-driver
 
+## 0.2.1-beta.0
+
+### Patch Changes
+
+- 77cf56d: For operators: The configuration reference now explains the two deprecated search-log variables in full, instead of stopping mid-sentence.
+
+## 0.2.0
+
+### Minor Changes
+
+- cb0f60a: New: Two release channels. `npm install clearotron` stays on the tested release; `npm install clearotron@beta` follows every merge.
+
 ## 0.1.12
 
 ### Patch Changes

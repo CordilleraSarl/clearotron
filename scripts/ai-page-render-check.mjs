@@ -41,6 +41,7 @@
 //                    per assistant, with a reason, and render no button. Zero buttons is the pass.
 //   wired-client     the hosted shape: address assistants live, stdio ones honestly absent.
 //   wired-staff      everything on offer at once — the widest bijection.
+import { navigateOrRefuse } from './headless-page.mjs'   // tracker issue 227 — Page.navigate returns an errorText, and nothing read it
 import { createServer } from 'node:http'
 import { reapOnExit } from "../shared/reap-on-exit.mjs";   // — a detached group dies with this script
 import { readFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs'
@@ -350,7 +351,7 @@ for (const state of Object.keys(STATES)) {
   mints = 0
   await cmd('Page.navigate', { url: 'about:blank' })
   await new Promise((r) => setTimeout(r, 150))
-  await cmd('Page.navigate', { url: `${origin}/portal/ai` })
+  await navigateOrRefuse(cmd, `${origin}/portal/ai`, { what: 'ai-page-render-check' })
   await new Promise((r) => setTimeout(r, 1400))
 
   const access = accessFor(STATES[state])

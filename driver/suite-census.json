@@ -483,6 +483,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-screenshot-of-an-error-page-is-not-a-report.test.mjs": {
+          "tests": 17,
+          "asserts": 44,
+          "skips": 4,
+          "todos": 0
+        },
         "a-secret-file-is-compared-not-printed.test.mjs": {
           "tests": 5,
           "asserts": 16,
@@ -3238,8 +3244,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 52,
-          "asserts": 243,
+          "tests": 70,
+          "asserts": 287,
           "skips": 0,
           "todos": 0
         },
@@ -4332,6 +4338,12 @@
         "the-record-half-of-an-add-must-reach-git.test.mjs": {
           "tests": 11,
           "asserts": 39,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-reference-strip-left-sentences-unfinished.test.mjs": {
+          "tests": 6,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },

@@ -59,6 +59,7 @@
 // MUST NOT run as a user with a virtual-memory ulimit (`ulimit -v`) — Chrome dumps core under one. Run it
 // as a user with `ulimit -v unlimited`. The dbus/UPower errors Chrome prints on a headless box are noise.
 
+import { navigateOrRefuse } from './headless-page.mjs'   // tracker issue 227 — Page.navigate returns an errorText, and nothing read it
 import { createServer } from 'node:http'
 import { readFileSync, existsSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs'
 import { join, extname, dirname } from 'node:path'
@@ -284,7 +285,7 @@ const record = {}
 
 // The shell, once. Everything after this is client-side.
 epoch = 'boot'
-await cmd('Page.navigate', { url: `${origin}/portal/home` })
+await navigateOrRefuse(cmd, `${origin}/portal/home`, { what: 'revisit-render-check' })
 if (!(await settle())) say(false, 'the shell never went quiet within 12s — it is still requesting')
 const bootPath = await where()
 say(bootPath === '/portal/home', `the shell loaded on /portal/home (got ${bootPath})`)
@@ -375,7 +376,7 @@ await twice('clearances', () => clickNav('Clearances'), '/portal/clearances')
 // URL and the SECOND is the Back button, which is the revisit a reader actually performs and the one that
 // runs AppShell's popstate listener rather than its click funnel.
 epoch = 'result:1'
-await cmd('Page.navigate', { url: `${origin}/portal/result/${RUN_ID}` })
+await navigateOrRefuse(cmd, `${origin}/portal/result/${RUN_ID}`, { what: 'revisit-render-check' })
 const rq1 = await settle()
 const rp1 = await where()
 const rt1 = await screenText()

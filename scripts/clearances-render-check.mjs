@@ -9,6 +9,7 @@
 //
 // Because nothing else in this repo can answer the question. portal-ui runs `node --test` with type
 // stripping and carries no jsdom and no React test renderer — Node cannot import a `.tsx` at all — so the
+import { navigateOrRefuse } from './headless-page.mjs'   // tracker issue 227 — Page.navigate returns an errorText, and nothing read it
 import { reapOnExit } from "../shared/reap-on-exit.mjs";   // — a detached group dies with this script
 // four source-text tests over Clearances.tsx can prove a string is in a file and nothing more. They
 // cannot see a width, an alignment, or a scrollbar, which is precisely what and are about.
@@ -318,7 +319,7 @@ const cmd = (method, params) => new Promise((r) => { const i = ++id; pending.set
 const value = async (expr) => (await cmd('Runtime.evaluate', { expression: expr, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null
 
 const reload = async () => {
-  await cmd('Page.navigate', { url: `${origin}/portal/clearances` })
+  await navigateOrRefuse(cmd, `${origin}/portal/clearances`, { what: 'clearances-render-check' })
   await new Promise((r) => setTimeout(r, 1800))
 }
 

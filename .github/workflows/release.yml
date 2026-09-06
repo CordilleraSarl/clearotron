@@ -469,6 +469,9 @@ jobs:
     outputs:
       cut: ${{ steps.awaited.outputs.cut }}
       version: ${{ steps.awaited.outputs.version }}
+      # THE COMMIT THE WAIT DECIDED ABOUT, so the publish below packs that tree and not whatever `main`
+      # has become since — see tracker issue 238 and the guard in that job.
+      sha: ${{ steps.awaited.outputs.sha }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -706,6 +709,12 @@ jobs:
       # The tag and the release come AFTER the publish: a tag naming a version that is not on the
       # registry is a worse lie than a publish that is not yet tagged, and this order means the failure
       # leaves the tag unwritten rather than pointing at nothing.
+      # A PRE-RELEASE IS TAGGED AND GETS NO RELEASE ENTRY (owner's ruling, 2026-09-06). The Releases
+      # page is what somebody opens to find out which version to install, and one entry per beta
+      # buries the stable they came for. The TAG still has to land: `release-cut-decision.mjs` reads
+      # tags to decide whether a version is already published, so a beta with no tag is a version
+      # this pipeline would cut again, and again. `pre exit` folds the betas into the stable, and the
+      # stable keeps its entry and its changelog.
       - name: Tag it, and say what changed
         if: steps.what.outputs.dry_flag == ''
         env:
@@ -714,19 +723,35 @@ jobs:
           PRERELEASE_FLAG: ${{ steps.what.outputs.prerelease }}
         run: |
           set -euo pipefail
+          TARGET="$GITHUB_SHA"
+          # Read from the VERSION above, never from the channel — see the step that computed it.
+          if [ "$PRERELEASE_FLAG" = "true" ]; then
+            # THE EXACT REF, NOT A PREFIX. Measured on this repository, 2026-09-06:
+            # `git/matching-refs/tags/v0.1.1` answers with six refs — v0.1.1, v0.1.1-beta.0,
+            # v0.1.1-beta.1, v0.1.10, v0.1.11, v0.1.12 — so a prefix read would report the stable
+            # that follows a beta as already tagged and it would never get a tag of its own.
+            # `git/ref/tags/v0.1.11` answers with that one ref and `git/ref/tags/v0.1` is a 404, so
+            # the singular read is exact. The answer is still compared in full, because this step
+            # should not rest on that distinction holding.
+            EXISTING=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/v$VERSION" --jq '.ref' 2>/dev/null || true)
+            if [ "$EXISTING" = "refs/tags/v$VERSION" ]; then
+              echo "The tag v$VERSION already exists."
+              exit 0
+            fi
+            gh api "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/v$VERSION" -f sha="$TARGET" >/dev/null
+            echo "Tagged v$VERSION at $TARGET, and wrote no release entry: the Releases page carries stable versions only."
+            exit 0
+          fi
           if gh release view "v$VERSION" >/dev/null 2>&1; then
             echo "The GitHub release v$VERSION already exists."
             exit 0
           fi
-          # Read from the VERSION above, never from the channel — see the step that computed it.
-          PRERELEASE=""
-          if [ "$PRERELEASE_FLAG" = "true" ]; then PRERELEASE="--prerelease"; fi
           NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
           if [ -n "$NOTES" ]; then
             printf '%s\n' "$NOTES" > release-notes.md
-            gh release create "v$VERSION" --target "$GITHUB_SHA" --title "v$VERSION" --notes-file release-notes.md $PRERELEASE
+            gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --notes-file release-notes.md
           else
-            gh release create "v$VERSION" --target "$GITHUB_SHA" --title "v$VERSION" --generate-notes $PRERELEASE
+            gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --generate-notes
           fi
 
   publish-awaited:
@@ -771,12 +796,38 @@ jobs:
       contents: write     # the tag and the GitHub release
       id-token: write     # the OIDC token npm exchanges for a short-lived publish credential
     steps:
-      # THE NEW main, NOT THE COMMIT THIS RUN STARTED ON. The version being published here landed after
-      # this run began — that is the whole point of the wait — so a default checkout would pack the
-      # bytes of the previous version and publish them under the new number.
+      # BEFORE THE CHECKOUT, because that is the step it protects. `ref:` with an empty value does not
+      # fail — it checks out the default branch — so an absent answer here would publish `main` while
+      # every log line said it published the commit this run awaited. That is the defect this job
+      # already had, wearing the name of its fix.
+      - name: The wait named a commit to publish
+        env:
+          AWAITED_SHA: ${{ needs.awaited.outputs.sha }}
+        run: |
+          set -euo pipefail
+          if [ -z "$AWAITED_SHA" ]; then
+            echo "::error::The wait reported no commit, so there is nothing to check out. That is a failure to LOOK, not a finding that nothing merged, and checking out the branch name instead would ship a tree this run never decided about."
+            exit 2
+          fi
+          case "$AWAITED_SHA" in
+            *[!0-9a-f]*) echo "::error::The wait reported \"$AWAITED_SHA\", which is not a commit."; exit 2 ;;
+          esac
+          if [ "${#AWAITED_SHA}" -ne 40 ]; then
+            echo "::error::The wait reported a ${#AWAITED_SHA}-character ref rather than a full commit. An abbreviated or moving name is what let this job publish a different tree from the one it decided about."
+            exit 2
+          fi
+          echo "Publishing the commit this run awaited: $AWAITED_SHA"
+
+      # THE COMMIT THE WAIT DECIDED ABOUT, NOT THE BRANCH NAME. The version being published here landed
+      # after this run began — that is the whole point of the wait — so a default checkout would pack
+      # the bytes of the previous version and publish them under the new number. But `main` is a NAME,
+      # and between the wait's last read and this checkout it can move on to a commit that changes no
+      # version: an instrument fix with no note passes the tip check below untouched, because that check
+      # compares VERSIONS. Naming the commit is what makes the two ends talk about one tree. tracker
+      # issue 238.
       - uses: actions/checkout@v7
         with:
-          ref: main
+          ref: ${{ needs.awaited.outputs.sha }}
           fetch-depth: 0
 
       - uses: actions/setup-node@v7
@@ -977,6 +1028,12 @@ jobs:
       # The tag and the release come AFTER the publish: a tag naming a version that is not on the
       # registry is a worse lie than a publish that is not yet tagged, and this order means the failure
       # leaves the tag unwritten rather than pointing at nothing.
+      # A PRE-RELEASE IS TAGGED AND GETS NO RELEASE ENTRY (owner's ruling, 2026-09-06). The Releases
+      # page is what somebody opens to find out which version to install, and one entry per beta
+      # buries the stable they came for. The TAG still has to land: `release-cut-decision.mjs` reads
+      # tags to decide whether a version is already published, so a beta with no tag is a version
+      # this pipeline would cut again, and again. `pre exit` folds the betas into the stable, and the
+      # stable keeps its entry and its changelog.
       - name: Tag it, and say what changed
         if: steps.what.outputs.dry_flag == ''
         env:
@@ -985,17 +1042,33 @@ jobs:
           PRERELEASE_FLAG: ${{ steps.what.outputs.prerelease }}
         run: |
           set -euo pipefail
+          TARGET="$(git rev-parse HEAD)"
+          # Read from the VERSION above, never from the channel — see the step that computed it.
+          if [ "$PRERELEASE_FLAG" = "true" ]; then
+            # THE EXACT REF, NOT A PREFIX. Measured on this repository, 2026-09-06:
+            # `git/matching-refs/tags/v0.1.1` answers with six refs — v0.1.1, v0.1.1-beta.0,
+            # v0.1.1-beta.1, v0.1.10, v0.1.11, v0.1.12 — so a prefix read would report the stable
+            # that follows a beta as already tagged and it would never get a tag of its own.
+            # `git/ref/tags/v0.1.11` answers with that one ref and `git/ref/tags/v0.1` is a 404, so
+            # the singular read is exact. The answer is still compared in full, because this step
+            # should not rest on that distinction holding.
+            EXISTING=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/v$VERSION" --jq '.ref' 2>/dev/null || true)
+            if [ "$EXISTING" = "refs/tags/v$VERSION" ]; then
+              echo "The tag v$VERSION already exists."
+              exit 0
+            fi
+            gh api "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/v$VERSION" -f sha="$TARGET" >/dev/null
+            echo "Tagged v$VERSION at $TARGET, and wrote no release entry: the Releases page carries stable versions only."
+            exit 0
+          fi
           if gh release view "v$VERSION" >/dev/null 2>&1; then
             echo "The GitHub release v$VERSION already exists."
             exit 0
           fi
-          # Read from the VERSION above, never from the channel — see the step that computed it.
-          PRERELEASE=""
-          if [ "$PRERELEASE_FLAG" = "true" ]; then PRERELEASE="--prerelease"; fi
           NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
           if [ -n "$NOTES" ]; then
             printf '%s\n' "$NOTES" > release-notes.md
-            gh release create "v$VERSION" --target "$(git rev-parse HEAD)" --title "v$VERSION" --notes-file release-notes.md $PRERELEASE
+            gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --notes-file release-notes.md
           else
-            gh release create "v$VERSION" --target "$(git rev-parse HEAD)" --title "v$VERSION" --generate-notes $PRERELEASE
+            gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --generate-notes
           fi

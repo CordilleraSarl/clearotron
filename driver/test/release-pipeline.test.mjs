@@ -21,7 +21,7 @@ import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { findings, BANNED_WORDS } from "../../scripts/changelog-plain-language.mjs";
-import { refusals as publishRefusals, WORKFLOW, CREDENTIAL_TOKENS, REPOSITORY } from "../../scripts/release-publish-guard.mjs";
+import { refusals as publishRefusals, WORKFLOW, CREDENTIAL_TOKENS, REPOSITORY, publishingJobs } from "../../scripts/release-publish-guard.mjs";
 import { distTag, isPrerelease, preModeFrom, STABLE, UNNAMED_PRERELEASE } from "../../scripts/release-dist-tag.mjs";
 import { cutDecision, versionAtHead } from "../../scripts/release-cut-decision.mjs";
 import { checksVerdict, waitForChecks, RUNNING, NOTHING_STARTED, WAITING_FOR_A_PERSON, exitCodeFor } from "../../scripts/release-version-pr-checks.mjs";
@@ -930,7 +930,7 @@ test("tracker 97 the manifest names the repository provenance will be attested f
 //   · giving up is NOT reported as a cut               → break: return cut:true, arm 2 red
 //   · the wait fires only on the version branch's CI   → break: drop `branches`, arm 4 red
 //   · the rehearsal path is untouched                  → break: let dispatch publish, arm 5 red
-import { awaitCut, WAIT_MS, STEP_MS, waitBudget } from "../../scripts/release-await-cut.mjs";
+import { awaitCut, WAIT_MS, STEP_MS, waitBudget, readMain, versionBumpCommit } from "../../scripts/release-await-cut.mjs";
 import { cutRef } from "../../scripts/release-cut-decision.mjs";
 
 /** This repository's root, and the workflow this section reads. Named here rather than reusing a
@@ -1044,8 +1044,15 @@ test("208 both deciders answer the same question, and a skipped one cannot answe
   const src = readFileSync(join(REPO, "scripts", "release-await-cut.mjs"), "utf8");
   assert.match(src, /import \{ cutDecision, versionAtHead, tagsHere \}/,
     "the waiting path decides for itself instead of asking the one authority");
-  assert.match(src, /versionAtHead\(\{ ref: "origin\/main" \}\)/,
+  // THE READERS ARE INJECTABLE NOW, so this asks the same question in two halves: that the DEFAULT is
+  // the one authority, and that it is asked about the commit. An arm matching the old inline call would
+  // have gone red on a refactor that changed nothing it cares about, and been widened rather than fixed.
+  assert.match(src, /versionAt = versionAtHead/,
+    "the waiting path's default version reader is no longer the one authority, so it can decide for itself");
+  assert.match(src, /versionAt\(\{ ref: "origin\/main" \}\)/,
     "the waiting path reads the working tree rather than the commit — the defect release-cut-decision.mjs was written for");
+  assert.match(src, /tags = tagsHere/,
+    "the waiting path's default tag reader is no longer the one authority");
 });
 
 test("208 the stranded-cut detector does not sit downstream of the gate that strands a cut", () => {
@@ -1247,12 +1254,27 @@ test("208 the second publish proves its OWN bytes — it does not reuse the firs
 
 test("208 the second publish takes the NEW main, and tags the commit it actually published", () => {
   const second = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:"));
-  assert.match(second, /ref: main/,
-    "the second publish checks out the commit this run started on, so it packs the PREVIOUS version's "
-    + "bytes and publishes them under the new number");
-  assert.ok(!/--target "\$GITHUB_SHA"/.test(second),
+  // NOT `ref: main` ANY MORE (tracker issue 238). The branch name was right about the first half of the
+  // problem — it does pick up a version that landed after the run began — and wrong about the second:
+  // between the wait's last read and this checkout the name can move on to a commit that changes no
+  // version, and the tip check below compares versions, so it passes.
+  assert.match(second, /ref: \$\{\{ needs\.awaited\.outputs\.sha \}\}/,
+    "the second publish checks out a branch NAME rather than the commit the wait decided about, so a "
+    + "commit that lands in between and moves no version is published under a number whose changelog "
+    + "never described it");
+  assert.ok(!/\n {10}ref: main\n/.test(second),
+    "the second publish still checks out `main` by name somewhere");
+  // THE TARGET IS RESOLVED ONCE AND USED BY BOTH PATHS. It was written inline on each `gh release
+  // create` until the pre-release branch landed and needed the same commit for the tag it writes
+  // directly, so this reads the variable and the uses of it, not one literal.
+  assert.ok(!/TARGET="\$GITHUB_SHA"/.test(second),
     "the release is tagged against the commit this run started on, not the one that was published");
-  assert.match(second, /--target "\$\(git rev-parse HEAD\)"/, "the tag does not name the published commit");
+  assert.match(second, /TARGET="\$\(git rev-parse HEAD\)"/, "the tag does not name the published commit");
+  assert.ok(!/--target "(?!\$TARGET")/.test(second),
+    "the second publish still names a commit inline somewhere, so one of its two paths can tag a "
+    + "different commit from the other");
+  assert.match(second, /-f sha="\$TARGET"/,
+    "the tag the pre-release path writes does not name the commit this job resolved");
 });
 
 test("208 the two publish jobs carry the same steps, so they cannot drift apart", () => {
@@ -1275,7 +1297,12 @@ test("208 the two publish jobs carry the same steps, so they cannot drift apart"
   // The direction that matters is preserved exactly: a check added to `publish` and not to
   // `publish-awaited` breaks the subsequence, and that is the failure this exists for — a version
   // published without a check the other version got.
-  const EXTRA_BY_DESIGN = ["The tip this packs is the version this run awaited"];
+  // BOTH OF THESE EXIST BECAUSE THIS JOB PUBLISHES A TIP THAT LANDED AFTER THE RUN BEGAN, which the
+  // first publish never does. `publish` packs the commit its run started on and has nothing to check.
+  const EXTRA_BY_DESIGN = [
+    "The wait named a commit to publish",
+    "The tip this packs is the version this run awaited",
+  ];
   let i = 0;
   const missing = [];
   for (const step of first) {
@@ -1389,4 +1416,383 @@ test("208 the second publish refuses a tip that is not the one it awaited", () =
   const guard = second.indexOf("The tip this packs is the version this run awaited");
   const pack = second.indexOf("- name: Pack the exact bytes that will be published");
   assert.ok(guard > 0 && pack > guard, "the tip check does not run before the pack, so it gates nothing");
+});
+
+// ── the Releases page carries stable versions only (owner's ruling, 2026-09-06) ──────────────────
+//
+// A pre-release is tagged and gets no release entry; a stable keeps its entry AND its changelog.
+//
+// THESE ARMS RUN THE STEP'S SHELL RATHER THAN READING IT. Every earlier arm over this workflow
+// asserted that some text was present, and a text arm cannot tell "the beta branch is there" from
+// "the beta branch is there and never taken". The script is lifted out of the job and driven against
+// a stub `gh`, once per publishing job, because the step is DUPLICATED — `publish` and
+// `publish-awaited` each carry a copy, and a change made to one of them is the shape of defect this
+// pipeline has already shipped once.
+
+/** The `run:` block of one NAMED step, lifted out of a job's text and dedented back to a script. */
+function namedStepScript(jobBody, stepName, jobName = stepName) {
+  const at = jobBody.indexOf(`- name: ${stepName}`);
+  assert.ok(at >= 0, `${jobName} has no step called "${stepName}" — this arm could not look, which is not a pass`);
+  const rest = jobBody.slice(at);
+  const runAt = rest.indexOf("        run: |\n");
+  assert.ok(runAt >= 0, `${jobName}'s tag step has no run block — this arm could not look`);
+  const lines = rest.slice(runAt + "        run: |\n".length).split("\n");
+  const body = [];
+  for (const line of lines) {
+    if (line.trim() === "") { body.push(""); continue; }
+    if (!line.startsWith("          ")) break;
+    body.push(line.slice(10));
+  }
+  return body.join("\n").trimEnd();
+}
+
+/** The tag/release step, with the assertion that the lift actually caught it. */
+function tagStepScript(jobBody, jobName) {
+  const script = namedStepScript(jobBody, "Tag it, and say what changed", jobName);
+  assert.ok(/gh release create/.test(script), `${jobName}'s lifted script never creates a release — the lift is wrong`);
+  return script;
+}
+
+const KNOWN_NOTES = "New: the thing the reader came for.";
+
+/**
+ * Drive one lifted script against a stub `gh`, in a throwaway git repository.
+ *
+ * The repository is real because one of the two jobs resolves its target with `git rev-parse HEAD`;
+ * `release-notes-for.mjs` is real, and NON-EMPTY, because the ruling's stable half is "keeps the
+ * release WITH the folded changelog" — that is the `--notes-file` branch, and a stub that returned
+ * nothing would leave it undriven and the arm green with the notes generator deleted.
+ */
+function driveTagStep({ script, version, prerelease, existingTagRef = null }) {
+  const dir = mkdtempSync(join(tmpdir(), "tag-step-"));
+  try {
+    execFileSync("git", ["init", "-q", "-b", "main", dir], { stdio: "pipe" });
+    writeFileSync(join(dir, "seed"), "x\n");
+    execFileSync("git", ["-C", dir, "add", "seed"], { stdio: "pipe" });
+    execFileSync("git", ["-C", dir, "-c", "user.email=a@b.c", "-c", "user.name=t", "commit", "-qm", "seed"], { stdio: "pipe" });
+
+    mkdirSync(join(dir, "scripts"), { recursive: true });
+    writeFileSync(join(dir, "scripts", "release-notes-for.mjs"),
+      `console.log(${JSON.stringify(KNOWN_NOTES)});\n`);
+
+    const bin = join(dir, "bin");
+    mkdirSync(bin);
+    const log = join(dir, "gh.log");
+    // The read answers with `existingTagRef` when one is given — including a ref that is a PREFIX
+    // MATCH rather than the ref asked for, which is the answer the plural endpoint gives.
+    const found = existingTagRef ? `printf '%s\\n' ${JSON.stringify(existingTagRef)}; exit 0` : "exit 1";
+    writeFileSync(join(bin, "gh"),
+      `#!/bin/sh\nprintf '%s\\n' "$*" >> ${JSON.stringify(log)}\n`
+      + `case "$1" in\n`
+      + `  release) case "$2" in view) exit 1 ;; create) exit 0 ;; esac ;;\n`
+      + `  api) case "$2" in *"/git/ref/tags/"*) ${found} ;; *"/git/refs") exit 0 ;; esac ;;\n`
+      + `esac\nexit 0\n`, { mode: 0o755 });
+
+    const scriptPath = join(dir, "step.sh");
+    writeFileSync(scriptPath, script);
+    const sha = execFileSync("git", ["-C", dir, "rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+    const out = execFileSync("bash", [scriptPath], {
+      cwd: dir,
+      encoding: "utf8",
+      stdio: "pipe",
+      env: {
+        PATH: `${bin}:${process.env.PATH}`,
+        HOME: dir,
+        GH_TOKEN: "not-a-token",
+        GITHUB_REPOSITORY: "CordilleraSarl/clearotron",
+        GITHUB_SHA: sha,
+        VERSION: version,
+        PRERELEASE_FLAG: prerelease,
+      },
+    });
+    return {
+      out,
+      log: existsSync(log) ? readFileSync(log, "utf8") : "",
+      notesFile: existsSync(join(dir, "release-notes.md")) ? readFileSync(join(dir, "release-notes.md"), "utf8") : null,
+      sha,
+    };
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+const PUBLISHING = publishingJobs(RELEASE_YML);
+
+test("230 every job that publishes carries the tag/release step, and there is more than one", () => {
+  assert.ok(PUBLISHING.length >= 2,
+    `the workflow has ${PUBLISHING.length} publishing job(s); this suite drives the step in each of them, `
+    + "and finding fewer than two means the splitter stopped seeing one — an arm that could not look");
+  for (const [name, body] of PUBLISHING) tagStepScript(body, name);
+});
+
+test("230 a pre-release is tagged and yields no GitHub release entry", () => {
+  for (const [name, body] of PUBLISHING) {
+    const run = driveTagStep({ script: tagStepScript(body, name), version: "9.9.9-beta.3", prerelease: "true" });
+    assert.ok(!/release create/.test(run.log),
+      `${name}: a pre-release wrote a GitHub release entry. The Releases page is what a person opens to `
+      + `decide what to install, and it carries stable versions only.\n${run.log}`);
+    assert.match(run.log, /api repos\/CordilleraSarl\/clearotron\/git\/refs .*refs\/tags\/v9\.9\.9-beta\.3/,
+      `${name}: the pre-release was not tagged. The tag is what tells the next run this version is `
+      + `already published — without it the pipeline cuts it again, forever.\n${run.log}`);
+    assert.match(run.log, /-f sha=[0-9a-f]{40}/,
+      `${name}: the tag was written at no resolvable commit\n${run.log}`);
+  }
+});
+
+test("230 a stable keeps its release entry, and the entry carries the changelog", () => {
+  for (const [name, body] of PUBLISHING) {
+    const run = driveTagStep({ script: tagStepScript(body, name), version: "9.9.9", prerelease: "false" });
+    assert.match(run.log, /release create v9\.9\.9 .*--notes-file release-notes\.md/,
+      `${name}: a stable version made no release entry from its notes\n${run.log}`);
+    assert.equal(run.notesFile, `${KNOWN_NOTES}\n`,
+      `${name}: the release entry was created from notes that are not the ones the generator produced`);
+    assert.ok(!/--prerelease/.test(run.log),
+      `${name}: a stable was marked as a pre-release on the page\n${run.log}`);
+  }
+});
+
+test("230 an existing beta tag does not stop the stable that follows it from being tagged", () => {
+  // `git/refs/tags/v0.2.0` — plural — answers with `v0.2.0-beta.1`. A step that treats any answer as
+  // "already tagged" skips the tag for exactly the promotion this ruling exists to serve.
+  for (const [name, body] of PUBLISHING) {
+    const run = driveTagStep({
+      script: tagStepScript(body, name),
+      version: "9.9.9-beta.4",
+      prerelease: "true",
+      existingTagRef: "refs/tags/v9.9.9-beta.1",
+    });
+    assert.match(run.log, /-f ref=refs\/tags\/v9\.9\.9-beta\.4/,
+      `${name}: a DIFFERENT tag whose name starts the same way read as this one already existing, so `
+      + `this version was never tagged\n${run.log}`);
+  }
+});
+
+test("230 the same version is not tagged twice", () => {
+  for (const [name, body] of PUBLISHING) {
+    const run = driveTagStep({
+      script: tagStepScript(body, name),
+      version: "9.9.9-beta.4",
+      prerelease: "true",
+      existingTagRef: "refs/tags/v9.9.9-beta.4",
+    });
+    assert.ok(!/-f ref=/.test(run.log), `${name}: a tag that already exists was written again\n${run.log}`);
+    assert.ok(!/release create/.test(run.log),
+      `${name}: an already-tagged pre-release fell through to the release-entry path\n${run.log}`);
+    // NOT MERELY THE ABSENCE OF A SECOND TAG — a job with no pre-release path at all writes no tag
+    // either, and would read as a pass here. This is the step SAYING it looked and found one.
+    assert.match(run.out, /The tag v9\.9\.9-beta\.4 already exists\./,
+      `${name}: nothing reported an existing tag, so the absence of a second one proves nothing\n${run.out}`);
+  }
+});
+
+// THE PLANTS. Each mutates ONE job and drives it: a mutation applied to the whole file is how a
+// weakening hid here before, when a `.replace` without `/g` left the second publishing job untouched
+// and the arm passed on the one it had already broken.
+test("230 planted: a job that ignores the pre-release flag is caught, in each job separately", () => {
+  for (const [name, body] of PUBLISHING) {
+    const script = tagStepScript(body, name);
+    const broken = script.replace('if [ "$PRERELEASE_FLAG" = "true" ]; then', "if false; then");
+    assert.notEqual(broken, script, `${name}: the plant changed nothing, so it proves nothing`);
+    const run = driveTagStep({ script: broken, version: "9.9.9-beta.3", prerelease: "true" });
+    assert.match(run.log, /release create/,
+      `${name}: the tree was broken so that every version takes the release-entry path, and the drive `
+      + "still produced no release entry — the arm above cannot see the defect it exists for");
+  }
+});
+
+test("230 planted: a job that compares the tag read by prefix is caught, in each job separately", () => {
+  for (const [name, body] of PUBLISHING) {
+    const script = tagStepScript(body, name);
+    const broken = script.replace('if [ "$EXISTING" = "refs/tags/v$VERSION" ]; then', 'if [ -n "$EXISTING" ]; then');
+    assert.notEqual(broken, script, `${name}: the plant changed nothing, so it proves nothing`);
+    const run = driveTagStep({
+      script: broken, version: "9.9.9-beta.4", prerelease: "true", existingTagRef: "refs/tags/v9.9.9-beta.1",
+    });
+    assert.ok(!/-f ref=/.test(run.log),
+      `${name}: the tree was broken so that any answer reads as "already tagged", and the drive still `
+      + "wrote the tag — the exact-match arm above cannot see the defect it exists for");
+  }
+});
+
+// ── the awaited publish packs the commit it decided about (tracker issue 238) ────────────────────
+//
+// The wait watched a version pull request merge itself, then the job below checked out `main` BY NAME.
+// A commit landing in between that moves no version — an instrument fix with no note — was packed and
+// published under a number whose changelog never described it, and nothing could see it: the tip check
+// compares VERSIONS, and the version had not moved.
+
+test("238 the wait reports the commit that MOVED the version, not the tip that still carries it", () => {
+  // Newest first, as `git rev-list` prints them. c2 is the version pull request's merge; c4 and c3
+  // landed after it and change no version — an instrument fix with no note is the ordinary case, and
+  // publishing either of them ships bytes the changelog for 0.2.1 never described.
+  const versions = { c4: "0.2.1", c3: "0.2.1", c2: "0.2.1", c1: "0.2.0" };
+  const got = versionBumpCommit({
+    version: "0.2.1",
+    run: () => "c4\nc3\nc2\nc1\n",
+    versionAt: ({ ref }) => versions[ref],
+  });
+  assert.equal(got, "c2",
+    `the wait reported ${got}, which carries 0.2.1 but is not the commit that moved it there. The tip `
+    + "check downstream compares VERSIONS, so it passes on exactly this mistake");
+});
+
+test("238 when the bump IS the tip — the ordinary case — the tip is what is reported", () => {
+  const versions = { c2: "0.2.1", c1: "0.2.0" };
+  assert.equal(versionBumpCommit({ version: "0.2.1", run: () => "c2\nc1\n", versionAt: ({ ref }) => versions[ref] }),
+    "c2", "the common case, where nothing landed after the merge, no longer publishes the merge");
+});
+
+test("238 a version whose bump cannot be found in the walk answers nothing, and is not guessed at", () => {
+  const got = versionBumpCommit({
+    version: "0.2.1",
+    run: () => "c3\nc2\nc1\n",
+    // every commit in reach carries it, so the bump is beyond the walk and this cannot say which it is
+    versionAt: () => "0.2.1",
+  });
+  assert.equal(got, null,
+    "a walk that never saw the version change still named a commit. The oldest one it happened to reach "
+    + "is not the bump, and publishing it would ship a tree from before the release");
+});
+
+/**
+ * `readMain` with every reader supplied, so the arm answers about the code and not about this box.
+ *
+ * THE FIRST VERSION OF THIS ARM INJECTED ONLY `run`. It passed here, where `main` is tagged and the
+ * reader returned early, and failed on the runner, where the checkout has neither `origin/main` nor
+ * tags and it took the other path. Green by the box that ran it — the exact shape this file's header
+ * warns about, written into this file anyway. CI caught it; the local suite could not.
+ */
+const readingMain = ({ tip = "a".repeat(40), cut, version, history = [], versions = {} }) => {
+  const calls = [];
+  const r = readMain({
+    run: (args) => { calls.push(args.join(" ")); return args[0] === "rev-list" ? `${history.join("\n")}\n` : `${tip}\n`; },
+    versionAt: ({ ref }) => (ref === "origin/main" ? version : versions[ref]),
+    tags: () => [],
+    decide: () => ({ cut, version }),
+  });
+  return { r, calls };
+};
+
+test("238 the wait reports the tip it read, and reads it from the same ref as the version", () => {
+  const tip = "a".repeat(40);
+  const { r, calls } = readingMain({ tip, cut: false, version: "0.2.0" });
+  assert.equal(calls[0], "rev-parse origin/main",
+    "the commit is not read from the same ref the version is read from, in one pass");
+  for (const k of ["cut", "version", "sha", "tip"]) {
+    assert.ok(k in r, `the reader stopped answering \`${k}\`, so the loop above it cannot decide`);
+  }
+  assert.equal(r.tip, tip, "the wait no longer records which tip it looked at");
+  // NOTHING TO PUBLISH: the tip is what a reader wants recorded, and there is no bump to look for.
+  assert.equal(r.sha, tip, "with nothing cut, the wait reported something other than the tip it read");
+});
+
+test("238 with something to publish, the wait reports the bump and NOT the tip", () => {
+  const tip = "c".repeat(40);
+  const bump = "b".repeat(40);
+  const { r } = readingMain({
+    tip, cut: true, version: "0.2.1",
+    history: [tip, bump, "d".repeat(40)],
+    versions: { [tip]: "0.2.1", [bump]: "0.2.1", ["d".repeat(40)]: "0.2.0" },
+  });
+  assert.equal(r.sha, bump,
+    `the wait reported ${r.sha}. The tip carries 0.2.1 too — every commit after the bump does — so `
+    + "reporting it publishes bytes the changelog for 0.2.1 never described");
+  assert.equal(r.tip, tip, "the tip it looked at is no longer recorded alongside");
+});
+
+test("238 a cut whose bump cannot be found refuses rather than falling back to the tip", () => {
+  assert.throws(() => readingMain({
+    tip: "c".repeat(40), cut: true, version: "0.2.1",
+    history: ["c".repeat(40), "b".repeat(40)],
+    versions: { ["c".repeat(40)]: "0.2.1", ["b".repeat(40)]: "0.2.1" },
+  }), /no commit in the last 100/,
+    "a version whose bump is out of reach was published against the branch tip, which is a tree the "
+    + "changelog does not describe");
+});
+
+test("238 a name the wait cannot resolve refuses rather than being handed on", () => {
+  // `git rev-parse` PRINTS THE NAME BACK when it cannot resolve it, so this failure arrives looking
+  // like a value. A checkout would then take it as a ref and land somewhere.
+  for (const answer of ["origin/main\n", "\n", "abc123\n", `${"a".repeat(39)}\n`, `${"a".repeat(41)}\n`, "A".repeat(40)]) {
+    assert.throws(() => readMain({ run: () => answer }), /not a commit/,
+      `the wait accepted ${JSON.stringify(answer)} as the commit to publish`);
+  }
+});
+
+test("238 the commit reported is the one from the pass that found the cut, not an earlier or later read", async () => {
+  const seen = [];
+  let n = 0;
+  const read = () => {
+    n += 1;
+    const d = { cut: n === 3, version: "9.9.9", sha: `${n}`.repeat(40) };
+    seen.push(d.sha);
+    return d;
+  };
+  const r = await awaitCut({
+    refresh: async () => {}, read, sleep: async () => {}, waitMs: 10_000, stepMs: 1, now: () => 0,
+  });
+  assert.equal(r.cut, true, "the loop never saw the cut this arm staged");
+  assert.equal(r.sha, "3".repeat(40),
+    `the wait reported ${r.sha} but the pass that found the cut read ${seen[2]} — the publish would `
+    + "check out a tree the verdict was not about");
+});
+
+test("238 the second publish checks out the commit the wait named, and the wait publishes it", () => {
+  const awaited = jobText("awaited");
+  assert.match(awaited, /sha: \$\{\{ steps\.awaited\.outputs\.sha \}\}/,
+    "the wait no longer publishes the commit it decided about, so the job below has nothing to check out");
+  const second = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:"));
+  const co = second.indexOf("actions/checkout@v7");
+  const guard = second.indexOf("The wait named a commit to publish");
+  assert.ok(guard > 0, "nothing refuses an absent commit — this arm could not look");
+  // BEFORE THE CHECKOUT. `ref:` with an empty value checks out the default branch rather than failing,
+  // so a guard after it would certify a tree that was already wrong.
+  assert.ok(guard < co,
+    "the refusal runs after the checkout it protects, so an absent commit has already been resolved to "
+    + "the default branch by the time anything asks");
+});
+
+test("238 the refusal is driven, not read: an absent or partial commit stops the publish", () => {
+  const second = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:"));
+  const script = namedStepScript(second, "The wait named a commit to publish", "publish-awaited");
+  const drive = (sha) => {
+    const dir = mkdtempSync(join(tmpdir(), "awaited-sha-"));
+    try {
+      const f = join(dir, "step.sh");
+      writeFileSync(f, script);
+      try {
+        const out = execFileSync("bash", [f], { encoding: "utf8", stdio: "pipe", env: { PATH: process.env.PATH, AWAITED_SHA: sha } });
+        return { code: 0, out };
+      } catch (e) { return { code: e.status, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  };
+  for (const bad of ["", "main", "abc123", "a".repeat(39), "a".repeat(41), "A".repeat(40), "../../etc"]) {
+    const r = drive(bad);
+    assert.equal(r.code, 2,
+      `the publish accepted ${JSON.stringify(bad)} as the commit to check out (exit ${r.code}). Exit 2 is `
+      + `this repository's could-not-look, and an unresolvable ref must not read as one that resolved.\n${r.out}`);
+  }
+  const good = drive("b".repeat(40));
+  assert.equal(good.code, 0, `a full commit was refused\n${good.out}`);
+  assert.match(good.out, new RegExp("b".repeat(40)), "the step does not say which commit it is publishing");
+});
+
+test("238 planted: a refusal that only checks for emptiness is caught", () => {
+  const second = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:"));
+  const script = namedStepScript(second, "The wait named a commit to publish", "publish-awaited");
+  // The shape somebody writes when they think "empty" is the only bad answer. `main` is the exact value
+  // this issue is about, and it is not empty.
+  const broken = script.replace(/case "\$AWAITED_SHA" in[\s\S]*?esac\n/, "").replace(/if \[ "\$\{#AWAITED_SHA\}" -ne 40 \][\s\S]*?fi\n/, "");
+  assert.notEqual(broken, script, "the plant changed nothing, so it proves nothing");
+  const dir = mkdtempSync(join(tmpdir(), "awaited-plant-"));
+  try {
+    const f = join(dir, "step.sh");
+    writeFileSync(f, broken);
+    let code = 0;
+    try { execFileSync("bash", [f], { encoding: "utf8", stdio: "pipe", env: { PATH: process.env.PATH, AWAITED_SHA: "main" } }); }
+    catch (e) { code = e.status; }
+    assert.equal(code, 0,
+      "the tree was broken so that only an empty answer refuses, and `main` was still rejected — the "
+      + "arm above cannot see the defect it exists for");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });
