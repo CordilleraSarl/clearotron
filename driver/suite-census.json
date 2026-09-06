@@ -3238,8 +3238,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 22,
-          "asserts": 156,
+          "tests": 27,
+          "asserts": 177,
           "skips": 0,
           "todos": 0
         },
@@ -4312,9 +4312,9 @@
           "todos": 0
         },
         "the-published-manifest-is-not-the-repos-manifest.test.mjs": {
-          "tests": 16,
-          "asserts": 55,
-          "skips": 0,
+          "tests": 18,
+          "asserts": 64,
+          "skips": 1,
           "todos": 0
         },
         "the-readmes-commands-run-as-written.test.mjs": {

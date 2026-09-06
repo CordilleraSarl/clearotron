@@ -40,8 +40,8 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
+import { execFileSync, spawnSync } from "node:child_process";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -402,4 +402,73 @@ test("tracker issue 180 — an install this gave up waiting for is a could-not-l
       `npm was killed before it could answer and the check blamed the artefact: ${r.why}`);
     assert.match(r.why, /not about these bytes/);
   } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+// ── tracker issue 196 — TWO INSTRUMENTS THAT COULD NOT SPEAK ────────────────────────────────────────
+//
+// `scripts/verify-publishable.mjs` is the most thorough instrument this repository has for the packaged
+// artefact: it installs the tarball into a tree that has never seen this checkout, types every verb, and
+// holds the clean-room licence substitution end to end. It was invoked by NOTHING — no workflow, no npm
+// script, every other mention of its name a comment — while five uninstallable releases shipped past it.
+// That is the shape where an instrument exists, stops being reachable, and its silence reads as a pass.
+//
+// AND IT COULD NOT HAVE RUN IF WIRED, because the pack it shells out to needs a table the cut withheld.
+// Reviving that reconcile on a public tree is explicitly out of this issue's scope, so the fix is that
+// the script SAYS SO — an absence with a reason beside it is a different thing from a gap.
+//
+// BREAK MATRIX:
+//   · the script refuses rather than passing when it cannot pack  → break: exit 0, arm 1 red
+//   · the refusal is could-not-look, not failure                  → break: exit 1, arm 1 red
+//   · it names what is missing and what stays unproven            → break: a bare message, arm 1 red
+//   · the strip invariant asks only about keys actually stripped  → break: read STRIP_KEYS, arm 2 red
+test("196 verify-publishable REFUSES on a tree it cannot pack, and says so as a could-not-look", (ctx) => {
+  const script = join(REPO, "scripts", "verify-publishable.mjs");
+  assert.ok(existsSync(script), "the instrument this arm is about is gone");
+  const r = spawnSync(process.execPath, [script], { encoding: "utf8", timeout: 120_000 });
+  const said = `${r.stdout ?? ""}${r.stderr ?? ""}`;
+
+  // A TREE THAT CAN PACK IS NOT THIS ARM'S SUBJECT — and the bail is a SKIP, not a bare `return`.
+  //
+  // `node:test` counts a bare return as a PASS, so the first cut of this reported its subject clean
+  // having measured none of it. `driver/test/a-bail-on-an-unmeetable-precondition-is-a-skip.test.mjs`
+  // caught it in CI, correctly, and this is the shape it exists for: an arm that cannot look must say so
+  // rather than go quiet. Same rule the script under test now follows one layer down.
+  //
+  // When the cut table arrives, or the pack stops needing it, this script becomes runnable and this arm
+  // should be deleted with the block it guards — said here rather than left for a reader to infer.
+  if (existsSync(join(REPO, "cut", "packed-artifact.mjs")))
+    return ctx.skip("this tree carries cut/packed-artifact.mjs, so the pack does not refuse and this "
+      + "arm's subject — a script declaring why it cannot run — does not exist here");
+
+  assert.equal(r.status, 2,
+    `a checker that cannot look must exit 2, the house meaning — 0 is the silence this issue is about, `
+    + `1 would claim a failure it did not measure. Got ${r.status}:\n${said.slice(0, 600)}`);
+  // IT NAMES WHAT IS MISSING, so a reader is not sent looking.
+  assert.match(said, /cut[/\\]packed-artifact\.mjs/, `the refusal does not name the table it needs:\n${said}`);
+  // AND WHAT STAYS UNPROVEN, which is the half that makes this a finding rather than a shrug. A refusal
+  // that says only "I cannot run" invites the reader to conclude nothing is at stake.
+  assert.match(said, /NOT a pass/, `the refusal does not say it is not a pass:\n${said}`);
+  assert.match(said, /verb|substitution/, `the refusal does not say what is left unproven:\n${said}`);
+});
+
+test("196 the strip invariant asks about keys it actually stripped, not about a policy list", () => {
+  // `STRIP_KEYS` is the POLICY — what to remove from the published manifest IF PRESENT — and it still
+  // carries `private` so that a tree reintroducing that flag produces a publishable tarball. The
+  // invariant underneath it read the same list as a list of keys the REPOSITORY must HOLD, and `private`
+  // has not been in the manifest since publishing moved into CI. So the pack refused on every tree that
+  // got past the cut check, over a key the product deliberately no longer carries.
+  //
+  // "Strip this if you find it" and "refuse unless this exists" are different claims; one list was
+  // answering both.
+  const src = readFileSync(join(REPO, "scripts", "pack-publishable.mjs"), "utf8");
+  assert.match(src, /const lost = stripped\.filter/,
+    "the invariant reads a policy list again — a key the manifest legitimately lacks will refuse the pack");
+  assert.ok(!/const lost = STRIP_KEYS\.filter/.test(src),
+    "the invariant is back to demanding every policy key be present in the repo manifest");
+  // THE POLICY ITSELF DID NOT SHRINK, which is the half a fix could get wrong in the tidy direction:
+  // dropping `private` from STRIP_KEYS would make a tree that reintroduced the flag unpublishable.
+  assert.ok(STRIP_KEYS.includes("private"),
+    "`private` left the strip policy — a tree that reintroduces the flag would now pack an unpublishable tarball");
+  assert.ok(STRIP_KEYS.includes("overrides"),
+    "`overrides` left the strip policy — this is the key whose presence made five releases uninstallable");
 });

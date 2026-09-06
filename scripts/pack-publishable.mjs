@@ -200,12 +200,29 @@ async function main() {
       ? `  stripped from the PUBLISHED manifest only: ${stripped.join(", ")} (the repo manifest is untouched)`
       : "  nothing stripped — no publish-only keys were present");
     // Prove the repo manifest still has them, here, on every pack.
+    //
+    // ── WHICH KEYS THIS MAY REFUSE OVER, AND WHY IT IS NOT ALL OF THEM (tracker issue 196) ───────────
+    //
+    // This asserted every entry of STRIP_KEYS was present in the repo manifest, and `private` has not
+    // been in it since publishing moved into CI — the STRIP_KEYS comment above says so in its own words.
+    // So the invariant refused on every tree that got past the `cut/` check: the script was unrunnable
+    // twice over, and the second refusal was about a key the product deliberately no longer carries.
+    //
+    // THE STRIP LIST IS STILL THE POLICY and does not shrink. A tree that reintroduces `private` must
+    // still produce a publishable tarball, which is what keeping the entry buys. What changed is that a
+    // key the policy is willing to strip IF PRESENT is no longer a key the repository must HOLD.
+    //
+    // The distinction is the whole fix: "strip this if you find it" and "refuse unless this exists" are
+    // different claims, and one list was answering both. What this still catches is the case it was
+    // written for — a strip that reached the repository's own manifest instead of the published copy —
+    // and that can only happen to a key the manifest actually had, which is exactly `stripped`.
     const repo = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
-    const lost = STRIP_KEYS.filter((k) => !(k in repo));
+    const lost = stripped.filter((k) => !(k in repo));
     if (lost.length) {
-      console.error(`  REFUSING: the REPO manifest is missing ${lost.join(", ")}. Those are the clean-room`
-        + " buffers substitution and the flag that stops an accidental publish, not packaging details."
-        + " Restore them before publishing.");
+      console.error(`  REFUSING: ${lost.join(", ")} was stripped from the published manifest and is now`
+        + " missing from the REPO manifest too. The strip must touch the published copy alone — a key"
+        + " taken out of this repository's own manifest is the clean-room substitution or the"
+        + " accidental-publish guard being deleted rather than stripped. Restore it before publishing.");
       process.exit(1);
     }
   } finally {

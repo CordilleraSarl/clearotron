@@ -71,6 +71,26 @@ on:
   # most safety-critical part of this file, and it belongs in a change of its own.
   schedule:
     - cron: '*/5 * * * *'
+  # ── AND THE ONE MOMENT WE KNOW IS CLOSE TO THE MERGE (tracker issue 208) ─────────────────────────────
+  #
+  # The cron above is a floor and the paragraph before this says why. What it is not is punctual: on
+  # 2026-09-06 a version sat cut and unpublished for 74 minutes, and every stable release before that had
+  # published on an unrelated human merge rather than on this schedule.
+  #
+  # The version branch's CI COMPLETING is the moment auto-merge is waiting on, so it is the closest
+  # signal to the merge that exists — and `workflow_run` fires on it whoever pushed, so this needs no
+  # credential and changes no contract. That matters: an App or personal token is the one thing this
+  # publishing design forbids, and a dispatch from the version job would fire before main carries the
+  # version and find nothing.
+  #
+  # CI completing is not the merge, so `pending` waits for it — bounded, and quietly. See
+  # `scripts/release-await-cut.mjs`; not-merged-yet is the ordinary outcome, not a fault.
+  #
+  # `workflow_dispatch` is UNTOUCHED and is still a rehearsal.
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [changeset-release/main]
   workflow_dispatch:
 
 concurrency:
@@ -297,14 +317,20 @@ jobs:
   # this job wakes up every five minutes: an install here would be the whole cost of the mechanism.
   pending:
     name: Is a cut sitting on main unpublished
-    if: github.event_name == 'schedule' && github.repository == 'CordilleraSarl/clearotron'
+    # BOTH EVENTS ASK THE SAME QUESTION, and the branch check below holds them to the same rule: a
+    # scheduled run's ref IS the default branch, and a `workflow_run` run's is the workflow file's branch,
+    # so neither can be pointed at a feature branch. Only `workflow_dispatch` stays a rehearsal.
+    if: (github.event_name == 'schedule' || github.event_name == 'workflow_run') && github.repository == 'CordilleraSarl/clearotron'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: read
+    # ONE OF THE TWO STEPS RAN, never both — see the steps for which event takes which. An unset output
+    # from a skipped step is the empty string, so the `||` picks the one that answered rather than
+    # producing "true" out of a step that never executed.
     outputs:
-      cut: ${{ steps.cut.outputs.cut }}
-      version: ${{ steps.cut.outputs.version }}
+      cut: ${{ steps.cut.outputs.cut || steps.awaited.outputs.cut }}
+      version: ${{ steps.cut.outputs.version || steps.awaited.outputs.version }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -318,9 +344,21 @@ jobs:
       - name: This pipeline publishes only the way it was authorised to
         run: node scripts/release-publish-guard.mjs
 
+      # THE SCHEDULE ASKS ONCE; THE VERSION BRANCH'S CI WAITS BRIEFLY FIRST (tracker issue 208).
+      #
+      # On the cron there is nothing to wait for — if a cut is sitting there it has been sitting there.
+      # On `workflow_run` the merge has probably not been taken yet, because the completion that fired
+      # this run is what auto-merge was waiting on. So that path polls main for up to ten minutes and
+      # gives up quietly; the cron floor is still underneath either way.
       - name: Did a merge leave a version on main with no tag
+        if: github.event_name == 'schedule'
         id: cut
         run: node scripts/release-cut-decision.mjs
+
+      - name: Wait briefly for the version branch's merge, then ask the same question
+        if: github.event_name == 'workflow_run'
+        id: awaited
+        run: node scripts/release-await-cut.mjs
 
   publish:
     name: Publish the release to npm
