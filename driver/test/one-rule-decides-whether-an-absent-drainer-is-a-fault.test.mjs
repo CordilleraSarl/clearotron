@@ -30,7 +30,7 @@ import { fileURLToPath } from "node:url";
 const DRIVER = dirname(dirname(fileURLToPath(import.meta.url)));
 const src = (f) => readFileSync(join(DRIVER, f), "utf8");
 
-// DERIVED, NEVER A LITERAL HOME. `#644 no executable line names a specific account's home directory`
+// DERIVED, NEVER A LITERAL HOME. The arm named `no executable line names a specific account's home directory`
 // refuses a `/home/<user>/` written into code, and it is right to: a fixture path that names one
 // operator's account is wrong under every other service account and in every public clone. These are
 // only ever compared as strings, so where they live is immaterial — but the shape must be the sanctioned

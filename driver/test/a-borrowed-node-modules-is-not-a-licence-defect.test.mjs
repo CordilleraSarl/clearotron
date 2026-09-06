@@ -24,8 +24,8 @@ import { foreignTreeNote, collect, undeclaredProblems } from "../../scripts/thir
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 
-// DERIVED, NEVER A LITERAL HOME — see `#644 no executable line names a specific account's home
-// directory`. A borrowed tree in the wild is under somebody's home; naming one in code is the leak
+// DERIVED, NEVER A LITERAL HOME — see the arm named `no executable line names a specific account's
+// home directory`. A borrowed tree in the wild is under somebody's home; naming one in code is the leak
 // that guard exists for, and this fixture only ever appears in a compared string.
 const BORROWED = join(tmpdir(), "ct146-other-worktree", "node_modules");
 const linked = () => BORROWED;
