@@ -42,7 +42,7 @@
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, writeFileSync, readFileSync, rmSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 /** The manifest inside a packed tarball, without unpacking the rest of it. */
@@ -65,7 +65,13 @@ export function binNames(manifest) {
  * @returns {{ok: boolean, why: string|null, installed: object|null, missingBins: string[]}}
  */
 export function installsAsADependency(tarballPath, { keep = false, timeoutMs = 900_000 } = {}) {
-  const manifest = manifestOf(tarballPath);
+  // ABSOLUTE, BECAUSE THE INSTALL RUNS SOMEWHERE ELSE. npm resolves a file path against ITS OWN cwd,
+  // which here is the throwaway project rather than the caller's directory. CI passes
+  // `./packed/clearotron-<version>.tgz` and this refused it — npm looked for `packed/` inside the temp
+  // consumer and reported ENOENT, which arrives looking exactly like an artefact that will not install.
+  // Every arm below had handed it an absolute temp path, so the class was armed on one member only.
+  const abs = resolve(tarballPath);
+  const manifest = manifestOf(abs);
   const consumer = mkdtempSync(join(tmpdir(), "clearotron-install-check-"));
   try {
     // A project of its own, with a name that is not this package's — npm treats an install of a
@@ -75,7 +81,7 @@ export function installsAsADependency(tarballPath, { keep = false, timeoutMs = 9
       `${JSON.stringify({ name: "clearotron-install-check-consumer", version: "1.0.0", private: true }, null, 2)}\n`);
 
     try {
-      execFileSync("npm", ["install", tarballPath, "--no-audit", "--no-fund"],
+      execFileSync("npm", ["install", abs, "--no-audit", "--no-fund"],
         { cwd: consumer, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: timeoutMs });
     } catch (e) {
       const said = `${e?.stderr ?? ""}`.trim() || `${e?.stdout ?? ""}`.trim() || `${e?.message ?? e}`;

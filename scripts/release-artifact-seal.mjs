@@ -51,7 +51,7 @@
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, readFileSync, writeFileSync, rmSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
+import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 import { publishableManifest, STRIP_KEYS } from "./pack-publishable.mjs";
@@ -66,23 +66,26 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
  *   silent success on one is how a caller concludes the seal ran.
  */
 export function sealTarball(tarballPath) {
+  // Absolute for the same reason the install check is, even though nothing here changes directory
+  // today: a relative path plus a child with its own cwd is one edit away, and it fails as ENOENT.
+  const abs = resolve(tarballPath);
   const staging = mkdtempSync(join(tmpdir(), "clearotron-seal-"));
   try {
-    execFileSync("tar", ["-xzf", tarballPath, "-C", staging]);
+    execFileSync("tar", ["-xzf", abs, "-C", staging]);
     const manifestPath = join(staging, "package", "package.json");
     if (!existsSync(manifestPath)) {
-      throw new Error(`${tarballPath} carries no package/package.json — that is not an npm tarball`);
+      throw new Error(`${abs} carries no package/package.json — that is not an npm tarball`);
     }
     const before = JSON.parse(readFileSync(manifestPath, "utf8"));
     const stripped = STRIP_KEYS.filter((k) => k in before);
     writeFileSync(manifestPath, `${JSON.stringify(publishableManifest(before), null, 2)}\n`);
-    execFileSync("tar", ["-czf", tarballPath, "-C", staging, "package"]);
+    execFileSync("tar", ["-czf", abs, "-C", staging, "package"]);
 
     // THE POST-CONDITION IS READ BACK OFF THE SEALED BYTES, not asserted from the write above. The
     // whole defect being repaired here is a strip everybody believed was happening, so a seal that
     // reports success without re-reading the artefact is the same shape one layer up.
     const after = JSON.parse(
-      execFileSync("tar", ["-xzOf", tarballPath, "package/package.json"], { encoding: "utf8" }));
+      execFileSync("tar", ["-xzOf", abs, "package/package.json"], { encoding: "utf8" }));
     const survivors = STRIP_KEYS.filter((k) => k in after);
     if (survivors.length) {
       throw new Error(`the seal ran and ${survivors.join(", ")} is still in the sealed manifest`);

@@ -269,3 +269,47 @@ test("tracker issue 180 — the gate is asked on the pull request too, not only 
       `${script} in ci.yml is pointed at something other than the tarball that step packed`);
   }
 });
+
+test("tracker issue 180 — a relative tarball path is the caller's, not the install's", () => {
+  // THE MEMBER EVERY ARM ABOVE MISSED, and CI caught it on the first run. Each of them handed the
+  // check an absolute temp path; ci.yml hands it `./packed/clearotron-<version>.tgz`. npm resolves a
+  // file path against ITS OWN cwd, which is the throwaway consumer project, so it looked for `packed/`
+  // in there and reported ENOENT — a working artefact refused, in the vocabulary of one that will not
+  // install. An arm that quantifies over "a tarball" has to be given a different SHAPE of path, not
+  // another tarball.
+  const dir = scratch();
+  const cwd = process.cwd();
+  try {
+    const tgz = packTarball(dir,
+      { name: "relative-probe", version: "1.0.0", bin: { "rel-cmd": "bin/cli.mjs" } },
+      { "bin/cli.mjs": "#!/usr/bin/env node\nconsole.log('ok')\n" });
+    process.chdir(dir);
+    const r = offline(() => installsAsADependency(`./${tgz.split("/").pop()}`));
+    assert.equal(r.ok, true,
+      `a tarball named by a path relative to the CALLER was refused: ${r.why}`);
+    assert.equal(r.installed.name, "relative-probe");
+  } finally {
+    process.chdir(cwd);
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("tracker issue 180 — and the seal takes one too, since it is handed the same path", () => {
+  const dir = scratch();
+  const cwd = process.cwd();
+  try {
+    const tgz = packTarball(dir, { name: "relative-seal-probe", version: "1.0.0",
+      overrides: { buffers: "$buffers" } });
+    const base = tgz.split("/").pop();
+    process.chdir(dir);
+    const r = sealTarball(`./${base}`);
+    assert.deepEqual(r.stripped, ["overrides"]);
+    process.chdir(cwd);
+    assert.equal("overrides" in manifestOf(tgz), false,
+      "the seal reported a strip and the tarball at the caller's path still carries the key — it "
+      + "rewrote something else, or somewhere else");
+  } finally {
+    process.chdir(cwd);
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
