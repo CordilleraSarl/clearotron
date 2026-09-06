@@ -21,6 +21,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { unitEnvironment, unitValue, couldNotDetermine } from "../unit-environment.mjs";
+import { handRunEnv } from "./drive-env.mjs";   // — the drive names the two variables that would make it read no file at all
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..");
@@ -113,7 +114,17 @@ function doctor(home) {
     // this environment, and all of them are in the units'. A doctor that reads the shell fails here.
     const out = execFileSync(process.execPath, [ONBOARD, "--check"], {
       encoding: "utf8", stdio: "pipe", timeout: 120_000,
-      env: { HOME: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" },
+      // ── NAMED, NOT MERELY ABSENT (drive-env-check) ────────────────────────────────────────────────
+      //
+      // `CLEAROTRON_NO_ENV_FILE=1` — which the suite runner sets for every child — and `INVOCATION_ID`,
+      // inherited from any systemd unit above the run including a CI job, each make the command ignore
+      // the file this test just wrote and fall back to built-in defaults, with no error. A drive that
+      // does not say which of them it holds is a drive that can silently stop reading its own fixture.
+      //
+      // `handRunEnv` over an EMPTY base rather than over `process.env`, which is what it usually takes:
+      // the empty shell is this file's whole criterion — none of the names doctor reports on may be in
+      // this environment — so inheriting the real one would defeat the arms while satisfying the guard.
+      env: handRunEnv({ HOME: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" }, {}),
     });
     return { code: 0, out };
   } catch (e) { return { code: e.status ?? -1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }
