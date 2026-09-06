@@ -279,8 +279,21 @@ jobs:
       # reported that a push had cut `0.1.1-beta.0` when main still carried 0.1.0 and nobody had merged
       # anything — and the publish job started. It failed for an unrelated reason, which is the only thing
       # that stopped it.
+      # ── ASKED OF THE PUSH, NOT OF WHATEVER HEAD HAS BECOME (tracker issue 208) ─────────────────────
+      #
+      # The changesets step above has already run `changeset version` AND COMMITTED the bump by the time
+      # this runs, so HEAD carries the version branch's number while main carries the pushed one. Without
+      # this the step answered about a version that exists on main nowhere: measured on run 34050690448,
+      # `v0.1.11 has no tag — this push cut it` in the same run where the independent detector, checking
+      # out main, said `v0.1.10 is already released`. One tree, two answers.
+      #
+      # It made `cut` true on essentially every push, which is why a wait conditioned on `cut != 'true'`
+      # never armed, and why `publish` ran with nothing stranded and failed on `cannot publish over the
+      # previously published versions: 0.1.10`.
       - name: Did this push cut a version
         id: cut
+        env:
+          CLEAROTRON_CUT_REF: ${{ github.sha }}
         run: node scripts/release-cut-decision.mjs
 
       # ── AND THE GATE COMES AFTER IT (tracker issue 208 / tracker issue 229) ─────────────────────────
@@ -793,6 +806,30 @@ jobs:
       #    fixes" — and `beta` is deliberately not also set: npm exchanges its OIDC token inside
       #    `npm publish` and nowhere else, so a second tag would need a long-lived credential in this
       #    repository, which is the one thing this design forbids. One publish, one tag.
+      # ── IT PUBLISHES THE VERSION IT AWAITED, OR NOTHING (tracker issue 208) ────────────────────────
+      #
+      # This job checks out `main` AFTER a wait, so the tip it packs is whatever main carries by then —
+      # which is the point, and also the risk: another merge can land in the window, and this would then
+      # publish a version nobody awaited, under a run that reported awaiting a different one.
+      #
+      # The awaited verdict is a fact from a few minutes ago; the checkout is a fact from now. They must
+      # agree before anything is packed, and a disagreement is a refusal rather than a preference for
+      # either one — neither number is safe to publish once they have come apart.
+      - name: The tip this packs is the version this run awaited
+        run: |
+          set -euo pipefail
+          HERE=$(node -p "require('./package.json').version")
+          AWAITED="${{ needs.awaited.outputs.version }}"
+          if [ -z "$AWAITED" ]; then
+            echo "::error::This job ran with no awaited version. The wait reported nothing, and a publish on an absent verdict is a publish nobody decided."
+            exit 2
+          fi
+          if [ "$HERE" != "$AWAITED" ]; then
+            echo "::error::main now carries $HERE and this run awaited $AWAITED — another merge landed inside the wait. Refusing to publish either: one was never awaited and the other is no longer on main."
+            exit 1
+          fi
+          echo "main carries $HERE, which is the version this run awaited."
+
       - name: What is being published, and whether this run may publish it
         id: what
         run: |

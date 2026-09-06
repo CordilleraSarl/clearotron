@@ -931,6 +931,7 @@ test("tracker 97 the manifest names the repository provenance will be attested f
 //   · the wait fires only on the version branch's CI   → break: drop `branches`, arm 4 red
 //   · the rehearsal path is untouched                  → break: let dispatch publish, arm 5 red
 import { awaitCut, WAIT_MS, STEP_MS, waitBudget } from "../../scripts/release-await-cut.mjs";
+import { cutRef } from "../../scripts/release-cut-decision.mjs";
 
 /** This repository's root, and the workflow this section reads. Named here rather than reusing a
  *  constant from another section, because a constant that moves under an arm is how a guard comes to
@@ -1265,9 +1266,30 @@ test("208 the two publish jobs carry the same steps, so they cannot drift apart"
   const first = names(jobText("publish"));
   const second = names(RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:")));
   assert.ok(first.length >= 10, `only ${first.length} steps found in the first publish — this arm could not look`);
-  assert.deepEqual(second, first,
-    "the two publish jobs no longer run the same steps in the same order. Whatever was added to one and "
-    + "not the other is a check the other version is published without");
+
+  // EVERY STEP OF THE FIRST APPEARS IN THE SECOND, IN ORDER. A subsequence rather than equality, because
+  // the second job legitimately has work the first cannot have — it publishes a tip that landed after
+  // the run began, so it must prove that tip is the one it awaited. Requiring equality would have made a
+  // correct addition look like drift, which is how an arm gets loosened to `ok(true)` by the next person.
+  //
+  // The direction that matters is preserved exactly: a check added to `publish` and not to
+  // `publish-awaited` breaks the subsequence, and that is the failure this exists for — a version
+  // published without a check the other version got.
+  const EXTRA_BY_DESIGN = ["The tip this packs is the version this run awaited"];
+  let i = 0;
+  const missing = [];
+  for (const step of first) {
+    const at = second.indexOf(step, i);
+    if (at < 0) missing.push(step); else i = at + 1;
+  }
+  assert.deepEqual(missing, [],
+    `these steps run in \`publish\` and not, in order, in \`publish-awaited\`: ${missing.join(" | ")}. `
+    + "The awaited version would be published without them");
+  const extras = second.filter((n) => !first.includes(n));
+  assert.deepEqual(extras, EXTRA_BY_DESIGN,
+    `\`publish-awaited\` carries steps the first publish does not, and they are not the ones this arm `
+    + `knows about: ${extras.join(" | ")}. Either the first version publishes without them, or this list `
+    + "is stale — say which in the arm rather than widening it");
 });
 
 test("208 the rehearsal exercises both publishes, and waits for nothing while doing it", () => {
@@ -1302,4 +1324,69 @@ test("208 no job output is read through a hyphenated name", () => {
   const executable = RELEASE_YML.split("\n").filter((l) => !/^\s*#/.test(l)).join("\n");
   const bad = [...executable.matchAll(/needs\.([A-Za-z0-9_]*-[A-Za-z0-9_-]*)\./g)].map((m) => m[1]);
   assert.deepEqual(bad, [], `these job outputs are read through a hyphenated name and evaluate to nothing: ${bad.join(", ")}`);
+});
+
+// ── 208 · THE DECISION IS ASKED OF THE PUSH, NOT OF WHATEVER HEAD BECAME ────────────────────────────
+//
+// Measured on run 34050690448. In the `version` job the changesets action has already run `changeset
+// version` AND COMMITTED the bump before the cut decision runs, so HEAD carries the version branch's
+// number. The step said `v0.1.11 has no tag — this push cut it` in the same run where the independent
+// detector, checking out main, said `v0.1.10 is already released`. One tree, two answers.
+//
+// `cut` was therefore true on essentially every push, which is why the wait — conditioned on
+// `cut != 'true'` — never armed, and why `publish` ran with nothing stranded and failed on
+// `cannot publish over the previously published versions: 0.1.10`.
+
+test("208 the version job asks its cut decision about the commit that was pushed", () => {
+  const version = jobText("version");
+  assert.match(version, /CLEAROTRON_CUT_REF: \$\{\{ github\.sha \}\}/,
+    "the cut decision is asked of whatever HEAD has become after the changesets action committed the "
+    + "bump — it answers about the version branch, and `cut` is then true on every push");
+  // AND THE STEP IT SCOPES IS THE ONE THAT DECIDES. An env on the wrong step is a variable nothing reads.
+  const at = version.indexOf("CLEAROTRON_CUT_REF");
+  const decides = version.indexOf("release-cut-decision.mjs", at);
+  assert.ok(decides > at && decides - at < 200,
+    "CLEAROTRON_CUT_REF is set somewhere other than the step that runs the cut decision");
+});
+
+test("208 an unnamed ref still means HEAD, which is right for the cron and a hand run", () => {
+  // The cron checks out main and nothing has moved under it, so HEAD is the question there. This must
+  // not become a variable every caller has to remember.
+  assert.equal(cutRef({}), "HEAD");
+  assert.equal(cutRef({ CLEAROTRON_CUT_REF: "   " }), "HEAD");
+  assert.equal(cutRef({ CLEAROTRON_CUT_REF: "d534f531" }), "d534f531");
+});
+
+test("208 a wait that could not LOOK is not a wait that found nothing", () => {
+  // Giving up quietly is the ordinary outcome and stays exit 0 — red checks, a dismissed pull request,
+  // a re-cut mid-flight. A fetch that failed is a different thing, and reporting it as "nothing to
+  // publish" hands the job below a verdict this never reached.
+  const src = readFileSync(join(REPO, "scripts", "release-await-cut.mjs"), "utf8");
+  assert.match(src, /process\.exitCode = 2/,
+    "a failure to read main no longer exits 2, so it is indistinguishable from finding nothing merged");
+  assert.match(src, /looked=false/, "the two negatives are not separated in the output the job reads");
+  assert.match(src, /looked=true/, "a successful look does not say it looked, so `looked` proves nothing");
+});
+
+test("208 the loop propagates a read failure rather than answering with it", async () => {
+  // Driven: the catch that turns this into exit 2 lives in main(), and it can only do that if the loop
+  // itself refuses to invent an answer.
+  await assert.rejects(
+    () => awaitCut({ refresh: async () => { throw new Error("fetch died"); }, read: () => ({ cut: false, version: "0.0.0" }),
+      sleep: async () => {}, waitMs: 0, stepMs: 1, now: () => 0 }),
+    /fetch died/, "a refresh that threw was swallowed into a 'nothing merged' verdict");
+});
+
+test("208 the second publish refuses a tip that is not the one it awaited", () => {
+  const second = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:"));
+  assert.match(second, /needs\.awaited\.outputs\.version/,
+    "the second publish never compares what it checked out against what it awaited, so a merge landing "
+    + "inside the wait is published by a run that reported awaiting something else");
+  assert.match(second, /exit 2/, "an absent awaited version is not treated as a could-not-look");
+  assert.match(second, /Refusing to publish either/,
+    "a tip that moved is resolved in favour of one of the two numbers — neither is safe once they differ");
+  // BEFORE ANYTHING IS PACKED. A check after the pack certifies bytes it did not gate.
+  const guard = second.indexOf("The tip this packs is the version this run awaited");
+  const pack = second.indexOf("- name: Pack the exact bytes that will be published");
+  assert.ok(guard > 0 && pack > guard, "the tip check does not run before the pack, so it gates nothing");
 });
