@@ -463,7 +463,9 @@ jobs:
     # THE BUDGET CONTAINS THE WAIT, with room for the checkout and the fetches around it. A timeout under
     # the wait cancels this at the moment it was about to answer, and a cancelled job reads as neither a
     # pass nor a failure to anybody scanning the run. An arm couples the two numbers.
-    timeout-minutes: 25
+    # CONTAINS THE WAIT, WITH ROOM FOR THE CHECKOUT AND INSTALL ABOVE IT. The wait is 25 minutes
+    # (tracker issue 247) and `MIN_JOB_MARGIN_MS` in release-await-cut.mjs is what an arm holds this to.
+    timeout-minutes: 35
     permissions:
       contents: read
     outputs:

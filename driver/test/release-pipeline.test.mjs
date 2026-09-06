@@ -24,7 +24,7 @@ import { findings, BANNED_WORDS } from "../../scripts/changelog-plain-language.m
 import { refusals as publishRefusals, WORKFLOW, CREDENTIAL_TOKENS, REPOSITORY, publishingJobs } from "../../scripts/release-publish-guard.mjs";
 import { distTag, isPrerelease, preModeFrom, STABLE, UNNAMED_PRERELEASE } from "../../scripts/release-dist-tag.mjs";
 import { cutDecision, versionAtHead } from "../../scripts/release-cut-decision.mjs";
-import { checksVerdict, waitForChecks, RUNNING, NOTHING_STARTED, WAITING_FOR_A_PERSON, exitCodeFor } from "../../scripts/release-version-pr-checks.mjs";
+import { checksVerdict, waitForChecks, RUNNING, NOTHING_STARTED, WAITING_FOR_A_PERSON, exitCodeFor, CHECKS_WINDOW_MS, CHECKS_JOB_MARGIN_MS } from "../../scripts/release-version-pr-checks.mjs";
 import { refusals as completenessRefusals } from "../../scripts/release-completeness-check.mjs";
 import { notesFor } from "../../scripts/release-notes-for.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
@@ -930,7 +930,7 @@ test("tracker 97 the manifest names the repository provenance will be attested f
 //   · giving up is NOT reported as a cut               → break: return cut:true, arm 2 red
 //   · the wait fires only on the version branch's CI   → break: drop `branches`, arm 4 red
 //   · the rehearsal path is untouched                  → break: let dispatch publish, arm 5 red
-import { awaitCut, WAIT_MS, STEP_MS, waitBudget, readMain, versionBumpCommit } from "../../scripts/release-await-cut.mjs";
+import { awaitCut, WAIT_MS, STEP_MS, MIN_JOB_MARGIN_MS, waitBudget, readMain, versionBumpCommit } from "../../scripts/release-await-cut.mjs";
 import { cutRef } from "../../scripts/release-cut-decision.mjs";
 
 /** This repository's root, and the workflow this section reads. Named here rather than reusing a
@@ -1018,12 +1018,22 @@ test("208 the job's budget can contain its own longest step", () => {
   // A `timeout-minutes` below the wait cancels the job at the moment it was about to publish, and a
   // cancelled run reads as neither success nor failure to anybody scanning the list — the release goes
   // missing with nothing red. The two numbers live in different files, so nothing else couples them.
-  const version = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  version:"), RELEASE_YML.indexOf("\n  pending:"));
+  // AGAINST THE WAIT THIS JOB ACTUALLY RUNS (tracker issue 247). This arm used to compare the version
+  // job's budget to `WAIT_MS`, which belongs to `release-await-cut.mjs` and runs in a DIFFERENT job that
+  // this one never invokes. It held by coincidence: two unrelated numbers that happened to be ordered
+  // the right way, and it would have gone red the moment the other one was raised, about a job whose
+  // behaviour had not changed. What this job waits on is `release-version-pr-checks.mjs`'s own window,
+  // and BOTH numbers on the right-hand side come from that file — the margin too. Reaching across for
+  // the other job's margin would have been the same defect in a smaller size.
+  const version = jobText("version");
   const budget = Number(/timeout-minutes:\s*(\d+)/.exec(version)?.[1]);
   assert.ok(Number.isFinite(budget), "the version job declares no timeout — this arm could not look");
-  assert.ok(budget * 60_000 > WAIT_MS,
-    `the version job is capped at ${budget} minutes and its wait alone is ${WAIT_MS / 60_000}. `
-    + "The job is cancelled while waiting for the merge it set in motion, every time");
+  assert.match(version, /release-version-pr-checks\.mjs/,
+    "the version job no longer runs the wait this arm is about — check which budget now bounds it");
+  assert.ok(budget * 60_000 > CHECKS_WINDOW_MS + CHECKS_JOB_MARGIN_MS,
+    `the version job is capped at ${budget} minutes; its own wait for the checks to start is `
+    + `${CHECKS_WINDOW_MS / 60_000} and it needs ${CHECKS_JOB_MARGIN_MS / 60_000} more for the work `
+    + "around it. The job is cancelled while waiting for the merge it set in motion");
 });
 
 test("208 both deciders answer the same question, and a skipped one cannot answer for the other", () => {
@@ -1332,9 +1342,13 @@ test("208 the waiting job's budget contains the wait", () => {
   const job = jobText("awaited");
   const budget = Number(/timeout-minutes:\s*(\d+)/.exec(job)?.[1]);
   assert.ok(Number.isFinite(budget), "the waiting job declares no timeout — this arm could not look");
-  assert.ok(budget * 60_000 > WAIT_MS,
-    `the job is capped at ${budget} minutes and its wait alone is ${WAIT_MS / 60_000}. It is cancelled at `
-    + "the moment it was about to answer, and a cancelled job reads as neither a pass nor a failure");
+  // MARGIN, NOT MERELY ORDER (tracker issue 247). `>` is satisfied by one second of headroom, which
+  // cancels the job during the checkout and install that surround the wait — and the prose above
+  // `WAIT_MS` claimed a job budget of 30 while the job said 25 for exactly as long as nothing checked.
+  assert.ok(budget * 60_000 >= WAIT_MS + MIN_JOB_MARGIN_MS,
+    `the job is capped at ${budget} minutes, its wait alone is ${WAIT_MS / 60_000}, and it needs `
+    + `${MIN_JOB_MARGIN_MS / 60_000} more for the checkout and install around it. It is cancelled at the `
+    + "moment it was about to answer, and a cancelled job reads as neither a pass nor a failure");
 });
 
 test("208 an unreadable wait budget refuses rather than guessing in either direction", () => {
