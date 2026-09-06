@@ -1039,13 +1039,19 @@ export async function runCheck() {
   const elsewhere = programsFromAnotherCheckout({ table: processTable(), checkoutDir: configuredTree, entrypoints });
   if (elsewhere.state === "elsewhere") {
     warn(`${elsewhere.programs.length} running program(s) are executing a DIFFERENT checkout than the one `
-      + `this install names (${configuredTree}). They keep working until they restart and then cannot `
+      + `this install names (${configuredTree}). These are this account's own programs — another `
+      + `account's install is not read and is never advised on. They keep working until they restart and then cannot `
       + "start at all; deleting the tree they run from has the same effect and no restart recovers it:");
     for (const pr of elsewhere.programs.slice(0, 6)) say(`      pid ${pr.pid}  ${pr.tree}`);
     if (elsewhere.programs.length > 6) say(`      … and ${elsewhere.programs.length - 6} more`);
     say("      Either point the install back at the tree they run from, or restart them onto this one.");
   } else if (elsewhere.state === "unknown") {
     warn(`could not tell whether running programs are on a different checkout: ${elsewhere.detail}`);
+  } else if (elsewhere.state === "unplaced") {
+    // PRINTED, because the alternative is silence that reads as a clean answer. Nothing here was placed
+    // on a tree, which is not the same as everything being on the right one, and the reader is the only
+    // one who can tell which of the two it is.
+    say(`      running programs on a different checkout: ${elsewhere.detail}.`);
   }
 
   say("\n  Node");

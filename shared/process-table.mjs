@@ -18,6 +18,22 @@
 //
 // ── THE CONTRACT, AND THE ONE THING IT REFUSES TO DO ──────────────────────────────────────────────
 //
+// ── AND WHOSE PROCESSES, WHICH IS THE SECOND HALF OF THE CONTRACT ────────────────────────────────
+//
+// THE DEFAULT IS THIS USER'S OWN PROCESSES, and a whole-box read is asked for by name. `/proc` shows
+// every process on the machine, and a box that runs more than one install is the normal case here: on
+// the development box 281 of 327 visible processes belong to other accounts, and among them are another
+// account's live services running this same product. Two readers walked all of them.
+//
+// What that cost, measured on a real deployment rather than reasoned about: `doctor` reported five
+// running programs as "executing a different checkout" and advised repointing or restarting them, and
+// all five belonged to another account's PRODUCTION install. The advice was addressed to a reader with
+// no business touching those processes, about a deployment that was not theirs and was not wrong. A
+// check that reads a machine it does not own does not report a fault; it invents one.
+//
+// So the filter is here, once, rather than at each call site — a new reader gets the safe answer
+// without knowing to ask, and the unscoped read is spelled `everyUser: true` where anyone can see it.
+//
 // `null` means COULD NOT LOOK. An empty array means the box was read and nothing matched. They are
 // different answers and this module never collapses them, because the collapse is the whole bug class:
 // a scan that cannot run returns nothing, nothing matches the filter, and the caller reports a clean
@@ -38,8 +54,21 @@ import { spawnSync } from "node:child_process";
  * every arm for the branch this machine does not take would be written and never executed, which is
  * how a portability fix ships broken on the platform it was written for.
  */
-export function processTable({ platform = process.platform, runPs = defaultRunPs } = {}) {
-  return platform === "linux" ? fromProc() : fromPs(runPs);
+export function processTable({ platform = process.platform, runPs = defaultRunPs,
+  everyUser = false, uid = currentUid() } = {}) {
+  const all = platform === "linux" ? fromProc() : fromPs(runPs);
+  if (all == null) return null;                       // could not look, and that survives the filter
+  if (everyUser) return all;
+  // A box with no uid to compare against (a platform with no getuid) cannot answer "is this mine", and
+  // guessing would hand back either everything or nothing. Everything is the honest one: the caller
+  // gets what it always got, and the row carries `uid: null` so it can see the question was unanswered.
+  if (uid == null) return all;
+  return all.filter((p) => p.uid === uid);
+}
+
+/** This process's own user, or null where the platform has no such notion. */
+export function currentUid() {
+  return typeof process.getuid === "function" ? process.getuid() : null;
 }
 
 /** Linux: the kernel's own listing. `/proc/<pid>` mtime is the process's start. */
@@ -53,8 +82,12 @@ function fromProc() {
     // it belongs in the listing with the name the kernel gives it, not dropped as if it did not exist.
     try { cmd = readFileSync(`/proc/${pid}/cmdline`, "utf8").replace(/\0/g, " ").trim(); } catch { continue; }
     let startedAt = NaN;
-    try { startedAt = statSync(`/proc/${pid}`).mtimeMs; } catch { /* gone mid-scan */ }
-    out.push({ pid: Number(pid), cmd, startedAt });
+    let uid = null;
+    // ONE stat for both facts: `/proc/<pid>` is owned by the process's user, and its mtime is the
+    // process's start. Reading ownership therefore costs nothing that was not already being read.
+    try { const st = statSync(`/proc/${pid}`); startedAt = st.mtimeMs; uid = st.uid; }
+    catch { /* gone mid-scan */ }
+    out.push({ pid: Number(pid), cmd, startedAt, uid });
   }
   return out;
 }
@@ -75,9 +108,11 @@ function fromPs(runPs) {
   for (const line of r.stdout.split("\n")) {
     // lstart is `Mon Sep  1 08:21:53 2026` — a fixed shape, and anchoring on it is what separates the
     // pid from a command line that begins with a number.
-    const m = /^\s*(\d+)\s+(\w{3}\s+\w{3}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2}\s+\d{4})\s+(.*)$/.exec(line);
+    // uid sits between pid and lstart, and lstart's fixed shape is still what separates the numbers
+    // from a command line that begins with one.
+    const m = /^\s*(\d+)\s+(\d+)\s+(\w{3}\s+\w{3}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2}\s+\d{4})\s+(.*)$/.exec(line);
     if (!m) continue;
-    out.push({ pid: Number(m[1]), cmd: m[3].trim(), startedAt: Date.parse(m[2]) });
+    out.push({ pid: Number(m[1]), cmd: m[4].trim(), startedAt: Date.parse(m[3]), uid: Number(m[2]) });
   }
   // A `ps` that exited 0 and printed NOTHING PARSEABLE has not read the box: this process is in that
   // listing, so an empty result is a broken instrument and must not read as an empty machine.
@@ -85,6 +120,6 @@ function fromPs(runPs) {
 }
 
 const defaultRunPs = () =>
-  spawnSync("ps", ["-Ao", "pid=,lstart=,command="], { encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
+  spawnSync("ps", ["-Ao", "pid=,uid=,lstart=,command="], { encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
 
 export { defaultRunPs };
