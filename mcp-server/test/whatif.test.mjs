@@ -73,3 +73,80 @@ test("whatIfRun executes via injected fakes (no gateway, original untouched)", a
 test("whatIfRun refuses without a confirmation", async () => {
   await assert.rejects(() => whatif.whatIfRun({}), /confirmationToken/);
 });
+
+// ── THE MEMO DOOR (tracker issue 132) ────────────────────────────────────────────────────────────
+//
+// The capability was composed and unreachable: whatIfPlan minted a memo token, decodeOp validated it,
+// whatIfEnqueue answered the client `queued: true` — and whatIfRun, which the worker calls to execute
+// it, had no memo branch and refused every memo as a stage re-run on a delivered run. These arms hold
+// the door open from BOTH sides: a memo gets through, and the live-run rule a memo is exempt from is
+// still enforced for everything that is not one.
+
+const deliveredRun = (over = {}) => ({
+  runId: "d-e-f", slug: "d", codename: "f", location: "archive", state: "delivered",
+  P: {}, runDir: "/d", status: {}, ...over,
+});
+const memoToken = (assumption, runId = "d-e-f") =>
+  Buffer.from(JSON.stringify({ runId, kind: "memo", instructions: assumption })).toString("base64url");
+
+test("a memo on a DELIVERED run reaches the memo composer, carrying the assumption verbatim", async () => {
+  const run = deliveredRun();
+  const assumption = "treat the Align Networks Korean application as expired/abandoned";
+  let seen = null;
+  const res = await whatif.whatIfRun(
+    { confirmationToken: memoToken(assumption) },
+    {
+      resolveRun: () => run,
+      askArchivedRun: async (a) => { seen = a; return { ok: true, memoId: "m1", parentRunId: a.runId }; },
+      // If the memo branch ever falls through to the stage machinery this fires and the arm says so
+      // by name, rather than failing three lines later on a shape mismatch.
+      runExperiment: async () => { throw new Error("a memo must not reach runExperiment"); },
+    },
+  );
+  assert.equal(res.ok, true);
+  assert.equal(res.memoId, "m1");
+  assert.equal(seen.runId, "d-e-f");
+  // VERBATIM: the reader's own words are what the memo is stamped with, so a door that paraphrased or
+  // trimmed them would publish an assumption the reader never stated.
+  assert.equal(seen.question, assumption);
+});
+
+test("a memo re-runs no stage — runExperiment is never called for one", async () => {
+  let ranExperiment = false;
+  await whatif.whatIfRun(
+    { confirmationToken: memoToken("assume the mark lapsed") },
+    {
+      resolveRun: () => deliveredRun(),
+      askArchivedRun: async () => ({ ok: true, memoId: "m2" }),
+      runExperiment: async () => { ranExperiment = true; return { ok: true }; },
+    },
+  );
+  assert.equal(ranExperiment, false);
+});
+
+// A DIFFERENT MEMBER OF THE CLASS the branch touches. The fix makes the refusal kind-aware; the risk
+// it introduces is that "kind-aware" quietly becomes "unenforced". A STAGE op on the same delivered
+// run must still be refused in the same words it always was.
+test("the live-run rule still refuses a STAGE re-run on a delivered run", async () => {
+  await assert.rejects(
+    () => whatif.whatIfRun(
+      { confirmationToken: Buffer.from(JSON.stringify({ runId: "d-e-f", stage: "report-overview" })).toString("base64url") },
+      { resolveRun: () => deliveredRun() },
+    ),
+    /delivered or archived/i,
+  );
+});
+
+// AND A THIRD MEMBER: cancelled. A memo is exempt from "finished", never from "stopped" — a run whose
+// owner halted it has evidence that was never completed, and reasoning over a half-gathered record is
+// how a memo comes to say more than the run ever knew. whatif-queue.mjs states that rule; this holds
+// the memo door to it.
+test("a memo over a CANCELLED run is still refused, and says why a memo in particular cannot run", async () => {
+  await assert.rejects(
+    () => whatif.whatIfRun(
+      { confirmationToken: memoToken("assume it lapsed") },
+      { resolveRun: () => deliveredRun({ state: "cancelled" }) },
+    ),
+    /evidence was complete|stopped/i,
+  );
+});

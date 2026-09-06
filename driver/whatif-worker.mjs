@@ -120,7 +120,11 @@ async function settleOne(entry, exec) {
     // job through exactly the validation an ops caller's token goes through, with no second code path.
     const confirmationToken = Buffer.from(JSON.stringify(job.op)).toString("base64url");
     const result = await exec({ confirmationToken });
-    note(`[whatif] ${id} ${result?.ok === false ? "failed" : "done"} (${job.op.stage}${job.op.axis ? `:${job.op.axis}` : ""})`);
+    // A memo carries no stage — it re-runs none — so the old form logged a literal "undefined" for
+    // every memo the worker settled. The kind is what distinguishes the two here, and an operator
+    // reading the drain log needs to know which of them just ran (tracker issue 132).
+    const what = job.op?.kind === "memo" ? "memo" : `${job.op.stage}${job.op.axis ? `:${job.op.axis}` : ""}`;
+    note(`[whatif] ${id} ${result?.ok === false ? "failed" : "done"} (${what})`);
     return finishWhatIf(runDir, id, { ok: result?.ok !== false, op: job.op, result, error: result?.ok === false ? (result.fail ?? "the experiment did not complete") : null });
   } catch (e) {
     note(`[whatif] ${id} threw: ${e?.message ?? e}`);
