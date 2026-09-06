@@ -982,3 +982,28 @@ test("208 both deciders answer the same question, and a skipped one cannot answe
   assert.match(src, /versionAtHead\(\{ ref: "origin\/main" \}\)/,
     "the waiting path reads the working tree rather than the commit — the defect release-cut-decision.mjs was written for");
 });
+
+test("208 the stranded-cut detector does not sit downstream of the gate that strands a cut", () => {
+  // MEASURED ON A REAL STRANDING, 2026-09-06, by the lane holding the next pull request. 0.1.7 merged
+  // itself onto main and was not published: the release run on that push failed at "The checks it waits
+  // for actually started", and BOTH downstream jobs were skipped — including the one whose entire job is
+  // to notice a cut sitting on main unpublished. The detector was downstream of the gate that stranded
+  // the cut, so it did not run in exactly the state it exists to catch.
+  //
+  // `pending` therefore takes no `needs`, and that is load-bearing rather than incidental: a `needs` on
+  // `version` would reintroduce this on the very run where it matters. The `workflow_run` path added for
+  // this issue is a SEPARATE run in which `version` is skipped rather than failed — and a skipped job is
+  // not a failure, so `publish` still reaches `pending`'s answer.
+  const jobs = RELEASE_YML.slice(RELEASE_YML.indexOf("\njobs:"));
+  const pending = jobs.slice(jobs.indexOf("\n  pending:"), jobs.indexOf("\n  publish:"));
+  assert.ok(pending.length > 200, "the pending job could not be sliced out — this arm measured nothing");
+  assert.ok(!/^\s{4}needs:/m.test(pending),
+    "the stranded-cut detector now depends on another job. A failure in that job skips this one, which is "
+    + "precisely the state a stranded cut is in — measured on 0.1.7, 2026-09-06");
+  // AND THE PUBLISH GATE STILL TOLERATES A SKIPPED DECIDER, which is the other half: one of the two
+  // deciders is always skipped, because they run on different events.
+  const publish = jobs.slice(jobs.indexOf("\n  publish:"));
+  assert.match(publish, /!failure\(\) && !cancelled\(\)/,
+    "the publish gate no longer opens with !failure() — a skipped decider would read as a blocked path "
+    + "rather than as 'not this route'");
+});
