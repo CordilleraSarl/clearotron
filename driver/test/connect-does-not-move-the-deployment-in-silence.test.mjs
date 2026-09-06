@@ -25,11 +25,11 @@ const cmd = (tree) => ["/usr/bin/node", `${tree}/${REL}`];
 // ── is it a move at all ─────────────────────────────────────────────────────────────────────────────
 
 test("193 writing a different tree is a MOVE, and both paths are named", () => {
-  const m = checkoutMove("/home/testuser/clearotron", "/home/testuser/pr43");
+  const m = checkoutMove("/opt/clearotron", "/srv/worktree-pr43");
   assert.equal(m.moving, true);
   const said = describeMove(m).join("\n");
-  assert.match(said, /\/home\/testuser\/clearotron/, "the tree being left is not named");
-  assert.match(said, /\/home\/testuser\/pr43/, "the tree being moved to is not named");
+  assert.match(said, /\/opt\/clearotron/, "the tree being left is not named");
+  assert.match(said, /\/srv\/worktree-pr43/, "the tree being moved to is not named");
 });
 
 test("193 a FIRST write is not a move — an installer doing its job says so quietly", () => {
@@ -50,7 +50,7 @@ test("193 writing the SAME tree is not a move and says nothing at all", () => {
 // ── which tree is a live process actually executing ─────────────────────────────────────────────────
 
 test("193 the running tree comes off the process's own command line", () => {
-  assert.equal(treeOfRunning(cmd("/home/testuser/pr43"), REL).tree, "/home/testuser/pr43");
+  assert.equal(treeOfRunning(cmd("/srv/worktree-pr43"), REL).tree, "/srv/worktree-pr43");
   // The NUL-separated form, which is what /proc/<pid>/cmdline actually hands back.
   assert.equal(treeOfRunning(`/usr/bin/node\0/opt/clearotron/${REL}\0`, REL).tree, "/opt/clearotron");
 });
@@ -66,12 +66,12 @@ test("193 a RELATIVE entrypoint yields no tree, because its base is the process'
 // ── the posture a move is judged against ────────────────────────────────────────────────────────────
 
 test("193 a service running from another tree is a CONFLICT, named by unit and tree", () => {
-  const move = checkoutMove("/home/testuser/clearotron", "/home/testuser/pr43");
+  const move = checkoutMove("/opt/clearotron", "/srv/worktree-pr43");
   const p = movePosture({ move, running: [
-    { unit: "clearotron-portal.service", cmdline: cmd("/home/testuser/clearotron"), unitText: UNIT, why: null },
+    { unit: "clearotron-portal.service", cmdline: cmd("/opt/clearotron"), unitText: UNIT, why: null },
   ] });
   assert.equal(p.state, "conflict");
-  assert.deepEqual(p.conflicts, [{ unit: "clearotron-portal.service", tree: "/home/testuser/clearotron" }]);
+  assert.deepEqual(p.conflicts, [{ unit: "clearotron-portal.service", tree: "/opt/clearotron" }]);
   const said = describeConflict(p, move).join("\n");
   assert.match(said, /REFUSED/);
   assert.match(said, /clearotron-portal\.service/, "the reader is not told WHICH unit");
@@ -81,12 +81,12 @@ test("193 a service running from another tree is a CONFLICT, named by unit and t
 test("193 the mixed box from the finding: three units on the old tree, one already moved", () => {
   // Jaw's own table. The one unit `connect` restarted had followed the write; the other three had not,
   // and they are the ones that break. A posture that only looked at the door would have said "clear".
-  const move = checkoutMove("/home/testuser/clearotron", "/home/testuser/pr43");
+  const move = checkoutMove("/opt/clearotron", "/srv/worktree-pr43");
   const p = movePosture({ move, running: [
-    { unit: "clearotron-mcp-face.service", cmdline: cmd("/home/testuser/clearotron"), unitText: UNIT, why: null },
-    { unit: "clearotron-portal.service", cmdline: cmd("/home/testuser/clearotron"), unitText: UNIT, why: null },
-    { unit: "clearotron-worker.service", cmdline: cmd("/home/testuser/clearotron"), unitText: UNIT, why: null },
-    { unit: "clearotron-client-mcp.service", cmdline: cmd("/home/testuser/pr43"), unitText: UNIT, why: null },
+    { unit: "clearotron-mcp-face.service", cmdline: cmd("/opt/clearotron"), unitText: UNIT, why: null },
+    { unit: "clearotron-portal.service", cmdline: cmd("/opt/clearotron"), unitText: UNIT, why: null },
+    { unit: "clearotron-worker.service", cmdline: cmd("/opt/clearotron"), unitText: UNIT, why: null },
+    { unit: "clearotron-client-mcp.service", cmdline: cmd("/srv/worktree-pr43"), unitText: UNIT, why: null },
   ] });
   assert.equal(p.state, "conflict");
   assert.deepEqual(p.conflicts.map((c) => c.unit).sort(),
@@ -147,12 +147,12 @@ test("193 no move means no question — the posture short-circuits", () => {
 
 test("193 doctor names a program executing a DIFFERENT checkout than the install", () => {
   const r = programsFromAnotherCheckout({
-    table: [{ pid: 4242, cmd: `/usr/bin/node /home/testuser/pr43/${REL}` },
+    table: [{ pid: 4242, cmd: `/usr/bin/node /srv/worktree-pr43/${REL}` },
       { pid: 4243, cmd: `/usr/bin/node /opt/clearotron/${REL}` }],
     checkoutDir: "/opt/clearotron", entrypoints: [REL] });
   assert.equal(r.state, "elsewhere");
   assert.deepEqual(r.programs.map((p) => p.pid), [4242]);
-  assert.equal(r.programs[0].tree, "/home/testuser/pr43");
+  assert.equal(r.programs[0].tree, "/srv/worktree-pr43");
 });
 
 test("193 doctor reports an unread process table as UNKNOWN, never as a clean box", () => {
