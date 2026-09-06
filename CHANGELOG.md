@@ -4,6 +4,12 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.2.0
+
+### New
+
+- Two release channels. `npm install clearotron` stays on the tested release; `npm install clearotron@beta` follows every merge.
+
 ## 0.1.12
 
 ### For operators
