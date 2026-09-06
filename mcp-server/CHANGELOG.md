@@ -1,5 +1,7 @@
 # trademark-artifacts-mcp
 
+## 0.1.7
+
 ## 0.1.6
 
 ## 0.1.5
