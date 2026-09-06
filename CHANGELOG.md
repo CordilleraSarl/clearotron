@@ -4,6 +4,17 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.1.11
+
+### Fixed
+
+- A what-if on a delivered report now returns its memo. The previous release announced this before it worked; from this version it does.
+
+### For operators
+
+- On a box running the services, the check-up now reports what those services read rather than what the shell you typed in happens to carry.
+- `npm install clearotron` gives you the tested release. `npm install clearotron@beta` gives you the newest, published within minutes of every merge.
+
 ## 0.1.10
 
 ### Fixed
