@@ -17,7 +17,7 @@
 // is included verbatim. Where it ships none, that ABSENCE IS RECORDED IN THE FILE rather than skipped:
 // a package with a declared licence and no text is a smaller problem than one with neither, and a
 // reader deciding whether we are compliant needs to see both.
-import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, readdirSync, lstatSync, readlinkSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -170,7 +170,80 @@ function resolveInstalled(root, name, path) {
   return join(root, "node_modules", name);
 }
 
-export function collect(root = ROOT, tree = npmTree(root)) {
+/**
+ * tracker issue 146 — WHY `npm ls` IS COMPLAINING, WHEN THE ANSWER IS NOT IN THE CODE AT ALL.
+ *
+ * Adding a `git worktree` and symlinking `node_modules` from another one — the obvious way to skip a
+ * five-minute install — makes six licence arms fail in a way that reads exactly like a code defect, on
+ * whatever branch happens to be checked out. `npm ls` resolves through the symlink, finds a tree that
+ * does not match this worktree's lockfile, and reports EVERY package as extraneous. Measured: symlinked,
+ * 6 failures and 3100 problems; a real `npm install` from the repo root, 14/14 pass. Same worktree, same
+ * commit, same arms.
+ *
+ * THE ARMS ARE WORKING CORRECTLY, and that is the whole difficulty. They are built to refuse a tree
+ * nobody has looked at, and nobody has. The refusal was true and unactionable: it named a compliance
+ * property, so the natural reading is "this change broke the notices file" — and the file is untouched.
+ * It survives a rebase, a fresh branch and a clean tree, because the fault is in none of them. A lane
+ * came within one measurement of reporting six licence failures against somebody else's diff.
+ *
+ * SO THIS NAMES THE CAUSE AND NEVER SOFTENS THE REFUSAL. It is appended to the throw, never substituted
+ * for it, and it says nothing at all unless `npm ls` is reporting extraneous packages — a real undeclared
+ * problem still fails with the sentence it always had.
+ *
+ * READ, NOT INFERRED. The symlink is established with `lstat`, and its target is printed, because
+ * "your node_modules is borrowed" is only actionable if the reader can see which tree it came from.
+ * Where there is no symlink the note is weaker on purpose: an all-extraneous tree that is a real
+ * directory is a stale or foreign install, which is the same class and a different remedy.
+ *
+ * PURE given `linkTarget`, which is what lets an arm reach both branches on a box with neither.
+ */
+export function foreignTreeNote(root, problems, { linkTarget = defaultLinkTarget } = {}) {
+  const all = (problems ?? []).map(String);
+  if (!all.length) return null;
+  const kinds = {};
+  for (const p of all) { const k = /^(\w+):/.exec(p)?.[1] ?? "other"; kinds[k] = (kinds[k] ?? 0) + 1; }
+  const counted = MISMATCH_KINDS.map((k) => (kinds[k] ? `${kinds[k]} ${k}` : null)).filter(Boolean).join(", ");
+  const mismatched = MISMATCH_KINDS.reduce((n, k) => n + (kinds[k] ?? 0), 0);
+  const modules = join(root, "node_modules");
+  const target = linkTarget(modules);
+
+  // A BORROWED TREE MAKES EVERY ROW UNRELIABLE, so the symlink alone is enough to say so — including
+  // when a real problem is in the list. That is not softening the refusal: none of these rows can be
+  // trusted until the tree is this worktree's own, so installing properly is the first step whatever
+  // else is wrong. The refusal itself is unchanged and still printed above.
+  if (target) {
+    return `\n\nBEFORE READING THIS AS A LICENCE DEFECT: ${modules} is a SYMLINK to ${target}, so \`npm ls\` `
+      + `resolved through it and compared another tree against this one's lockfile (${counted || `${all.length} problem(s)`}). `
+      + "These arms are working correctly — they refuse a tree nobody has looked at, and nobody has, and "
+      + "NOTHING in the list above is trustworthy until the tree is this worktree's own. Run `npm install` "
+      + "from this repo root (it installs every workspace) and run them again before changing anything.";
+  }
+
+  // NO SYMLINK: the claim is an inference, so it is made only where the evidence is overwhelming. A real
+  // dependency problem is a handful of rows; a tree installed from another lockfile is thousands, and
+  // every one of them is missing, extraneous or invalid. Below that bar this says nothing at all rather
+  // than talking a reader out of a finding.
+  if (mismatched === all.length && all.length >= FOREIGN_TREE_FLOOR) {
+    return `\n\nBEFORE READING THIS AS A LICENCE DEFECT: every one of the ${all.length} problem(s) above is `
+      + `${counted} — that is what an install from a DIFFERENT lockfile looks like, not what a licence `
+      + `problem looks like. Check that ${modules} was installed from this tree — \`npm install\` from this `
+      + "repo root — and run these again before changing anything.";
+  }
+  return null;
+}
+
+/** The three shapes npm reports when the installed tree and the lockfile describe different things. */
+const MISMATCH_KINDS = ["missing", "extraneous", "invalid"];
+/** Below this many rows a mismatch is indistinguishable from a real problem, so nothing is claimed. */
+const FOREIGN_TREE_FLOOR = 20;
+
+/** ENOENT and "not a link" are both "no borrowed tree"; anything else is not silently one either. */
+const defaultLinkTarget = (p) => {
+  try { return lstatSync(p).isSymbolicLink() ? readlinkSync(p) : null; }
+  catch { return null; }
+};
+
+export function collect(root = ROOT, tree = npmTree(root), { linkTarget = defaultLinkTarget } = {}) {
   const overbroad = overbroadDeclarations();
   if (overbroad.length) {
     throw new Error(`${overbroad.length} declaration(s) in DECLARED_LS_PROBLEMS accept more than they were `
@@ -181,8 +254,11 @@ export function collect(root = ROOT, tree = npmTree(root)) {
   const undeclared = undeclaredProblems(tree.problems);
   if (undeclared.length) {
     throw new Error(`npm ls reports ${undeclared.length} problem(s) nothing declares, so the tree behind `
-      + "this file has not been looked at:\n  " + undeclared.join("\n  ")
-      + "\n\nFix the tree, or declare it in DECLARED_LS_PROBLEMS with the reason it is allowed.");
+      + "this file has not been looked at:\n  " + undeclared.slice(0, 12).join("\n  ")
+      + (undeclared.length > 12 ? `\n  …and ${undeclared.length - 12} more` : "")
+      + "\n\nFix the tree, or declare it in DECLARED_LS_PROBLEMS with the reason it is allowed."
+      // tracker issue 146 — appended, never substituted: a real problem keeps the sentence above.
+      + (foreignTreeNote(root, undeclared, { linkTarget }) ?? ""));
   }
   // ── ONE PACKAGE, SEVERAL NODES, AND ONLY ONE OF THEM CARRIES THE CHILDREN ──────────────────────
   //

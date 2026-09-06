@@ -237,6 +237,56 @@ export function lossBetween(prevPerFile, nextPerFile) {
 }
 
 /**
+ * tracker issue 205 — WHICH BUCKET EACH DIFFERENCE LANDS IN, and which of them refuses a re-stamp.
+ *
+ * `lossBetween` above answers what MOVED. This answers what that MEANS, and it is a separate question
+ * with a separate history. A rising skip count is a real difference and it used to refuse: it landed
+ * beside REMOVED and SHRANK and demanded `--allow-loss`. Two guards then came to disagree about the same
+ * edit — `a-bail-on-an-unmeetable-precondition-is-a-skip` requires an arm that cannot meet its
+ * precondition to say so with `ctx.skip(...)`, because node:test counts a bare `return;` as a PASS, and
+ * doing exactly that made this census refuse the tree. Overwatch ruled on 2026-09-06: the bail guard is
+ * right, and a reasoned skip is neither a pass nor a loss. It gets its own bucket, printed and never
+ * silent, and it does not refuse.
+ *
+ * IT IS NOT AN EXEMPTION, and the distinction is the whole care in this function. A skip still appears
+ * in `notes` whether or not a reason is attached, because this census cannot read whether a reason is
+ * honest and must not pretend to. `allClear` counts it too, so a file that gained nothing but skips can
+ * never be summarised as unchanged — an arm that stopped running, reported as a clean tree, is the
+ * failure both guards exist to stop, and rolling it into an all-clear here would be this census
+ * committing it.
+ *
+ * WHAT STILL REFUSES IS UNCHANGED: a file gone from the collection, or fewer tests or assertions inside
+ * one. Those are the three shapes a gutting takes.
+ *
+ * @param {object} o
+ * @param {Record<string, {tests: number, asserts: number, skips?: number, todos?: number}>|null} o.prev
+ * @param {Record<string, {tests: number, asserts: number, skips?: number, todos?: number}>|null} o.next
+ * @param {((file: string) => unknown)|null} [o.withheld]  a reader that answers truthy for a file whose
+ *        absence is a STATED consequence of the cut. Supplied for the root-script populations only;
+ *        without it every absence is undeclared, which is the correct reading of a workspace.
+ */
+export function censusBuckets({ prev, next, withheld = null } = {}) {
+  const a = prev ?? {};
+  const b = next ?? {};
+  const added = Object.keys(b).filter((k) => !(k in a)).sort();
+  const { gone, shrunk, skipped } = lossBetween(a, b);
+  const grew = Object.keys(b)
+    .filter((k) => k in a && (b[k].tests > a[k].tests || b[k].asserts > a[k].asserts))
+    .sort();
+  const withheldGone = withheld ? gone.filter((f) => withheld(f)) : [];
+  const undeclaredGone = withheld ? gone.filter((f) => !withheld(f)) : gone;
+  return {
+    added, gone, withheldGone, undeclaredGone, shrunk, skipped, grew,
+    /** The differences that REFUSE a re-stamp without --allow-loss. A rising skip count is not here. */
+    losses: [...undeclaredGone.map((file) => ({ kind: "REMOVED", file })), ...shrunk.map((file) => ({ kind: "SHRANK", file }))],
+    /** Printed whenever non-empty, in every mode, and never a refusal. */
+    notes: skipped.map((file) => ({ kind: "SKIPPED", file })),
+    /** True only when NOTHING moved — skips included, or the summary would say clean over a stopped arm. */
+    allClear: !added.length && !gone.length && !shrunk.length && !grew.length && !skipped.length,
+  };
+}
+
+/**
  * Test sites and assert sites in one test file's source.
  *
  * Comment lines are dropped first: these files argue about `assert` and `test(` at length in prose, and

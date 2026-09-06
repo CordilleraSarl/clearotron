@@ -34,6 +34,7 @@
 import { readFileSync, writeFileSync, mkdirSync, renameSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
+import { drainPosture, absentDrainerIsNormal } from "./drain-posture.mjs";   // tracker issue 206 — one rule about the box
 
 export const STAMP_BASENAME = "_drainer-identity.json";
 
@@ -79,9 +80,24 @@ export const DRAINER_CMD = /\b(runner\.mjs|clearotron[^\s]*\s+start)\b/;
  * @param {(rec: {pid: number, starttime: string|null}) => boolean} o.isAlive
  * @param {Array<{pid: number, cmd: string}>|null} o.processes  processTable(), or null if unreadable
  * @param {(pid: number) => number|null} [o.ppidOf]  the LIVE parent pid, or null when it cannot be read
+ * @param {{worker?: object|null, timer?: object|null}|null} [o.posture]  probeWorker()/probeTimer()'s
+ *        answers, the same pair the queue arm reads. Omitted entirely ⇒ the posture was not probed, and
+ *        every branch below keeps the answer it gave before this input existed.
  * @returns {{state: "pass"|"fail"|"warn", message: string}}
  */
-export function drainerVerdict({ stamp, headCommit, isAlive, processes, ppidOf = null }) {
+export function drainerVerdict({ stamp, headCommit, isAlive, processes, ppidOf = null, posture = null }) {
+  // ── WHICH POSTURE IS THIS BOX IN, and say it out loud whatever the answer (tracker issue 206).
+  //
+  // Only ONE branch below changes state on it — a stamped drainer whose process is gone. That is the
+  // state the ruling is about: between ticks on a scheduled box, and nothing is executing runs on a
+  // continuous one. Every other branch is posture-independent and keeps its answer; a stray, a commit
+  // mismatch and an orphan are findings under any drain path.
+  //
+  // AN ABSENT STAMP IS NOT ONE OF THEM, deliberately. A scheduled box that has drained once has a stamp
+  // from that tick, so "no stamp at all" is not the resting state of any posture — it is the state the
+  // incident's orphaned drainer was in, and the branch below says so under every answer this returns.
+  const drain = drainPosture(posture ?? {});
+  const postureNote = ` Drain posture ${drain.kind}: ${drain.how}.`;
   // Every drainer-looking process on the box, named. This is the half a unit-derived population cannot
   // have: the incident's drainer was in no unit, and an orphan that never stamped anything shows up
   // here or nowhere. `null` means the table could not be read, which is its own could-not-look.
@@ -96,7 +112,7 @@ export function drainerVerdict({ stamp, headCommit, isAlive, processes, ppidOf =
       : seen.length ? `while ${seen.length} drainer-shaped process(es) ARE running (${nameThem(seen)}) — unstamped, so what build they hold is unknown`
       : "and no drainer-shaped process is running, so nothing is executing runs on this box";
     return { state: "fail", message: `no drainer identity stamp at ${STAMP_BASENAME}: the build held by the process that `
-      + `executes runs was NOT established, ${extra}. This is a failure to look, never a pass.` };
+      + `executes runs was NOT established, ${extra}. This is a failure to look, never a pass.${postureNote}` };
   }
 
   const pid = Number(stamp.pid) || 0;
@@ -120,8 +136,23 @@ export function drainerVerdict({ stamp, headCommit, isAlive, processes, ppidOf =
     : "";
 
   if (!alive) {
+    // ── THE ONE BRANCH THE POSTURE DECIDES (tracker issue 206, ruled by overwatch 2026-09-06).
+    //
+    // The same empty answer means two opposite things. Where a worker holds the queue open, a gone
+    // drainer is the outage: nothing is executing runs and nothing will start one. Where the box drains
+    // on a schedule, this is its resting state between ticks — and the next tick boots a fresh process
+    // off the checkout, so the commit the dead one held has no bearing on what runs next. Neither
+    // sentence is safe to print without reading the units first, which is what this arm did not do.
+    if (absentDrainerIsNormal(drain.kind)) {
+      const base = `no drainer is running, and on this box that is the resting state, not a fault: the stamped `
+        + `drainer (pid ${pid}, on ${short(held)}${via}) has exited and the next tick starts a fresh process off `
+        + `the checkout.${postureNote}`;
+      // A stray under a scheduled posture is still a stray — an unstamped process holding an unknown
+      // build is a finding whatever wakes the drainer, so the posture excuses the absence and nothing else.
+      return strays?.length ? { state: "warn", message: `${base}${strayNote}` } : { state: "pass", message: base };
+    }
     return { state: "fail", message: `the stamped drainer (pid ${pid}, on ${short(held)}${via}) IS GONE: nothing is `
-      + `executing runs on this box, and the last thing that did held ${short(held)}.${strayNote}` };
+      + `executing runs on this box, and the last thing that did held ${short(held)}.${strayNote}${postureNote}` };
   }
 
   if (head && held !== head) {

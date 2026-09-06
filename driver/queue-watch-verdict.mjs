@@ -46,6 +46,8 @@
 // precisely so they cannot come to different conclusions about the same box; they were still reaching
 // two different conclusions about the same *consequence*. This closes that.
 
+import { drainPosture, CONTINUOUS } from "./drain-posture.mjs";   // tracker issue 206 — one rule about the box
+
 /**
  * @param {object}   a
  * @param {string[]|null} a.queueDirs   what this deployment would ACTUALLY drain, resolved — not the
@@ -75,7 +77,11 @@ export function queueWatchVerdict({ queueDirs, watched, unitPath, unitError = nu
   // permission error still skips — a privilege-limited read that answers "fine" is the exact failure
   // this family of checks exists to refuse, and letting a worker unit talk it into a pass would put
   // that failure back one door along.
-  const workerDrains = worker?.enabled === true;
+  // ONE RULE, NOT A SECOND COPY OF IT (tracker issue 206). This predicate used to be spelled out here
+  // and nowhere else, and the drainer arm — deciding the same question about the same box — did not
+  // read the units at all and applied the timer-era rule instead. Both arms now consult
+  // drain-posture.mjs, so a box cannot be continuous for one of them and timer-shaped for the other.
+  const workerDrains = drainPosture({ worker }).kind === CONTINUOUS;
   if (workerDrains && unitError && /ENOENT/.test(String(unitError))) {
     return { state: "pass",
       message: `no arrival trigger, and none is expected: ${worker.unit} is enabled and drains continuously, `
