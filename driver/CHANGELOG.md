@@ -1,5 +1,13 @@
 # prelim-driver
 
+## 0.1.10
+
+### Patch Changes
+
+- d06533e: Fixed: The check-up no longer reports that nobody can use the portal on an install where signing in works. It now reads the settings the running services load.
+- d06533e: Fixed: Restarting no longer logs a warning saying searches will fail. The portal sometimes starts before the door it calls, and that clears itself within seconds.
+- d06533e: Fixed: Stopping the product and starting it again now works. Before, the start refused because the assistant connection that stopping deliberately leaves running was still there.
+
 ## 0.1.9
 
 ### Patch Changes
