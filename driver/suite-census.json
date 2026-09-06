@@ -22,8 +22,8 @@
       "ext": "mjs",
       "perFile": {
         "a-backgrounded-install-can-actually-run-a-clearance.test.mjs": {
-          "tests": 7,
-          "asserts": 21,
+          "tests": 9,
+          "asserts": 35,
           "skips": 0,
           "todos": 0
         },
@@ -3509,13 +3509,13 @@
         },
         "runner.dedup.test.mjs": {
           "tests": 4,
-          "asserts": 41,
+          "asserts": 49,
           "skips": 0,
           "todos": 0
         },
         "runner.failure-backstop.test.mjs": {
           "tests": 3,
-          "asserts": 22,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -4120,8 +4120,8 @@
           "todos": 0
         },
         "the-door-answers-the-address-it-advertises.test.mjs": {
-          "tests": 6,
-          "asserts": 17,
+          "tests": 9,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
@@ -5288,8 +5288,8 @@
           "todos": 0
         },
         "useYourAI.test.ts": {
-          "tests": 12,
-          "asserts": 33,
+          "tests": 13,
+          "asserts": 46,
           "skips": 0,
           "todos": 0
         },

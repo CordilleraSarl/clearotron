@@ -123,14 +123,32 @@ test("normal pipeline failure (inside the try{}) is NOT double-noticed by the ba
 // outbox in the headless default and this one did not, so on a deployment without that platform
 // installed (which is every deployment of this product) the notice was simply LOST. The failure it
 // reports is the one nothing else reports: a throw before the run owns a directory.
-test("pre-try throw with NO run dir (dropped register credential) → a QUEUE-level outbox packet", async () => {
+// ── tracker issue 216 MOVED THIS CAUSE TO AN EARLIER GATE, and the arm follows it ───────────────────
+//
+// A dropped register credential used to reach `preflightCredentials` and throw there, before the run dir
+// existed. The owner ruled on 2026-09-06 that an install comes up unconfigured and every run is refused
+// AT ORDER TIME, so this cause is now caught at `claimAndPrep`'s intake wall — earlier, before the claim
+// does any work, and with a refusal written for a person rather than a stack trace.
+//
+// THE PROPERTY THIS ARM PROTECTS IS UNCHANGED and is why it was re-pointed rather than deleted: a
+// failure that happens BEFORE the run owns a directory must still reach the QUEUE-level outbox lane,
+// because the run-level lane is a file inside a directory that does not exist. That is the one failure
+// nothing else reports. What changed is which marker carries it — `.failed` from the intake wall rather
+// than `.prerun-failed` from the backstop — and the assertions below say so explicitly rather than
+// matching a prefix loosely enough to accept either.
+//
+// THE BACKSTOP ITSELF IS STILL ARMED for the throws that remain pre-run: the sibling arm above drives
+// one with a run dir, and `preRunFailNotify` is unchanged. If a future change leaves NO reachable
+// no-run-dir throw at all, that is worth knowing — and it would show up as this arm having no trigger,
+// which is the state I found it in.
+test("a dropped register credential is refused AT ORDER TIME → a QUEUE-level outbox packet, before any spend", async () => {
   const root = mkdtempSync(join(tmpdir(), "backstop-nodir-"));
   const Q = queueFor(root);
   mkdirSync(Q, { recursive: true });
   writeFileSync(join(Q, "job-c.json"), JSON.stringify(job("TMP9303", "NO CREDENTIAL")));
   const callLog = join(root, "calls.jsonl");
 
-  // empty credential ⇒ preflightCredentials throws BEFORE the run dir is created
+  // empty credential ⇒ the order-time wall refuses at intake, before the run dir is created
   const { code, log } = await runToExit(envFor(root, { CORSEARCH_SESSION_KEY: "", MOCK_CALL_LOG: callLog }));
   assert.equal(code, 0, log);
   assert.ok(existsSync(join(Q, "job-c.failed")), `run marked .failed\n${log}`);
@@ -138,13 +156,25 @@ test("pre-try throw with NO run dir (dropped register credential) → a QUEUE-le
   // under the `intake-<base>.` prefix scripts/e2e.mjs matches. A third naming scheme here
   // would be a notice the harness reports as never sent.
   const pending = outboxFiles(root);
-  assert.deepEqual(pending, ["intake-job-c.prerun-failed.pending"],
+  assert.deepEqual(pending, ["intake-job-c.failed.pending"],
     `exactly one outbox packet, keyed to the queue base rather than to a runId that does not exist\n${log}`);
   const packet = JSON.parse(readFileSync(join(root, "outbox", pending[0]), "utf8"));
-  assert.equal(packet.kind, "pre-run-failed", "the kind says which of the queue-level events this is");
-  assert.match(packet.reason, /missing CORSEARCH_SESSION_KEY/, "the packet names the machine's own reason");
-  assert.match(packet.text, /FAILED before the run could start/, "and carries the human-ready sentence");
   assert.equal(packet.base, "job-c");
+  // THE OPERATOR'S REASON NAMES THE VARIABLE. It is written into `<base>.failed.reason`, which is read
+  // by somebody with a shell on the box, so it may and must name what to set.
+  const reason = readFileSync(join(Q, "job-c.failed.reason"), "utf8");
+  assert.match(reason, /CORSEARCH_SESSION_KEY/, "the operator's reason does not name the value to set");
+  assert.match(reason, /installed but not configured/, "the operator's reason does not say what is wrong");
+  // AND THE REQUESTER'S DOES NOT, which is the half tracker issue 216 turns on: this text reaches a
+  // person who cannot act on an environment variable, and the portal refuses variable-shaped names in
+  // anything a browser renders.
+  const said = JSON.stringify(packet);
+  assert.doesNotMatch(said, /CORSEARCH_SESSION_KEY|CLEAROTRON_[A-Z_]+/,
+    `a switch name reached the requester's packet: ${said}`);
+  // NEVER THE F41 SENTENCE. The whole incident behind this family was a client told "Clearotron has been
+  // notified and will follow up" by a box with no outbox.
+  assert.doesNotMatch(said, /has been notified|will follow up/i,
+    `the packet promises a notice nobody sent: ${said}`);
 
   // NOTHING WAS SPAWNED. The old arm's evidence was a call log with a ping in it; this one's is a call
   // log with nothing in it, which is the stronger claim and the one the deletion is about.

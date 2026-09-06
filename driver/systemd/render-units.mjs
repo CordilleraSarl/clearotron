@@ -280,7 +280,7 @@ if (isEntrypoint(import.meta.url)) {
 export async function writeInstallEnv(envFile) {
   const { mergeEnvFile } = await import("../../shared/env-file-merge.mjs");
   const { laneValuesFor, LANE_VALUE_NOTES, signingSecretIfAbsent } = await import("../../shared/lane-address.mjs");
-  const { enablePlan, allowedHostsMerged } = await import("../../shared/client-door.mjs");
+  const { enablePlan, allowedHosts, allowedHostsMerged, DOOR_ALLOW_LISTS } = await import("../../shared/client-door.mjs");
   const { randomBytes } = await import("node:crypto");
   const { resolvePorts } = await import("../../bin/start.mjs");
 
@@ -412,12 +412,42 @@ export async function writeInstallEnv(envFile) {
   // is derived FROM, and rewriting a source is how a repair silently overrides someone's choice.
   //
   // `CLEAROTRON_CHECKOUT_DIR` is deliberately not here either, for the same reason one issue over.
+  //
+  // ── BOTH DOORS, NOT ONE (tracker issue 192) ───────────────────────────────────────────────────────
+  //
+  // This block used to name the client door alone. The engine door's allow-list is the same derivable
+  // `host:port` shape, refuses to start without a value in the same words, and was composed by NOTHING
+  // on a hosted install — `bin/start.mjs` injects one into its own children's environment, which no
+  // systemd unit inherits. So the documented install asked an operator for a value while writing the
+  // identical one next to it. That asymmetry was found by the census tracker issue 122 asked for, on
+  // its first run, which is what that check is for.
+  //
+  // The pair is DATA now (`DOOR_ALLOW_LISTS`), and the composition is one function taking the public
+  // address's variable name as a parameter. Two authors composing `host:port` in two places is exactly
+  // what let these diverge, so the fix that only wrote the missing value would have left the shape that
+  // produced it.
+  //
+  // WHICH PORT EACH DOOR IS JUDGED AGAINST, and they come from different authorities on purpose. The
+  // client door's is `enablePlan`'s CHOSEN port — it may differ from the configured one, because that
+  // function refuses an occupied port and the allow-list must name what the door will actually bind.
+  // The engine door has no such negotiation, so its port is the resolved one. Reading `want` for both
+  // would silently skip the engine door, whose port `enablePlan` never puts there.
+  const doorPort = { client: want.CLIENT_MCP_HTTP_PORT, engine: ports.mcp };
   const derived = [];
-  if (fileEnv.CLIENT_MCP_ALLOWED_HOSTS && want.CLIENT_MCP_HTTP_PORT) {
-    const merged = allowedHostsMerged(fileEnv.CLIENT_MCP_ALLOWED_HOSTS, want.CLIENT_MCP_HTTP_PORT, { ...fileEnv, ...want });
-    if (merged !== fileEnv.CLIENT_MCP_ALLOWED_HOSTS) {
-      want.CLIENT_MCP_ALLOWED_HOSTS = merged;
-      derived.push("CLIENT_MCP_ALLOWED_HOSTS");
+  for (const d of DOOR_ALLOW_LISTS) {
+    const port = doorPort[d.door];
+    if (!port) continue;
+    const existing = String(fileEnv[d.hosts] ?? "").trim();
+    if (existing) {
+      // The operator (or an earlier run) already has a value: re-derive only the loopback entries and
+      // keep every other host, per the paragraph above.
+      const merged = allowedHostsMerged(existing, port, { ...fileEnv, ...want }, { urlName: d.url });
+      if (merged !== existing) { want[d.hosts] = merged; derived.push(d.hosts); }
+    } else if (want[d.hosts] === undefined) {
+      // Nothing on disk and nothing composed upstream. `enablePlan` has already put the client door's
+      // in `want`, and this guard is what keeps that the single authority for that door rather than
+      // letting this loop compose a second opinion over the top of it.
+      want[d.hosts] = allowedHosts(port, { ...fileEnv, ...want }, { urlName: d.url });
     }
   }
 

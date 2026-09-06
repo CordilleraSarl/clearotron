@@ -1688,8 +1688,9 @@ function askAi(fm, { mcpUrl, runId }) {
       <button type="button" class="util primary askai-copy" data-copy="${pa}">📋 Copy question</button>
       <p class="askai-hint">Paste into the Claude or ChatGPT you already use — read-only. New chat: <a href="https://claude.ai/new" target="_blank" rel="noopener">Claude →</a> · <a href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT →</a></p>
       <div class="askai-field"><code class="askai-url">${esc(mcpUrl)}</code><button type="button" class="util askai-copy" data-copy="${escAttr(mcpUrl)}">Copy</button></div>
-      ${steps('Set up Claude', ['Settings → Connectors → Add custom connector', 'Paste the address above', `Connect → sign in (${BRAND.name} email)`])}
-      ${steps('Set up ChatGPT', ['Settings → Connectors → Advanced → Developer mode', 'Add MCP server → paste the address', `Sign in (${BRAND.name} email)`])}
+      ${steps('Set up Claude <span class="askai-checked">· ✓ Checked 4 September 2026</span>', ['Settings → Connectors → Add custom connector', 'Paste the address above — it already carries your key', 'Set Authentication to None', 'Add. If it warns that authentication is required, that is its own guess — None is correct here'])}
+      ${steps('Set up ChatGPT', ['Settings → Connectors → Advanced → Developer mode', 'Add MCP server, paste the address above', `Sign in when the browser opens (${BRAND.name} email)`])}
+      <p class="askai-hint askai-note">These steps name no button we have not opened ourselves. Your app may word them differently.</p>
     </div>
   </details>`;
 }

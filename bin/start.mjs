@@ -120,6 +120,7 @@ import { listenErrorMessage } from "../shared/listen.mjs";
 import { chmodSync, copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
 import { randomBytes } from "node:crypto";
 import { invocationPrefix, invoke } from "../shared/invocation.mjs";   // — the banner names the verb
+import { unitEnvPath } from "../shared/env-local.mjs";   // — the file the units read, named once
 import { homedir, userInfo } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -1078,7 +1079,10 @@ if (isMain) {
   // operator put there wins), plus CLEAROTRON_CHECKOUT_DIR for the units' ExecStart. Add-only is also
   // what makes re-running safe, and the same idempotence sentence the foreground fatal carries applies.
   if (wantBackground) {
-    const HOME_ENV = join(homedir(), ".env");
+    // ONE AUTHOR for this path — `driver/runner.mjs` names the same file in the same words since
+    // tracker issue 216 moved the run-configuration refusal there, and two composers of one path
+    // fail quietly: a refusal that sends an operator to edit a file the units do not read.
+    const HOME_ENV = unitEnvPath();
     const union = { ...envs.mcp, ...envs.portal, ...(envs.worker ?? {}),
       "CLEAROTRON_CHECKOUT_DIR": REPO };
 
@@ -1152,9 +1156,40 @@ if (isMain) {
           if (m) already[m[1]] = m[2];
         }
       } catch { /* no file yet — the union is the whole of it */ }
+      // ONE COMPOSER for "where do I set these", used by the start-time refusal and by the order-time
+      // announcement below it. Two copies of this sentence is how one of them comes to name a file the
+      // reader cannot use — which is the whole of tracker issue 202.
+      const orderRemedy = (homeEnv) => {
+        const cliEnv = envFileRead();
+        return cliEnv
+          ? `Set them in either of these — both reach a run:\n`
+            + `      ${cliEnv}\n          the file this command reads — this install's own configuration\n`
+            + `      ${homeEnv}\n          the file the units read\n`
+            + `      Or run \`${invoke("install")}\` IN A TERMINAL — it is an interactive wizard and refuses `
+            + `when stdin is not one, which is why this names the files to edit.`
+          : `Set them in ${homeEnv} — the file the units read. This command read no environment file of `
+            + `its own, so that is the address. \`${invoke("install")}\` writes them for you IN A TERMINAL.`;
+      };
       const willRead = { ...already, ...union };
       const miss = missingRequirements(willRead, RUN_TABLES);
-      if (miss.blocking.length) {
+      // ── — WHICH HALF OF `blocking` MAY REFUSE A START (tracker issue 216) ─────
+      //
+      // Owner ruling 2026-09-06, in session: "someone can install and select key later so it should
+      // still start." So the register, its credential, the engine and the engine's binary NO LONGER
+      // refuse here. They refuse AT ORDER TIME — `driver/runner.mjs`'s intake wall, before a stage
+      // dispatches and before anything is spent — and `doctor` and the portal report the box as
+      // unconfigured rather than healthy.
+      //
+      // THE F41 OUTCOME IS STILL IMPOSSIBLE, which is the only thing that ever mattered here. What that
+      // incident cost was a run that died at its first stage while the client was told "Clearotron has
+      // been notified" on a box that notified nobody. A refusal at order time forecloses that exactly as
+      // well as a refusal at start, and does not brick an install somebody is halfway through.
+      //
+      // WHAT STILL REFUSES: only what THIS PROCESS WRITES. Its absence is our bug, not a reader's
+      // omission, and there is nothing for them to go and set. The split is on the row, in the one
+      // authority — never re-decided here.
+      if (miss.atStart.length) {
+        const m = miss.atStart;
         // ── — THE FILES ARE NAMED, BECAUSE THE COMMAND OFFERED CANNOT BE RUN ──
         //
         // This said "Set these where this command can see them" and named no file, on a product with two
@@ -1183,13 +1218,42 @@ if (isMain) {
             + `environment file of its own, so that is the address.`;
         fatal(`--background would install units that cannot run a clearance. ${HOME_ENV} is what they read, and `
           + `it would not carry:\n`
-          + miss.blocking.map((r) => `    ${r.name} — ${r.why}`).join("\n")
+          + m.map((r) => `    ${r.name} — ${r.why}`).join("\n")
           + `\n\n  Nothing has been installed and nothing has been started. ${where}\n`
           + `\n  \`${invoke("install")}\` writes them for you IN A TERMINAL — it is an interactive wizard and `
           + `refuses when stdin is not one, which is why this refusal names the file to edit. Run this again after.\n`
           + `\n  Refusing here rather than at a `
           + `client's first search, which is where this surfaced before: as a failed run and a notice saying `
           + `they had been notified.`);
+      }
+      // ── THE BOX STARTS AND SAYS WHAT IT CANNOT DO YET (tracker issue 216) ──
+      //
+      // An install that comes up unconfigured must not come up SILENTLY unconfigured — that is the
+      // failure one step along from the one being fixed: a reader who is told nothing concludes they are
+      // finished. The names, the file, and what a run will do until they are set.
+      if (miss.atOrder.length) {
+        say(`  ⚠ This install is not configured to run a search yet. Nothing has been left half-done:`);
+        say(`    the doors and the portal are up, and every run is refused at order time, before`);
+        say(`    anything is spent, naming what is missing.`);
+        for (const r of miss.atOrder) say(`      ${r.name} — ${r.why}`);
+        // ── THE SAME REMEDY THE REFUSAL USED TO CARRY, AND THE SAME TWO FILES (tracker issue 202) ──
+        //
+        // 202's subject was a refusal on THESE values that named no file, on a product with two of them,
+        // and offered `install` — a wizard that refuses a non-terminal, so the one reader who arrives
+        // here by a scripted or hosted install was handed a route they cannot take.
+        //
+        // tracker issue 216 moved that refusal to order time, so this screen is where these values are
+        // now named to an operator. The remedy travels with them RATHER THAN BEING DELETED WITH THE
+        // REFUSAL — 202's property is about the class ("a message about a value names the file that sets
+        // it"), not about which gate happened to print it, and the arms in
+        // `a-refusal-names-the-file-when-the-command-it-offers-cannot-be-run.test.mjs` measure it here now.
+        //
+        // BOTH FILES, because both genuinely reach the check: `~/.env` is merged into `already` above,
+        // and this command's own file reaches it through the carry loop. `envFileRead()` for the second,
+        // never a path composed here — null means this process read no file of its own (a systemd start,
+        // or CLEAROTRON_NO_ENV_FILE=1) and then HOME_ENV is the only honest address there is.
+        say(`    Nothing has been installed that cannot run, and nothing has been spent.`);
+        say(`    ${orderRemedy(HOME_ENV)}`);
       }
       for (const r of miss.narrowing)
         say(`  ⚠ ${r.name} is not set — ${r.why}`);

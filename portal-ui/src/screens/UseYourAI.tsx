@@ -123,6 +123,35 @@ async function copy(text: string): Promise<boolean> {
 const mask = (key: string): string => (key.length > 3 ? `${key.slice(0, 3)}••••` : '••••')
 
 /**
+ * The paste sentence for one row.
+ *
+ * `Paste it into {name}` reads for every proper noun — Claude, ChatGPT, Perplexity — and does not read
+ * for the generic row, whose name is a description rather than a product: "Paste it into Another agent"
+ * is not English. It passes every gate on this page: it is not mechanism vocabulary, it breaks no banned
+ * word, and the row label is correct where it stands on its own. Only the COMPOSED sentence stumbles,
+ * on a page whose whole subject is being read by somebody who is not us. Found by driving the four
+ * decks, not by reading them — both instruments here ask whether the right row rendered and neither
+ * asks whether the sentence reads.
+ *
+ * Owner's ruling 2026-09-06, tracker issue 147, option B: the generic row gets its own line and the
+ * approved sentence is left untouched for the three named ones. Option A — renaming the row to "your
+ * assistant" — was the alternative, and it was rejected because it edits a line the owner approved in
+ * order to repair a line he did not.
+ *
+ * IT BRANCHES ON NOTHING — the row carries its own sentence or it does not, and this composes the
+ * default. An earlier cut of this keyed on `offer.id === 'other'` and
+ * `driver/test/connect-clients-are-data.test.mjs` refused it, correctly: no surface may branch on a
+ * client's identity, because a branch in a screen drifts from the table silently and both keep rendering
+ * while the reader follows whichever one is wrong. The exception lives on the row now, so a fifth client
+ * needing its own line is a row edit and this file never changes.
+ *
+ * ONE AUTHOR, TWO SLOTS. The row's label and the panel's heading render the same sentence, and they had
+ * two copies of it before this. Two copies of a sentence is how one of them gets fixed.
+ */
+const pasteLine = (offer: ConnectOffer): string =>
+  offer.pasteAs ?? `Paste it into ${offer.name}`
+
+/**
  * One destination row. THE PRESSED CONTROL IS THE CONFIRMATION — the owner reported the previous
  * feedback as "not obvious still - muted colours", so this is a state change on the thing he pressed.
  *
@@ -158,7 +187,7 @@ function Destination({
         {offer.sub ? <span className="ai-dest-sub">{offer.sub}</span> : null}
       </span>
       <span className="ai-dest-say">
-        <span className="ai-dest-idle">Paste it into {offer.name}</span>
+        <span className="ai-dest-idle">{pasteLine(offer)}</span>
         <span className="ai-dest-done">✓ Copied</span>
       </span>
     </button>
@@ -169,7 +198,7 @@ function Destination({
 function Panel({ offer, landed }: { readonly offer: ConnectOffer; readonly landed: string | null }) {
   return (
     <div className="ai-panel" data-for={offer.id}>
-      <h3 className="ai-panel-head">Paste it into {offer.name}</h3>
+      <h3 className="ai-panel-head">{pasteLine(offer)}</h3>
       {landed ? (
         <p className="ai-panel-landed">On your clipboard now: <code className="mono">{landed}</code></p>
       ) : null}

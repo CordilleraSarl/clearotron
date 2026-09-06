@@ -127,18 +127,6 @@ const SUPPLIED_ELSEWHERE = Object.freeze({
   TRADEMARK_MCP_HTTP_HOST: "refuses over a non-loopback value; unset binds loopback, which is the shipped posture",
   PORTAL_SERVICE_HOST: "refuses over a non-loopback value; unset binds loopback, which is the shipped posture",
 
-  // ── AND ONE THE INSTALL COULD WRITE AND DOES NOT ─────────────────────────────────────────────────
-  //
-  // This one is not like the others and the reason is written out rather than smoothed over. The engine
-  // door's allow-list is host:port — the same derivable shape as the client door's, which the installer
-  // DOES compose and write (`enablePlan`, `CLIENT_MCP_ALLOWED_HOSTS`). Two doors, one shape, one of them
-  // filled in. It does not by itself stop the engine door coming up on a hosted box, because that door
-  // needs the proxy's four values above and they are genuinely the operator's — but it is a value this
-  // product can compute and asks a reader for, which is the arithmetic 122's remedy shape says not to
-  // hand over. Raised rather than repaired here — tracker issue 192 — because writing it belongs with the
-  // install and not with the check that found it, and finding it was this arm's whole job.
-  TRADEMARK_MCP_ALLOWED_HOSTS: "the operator's, today — and DERIVABLE, exactly like the client door's, which the installer composes; the asymmetry is a finding this census made, not a settled design",
-
   // ── LOCAL SIGN-IN, WHICH THE WIZARD ASKS FOR ────────────────────────────────────────────────────
   PORTAL_LOCAL_USER: "the one address that signs in to a local install; `clearotron install` asks and `clearotron start` injects it",
   PORTAL_LOCAL_CREDENTIAL: "a passphrase file the portal creates itself on first local start, never an install-time value",

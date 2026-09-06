@@ -345,9 +345,33 @@ export function describeDoorState(door, {
  * to loopback rather than throwing, and the door still starts. A door that runs and turns one address
  * away is recoverable; a `connect` that dies on a typo in an unrelated variable is not.
  */
-export function allowedHosts(port, env = {}) {
+/**
+ * WHICH PUBLIC ADDRESS A DOOR IS ADVERTISED ON — one name per door, and the reason they are named here.
+ *
+ * Both doors need the same derivable thing: the `host:port` list that arms DNS-rebinding protection,
+ * composed from the port the install settled on plus the public hostname when one is configured. They
+ * differ in ONE value — which variable carries that public address — so the composition is one function
+ * with that name as a parameter rather than two functions that agree until they do not.
+ *
+ * Written down after tracker issue 192, where the census found the asymmetry: the client door's
+ * allow-list is composed by the installer and the engine door's was composed by nothing at all, so a
+ * hosted operator was asked for a value sitting next to an identical one the product works out. Two
+ * authors composing `host:port` in two places is what let them diverge in the first place.
+ */
+export const CLIENT_DOOR_URL_ENV = "CLEAROTRON_CLIENT_MCP_URL";
+export const ENGINE_DOOR_URL_ENV = "CLEAROTRON_MCP_URL";
+
+/** The two doors as data, so a caller iterates rather than repeating the pair. `port` names the
+ *  variable the door binds; `hosts` the allow-list it refuses to start without; `url` its public
+ *  address. Keep them in one place: the failure this closes was a list that existed once. */
+export const DOOR_ALLOW_LISTS = Object.freeze([
+  Object.freeze({ door: "client", port: "CLIENT_MCP_HTTP_PORT", hosts: "CLIENT_MCP_ALLOWED_HOSTS", url: CLIENT_DOOR_URL_ENV }),
+  Object.freeze({ door: "engine", port: "TRADEMARK_MCP_HTTP_PORT", hosts: "TRADEMARK_MCP_ALLOWED_HOSTS", url: ENGINE_DOOR_URL_ENV }),
+]);
+
+export function allowedHosts(port, env = {}, { urlName = CLIENT_DOOR_URL_ENV } = {}) {
   const hosts = [`127.0.0.1:${port}`, `localhost:${port}`];
-  const raw = String(env.CLEAROTRON_CLIENT_MCP_URL ?? "").trim();
+  const raw = String(env[urlName] ?? "").trim();
   if (raw) {
     try {
       const u = new URL(raw);
@@ -371,8 +395,8 @@ export function allowedHosts(port, env = {}) {
  * @param {string} existing  the value currently in the env file
  * @param {string|number} port  the port the door will actually bind
  */
-export function allowedHostsMerged(existing, port, env = {}) {
-  const derived = allowedHosts(port, env).split(",");
+export function allowedHostsMerged(existing, port, env = {}, { urlName = CLIENT_DOOR_URL_ENV } = {}) {
+  const derived = allowedHosts(port, env, { urlName }).split(",");
   const mine = /^(127\.0\.0\.1|localhost):\d+$/;
   const theirs = String(existing ?? "").split(",").map((s) => s.trim()).filter(Boolean).filter((h) => !mine.test(h));
   return [...new Set([...derived, ...theirs])].join(",");
