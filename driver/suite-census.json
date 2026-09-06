@@ -483,6 +483,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-screenshot-of-an-error-page-is-not-a-report.test.mjs": {
+          "tests": 17,
+          "asserts": 44,
+          "skips": 4,
+          "todos": 0
+        },
         "a-secret-file-is-compared-not-printed.test.mjs": {
           "tests": 5,
           "asserts": 16,
@@ -3238,8 +3244,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 52,
-          "asserts": 243,
+          "tests": 59,
+          "asserts": 263,
           "skips": 0,
           "todos": 0
         },

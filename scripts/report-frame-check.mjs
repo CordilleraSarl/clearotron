@@ -22,6 +22,7 @@
 // Needs `google-chrome` (on the VM). Same mechanism as render-check.mjs: a page computes its verdict
 // and writes it into <title>, which --dump-dom hands back.
 
+import { chromeErrorPage } from "./headless-page.mjs";   // tracker issue 227 — a dumped DOM can be chrome's own error document
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -63,6 +64,17 @@ function main() {
       "--virtual-time-budget=8000", "--dump-dom", `file://${join(work, "verify.html")}`,
     ], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], timeout: 120000 });
 
+    // ── IS THIS OUR PAGE, OR CHROME'S ERROR PAGE? (tracker issue 227) ───────────────────────────────
+    //
+    // `--dump-dom` prints whatever chrome ended up showing, and a file it could not read produces the
+    // interstitial — which has a `<title>` of its own. This was saved from reporting a pass only by the
+    // marker below being specific: the title has to parse as JSON with a `kept` array. That is luck, not
+    // a check, and the next person to loosen the parse removes it. Said out loud instead.
+    if (chromeErrorPage(out)) {
+      console.log(`FAILED — chrome could not open the page and dumped its own error document instead. `
+        + `Nothing below is about the report.`);
+      process.exit(1);
+    }
     const m = /<title>(.*?)<\/title>/s.exec(out);
     if (!m || m[1] === "pending") { console.log("FAILED — the page never reported"); process.exit(1); }
     const kept = JSON.parse(m[1]).kept;

@@ -1,5 +1,17 @@
 # prelim-driver
 
+## 0.2.0
+
+### Minor Changes
+
+- cb0f60a: New: Two release channels. `npm install clearotron` stays on the tested release; `npm install clearotron@beta` follows every merge.
+
+## 0.1.12
+
+### Patch Changes
+
+- fb25fd5: For operators: A release now publishes both the version waiting and the one it just prepared, so neither sits unpublished.
+
 ## 0.1.11
 
 ### Patch Changes
