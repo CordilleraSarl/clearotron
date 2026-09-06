@@ -123,6 +123,19 @@ test("193 a unit whose ExecStart names no module under the checkout is not guess
   assert.equal(p.state, "unknown", "a unit this code cannot attribute was treated as evidence");
 });
 
+test("193 a live process whose command line does not carry its unit's entrypoint is not evidence", () => {
+  // A DIFFERENT BRANCH FROM THE ARM ABOVE, and a plant is what proved it. There the UNIT was
+  // unattributable — its ExecStart named no module under the checkout. Here the unit is perfectly
+  // attributable and the RUNNING command line does not carry that path, so no tree can be read off it.
+  // Counting that as looked-at lets a box report a clear coast from a process nobody could place.
+  const move = checkoutMove("/old", "/new");
+  const p = movePosture({ move, running: [
+    { unit: "u.service", cmdline: ["/usr/bin/node", "--eval", "something-else"], unitText: UNIT, why: null },
+  ] });
+  assert.equal(p.state, "unknown",
+    "a process whose tree could not be read was counted as a service confirmed on the destination tree");
+});
+
 test("193 no move means no question — the posture short-circuits", () => {
   const p = movePosture({ move: checkoutMove("/same", "/same"), running: [
     { unit: "u.service", cmdline: cmd("/entirely-elsewhere"), unitText: UNIT, why: null }] });
