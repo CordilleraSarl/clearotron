@@ -88,9 +88,9 @@
           "todos": 0
         },
         "a-change-a-reader-can-see-arrives-with-something-to-read.test.mjs": {
-          "tests": 9,
-          "asserts": 16,
-          "skips": 0,
+          "tests": 10,
+          "asserts": 20,
+          "skips": 2,
           "todos": 0
         },
         "a-check-does-not-read-another-accounts-processes.test.mjs": {
@@ -418,8 +418,8 @@
           "todos": 0
         },
         "a-refused-unit-says-what-is-half-started.test.mjs": {
-          "tests": 8,
-          "asserts": 25,
+          "tests": 9,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
@@ -3839,7 +3839,7 @@
         },
         "start-background-units.test.mjs": {
           "tests": 6,
-          "asserts": 19,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
