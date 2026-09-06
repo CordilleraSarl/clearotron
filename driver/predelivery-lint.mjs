@@ -701,7 +701,7 @@ export function competitorClaimChecks({ text, ownerScreen, recordsByUri, markVoc
 // ── COVERAGE CLAIMS IN PROSE vs WHAT THE RUN ACTUALLY SEARCHED (tracker issue 134) ──────────────────
 //
 // THE DEFECT. `coverage_line:` is code-stamped from scope-facts.json; the narrative is model-written
-// prose. Nothing bound them to one searched-territory set. On `amber-summit` the masthead read
+// prose. Nothing bound them to one searched-territory set. On one recorded run the masthead read
 // `registers: JP, WO` while the narrative said "Register searches covered Japan and Korea" — one of
 // them was wrong and nothing detected it until a human compared the two surfaces by eye. They agree
 // on today's runs because a prompt fix stopped the input contradicting itself, which is evidence the

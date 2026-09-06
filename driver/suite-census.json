@@ -4335,6 +4335,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-reference-strip-left-sentences-unfinished.test.mjs": {
+          "tests": 6,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "the-repair-order-and-the-tool-schema-agree.test.mjs": {
           "tests": 6,
           "asserts": 27,

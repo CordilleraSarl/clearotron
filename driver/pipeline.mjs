@@ -4651,7 +4651,7 @@ export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortR
   // was healthy and answering, re-triggering now hits the same cap, and "overloaded" points the reader
   // at an availability problem they cannot act on.
   //
-  // The owner pre-committed the wording watching indigo-falcon: a cap death is reported as a
+  // The owner pre-committed the wording watching a capped run: a cap death is reported as a
   // SUBSCRIPTION OUTCOME, NEVER AS AN ENGINE FINDING. So this names the cap, states how long the run
   // actually held out before giving up, and says plainly that nothing about the run or the mark
   // produced it.

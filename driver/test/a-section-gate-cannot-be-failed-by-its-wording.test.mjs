@@ -171,7 +171,7 @@ test("DRIVEN: synonym headings with no anchor still fail, on the exact token tha
   const r = validators.commonLaw(ARCHIVED_PATH, SYNONYM_DOC(false));
   assert.equal(r.ok, false);
   assert.equal(r.reason, "missing:negative-results",
-    "this is pewter-lantern's failure verbatim — the section was present and complete, and the gate said missing");
+    "this is the recorded failure verbatim — the section was present and complete, and the gate said missing");
 });
 
 test("DRIVEN: the same document with anchors passes the structural floor", () => {
@@ -195,9 +195,9 @@ test("the anchor regex accepts the dictated spelling and tolerates incidental wh
 test("the recorded killer spellings are all acceptable when the anchor is present", () => {
   const re = new RegExp(`<!--\\s*clearotron:section\\s*=\\s*negative-results\\s*-->`, "i");
   for (const heading of [
-    "## Negative-results matrix",            // pewter-lantern, codex — rejected twice, killed a client run
-    "## Negative results (per-cell detail)", // umber-beacon, anthropic — same skill, different words
-    "## Negative results",                   // briar-kestrel family
+    "## Negative-results matrix",            // codex — rejected twice, killed the run
+    "## Negative results (per-cell detail)", // anthropic — same skill, different words
+    "## Negative results",                   // the third recorded variant
     "## What we did not find",               // a synonym no regex would ever have been widened to
   ]) {
     const doc = `${heading}\n<!-- clearotron:section=negative-results -->\n\nbody`;

@@ -555,7 +555,7 @@ export function countRecoveryLanes(history, { total = 0 } = {}) {
 
 // ── CAP PARKS: A PROVIDER SAYING "NOT YET" IS NOT A STAGE FAILING (tracker issue 103) ──────────────
 //
-// Owner, watching indigo-falcon spend 4 of its 6 recovery parks against one subscription cap:
+// Owner, watching a run spend 4 of its 6 recovery parks against one subscription cap:
 //
 //   "surely it can work out when the cap expires and try after that time and not just keep trying
 //    and then die."
