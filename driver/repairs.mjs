@@ -618,6 +618,43 @@ export function capParkSchedule({ resetsAt = null, attempts = 0, now = Date.now(
   return { resumesAt: new Date(ms).toISOString(), basis: "ladder", waitMin: Math.round((ms - now) / 60000) };
 }
 
+/**
+ * capWaitFrom — what a run actually spent WAITING on a provider's cap, read off the park history.
+ *
+ * tracker issue 103's fourth ask: a run that still dies on a cap has to SAY it was a cap, and say how
+ * long it held out. The park history is the only record that survives a park/resume cycle, so it is the
+ * only place that answer can come from at the terminal.
+ *
+ * Returns `{ parks, waitedMin, statedResets }` or NULL when no row is a cap park. Null rather than a
+ * zeroed object on purpose: "no cap park in this history" and "cap parks that waited zero minutes" are
+ * different facts, and a caller that renders the second as the first tells the reader we waited when we
+ * did not. Rows written before the cap fields existed carry no `capPark` key and are counted as
+ * non-cap — the conservative reading, matching how countRecoveryLanes charges its own pre-split rows.
+ *
+ * `statedResets` counts the parks where the PROVIDER named the time rather than our ladder guessing it,
+ * so a notice can distinguish a cap we were told about from one we inferred. PURE.
+ */
+export function capWaitFrom(history) {
+  const rows = Array.isArray(history) ? history : [];
+  let parks = 0, waitedMin = 0, statedResets = 0;
+  for (const r of rows) {
+    if (r?.capPark !== true) continue;
+    parks++;
+    const w = Number(r.recoveryWaitMin);
+    if (Number.isFinite(w) && w > 0) waitedMin += w;
+    if (r.recoveryWaitBasis === "provider") statedResets++;
+  }
+  return parks ? { parks, waitedMin, statedResets } : null;
+}
+
+/** "21h 30m" / "45m" — for a notice a human reads. 0 stays "0m" rather than becoming an empty string. */
+export function humanWait(min) {
+  const m = Math.max(0, Math.round(Number(min) || 0));
+  if (m < 60) return `${m}m`;
+  const h = Math.floor(m / 60), rem = m % 60;
+  return rem ? `${h}h ${rem}m` : `${h}h`;
+}
+
 // ── the recovery decision ────────────────────────────────────────────────────────────────────────
 
 // Pure decision core for the run-level catch. Park budgets BY CLASS:

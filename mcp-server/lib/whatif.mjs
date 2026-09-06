@@ -219,6 +219,42 @@ export async function whatIfRun({ confirmationToken } = {}, deps = {}) {
   const resolveRun = deps.resolveRun ?? (await import("./runs.mjs")).resolveRun;
   const run = resolveRun(runId);
   if (!run) throw new Error(`whatIfRun: run "${runId}" not found.`);
+
+  // ── A MEMO IS NOT A STAGE RE-RUN, AND THIS IS THE DOOR IT WAS MISSING (tracker issue 132) ────────
+  //
+  // Every piece of the memo capability existed and nothing reached it. whatIfPlan mints the token,
+  // decodeOp validates it on its own terms, whatIfEnqueue queues it and answers the client
+  // `queued: true, kind: "memo"` — and then the worker calls THIS function, which had no memo branch.
+  // Two faults, and the second is why the first was never seen:
+  //
+  //   1. askArchivedRun (driver/whatif-memo-run.mjs, 323 lines with its own arms) was imported by
+  //      nothing but its own test. Composed and completely unreachable.
+  //   2. The refusal below was called WITHOUT `kind`, so it defaulted to "stage" and refused every
+  //      memo with "what-if runs on live runs only" — the exact sentence tracker issue 132 was filed
+  //      to delete. whatIfEnqueue passes the kind (see its own note); this door did not.
+  //
+  // So a memo was accepted at the front door, PROMISED to the client, and killed in the worker where
+  // the client cannot see it. Driven on one token before the fix: whatIfEnqueue returned
+  // {queued:true, kind:"memo"} and whatIfRun threw "this run is delivered or archived" on the same
+  // bytes. That is worse than the refusal the issue was filed about, because the refusal at least
+  // reached the person asking.
+  //
+  // THE BRANCH SITS BEFORE THE JOB RECONSTRUCTION because a memo reconstructs no job. It re-runs no
+  // stage, so the slug guard, the rating-authority carry and the model tier below are all answers to
+  // questions a memo never asks; running them would make a memo depend on status.json fields it has no
+  // use for. The lazy import is the same discipline as runExperiment's below — this module keeps
+  // driver/ out of its module scope so the remote surfaces never pull the engine in.
+  if (op.kind === "memo") {
+    const memoRefusal = whatIfRefusal({ location: run.location, state: run.state, kind: "memo" });
+    if (memoRefusal) throw new Error(`whatIfRun: run ${runId}: ${memoRefusal}.`);
+    const askArchivedRun = deps.askArchivedRun
+      ?? (await import("../../driver/whatif-memo-run.mjs")).askArchivedRun;
+    // askArchivedRun answers {ok:true, memoPath, memoId, parentRunId, assumption, ratedUnder,
+    // statedLimits} or {ok:false, fail, detail} — a stable MEMO_FAILS code, never a throw, because the
+    // worker records what it is handed and a throw there becomes a string nobody can branch on.
+    return await askArchivedRun({ runId, question: instructions, requestedBy: null });
+  }
+
   const refusal = whatIfRefusal({ location: run.location, state: run.state });
   if (refusal) throw new Error(`whatIfRun: run ${runId}: ${refusal}.`);
 

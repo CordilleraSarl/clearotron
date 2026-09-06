@@ -171,7 +171,7 @@ import { verifyRegisterDirectiveClose } from "./close-verify.mjs";
 import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs";
 import { findRecallFloorViolations, findReviewFreshnessViolation, findSeedNeutralityViolations, findProbativeGradingViolations, findStatusHonestyViolation, findMatrixCeilingViolations, findDeadlineUrgencyMiss, findUnresolvedDisagreements, findOrphanVerificationFlags, findUncrossCheckedDemotions, findRecallRegressionViolations, findDeadlineCarryViolations, formatRecallRegression } from "./reasoning-tripwires.mjs";
 import { findRuleShapeFlags } from "./rule-shape.mjs";
-import { failureSignature, classifyFailureReason, decideRecovery, createRepairLedger, countTrailingStageStrikes, countRecoveryLanes, weatherCeilingFor, TRANSIENT_RE, REFUSAL_TERMINAL_KIND, fanInMissingEvidence, retryCannotHelpWith, unnamedStructuredFailure, classificationSource, isCapPark, capParkSchedule } from "./repairs.mjs";
+import { failureSignature, classifyFailureReason, decideRecovery, createRepairLedger, countTrailingStageStrikes, countRecoveryLanes, weatherCeilingFor, TRANSIENT_RE, REFUSAL_TERMINAL_KIND, fanInMissingEvidence, retryCannotHelpWith, unnamedStructuredFailure, classificationSource, isCapPark, capParkSchedule, capWaitFrom, humanWait } from "./repairs.mjs";
 import { caseLawInventory } from "./config-inventory.mjs";   // — the deployment's own case-law sources
 import { caseLawSourceRows } from "./case-law-sources.mjs";  // one author for the shape the stage is handed
 import { writeSettleStamp } from "./settle-stamp.mjs";   // — the pool copy's own terminal state
@@ -4609,7 +4609,7 @@ export function terminalReasonFields(reason, { cap = 200, fullCap = 4000 } = {})
 // every terminal failure to preserve. And per the payload stays OUT of the sentence — `whatsappText`
 // and the CLIENT body are untouched; the staff body gets it in its own <pre>, beside the verbatim reason
 // that body already quotes.
-export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortReason, reasonVerbatim, sig, failClass, terminalKind, repairs = [], priorAttempts = 0, whatsappTo = null, reasonDetail = null, reasonQuantity = null }) {
+export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortReason, reasonVerbatim, sig, failClass, terminalKind, repairs = [], priorAttempts = 0, whatsappTo = null, reasonDetail = null, reasonQuantity = null, capWait = null }) {
   const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;");
   const detail = typeof reasonDetail === "string" && reasonDetail.trim() ? reasonDetail.trim() : null;
   const quantity = Number.isFinite(reasonQuantity) ? reasonQuantity : null;
@@ -4643,7 +4643,30 @@ export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortR
     // verbatim reason below this line names which.
     [REFUSAL_TERMINAL_KIND]: "Nothing failed. This deployment does not serve the search that was ordered, and said so before any work was done — the reason below names what is missing and what to change. Re-running it unchanged returns the same answer.",
   };
-  const kindLine = KIND_SENTENCES[terminalKind] ?? "The run stopped on a technical failure; the run directory is preserved for diagnosis.";
+  // ── A CAP DEATH IS A SUBSCRIPTION OUTCOME, NOT AN OUTAGE (tracker issue 103, the fourth ask) ──────
+  //
+  // The weather lane carries BOTH an overloaded provider and a usage cap, and its one sentence
+  // described the first: "stayed overloaded or unreachable … Re-trigger once the provider is healthy."
+  // Told to somebody whose subscription cap has not reset, every clause of that is wrong — the provider
+  // was healthy and answering, re-triggering now hits the same cap, and "overloaded" points the reader
+  // at an availability problem they cannot act on.
+  //
+  // The owner pre-committed the wording watching indigo-falcon: a cap death is reported as a
+  // SUBSCRIPTION OUTCOME, NEVER AS AN ENGINE FINDING. So this names the cap, states how long the run
+  // actually held out before giving up, and says plainly that nothing about the run or the mark
+  // produced it.
+  //
+  // The elapsed wait matters as much as the cause. The cap ladder now reaches ~11h, so "3 automatic
+  // recovery attempts" — which is all the surrounding copy reports — reads as a run that gave up
+  // quickly when it waited most of a day. A reader deciding whether to re-trigger needs the hours.
+  //
+  // Falls back to the weather sentence when the history carries no cap park, so an actual outage is
+  // still described as one. capWait is null in that case BY CONSTRUCTION (capWaitFrom returns null
+  // rather than a zeroed object), which is what keeps this branch from claiming a cap that never was.
+  const capLine = capWait && terminalKind === "weather-exhausted"
+    ? `A provider's usage cap was still in force after ${humanWait(capWait.waitedMin)} of waiting across ${capWait.parks} attempt${capWait.parks === 1 ? "" : "s"} — a subscription outcome, not a finding about the run or the mark. Nothing in the run itself failed a check.${capWait.statedResets ? " The provider stated its own reset time and the run waited for it." : ""} Re-trigger once the cap has reset.`
+    : null;
+  const kindLine = capLine ?? KIND_SENTENCES[terminalKind] ?? "The run stopped on a technical failure; the run directory is preserved for diagnosis.";
   const attempted = repairs.length
     ? `<p>What the machine already attempted:</p><ul>${repairs.map((r) => `<li>${esc(r.repair)} → ${esc(r.outcome)}${r.target ? ` (${esc(r.target)})` : ""}</li>`).join("")}</ul>`
     : "";
@@ -14868,7 +14891,16 @@ async function pipelineInner(job, opts = {}) {
         // the digest applies the SAME exported predicate the pipeline applies instead of guessing from
         // half the inputs. It also makes the epoch legible: a row with no `classSource` KEY predates
         // this field and was never measured, which is a different fact from a row that says "no gap".
-        recoveryHistory: [...recoveryHistory, { sig: failSig.sig, stage: failedStage, class: failClass, lane, attempt, quantity, quantityToken: failSig.quantityToken ?? null, kindToken: failSig.kindToken ?? null, classSource, ts: new Date().toISOString() }] });
+        recoveryHistory: [...recoveryHistory, { sig: failSig.sig, stage: failedStage, class: failClass, lane, attempt, quantity, quantityToken: failSig.quantityToken ?? null, kindToken: failSig.kindToken ?? null, classSource, ts: new Date().toISOString(),
+        // tracker issue 103 — THE SAME FACTS THE RUN LOG ALREADY GETS, in the record that SURVIVES.
+        // The auto-recovery-parked event below carries capPark/basis/waitMin and says in its own note
+        // that a cap has to be legible or nobody can tell a stated reset from our ladder's guess. But
+        // run.jsonl is not what the terminal reads: status.json's recoveryHistory is the only record
+        // that survives a park/resume, so the cap died with the run log and the failure notice could
+        // only ever say 'a provider was overloaded'. Spread the same way, ABSENT on a non-cap park
+        // rather than false, for the reason stated below: a row that says nothing is honest about not
+        // having looked; `capPark: false` claims we checked.
+        ...(capSchedule ? { capPark: true, recoveryWaitBasis, recoveryWaitMin } : {}) }] });
       rollupStatus(run.studioRoot);
       runLog(run.runDir, { event: "auto-recovery-parked", stage: failedStage, attempt, of: recoveryMax, lane, laneAttempt, laneOf: decision.laneCeiling, recoveryResumesAt, reason: String(reason).slice(0, 200), sig: failSig.sig, class: failClass,
         // tracker issue 103 — a cap park has to be legible in the record, or the next reader diagnosing
@@ -14964,6 +14996,8 @@ async function pipelineInner(job, opts = {}) {
           reasonVerbatim: String(reason).slice(0, 1000), sig: failSig.sig, failClass,
           terminalKind: terminalKind ?? null, repairs: attemptedRepairs ?? [],
           priorAttempts, whatsappTo: AGENT_WHATSAPP[agent] ?? null,
+          // Read off the park history rather than recomputed: the history is what survived the parks.
+          capWait: capWaitFrom(Array.isArray(statusSnapshot?.recoveryHistory) ? statusSnapshot.recoveryHistory : []),
           reasonDetail: reasonDetailField, reasonQuantity: quantity,   // — the payload reaches the notice
         });
         const packet = {
