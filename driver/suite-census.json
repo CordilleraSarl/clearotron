@@ -316,8 +316,8 @@
           "todos": 0
         },
         "a-port-refusal-names-the-file-it-reads.test.mjs": {
-          "tests": 6,
-          "asserts": 16,
+          "tests": 7,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -4062,6 +4062,12 @@
         "the-demo-account-shows-a-configured-customer.test.mjs": {
           "tests": 4,
           "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-demo-help-names-every-product-it-ships.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
