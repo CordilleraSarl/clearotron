@@ -94,7 +94,7 @@ import { CHECKED_UNITS, unitInventoryVerdict, serviceCommitVerdict, unitWorkingD
 import { findUnitFiles, unitFilePath } from "../driver/unit-files.mjs";   //
 import { managerGroupsVerdict } from "../driver/manager-groups-verdict.mjs";   //
 import { config } from "../driver/driver.config.mjs";                          //
-import { probeQueueWatch } from "../driver/queue-watch-probe.mjs";              // ·
+import { probeQueueWatch, probeWorker, probeTimer } from "../driver/queue-watch-probe.mjs";   // · and, tracker issue 206, the units that say HOW this box drains
 import { doorPostureVerdict } from "../mcp-server/door-posture.mjs";   // — a door whose mode came from another door's variables
 import { readDrainerStamp, drainerVerdict, defaultPpidOf } from "../driver/drainer-identity.mjs";   // — the process that EXECUTES runs
 import { claimerIsAlive } from "../driver/claim-liveness.mjs";                       // the shared liveness test, same polarity as the queue's
@@ -664,6 +664,12 @@ else {
       // second criterion — an orphaned drainer in a closed login session is a
       // state health must say out loud, whatever the ruling on the posture.
       ppidOf: defaultPpidOf,
+      // tracker issue 206 — THE SAME TWO PROBES THE QUEUE ARM READS, so this arm and that one cannot
+      // reach opposite conclusions about one box. They did: the queue arm read the worker unit and said
+      // the timer posture is retired here, while this one read nothing and called an absent drainer a
+      // fault in the same report. A probe that throws answers `enabled: null`, which the rule resolves
+      // to an unprobed posture — a failure to look, never a pass.
+      posture: { worker: probeWorker(), timer: probeTimer() },
     });
     record("the process that executes runs is on the deployed commit", v.state, v.message);
   }

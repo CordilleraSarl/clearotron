@@ -35,7 +35,7 @@ import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { CENSUS_WORKSPACES, CENSUS_ROOT_SCRIPTS, countTestSites, collectionFromManifests, censusDisagreements,
-  rootScriptDisagreements, lossBetween } from "../shared/suite-census.mjs";
+  rootScriptDisagreements, censusBuckets } from "../shared/suite-census.mjs";
 import { withheldEntryFor, announceWithheldMode } from "../shared/withheld-paths-access.mjs";   // — withheld is a stated absence, not a loss.: the record does not ship, and without it every absence is a loss
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
 
@@ -150,17 +150,35 @@ function main() {
   try { prev = JSON.parse(readFileSync(CENSUS, "utf8")); } catch { /* first mint */ }
 
   const lost = [];
+  // tracker issue 205 — THE THIRD BUCKET, ruled by overwatch 2026-09-06.
+  //
+  // A reasoned skip is neither a pass nor a loss, and this census had no place to put one. Two guards
+  // that are each right about their own failure had come to disagree: `a-bail-on-an-unmeetable-
+  // precondition-is-a-skip` requires an arm that cannot meet its precondition to say so with
+  // `ctx.skip(...)`, because node:test counts a bare `return;` as a PASS — and following that
+  // instruction made this file refuse to re-stamp, because a rising skip count landed under LOSS.
+  //
+  // WHAT THE BUCKET DOES NOT CLAIM. It cannot read whether the reason is honest, and it does not try.
+  // A skip that arrives with no reason at all lands here too. This is a place to LOOK, printed every
+  // time the count is non-zero and never rolled into an all-clear — an exemption nobody can see is the
+  // failure both guards exist to stop, and it would be this census's own version of it.
+  const noted = [];
   for (const { ws } of CENSUS_WORKSPACES) {
     const a = prev?.workspaces?.[ws]?.perFile ?? {};
     const b = next.workspaces[ws].perFile;
-    const added = Object.keys(b).filter((k) => !(k in a)).sort();
-    const { gone, shrunk, skipped } = lossBetween(a, b);
-    for (const f of gone) lost.push(`${ws}  REMOVED  ${f}  (was ${a[f].tests} tests, ${a[f].asserts} asserts)`);
-    for (const f of shrunk) lost.push(`${ws}  SHRANK   ${f}  ${a[f].tests}\u2192${b[f].tests} tests, ${a[f].asserts}\u2192${b[f].asserts} asserts`);
-    // item 3 — a NEW skip is a loss. It lands here with REMOVED and SHRANK so it needs the same
-    // --allow-loss and the same sentence in the PR body naming what stopped running.
-    for (const f of skipped) lost.push(`${ws}  SKIPPED  ${f}  ${a[f].skips ?? 0}\u2192${b[f].skips ?? 0} skip(s), `
-      + `${a[f].todos ?? 0}\u2192${b[f].todos ?? 0} todo(s) — an arm that stopped running reads as one that passed`);
+    // tracker issue 205 — the buckets are decided in shared/suite-census.mjs, where a test can reach
+    // them, and BOTH populations below read the same function. The two loops used to spell the decision
+    // out separately and had already drifted on their all-clear line.
+    const { added, gone, shrunk, grew, losses, notes, allClear } = censusBuckets({ prev: a, next: b });
+    for (const { kind, file: f } of losses) {
+      lost.push(kind === "REMOVED"
+        ? `${ws}  REMOVED  ${f}  (was ${a[f].tests} tests, ${a[f].asserts} asserts)`
+        : `${ws}  SHRANK   ${f}  ${a[f].tests}\u2192${b[f].tests} tests, ${a[f].asserts}\u2192${b[f].asserts} asserts`);
+    }
+    // tracker issue 205 — a rising skip count is NOT a loss and does not refuse. It is collected for
+    // the bucket printed after both loops, where it is neither excused nor counted against the tree.
+    for (const { file: f } of notes) noted.push(`${ws}  ${f}  ${a[f].skips ?? 0}\u2192${b[f].skips ?? 0} skip(s), `
+      + `${a[f].todos ?? 0}\u2192${b[f].todos ?? 0} todo(s)`);
     console.log(`\n${ws}: ${Object.keys(next.workspaces[ws].perFile ?? {}).length} file(s)`);
     for (const f of added) console.log(`  + ${f}  (${b[f].tests} tests, ${b[f].asserts} asserts)`);
     // A file leaving the census, or shrinking inside it, is the shape this whole thing exists for.
@@ -169,7 +187,7 @@ function main() {
     // was an accurate description of what the code then did: it printed both lines and wrote the file.
     for (const f of gone) console.log(`  REMOVED  ${f}  (was ${a[f].tests} tests, ${a[f].asserts} asserts)`);
     for (const f of shrunk) console.log(`  SHRANK   ${f}  ${a[f].tests}→${b[f].tests} tests, ${a[f].asserts}→${b[f].asserts} asserts`);
-    for (const f of skipped) console.log(`  SKIPPED  ${f}  ${a[f].skips ?? 0}→${b[f].skips ?? 0} skip(s), `
+    for (const { file: f } of notes) console.log(`  skipped  ${f}  ${a[f].skips ?? 0}→${b[f].skips ?? 0} skip(s), `
       + `${a[f].todos ?? 0}→${b[f].todos ?? 0} todo(s)`);
     // follow-up — THE REASSURING LINE READ BROADER THAN IT MEASURED. `added`/`gone`/`shrunk` are
     // the three LOSS shapes this census exists to catch, and a file that GREW is none of them: gain a
@@ -178,9 +196,11 @@ function main() {
     // minutes after `--check` landed, which is the same disease one level up: a narrator that sounds like
     // a verdict. So growth is now printed as its own shape, and the all-clear says what it actually
     // checked instead of implying currency it never established.
-    const grew = Object.keys(b).filter((k) => k in a && (b[k].tests > a[k].tests || b[k].asserts > a[k].asserts)).sort();
     for (const f of grew) console.log(`  grew     ${f}  ${a[f].tests}→${b[f].tests} tests, ${a[f].asserts}→${b[f].asserts} asserts`);
-    if (!added.length && !gone.length && !shrunk.length && !grew.length) console.log("  (unchanged — no file added, removed, grown or shrunk)");
+    // tracker issue 205 — `allClear` counts skips. Without that a file that gained nothing but skips
+    // printed "(unchanged)" over a tree where an arm had stopped running, which is the exact
+    // reassuring-narrator failure the growth line above was added to repair.
+    if (allClear) console.log("  (unchanged — no file added, removed, grown, shrunk or newly skipped)");
     else if (!added.length && !gone.length && !shrunk.length) console.log("  (nothing LOST — but the counts above moved, so the census on disk is stale)");
   }
 
@@ -199,24 +219,38 @@ function main() {
   for (const { script } of CENSUS_ROOT_SCRIPTS) {
     const a = prev?.rootScripts?.[script]?.perFile ?? {};
     const b = next.rootScripts[script].perFile;
-    const added = Object.keys(b).filter((k) => !(k in a)).sort();
-    const { gone, shrunk, skipped } = lossBetween(a, b);
-    const withheldGone = gone.filter((f) => withheldEntryFor(f));
-    const undeclaredGone = gone.filter((f) => !withheldEntryFor(f));
-    for (const f of undeclaredGone) lost.push(`${script}  REMOVED  ${f}  (was ${a[f].tests} tests, ${a[f].asserts} asserts) — not covered by any withheld-paths entry`);
-    for (const f of shrunk) lost.push(`${script}  SHRANK   ${f}  ${a[f].tests}\u2192${b[f].tests} tests, ${a[f].asserts}\u2192${b[f].asserts} asserts`);
-    for (const f of skipped) lost.push(`${script}  SKIPPED  ${f}  ${a[f].skips ?? 0}\u2192${b[f].skips ?? 0} skip(s), `
-      + `${a[f].todos ?? 0}\u2192${b[f].todos ?? 0} todo(s) — an arm that stopped running reads as one that passed`);
+    const { added, shrunk, grew, withheldGone, undeclaredGone, losses, notes, allClear } =
+      censusBuckets({ prev: a, next: b, withheld: withheldEntryFor });
+    for (const { kind, file: f } of losses) {
+      lost.push(kind === "REMOVED"
+        ? `${script}  REMOVED  ${f}  (was ${a[f].tests} tests, ${a[f].asserts} asserts) — not covered by any withheld-paths entry`
+        : `${script}  SHRANK   ${f}  ${a[f].tests}\u2192${b[f].tests} tests, ${a[f].asserts}\u2192${b[f].asserts} asserts`);
+    }
+    for (const { file: f } of notes) noted.push(`${script}  ${f}  ${a[f].skips ?? 0}\u2192${b[f].skips ?? 0} skip(s), `
+      + `${a[f].todos ?? 0}\u2192${b[f].todos ?? 0} todo(s)`);
     console.log(`\n${script}: ${Object.keys(b).length} file(s)`);
     for (const f of added) console.log(`  + ${f}  (${b[f].tests} tests, ${b[f].asserts} asserts)`);
     for (const f of withheldGone) console.log(`  withheld ${f}  (was ${a[f].tests} tests, ${a[f].asserts} asserts) — ${withheldEntryFor(f).path}, a stated consequence of the cut, not a loss`);
     for (const f of undeclaredGone) console.log(`  REMOVED  ${f}  (was ${a[f].tests} tests, ${a[f].asserts} asserts)  UNDECLARED`);
     for (const f of shrunk) console.log(`  SHRANK   ${f}  ${a[f].tests}→${b[f].tests} tests, ${a[f].asserts}→${b[f].asserts} asserts`);
-    for (const f of skipped) console.log(`  SKIPPED  ${f}  ${a[f].skips ?? 0}→${b[f].skips ?? 0} skip(s), ${a[f].todos ?? 0}→${b[f].todos ?? 0} todo(s)`);
-    const grew = Object.keys(b).filter((k) => k in a && (b[k].tests > a[k].tests || b[k].asserts > a[k].asserts)).sort();
+    for (const { file: f } of notes) console.log(`  skipped  ${f}  ${a[f].skips ?? 0}→${b[f].skips ?? 0} skip(s), ${a[f].todos ?? 0}→${b[f].todos ?? 0} todo(s)`);
     for (const f of grew) console.log(`  grew     ${f}  ${a[f].tests}→${b[f].tests} tests, ${a[f].asserts}→${b[f].asserts} asserts`);
-    if (!added.length && !gone.length && !shrunk.length && !grew.length) console.log("  (unchanged — no file added, removed, grown or shrunk)");
+    if (allClear) console.log("  (unchanged — no file added, removed, grown, shrunk or newly skipped)");
     else if (!undeclaredGone.length && !shrunk.length && !added.length) console.log("  (nothing LOST — the counts above moved, so the census on disk is stale)");
+  }
+
+  // tracker issue 205 — PRINTED WHENEVER IT IS NON-EMPTY, on every mode this script has. `--check`
+  // returns before `--apply`'s refusal and `--apply` returns before `--check`'s comparison, so a bucket
+  // printed inside either one would be invisible from the other — and the mode a lane gate runs is the
+  // one nobody watches.
+  if (noted.length) {
+    console.log(`\nSKIPPED WITH REASON — ${noted.length} file(s) whose skip or todo count rose:\n`);
+    for (const l of noted) console.log(`  ${l}`);
+    console.log("\nNeither a pass nor a loss, and not a refusal. A skip is a could-not-look that node:test\n"
+      + "prints and exits 0 on, so it must be visible — but a bail guard elsewhere REQUIRES `ctx.skip(...)`\n"
+      + "over a bare `return;` for exactly that reason, and counting the result as a loss made following\n"
+      + "one guard trip the other. This census cannot read whether the reason attached to a skip is\n"
+      + "honest, and does not pretend to: read the files above and decide.");
   }
 
   if (CHECK) {
