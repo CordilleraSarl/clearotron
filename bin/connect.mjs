@@ -57,21 +57,15 @@ import { SERVER_INSTALL_SET, unitHealthVerdict } from "../shared/server-units.mj
 import { checkoutMove, movePosture, describeMove, describeConflict } from "../shared/checkout-move.mjs";   // tracker issue 193
 import { unitEnvironment, unitValue, couldNotDetermine } from "../driver/unit-environment.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
-import { looksLikeBusFailure, systemdSaid, busRemedy, userBusEnv, CAPTURE_STDERR,
+import { looksLikeBusFailure, systemdSaid, userBusEnv, CAPTURE_STDERR,
   systemdFailure as sharedSystemdFailure } from "../shared/systemd-failure.mjs";   // tracker issue 203 — `start` needed the same three answers
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
-/**
- * The environment `systemctl --user` needs, with the session bus filled in when it can be derived.
- *
- *. Under `su`/`sudo -u` these two are unset and systemctl cannot find the bus.
- * `/run/user/<uid>` is where it lives when a user session exists, so this supplies them from the uid
- * rather than asking a reader to. When the directory is absent there IS no user bus and no value would
- * help — busRemedy() says so in words instead.
- */
-// MOVED TO shared/systemd-failure.mjs, unchanged, because `start --background` needs the same three
-// answers and had none (tracker issue 203). Re-exported below so this module's readers keep their
-// import.
+// `userBusEnv` and `busRemedy` MOVED TO shared/systemd-failure.mjs, unchanged, because
+// `start --background` needs the same answers and had none (tracker issue 203). Their reasoning went
+// with them; this file imports them and passes `userBusEnv()` at every `systemctl` call it makes,
+// `showUnit` included — which is the property that makes deriving the bus safe here and is why `start`
+// does not do it at two of its five.
 
 /**
  * What a half-finished connect has ALREADY written by the time `step` failed — tracker issue 121.

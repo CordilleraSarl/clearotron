@@ -74,8 +74,8 @@
 // The ops key is deliberately NOT persisted. It is minted fresh, in memory, at every start, so no
 // long-lived engine credential is written to disk by a command whose job is to show you the product.
 
-import { envLocalPath, envFileRead } from "../shared/env-local.mjs";
-import { systemdFailure, systemdSaid, CAPTURE_STDERR } from "../shared/systemd-failure.mjs";   // tracker issue 203 — a refusal, not a stack trace   // side effect: apply this install's .env when THIS file is the CLI entry (never on library import)
+import { envLocalPath, envFileRead } from "../shared/env-local.mjs";   // side effect: apply this install's .env when THIS file is the CLI entry (never on library import)
+import { systemdFailure, systemdSaid, CAPTURE_STDERR } from "../shared/systemd-failure.mjs";   // tracker issue 203 — a refusal, not a stack trace
 import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic write for every file holding credentials, and it creates the directory
 // — ONE AUTHORITY for what a clearance needs from its environment, used twice
 // below: to COMPOSE the units' environment and to GUARD it before this command reports success. The
