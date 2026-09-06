@@ -208,6 +208,70 @@ const HOST = "127.0.0.1";
 
 // ── pure helpers (exported for driver/test/start-command.test.mjs) ───────────────────────────────────
 
+/**
+ * WHOSE socket is on the client door's port — tracker issue 228.
+ *
+ * `clearotron stop` removes three units and DELIBERATELY leaves the client door running, because a
+ * product stop must not silently revoke an assistant's connection. `start` then manages that same door
+ * (it is in the managed set) and probed its port as if any listener were a stranger — so the two
+ * supported verbs contradicted each other and `stop`'s own closing line named a command that fatalled.
+ *
+ * The refresh carve three sections up was supposed to cover this and cannot: it keys off
+ * `installedUnits()`, which filters `SERVER_UNITS` — the DETECTOR, which does not name the client door
+ * and must not (it answers "is this box already a server", and a lone client door is not one). So after
+ * a stop the box reads as bare, the carve does not apply, and the probe meets our own door.
+ *
+ * ── THIS REFUSES ON "UNKNOWN", AND `connect` DOES NOT. THE ASYMMETRY IS DELIBERATE ────────────────
+ *
+ * `bin/connect.mjs`'s `portOwnerOf` treats a failed read as "do not decide", because ITS baseline was a
+ * permanent refusal on every correctly-configured box — there, a could-not-look that refused was the
+ * bug. Here the baseline is the opposite: this probe refuses on any held port today, and this change
+ * only ever RELAXES it. So adoption needs positive evidence and everything else keeps today's answer.
+ * Do not "fix" this into agreement with connect — they are two different questions with one shape.
+ *
+ * PURE, and separated from the two reads it needs, because the decision is the half that had the bug.
+ */
+export function clientDoorOwner({ probeCode = null, unitActive = null, unitPort = null, port = null } = {}) {
+  if (!probeCode) return "free";
+  // EACCES on a privileged port, an address this host does not have — not a listener we could adopt,
+  // and `listenErrorMessage` already says the right thing about each.
+  if (probeCode !== "EADDRINUSE") return "stranger";
+  if (unitActive == null || unitPort == null) return "unknown";   // a reader that failed
+  if (!unitActive) return "stranger";
+  // The port answering was never proof of whose process it is. The unit's own environment is the
+  // authority for the port it was born on — asking this shell would hand back "stranger" for our own
+  // healthy door on any install whose port is not the default.
+  return unitPort === port ? "ours" : "stranger";
+}
+
+/**
+ * The two reads `clientDoorOwner` needs, against the live box.
+ *
+ * `systemctl --user show` in THIS FILE'S shape and without `userBusEnv()` — see the note at the
+ * daemon-reload below for why this file does not pass it yet. A read that throws answers `null`, which
+ * `clientDoorOwner` turns into "unknown" and therefore into today's refusal.
+ */
+function liveClientDoor(unitEnvFile = unitEnvPath(), run = execFileSync) {
+  let unitActive = null, unitPort = null;
+  try {
+    const out = run("systemctl", ["--user", "show", CLIENT_DOOR_UNIT, "-p", "ActiveState", "-p", "SubState"],
+      { encoding: "utf8" });
+    const f = Object.fromEntries(out.split("\n").filter(Boolean).map((l) => {
+      const i = l.indexOf("="); return [l.slice(0, i), l.slice(i + 1)];
+    }));
+    if (f.ActiveState !== undefined) unitActive = f.ActiveState === "active" && f.SubState === "running";
+  } catch { /* null — a could-not-look, which refuses */ }
+  try {
+    const env = {};
+    for (const line of readFileSync(unitEnvFile, "utf8").split("\n")) {
+      const m = /^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=(.*)$/.exec(line);
+      if (m) env[m[1]] = m[2];
+    }
+    unitPort = clientDoorPort(env);
+  } catch { /* null — as above */ }
+  return { unitActive, unitPort };
+}
+
 /** The two ports, from the environment or the shipped defaults. Throws on a value that is not a port. */
 export function resolvePorts(env = {}) {
   const one = (name, dflt) => {
@@ -803,12 +867,31 @@ if (isMain) {
   // shared/env-local.mjs actually did in this process, and answers null when it read nothing. Its own
   // header carries the reasoning (tracker issue 200).
   const portFile = envFileRead();
-  for (const [what, port, portVar] of [["portal", ports.portal, "PORTAL_SERVICE_PORT"], ["engine door", ports.mcp, "TRADEMARK_MCP_HTTP_PORT"], ["client door", ports.client, "CLIENT_MCP_HTTP_PORT"]]) {
+  // Set when the probe met OUR OWN client door on its own port (tracker issue 228). Carried out of this
+  // loop because both paths below have to act on it: the background path must RESTART the door it
+  // adopted, and the foreground path must not spawn a second one beside it.
+  let adoptedClientDoor = false;
+  for (const [what, port, portVar, doorUnit = null] of [["portal", ports.portal, "PORTAL_SERVICE_PORT"], ["engine door", ports.mcp, "TRADEMARK_MCP_HTTP_PORT"], ["client door", ports.client, "CLIENT_MCP_HTTP_PORT", CLIENT_DOOR_UNIT]]) {
     // A --background REFRESH runs over its own healthy units, which hold these ports on purpose;
     // systemd's restart is the handover. Probing would refuse the flag exactly once it has worked.
     // The narrow carve above already proved every installed unit is ours.
     if (backgroundRefresh) break;
     const code = await probe(port);
+    // ── OUR OWN DOOR IS NOT A COLLISION (tracker issue 228) ──────────────────
+    //
+    // `stop` leaves this door up on purpose and says so; refusing here made `stop`'s own "plain
+    // `clearotron start` works in a terminal from here" a lie, and left `clearotron demo` unrunnable on
+    // any box with the product installed. A STRANGER on the port still refuses, and so does a read that
+    // failed — see `clientDoorOwner` for why that asymmetry with `connect` is deliberate.
+    if (code && doorUnit) {
+      const owner = clientDoorOwner({ probeCode: code, port, ...liveClientDoor() });
+      if (owner === "ours") {
+        adoptedClientDoor = true;
+        say(`  client door    already up on ${HOST}:${port} and it is ours (${doorUnit}) — keeping it, `
+          + "so the key your assistant holds keeps working");
+        continue;
+      }
+    }
     // 's wording, not a second copy of it. That helper already distinguishes EADDRINUSE from EACCES
     // on a privileged port and from an address this host does not have, and names the way out of each;
     // the launcher having its own shorter sentence for one of the three would mean a user meets two
@@ -1390,6 +1473,22 @@ if (isMain) {
     if (backgroundRefresh) for (const u of unitsToRestartOnRefresh(BACKGROUND_UNITS, unitTypeOf)) {
       try { execFileSync("systemctl", ["--user", "restart", u], { stdio: "ignore" }); } catch { /* health check below reports it */ }
     }
+    // ── AN ADOPTED DOOR IS RESTARTED, OR IT KEEPS RUNNING THE OLD TREE (tracker issue 228) ──────────
+    //
+    // `enable --now` is a NO-OP on an already-active unit — the finding `unitsToRestartOnRefresh` exists
+    // for, measured on the test box as an unchanged MainPID. So a door this run adopted rather than
+    // started would go on executing the checkout and the environment it was born with, while the other
+    // three come up on this one, and the health check below would report all four up. That is the exact
+    // shape of the defect that helper was written to fix, and adopting without this line would
+    // reintroduce it through a second door.
+    //
+    // The restart keeps the port and the key: both live in the unit's environment and the access file,
+    // not in the process. That is tracker issue 228's criterion 2, and it is why this is a restart
+    // rather than a re-place.
+    if (adoptedClientDoor && !backgroundRefresh) {
+      try { execFileSync("systemctl", ["--user", "restart", CLIENT_DOOR_UNIT], { stdio: "ignore" }); }
+      catch { /* health check below reports it */ }
+    }
 
     // STARTED IS NOT RUNNING (the connect lesson): settle, then read each service's own state.
     //
@@ -1634,7 +1733,12 @@ if (isMain) {
   // supported state and a useful one; an install that refuses to come up at all because a door could
   // not bind is not. The door's own refusal is loud and carries its remedy — measured and recorded as
   // working — so a reader sees why in its output rather than losing the portal along with it.
-  const clientDoor = start("the client door", "mcp-server/http-server-client.mjs", envs.client, { fatal: false });
+  // ADOPTED, NOT RE-SPAWNED (tracker issue 228). On a box where `stop` left the door unit up, spawning a
+  // second door here would bind-fail against the first and print a refusal about a port the reader's
+  // assistant is correctly connected to. The unit IS the door; this path just does not add another.
+  const clientDoor = adoptedClientDoor
+    ? null
+    : start("the client door", "mcp-server/http-server-client.mjs", envs.client, { fatal: false });
 
   // ── 6. one URL ─────────────────────────────────────────────────────────────────────────────────────
 
@@ -1656,10 +1760,16 @@ if (isMain) {
   // is reaped, so it is the same fact without the race. The failure mode being avoided is this
   // finding's own defect relocated into its failure path: a dead door announced as one a client's
   // assistant connects to, which is worse than the silence F26 replaced.
-  const doorRunning = clientDoor?.child?.exitCode === null;
+  // AN ADOPTED DOOR IS RUNNING (tracker issue 228). Without this the banner reported "NOT RUNNING …
+  // its output above says why" about a door that is up and serving, and pointed the reader at output
+  // that does not exist — the one sentence on this screen a reader would act on, and false.
+  const doorRunning = adoptedClientDoor || clientDoor?.child?.exitCode === null;
   if (doorRunning) {
     say(`  Client door  http://${HOST}:${ports.client}/mcp   — a client's assistant connects here.`);
-    say(`               It refuses every caller until a key is issued: ${invocationPrefix()}clearotron key issue <email>`);
+    if (adoptedClientDoor)
+      say(`               Already running as ${CLIENT_DOOR_UNIT}; this start kept it, so existing keys still work.`);
+    else
+      say(`               It refuses every caller until a key is issued: ${invocationPrefix()}clearotron key issue <email>`);
   } else {
     say(`  Client door  NOT RUNNING on ${HOST}:${ports.client} — its output above says why. The portal and`);
     say("               the engine door are unaffected; a client assistant cannot connect until it is up.");

@@ -4034,7 +4034,12 @@ const PORT = PORT_CHOICE.port;
       // than judged — with the mechanism, so a reader knows what to look at. Claiming more than was
       // measured is how a check starts refusing deployments that work.
       if (lane.state === "fail") log(`WARNING: trigger lane — ${lane.message}`);
-      else if (lane.state === "unprobed") log(`trigger lane: ${lane.message}`);
+      // NOT `WARNING:` (tracker issue 222). A connection nothing answered at boot is a startup race far
+      // more often than an outage — the units carry no ordering, so the portal routinely binds first —
+      // and the old text stated an outage in the present tense with a 502 attached to it. It printed on
+      // every reboot, on boxes that were fine. Reserving `WARNING:` for what did answer wrongly is what
+      // keeps the word meaning something on the day the lane is genuinely down.
+      else if (lane.state === "unsettled" || lane.state === "unprobed") log(`trigger lane: ${lane.message}`);
       else if (probe?.challenge && /bearer/i.test(probe.challenge)) {
         log(`trigger lane: the engine door answered ${probe.status} with an OAuth challenge, so an identity `
           + "proxy is in front of it. This portal presents an ACCESS KEY, not a proxy identity, and whether "

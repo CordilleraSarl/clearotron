@@ -21,6 +21,25 @@ Description=Clearotron portal — the UI, the API, the sign-in and the config su
 Documentation=https://github.com/CordilleraSarl/Clearotron/blob/main/docs/architecture/02-architecture.md
 After=network-online.target
 Wants=network-online.target
+# ── THE ENGINE DOOR FIRST, WHERE THERE IS ONE (tracker issue 222) ─────────────────────────────────────
+#
+# The units carried no ordering between them, so a simultaneous restart of the set started this process
+# before the door it calls. Its boot probe then logged an outage — in the present tense, with "a
+# clearance ordered from the portal returns 502" attached — on a box that was fine seconds later. It
+# printed on every reboot and cost a diagnostic detour during the 0.1.6 production upgrade.
+#
+# `After=` AND NOT `Wants=`: this is ordering only. A portal serving with no engine door is a supported
+# state — the pages work, only the Start button's upstream is missing — so pulling the door in as a
+# dependency would change what installing this unit means. Naming a unit that is not installed is a
+# no-op to systemd, which is what makes one line correct on every unit set: the packaged install has
+# `clearotron-mcp-face.service`, and a deployment that runs the door under another name simply orders
+# against nothing here.
+#
+# IT NARROWS THE RACE RATHER THAN CLOSING IT, and the other half of tracker issue 222 is why that is
+# enough. `Type=simple` counts a unit as started once its process is forked, not once it is listening,
+# so the door may still be binding when this starts. The probe's message no longer claims an outage for
+# that, because the submit path re-probes per request and never consults the boot verdict.
+After=clearotron-mcp-face.service
 
 [Service]
 Type=simple

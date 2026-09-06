@@ -14,7 +14,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { childEnv, resolvePorts, BACKGROUND_UNITS } from "../../bin/start.mjs";
+import { childEnv, resolvePorts, BACKGROUND_UNITS, clientDoorOwner } from "../../bin/start.mjs";
 import { clientDoorPort } from "../../shared/client-door.mjs";
 import { unitsToRestartOnRefresh, unitHealthVerdict } from "../../shared/server-units.mjs";
 
@@ -257,7 +257,8 @@ test("2191-F15 a oneshot is judged by being enabled, not by still running", () =
 });
 
 test("2191-F11 the foreground port pre-check covers ALL THREE doors, before anything binds", () => {
-  const probeLoop = START_SRC.slice(START_SRC.indexOf("for (const [what, port, portVar] of"));
+  const probeLoop = START_SRC.slice(START_SRC.indexOf("for (const [what, port, portVar, doorUnit"));
+  assert.ok(probeLoop.length > 400, "the probe loop was not found at all — this arm could not look, which is not a pass");
   const head = probeLoop.slice(0, 400);
   for (const v of ["PORTAL_SERVICE_PORT", "TRADEMARK_MCP_HTTP_PORT", "CLIENT_MCP_HTTP_PORT"])
     assert.ok(head.includes(v),
@@ -267,7 +268,7 @@ test("2191-F11 the foreground port pre-check covers ALL THREE doors, before anyt
 
   // BEFORE THE FIRST WRITE, which is the whole point of the check: `markStateWritten` is what divides
   // "refuses with nothing to clean up" from "refuses over a changed box".
-  assert.ok(START_SRC.indexOf("for (const [what, port, portVar] of") < START_SRC.indexOf("markStateWritten()"),
+  assert.ok(START_SRC.indexOf("for (const [what, port, portVar, doorUnit") < START_SRC.indexOf("markStateWritten()"),
     "the probe must run before the run starts changing the box");
 });
 
@@ -369,4 +370,81 @@ test("2191 both doors get the operator's denylist when one is set", () => {
   const none = childEnv({ ...base, env: {} });
   assert.match(none.client.TRADEMARK_MCP_TOKEN_DENYLIST, /\.config\/clearotron\/token-denylist$/,
     "with nothing set, the client door still gets the documented default");
+});
+
+// ── 228 · OUR OWN DOOR IS NOT A COLLISION ────────────────────────────────────────────
+//
+// `clearotron stop` removes three units and leaves the client door up ON PURPOSE — a product stop must
+// not silently revoke an assistant's connection. `start` manages that same door and probed its port as
+// if any listener were a stranger, so the two supported verbs contradicted each other: `stop` printed
+// "plain `clearotron start` works in a terminal from here" and that command fatalled. `clearotron demo`
+// hit the same wall, because it spawns start.mjs.
+//
+// THE REFRESH CARVE DOES NOT COVER IT, and that is the part worth pinning. It keys off
+// `installedUnits()`, which filters `SERVER_UNITS` — the DETECTOR, which deliberately does not name the
+// client door because a lone door does not make a box a server. So after a stop the box reads as bare.
+
+test("228 our own door on its own port is adopted, not refused", () => {
+  assert.equal(clientDoorOwner({ probeCode: "EADDRINUSE", unitActive: true, unitPort: 18862, port: 18862 }), "ours");
+});
+
+test("228 a STRANGER on the port is still refused — the fix must not be a silencer", () => {
+  // The 2026-08-31 incident: 18811 held by another user's client face, the unit installed and
+  // crash-looping, while a listening socket made it look like the door was up.
+  assert.equal(clientDoorOwner({ probeCode: "EADDRINUSE", unitActive: false, unitPort: 18862, port: 18862 }), "stranger");
+});
+
+test("228 our door on a DIFFERENT port is a stranger on this one", () => {
+  // Reading a port as proof of your own process is the mistake the incident above taught. Our door
+  // being up says nothing about whether it is up HERE.
+  assert.equal(clientDoorOwner({ probeCode: "EADDRINUSE", unitActive: true, unitPort: 18811, port: 18862 }), "stranger");
+});
+
+test("228 a read that FAILED refuses, which is the opposite of what connect does — deliberately", () => {
+  // `connect`'s portOwnerOf treats unknown as "do not decide", because its baseline was a permanent
+  // refusal on every correct box. This probe's baseline is the reverse: it refuses on any held port
+  // today and this change only ever relaxes that, so adoption takes positive evidence and nothing else
+  // moves. An arm exists for the asymmetry so nobody "fixes" the two into agreement.
+  assert.equal(clientDoorOwner({ probeCode: "EADDRINUSE", unitActive: null, unitPort: null, port: 18862 }), "unknown");
+  assert.equal(clientDoorOwner({ probeCode: "EADDRINUSE", unitActive: true, unitPort: null, port: 18862 }), "unknown");
+});
+
+test("228 a port nothing holds is free, and a refusal that is not EADDRINUSE is never adopted", () => {
+  assert.equal(clientDoorOwner({ probeCode: null, port: 18862 }), "free");
+  // EACCES on a privileged port is not a listener to adopt, and listenErrorMessage says the right
+  // thing about it already.
+  assert.equal(clientDoorOwner({ probeCode: "EACCES", unitActive: true, unitPort: 18862, port: 18862 }), "stranger");
+  assert.equal(clientDoorOwner({ probeCode: "EADDRNOTAVAIL", unitActive: true, unitPort: 18862, port: 18862 }), "stranger");
+});
+
+test("228 the probe loop CONSULTS that decision, and only 'ours' escapes the refusal", () => {
+  // Source-coupled, and said out loud rather than dressed up: the probe lives inside the main() that
+  // installs units and starts services, so the suite cannot run it. The decision was extracted to be
+  // driven — the arms above do that — and this one pins the wiring, which is the half a pure function
+  // cannot protect. Same posture as the 2191 restart-loop arm twelve tests up.
+  const loop = START_SRC.slice(START_SRC.indexOf("for (const [what, port, portVar, doorUnit"));
+  const body = loop.slice(0, 2000);
+  assert.ok(body.includes("clientDoorOwner({ probeCode: code, port, ...liveClientDoor() })"),
+    "the probe does not ask whose socket it is, so our own door is refused as a stranger again");
+  assert.match(body, /owner === "ours"/,
+    "nothing narrows the adoption to 'ours' — a wider test here silences the lockout the probe is for");
+  assert.ok(body.indexOf('owner === "ours"') < body.indexOf("fatal(listenErrorMessage"),
+    "the adoption must be reached before the refusal, or it can never fire");
+});
+
+test("228 a door this run ADOPTED is restarted, or it keeps serving the tree it was born on", () => {
+  // `enable --now` is a no-op on an active unit — the 2191 finding. A door adopted rather than started
+  // would run the old checkout and the old environment while the other three come up on the new one,
+  // and the health check would report all four up. That is 2191's defect reintroduced through the
+  // other door, which is why adoption and this restart land together.
+  assert.match(START_SRC, /adoptedClientDoor && !backgroundRefresh[\s\S]{0,220}"restart", CLIENT_DOOR_UNIT/,
+    "an adopted door is never restarted, so it keeps executing whatever it was started with");
+});
+
+test("228 an adopted door is reported as RUNNING, not as the failure whose output does not exist", () => {
+  // The banner reads `clientDoor?.child?.exitCode === null`, and an adopted door spawns no child. Left
+  // alone it printed "NOT RUNNING … its output above says why" about a door that is up and serving,
+  // and pointed the reader at output that was never written.
+  assert.match(START_SRC, /const doorRunning = adoptedClientDoor \|\| clientDoor\?\.child\?\.exitCode === null/,
+    "the summary judges the door by a child that adoption never spawns, so it reports a healthy door as dead");
 });
