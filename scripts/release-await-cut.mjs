@@ -111,6 +111,70 @@ export async function awaitCut({ refresh, read, sleep, waitMs = WAIT_MS, stepMs 
 
 const git = (args) => execFileSync("git", args, { encoding: "utf8" });
 
+/**
+ * One read of `main`: the version it carries, whether that version is tagged, and WHICH COMMIT said so.
+ *
+ * THE COMMIT IS READ IN THE SAME PASS AS THE VERSION, and that is the whole point of this function
+ * existing rather than being three calls at the call site (tracker issue 238). The job below used to
+ * check out `main` by name after this loop returned, so a commit landing in between — one that moves no
+ * version, an instrument fix with no note — was packed and published under a number whose changelog
+ * never described it. Nothing downstream could see it: the tip check compares VERSIONS, and the version
+ * had not moved. Naming the commit here is what makes the two ends of the pipeline talk about the same
+ * tree.
+ *
+ * No fetch happens between the two reads, so they cannot straddle one.
+ *
+ * EVERY READER IS AN ARGUMENT, and that is not decoration. An arm that injected only `run` still asked
+ * real git for the version and the tags, so it answered differently on a box where `main` is tagged than
+ * on a runner where the checkout has neither `origin/main` nor tags — green here, red there, for reasons
+ * that have nothing to do with what it was checking. This file's own suite header warns about exactly
+ * that shape, and one of these arms was written into it anyway.
+ */
+export function versionBumpCommit({ version, ref = "origin/main", run = git, versionAt = versionAtHead, maxWalk = 100 }) {
+  const shas = run(["rev-list", "--first-parent", `-n${maxWalk}`, ref]).trim().split("\n").filter(Boolean);
+  let answer = null;
+  let sawTheChange = false;
+  for (const sha of shas) {
+    if (versionAt({ ref: sha }) !== version) { sawTheChange = true; break; }
+    // KEEP WALKING PAST THE FIRST MATCH. Every commit landing after the bump and before this read also
+    // carries the version — that is precisely the class of commit this exists to leave out — so the
+    // answer is the OLDEST consecutive one, not the newest.
+    answer = sha;
+  }
+  // A WALK THAT NEVER SAW THE VERSION CHANGE HAS NOT FOUND THE BUMP; it has run out of road. The oldest
+  // commit it happened to reach carries the version by coincidence of the window, and publishing that
+  // would ship a tree from before the release. An absence is a finding.
+  return sawTheChange ? answer : null;
+}
+
+export function readMain({ run = git, versionAt = versionAtHead, tags = tagsHere, decide = cutDecision } = {}) {
+  const sha = run(["rev-parse", "origin/main"]).trim();
+  // CHECKED BEFORE THE VERSION IS READ, so a checkout with no `origin/main` refuses here rather than
+  // going on to answer confidently about a tree it could not name. `git rev-parse` prints the name back
+  // when it cannot resolve it, so the failure looks like a value rather than like an error.
+  if (!/^[0-9a-f]{40}$/.test(sha)) {
+    throw new Error(`release-await-cut: \`git rev-parse origin/main\` answered "${sha.slice(0, 80)}", which is `
+      + "not a commit. The publish below checks out what this reports, so a name it cannot resolve must "
+      + "refuse here rather than resolve to something else there.");
+  }
+  const d = decide({ version: versionAt({ ref: "origin/main" }), tags: tags() });
+  // NOT THE TIP. `origin/main` is where the branch points in this pass, and a commit that landed after
+  // the version bump carries the same version — so the tip check downstream, which compares versions,
+  // passes on exactly the commit that made the tarball disagree with its changelog. The answer is the
+  // commit that MOVED the version, which is the version pull request's merge.
+  //
+  // Only asked when there is something to publish. On the ordinary "nothing merged" answer the tip is
+  // what a reader wants recorded, and there is no version whose bump could be looked for.
+  if (!d.cut) return { ...d, sha, tip: sha };
+  const bump = versionBumpCommit({ version: d.version, run, versionAt });
+  if (!bump) {
+    throw new Error(`release-await-cut: main carries ${d.version} but no commit in the last 100 could be `
+      + "found that moved it there. The publish below checks out what this reports, and reporting the "
+      + "branch tip instead would publish whatever else has landed since.");
+  }
+  return { ...d, sha: bump, tip: sha };
+}
+
 function main() {
   const out = process.env.GITHUB_OUTPUT;
   const started = Date.now();
@@ -120,7 +184,7 @@ function main() {
     // tags never arrived answers "no tag" about every version there has ever been. That is the one wrong
     // answer this pipeline cannot afford, so it is refreshed on every pass rather than once at checkout.
     refresh: async () => { git(["fetch", "--no-tags", "--prune", "origin", "+refs/heads/main:refs/remotes/origin/main"]); git(["fetch", "--tags", "--force", "origin"]); },
-    read: () => cutDecision({ version: versionAtHead({ ref: "origin/main" }), tags: tagsHere() }),
+    read: () => readMain(),
     sleep: (ms) => new Promise((r) => setTimeout(r, ms)),
     now: () => Date.now() - started,
   }).catch((e) => {
@@ -137,7 +201,7 @@ function main() {
       + `(${String(e?.message ?? e).slice(0, 200)}). This is a failure to LOOK, not a finding that `
       + "nothing was cut — nothing downstream may treat it as one.");
     process.exitCode = 2;
-    if (out) appendFileSync(out, "cut=false\nversion=\nlooked=false\n");
+    if (out) appendFileSync(out, "cut=false\nversion=\nsha=\nlooked=false\n");
   }).then((r) => {
     if (!r) return;
     const secs = Math.round(r.waitedMs / 1000);
@@ -148,7 +212,9 @@ function main() {
     // `looked` SEPARATES the two negatives above: a loop that ran and found nothing merged, from one
     // that could not read main at all. The publish job below requires `cut=true`, so neither publishes —
     // but a reader deciding whether a release went missing needs to know which of the two happened.
-    if (out) appendFileSync(out, `cut=${r.cut ? "true" : "false"}\nversion=${r.version}\nlooked=true\n`);
+    // `sha` IS WRITTEN ON BOTH ANSWERS, not only on a cut. It records which commit this loop's verdict is
+    // about, so a run that published nothing can still be read back against the tree it looked at.
+    if (out) appendFileSync(out, `cut=${r.cut ? "true" : "false"}\nversion=${r.version}\nsha=${r.sha ?? ""}\nlooked=true\n`);
   });
 }
 
