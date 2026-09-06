@@ -4,6 +4,34 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.1.4
+
+### New
+
+- The install guide names both provider settings an assistant's sign-in depends on. `clearotron doctor --probe-connector` asks your address whether each assistant maker can sign in.
+- The portal now checks at start-up whether the engine it submits to will accept it, and says so in its log. Changing the engine's sign-in used to break Start silently.
+- Ask a what-if about a delivered report and get a supplementary memo over its archived evidence, without touching the report.
+
+### Fixed
+
+- A server install now generates the portal secret it needs, so the portal starts instead of exiting at boot.
+- A report now says a case-law source could not be confirmed, rather than saying this installation does not have it.
+- An address only this machine can reach is no longer described as reachable from the internet. A key that could not be written down now names the missing setting.
+- Connecting an assistant no longer reports the connector as closed when it cannot reach the session bus. It also no longer stops on a signing secret the installation already holds.
+- Connecting an assistant now says what went wrong when it stops part-way, and what it had already changed.
+- Checking a settings file now reports on the file you named, not the one this machine happens to use.
+- Installing Clearotron from npm works again — recent releases failed before any files were written, so nothing could be installed or run.
+- Reinstalling the services no longer overrides the port and address you set for the assistant connector. The connector's unit reads them from your settings file like every other service.
+- The portal now runs on the current React, TypeScript and Vite, and its download is smaller because build comments no longer ship to the browser.
+- The case-law sign-in instructions now produce a credential that survives its first renewal, and verify that it does.
+
+### For operators
+
+- The live-surface check no longer calls a healthy installation broken over a service file the product never shipped.
+- the configuration page now shows this deployment's live settings, and says if the last run used different ones.
+- the shipped multi-country demo is now the same run family as the other three, not an older capture from a different customer.
+- The end-to-end harness now recognises the worker draining queues here, instead of offering to start a second one.
+
 ## 0.1.3
 
 ### For operators
