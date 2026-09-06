@@ -469,6 +469,9 @@ jobs:
     outputs:
       cut: ${{ steps.awaited.outputs.cut }}
       version: ${{ steps.awaited.outputs.version }}
+      # THE COMMIT THE WAIT DECIDED ABOUT, so the publish below packs that tree and not whatever `main`
+      # has become since — see tracker issue 238 and the guard in that job.
+      sha: ${{ steps.awaited.outputs.sha }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -793,12 +796,38 @@ jobs:
       contents: write     # the tag and the GitHub release
       id-token: write     # the OIDC token npm exchanges for a short-lived publish credential
     steps:
-      # THE NEW main, NOT THE COMMIT THIS RUN STARTED ON. The version being published here landed after
-      # this run began — that is the whole point of the wait — so a default checkout would pack the
-      # bytes of the previous version and publish them under the new number.
+      # BEFORE THE CHECKOUT, because that is the step it protects. `ref:` with an empty value does not
+      # fail — it checks out the default branch — so an absent answer here would publish `main` while
+      # every log line said it published the commit this run awaited. That is the defect this job
+      # already had, wearing the name of its fix.
+      - name: The wait named a commit to publish
+        env:
+          AWAITED_SHA: ${{ needs.awaited.outputs.sha }}
+        run: |
+          set -euo pipefail
+          if [ -z "$AWAITED_SHA" ]; then
+            echo "::error::The wait reported no commit, so there is nothing to check out. That is a failure to LOOK, not a finding that nothing merged, and checking out the branch name instead would ship a tree this run never decided about."
+            exit 2
+          fi
+          case "$AWAITED_SHA" in
+            *[!0-9a-f]*) echo "::error::The wait reported \"$AWAITED_SHA\", which is not a commit."; exit 2 ;;
+          esac
+          if [ "${#AWAITED_SHA}" -ne 40 ]; then
+            echo "::error::The wait reported a ${#AWAITED_SHA}-character ref rather than a full commit. An abbreviated or moving name is what let this job publish a different tree from the one it decided about."
+            exit 2
+          fi
+          echo "Publishing the commit this run awaited: $AWAITED_SHA"
+
+      # THE COMMIT THE WAIT DECIDED ABOUT, NOT THE BRANCH NAME. The version being published here landed
+      # after this run began — that is the whole point of the wait — so a default checkout would pack
+      # the bytes of the previous version and publish them under the new number. But `main` is a NAME,
+      # and between the wait's last read and this checkout it can move on to a commit that changes no
+      # version: an instrument fix with no note passes the tip check below untouched, because that check
+      # compares VERSIONS. Naming the commit is what makes the two ends talk about one tree. tracker
+      # issue 238.
       - uses: actions/checkout@v7
         with:
-          ref: main
+          ref: ${{ needs.awaited.outputs.sha }}
           fetch-depth: 0
 
       - uses: actions/setup-node@v7
