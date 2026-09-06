@@ -4,6 +4,12 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.1.8
+
+### For operators
+
+- A new version now reaches npm within about a minute of its release being merged, instead of waiting for the next unrelated change.
+
 ## 0.1.7
 
 ### Fixed
