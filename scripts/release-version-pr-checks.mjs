@@ -169,6 +169,19 @@ export function surfacesFor(repo, sha, api = gh) {
   return { checkRuns, workflowRuns };
 }
 
+/**
+ * What each verdict costs the run — the half of tracker issue 208 that had the defect, so the half
+ * worth driving rather than reading.
+ *
+ * `0` is not "everything is fine"; it is "nothing here needs to stop the release". A parked run clears
+ * when a person approves it, auto-merge is still waiting when they do, and the release run has a cut to
+ * publish in the meantime. `NOTHING_STARTED` does not clear on its own, so it keeps its failure.
+ */
+export function exitCodeFor(state) {
+  if (state === RUNNING || state === WAITING_FOR_A_PERSON) return 0;
+  return 1;
+}
+
 async function main() {
   const pr = process.argv[2];
   const repo = process.env.GITHUB_REPOSITORY;
@@ -194,8 +207,26 @@ async function main() {
     console.log(seen.reason);
     return;
   }
+  // ── A PARKED RUN IS THE ORDINARY STATE OF A CUT, NOT A FAULT (tracker issue 208) ─────────────────
+  //
+  // This failed the job, and failing it was worse than the thing it reported. Measured 2026-09-06:
+  // a merge cut version pull request 59, its run parked awaiting approval as EVERY version branch's
+  // run does, this step failed — and both downstream jobs were skipped. One of them was the publish,
+  // which would have released the 0.1.8 already sitting cut and untagged on main from the previous
+  // merge. So a condition that clears itself in minutes stranded a second version behind the first.
+  //
+  // The approval is a person's, it arrives, and auto-merge is still waiting when it does. Nothing here
+  // needs to stop for it: the run records the state, the wait below watches for the merge, and the cron
+  // is underneath. What stays a failure is `NOTHING_STARTED` — no checks and nobody to approve is a
+  // trigger that will never arrive, which does not resolve on its own.
+  if (exitCodeFor(seen.state) === 0) {
+    console.log(`::warning::The version pull request (#${pr}) is waiting for an approval: ${seen.reason}`);
+    console.log("Recorded, not failed — this clears when somebody approves it, and the release run does "
+      + "not need to stop for that. A version already cut and unpublished is still published by this run.");
+    return;
+  }
   console.error(`::error::The version pull request (#${pr}) will not merge itself: ${seen.reason}`);
-  process.exitCode = 1;
+  process.exitCode = exitCodeFor(seen.state);
 }
 
 if (isEntrypoint(import.meta.url)) await main();

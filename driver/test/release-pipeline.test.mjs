@@ -15,7 +15,7 @@
 // by the box that ran it and red on the runner. The completeness arms drive synthetic trees instead.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
@@ -24,7 +24,7 @@ import { findings, BANNED_WORDS } from "../../scripts/changelog-plain-language.m
 import { refusals as publishRefusals, WORKFLOW, CREDENTIAL_TOKENS, REPOSITORY } from "../../scripts/release-publish-guard.mjs";
 import { distTag, isPrerelease, preModeFrom, STABLE, UNNAMED_PRERELEASE } from "../../scripts/release-dist-tag.mjs";
 import { cutDecision, versionAtHead } from "../../scripts/release-cut-decision.mjs";
-import { checksVerdict, waitForChecks, RUNNING, NOTHING_STARTED, WAITING_FOR_A_PERSON } from "../../scripts/release-version-pr-checks.mjs";
+import { checksVerdict, waitForChecks, RUNNING, NOTHING_STARTED, WAITING_FOR_A_PERSON, exitCodeFor } from "../../scripts/release-version-pr-checks.mjs";
 import { refusals as completenessRefusals } from "../../scripts/release-completeness-check.mjs";
 import { notesFor } from "../../scripts/release-notes-for.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
@@ -122,26 +122,34 @@ test("tracker 97 the shipped workflow publishes on a channel it derived, never a
     "npm's trusted publisher names this workflow file; renaming it breaks the publish, not a test");
 });
 
-test("tracker 97 during the pre-release phase `latest` is the pre-release, and that is a decision", () => {
-  // Owner ruling, 2026-09-05, in his words: "latest has all our fixes." While the repository is in pre
-  // mode every cut publishes as `latest`, so a friendly early user typing `npm i clearotron` gets the
-  // newest build. This arm exists because the same file refuses that outcome OUTSIDE pre mode, and the
-  // two rules are one character apart in the code and opposite in meaning.
-  assert.equal(distTag("0.1.1-beta.0", { preMode: true }), STABLE);
-  assert.equal(distTag("1.0.0-rc.1", { preMode: true }), STABLE);
-  assert.equal(distTag("0.2.0", { preMode: true }), STABLE);
-
-  // And outside it the original rule stands, for the original reason.
-  assert.equal(distTag("1.0.0-rc.1"), "rc");
-  assert.equal(distTag("0.1.1-beta.0"), "beta");
+test("tracker 230 a pre-release goes to `beta` and a stable to `latest` — the channel is the version's", () => {
+  // REPLACES THE 2026-09-05 RULING ("latest has all our fixes"), which was right while nothing installed
+  // the package and wrong once things did: nine versions reached the npm page in two days, three of them
+  // broken, and every one was what a plain `npm install clearotron` handed a stranger.
+  //
+  // `preMode` NO LONGER CHANGES THE ANSWER, and that is the property worth pinning. The override was
+  // deleted rather than inverted: Changesets already produces `0.2.1-beta.0` in pre mode, and the label
+  // is read straight out of it, so the version carries its own channel. Writing `if (preMode) return
+  // BETA` would hardcode a name that `changeset pre enter <tag>` chooses, and the two would disagree the
+  // first time anybody entered pre mode under another name.
+  for (const preMode of [true, false]) {
+    assert.equal(distTag("0.2.1-beta.0", { preMode }), "beta",
+      `a beta reached ${distTag("0.2.1-beta.0", { preMode })} with preMode=${preMode} — a pre-release on `
+      + "`latest` is what a stranger gets from a plain `npm install`");
+    assert.equal(distTag("1.0.0-rc.1", { preMode }), "rc");
+    assert.equal(distTag("0.2.0", { preMode }), STABLE);
+    assert.equal(distTag("0.1.9", { preMode }), STABLE);
+  }
 
   // AN UNREADABLE VERSION STILL REFUSES IN PRE MODE, and that matters more here rather than less: the
   // answer would be `latest` for the right reason and by accident.
   assert.throws(() => distTag("v0.1.1", { preMode: true }), /not a version this can read/);
 
-  // THE GITHUB RELEASE'S FLAG COMES FROM THE VERSION, never from the channel. In pre mode the channel is
-  // `latest` for a version that is very much a pre-release, and deriving the flag from the channel would
-  // mark it stable on the releases page.
+  // THE GITHUB RELEASE'S FLAG COMES FROM THE VERSION, never from the channel — and this matters MORE
+  // under the two-channel rule, not less. While pre mode forced `latest`, deriving the flag from the
+  // channel produced a visibly wrong answer that this arm caught. Now channel and flag agree for a beta,
+  // so the same wrong derivation would give the right answer by coincidence and nothing would notice —
+  // until the first version whose channel is not its channel-shaped label.
   //
   // THE WORKFLOW DID EXACTLY THAT. `PRERELEASE=""; if [ "$DIST_TAG" != "latest" ]` — with the inversion
   // in place, `DIST_TAG` is `latest` for `0.1.1-beta.0`, so the flag was never passed and the first beta
@@ -159,11 +167,14 @@ test("tracker 97 during the pre-release phase `latest` is the pre-release, and t
     + "up as the stable release");
   assert.match(workflow, /PRERELEASE_FLAG" = "true"/, "the flag the step computed is not the one it reads");
 
-  // The member that broke: channel and flag disagreeing, which only happens in pre mode.
-  assert.equal(distTag("0.1.1-beta.0", { preMode: true }), STABLE);
-  assert.equal(isPrerelease("0.1.1-beta.0"), true);
-  assert.notEqual(isPrerelease("0.1.1-beta.0"), distTag("0.1.1-beta.0", { preMode: true }) !== STABLE);
-  assert.equal(isPrerelease("0.1.1"), false);
+  // THE TWO ARE COMPUTED FROM THE VERSION BY DIFFERENT ROUTES, and the arm says so rather than relying
+  // on them disagreeing somewhere. `isPrerelease` reads the version's own suffix; `distTag` reads the
+  // label inside that suffix. They now agree for every ordinary version, which is why the coupling is
+  // asserted here instead of being left to a case that no longer exists.
+  assert.equal(isPrerelease("0.2.1-beta.0"), true);
+  assert.equal(distTag("0.2.1-beta.0", { preMode: true }), "beta");
+  assert.equal(isPrerelease("0.2.0"), false);
+  assert.equal(distTag("0.2.0", { preMode: true }), STABLE);
 
   // AND A VERSION IT CANNOT READ REFUSES rather than answering `false`, which is the unsafe answer: it
   // marks the release stable — the state a reader trusts most — off a string nobody could parse.
@@ -756,8 +767,12 @@ test("tracker 97 a version that merged itself still publishes, because that merg
     "the cron no longer says why it exists, so the next reader will simplify it away");
 
   const jobs = releaseJobs(workflow);
-  assert.deepEqual(jobs, ["version", "pending", "publish"],
-    "the release workflow's jobs are not the three this file is written about");
+  // FOUR NOW. `stranded` joined on 2026-09-06 for tracker issue 229: the job that notices a cut sitting
+  // on main unpublished used to be `pending`, which is downstream of the version gate on the push path
+  // and skipped whenever that gate failed — so it could not run in the one state it exists to detect.
+  // The new job has no `needs:` at all, which is the whole of its design and has its own arm.
+  assert.deepEqual(jobs, ["version", "stranded", "pending", "publish"],
+    "the release workflow's jobs are not the four this file is written about");
 
   // IT DECIDES WITH THE SAME FUNCTION THE PUSH PATH USES. Two answers to one question is how a pipeline
   // publishes on one path what it refuses on the other.
@@ -952,28 +967,57 @@ test("208 a merge taken mid-wait is caught, and costs only the steps it took", a
   assert.equal(r.waitedMs, 3 * STEP_MS, `it waited ${r.waitedMs}ms for a merge that landed after three steps`);
 });
 
-test("208 the wait fires on the VERSION branch's CI and nothing else", () => {
-  // A `workflow_run` with no branch filter fires on every CI run in the repository, so every pull
-  // request's CI would start a job that polls main for ten minutes. The filter is what makes this one
-  // signal rather than a tax on every branch.
+test("208 the wait rides the run a PERSON started, and the dead trigger is gone", () => {
+  // FIRST ATTEMPT, MEASURED DEAD. The wait hung off `workflow_run` on the version branch's CI, on the
+  // reasoning that the completion auto-merge waits for fires regardless of who pushed. It does not:
+  // 2026-09-06, trigger live on main, version pull request 58 self-merged at 16:12:48Z as "Release
+  // 0.1.8", both CI completions on changeset-release/main fired nothing, and across sixty runs of every
+  // workflow there was not one `workflow_run` event. The suppression that swallows the merge push
+  // swallows the event its CI would raise, because that CI was itself GITHUB_TOKEN-started.
+  //
+  // SO THE TRIGGER IS ASSERTED ABSENT. A trigger that has never fired reads like a net and is not one,
+  // and leaving it would leave every arm here green over a release path that is cron-only again.
   const on = RELEASE_YML.slice(RELEASE_YML.indexOf("\non:"), RELEASE_YML.indexOf("\nconcurrency:"));
-  assert.match(on, /workflow_run:/, "the version branch's CI no longer triggers the release workflow");
-  assert.match(on, /workflows: \["CI"\]/, "the trigger names no workflow, so it would fire on all of them");
-  assert.match(on, /branches: \[changeset-release\/main\]/,
-    "the trigger has no branch filter — every pull request's CI would start a ten-minute poll of main");
+  assert.ok(!/workflow_run:/.test(on),
+    "the workflow_run trigger is back. It was measured to fire zero times while live on main, so it "
+    + "cannot be what carries the publish — and its presence makes the cron-only path look covered");
   // AND THE REHEARSAL IS UNTOUCHED. This file's header states that `workflow_dispatch` cannot publish,
-  // and widening the event gate is exactly where that contract gets lost by accident.
+  // and changing the event gate is exactly where that contract gets lost by accident.
   assert.match(on, /workflow_dispatch:/, "the rehearsal trigger is gone");
+  assert.match(on, /schedule:/, "the cron floor is gone — it is what catches everything the wait gives up on");
+
+  // THE WAIT IS IN THE JOB A HUMAN PUSH STARTS, and scoped to the only case with something to wait for.
+  const version = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  version:"), RELEASE_YML.indexOf("\n  pending:"));
+  assert.match(version, /id: awaited\n\s+run: node scripts\/release-await-cut\.mjs/,
+    "the version job does not wait for the pull request it just cut, so nothing publishes it but the cron");
+  assert.match(version, /if: steps\.changesets\.outputs\.pr-number != '' && steps\.cut\.outputs\.cut != 'true'/,
+    "the wait is unscoped — it would hold a runner on every push to main, including the merge that "
+    + "already answered `cut` for itself");
+});
+
+test("208 the job's budget can contain its own longest step", () => {
+  // A `timeout-minutes` below the wait cancels the job at the moment it was about to publish, and a
+  // cancelled run reads as neither success nor failure to anybody scanning the list — the release goes
+  // missing with nothing red. The two numbers live in different files, so nothing else couples them.
+  const version = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  version:"), RELEASE_YML.indexOf("\n  pending:"));
+  const budget = Number(/timeout-minutes:\s*(\d+)/.exec(version)?.[1]);
+  assert.ok(Number.isFinite(budget), "the version job declares no timeout — this arm could not look");
+  assert.ok(budget * 60_000 > WAIT_MS,
+    `the version job is capped at ${budget} minutes and its wait alone is ${WAIT_MS / 60_000}. `
+    + "The job is cancelled while waiting for the merge it set in motion, every time");
 });
 
 test("208 both deciders answer the same question, and a skipped one cannot answer for the other", () => {
-  // `pending` now has two steps and exactly one runs per event. An unset output from a skipped step is
-  // the empty string; reading only one of them would report "not this path" on the event that did answer.
+  // The `version` job now has two steps and exactly one answers: `cut` on the push that IS the merge,
+  // `awaited` on the push that cut the pull request and waited. An unset output from a skipped step is
+  // the empty string; reading only one would report "not this path" on the event that did answer.
+  const version = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  version:"), RELEASE_YML.indexOf("\n  pending:"));
+  assert.match(version, /cut: \$\{\{ steps\.cut\.outputs\.cut \|\| steps\.awaited\.outputs\.cut \}\}/,
+    "the job reads one decider's output only — the other path's answer is dropped and nothing publishes");
+  // AND `pending` IS THE CRON ALONE AGAIN. It carried the second entry while the trigger existed.
   const pending = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  pending:"), RELEASE_YML.indexOf("\n  publish:"));
-  assert.match(pending, /cut: \$\{\{ steps\.cut\.outputs\.cut \|\| steps\.awaited\.outputs\.cut \}\}/,
-    "the job reads one decider's output only — the other event's answer is dropped");
-  assert.match(pending, /if: github\.event_name == 'schedule'/, "the cron step is no longer scoped to the cron");
-  assert.match(pending, /if: github\.event_name == 'workflow_run'/, "the waiting step is not scoped to its event");
+  assert.match(pending, /if: github\.event_name == 'schedule' &&/, "the cron job answers to some other event too");
+  assert.ok(!/steps\.awaited/.test(pending), "the waiting step is still wired into the cron job, where there is nothing to wait for");
   // THE DECISION ITSELF IS STILL ONE FUNCTION. Two paths asking one question in two ways is how a
   // pipeline comes to publish something nobody merged.
   const src = readFileSync(join(REPO, "scripts", "release-await-cut.mjs"), "utf8");
@@ -1006,4 +1050,118 @@ test("208 the stranded-cut detector does not sit downstream of the gate that str
   assert.match(publish, /!failure\(\) && !cancelled\(\)/,
     "the publish gate no longer opens with !failure() — a skipped decider would read as a blocked path "
     + "rather than as 'not this route'");
+});
+
+// ── 208 / 229 · A CONDITION THAT CLEARS ITSELF MUST NOT STRAND A RELEASE ────────────────────────────
+//
+// MEASURED 2026-09-06, and it cost two versions at once. A merge cut version pull request 59; its CI run
+// parked awaiting approval, as EVERY version branch's run does under the fork-approval policy; the step
+// that reports that FAILED the job; and both downstream jobs were skipped. One of them was the publish —
+// which would have released the 0.1.8 already sitting cut and untagged on main from the previous merge.
+//
+// So a state that resolves in minutes, on its own, by a person clicking approve, stranded a second
+// version behind the first. Three strandings by then, and not one of them self-reported.
+
+test("208 a parked run is recorded and the release proceeds — it clears itself", () => {
+  assert.equal(exitCodeFor(WAITING_FOR_A_PERSON), 0,
+    "a version branch waiting for an approval fails the job again. Auto-merge is still waiting when the "
+    + "approval arrives, and a cut already sitting on main goes unpublished in the meantime");
+});
+
+test("208 THE PLANT — checks that will never arrive still fail, because nothing clears that", () => {
+  // The distinction is the fix. A parked run has somebody to approve it; no check runs at all means the
+  // trigger will never fire, and waiting does not repair it.
+  const nothing = checksVerdict({ checkRuns: [], workflowRuns: [] });
+  assert.notEqual(nothing.state, WAITING_FOR_A_PERSON, "the two states collapsed into one");
+  assert.equal(exitCodeFor(nothing.state), 1,
+    "a commit with no checks at all stopped being a failure — that one does not clear on its own");
+});
+
+test("208 a parked run is still SEEN, or the fix is a mute", () => {
+  // Not failing is not the same as not noticing. The verdict must still name what is parked and how to
+  // clear it, because somebody has to act on it even though the release does not stop for them.
+  const v = checksVerdict({ workflowRuns: [{ name: "CI", status: "action_required" }], repo: "o/r" });
+  assert.equal(v.state, WAITING_FOR_A_PERSON);
+  assert.match(v.reason, /approve/i, "the parked run no longer says what would clear it");
+  assert.deepEqual(v.blocked, ["CI"], "the parked run is not named, so a reader cannot act on it");
+});
+
+test("229 the stranded-cut detector does not depend on the job that strands cuts", () => {
+  // Every stranding so far was invisible for the same reason: the detector was downstream of the gate.
+  // `needs:` is what made it skippable, so its absence is the property.
+  const job = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  stranded:"), RELEASE_YML.indexOf("\n  pending:"));
+  assert.ok(job.length > 100, "the independent detector job is gone — this arm could not look");
+  assert.ok(!/^\s+needs:/m.test(job),
+    "the detector took a `needs:`, so a failure upstream skips it in exactly the state it exists to catch");
+  assert.match(job, /run: node scripts\/release-cut-decision\.mjs/,
+    "the detector does not ask the one authority, so it can disagree with the deciders about what is cut");
+  // READ-ONLY, DELIBERATELY. Making the detector reachable must not widen the publish gate.
+  assert.match(job, /permissions:\n\s+contents: read/,
+    "the detector asks for more than read — it reports a stranding, it does not publish one");
+});
+
+test("229 the detector SAYS SO — reachable is not the same as heard", () => {
+  // `release-cut-decision.mjs` prints its answer and exits 0. That is right for its other callers, which
+  // read the output and decide; here it would mean a green, silent job in exactly the state this one
+  // exists to surface — the log would carry "v0.1.8 has no tag" and nothing would carry it anywhere a
+  // reader looks. Being unskippable and saying nothing is the same defect one step along.
+  const job = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  stranded:"), RELEASE_YML.indexOf("\n  pending:"));
+  assert.match(job, /if: steps\.ask\.outputs\.cut == 'true'/,
+    "nothing in the detector branches on the answer, so it reports the same amount either way: none");
+  assert.match(job, /::warning title=A version is cut and unpublished::/,
+    "a stranded version raises no annotation, so the job is green and silent in the state it detects");
+  assert.match(job, /GITHUB_STEP_SUMMARY/,
+    "the finding lives only in a log somebody has to open on purpose");
+});
+
+test("229 the cut decision is recorded BEFORE the gate that can fail", () => {
+  // Order is the fix. The decision that notices a stranded cut used to run after the checks gate, so a
+  // gate failure meant it was never even asked.
+  const version = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  version:"), RELEASE_YML.indexOf("\n  stranded:"));
+  const cutAt = version.indexOf("id: cut");
+  const gateAt = version.indexOf("release-version-pr-checks.mjs");
+  assert.ok(cutAt > 0 && gateAt > 0, "one of the two steps is gone — this arm could not look");
+  assert.ok(cutAt < gateAt,
+    "the cut decision runs after the checks gate again, so a gate failure strands a cut without ever "
+    + "asking whether one was sitting there");
+});
+
+// ── 230 · THE CHANNELS ARE ONLY REAL IF A READER CAN FIND THEM ──────────────────────────────────────
+//
+// The mechanism above decides where a version lands. It tells nobody. A stranger typing `npm install
+// clearotron` has no way to know there is a second channel, and — this is the half that bit — no way to
+// know that what they just installed IS the tested one. The pattern is enshrined in the repository, per
+// the ruling, rather than in anybody's memory.
+
+const RELEASES_DOC = join(REPO, "docs", "RELEASES.md");
+
+test("230 the release doc states both install commands and what each channel promises", () => {
+  assert.ok(existsSync(RELEASES_DOC), "docs/RELEASES.md is gone — the doc every other surface points at");
+  const doc = readFileSync(RELEASES_DOC, "utf8");
+  assert.match(doc, /npm install -g clearotron\b(?!@)/, "the stable install command is not in the doc");
+  assert.match(doc, /npm install -g clearotron@beta/, "the beta install command is not in the doc");
+  // WHAT EACH PROMISES, not merely that two exist. "There are two channels" tells a reader nothing they
+  // can decide on; what was proved before each publish is the whole of the decision.
+  assert.match(doc, /clearance run|real clearance/i,
+    "the doc does not say what a stable had to pass, so a reader cannot tell the channels apart");
+  assert.match(doc, /provenance/i, "the doc drops that both channels publish with provenance");
+});
+
+test("230 the two places a reader starts both point at it", () => {
+  // README is where a stranger lands; INSTALL.md is where somebody deploying lands. A channel section in
+  // one and not the other sends half the readers to the wrong default.
+  for (const [name, file] of [["README.md", join(REPO, "README.md")], ["INSTALL.md", join(REPO, "INSTALL.md")]]) {
+    const text = readFileSync(file, "utf8");
+    assert.match(text, /clearotron@beta/, `${name} does not mention the beta channel at all`);
+    assert.match(text, /docs\/RELEASES\.md/, `${name} does not link the release doc, so its summary is the last word and will drift`);
+  }
+});
+
+test("230 the notes contract tells a note's author which reader it is written for", () => {
+  // A note ships to beta readers in minutes and to stable readers when the next stable is cut — so it is
+  // read alongside a fortnight of other notes by somebody deciding whether to upgrade. That is a fact
+  // about who to write for, and it belongs where notes are written.
+  const contract = readFileSync(join(REPO, ".changeset", "README.md"), "utf8");
+  assert.match(contract, /beta/i, "the notes contract does not mention the channel a note reaches first");
+  assert.match(contract, /docs\/RELEASES\.md/, "the contract restates the channels instead of pointing at the one doc");
 });

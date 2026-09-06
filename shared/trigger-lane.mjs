@@ -135,6 +135,31 @@ export function triggerLaneVerdict({ url = null, hasToken = false, verbs = null,
       message: `the trigger lane answers at ${raw}${probe.status ? ` (${probe.status})` : ""}${challengeNote(challenge)}` };
   }
   const why = probe.error ? probe.error : `it answered ${probe.status}`;
+  // ── A DOOR THAT IS NOT LISTENING YET IS NOT A DOOR THAT IS DOWN (tracker issue 222) ───────────────
+  //
+  // On a simultaneous restart of the unit set the portal binds before the engine door does — the units
+  // carry no ordering between them — and this branch logged an OUTAGE in the present indicative, with a
+  // client-facing consequence: "a clearance ordered from the portal returns 502". That sentence is
+  // false the moment the door finishes binding, which is seconds later.
+  //
+  // It is also false as a prediction, and that is the worse half. The submit path makes a FRESH upstream
+  // call per request inside its own try/catch (`driver/portal-service.mjs:1770-1798`) and never consults
+  // this verdict. So nothing about a boot-time refusal determines what a clearance does.
+  //
+  // IT COST A DIAGNOSTIC DETOUR during the 0.1.6 production upgrade, and it prints on every reboot. The
+  // reader had no way to tell it from the real thing — which this same branch also emits.
+  //
+  // SPLIT ON WHAT THE PROBE ACTUALLY SAW. A refused or unreachable CONNECTION is "nothing is listening
+  // there yet, or at all", and at boot the first is ordinary. A door that ANSWERED something wrong is a
+  // fault that no amount of waiting fixes, and keeps the full warning.
+  if (probe.error && /ECONNREFUSED|ECONNRESET|EHOSTUNREACH|ENETUNREACH|ETIMEDOUT|EAI_AGAIN|socket hang up|fetch failed/i.test(String(probe.error))) {
+    return { state: "unsettled",
+      message: `${raw} is configured and nothing answered there when this was checked — ${why}. THIS IS A `
+        + "BOOT-TIME OBSERVATION, NOT A VERDICT: the submit path re-probes on every request and does not "
+        + "consult this, so it says nothing about what a clearance will do. On a simultaneous restart the "
+        + "portal routinely binds before the engine door and this clears itself within seconds. If it is "
+        + "still true after the box has settled, the engine door is genuinely down — check it then." };
+  }
   return { state: "fail",
     message: `${raw} is configured and the engine door DOES NOT ANSWER — ${why}. This is the submit lane: `
       + "a clearance ordered from the portal returns 502 while the portal's own health endpoint stays 200." };

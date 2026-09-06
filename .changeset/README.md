@@ -7,6 +7,25 @@ releases page and in `CHANGELOG.md` to decide whether to upgrade.
 refuses a note that breaks the mechanical parts of it, on the pull request that adds the note — where the
 person who wrote it is still holding it — and again before a release is cut.
 
+## Two channels, and which one a note reaches first
+
+**Stable is `latest`; everything else is a beta on the `beta` tag.** `main` sits in Changesets pre mode,
+so every merge cuts and publishes `X.Y.Z-beta.N` under `beta` on its own. `npm install clearotron` gives a
+stranger the stable; `npm install clearotron@beta` gives them the newest.
+
+A **stable** is cut on the owner's word, once a beta has passed a clearance run and a from-scratch install
+by somebody who has never seen the product. Cutting one means leaving pre mode: the accumulated betas fold
+into **one** version with **one** changelog entry, which is why the notes in `pre/` matter (below).
+
+**So a note you write today ships to beta readers within minutes and to stable readers when the next
+stable is cut.** Write it for the stable reader — they are the one deciding whether to upgrade, and they
+will meet your sentence alongside a fortnight of others. A note that only makes sense next to the four
+betas it shipped between is a note the person who needs it cannot use.
+
+Numbering follows the change: `0.2.x` for fixes, `0.3.0` when a feature lands. What the channels promise a
+reader is in **[../docs/RELEASES.md](../docs/RELEASES.md)**; this section is only about what it means for
+writing a note.
+
 ## What `pre/` holds
 
 While the repository is in pre-release mode, `changeset version` MOVES the notes it has already cut into

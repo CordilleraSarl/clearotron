@@ -59,38 +59,22 @@ on:
   # publish then worked first try. The cron's whole record on 2026-09-05 is one run, 33973623236 at
   # 15:03:15Z, which found nothing to do.
   #
-  # SO THE HONEST DESCRIPTION OF THIS PIPELINE IS THREE ACTS AND TWO OF THEM ARE A PERSON'S: a merge
-  # opens the version pull request; somebody approves its parked run, once per version branch; and
-  # somebody's NEXT push to main is what publishes it. Read the paragraph above as what SHOULD make the
-  # ordinary path work without a person rather than what does, and do not plan a release around the
-  # cron arriving.
+  # THAT DESCRIPTION USED TO END HERE, AND IT ENDED BADLY: three acts, two of them a person's — a merge
+  # opens the version pull request, somebody approves its parked run, and somebody's NEXT push to main is
+  # what publishes it. Two stable releases went out that way and neither was published by this cron.
   #
-  # The fix worth building, for whoever takes it: `pending` is already the right mechanism and is
-  # reachable only on the cron. A dispatch path into it — where a dispatch on main publishes rather than
-  # rehearsing — replaces the push with a button. That is a change to the publish gate, which is the
-  # most safety-critical part of this file, and it belongs in a change of its own.
+  # WHAT CLOSED IT (tracker issue 208) is in the `version` job, not here: the human push that opens the
+  # version pull request now stays alive and watches main for that pull request to merge, then publishes
+  # it. The waiting run is the one a person started, which is the only run this design can be sure will
+  # exist — see the note on that step for the attempt that failed first and why.
+  #
+  # THIS CRON REMAINS THE FLOOR UNDER ALL OF IT, and deleting it is still how every release stops. It
+  # catches what the wait gives up on: a version branch whose checks went red and merged an hour later, a
+  # run cancelled mid-wait, anything that merges outside the fifteen minutes.
   schedule:
     - cron: '*/5 * * * *'
-  # ── AND THE ONE MOMENT WE KNOW IS CLOSE TO THE MERGE (tracker issue 208) ─────────────────────────────
-  #
-  # The cron above is a floor and the paragraph before this says why. What it is not is punctual: on
-  # 2026-09-06 a version sat cut and unpublished for 74 minutes, and every stable release before that had
-  # published on an unrelated human merge rather than on this schedule.
-  #
-  # The version branch's CI COMPLETING is the moment auto-merge is waiting on, so it is the closest
-  # signal to the merge that exists — and `workflow_run` fires on it whoever pushed, so this needs no
-  # credential and changes no contract. That matters: an App or personal token is the one thing this
-  # publishing design forbids, and a dispatch from the version job would fire before main carries the
-  # version and find nothing.
-  #
-  # CI completing is not the merge, so `pending` waits for it — bounded, and quietly. See
-  # `scripts/release-await-cut.mjs`; not-merged-yet is the ordinary outcome, not a fault.
   #
   # `workflow_dispatch` is UNTOUCHED and is still a rehearsal.
-  workflow_run:
-    workflows: ["CI"]
-    types: [completed]
-    branches: [changeset-release/main]
   workflow_dispatch:
 
 concurrency:
@@ -116,7 +100,10 @@ jobs:
     name: Open the version pull request, or record the version this push cut
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'CordilleraSarl/clearotron'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # 15 OF THESE MINUTES CAN BE THE WAIT BELOW (tracker issue 208), so this is not the 20 it was: a
+    # budget that cannot contain its own longest step cancels the job at the moment it was about to
+    # publish, and a cancelled job reads as neither a success nor a failure to anybody scanning runs.
+    timeout-minutes: 30
     permissions:
       contents: write         # the version commit
       pull-requests: write    # the standing version pull request
@@ -138,9 +125,12 @@ jobs:
       # So the policy read is best-effort by design. It fails soft and the finding says the policy could
       # not be read from here and names it as the setting to look at, which is still better than a value
       # this file remembers and the repository has changed.
+    # EITHER STEP MAY ANSWER, NEVER BOTH. `cut` answers on the push that IS the version merge; `awaited`
+    # answers on the push that CUT the version pull request and then waited for it. An unset output from
+    # a skipped step is the empty string, so `||` picks the one that ran.
     outputs:
-      cut: ${{ steps.cut.outputs.cut }}
-      version: ${{ steps.cut.outputs.version }}
+      cut: ${{ steps.cut.outputs.cut || steps.awaited.outputs.cut }}
+      version: ${{ steps.cut.outputs.version || steps.awaited.outputs.version }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -274,6 +264,25 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh workflow run ci.yml --ref changeset-release/${{ github.ref_name }}
+      # A VERSION WITH NO TAG HAS NOT BEEN RELEASED — asked of the COMMIT, never of the working tree.
+      #
+      # The step before this one runs `changeset version` IN PLACE: it rewrites every manifest and the
+      # changelog on disk and hands the result to a pull request for somebody to merge. None of that is on
+      # this branch yet, and the files say otherwise. Reading `package.json` from disk here therefore
+      # reported that a push had cut `0.1.1-beta.0` when main still carried 0.1.0 and nobody had merged
+      # anything — and the publish job started. It failed for an unrelated reason, which is the only thing
+      # that stopped it.
+      - name: Did this push cut a version
+        id: cut
+        run: node scripts/release-cut-decision.mjs
+
+      # ── AND THE GATE COMES AFTER IT (tracker issue 208 / tracker issue 229) ─────────────────────────
+      #
+      # ORDER IS THE POINT. The decision above is what notices a version sitting cut and unpublished, and
+      # it used to run AFTER the step below. On 2026-09-06 that step failed on a parked run and both
+      # downstream jobs were skipped, so the 0.1.8 already stranded on main was never even asked about.
+      # A detector placed downstream of the thing that strands a cut cannot run in the state it exists to
+      # detect. It is first now, and it writes its output before anything here can fail.
 
       # AND THE CHECKS IT WAITS FOR HAVE TO EXIST. Auto-merge waits for required checks; a check that
       # never starts is not a check that failed, and the pull request simply sits there. That happened
@@ -292,17 +301,105 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/release-version-pr-checks.mjs "${{ steps.changesets.outputs.pr-number }}"
 
-      # A VERSION WITH NO TAG HAS NOT BEEN RELEASED — asked of the COMMIT, never of the working tree.
+      # ── THE RUN A PERSON STARTED IS THE ONE THAT WAITS (tracker issue 208) ──────────────────────────
       #
-      # The step before this one runs `changeset version` IN PLACE: it rewrites every manifest and the
-      # changelog on disk and hands the result to a pull request for somebody to merge. None of that is on
-      # this branch yet, and the files say otherwise. Reading `package.json` from disk here therefore
-      # reported that a push had cut `0.1.1-beta.0` when main still carried 0.1.0 and nobody had merged
-      # anything — and the publish job started. It failed for an unrelated reason, which is the only thing
-      # that stopped it.
-      - name: Did this push cut a version
-        id: cut
+      # THE PREVIOUS ATTEMPT IS DELETED RATHER THAN KEPT BESIDE THIS, and why matters. It hung the wait
+      # off `workflow_run` on the version branch's CI, reasoning that the completion `auto-merge` is
+      # waiting on fires "regardless of who pushed". It does not. Measured 2026-09-06 with the trigger
+      # live on main: version pull request 58 self-merged at 16:12:48Z as "Release 0.1.8", both CI
+      # completions on `changeset-release/main` fired NOTHING, and across the last sixty runs of every
+      # workflow on this repository there is not one `workflow_run` event. The suppression that swallows
+      # the merge push swallows the event its CI would raise too, because that CI was itself started by
+      # `GITHUB_TOKEN` activity. A trigger that has never fired is not a net; it is a line that reads
+      # like one.
+      #
+      # SO THE WAIT RIDES THE ONE RUN THAT IS DEFINITELY A PERSON'S: this one. A human push to main
+      # opened or updated the version pull request three steps up. That pull request merges itself
+      # minutes later and fires nothing — so rather than wait for an event that will not come, this run
+      # stays alive and watches main for the merge it just set in motion, then publishes it.
+      #
+      # ONLY WHEN THERE IS SOMETHING TO WAIT FOR. No version pull request means this push was not a cut
+      # and there is nothing coming; `cut` above has already answered for the push that IS the merge.
+      #
+      # AND ONLY WHEN NOTHING IS ALREADY STRANDED, which is a trade rather than an oversight. A push can
+      # do both at once — release the version sitting cut and unpublished, AND cut the next one — and
+      # this run publishes ONE version. So the stranded one wins: it has been waiting, and it is the one
+      # a reader is missing from the registry. The version this push cut then waits for the cron, or for
+      # the next push, exactly as it would have before.
+      #
+      # Covering both in one run means publishing twice from one job, which is a change to the publish
+      # gate and does not belong in the same change as the reason for making it.
+      #
+      # GIVING UP IS THE ORDINARY OUTCOME, NOT A FAULT — checks that fail, a pull request somebody
+      # dismisses, a re-cut mid-flight. The cron floor stays underneath either way, which is what makes
+      # a quiet give-up safe.
+      - name: Wait for the version pull request this push cut to merge, then publish it
+        if: steps.changesets.outputs.pr-number != '' && steps.cut.outputs.cut != 'true'
+        id: awaited
+        run: node scripts/release-await-cut.mjs
+
+  # ── THE DETECTOR THAT CANNOT BE SKIPPED BY THE THING IT DETECTS (tracker issue 229) ────────────────
+  #
+  # Three strandings, none self-reported, all the same shape: the job that notices a cut sitting on main
+  # unpublished was downstream of the gate that stranded it, so every time it mattered it was `skipped`.
+  #
+  # NO `needs:`. That is the whole design. This job cannot be skipped by another job's failure because it
+  # does not depend on one, and it runs on every push to main whatever the rest of this file does.
+  #
+  # IT REPORTS AND DOES NOT PUBLISH. Read-only permissions, no environment, no registry credential: the
+  # publish gate is the most safety-critical part of this file and widening it is not what this fixes.
+  # A reader gets an annotation naming the stranded version; the cron and the version job still carry
+  # the publishing.
+  #
+  # ONE CASE STAYS OPEN AND IS NAMED RATHER THAN PAPERED OVER: a version pull request that merges itself
+  # starts NO run at all, so no job here fires and nothing annotates. Only the cron reaches that one.
+  # Covering it needs a scheduled workflow of its own, which is a separate change.
+  stranded:
+    name: Is a version already cut and unpublished
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'CordilleraSarl/clearotron'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0      # tags included: the cut decision reads them, and refuses without them
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      # EVERY JOB IN THIS FILE RUNS THIS, and an arm counts them. The guard refuses if a credential, a
+      # registry to authenticate against, or a publish without provenance ever appears here — a job
+      # exempt from it is a job somebody can add one to later without the count noticing.
+      - name: This pipeline publishes only the way it was authorised to
+        run: node scripts/release-publish-guard.mjs
+
+      - name: Ask main whether a cut is sitting there unpublished
+        id: ask
         run: node scripts/release-cut-decision.mjs
+
+      # ── AND SAY IT WHERE SOMEBODY WILL SEE IT ────────────────────────────────────────────────────
+      #
+      # `release-cut-decision.mjs` PRINTS its answer and exits 0 — correct for its other three callers,
+      # which read the output and decide. Here it would mean a green, silent job in exactly the state
+      # this one exists to surface: the log would carry "v0.1.8 has no tag" and nothing would carry it
+      # anywhere a reader looks. A detector that reports to nobody is the defect it was built to fix,
+      # relocated one step.
+      #
+      # A WARNING ANNOTATION AND A JOB SUMMARY, so it appears on the run and in the pull request's checks
+      # rather than only in a log somebody would have to open on purpose.
+      - name: Say so, if one is
+        if: steps.ask.outputs.cut == 'true'
+        run: |
+          echo "::warning title=A version is cut and unpublished::v${{ steps.ask.outputs.version }} is on main with no tag. It was cut and never published — the publish either did not run or did not reach the registry."
+          {
+            echo "### A version is sitting on main unpublished"
+            echo ""
+            echo "\`v${{ steps.ask.outputs.version }}\` carries no tag."
+            echo ""
+            echo "This job has no \`needs:\`, so it runs whatever else in this workflow failed or was skipped."
+          } >> "$GITHUB_STEP_SUMMARY"
 
   # THE JOB THAT NOTICES. It asks main one question — does the version on this commit have a tag — and
   # it is the same function the push path calls, from the same commit, so there are not two answers to
@@ -317,20 +414,17 @@ jobs:
   # this job wakes up every five minutes: an install here would be the whole cost of the mechanism.
   pending:
     name: Is a cut sitting on main unpublished
-    # BOTH EVENTS ASK THE SAME QUESTION, and the branch check below holds them to the same rule: a
-    # scheduled run's ref IS the default branch, and a `workflow_run` run's is the workflow file's branch,
-    # so neither can be pointed at a feature branch. Only `workflow_dispatch` stays a rehearsal.
-    if: (github.event_name == 'schedule' || github.event_name == 'workflow_run') && github.repository == 'CordilleraSarl/clearotron'
+    # THE CRON ONLY. A scheduled run's ref IS the default branch, so it cannot be pointed at a feature
+    # branch; `workflow_dispatch` stays a rehearsal. The wait that used to live here as a second entry
+    # moved into the `version` job, where a person's run is what holds it — see the note there.
+    if: github.event_name == 'schedule' && github.repository == 'CordilleraSarl/clearotron'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: read
-    # ONE OF THE TWO STEPS RAN, never both — see the steps for which event takes which. An unset output
-    # from a skipped step is the empty string, so the `||` picks the one that answered rather than
-    # producing "true" out of a step that never executed.
     outputs:
-      cut: ${{ steps.cut.outputs.cut || steps.awaited.outputs.cut }}
-      version: ${{ steps.cut.outputs.version || steps.awaited.outputs.version }}
+      cut: ${{ steps.cut.outputs.cut }}
+      version: ${{ steps.cut.outputs.version }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -344,21 +438,11 @@ jobs:
       - name: This pipeline publishes only the way it was authorised to
         run: node scripts/release-publish-guard.mjs
 
-      # THE SCHEDULE ASKS ONCE; THE VERSION BRANCH'S CI WAITS BRIEFLY FIRST (tracker issue 208).
-      #
-      # On the cron there is nothing to wait for — if a cut is sitting there it has been sitting there.
-      # On `workflow_run` the merge has probably not been taken yet, because the completion that fired
-      # this run is what auto-merge was waiting on. So that path polls main for up to ten minutes and
-      # gives up quietly; the cron floor is still underneath either way.
+      # THE SCHEDULE ASKS ONCE. If a cut is sitting there it has been sitting there, so there is nothing
+      # to wait for — the waiting belongs to the run that set the merge in motion, and lives there.
       - name: Did a merge leave a version on main with no tag
-        if: github.event_name == 'schedule'
         id: cut
         run: node scripts/release-cut-decision.mjs
-
-      - name: Wait briefly for the version branch's merge, then ask the same question
-        if: github.event_name == 'workflow_run'
-        id: awaited
-        run: node scripts/release-await-cut.mjs
 
   publish:
     name: Publish the release to npm

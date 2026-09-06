@@ -57,13 +57,30 @@
 // Offline: no HTTP to anywhere real, no jose. The portal's trigger is injected; start_run and the dev
 // cockpit write to temp queues; the CLI runs `--dry-run`, which validates and gates and writes nothing.
 
-import { mkdtempSync as __mkdtemp } from "node:fs";
+import { mkdtempSync as __mkdtemp, mkdirSync as __mkdirSync } from "node:fs";
 import { tmpdir as __tmpdir } from "node:os";
 import { join as __join } from "node:path";
 import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";   // — the default is taken only when NO spelling holds a value
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK_DIR") || __mkdtemp(__join(__tmpdir(), "doors-ws-")));
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", envFrom(process.env, "CLEAROTRON_REPORTS_DIR") || __mkdtemp(__join(__tmpdir(), "doors-pool-")));
-pinEnv(process.env, "CLEAROTRON_QUEUE_DIR", envFrom(process.env, "CLEAROTRON_QUEUE_DIR") || __mkdtemp(__join(__tmpdir(), "doors-queue-")));
+// ── A FIXTURE DIRECTORY THIS FILE OWNS IS NEVER TAKEN FROM THE ENVIRONMENT (tracker issue 224) ──────
+//
+// `envFrom(...) || mkdtemp(...)` reads an inherited value FIRST. That is right for a variable an
+// operator sets and wrong for a queue this file writes jobs into and then reads back, and the two are
+// spelled the same way. `scripts/test-run.mjs` exports `CLEAROTRON_QUEUE_DIR` for the whole run, so the
+// inherited value won and the private directory below was never created.
+//
+// MEASURED 2026-09-06 in a 151-file run: `ENOENT … <testrun-root>/queue/doors-mcp-xt7k93xf.json` — a
+// missing job file at a door, which reads as a product defect and cost a diagnosis pass before the PATH
+// gave it away. Alone this file is 19/19, measured three times at the same head. `npm run test:full`
+// uses globs, so CI has the same exposure and has simply not collided there yet.
+//
+// STILL INSIDE THE RUN ROOT when there is one. Escaping to `tmpdir()` would drop the runner's
+// containment and its cleanup — the guarantee that no test writes into the checkout is built on these
+// paths living under the run root, so privacy is taken by adding a unique leaf rather than by leaving.
+const __queueBase = envFrom(process.env, "CLEAROTRON_QUEUE_DIR") || __tmpdir();
+__mkdirSync(__queueBase, { recursive: true });
+pinEnv(process.env, "CLEAROTRON_QUEUE_DIR", __mkdtemp(__join(__queueBase, "doors-queue-")));
 
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
@@ -928,4 +945,25 @@ test("DECLARED_JOB_FIELDS covers the job shape the schema documents and the MCP 
     }
   }
   assert.ok(declared.has("deliveryRoute"), "the field this whole mechanism exists for");
+});
+
+// ── 224 · THE QUEUE THIS FILE WRITES INTO IS ITS OWN ────────────────────────────────────────────────
+
+test("224 the fixture queue is private to this file, not the run's shared one", () => {
+  // The failure this pins is a RED CAUSED BY LOAD wearing a product failure's clothes: a job file
+  // missing at a door, because another file's cleanup removed it between this file's write and its
+  // read. The path was the only tell.
+  const mine = process.env.CLEAROTRON_QUEUE_DIR;
+  assert.ok(mine, "no queue directory is set at all — this arm could not look, which is not a pass");
+  assert.match(mine, /doors-queue-/,
+    `the queue is ${mine}, which is the run's shared directory rather than this file's own. Another `
+    + "file's cleanup can delete a job between the write and the read here, and it surfaces as ENOENT "
+    + "at a door");
+  // AND IT IS STILL CONTAINED — asserted against the base this file actually resolved, not against a
+  // variable nothing sets. Taking a private directory by escaping to tmpdir() would drop the runner's
+  // containment, which is what keeps tests out of the checkout; privacy comes from the unique leaf.
+  assert.ok(mine.startsWith(__queueBase),
+    `the private queue (${mine}) is not inside the base this run gave it (${__queueBase}), so it left `
+    + "the run root and the runner's containment and cleanup no longer cover it");
+  assert.notEqual(mine, __queueBase, "the leaf is missing — this is the shared directory itself");
 });

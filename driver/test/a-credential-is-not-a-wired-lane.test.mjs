@@ -64,11 +64,23 @@ test("2126 an origin carrying a path is refused — the client appends /mcp itse
     "and the bare origin is the shape that passes, or the arm above proves nothing");
 });
 
-test("2126 a configured lane whose door does not answer is a fault naming the reason", () => {
-  const v = triggerLaneVerdict({ url: ORIGIN, hasToken: true, posture: HOSTED, probe: { ok: false, error: "ECONNREFUSED" } });
-  assert.equal(v.state, "fail");
-  assert.match(v.message, /ECONNREFUSED/);
-  assert.match(v.message, /health endpoint stays 200/, "and it names why the other surfaces disagree");
+test("2126 a configured lane whose door does not answer names the reason, whichever way it failed", () => {
+  // SPLIT BY WHAT THE PROBE SAW (tracker issue 222). This arm used to assert that a refused connection
+  // is a `fail` carrying "a clearance ordered from the portal returns 502". That claim was measured
+  // false: on a simultaneous restart the portal binds before the engine door, and the submit path
+  // re-probes per request without ever consulting this verdict. So a refused CONNECTION is now
+  // `unsettled` — and the property this arm was written for, that the verdict NAMES THE REASON rather
+  // than saying something went wrong, is asserted on both halves instead of one.
+  const refused = triggerLaneVerdict({ url: ORIGIN, hasToken: true, posture: HOSTED, probe: { ok: false, error: "ECONNREFUSED" } });
+  assert.equal(refused.state, "unsettled", "a connection nothing answered is reported as an outage again");
+  assert.match(refused.message, /ECONNREFUSED/, "the reason is gone, which was this arm's whole point");
+
+  // A DOOR THAT ANSWERED WRONGLY IS STILL THE FAULT IT ALWAYS WAS, with the sentence that explains why
+  // the other surfaces disagree. Waiting does not repair a 500, so nothing about it is unsettled.
+  const answered = triggerLaneVerdict({ url: ORIGIN, hasToken: true, posture: HOSTED, probe: { ok: false, status: 500 } });
+  assert.equal(answered.state, "fail");
+  assert.match(answered.message, /it answered 500/, "the fault does not name what the door said");
+  assert.match(answered.message, /health endpoint stays 200/, "and it names why the other surfaces disagree");
 });
 
 // ── both directions (the owner's "Stop now" unavailable, 2026-09-02) ────────────────────────────────

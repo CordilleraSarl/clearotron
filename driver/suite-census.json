@@ -119,7 +119,7 @@
         },
         "a-credential-is-not-a-wired-lane.test.mjs": {
           "tests": 10,
-          "asserts": 22,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -844,8 +844,8 @@
           "todos": 0
         },
         "both-doors-start-on-both-paths.test.mjs": {
-          "tests": 18,
-          "asserts": 45,
+          "tests": 26,
+          "asserts": 59,
           "skips": 0,
           "todos": 0
         },
@@ -1528,8 +1528,8 @@
           "todos": 0
         },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
-          "tests": 12,
-          "asserts": 35,
+          "tests": 16,
+          "asserts": 41,
           "skips": 0,
           "todos": 0
         },
@@ -1564,8 +1564,8 @@
           "todos": 0
         },
         "doors-agree.test.mjs": {
-          "tests": 19,
-          "asserts": 49,
+          "tests": 20,
+          "asserts": 53,
           "skips": 0,
           "todos": 0
         },
@@ -3238,8 +3238,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 28,
-          "asserts": 180,
+          "tests": 38,
+          "asserts": 206,
           "skips": 0,
           "todos": 0
         },
@@ -4282,8 +4282,8 @@
           "todos": 0
         },
         "the-portal-asks-whether-its-engine-will-take-it.test.mjs": {
-          "tests": 4,
-          "asserts": 15,
+          "tests": 8,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },

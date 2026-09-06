@@ -17,22 +17,28 @@
 // version sat cut and unpublished for 74 minutes. Every stable release so far published on an unrelated
 // human merge instead.
 //
-// ── WHAT THIS ADDS, AND WHAT IT DELIBERATELY DOES NOT ───────────────────────────────────────────────
+// ── WHAT THIS ADDS, AND THE ATTEMPT IT REPLACES ────────────────────────────────────────────────────
 //
-// The one moment we KNOW is close to the merge is the version branch's CI completing, because that
-// completion is what auto-merge is waiting on. `workflow_run` fires on it regardless of who pushed, so
-// it needs no credential and changes no contract — which is the whole reason it was chosen over an App
-// token (forbidden by this design) or a dispatch (which would fire before main carries the version).
+// FIRST ATTEMPT, DELETED: hang the wait off `workflow_run` on the version branch's CI, on the reasoning
+// that the completion auto-merge is waiting on fires regardless of who pushed. IT DOES NOT. Measured
+// 2026-09-06 with the trigger live on main — version pull request 58 self-merged at 16:12:48Z as
+// "Release 0.1.8", both CI completions on `changeset-release/main` fired nothing, and across the last
+// sixty runs of every workflow on this repository there was not one `workflow_run` event. The
+// suppression that swallows the merge push swallows the event its CI would raise, because that CI was
+// itself started by `GITHUB_TOKEN` activity. The trigger is gone rather than kept beside this: a line
+// that has never fired reads like a net and is not one.
 //
-// But CI completing is not the merge. GitHub still has to take the merge, and that takes seconds to a
-// couple of minutes. So this waits — bounded, and quietly.
+// WHAT RUNS THIS NOW is the release run a PERSON started — the human push to main that opened or
+// updated the version pull request. That pull request merges itself minutes later and fires nothing, so
+// instead of waiting for an event that will not come, that run stays alive and watches main for the
+// merge it just set in motion.
 //
-//   BOUNDED, because an unbounded wait is a job that hangs a runner on every version branch CI run,
-//   including the ones whose pull request is not going to merge at all.
+//   BOUNDED, because an unbounded wait hangs a runner on every version branch that is not going to
+//   merge at all.
 //
 //   QUIETLY, because not-merged-yet is the ORDINARY outcome here, not a fault. A checks-failed version
 //   branch, a merge somebody dismissed, a re-cut mid-flight: none of those is a release that went
-//   missing, and reporting them as failures would train every reader to ignore this job. The cron floor
+//   missing, and reporting them as failures would train every reader to ignore this step. The cron floor
 //   is still underneath, so nothing is lost by giving up.
 //
 // ── THE ANSWER IS THE SAME FUNCTION THE OTHER PATHS ASK ─────────────────────────────────────────────
@@ -45,8 +51,14 @@ import { execFileSync } from "node:child_process";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 import { cutDecision, versionAtHead, tagsHere } from "./release-cut-decision.mjs";
 
-/** Default bound: ten minutes at thirty-second steps. Both are arguments so an arm can drive the loop. */
-export const WAIT_MS = 10 * 60 * 1000;
+/**
+ * Default bound: fifteen minutes at thirty-second steps. Both are arguments so an arm can drive the loop.
+ *
+ * FIFTEEN, and the job's `timeout-minutes` is 30 to contain it — a budget smaller than its own longest
+ * step cancels the job at the moment it was about to publish, and a cancelled run reads as neither a
+ * success nor a failure to anybody scanning the list.
+ */
+export const WAIT_MS = 15 * 60 * 1000;
 export const STEP_MS = 30 * 1000;
 
 /**
