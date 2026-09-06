@@ -191,6 +191,25 @@ test("198 a rewrite that keeps the mtime is still caught, because the size is in
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
+test("198 the plant that started this: a future mtime, with the file's SIZE untouched", () => {
+  // 198's ACTUAL defect, reproduced. `health-tells-the-truth-about-the-bundle` ran
+  // `utimesSync(victim, future, future)` against a real file in `portal-ui/src` — the bytes never
+  // changed, only the clock. A stamp built from size alone is blind to exactly that, and a plant
+  // proved no other arm here covered it: every "changed" case above also changes the length.
+  const root = mkdtempSync(join(tmpdir(), "ct198-touch-"));
+  try {
+    const f = join(root, "victim.txt");
+    const bytes = "these bytes never change";
+    writeFileSync(f, bytes);
+    const before = snapshotRepo(root);
+    const future = new Date(Date.now() + 3_600_000);
+    utimesSync(f, future, future);
+    assert.equal(statSync(f).size, bytes.length, "the plant altered the size, so it is not 198's plant");
+    assert.match(repoWrites(before, snapshotRepo(root), root).join("\n"), /~ victim\.txt/,
+      "a file whose mtime moved into the future was reported as untouched");
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
 test("198 a directory created by a run is named, even with nothing in it", () => {
   const root = mkdtempSync(join(tmpdir(), "ct198-dir-"));
   try {
@@ -245,8 +264,14 @@ test("198 a directory that cannot be read is recorded, never quietly skipped", (
     const before = snapshotRepo(root);
     chmodSync(shut, 0o000);
     try {
-      const rows = repoWrites(before, snapshotRepo(root), root).join("\n");
-      assert.match(rows, /shut/, "closing a directory read as no change at all");
+      // THE DIRECTORY'S OWN STAMP, not the rows. Asserting only on the rows passed with the recording
+      // removed entirely: the file inside had vanished from the walk, so the row said "removed" and the
+      // arm matched on that instead — a plant proved it, and this is what the plant was for.
+      assert.equal(snapshotRepo(root).get(shut), "UNREADABLE",
+        "a directory that cannot be read was recorded as an ordinary directory, so a run that closed "
+        + "one would be indistinguishable from a run that did nothing");
+      assert.match(repoWrites(before, snapshotRepo(root), root).join("\n"), /shut/,
+        "closing a directory read as no change at all");
     } finally { chmodSync(shut, 0o755); }
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
