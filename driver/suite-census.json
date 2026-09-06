@@ -280,8 +280,8 @@
           "todos": 0
         },
         "a-memo-has-a-door-onto-it.test.mjs": {
-          "tests": 21,
-          "asserts": 66,
+          "tests": 24,
+          "asserts": 80,
           "skips": 0,
           "todos": 0
         },
@@ -1528,8 +1528,8 @@
           "todos": 0
         },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
-          "tests": 16,
-          "asserts": 41,
+          "tests": 20,
+          "asserts": 47,
           "skips": 0,
           "todos": 0
         },

@@ -21,6 +21,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { unitEnvironment, unitValue, couldNotDetermine } from "../unit-environment.mjs";
+import { handRunEnv } from "./drive-env.mjs";   // — the drive names the two variables that would make it read no file at all
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..");
@@ -113,7 +114,17 @@ function doctor(home) {
     // this environment, and all of them are in the units'. A doctor that reads the shell fails here.
     const out = execFileSync(process.execPath, [ONBOARD, "--check"], {
       encoding: "utf8", stdio: "pipe", timeout: 120_000,
-      env: { HOME: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" },
+      // ── NAMED, NOT MERELY ABSENT (drive-env-check) ────────────────────────────────────────────────
+      //
+      // `CLEAROTRON_NO_ENV_FILE=1` — which the suite runner sets for every child — and `INVOCATION_ID`,
+      // inherited from any systemd unit above the run including a CI job, each make the command ignore
+      // the file this test just wrote and fall back to built-in defaults, with no error. A drive that
+      // does not say which of them it holds is a drive that can silently stop reading its own fixture.
+      //
+      // `handRunEnv` over an EMPTY base rather than over `process.env`, which is what it usually takes:
+      // the empty shell is this file's whole criterion — none of the names doctor reports on may be in
+      // this environment — so inheriting the real one would defeat the arms while satisfying the guard.
+      env: handRunEnv({ HOME: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" }, {}),
     });
     return { code: 0, out };
   } catch (e) { return { code: e.status ?? -1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }
@@ -341,5 +352,90 @@ test("226 units whose environment cannot be read withhold the verdict rather tha
       `doctor asserted a lockout from a read that failed:\n${r.out}`);
     assert.match(r.out, /could not be read|not judged here/,
       "the failure to look is not stated, so silence here is indistinguishable from a clean box");
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+// ── 223 · ONE RUN REPORTED THE SAME VARIABLE SET AND UNSET, AND CALLED PRODUCTION A DEMO ────────────
+//
+// Measured on the 0.1.6 production box:
+//
+//   ✓ CLEAROTRON_CUSTOMERS_DIR=/home/clearotron/trademark/config/profiles (.env)
+//   · profiles resolve from …/node_modules/clearotron/driver/profiles — THE BUNDLED DEMO ROSTER,
+//     because CLEAROTRON_CUSTOMERS_DIR is unset.
+//   · 1 brand owner(s) resolve here: demo-brand-owner (DEMO DATA)
+//   ✓ the settings surface serves the same store as the runs (…/driver/profiles)
+//
+// Every line honest about its own source and none of them saying what it was. The deployment served
+// celsius, microsoft and generic throughout. The last `✓` endorsed the wrong half.
+
+function hostedHomeWith(envLines, extraDirs = []) {
+  const home = installedHome("");
+  for (const d of extraDirs) mkdirSync(join(home, d), { recursive: true });
+  writeFileSync(join(home, ".env"), [...envLines, ...GOOD_ENV.trim().split("\n")].join("\n") + "\n");
+  return home;
+}
+
+test("223 a units-configured customer store is not reported as the bundled demo roster", () => {
+  const home = hostedHomeWith([], ["profiles"]);
+  writeFileSync(join(home, ".env"),
+    [`CLEAROTRON_CUSTOMERS_DIR=${join(home, "profiles")}`, ...GOOD_ENV.trim().split("\n")].join("\n") + "\n");
+  try {
+    const r = doctor(home);
+    assert.match(r.out, /the services resolve profiles from/,
+      `doctor never says what the SERVICES resolve, so a hosted box only gets this process's answer:\n${r.out}`);
+    assert.ok(!/THE BUNDLED DEMO ROSTER/.test(r.out.split("this command's own process")[0] ?? r.out),
+      `the demo-roster verdict is still printed as the box's answer on a configured deployment:\n${r.out}`);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("223 THE CONTRADICTION — no line calls the variable unset while another reports its value", () => {
+  // This is the acceptance in the issue's own words. A reader cannot act on a report that says both.
+  //
+  // THE FIXTURE HAS TO CARRY BOTH FILES, and the first cut of this arm did not — so it passed against
+  // the unfixed code by never reaching the state it was named after. The production report's `(.env)`
+  // provenance tag is the tell: the value was in the CLI's own file, which is what `effective()` reads
+  // and reports, while the resolution read this process's environment and found nothing. Writing only
+  // the units' file reproduces neither half.
+  const home = hostedHomeWith([], ["profiles"]);
+  const store = join(home, "profiles");
+  writeFileSync(join(home, ".env"), [`CLEAROTRON_CUSTOMERS_DIR=${store}`, ...GOOD_ENV.trim().split("\n")].join("\n") + "\n");
+  mkdirSync(join(home, ".config", "clearotron"), { recursive: true });
+  writeFileSync(join(home, ".config", "clearotron", ".env"), `CLEAROTRON_CUSTOMERS_DIR=${store}\n`);
+  try {
+    const r = doctor(home);
+    const reportsValue = /CLEAROTRON_CUSTOMERS_DIR=/.test(r.out);
+    const callsItUnset = /because CLEAROTRON_CUSTOMERS_DIR is unset/.test(r.out);
+    assert.ok(!(reportsValue && callsItUnset),
+      `doctor reports CLEAROTRON_CUSTOMERS_DIR as both set and unset in one run:\n${r.out}`);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("223 a doctrine overlay the UNITS name is not reported as nothing configured", () => {
+  const home = hostedHomeWith([], ["doctrine"]);
+  writeFileSync(join(home, ".env"),
+    [`CLEAROTRON_INSTRUCTIONS_DIR=${join(home, "doctrine")}`, ...GOOD_ENV.trim().split("\n")].join("\n") + "\n");
+  try {
+    const r = doctor(home);
+    assert.match(r.out, /the services read a doctrine overlay this process does not/,
+      `doctor claims this install overrides nothing while the units name an overlay:\n${r.out}`);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("223 the agreement line says which environment it compared, and what it cannot catch", () => {
+  // The old `✓` read "the settings surface serves the same store as the runs" — a claim a reader takes
+  // as "production is configured". Both sides derive from one variable, so it cannot catch two
+  // environments disagreeing, which is exactly what had gone wrong above it.
+  const home = hostedHomeWith([], ["profiles"]);
+  writeFileSync(join(home, ".env"),
+    [`CLEAROTRON_CUSTOMERS_DIR=${join(home, "profiles")}`, ...GOOD_ENV.trim().split("\n")].join("\n") + "\n");
+  try {
+    const r = doctor(home);
+    if (/resolve to one store/.test(r.out)) {
+      assert.match(r.out, /they share a variable/,
+        "the agreement line still implies it verified two environments agree, which it cannot do");
+    } else {
+      assert.ok(!/serves the same store as the runs/.test(r.out),
+        `the old unqualified agreement claim is still printed:\n${r.out}`);
+    }
   } finally { rmSync(home, { recursive: true, force: true }); }
 });

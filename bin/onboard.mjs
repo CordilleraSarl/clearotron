@@ -1046,6 +1046,57 @@ export async function runCheck() {
     return null;
   };
 
+  // ── ONE READING OF THE UNITS' ENVIRONMENT, FOR EVERY SECTION THAT CLAIMS ANYTHING ABOUT THEM ─────
+  //
+  // F34: two sections asserted facts about the units while reading the operator's shell, and both of
+  // their reported problems were false on a correctly-running install. Resolving this once, here, is
+  // deliberate — a second reader would drift from this one exactly as the composer and the checker did
+  // in F41, and the drift is invisible because both sides keep passing their own arms.
+  const unitDir = join(homedir(), ".config", "systemd", "user");
+  const { BACKGROUND_UNITS } = await import(join(REPO, "bin", "start.mjs"));
+  const hosted = BACKGROUND_UNITS.some((u) => existsSync(join(unitDir, u)));
+  const unitEnv = hosted
+    ? unitEnvironment({
+        units: BACKGROUND_UNITS.map((u) => ({ name: u, text: readIfPresent(join(unitDir, u)) })),
+        readEnvFile: readIfPresent,
+        // These are USER units under ~/.config/systemd/user, so systemd's %h is this home.
+        home: homedir() })
+    : null;
+
+  // ── AND THE DOOR SECTION IS THE THIRD SUCH SECTION (tracker issue 226) ──────────────────────────
+  //
+  // The reading above was hoisted here from further down for this. It used to be resolved BELOW the
+  // door check, so the one section making the loudest claim about the running service — "NOBODY can
+  // use this portal" — was the one section that could not consult it.
+  //
+  // MEASURED 2026-09-06 on a healthy packaged install: `doctor` printed that ✗ and exited 1 on a box
+  // where the local user signs in and `GET /portal/api/me` returns `{"role":"staff"}`. The units' file
+  // carries `PORTAL_STAFF_DOMAINS=localhost`, the identity is `<user>@localhost`, and the running
+  // service admits it as staff. This command reads the CLI's own `.env`, where neither that name nor
+  // `PORTAL_AUTH_MODE` appears — so the check was not ignoring the auth mode, it never saw it.
+  //
+  // The disclosure was already here and one severity too quiet: a `·` saying "what THIS environment
+  // implies, not what the running service serves", directly above a `✗` phrased in the present
+  // indicative about the live box. A caveat does not repair a false claim standing beside it.
+  //
+  // SO THE VALUES COME FROM THE FILE THE SERVICE READS when this box is hosted, and the source is named
+  // beside the verdict rather than left to a caveat. Not an exemption for `PORTAL_AUTH_MODE=local`,
+  // which was the fix originally filed: that variable is absent from the file this command was reading,
+  // so exempting on it would have changed nothing at all.
+  const serviceEnvLabel = hosted ? "the units' environment" : "your environment file";
+  const serviceEnvFile = hosted ? join(homedir(), ".env") : READ_ENV_PATH();
+  // A HOSTED BOX WHOSE UNIT ENVIRONMENT COULD NOT BE READ ANSWERS `null`, NEVER `fileEnv`. Falling back
+  // to the CLI's file there would reproduce this defect exactly, and silently — `unitEnvironment`
+  // already distinguishes a failure to look, and the door check below refuses to claim a lockout on one.
+  const serviceKnown = !hosted || unitEnv?.known === true;
+  const serviceFileEnv = hosted ? (unitEnv?.known === true ? unitEnv.env : null) : fileEnv;
+  const effectiveForService = (k, names = [k]) => {
+    for (const name of names) {
+      if (present(process.env[name])) return { v: process.env[name], from: "environment", name };
+      if (serviceFileEnv && present(serviceFileEnv[name])) return { v: serviceFileEnv[name], from: serviceEnvLabel, name };
+    }
+    return null;
+  };
 
   say("\n  Engine");
   // This block used to read CLEAROTRON_CLAUDE_PATH unconditionally, under the heading "Engine binary", on a
@@ -1303,11 +1354,52 @@ export async function runCheck() {
       const mod = await import(`../driver/profiles.mjs?doctor=${Date.now()}`);
       const r = mod.profileStoreResolution();
       const where = `profiles resolve from ${r.store}`;
-      if (r.situation === "overlay" && !r.findings.length) ok(`${where} — the configured store`);
-      else if (r.situation === "bundled-fallback") info(`${where} — THE BUNDLED DEMO ROSTER, because CLEAROTRON_CUSTOMERS_DIR is unset. Legitimate on a generic-defaults install; a fallback either way, and it is what a misconfigured deployment also looks like`);
-      else if (r.situation === "env-arrived-late") problem(`CLEAROTRON_CUSTOMERS_DIR is set in this environment but was not set when the profile module loaded, so it is NOT in force — ${where}. Export it before the process starts`);
-      else problem(`${where} — ${r.detail}`);
-      info("what a RUN used is its own `profile-store` journal line — this command reports the environment you are typing in, not the supervisor's");
+      // ── ON A HOSTED BOX THE SERVICES' ANSWER COMES FIRST (tracker issue 223) ────────────────────────
+      //
+      // One run of this command reported the SAME variable as both set and unset, and concluded a
+      // production box was a demo install:
+      //
+      //   ✓ CLEAROTRON_CUSTOMERS_DIR=/home/clearotron/trademark/config/profiles (.env)
+      //   · profiles resolve from …/node_modules/clearotron/driver/profiles — THE BUNDLED DEMO ROSTER,
+      //     because CLEAROTRON_CUSTOMERS_DIR is unset.
+      //
+      // Both lines were honest about their own source and neither said what it was. The first reads this
+      // command's env file; the second reads THIS PROCESS's resolution, and a CLI is started by a login
+      // shell that carries none of the units' `EnvironmentFile`. The deployment was correct and served
+      // celsius, microsoft and generic throughout.
+      //
+      // THE UNITS' ENV IS NOT PASSED INTO `profileStoreResolution`, deliberately. `PROFILES_OVERLAY_DIR`
+      // is captured when profiles.mjs LOADS, so handing it the units' value would set `live` with no
+      // `inForce` behind it — the `env-arrived-late` branch, whose remedy is "export it before the
+      // process starts". True of this shell and precisely wrong as advice for a box whose units already
+      // do. A second wrong answer is not an improvement on the first.
+      //
+      // So the two questions are answered separately and each is labelled: what the SERVICES resolve,
+      // read from the file they load, and what THIS process resolved, which is a fact about a CLI.
+      const svcCustomers = effectiveForService("CLEAROTRON_CUSTOMERS_DIR");
+      if (hosted && serviceKnown) {
+        if (svcCustomers?.v) {
+          ok(`the services resolve profiles from ${svcCustomers.v} (${svcCustomers.from})`);
+        } else {
+          info(`the services resolve profiles from the bundled roster — CLEAROTRON_CUSTOMERS_DIR is not in `
+            + `${serviceEnvFile}. Legitimate on a generic-defaults install, and what a misconfigured `
+            + `deployment also looks like`);
+        }
+        // NAMED AS A CLI FACT, not printed as a verdict about the box. It is worth printing at all
+        // because a reader debugging `clearotron run` by hand IS this process.
+        info(`this command's own process ${where} — a CLI is not started by the units' EnvironmentFile, so `
+          + "that differs by design and is not what a run uses");
+      } else {
+        if (r.situation === "overlay" && !r.findings.length) ok(`${where} — the configured store`);
+        else if (r.situation === "bundled-fallback") info(`${where} — THE BUNDLED DEMO ROSTER, because CLEAROTRON_CUSTOMERS_DIR is unset. Legitimate on a generic-defaults install; a fallback either way, and it is what a misconfigured deployment also looks like`);
+        else if (r.situation === "env-arrived-late") problem(`CLEAROTRON_CUSTOMERS_DIR is set in this environment but was not set when the profile module loaded, so it is NOT in force — ${where}. Export it before the process starts`);
+        else problem(`${where} — ${r.detail}`);
+      }
+      if (hosted && !serviceKnown)
+        info(`the units are installed but their environment could not be read (${unitEnv?.why ?? "no reason given"}) — `
+          + "what the services resolve is not judged here, and the line above is this process's own answer");
+      info("what a RUN used is its own `profile-store` journal line — this command reports what the "
+        + (hosted ? "units' file says, which the running services read at their own start" : "environment you are typing in says"));
       // ── AND WHO IS ACTUALLY IN IT ─────────────────────────────────────────
       //
       // The line above names the STORE. An operator who has just configured one wants to know their
@@ -1368,14 +1460,35 @@ export async function runCheck() {
       // a named disagreement instead of as a tenancy refusal a reader will read as a permissions problem.
       try {
         const cs = await import(`../shared/customer-store.mjs?doctor=${Date.now()}`);
-        const surface = cs.customerStoreDir({ bundledDir: mod.profilesStoreDir });
-        const split = cs.customerStoreDivergence({ surfaceDir: surface.dir, rosterDir: r.store });
+        // ── ONE ENVIRONMENT ON BOTH SIDES, AND THE LINE SAYS WHICH (tracker issue 223) ────────────────
+        //
+        // This compared a surface resolved from THIS PROCESS's environment against a roster resolved
+        // from this process's module load — so on a hosted box it certified agreement between two
+        // readings neither of which was the deployment's. The `✓` endorsed the wrong half of a report
+        // that had just contradicted itself.
+        const storeEnv = hosted && serviceKnown && serviceFileEnv ? serviceFileEnv : process.env;
+        const surface = cs.customerStoreDir({ env: storeEnv, bundledDir: mod.profilesStoreDir });
+        const rosterDir = hosted && serviceKnown
+          ? cs.customerStoreDir({ env: storeEnv, bundledDir: mod.profilesStoreDir }).dir
+          : r.store;
+        const split = cs.customerStoreDivergence({ surfaceDir: surface.dir, rosterDir });
         if (split) {
           problem(`the settings surface and the run roster serve DIFFERENT customer stores — settings: `
             + `${split.surface}, runs: ${split.roster}. A brand owner in one and not the other is refused `
             + `by the surface with a tenancy message, which reads as a permissions problem and is not one.`);
         } else {
-          ok(`the settings surface serves the same store as the runs (${surface.dir})`);
+          // ── WHAT THIS ✓ CERTIFIES, AND WHAT IT CANNOT (tracker issue 223) ──────────────────────────
+          //
+          // Both sides derive from `CLEAROTRON_CUSTOMERS_DIR`, which is what 1923 settled — so this
+          // cannot catch two environments disagreeing, and reading it as "production is configured"
+          // is how a green here sat above a line calling the same box a demo install.
+          //
+          // What it CAN catch is a second source in the CODE: a resurrected PROFILE_DIR, a bundled
+          // directory that moves under one caller and not the other. That is the regression it is for,
+          // and the sentence now says so instead of implying the larger claim.
+          ok(`the settings surface and the run roster resolve to one store (${surface.dir}), read from `
+            + `${hosted && serviceKnown ? serviceEnvFile : "this command's environment"} — they share a `
+            + "variable, so this catches a second store appearing in the code, not two environments disagreeing");
         }
       } catch (e) {
         info(`could not compare the settings surface's store with the roster's (${String(e?.message ?? e).slice(0, 80)}) — a failure to look, not a finding`);
@@ -1404,6 +1517,25 @@ export async function runCheck() {
   try {
     const report = overlayReport({ baseRoot: config.skillsBaseDir, overlayRoot: config.skillsOverlayDir });
     for (const line of renderOverlayReport(report, { indent: "" })) say(`  ${line}`);
+    // ── AND THE SERVICES MAY HAVE ONE THIS PROCESS CANNOT SEE (tracker issue 223) ───────────────────
+    //
+    // `config.skillsOverlayDir` resolves from this process's environment. On a production box that
+    // printed "none configured — this install overrides nothing" while CLEAROTRON_INSTRUCTIONS_DIR was
+    // set in the units' file and the overlay was in active use. Same cause as the profiles section
+    // above, in a section that reads as a fact about the deployment.
+    //
+    // ADDITIVE, not a replacement: the report above is still what this process sees, which is the right
+    // answer for somebody running the engine by hand. This line is what the services see.
+    const svcDoctrine = effectiveForService("CLEAROTRON_INSTRUCTIONS_DIR");
+    if (hosted && serviceKnown && svcDoctrine?.v && svcDoctrine.v !== config.skillsOverlayDir) {
+      info(`the services read a doctrine overlay this process does not: ${svcDoctrine.v} `
+        + `(${svcDoctrine.from}). The lines above are this command's own environment — a CLI is not `
+        + "started by the units' EnvironmentFile, so \"none configured\" here is not a statement about "
+        + "the deployment");
+    } else if (hosted && !serviceKnown) {
+      info(`the units are installed but their environment could not be read (${unitEnv?.why ?? "no reason given"}) — `
+        + "whether the services read an overlay is not judged here");
+    }
     if (report.ok && report.overlayConfigured) say("\n  Full detail: npm run doctrine-report");
   } catch (e) {
     // An unreadable overlay THROWS by design (config.resolveSkillPath refuses rather than falling back
@@ -1637,58 +1769,6 @@ export async function runCheck() {
       }
     }
   }
-
-  // ── ONE READING OF THE UNITS' ENVIRONMENT, FOR EVERY SECTION THAT CLAIMS ANYTHING ABOUT THEM ─────
-  //
-  // F34: two sections asserted facts about the units while reading the operator's shell, and both of
-  // their reported problems were false on a correctly-running install. Resolving this once, here, is
-  // deliberate — a second reader would drift from this one exactly as the composer and the checker did
-  // in F41, and the drift is invisible because both sides keep passing their own arms.
-  const unitDir = join(homedir(), ".config", "systemd", "user");
-  const { BACKGROUND_UNITS } = await import(join(REPO, "bin", "start.mjs"));
-  const hosted = BACKGROUND_UNITS.some((u) => existsSync(join(unitDir, u)));
-  const unitEnv = hosted
-    ? unitEnvironment({
-        units: BACKGROUND_UNITS.map((u) => ({ name: u, text: readIfPresent(join(unitDir, u)) })),
-        readEnvFile: readIfPresent,
-        // These are USER units under ~/.config/systemd/user, so systemd's %h is this home.
-        home: homedir() })
-    : null;
-
-  // ── AND THE DOOR SECTION IS THE THIRD SUCH SECTION (tracker issue 226) ──────────────────────────
-  //
-  // The reading above was hoisted here from further down for this. It used to be resolved BELOW the
-  // door check, so the one section making the loudest claim about the running service — "NOBODY can
-  // use this portal" — was the one section that could not consult it.
-  //
-  // MEASURED 2026-09-06 on a healthy packaged install: `doctor` printed that ✗ and exited 1 on a box
-  // where the local user signs in and `GET /portal/api/me` returns `{"role":"staff"}`. The units' file
-  // carries `PORTAL_STAFF_DOMAINS=localhost`, the identity is `<user>@localhost`, and the running
-  // service admits it as staff. This command reads the CLI's own `.env`, where neither that name nor
-  // `PORTAL_AUTH_MODE` appears — so the check was not ignoring the auth mode, it never saw it.
-  //
-  // The disclosure was already here and one severity too quiet: a `·` saying "what THIS environment
-  // implies, not what the running service serves", directly above a `✗` phrased in the present
-  // indicative about the live box. A caveat does not repair a false claim standing beside it.
-  //
-  // SO THE VALUES COME FROM THE FILE THE SERVICE READS when this box is hosted, and the source is named
-  // beside the verdict rather than left to a caveat. Not an exemption for `PORTAL_AUTH_MODE=local`,
-  // which was the fix originally filed: that variable is absent from the file this command was reading,
-  // so exempting on it would have changed nothing at all.
-  const serviceEnvLabel = hosted ? "the units' environment" : "your environment file";
-  const serviceEnvFile = hosted ? join(homedir(), ".env") : READ_ENV_PATH();
-  // A HOSTED BOX WHOSE UNIT ENVIRONMENT COULD NOT BE READ ANSWERS `null`, NEVER `fileEnv`. Falling back
-  // to the CLI's file there would reproduce this defect exactly, and silently — `unitEnvironment`
-  // already distinguishes a failure to look, and the door check below refuses to claim a lockout on one.
-  const serviceKnown = !hosted || unitEnv?.known === true;
-  const serviceFileEnv = hosted ? (unitEnv?.known === true ? unitEnv.env : null) : fileEnv;
-  const effectiveForService = (k, names = [k]) => {
-    for (const name of names) {
-      if (present(process.env[name])) return { v: process.env[name], from: "environment", name };
-      if (serviceFileEnv && present(serviceFileEnv[name])) return { v: serviceFileEnv[name], from: serviceEnvLabel, name };
-    }
-    return null;
-  };
 
   say("\n  Portal door");
   {

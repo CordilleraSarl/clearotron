@@ -123,7 +123,29 @@ function pathFor(runDir, id, suffix) { return join(whatIfQueueDir(runDir), `${id
  * verbatim so the worker validates the caller's op rather than a re-derivation of it.
  */
 export function enqueueWhatIf(runDir, { op, requestedBy = null, account = null, now = Date.now() }) {
-  if (!op || typeof op !== "object" || !op.runId || !op.stage) throw new Error("enqueueWhatIf: op must carry runId and stage");
+  if (!op || typeof op !== "object" || !op.runId) throw new Error("enqueueWhatIf: op must carry runId and stage");
+  // ── A MEMO CARRIES NO STAGE, AND THIS GUARD USED TO REQUIRE ONE (tracker issue 132) ──────────────
+  //
+  // Two consecutive guards, mutually exclusive for a memo. decodeOp refuses a memo token that CARRIES
+  // a stage — "a memo re-runs no stage, so a token carrying one was not planned as a memo" — and this
+  // line refused one that did not. So every memo minted by whatIfPlan was admitted by whatIfEnqueue's
+  // kind-aware refusal and then thrown out by the very next call, on the one non-test path there is
+  // (mcp-server/lib/whatif.mjs:202, reached from the live tool handler at server.mjs:443).
+  //
+  // WHY IT SURVIVED A FIX THAT WAS ABOUT EXACTLY THIS. The earlier repair opened whatIfRun's memo
+  // branch and was proved by arms that INJECT the composer — routing coverage. A routing arm cannot
+  // see a second gate one link further down, which is what this was. The arm added with this change
+  // drives the real enqueue path so the class cannot hide there again.
+  //
+  // The stage shape is UNCHANGED, message included: anything reading that string keeps reading it.
+  // A memo is admitted on what it actually carries — the run and the assumption — and an assumption
+  // is required, because a memo with nothing to apply is not a memo, it is a re-read.
+  if (op.kind === "memo") {
+    if (!String(op.instructions ?? "").trim())
+      throw new Error("enqueueWhatIf: a memo op must carry the assumption to apply");
+  } else if (!op.stage) {
+    throw new Error("enqueueWhatIf: op must carry runId and stage");
+  }
   const id = mintId();
   const dir = whatIfQueueDir(runDir);
   mkdirSync(dir, { recursive: true });
