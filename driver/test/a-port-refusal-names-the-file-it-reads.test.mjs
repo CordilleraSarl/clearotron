@@ -18,7 +18,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { createServer } from "node:http";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readdirSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readdirSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -156,3 +156,41 @@ test("200 the file rides with EACCES too, which has the same remedy and the same
   assert.match(m, /in \/somewhere\/\.env/);
   assert.match(m, /is the file this command reads/);
 });
+
+// ── THE CLASS, PINNED ────────────────────────────────────────────────────────────────────────────────
+//
+// One caller fixed and the siblings left is how this defect comes back under a different port variable.
+// The rule is not "every caller names a file" — it is that naming one depends on having READ one:
+//
+//   a CLI entry (shared/env-local.mjs CLI_ENTRIES) reads an env file, so its refusal must name it;
+//   anything else is booted by a unit with CLEAROTRON_NO_ENV_FILE=1, reads none, and must name none.
+//
+// Measured when this landed: bin/start.mjs, driver/dev-portal.mjs and mcp-server/http-server.mjs are
+// the entries that refuse on a port, and all three pass it; portal-service, profile-service,
+// recipe-service and http-server-client are unit-booted and pass nothing. A new door on either side of
+// that line fails here rather than shipping half a remedy.
+test("200 every port refusal that read an env file names it, and every one that did not names none",
+  async () => {
+    const { CLI_ENTRIES } = await import("../../shared/env-local.mjs");
+    const entries = new Set(CLI_ENTRIES);
+    const callers = spawnSync("grep",
+      ["-rl", "listenOrDie\\|listenErrorMessage", "--include=*.mjs", "bin", "driver", "mcp-server", "shared"],
+      { cwd: ROOT, encoding: "utf8" }).stdout.split("\n").filter(Boolean)
+      .filter((f) => !f.includes("/test/") && f !== "shared/listen.mjs");
+
+    assert.ok(callers.length >= 5, `only ${callers.length} port-refusal callers found — the grep is the suspect`);
+    const wrong = [];
+    for (const rel of callers) {
+      const text = readFileSync(join(ROOT, rel), "utf8");
+      // NOT a bare substring: `resolveReportFile` contains "portFile" and read as a hit while this arm
+      // was being written, which is how the first measurement of this class came out wrong. Not
+      // `portFile:` either — start.mjs passes it as a shorthand property with no colon, and requiring
+      // one reported the file that started this issue as unfixed. A word boundary that also refuses a
+      // preceding letter is what actually names the option in both forms.
+      const names = /(?<![A-Za-z])portFile\b/.test(text);
+      if (entries.has(rel) !== names) {
+        wrong.push(`${rel} is ${entries.has(rel) ? "a CLI entry that names no env file" : "unit-booted but names one"}`);
+      }
+    }
+    assert.deepEqual(wrong, [], `a port refusal disagrees with what its process actually reads:\n  ${wrong.join("\n  ")}`);
+  });

@@ -473,6 +473,24 @@ function defaultNote(line) { try { process.stderr.write(line); } catch { /* a cl
 // (mcp-server/http-server.mjs imports mcp-server/server.mjs; both are entries).
 export const loaded = isCliEntry(process.argv[1]) ? loadEnvLocal() : null;
 
+/**
+ * The env file THIS process took its configuration from, or null when it took none.
+ *
+ * ONE DEFINITION, because the question has a wrong answer that looks right. A refusal that tells an
+ * operator to set a variable is only half a remedy on a product with two env files — the units load
+ * `EnvironmentFile=%h/.env`, a CLI entry reads this one — and the half that is missing is which file.
+ * Composing the path from `envLocalPath()` at each call site would answer for a process that never read
+ * it: a service started by systemd is handed CLEAROTRON_NO_ENV_FILE=1 and is configured by its
+ * EnvironmentFile, so naming the CLI's file there replaces one wrong address with another.
+ *
+ * `read` and `absent` are both a yes — absent only means nobody has written it yet, and that IS the file
+ * to write. `service-managed`, `opted-out` and `unreadable` are a no, and a no means say nothing rather
+ * than guess (tracker issue 200).
+ */
+export function envFileRead(l = loaded) {
+  return l && (l.reason === "read" || l.reason === "absent") ? l.path : null;
+}
+
 // ── — the install surface's new names, translated into the ones every read site still reads ────
 //
 // AFTER the `.env` read, because a `.env` may be where the new names are written, and BEFORE anything

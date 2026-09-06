@@ -194,6 +194,11 @@ export function listenErrorMessage(err, { what, host, port, portVar, portFlag = 
  */
 export function listenOrDie(server, {
   port, host, what, portVar, portFlag = null, log, onReady, exit = (c) => process.exit(c),
+  // — the env file this process actually read, from `envFileRead()`. Same contract as
+  // `portSource` above: null is a caller that has not been taught the question, and its sentence is
+  // exactly what it was. Never composed here; a service booted by systemd read no file and must name
+  // none (tracker issue 200).
+  portFile = null,
   // — "env" | "default" | null. Null is a caller that has not been taught the question yet and
   // behaves exactly as before; every service in this repo passes it.
   portSource = null,
@@ -212,7 +217,7 @@ export function listenOrDie(server, {
   }
 
   server.once("error", (err) => {
-    write(listenErrorMessage(err, { what, host, port, portVar, portFlag, portSource }));
+    write(listenErrorMessage(err, { what, host, port, portVar, portFlag, portSource, portFile }));
     exit(1);
   });
   server.listen(port, host, () => {

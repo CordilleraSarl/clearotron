@@ -74,7 +74,7 @@
 // The ops key is deliberately NOT persisted. It is minted fresh, in memory, at every start, so no
 // long-lived engine credential is written to disk by a command whose job is to show you the product.
 
-import { envLocalPath, loaded as envLocalLoaded } from "../shared/env-local.mjs";   // side effect: apply this install's .env when THIS file is the CLI entry (never on library import)
+import { envLocalPath, envFileRead } from "../shared/env-local.mjs";   // side effect: apply this install's .env when THIS file is the CLI entry (never on library import)
 import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic write for every file holding credentials, and it creates the directory
 // — ONE AUTHORITY for what a clearance needs from its environment, used twice
 // below: to COMPOSE the units' environment and to GUARD it before this command reports success. The
@@ -767,14 +767,10 @@ if (isMain) {
   // run fatalled mid-flight, tore down what it had started, and then did not exit — measured at rc=124
   // on a 120-second and a 300-second timeout. Refusing here costs nothing and leaves nothing to tear
   // down, which is what the paragraph above says this check is for.
-  // The file to send the reader to, and it is MEASURED rather than derived: `loaded` is what
-  // shared/env-local.mjs actually did in this process. `read` and `absent` both mean this command reads
-  // that path — absent only means nobody has written it yet, and writing the port there is exactly
-  // right. `service-managed` (the units set CLEAROTRON_NO_ENV_FILE=1), `opted-out` and `unreadable` all
-  // mean this process did NOT take its configuration from that file, and naming it would replace one
-  // wrong address with another. No file, no sentence (tracker issue 200).
-  const portFile = envLocalLoaded && (envLocalLoaded.reason === "read" || envLocalLoaded.reason === "absent")
-    ? envLocalLoaded.path : null;
+  // The file to send the reader to, MEASURED rather than composed — `envFileRead()` reports what
+  // shared/env-local.mjs actually did in this process, and answers null when it read nothing. Its own
+  // header carries the reasoning (tracker issue 200).
+  const portFile = envFileRead();
   for (const [what, port, portVar] of [["portal", ports.portal, "PORTAL_SERVICE_PORT"], ["engine door", ports.mcp, "TRADEMARK_MCP_HTTP_PORT"], ["client door", ports.client, "CLIENT_MCP_HTTP_PORT"]]) {
     // A --background REFRESH runs over its own healthy units, which hold these ports on purpose;
     // systemd's restart is the handover. Probing would refuse the flag exactly once it has worked.
@@ -1169,6 +1165,15 @@ if (isMain) {
       say(`      ${ENV_PATH}  — the CLI reads this one when you type a command in a shell.`);
       say(`    Editing one does not change the other. To change what the RUNNING product does, edit the`);
       say(`    first and restart the units.`);
+      // PORTS ARE THE EXCEPTION, and leaving it unsaid is what tracker issue 200 was filed about. The
+      // sentence above is true — a unit takes its port from the EnvironmentFile like everything else —
+      // but THIS command probes for a collision using the value it read from the CLI file, before any
+      // unit exists. A reader who has just been told to edit the first file, and whose next run refuses
+      // on a port, edits it again and nothing moves. The refusal itself now names the file too; this is
+      // the same fact where the reader first meets the two files.
+      say(`    Ports are the exception worth knowing: a unit takes its port from the first file like`);
+      say(`    everything else, but THIS command checks for a collision using the second. If it ever`);
+      say(`    refuses on a port, that is the file to set it in.`);
     }
 
     const UNIT_DIR = join(homedir(), ".config", "systemd", "user");
