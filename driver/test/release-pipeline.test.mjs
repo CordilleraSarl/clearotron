@@ -880,3 +880,130 @@ test("tracker 97 the manifest names the repository provenance will be attested f
   assert.match(pkg.homepage ?? "", new RegExp(REPOSITORY), "the package page links nowhere");
   assert.match(pkg.bugs?.url ?? "", new RegExp(REPOSITORY), "the package page offers nowhere to report a bug");
 });
+
+// ── tracker issue 208 — A CUT THAT MERGED ITSELF WAITS ON A CLOCK THAT IS NOT ONE ────────────────────
+//
+// The version pull request merges itself, GitHub takes that merge with the built-in `GITHUB_TOKEN`, and
+// a push made with that token starts no workflow run. The `*/5` cron is the standing net and the
+// workflow's own header calls it "a floor, not a clock": measured 2026-09-06, a version sat cut and
+// unpublished for 74 minutes, and every stable release before it published on an unrelated human merge.
+//
+// The version branch's CI COMPLETING is the moment auto-merge is waiting on, so `workflow_run` on it is
+// the closest signal to the merge that exists — and it needs no credential, which is what rules out the
+// two options that would.
+//
+// BREAK MATRIX:
+//   · the loop answers the moment main carries a cut   → break: sleep first, arm 1 red
+//   · it gives up rather than hanging a runner         → break: unbounded loop, arm 2 red
+//   · giving up is NOT reported as a cut               → break: return cut:true, arm 2 red
+//   · the wait fires only on the version branch's CI   → break: drop `branches`, arm 4 red
+//   · the rehearsal path is untouched                  → break: let dispatch publish, arm 5 red
+import { awaitCut, WAIT_MS, STEP_MS } from "../../scripts/release-await-cut.mjs";
+
+/** This repository's root, and the workflow this section reads. Named here rather than reusing a
+ *  constant from another section, because a constant that moves under an arm is how a guard comes to
+ *  measure a file nobody ships. `WORKFLOW` is the guard's own path for the same file. */
+const REPO = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
+const RELEASE_YML = readFileSync(join(REPO, WORKFLOW), "utf8");
+
+/** A fake clock and a fake main, so the loop is DRIVEN rather than asserted about. Ten real minutes of
+ *  waiting is a loop nobody checks. */
+function world({ cutAfter = 0, version = "0.1.7" } = {}) {
+  let clock = 0, passes = 0;
+  return {
+    now: () => clock,
+    passes: () => passes,
+    refresh: async () => { passes++; },
+    read: () => ({ cut: passes > cutAfter, version }),
+    sleep: async (ms) => { clock += ms; },
+  };
+}
+
+test("208 a merge already taken costs no wait at all — the common case, not the exception", async () => {
+  const w = world({ cutAfter: 0 });
+  const r = await awaitCut(w);
+  assert.equal(r.cut, true, "main carried an untagged version and the loop did not say so");
+  assert.equal(r.gaveUp, false);
+  assert.equal(r.waitedMs, 0, "the loop slept before asking — a merge taken while CI finished paid for nothing");
+  assert.equal(w.passes(), 1, "it re-read main more than once for an answer it already had");
+});
+
+test("208 it gives up rather than hanging a runner, and giving up is not a cut", async () => {
+  // Every version branch CI run fires this, INCLUDING the ones whose pull request never merges — checks
+  // failed, a merge dismissed, a re-cut mid-flight. An unbounded wait would hold a runner on each.
+  const w = world({ cutAfter: Infinity });
+  const r = await awaitCut(w);
+  assert.equal(r.gaveUp, true, "the loop did not stop — this is the arm between a bounded wait and a hung runner");
+  assert.equal(r.cut, false,
+    "giving up reported a cut. That publishes a version nobody merged, which is the one outcome this "
+    + "pipeline cannot afford");
+  assert.ok(r.waitedMs <= WAIT_MS, `the loop waited ${r.waitedMs}ms, past its own budget of ${WAIT_MS}ms`);
+  assert.ok(r.waitedMs + STEP_MS > WAIT_MS,
+    `the loop gave up at ${r.waitedMs}ms with a whole step of budget left — it is quitting early, not bounding`);
+});
+
+test("208 a merge taken mid-wait is caught, and costs only the steps it took", async () => {
+  // The arm that separates a real wait from a loop that answers once and returns.
+  const w = world({ cutAfter: 3 });
+  const r = await awaitCut(w);
+  assert.equal(r.cut, true, "the loop gave up on a merge that landed inside its budget");
+  assert.equal(r.gaveUp, false);
+  assert.equal(w.passes(), 4, "it did not re-read main on each pass — a cached answer never becomes true");
+  assert.equal(r.waitedMs, 3 * STEP_MS, `it waited ${r.waitedMs}ms for a merge that landed after three steps`);
+});
+
+test("208 the wait fires on the VERSION branch's CI and nothing else", () => {
+  // A `workflow_run` with no branch filter fires on every CI run in the repository, so every pull
+  // request's CI would start a job that polls main for ten minutes. The filter is what makes this one
+  // signal rather than a tax on every branch.
+  const on = RELEASE_YML.slice(RELEASE_YML.indexOf("\non:"), RELEASE_YML.indexOf("\nconcurrency:"));
+  assert.match(on, /workflow_run:/, "the version branch's CI no longer triggers the release workflow");
+  assert.match(on, /workflows: \["CI"\]/, "the trigger names no workflow, so it would fire on all of them");
+  assert.match(on, /branches: \[changeset-release\/main\]/,
+    "the trigger has no branch filter — every pull request's CI would start a ten-minute poll of main");
+  // AND THE REHEARSAL IS UNTOUCHED. This file's header states that `workflow_dispatch` cannot publish,
+  // and widening the event gate is exactly where that contract gets lost by accident.
+  assert.match(on, /workflow_dispatch:/, "the rehearsal trigger is gone");
+});
+
+test("208 both deciders answer the same question, and a skipped one cannot answer for the other", () => {
+  // `pending` now has two steps and exactly one runs per event. An unset output from a skipped step is
+  // the empty string; reading only one of them would report "not this path" on the event that did answer.
+  const pending = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  pending:"), RELEASE_YML.indexOf("\n  publish:"));
+  assert.match(pending, /cut: \$\{\{ steps\.cut\.outputs\.cut \|\| steps\.awaited\.outputs\.cut \}\}/,
+    "the job reads one decider's output only — the other event's answer is dropped");
+  assert.match(pending, /if: github\.event_name == 'schedule'/, "the cron step is no longer scoped to the cron");
+  assert.match(pending, /if: github\.event_name == 'workflow_run'/, "the waiting step is not scoped to its event");
+  // THE DECISION ITSELF IS STILL ONE FUNCTION. Two paths asking one question in two ways is how a
+  // pipeline comes to publish something nobody merged.
+  const src = readFileSync(join(REPO, "scripts", "release-await-cut.mjs"), "utf8");
+  assert.match(src, /import \{ cutDecision, versionAtHead, tagsHere \}/,
+    "the waiting path decides for itself instead of asking the one authority");
+  assert.match(src, /versionAtHead\(\{ ref: "origin\/main" \}\)/,
+    "the waiting path reads the working tree rather than the commit — the defect release-cut-decision.mjs was written for");
+});
+
+test("208 the stranded-cut detector does not sit downstream of the gate that strands a cut", () => {
+  // MEASURED ON A REAL STRANDING, 2026-09-06, by the lane holding the next pull request. 0.1.7 merged
+  // itself onto main and was not published: the release run on that push failed at "The checks it waits
+  // for actually started", and BOTH downstream jobs were skipped — including the one whose entire job is
+  // to notice a cut sitting on main unpublished. The detector was downstream of the gate that stranded
+  // the cut, so it did not run in exactly the state it exists to catch.
+  //
+  // `pending` therefore takes no `needs`, and that is load-bearing rather than incidental: a `needs` on
+  // `version` would reintroduce this on the very run where it matters. The `workflow_run` path added for
+  // this issue is a SEPARATE run in which `version` is skipped rather than failed — and a skipped job is
+  // not a failure, so `publish` still reaches `pending`'s answer.
+  const jobs = RELEASE_YML.slice(RELEASE_YML.indexOf("\njobs:"));
+  const pending = jobs.slice(jobs.indexOf("\n  pending:"), jobs.indexOf("\n  publish:"));
+  assert.ok(pending.length > 200, "the pending job could not be sliced out — this arm measured nothing");
+  assert.ok(!/^\s{4}needs:/m.test(pending),
+    "the stranded-cut detector now depends on another job. A failure in that job skips this one, which is "
+    + "precisely the state a stranded cut is in — measured on 0.1.7, 2026-09-06");
+  // AND THE PUBLISH GATE STILL TOLERATES A SKIPPED DECIDER, which is the other half: one of the two
+  // deciders is always skipped, because they run on different events.
+  const publish = jobs.slice(jobs.indexOf("\n  publish:"));
+  assert.match(publish, /!failure\(\) && !cancelled\(\)/,
+    "the publish gate no longer opens with !failure() — a skipped decider would read as a blocked path "
+    + "rather than as 'not this route'");
+});

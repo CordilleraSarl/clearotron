@@ -11,14 +11,31 @@
 //
 // ── AND THE CAUSE IS STRUCTURAL, not that box's mistake ──────────────────────────────────────────────
 //
-// `bin/start.mjs` is the ONLY thing in this product that ever sets `PORTAL_MCP_URL` — it derives the
-// origin from the resolved MCP port and hands it to the portal child, and under `--background` writes
-// the same union into `%h/.env` for the units. Nothing else does: not `bin/onboard.mjs`, not
-// `driver/systemd/render-units.mjs`, not `.env.example`, not any shipped unit file.
+// WHEN THIS WAS FILED, `bin/start.mjs` was the ONLY thing in this product that ever set
+// `PORTAL_MCP_URL` — it derives the origin from the resolved MCP port and hands it to the portal child,
+// and under `--background` writes the same union into `%h/.env` for the units. Nothing else did: not
+// `bin/onboard.mjs`, not `driver/systemd/render-units.mjs`, not `.env.example`, not any shipped unit
+// file.
 //
-// So a box installed the DOCUMENTED HOSTED WAY — wizard, then `render-units.mjs --apply` — gets a
-// portal whose trigger lane is unwired, and every check it can run says it is fine. A box that runs
-// `clearotron start` is wired. That is the whole difference, and no health surface looked at it.
+// So a box installed the DOCUMENTED HOSTED WAY — wizard, then `render-units.mjs --apply` — got a portal
+// whose trigger lane was unwired, and every check it could run said it was fine. A box that ran
+// `clearotron start` was wired. That was the whole difference, and no health surface looked at it.
+//
+// ── THAT IS FIXED, AND THIS PARAGRAPH SAYING OTHERWISE IS ITS OWN DEFECT ─────────────────────────────
+//
+// `driver/systemd/render-units.mjs` writes the value now, so the documented hosted install wires the
+// lane. Both writers compose it through ONE function — `laneValuesFor` in `shared/lane-address.mjs`,
+// which returns `{ PORTAL_MCP_URL: mcpOriginFor(...) }` — so there is one composer and two callers
+// rather than two opinions.
+//
+// The correction is here rather than in a commit message because of what the stale version DOES to a
+// reader. It states a premise — "exactly one thing in this product ever sets it" — that a careful person
+// checks, finds one writer named, and concludes the hosted path is still unwired. That re-files a defect
+// that is fixed, which is precisely the class this file was written about. A comment asserting a
+// structural fact outlives the fact, and the assertion is what makes it dangerous rather than merely old.
+//
+// Found by the test lane driving `render-units.mjs --apply` into a scratch destination and reading
+// `PORTAL_MCP_URL=http://127.0.0.1:18790` out of the result — driven, not read.
 //
 // ── THE CLASS ────────────────────────────────────────────────────────────────────────────────────────
 //
