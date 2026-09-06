@@ -4,6 +4,14 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.1.10
+
+### Fixed
+
+- The check-up no longer reports that nobody can use the portal on an install where signing in works. It now reads the settings the running services load.
+- Restarting no longer logs a warning saying searches will fail. The portal sometimes starts before the door it calls, and that clears itself within seconds.
+- Stopping the product and starting it again now works. Before, the start refused because the assistant connection that stopping deliberately leaves running was still there.
+
 ## 0.1.9
 
 ### Fixed
