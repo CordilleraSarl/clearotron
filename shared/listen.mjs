@@ -124,10 +124,27 @@ export function explicitPortRequiredMessage({ what, port, portVar }) {
  *             response-body and bundle assertion in the suite, so naming it is free and correct.
  *  `portFlag` an optional CLI equivalent, for the entry points that take one.
  */
-export function listenErrorMessage(err, { what, host, port, portVar, portFlag = null, portSource = null }) {
+export function listenErrorMessage(err, { what, host, port, portVar, portFlag = null, portSource = null,
+  portFile = null }) {
   const at = `${host}:${port}`;
-  const move = [portVar ? `set ${portVar}=<free port>` : null, portFlag ? `pass ${portFlag} <free port>` : null]
+  const move = [portVar ? `set ${portVar}=<free port>${portFile ? ` in ${portFile}` : ""}` : null,
+    portFlag ? `pass ${portFlag} <free port>` : null]
     .filter(Boolean).join(", or ");
+  // NAMING THE VARIABLE IS HALF A REMEDY ON THIS PRODUCT, because it has two env files with different
+  // jobs: the installed units load `EnvironmentFile=%h/.env`, and a CLI entry point reads
+  // `~/.config/clearotron/.env` for itself. A reader whose RUNNING product has the wrong port reaches
+  // for the units' file, and `clearotron start` — the command that installs those units, so the command
+  // that is resolving the ports they will be born with — does not read it. Measured as a stranger on
+  // published 0.1.4: the three ports sat in the units' file, the refusal fired, and the only way to see
+  // why was to compare two lists of variable names in a log line (tracker issue 200).
+  //
+  // The CALLER passes the file, and passes it only when its own loader actually read one. This module
+  // cannot know: the same function serves four services booted by units — where naming the CLI's file
+  // would be a fresh wrong answer — and the CLI that installs them. No file, no sentence.
+  const whichFile = portFile && portVar
+    ? `  ${portFile} is the file this command reads. \`~/.env\` is loaded by the installed units and is `
+      + `NOT read here, so setting ${portVar} there changes nothing for this command.\n`
+    : "";
   switch (err?.code) {
     case "EADDRINUSE":
       return `FATAL: ${what} cannot start — ${at} is already in use.\n`
@@ -145,13 +162,14 @@ export function listenErrorMessage(err, { what, host, port, portVar, portFlag = 
           : "")
         + `  See what holds it:  ss -ltnp 'sport = :${port}'   (or: lsof -i :${port})\n`
         + `  Then stop that process${move ? `, or ${move}` : ""}.\n`
+        + whichFile
         + `  Refusing to start — it will NOT quietly move to another port, because whatever is in front `
         + `of it is still addressed to ${at}.`;
     case "EACCES":
       return `FATAL: ${what} cannot start — this process is not allowed to bind ${at}.\n`
         + (port < 1024
-          ? `  ${port} is a privileged port; an unprivileged process cannot bind it. ${move || "Choose a port above 1024"}.`
-          : `  The address is refused by the OS (a socket policy, a container restriction, or a bound-but-hidden listener). ${move || ""}`.trimEnd());
+          ? `  ${port} is a privileged port; an unprivileged process cannot bind it. ${move || "Choose a port above 1024"}.\n${whichFile}`.trimEnd()
+          : `  The address is refused by the OS (a socket policy, a container restriction, or a bound-but-hidden listener). ${move || ""}\n${whichFile}`.trimEnd());
     case "EADDRNOTAVAIL":
       return `FATAL: ${what} cannot start — ${host} is not an address on this machine, so ${at} cannot be bound.\n`
         + `  Bind an interface this host actually has (127.0.0.1 for loopback, 0.0.0.0 for every interface).`;

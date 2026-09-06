@@ -74,7 +74,7 @@
 // The ops key is deliberately NOT persisted. It is minted fresh, in memory, at every start, so no
 // long-lived engine credential is written to disk by a command whose job is to show you the product.
 
-import { envLocalPath } from "../shared/env-local.mjs";   // side effect: apply this install's .env when THIS file is the CLI entry (never on library import)
+import { envLocalPath, loaded as envLocalLoaded } from "../shared/env-local.mjs";   // side effect: apply this install's .env when THIS file is the CLI entry (never on library import)
 import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic write for every file holding credentials, and it creates the directory
 // — ONE AUTHORITY for what a clearance needs from its environment, used twice
 // below: to COMPOSE the units' environment and to GUARD it before this command reports success. The
@@ -767,6 +767,14 @@ if (isMain) {
   // run fatalled mid-flight, tore down what it had started, and then did not exit — measured at rc=124
   // on a 120-second and a 300-second timeout. Refusing here costs nothing and leaves nothing to tear
   // down, which is what the paragraph above says this check is for.
+  // The file to send the reader to, and it is MEASURED rather than derived: `loaded` is what
+  // shared/env-local.mjs actually did in this process. `read` and `absent` both mean this command reads
+  // that path — absent only means nobody has written it yet, and writing the port there is exactly
+  // right. `service-managed` (the units set CLEAROTRON_NO_ENV_FILE=1), `opted-out` and `unreadable` all
+  // mean this process did NOT take its configuration from that file, and naming it would replace one
+  // wrong address with another. No file, no sentence (tracker issue 200).
+  const portFile = envLocalLoaded && (envLocalLoaded.reason === "read" || envLocalLoaded.reason === "absent")
+    ? envLocalLoaded.path : null;
   for (const [what, port, portVar] of [["portal", ports.portal, "PORTAL_SERVICE_PORT"], ["engine door", ports.mcp, "TRADEMARK_MCP_HTTP_PORT"], ["client door", ports.client, "CLIENT_MCP_HTTP_PORT"]]) {
     // A --background REFRESH runs over its own healthy units, which hold these ports on purpose;
     // systemd's restart is the handover. Probing would refuse the flag exactly once it has worked.
@@ -777,7 +785,7 @@ if (isMain) {
     // on a privileged port and from an address this host does not have, and names the way out of each;
     // the launcher having its own shorter sentence for one of the three would mean a user meets two
     // different answers to the same question depending on which door refused first.
-    if (code) fatal(listenErrorMessage({ code }, { what, host: HOST, port, portVar }));
+    if (code) fatal(listenErrorMessage({ code }, { what, host: HOST, port, portVar, portFile }));
   }
 
   // ── 2. the two secrets, generated once and kept ────────────────────────────────────────────────────
