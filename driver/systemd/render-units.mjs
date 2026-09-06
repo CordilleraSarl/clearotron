@@ -231,6 +231,15 @@ if (isEntrypoint(import.meta.url)) {
   }
   if (APPLY) {
     if (laneNote) console.log(laneNote);
+    // ── AND WHAT THIS INSTALL STILL HAS NOT GOT (tracker issue 133) ─────────────────────────────────
+    //
+    // The nine values above are the ones this command RESOLVES. They are not the values the units
+    // refuse to start over, and the gap between those two lists is how a documented install produced a
+    // box with two of four units dead and nothing saying why. Read from the env file as it stands after
+    // the write, because that is the file the units will load.
+    const { authGaps, describeAuthGaps } = await import("../../shared/install-auth.mjs");
+    const finalEnv = { ...parseEnvFile(existsSync(envFile) ? readFileSync(envFile, "utf8") : ""), ...process.env };
+    for (const line of describeAuthGaps(authGaps(finalEnv), envFile)) console.log(line);
     console.log("render-units: written. `systemctl --user daemon-reload` before starting them.");
     process.exit(0);
   }

@@ -27,6 +27,17 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
 
 ## 1. Prerequisites
 
+- **A base toolchain**, if you are starting from a bare server image. `ubuntu:24.04` ships with none of
+  `node`, `npm`, `git` or `curl`, and every step below assumes all four — including `nvm use` in the
+  next line, which presupposes an nvm this page never introduces. On a bare image, start with:
+
+  ```
+  apt-get update && apt-get install -y curl git ca-certificates
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+  . "$HOME/.nvm/nvm.sh" && nvm install 22
+  ```
+
+  Skip this on any machine that already builds software.
 - **Node.js >= 22**, and npm. A hard floor: `package.json` declares it, `.nvmrc` pins it, and the free
   US register runs on `node:sqlite`, which ships with FTS5 from Node 22. Node 20 installs and then fails
   at the first US search. `nvm use` picks the pin up.
@@ -1068,11 +1079,21 @@ impersonate someone is not the answer — local sign-in is one user by design, a
 start if the credential does not match the configured address, so you lose your own access and take the
 deployment down to answer a question.
 
-**Two instances on one machine.** The environment is the whole isolation boundary, and four variables
-draw it: `CLEAROTRON_REPORTS_DIR`, `CLEAROTRON_ACCESS_FILE`, and the two data-plane directories —
-`CLEAROTRON_QUEUE_DIR`, where jobs arrive, and `CLEAROTRON_OUTBOX_DIR`, where delivery packets are
-written for the forwarder. Point a test instance's four at a test tree and it cannot reach production's
-pool, roster or queue. Nothing else separates them.
+**Two instances on one machine.** The environment is the whole isolation boundary, and **seven**
+variables draw it — four for the data, three for the doors.
+
+The four that separate what an instance can *reach*: `CLEAROTRON_REPORTS_DIR`,
+`CLEAROTRON_ACCESS_FILE`, and the two data-plane directories — `CLEAROTRON_QUEUE_DIR`, where jobs
+arrive, and `CLEAROTRON_OUTBOX_DIR`, where delivery packets are written for the forwarder. Point a test
+instance's four at a test tree and it cannot reach production's pool, roster or queue.
+
+The three that separate what it *binds*: `PORTAL_SERVICE_PORT` (18802), `TRADEMARK_MCP_HTTP_PORT`
+(18790) and `CLIENT_MCP_HTTP_PORT` (18811). These were missing from this list and the omission is not
+cosmetic: a second instance with all four data variables correctly set still crash-loops, because both
+instances bind the same three defaults and the second one to start cannot listen. The symptom is a unit
+that fails at boot, which reads as a broken install rather than as a port already in use.
+
+Set all seven. Nothing else separates them.
 
 ## 9. What the integrator supplies
 
