@@ -57,10 +57,24 @@ export function distTag(version, { preMode = false } = {}) {
     throw new Error(`release-dist-tag: "${version}" is not a version this can read, so the channel it `
       + "belongs on cannot be derived. Publishing it would default to `latest`.");
   }
-  // THE PRE-RELEASE PHASE PUTS EVERYTHING ON `latest`, by the owner's ruling. Checked after the version
-  // is parsed, never before: refusing an unreadable version matters more here, not less, because in pre
-  // mode `latest` is the answer and an unparseable version would reach it without anybody deciding.
-  if (preMode) return STABLE;
+  // ── THE PRE-MODE OVERRIDE IS GONE, AND `preMode` NO LONGER DECIDES ANYTHING (tracker issue 230) ──
+  //
+  // It read `if (preMode) return STABLE`, putting every pre-release on `latest` under the owner's ruling
+  // of 2026-09-05. That was right while nothing installed the package and wrong once things did: nine
+  // versions reached the npm page in two days, three of them broken, and every one of them was what a
+  // plain `npm install clearotron` handed a stranger.
+  //
+  // The 2026-09-06 two-channel ruling replaces it. Stable is `latest`; everything else is a beta on
+  // `beta`, cut automatically, with a stable cut on the owner's word by leaving pre mode.
+  //
+  // DELETED RATHER THAN INVERTED, and this note exists so nobody restores the line for tidiness. In pre
+  // mode Changesets already produces `0.2.1-beta.0`, and the label below reads `beta` straight out of
+  // it — so the version carries its own channel and the override was the only thing overruling it.
+  // Writing `if (preMode) return BETA` would hardcode a channel name that `changeset pre enter <tag>`
+  // chooses, and the two would disagree the first time anybody entered pre mode under another name.
+  //
+  // `preMode` stays in the signature: `isPrerelease` and the callers still need the distinction, and a
+  // parameter removed here would be re-derived by whoever needs it next, differently.
   const prerelease = m[4];
   if (!prerelease) return STABLE;
   const first = prerelease.split(".")[0];
