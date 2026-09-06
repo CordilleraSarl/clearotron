@@ -23,6 +23,7 @@ import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { listenErrorMessage } from "../../shared/listen.mjs";
+import { handRunEnv, assertReadItsEnvFile } from "./drive-env.mjs";   // tracker issue 204
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const START = join(ROOT, "bin", "start.mjs");
@@ -45,25 +46,16 @@ function driveStart(port, extra = {}) {
   mkdirSync(join(home, ".config", "clearotron"), { recursive: true });
   const envFile = join(home, ".config", "clearotron", ".env");
   writeFileSync(envFile, `PORTAL_SERVICE_PORT=${port}\n`);
-  const env = { ...process.env, HOME: home, ...extra };
-  // THE RUNNER OPTS EVERY CHILD OUT OF .env FILES (scripts/test-run.mjs sets CLEAROTRON_NO_ENV_FILE=1
-  // for the whole suite, so no test can be configured by a file on the developer's box). This drive is
-  // ABOUT that file, so it must opt back in — and the first version of it did not. The .env went
-  // unread, PORTAL_SERVICE_PORT fell back to the built-in 18802, and the refusal these arms measured
-  // was a collision with whatever holds 18802 on the machine running the suite: on this box, the
-  // owner's own portal. Nothing was written — the probe refuses before the first state change, which
-  // the third arm checks — but the arms were reading a different collision than the one they set up,
-  // and on a runner where 18802 is free they would have read no collision at all.
-  if (!("CLEAROTRON_NO_ENV_FILE" in extra)) delete env.CLEAROTRON_NO_ENV_FILE;
-  // AND INVOCATION_ID, which is the same trap wearing a second face. env-local treats that variable as
-  // proof the process was started by systemd and is configured by its EnvironmentFile, so it ignores the
-  // file. Its own note says systemd sets it "and nothing else does" — true of who SETS it, and not of
-  // who has it: any descendant of a unit inherits it, and a GitHub runner's job is a descendant of the
-  // runner agent's unit. So this drive read no .env on CI, took the built-in default port, met no
-  // collision, and three arms failed saying the refusal named a port they did not hold. Locally the
-  // variable is unset and all three passed. A drive standing in for a hand-run CLI must present a
-  // hand-run environment; the one arm that is ABOUT the service-managed path sets it back deliberately.
-  if (!("INVOCATION_ID" in extra)) delete env.INVOCATION_ID;
+  // A HAND-RUN ENVIRONMENT, from the one definition — `handRunEnv` clears CLEAROTRON_NO_ENV_FILE and
+  // INVOCATION_ID, and `extra` is applied after it, so the arm that is ABOUT the service-managed path
+  // sets one back deliberately. Both were live defects on this file before that helper existed: the
+  // suite runner sets the first for every child, so the .env went unread and the port fell back to the
+  // built-in 18802 — the refusal these arms measured was a collision with whatever holds 18802 on the
+  // machine running the suite, on this box the owner's own portal; and the second is inherited by any
+  // descendant of a systemd unit, so on CI the same drive read no .env, met no collision at all, and
+  // three arms failed reporting a port they did not hold. The reasoning is in drive-env.mjs
+  // (tracker issue 204).
+  const env = handRunEnv({ HOME: home, ...extra });
   const r = spawnSync(process.execPath, [START, "--background"],
     { encoding: "utf8", timeout: 180_000, env });
   return { home, envFile, port, said: `${r.stdout ?? ""}${r.stderr ?? ""}`, code: r.status,
@@ -79,12 +71,7 @@ function driveStart(port, extra = {}) {
  * its subject has to say so in those words, or the next reader debugs the wrong thing.
  */
 function readItsEnvFile(d) {
-  const loader = /\[env-local\] applied \d+ variables? from (\S+):/.exec(d.said);
-  assert.ok(loader,
-    `this drive's .env never reached the command, so nothing below it could be measured — the port it `
-    + `refuses on is a built-in default, not the one this arm held:\n${d.said.slice(0, 700)}`);
-  assert.equal(loader[1], d.envFile, "the command read an env file, but not this drive's");
-  return loader[1];
+  return assertReadItsEnvFile(d.said, d.envFile);
 }
 
 /** The refusal must be about the port this drive HELD, never a default it fell back to. */

@@ -24,6 +24,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync, chmodSync } from "node:f
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
+import { handRunEnv } from "./drive-env.mjs";   // tracker issue 204
 import { startStands } from "../../bin/start.mjs";
 import { systemdFailure, CAPTURE_STDERR } from "../../shared/systemd-failure.mjs";
 
@@ -61,13 +62,13 @@ async function driveToEnable(stderrLine) {
     + `CLEAROTRON_REPORTS_DIR=${join(home, "pool")}\n`);
   const ports = { portal: await freePort(), mcp: await freePort(), client: await freePort() };
   const r = spawnSync(process.execPath, [START, "--background"], { encoding: "utf8", timeout: 180_000,
-    env: { ...process.env, HOME: home, PATH: `${bin}:${process.env.PATH}`,
+    // A hand-run environment from the one definition. Either of the two variables `handRunEnv` clears
+    // would make this drive read no .env, so the values written above never arrive and it stops at an
+    // earlier refusal — the guard `reachedTheEnable` names rather than lets an arm read past
+    // (tracker issue 204).
+    env: handRunEnv({ HOME: home, PATH: `${bin}:${process.env.PATH}`,
       PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
-      CLIENT_MCP_HTTP_PORT: String(ports.client),
-      // Both of these make the drive read no .env — the runner sets the first for every child, and the
-      // second is inherited by any descendant of a systemd unit, which on CI includes the runner's job.
-      // Without them deleted the values above never arrive and this drive stops at an earlier refusal.
-      CLEAROTRON_NO_ENV_FILE: undefined, INVOCATION_ID: undefined } });
+      CLIENT_MCP_HTTP_PORT: String(ports.client) }) });
   return { home, unitDir: join(home, ".config", "systemd", "user"),
     said: `${r.stdout ?? ""}${r.stderr ?? ""}`, code: r.status,
     clean: () => rmSync(home, { recursive: true, force: true }) };
@@ -135,10 +136,12 @@ test("203 and the generic trailer still fires where nothing better was said", as
   const ports = { portal: await freePort(), mcp: await freePort(), client: await freePort() };
   try {
     const r = spawnSync(process.execPath, [START, "--background"], { encoding: "utf8", timeout: 180_000,
-      env: { ...process.env, HOME: home, CLEAROTRON_NO_ENV_FILE: "1", INVOCATION_ID: undefined,
+      // CLEAROTRON_NO_ENV_FILE is set BACK here on purpose: this drive wants the refusal that comes
+      // from having no engine values, and reading a file would be a way to accidentally have some.
+      env: handRunEnv({ HOME: home, CLEAROTRON_NO_ENV_FILE: "1",
         PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
         CLIENT_MCP_HTTP_PORT: String(ports.client),
-        CLEAROTRON_DATABASE: undefined, CLEAROTRON_AI: undefined, CLEAROTRON_CLAUDE_PATH: undefined } });
+        CLEAROTRON_DATABASE: undefined, CLEAROTRON_AI: undefined, CLEAROTRON_CLAUDE_PATH: undefined }) });
     const said = `${r.stdout ?? ""}${r.stderr ?? ""}`;
     assert.match(said, /would install units that cannot run a clearance/,
       `this drive did not reach a post-write refusal, so it proves nothing about the trailer:\n${said.slice(-1200)}`);

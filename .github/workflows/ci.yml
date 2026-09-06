@@ -348,3 +348,13 @@ jobs:
       # against the live version branch rather than reasoned about.
       - name: A change a reader can see arrives with something to read
         run: node scripts/release-note-required.mjs --base "${{ github.event.pull_request.base.sha || 'origin/main' }}"
+
+      # A test that drives a real command and writes the .env it expects that command to read gets
+      # BUILT-IN DEFAULTS instead — silently, ports included — when either CLEAROTRON_NO_ENV_FILE (which
+      # the suite runner sets for every child) or INVOCATION_ID (which is inherited from any systemd unit
+      # above the run) reaches it. This job is where that matters most: INVOCATION_ID is set on a hosted
+      # runner and unset on a laptop, so the shape is green locally and wrong here (tracker issue 204).
+      #
+      # It reads source, not history, so it needs no base and answers the same on every event.
+      - name: A drive of a real command says what environment it drives it in
+        run: node scripts/drive-env-check.mjs

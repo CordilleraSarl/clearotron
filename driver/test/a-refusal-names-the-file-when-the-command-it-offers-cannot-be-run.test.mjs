@@ -27,6 +27,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
+import { handRunEnv, assertReadItsEnvFile } from "./drive-env.mjs";   // tracker issue 204
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const START = join(ROOT, "bin", "start.mjs");
@@ -62,21 +63,16 @@ function driveStart(ports, extra = {}) {
   // whose two branches differ in whether a file is read cannot take anything it needs in both from
   // that file.
   writeFileSync(envFile, "PORTAL_LOCAL_USER=drive@localhost\n");
-  const env = { ...process.env, HOME: home, PORTAL_SERVICE_PORT: String(ports.portal),
+  // A hand-run environment from the one definition: `handRunEnv` clears CLEAROTRON_NO_ENV_FILE and
+  // INVOCATION_ID, either of which would make this drive read no .env and take built-in defaults with
+  // no error, and `extra` lands after it so the arm ABOUT the service-managed path sets one back
+  // deliberately (tracker issue 204). The engine values go with them: a developer's shell or a CI
+  // secret carrying one would clear the refusal, and the arms would measure a run that never refused.
+  const env = handRunEnv({ HOME: home, PORTAL_SERVICE_PORT: String(ports.portal),
     TRADEMARK_MCP_HTTP_PORT: String(ports.mcp), CLIENT_MCP_HTTP_PORT: String(ports.client),
-    ...extra };
-  // Both of these make a drive read no .env, and both were live defects on the arms next door
-  // (tracker issue 200): the suite runner sets CLEAROTRON_NO_ENV_FILE=1 for every child, and
-  // INVOCATION_ID is INHERITED by every descendant of a systemd unit, which on CI includes the runner's
-  // own job. A drive standing in for a hand-run CLI must present a hand-run environment. The arm that
-  // is ABOUT the service-managed path sets one of them back deliberately.
-  if (!("CLEAROTRON_NO_ENV_FILE" in extra)) delete env.CLEAROTRON_NO_ENV_FILE;
-  if (!("INVOCATION_ID" in extra)) delete env.INVOCATION_ID;
-  // The engine values this refusal is about must be absent from the INHERITED environment too — a
-  // developer's shell or a CI secret carrying one would clear the refusal and the arms would measure a
-  // run that never refused.
-  for (const k of ["CLEAROTRON_DATABASE", "CLEAROTRON_AI", "CLEAROTRON_CLAUDE_PATH",
-    "CLEAROTRON_REPORTS_DIR"]) delete env[k];
+    CLEAROTRON_DATABASE: undefined, CLEAROTRON_AI: undefined, CLEAROTRON_CLAUDE_PATH: undefined,
+    CLEAROTRON_REPORTS_DIR: undefined,
+    ...extra });
   const r = spawnSync(process.execPath, [START, "--background"],
     { encoding: "utf8", timeout: 180_000, env });
   return { home, envFile, homeEnv: join(home, ".env"), said: `${r.stdout ?? ""}${r.stderr ?? ""}`,
@@ -135,12 +131,7 @@ function poolWarning(said) {
 
 /** The file this process reports READING, taken off its own loader line — never composed by this test. */
 function readItsEnvFile(d) {
-  const loader = /\[env-local\] applied \d+ variables? from (\S+):/.exec(d.said);
-  assert.ok(loader,
-    `this drive's .env never reached the command, so the file it should name is not established:\n`
-    + d.said.slice(0, 700));
-  assert.equal(loader[1], d.envFile, "the command read an env file, but not this drive's");
-  return loader[1];
+  return assertReadItsEnvFile(d.said, d.envFile);
 }
 
 let PORTS = null;
