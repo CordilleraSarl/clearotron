@@ -388,10 +388,11 @@ test("tracker issue 180 — the exit codes CI reads carry the house meanings", (
 });
 
 test("tracker issue 180 — an install this gave up waiting for is a could-not-look too", () => {
-  // THE MEMBER OF THE CLASS THE CLASSIFIER CANNOT SEE. On a timeout npm is killed by signal and writes
-  // nothing recognisable, so a check that only reads the message blames the artefact for a slow
-  // network or a loaded machine. Driven by giving it a deadline nothing can meet, which is the same
-  // path a fifteen-minute hang takes.
+  // THE MEMBER THE CLASSIFIER WAS NOT WRITTEN FOR, and does carry. A check that only read npm's message
+  // would blame the artefact for a slow network or a loaded machine, so this was first repaired with a
+  // second branch reading `e.signal` — which planted GREEN, because Node hands back `spawnSync npm
+  // ETIMEDOUT` and the predicate already matches it. The branch went; this arm stayed, because what it
+  // pins is real and was not pinned before: a fifteen-minute hang takes exactly this path.
   const dir = scratch();
   try {
     const tgz = packTarball(dir, { name: "timeout-probe", version: "1.0.0" });

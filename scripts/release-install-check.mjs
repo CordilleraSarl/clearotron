@@ -62,6 +62,11 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 /**
  * Is this npm failure about reaching the world, rather than about the artefact?
  *
+ * A KILLED CHILD IS IN HERE TOO, and a separate branch for it was written and then deleted. On the
+ * timeout above npm is killed by signal, and Node hands back `spawnSync npm ETIMEDOUT` — measured — so
+ * this predicate already carries it. The branch that also read `e.signal` was redundant: planted
+ * against, with it disabled, nothing went red. One path, armed, rather than two where only one is.
+ *
  * MEASURED STRINGS, not guessed ones. `ENOTCACHED` is what an offline npm says when a dependency is not
  * in the cache — "request to https://registry.npmjs.org/… failed" — and it is the one this file's own
  * arm drives. The rest are the ordinary network and disk codes. `EINVALIDTAGNAME`, `EINTEGRITY` and a
@@ -115,15 +120,6 @@ export function installsAsADependency(tarballPath, { keep = false, timeoutMs = 9
         { cwd: consumer, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: timeoutMs });
     } catch (e) {
       const said = `${e?.stderr ?? ""}`.trim() || `${e?.stdout ?? ""}`.trim() || `${e?.message ?? e}`;
-      // A KILLED CHILD IS THE SAME CLASS AS AN UNREACHABLE REGISTRY, and the string does not say so.
-      // On the timeout above npm is killed by signal and writes nothing recognisable, so the classifier
-      // below cannot see it and the artefact would be blamed for a slow network. `e.signal` is the only
-      // place that fact exists.
-      if (e?.signal) {
-        return { ok: false, couldNotLook: true, missingBins: [], installed: null,
-          why: `npm was killed (${e.signal}) before it finished — after ${Math.round(timeoutMs / 1000)}s `
-            + "this gave up on it. That is a fact about this machine or the registry, not about these bytes." };
-      }
       if (looksLikeCouldNotLook(said)) {
         return { ok: false, couldNotLook: true, missingBins: [], installed: null,
           why: `npm could not complete an install here for a reason that is not about these bytes:\n\n${said}` };
