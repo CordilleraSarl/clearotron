@@ -90,6 +90,8 @@ import { resolveAuthMode } from "../driver/engine/auth.mjs";
 import { isInsideCheckout } from "../shared/inside-checkout.mjs";   // — one copy of the rule, and it is testable
 import { packagedBuild as sharedPackagedBuild } from "../shared/packaged-build.mjs";   // — one reader of build-info.json, reachable from the driver
 import { processTable } from "../shared/process-table.mjs";   // — /proc is not the only box
+import { programsFromAnotherCheckout } from "../shared/checkout-move.mjs";   // tracker issue 193
+import { entrypointOf } from "../driver/systemd/install-census.mjs";         // one ExecStart parser
 import { overlayReport, renderOverlayReport } from "../shared/doctrine-overlay.mjs";   // — the doctor reports the overlay
 import { engineInventory, engineMode, ENGINE_MODES } from "../driver/config-inventory.mjs";   //
 import { probeEngineTurn, probeFailureText, PROBE_MODEL, PROBE_TIMEOUT_SEC } from "../driver/engine/probe.mjs";
@@ -1013,6 +1015,37 @@ export async function runCheck() {
     say("      them is a property of your deployment and not of this checkout.");
   } else if (running.state === "unknown") {
     warn(`could not tell whether running programs are on the current tree: ${running.detail}`);
+  }
+
+  // ── AND THE MORE DANGEROUS ANSWER: A DIFFERENT TREE, NOT AN OLDER ONE (tracker issue 193) ──────────
+  //
+  // The block above asks whether a process predates this checkout's last move. This asks whether it is
+  // executing a DIFFERENT checkout entirely, which is what `clearotron connect` used to cause silently
+  // by writing CLEAROTRON_CHECKOUT_DIR from whatever tree it was run in. Such a process keeps serving
+  // until it restarts and then cannot start at all — and deleting the tree it runs from does the same,
+  // irrecoverably. Both surface at the next reboot, long after the cause.
+  const userUnitDir = join(homedir(), ".config", "systemd", "user");
+  const entrypoints = (() => {
+    try {
+      return readdirSync(userUnitDir).filter((f) => f.startsWith("clearotron-") && f.endsWith(".service"))
+        .map((f) => entrypointOf(readFileSync(join(userUnitDir, f), "utf8")).rel).filter(Boolean);
+    } catch { return []; }
+  })();
+  const configuredTree = (() => {
+    // THE FILE THE UNITS LOAD, not this checkout — the whole point is that the two can disagree.
+    try { return parseEnvFile(readFileSync(join(homedir(), ".env"), "utf8")).CLEAROTRON_CHECKOUT_DIR ?? ""; }
+    catch { return ""; }
+  })();
+  const elsewhere = programsFromAnotherCheckout({ table: processTable(), checkoutDir: configuredTree, entrypoints });
+  if (elsewhere.state === "elsewhere") {
+    warn(`${elsewhere.programs.length} running program(s) are executing a DIFFERENT checkout than the one `
+      + `this install names (${configuredTree}). They keep working until they restart and then cannot `
+      + "start at all; deleting the tree they run from has the same effect and no restart recovers it:");
+    for (const pr of elsewhere.programs.slice(0, 6)) say(`      pid ${pr.pid}  ${pr.tree}`);
+    if (elsewhere.programs.length > 6) say(`      … and ${elsewhere.programs.length - 6} more`);
+    say("      Either point the install back at the tree they run from, or restart them onto this one.");
+  } else if (elsewhere.state === "unknown") {
+    warn(`could not tell whether running programs are on a different checkout: ${elsewhere.detail}`);
   }
 
   say("\n  Node");
