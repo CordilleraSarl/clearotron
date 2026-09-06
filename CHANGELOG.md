@@ -4,6 +4,23 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.1.5
+
+### Fixed
+
+- The demo's help now lists every example clearance it ships and says which one runs by default, so none stay hidden.
+
+### For operators
+
+- A background install that stops because engine settings are missing now names the files to put them in. It used to point only at the setup wizard, which will not run outside a terminal. So a scripted or hosted install was being sent somewhere it could not go. The missing report-pool setting is the same.
+- When systemd refuses to start one of the installed services, the background install now says what systemd said. It names which service refused and which ones are already up. It also says that re-running finishes the job. It used to end in a raw crash dump.
+- An install step that refuses no longer claims it wrote new keys first, so a failed run cannot look like a partly finished one.
+- A server install now refuses before installing services that cannot run, naming each missing setting and the file to put it in.
+- When a port is already in use, the message now names the configuration file it actually reads, so the setting goes where it works.
+- Connecting now says when it would point your deployment at a different copy of the software, and refuses when the running services disagree.
+- Changing the client connection port and re-running the install step now updates the addresses it accepts, so the service no longer refuses its own.
+- A warning about the ops access key now prints a command that preserves the holder and permissions it already had, instead of widening them.
+
 ## 0.1.4
 
 ### New
