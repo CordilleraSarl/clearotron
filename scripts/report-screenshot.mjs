@@ -19,6 +19,7 @@
 // receives, so it loads the brand webfonts the client's browser loads. Two scripts, two intents; do not
 // "fix" either to match the other.
 import { spawn } from "node:child_process";
+import { assertPageLoaded } from "./headless-page.mjs";   // tracker issue 227 — did chrome open the report, or its own error page?
 import { mkdtempSync, writeFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname, resolve } from "node:path";
@@ -29,6 +30,9 @@ const OUT = resolve(process.argv[3] ?? join(ROOT, "docs", "assets", "example-rep
 const WIDTH = 1280, HEIGHT = 1040;
 // The frame starts here rather than at the top of the document — see the scroll block below.
 const ANCHOR = process.argv.includes("--anchor") ? process.argv[process.argv.indexOf("--anchor") + 1] : "h1";
+// WHAT ONLY A REPORT CARRIES. `h1` is the ANCHOR — where to start the frame — and it is on every HTML
+// page including Chrome's error interstitial, so it cannot also be the proof that this IS a report.
+const MARKER = process.argv.includes("--marker") ? process.argv[process.argv.indexOf("--marker") + 1] : "[data-run-id]";
 
 const src = process.argv[2];
 if (!src) { console.error("usage: node scripts/report-screenshot.mjs <report.html> [out.png]"); process.exit(2); }
@@ -69,6 +73,34 @@ const sessionId = sess.sessionId;
 const cmd = (method, params = {}) => new Promise((r) => { const n = ++id; pending.set(n, r); ws.send(JSON.stringify({ id: n, sessionId, method, params })); });
 
 await cmd("Page.enable");
+
+// ── IS THIS THE REPORT, OR CHROME'S OWN ERROR PAGE? (tracker issue 227) ──────────────────────────────
+//
+// Chrome is launched with the file URL as an ARGUMENT, so there is no navigation response to check and
+// nothing here ever asked. When the file could not be read, Chrome showed `ERR_ACCESS_DENIED` — a page
+// with an `<h1>` — the anchor below resolved against it, the clip was taken, and this exited 0 having
+// written 38 KB of grey error page over the README's example frame. The successful run and the failed
+// one differed in the log by an anchor offset and a font count, neither of which was asserted on.
+//
+// `existsSync` above does not cover it: a file that EXISTS and cannot be READ passes that check and
+// fails in Chrome. So does a file that is readable and is not a report.
+//
+// THE MARKER IS THE RUN ID, not a tag. `h1` is what the error page has; `[data-run-id]` is what only a
+// rendered report has, and naming it in the log is what makes the success line say what it certified
+// rather than "an h1 was found".
+const evaluate = async (expression) => {
+  const r = await cmd("Runtime.evaluate", { expression, returnByValue: true });
+  return r?.result?.result?.value;
+};
+const loaded = await assertPageLoaded(evaluate, {
+  expected: `file://${page}`,
+  marker: `document.querySelector(${JSON.stringify(MARKER)})`,
+  markerName: `a report element (${MARKER})`,
+  what: "report-screenshot",
+});
+if (!loaded.ok) { chrome.kill(); process.exit(1); }
+const runId = await evaluate(`(document.querySelector(${JSON.stringify(MARKER)})?.getAttribute("data-run-id") ?? "")`);
+
 // The fonts are the point of allowing the network at all, so wait for them rather than for a fixed
 // sleep: a timer long enough on this box is a timer too short on a slower one, and the failure is a
 // screenshot in the wrong typeface that nobody notices until it is in the README.
@@ -96,6 +128,8 @@ const shot = await cmd("Page.captureScreenshot", { format: "png", captureBeyondV
   clip: { x: 0, y, width: WIDTH, height: HEIGHT, scale: 1 } });
 if (!shot?.result?.data) { console.error(`report-screenshot: chrome returned no image. ${JSON.stringify(shot).slice(0, 300)}`); chrome.kill(); process.exit(1); }
 writeFileSync(OUT, Buffer.from(shot.result.data, "base64"));
-const loaded = await cmd("Runtime.evaluate", { expression: "document.fonts.size + ':' + [...document.fonts].filter(f=>f.status==='loaded').length", returnByValue: true });
+const fonts = await cmd("Runtime.evaluate", { expression: "document.fonts.size + ':' + [...document.fonts].filter(f=>f.status==='loaded').length", returnByValue: true });
 chrome.kill();
-console.log(`report-screenshot: wrote ${OUT} (${WIDTH}x${HEIGHT}, anchor ${JSON.stringify(ANCHOR)} at y=${Math.round(y)}, fonts ${loaded?.result?.result?.value ?? "?"})`);
+// NAMES WHAT IT CERTIFIED. "an h1 was found" is true of the error page this used to photograph; the
+// run id is read out of the document and is the thing a reader can check against the report they meant.
+console.log(`report-screenshot: wrote ${OUT} of run ${runId || "(no run id in the page)"} (${WIDTH}x${HEIGHT}, anchor ${JSON.stringify(ANCHOR)} at y=${Math.round(y)}, fonts ${fonts?.result?.result?.value ?? "?"})`);
