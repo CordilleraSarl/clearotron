@@ -4,6 +4,23 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.1.9
+
+### Fixed
+
+- Asking a delivered report a what-if now returns a memo — the request used to be accepted and then dropped before anything ran.
+- A clearance no longer stops because its placement section was worded differently. The section is accepted on what it contains.
+
+### For operators
+
+- A run stopped by a provider's usage cap now says so and how long it waited, instead of reporting the provider as overloaded.
+
+## 0.1.8
+
+### For operators
+
+- A new version now reaches npm within about a minute of its release being merged, instead of waiting for the next unrelated change.
+
 ## 0.1.7
 
 ### Fixed

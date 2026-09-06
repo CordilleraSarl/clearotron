@@ -1867,7 +1867,36 @@ export const validators = {
   // artifact passing, and a fresh dispatch under this code is held to the new floor. A sibling that
   // EXISTS is parsed strictly regardless of vintage (present-and-malformed is always a defect).
   placement: (p, c) => {
-    const base = all(nonEmpty(c), needs(c, [/tier|placement|sheet|level/i], "placement tiers"));
+    // THE LAST PROSE-KEYED GATE ON A SEAT-WRITTEN ARTIFACT (tracker issue 129).
+    //
+    // 129 named three sites and all three had stopped being members before it was filed: conversions 5
+    // and 11 moved report-cards/<ord>.md and register-findings.md to driver renders, and audit.md was
+    // always built by buildAuditMd — a prose key on a document the driver itself writes is code
+    // checking its own render, which no model's phrasing can reach. THIS one the issue never named.
+    // placements.json is rendered from the form (renderPlacementsJson), but the .md is still the
+    // seat's, and stages.mjs's own contract declaration says so: "`missing:placement tiers` is the
+    // token that checks the md for tier words."
+    //
+    // Four alternatives matched anywhere is a wide net, and that is exactly what made it survive three
+    // censuses: it is unfailable UNTIL a seat words all four dictated tier headings without reaching
+    // for "tier", "placement", "sheet" or "level" — "Top conflicts / Secondary watch / Annex /
+    // Filtered out" is a perfectly good answer that this gate refuses, driven and confirmed. That is
+    // 129's failure verbatim: rejected for wording on a document written correctly.
+    //
+    // WHAT FIXES THAT IS THE DICTATION, NOT THIS LINE, and the distinction is worth writing down
+    // because the measurement that first looked like proof was not one. The anchor string contains the
+    // literal words "placement" and "tier", so a document carrying it passes the BARE regex too — the
+    // old gate accepted the anchor by substring coincidence, and a specimen built to show the
+    // alternation working goes green against the pre-change tree. The behaviour change in this PR is
+    // the skill telling the seat to emit a stable token; the change on this line makes the anchor
+    // load-bearing BY CONTRACT rather than by that coincidence, so renaming the token to anything
+    // without one of the four words in it (`groupings`, `conflict-groups`) stops being a silent
+    // regression. Verdict-identical today, on every input, by construction.
+    //
+    // The alternation is strictly more permissive than the regex it wraps, so no archived run's replay
+    // verdict moves, and the token is unchanged (`missing:placement tiers`) because the corrective
+    // ladder reads it.
+    const base = all(nonEmpty(c), needsSection(c, "placement-tiers", [/tier|placement|sheet|level/i], "placement tiers"));
     if (!base.ok) return base;
     const dir = dirname(String(p ?? ""));
     if (existsSync(join(dir, "placements.json")))

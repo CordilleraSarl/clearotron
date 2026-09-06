@@ -41,6 +41,20 @@ TWO files.
 
 **1. The markdown file** `studio/prelim-search/<slug>/<date>/placement-recommendations.md`. Use these section headings, in this order: **Band reconciliation** (the expectation-vs-band check), the four placement tiers (**Headline candidates**, **Sheet 2 / register watch**, **Watchlist annex**, **Out-of-scope / filtered**), **Disagreements / flags surfaced to downstream**, **Coverage rulings & open questions** (the per-crowd-descriptor cleared/material-gap rulings that feed synthesis `coverage_judgment`), and **Open questions for the client / reviewer** (genuine open judgment that ships).
 
+**Section anchor — copy it verbatim.** Directly under the FIRST of the four placement-tier headings,
+emit this line exactly as written, on its own line:
+
+    <!-- clearotron:section=placement-tiers -->
+
+It is how the validator finds your tier sections. Without it the validator falls back to guessing your
+heading wording, and a set of tier headings that never happens to use the words "tier", "placement",
+"sheet" or "level" is rejected for a document you wrote correctly — the failure that killed three runs
+on the common-law layer before its anchors landed. It is an HTML comment, so it renders as nothing and
+no reader ever sees it.
+
+**Word the headings however reads best.** The anchor is the contract; the heading text is yours. The
+order above is still the order to write them in, but you will not be failed for choosing other words.
+
 **2. The structured mirror** `studio/prelim-search/<slug>/<date>/placements.json` — the four tier sections as data: `{"schema_version":1,"placements":[...]}`, ONE object per placed candidate, keys EXACTLY `{"mark","owner","jurisdiction","records","tier","reason"}` plus the optional `"borderline"`:
 
 - `mark` / `owner` — verbatim as in your md entry (downstream joins on mark + owner + jurisdiction)

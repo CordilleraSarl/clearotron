@@ -15,7 +15,8 @@
 // at an hour.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { capParkSchedule, isCapPark, CAP_BACKOFF_MIN, OUTAGE_RE } from "../repairs.mjs";
+import { capParkSchedule, isCapPark, CAP_BACKOFF_MIN, OUTAGE_RE, capWaitFrom, humanWait } from "../repairs.mjs";
+import { buildFailurePacket } from "../pipeline.mjs";
 
 const NOW = Date.parse("2026-09-05T12:00:00Z");
 const iso = (ms) => new Date(ms).toISOString();
@@ -106,4 +107,93 @@ test("the schedule is PURE — same inputs, same answer, no clock read", () => {
   const a = capParkSchedule({ attempts: 2, now: NOW });
   const b = capParkSchedule({ attempts: 2, now: NOW });
   assert.deepEqual(a, b);
+});
+
+// ── AND WHEN IT STILL DIES: THE FOURTH ASK (tracker issue 103) ───────────────────────────────────
+//
+// The three above buy the run time. This is what it says when the time runs out. The weather lane
+// carries both an overloaded provider and a usage cap, and its one sentence described the first —
+// "stayed overloaded or unreachable … Re-trigger once the provider is healthy." Every clause of that
+// is wrong for a cap: the provider was healthy, re-triggering hits the same cap, and it points the
+// reader at an availability problem they cannot act on. The owner pre-committed the wording watching
+// indigo-falcon: a subscription outcome, never an engine finding.
+
+const capRow = (over = {}) => ({ sig: "s", stage: "synthesis", lane: "weather", capPark: true, recoveryWaitMin: 60, recoveryWaitBasis: "ladder", ...over });
+
+test("capWaitFrom sums the wait, counts the parks, and counts which resets the PROVIDER stated", () => {
+  const got = capWaitFrom([
+    capRow({ recoveryWaitMin: 15 }),
+    capRow({ recoveryWaitMin: 30, recoveryWaitBasis: "provider" }),
+    capRow({ recoveryWaitMin: 240, recoveryWaitBasis: "provider" }),
+  ]);
+  assert.deepEqual(got, { parks: 3, waitedMin: 285, statedResets: 2 });
+});
+
+// NULL, NOT A ZEROED OBJECT. "No cap park in this history" and "cap parks that waited zero minutes"
+// are different facts; a caller rendering the second as the first tells the reader we waited when we
+// did not. This is the property the notice's whole branch rests on.
+test("capWaitFrom answers null when nothing in the history was a cap park", () => {
+  assert.equal(capWaitFrom([{ sig: "s", lane: "weather" }, { sig: "t", lane: "defect" }]), null);
+  assert.equal(capWaitFrom([]), null);
+  assert.equal(capWaitFrom(undefined), null);
+});
+
+// A DIFFERENT MEMBER OF THE CLASS: a row written before the cap fields existed. It carries no capPark
+// key at all, and must count as non-cap — the conservative reading, and the same way countRecoveryLanes
+// charges its own pre-split rows. A history that read absent-as-cap would invent a cap for every run
+// parked before this landed.
+test("a park row written before the cap fields existed is not counted as a cap", () => {
+  assert.equal(capWaitFrom([{ sig: "s", stage: "synthesis", lane: "weather", attempt: 1 }]), null);
+  // and `capPark: false` — should it ever be written — is also not a cap
+  assert.equal(capWaitFrom([capRow({ capPark: false })]), null);
+});
+
+test("humanWait reads as hours once it passes one, and 0 stays a number", () => {
+  assert.equal(humanWait(45), "45m");
+  assert.equal(humanWait(60), "1h");
+  assert.equal(humanWait(285), "4h 45m");
+  assert.equal(humanWait(0), "0m");
+});
+
+const packetFor = (over = {}) => buildFailurePacket({
+  runId: "r", agent: "a", job: { markName: "ZEPHYR" }, failedStage: "synthesis",
+  shortReason: "usage limit reached", reasonVerbatim: "usage limit reached",
+  sig: "s", failClass: "transient", terminalKind: "weather-exhausted", priorAttempts: 3, ...over,
+});
+
+test("a cap death names the cap and the hours waited, and never calls the provider overloaded", () => {
+  const p = packetFor({ capWait: { parks: 5, waitedMin: 645, statedResets: 0 } });
+  const body = p.emailBodyHtml;
+  assert.match(body, /usage cap/i);
+  assert.match(body, /10h 45m/);
+  assert.match(body, /subscription outcome/i);
+  // The pre-commitment's second half: never an engine finding.
+  assert.match(body, /not a finding about the run or the mark/i);
+  // and the outage sentence is GONE — this is the clause that was wrong for a cap
+  assert.doesNotMatch(body, /overloaded or unreachable/i);
+  assert.doesNotMatch(body, /once the provider is healthy/i);
+});
+
+test("the provider stating its own reset is said so, because a told time is not our guess", () => {
+  assert.match(packetFor({ capWait: { parks: 2, waitedMin: 90, statedResets: 2 } }).emailBodyHtml,
+    /provider stated its own reset time/i);
+  assert.doesNotMatch(packetFor({ capWait: { parks: 2, waitedMin: 90, statedResets: 0 } }).emailBodyHtml,
+    /provider stated its own reset time/i);
+});
+
+// THE OTHER MEMBER, and the one that proves the branch did not simply replace the sentence: a REAL
+// outage still gets the outage words. capWaitFrom returns null for it by construction.
+test("a weather death with no cap park still reads as the outage it is", () => {
+  const body = packetFor({ capWait: null }).emailBodyHtml;
+  assert.match(body, /overloaded or unreachable/i);
+  assert.doesNotMatch(body, /usage cap/i);
+  assert.doesNotMatch(body, /subscription outcome/i);
+});
+
+// AND A THIRD: the cap sentence is scoped to the weather terminal. A defect-lane death that somehow
+// carried a capWait must not be relabelled a subscription outcome — that would excuse a real defect.
+test("the cap sentence does not escape onto a defect-lane terminal", () => {
+  const body = packetFor({ terminalKind: "exhausted", capWait: { parks: 4, waitedMin: 300, statedResets: 0 } }).emailBodyHtml;
+  assert.doesNotMatch(body, /subscription outcome/i);
+  assert.match(body, /Automatic recovery is exhausted/i);
 });

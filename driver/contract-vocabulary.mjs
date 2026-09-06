@@ -107,7 +107,7 @@ export const VOCABULARY = [
   { token: "coverage_no_status", stages: ["register-digest"], site: "driver/verify.mjs:1062" },
   { token: "coverage_form_missing", stages: ["register-digest"], site: "driver/verify.mjs:1445" },
   { token: "coverage_form_empty", stages: ["register-digest"], site: "driver/verify.mjs:1449" },
-  { token: "coverage_status_offenum", stages: ["register-digest"], site: "driver/verify.mjs:1940" },
+  { token: "coverage_status_offenum", stages: ["register-digest"], site: "driver/verify.mjs:2050" },
   { token: "coverage_deferred_unaccounted", stages: ["register-digest"], site: "driver/verify.mjs:1504", family: "driver/register-plan.mjs:1620 (token on a data row)", dynamic: "D5" },
   { token: "coverage_clean_unexecuted", stages: ["register-digest"], site: "driver/verify.mjs:1567", family: "driver/register-plan.mjs:1395", dynamic: "D6" },
   { token: "coverage_clean_skipped", stages: ["register-digest"], site: "driver/verify.mjs:1567", family: "driver/register-plan.mjs:1744", dynamic: "D6" },
@@ -381,7 +381,7 @@ export const TRIPWIRE_OUT_OF_SCOPE = [
   {
     prefix: "register_plan_",
     site: "driver/register-plan.mjs",
-    reason: "parseRegisterPlan is called once from a validator (verify.mjs:2012) inside a try whose catch swallows it — `catch { /* no plan in reach — gate inactive */ }` at verify.mjs:1763. No throw of this family becomes a stage failure token.",
+    reason: "parseRegisterPlan is called once from a validator (verify.mjs:2102) inside a try whose catch swallows it — `catch { /* no plan in reach — gate inactive */ }` at verify.mjs:2146. No throw of this family becomes a stage failure token.",
   },
 ];
 
