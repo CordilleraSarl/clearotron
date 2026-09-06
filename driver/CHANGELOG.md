@@ -1,5 +1,13 @@
 # prelim-driver
 
+## 0.1.9
+
+### Patch Changes
+
+- 9a1a968: Fixed: Asking a delivered report a what-if now returns a memo — the request used to be accepted and then dropped before anything ran.
+- 9a1a968: For operators: A run stopped by a provider's usage cap now says so and how long it waited, instead of reporting the provider as overloaded.
+- 9a1a968: Fixed: A clearance no longer stops because its placement section was worded differently. The section is accepted on what it contains.
+
 ## 0.1.8
 
 ### Patch Changes
