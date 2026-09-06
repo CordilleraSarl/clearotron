@@ -8,13 +8,21 @@
 // than by decision is the shape of it: the log says "published" either way, and nobody finds out until
 // somebody reports behaviour from a release that was never meant to be what they got.
 //
-// ── AND DURING THE PRE-RELEASE PHASE, `latest` IS THE PRE-RELEASE. ──────────────────────────────────
+// ── A PRE-RELEASE GOES TO `beta`. `latest` IS THE TESTED ONE. ──────────────────────────────────────
 //
-// This file used to say, in capitals, that a pre-release must never reach `latest`. That is the right
-// rule for a product with ordinary users, and it is not what this product is doing right now. Owner
-// ruling, 2026-09-05, in his words: "latest has all our fixes." While `.changeset/pre.json` is in `pre`
-// mode the people installing are the people he wants on the newest build, so every merge that carries a
-// release note cuts a pre-release and publishes it as `latest`.
+// This block said the opposite until 2026-09-06, and the words mattered: "During the pre-release phase,
+// `latest` IS the pre-release", on the owner's ruling of 2026-09-05 — "latest has all our fixes" — back
+// when the people installing were the people he wanted on the newest build.
+//
+// He replaced that ruling the next day, and the reason is worth keeping: nine versions reached the npm
+// page in two days, three of them broken, and every one was what a plain `npm install clearotron` handed
+// somebody who had never seen the product. The rule that was right while nothing installed became wrong
+// the moment things did.
+//
+// So `preMode` no longer changes the answer at all. In pre mode Changesets produces `0.2.0-beta.N` and
+// the label is read straight out of the version, which is why the override could be DELETED rather than
+// inverted — see the note at that branch. A stable is cut by LEAVING pre mode, which folds the
+// accumulated betas into one version with one changelog entry.
 //
 // `beta` IS NOT ALSO SET, and that is a measurement rather than an omission. npm's trusted publishing
 // exchanges its OIDC token inside `npm publish` and nowhere else — `lib/commands/publish.js` is the only
