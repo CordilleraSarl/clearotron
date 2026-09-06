@@ -33,6 +33,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { CAPTURE_STDERR } from "../../shared/systemd-failure.mjs";
 import { unitIsHealthy, showUnit, looksLikeBusFailure, systemdSaid, systemdFailure,
   secretForMint, withSecret } from "../../bin/connect.mjs";
 import { describeChange } from "../../shared/client-door.mjs";
@@ -117,7 +118,12 @@ test("tracker issue 130 — no read site asks systemd directly, which is how thi
   const direct = src.split("\n")
     .map((line, i) => ({ line, n: i + 1 }))
     .filter(({ line }) => /execFileSync\(\s*"systemctl"/.test(line));
-  const wrapped = direct.filter(({ line }) => /stdio: \["ignore", "ignore", "pipe"\]/.test(line) && /env: userBusEnv\(\)/.test(line));
+  // TWO SPELLINGS OF ONE FACT, and the named one is now the definition. `CAPTURE_STDERR` in
+  // shared/systemd-failure.mjs IS `stdio: ["ignore", "ignore", "pipe"], encoding: "utf8"` — the arm
+  // below holds it to that, so widening here cannot be satisfied by a constant that stopped piping.
+  // Matching only the literal made this guard fire on a call that had lost nothing (tracker issue 203).
+  const captures = (line) => /stdio: \["ignore", "ignore", "pipe"\]/.test(line) || /\.\.\.CAPTURE_STDERR/.test(line);
+  const wrapped = direct.filter(({ line }) => captures(line) && /env: userBusEnv\(\)/.test(line));
   const bare = direct.filter((d) => !wrapped.includes(d));
   assert.deepEqual(bare.map((d) => d.n), [],
     "a `systemctl` call in this file neither goes through `showUnit` nor carries the derived bus and "
@@ -128,6 +134,15 @@ test("tracker issue 130 — no read site asks systemd directly, which is how thi
   // And the wrapper itself is the only other way in.
   assert.equal((src.match(/run\("systemctl"/g) ?? []).length, 1,
     "there is more than one wrapped runner, so `showUnit` is no longer the single read authority");
+});
+
+test("tracker issue 203 — the constant the guard above accepts by name really does pipe stderr", () => {
+  // The guard one arm up now accepts `...CAPTURE_STDERR` as proof a call captures systemd's words. That
+  // is only true while the constant says so, and a constant is exactly the thing that can be edited
+  // somewhere else. Held to its value here, so the two cannot drift apart silently.
+  assert.deepEqual(CAPTURE_STDERR, { stdio: ["ignore", "ignore", "pipe"], encoding: "utf8" },
+    "CAPTURE_STDERR no longer captures stderr, so every call site spelled with it is discarding the "
+    + "one thing a reader needs — and the source guard above is reading it as compliant");
 });
 
 test("tracker issue 130 — the raise says what a half-finished connect already wrote", () => {

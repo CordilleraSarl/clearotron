@@ -13,6 +13,7 @@ import { readdirSync, existsSync, accessSync, statSync, statfsSync, constants as
 import { homedir } from "node:os";
 import { envFrom } from "../shared/env-aliases.mjs";   // — an operator-facing name is the one an operator sets, and it has to work where they set it; — envFrom is the resolver that reads every spelling of it
 import { invoke } from "../shared/invocation.mjs";   // — name a command the reader can actually type
+import { envFileRead } from "../shared/env-local.mjs";   // — WHICH file to set it in, measured; null for a service that read none (tracker issue 202)
 import { numericSetting, resolveNumericSetting } from "./numeric-setting.mjs";   // — a number, or a refusal that names the variable; never NaN
 
 const { X_OK } = FS;
@@ -365,11 +366,23 @@ export const config = {
     // — the name a reader is told to SET is the one in force. This refusal reaches `doctor`'s
     // screen, beside seven lines that already name the current spelling, and told the reader to set a
     // retired one. Reproduced through the real entry path, not through the function.
+    // — AND THE FILE TO PUT IT IN, WHEN THIS PROCESS READ ONE ─────────────────
+    //
+    // "`install` writes one for you" is the whole remedy this carried, and `install` refuses a
+    // non-terminal. This message reaches `start --background`'s screen, which is the scripted and hosted
+    // install route, so its reader was being sent to a wizard they cannot open (tracker issue 202).
+    //
+    // `envFileRead()` rather than a path composed here, for the reason its header gives: this is a
+    // library reached by CLI entries AND by unit-booted services, and a service read no file of its own.
+    // Null there is correct and says nothing — the wizard offer stands alone, as it did.
+    const cliEnv = envFileRead();
     throw new Error(
       `CLEAROTRON_REPORTS_DIR is not set, and it has NO default. Unset is not "no pool": this used to fall `
       + "back to /srv/trademark-archive, a deployed server's real client archive, so a forgotten export "
       + "published into somebody else's matter. Set it to the pool this install owns, e.g. "
-      + `CLEAROTRON_REPORTS_DIR=$HOME/trademark/pool — \`${invoke("install")}\` writes one for you.`,   // backticked: issue 1916 can return a `cd … && npx …` form, which runs into the next words unquoted
+      + `CLEAROTRON_REPORTS_DIR=$HOME/trademark/pool — \`${invoke("install")}\` writes one for you`   // backticked: issue 1916 can return a `cd … && npx …` form, which runs into the next words unquoted
+      + (cliEnv ? `, or set it by hand in ${cliEnv} — the file this command reads, and the wizard refuses `
+        + `when stdin is not a terminal.` : "."),
     );
   },
   // The same question, asked by a surface that only reads. null ⇒ "no pool configured": show nothing,

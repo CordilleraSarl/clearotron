@@ -462,6 +462,66 @@ try {
   fail("ops-MCP reachable", `${MCP_URL}: ${e.message}`);
 }
 
+// ── 3b. THE TRIGGER LANE, AS ITS OWN SURFACE (tracker issue 112) ─────────────────────────────────────
+//
+// The lane the portal's Start button calls is `PORTAL_MCP_URL` + `PORTAL_OPS_TOKEN`, and NOTHING on
+// this box exercised it. On 2026-09-02 the owner could not start a run: every surface here was green,
+// the engine probe passed, the portal's health endpoint answered 200, and the boot log announced the
+// lane on the token's presence alone while `PORTAL_MCP_URL` had never been set. Diagnosis ran out of
+// places to look. A deployment can pass every arrival check on this box while being unable to start a
+// search, which is the one thing the product is for.
+//
+// WIRED AND REACHABLE ARE REPORTED SEPARATELY, because they are different faults with different fixes
+// and on that box they failed together — which is exactly how one hides behind the other. Unset is a
+// value somebody has to write; unreachable is a door that is down.
+//
+// IT STARTS NOTHING. `start_run` bills a real clearance, so proving the lane must not use it: a POST
+// answering 401 rather than connection-refused already proves origin, path and listener, and that is
+// what the issue's own criterion asks for.
+{
+  const laneUrl = (process.env.PORTAL_MCP_URL ?? "").trim();
+  const hasToken = Boolean(OPS_TOKEN);
+  const missing = [!laneUrl && "PORTAL_MCP_URL", !hasToken && "PORTAL_OPS_TOKEN"].filter(Boolean);
+  if (missing.length) {
+    fail("trigger lane wired", `${missing.join(" and ")} unset — the portal's Start button has `
+      + `${laneUrl ? "no credential" : "nowhere"} to call, and every Start answers 502. `
+      + "The portal's own health endpoint answers 200 regardless.");
+  } else {
+    pass("trigger lane wired", `PORTAL_MCP_URL=${laneUrl} and an ops token are both set`);
+  }
+
+  // REACHABILITY IS ASKED ONLY WHEN THERE IS AN ORIGIN TO ASK. Probing a default would report on some
+  // other instance's door, which is the fault the URL derivation at the top of this file exists to stop.
+  if (!laneUrl) {
+    skip("trigger lane reachable", "PORTAL_MCP_URL is unset, so there is no origin to probe — NOT PROBED, "
+      + "which is not the same as unreachable and not the same as fine");
+  } else {
+    const answered = await new Promise((resolve) => {
+      let u;
+      try { u = new URL(`${laneUrl.replace(/\/+$/, "")}/mcp`); } catch { resolve({ error: "PORTAL_MCP_URL is not a URL" }); return; }
+      if (u.protocol !== "http:") { resolve({ error: `only http origins are probed here; this is ${u.protocol}` }); return; }
+      const req = httpRequest({ host: u.hostname, port: u.port || 80, path: u.pathname, method: "POST",
+        headers: { "content-type": "application/json" } }, (res) => {
+        res.resume();
+        resolve({ status: res.statusCode });
+      });
+      req.setTimeout(5000, () => req.destroy(new Error("timeout")));
+      req.on("error", (e) => resolve({ error: e.message }));
+      req.end("{}");
+    });
+    if (answered.status) {
+      // ANY answer proves it. A 401 is the expected one on a door with auth in front, and treating it
+      // as a failure would red every correctly-secured deployment.
+      pass("trigger lane reachable", `${laneUrl}/mcp answered ${answered.status} — origin, path and listener all real`);
+    } else if (answered.error && /only http origins|not a URL/.test(answered.error)) {
+      skip("trigger lane reachable", `${answered.error} — NOT PROBED`);
+    } else {
+      fail("trigger lane reachable", `${laneUrl}/mcp did not answer: ${answered.error}. The lane is `
+        + "configured and the door is not there, which is a different fault from an unset variable.");
+    }
+  }
+}
+
 if (mcpOptions && built) {
   const doorSays = new Map();
   // `products`, not `levels` — the wire key the offering ships under. Reading the old key would

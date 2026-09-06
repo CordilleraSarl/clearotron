@@ -4,6 +4,7 @@
 // clearotron demo — show a real clearance report to somebody who has nothing, IN THE REAL PORTAL.
 //
 //   npx clearotron demo                    replay demo into ~/trademark-demo and open the portal
+//   npx clearotron demo --product <id>     replay a different product's demo (the ids are listed below)
 //   npx clearotron demo --run-dir <dir>    replay a frozen example from somewhere else
 //   npx clearotron demo --base <dir>       put the whole demo somewhere else (remove it with one rm -rf)
 //   npx clearotron demo --port 9000        serve on another port (the demo opens three doors:
@@ -56,6 +57,23 @@ const has = (n) => argv.includes(n);
 if (has("--help") || has("-h")) {
   // — was slice(1, 8): a hand-counted window starting at the licence header.
   console.log(usageBlock(readFileSync(fileURLToPath(import.meta.url), "utf8")));
+  // THE IDS ARE READ OFF THE SHIPPED CONTAINER, never listed in the synopsis above. `demo/` holds one
+  // child per product and the set grows; a hand-written list in a comment is a second definition that
+  // goes stale the day a fifth demo lands, and this file already has the one definition — the same
+  // `demoChildren` the refusal below uses to say which products a tree actually carries.
+  //
+  // Until now the flag was discoverable only by getting it wrong: `--help` listed --run-dir, --base,
+  // --port and --no-open and stopped, so three of the four shipped demos were invisible from the
+  // command written to give somebody their first look (tracker issue 201).
+  const shipped = demoChildren(join(REPO, "demo"));
+  if (shipped.length) {
+    console.log(`\n  --product takes one of:`);
+    for (const id of shipped) console.log(`    ${id}${id === shipped[0] ? "   (the default, when --product is not given)" : ""}`);
+    console.log("");
+  } else {
+    // An absence is a finding: a tree with no demo says so rather than printing an empty list.
+    console.log(`  --product takes a directory name under demo/, and this tree ships none.\n`);
+  }
   process.exit(0);
 }
 

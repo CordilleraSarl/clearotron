@@ -26,6 +26,24 @@ import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 
+/**
+ * The environment both packs run under.
+ *
+ * `npm_config_offline` because this resolves entirely on disk: npm otherwise reaches for a registry it
+ * does not need, and that reach can BLOCK rather than fail.
+ *
+ * `npm_config_ignore_scripts` BECAUSE `npm pack` — INCLUDING `--dry-run` — RUNS `prepack`, and this
+ * repository's `prepack` is `write-build-info.mjs`, which stamps `build-info.json` into the checkout
+ * root. Measured 2026-09-06: this file was one of the two things in the whole suite that wrote inside
+ * the tree, and `product-identity.test.mjs:70` already records what that costs a reader — a correct arm
+ * failing for a file absent from their diff, with the tempting repair being to weaken the assertion.
+ *
+ * It does not weaken what is asked here. The question is which paths npm puts in the tarball, and the
+ * answer for `driver/profiles/` comes from `files[]` and the working tree, neither of which `prepack`
+ * touches.
+ */
+const PACK_ENV = Object.freeze({ ...process.env, npm_config_offline: "true", npm_config_ignore_scripts: "true" });
+
 /** Account files a reader who installed this package is meant to find. */
 const SHIPPED_ACCOUNTS = Object.freeze(["demo-brand-owner.json", "generic.json"]);
 
@@ -33,10 +51,8 @@ const SHIPPED_ACCOUNTS = Object.freeze(["demo-brand-owner.json", "generic.json"]
 const FIXTURES_ONLY = Object.freeze(["aurora", "zephyr", "petcary"]);
 
 test("94/F13 the package's customer roster is the two accounts a reader is meant to see", { timeout: 120_000 }, () => {
-  // `npm_config_offline` because this resolves entirely on disk: npm otherwise reaches for a registry it
-  // does not need, and that reach can BLOCK rather than fail.
   const out = execFileSync("npm", ["pack", "--dry-run", "--json"],
-    { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], env: { ...process.env, npm_config_offline: "true" } });
+    { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], env: PACK_ENV });
   const files = JSON.parse(out)[0].files.map((f) => f.path);
   // AN EMPTY FILE LIST WOULD SATISFY EVERY ASSERTION BELOW. npm printing nothing, or printing its
   // manifest to stderr where this cannot see it, is a could-not-look and not a clean roster.
@@ -76,7 +92,7 @@ test("94/F13 and the artifact itself carries none of them", { timeout: 300_000 }
   const out = mkdtempSync(join(tmpdir(), "roster-pack-"));
   try {
     execFileSync("npm", ["pack", "--pack-destination", out],
-      { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], env: { ...process.env, npm_config_offline: "true" } });
+      { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], env: PACK_ENV });
     const tarballs = readdirSync(out).filter((f) => f.endsWith(".tgz"));
     assert.equal(tarballs.length, 1, `expected exactly one tarball, got: ${tarballs.join(", ") || "none"}`);
     const entries = execFileSync("tar", ["-tzf", join(out, tarballs[0])], { encoding: "utf8" })

@@ -87,6 +87,18 @@
           "skips": 0,
           "todos": 0
         },
+        "a-change-a-reader-can-see-arrives-with-something-to-read.test.mjs": {
+          "tests": 10,
+          "asserts": 20,
+          "skips": 2,
+          "todos": 0
+        },
+        "a-check-does-not-read-another-accounts-processes.test.mjs": {
+          "tests": 6,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-claim-may-not-outlive-its-evidence.test.mjs": {
           "tests": 14,
           "asserts": 46,
@@ -174,6 +186,12 @@
         "a-doubt-cannot-answer-itself.test.mjs": {
           "tests": 17,
           "asserts": 40,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-drive-of-a-real-command-says-what-environment-it-drives-it-in.test.mjs": {
+          "tests": 8,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
@@ -274,8 +292,8 @@
           "todos": 0
         },
         "a-missing-bus-is-not-a-closed-door.test.mjs": {
-          "tests": 9,
-          "asserts": 37,
+          "tests": 10,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },
@@ -312,6 +330,12 @@
         "a-pool-copy-is-not-a-refusal.test.mjs": {
           "tests": 8,
           "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-port-refusal-names-the-file-it-reads.test.mjs": {
+          "tests": 7,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -375,6 +399,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-refusal-names-the-file-when-the-command-it-offers-cannot-be-run.test.mjs": {
+          "tests": 8,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "a-refusal-names-what-resolves-it.test.mjs": {
           "tests": 7,
           "asserts": 23,
@@ -384,6 +414,12 @@
         "a-refused-mcp-call-is-not-a-call-nobody-made.test.mjs": {
           "tests": 7,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-refused-unit-says-what-is-half-started.test.mjs": {
+          "tests": 9,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
@@ -606,6 +642,12 @@
         "an-arm-that-produced-nothing-is-not-ok.test.mjs": {
           "tests": 5,
           "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-arrival-check-exercises-the-trigger-lane.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -1038,6 +1080,12 @@
         "connect-clients-are-data.test.mjs": {
           "tests": 12,
           "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "connect-does-not-move-the-deployment-in-silence.test.mjs": {
+          "tests": 16,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
@@ -2371,6 +2419,12 @@
           "tests": 3,
           "asserts": 7,
           "skips": 2,
+          "todos": 0
+        },
+        "no-test-writes-inside-the-checkout.test.mjs": {
+          "tests": 16,
+          "asserts": 35,
+          "skips": 0,
           "todos": 0
         },
         "no-vendor-provenance-in-the-public-cut.test.mjs": {
@@ -3785,7 +3839,7 @@
         },
         "start-background-units.test.mjs": {
           "tests": 6,
-          "asserts": 19,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -4041,6 +4095,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-demo-help-names-every-product-it-ships.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "the-door-answers-the-address-it-advertises.test.mjs": {
           "tests": 6,
           "asserts": 17,
@@ -4143,9 +4203,21 @@
           "skips": 0,
           "todos": 0
         },
+        "the-install-names-the-auth-values-it-needs.test.mjs": {
+          "tests": 9,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
         "the-install-places-what-a-server-needs.test.mjs": {
           "tests": 22,
           "asserts": 51,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-installer-advice-matches-the-box-it-is-given.test.mjs": {
+          "tests": 9,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -4205,7 +4277,7 @@
         },
         "the-process-table-reads-a-box-with-no-proc.test.mjs": {
           "tests": 7,
-          "asserts": 24,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -4468,8 +4540,8 @@
           "todos": 0
         },
         "unit-entries-load-env-local.test.mjs": {
-          "tests": 4,
-          "asserts": 18,
+          "tests": 5,
+          "asserts": 23,
           "skips": 1,
           "todos": 0
         },

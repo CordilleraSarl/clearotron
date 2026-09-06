@@ -243,9 +243,19 @@ const optedOut = (env) => {
 
 // ── A SERVICE NEVER READS THE CHECKOUT, AND NOBODY HAS TO REMEMBER THAT ──────────────────────────────
 //
-// systemd sets INVOCATION_ID on every unit it starts, and nothing else does — a hand-run command, a
+// systemd sets INVOCATION_ID on every unit it starts, and nothing else SETS it — a hand-run command, a
 // test, an MCP client spawning the stdio server all have it unset. So "was I started as a service?" is
 // answerable without configuration, and this is the answer.
+//
+// SETS is not HAS, and the difference is inherited. Every descendant of a unit carries the variable, so
+// this answers yes for anything a unit launched however indirectly — a deploy timer running the CLI, a
+// wrapper script inside a service, a hosted CI runner's job, which is a descendant of the runner
+// agent's own unit. That is the right answer for all of them: each is unattended and configured by its
+// EnvironmentFile. It is written down because reading the line above as "only a unit itself has it"
+// costs a CI cycle to discover — a drive standing in for a hand-run CLI inherited the runner's
+// INVOCATION_ID, read no file, and failed three arms with a symptom three steps downstream. Measured
+// on this box: an interactive login shell inside a session scope has it UNSET, so the paragraph below
+// about a human-started process holds.
 //
 // It exists because the OTHER guard cannot be relied on. `Environment=CLEAROTRON_NO_ENV_FILE=1` lives in
 // the git-tracked unit files, and a unit file in git is not a unit file on a box: the deploy syncs
@@ -472,6 +482,24 @@ function defaultNote(line) { try { process.stderr.write(line); } catch { /* a cl
 // ESM caches by resolved URL, so this runs exactly once per process however many entries import it
 // (mcp-server/http-server.mjs imports mcp-server/server.mjs; both are entries).
 export const loaded = isCliEntry(process.argv[1]) ? loadEnvLocal() : null;
+
+/**
+ * The env file THIS process took its configuration from, or null when it took none.
+ *
+ * ONE DEFINITION, because the question has a wrong answer that looks right. A refusal that tells an
+ * operator to set a variable is only half a remedy on a product with two env files — the units load
+ * `EnvironmentFile=%h/.env`, a CLI entry reads this one — and the half that is missing is which file.
+ * Composing the path from `envLocalPath()` at each call site would answer for a process that never read
+ * it: a service started by systemd is handed CLEAROTRON_NO_ENV_FILE=1 and is configured by its
+ * EnvironmentFile, so naming the CLI's file there replaces one wrong address with another.
+ *
+ * `read` and `absent` are both a yes — absent only means nobody has written it yet, and that IS the file
+ * to write. `service-managed`, `opted-out` and `unreadable` are a no, and a no means say nothing rather
+ * than guess (tracker issue 200).
+ */
+export function envFileRead(l = loaded) {
+  return l && (l.reason === "read" || l.reason === "absent") ? l.path : null;
+}
 
 // ── — the install surface's new names, translated into the ones every read site still reads ────
 //

@@ -50,6 +50,7 @@ import { mkdtempSync, mkdirSync, rmSync, readdirSync, statSync, existsSync, read
 import { delimiter, dirname, join, parse as parsePath, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
+import { snapshotRepo, repoWrites, explainRepoWrites } from "./repo-writes.mjs";   // tracker issue 198
 
 
 // ── TAIL — THIS WRAPPER READS BOTH SPELLINGS; IT DOES NOT TRANSLATE THE ENVIRONMENT ───────────
@@ -639,6 +640,24 @@ if (String(process.env[REAL_ENGINE_OVERRIDE] ?? "").trim()) {
 process.env.CLEAROTRON_SUITE_TELEMETRY_DIR = join(root, "telemetry");
 mkdirSync(process.env.CLEAROTRON_SUITE_TELEMETRY_DIR, { recursive: true });
 
+// ── NO TEST MAY WRITE INSIDE THIS CHECKOUT ──────────────────────────────────────────────────────────
+//
+// Tracker issue 198, and `scripts/repo-writes.mjs` carries the whole reason. In one line: `node --test`
+// runs test FILES concurrently against ONE shared working tree, so a test that writes into the checkout
+// is read by every other file in the run, and the red that causes surfaces somewhere else entirely —
+// another arm, another branch, another session, in a diff that never touched the file.
+//
+// THE ROOT COMES FROM THIS MODULE'S OWN PATH, NEVER FROM cwd. The driver workspace runs this as
+// `node ../scripts/test-run.mjs` from `driver/`, and a cwd-relative root would have watched the wrong
+// tree there while looking exactly as green. The same defect shipped once already, in the install
+// check's tarball path, and CI caught it rather than a reader.
+//
+// Taken HERE, at the last statement before the child exists, so nothing this runner does to the tree
+// between the two reads can be mistaken for something a test did. The comparison is in `close`, below.
+const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const repoBefore = snapshotRepo(REPO_ROOT);
+
+
 child = spawn(argv[0], argv.slice(1), {
   stdio: "inherit",
   // OUT — the MCP access log lands inside this run's own tmpdir, not the operator's data plane.
@@ -649,6 +668,13 @@ child = spawn(argv[0], argv.slice(1), {
     TMPDIR: root,
     TRADEMARK_MCP_AUDIT_LOG: String(process.env.TRADEMARK_MCP_AUDIT_LOG ?? "").trim()
       || join(root, "mcp-access.jsonl"),
+    // AND THE PORTAL'S AUDIT LOG, for the same reason and by the same rule as the line above it.
+    // `portal-service.mjs` defaults it to `join(HERE, "..", "portal-audit.log")` — the CHECKOUT ROOT —
+    // so every suite run that reaches a mutating admin route appended a row to the developer's tree.
+    // Measured 2026-09-06: one row per full run, from `the-settings-surface-reads-the-customer-store`.
+    // Fixed HERE rather than in that one test because any of the ~40 files that boot the portal reaches
+    // it the moment it drives a mutating route, and the next one to do so would ship the defect again.
+    PORTAL_AUDIT: String(process.env.PORTAL_AUDIT ?? "").trim() || join(root, "portal-audit.log"),
   },
 });
 
@@ -661,6 +687,14 @@ child.on("error", (e) => {
 child.on("close", (code, signal) => {
   cleanup();
   // The exit code IS the result — CI reads it. Never swallow a failure to report a tidy cleanup.
+  // A SIGNALLED RUN IS NOT EVIDENCE ABOUT WRITES: it was cancelled mid-flight, so a half-finished
+  // fixture proves nothing and re-raising is the honest answer. The guard below never runs on that path.
   if (signal) { process.kill(process.pid, signal); return; }
-  process.exit(code ?? 1);
+
+  const wrote = repoWrites(repoBefore, snapshotRepo(REPO_ROOT), REPO_ROOT);
+  if (wrote.length) for (const line of explainRepoWrites(wrote)) console.error(line);
+  // THIS MAY TURN A GREEN RUN RED. IT MUST NEVER TURN A RED RUN GREEN — a failing suite keeps its own
+  // exit code, because what the tests found matters more than what they wrote while finding it.
+  const childCode = code ?? 1;
+  process.exit(childCode !== 0 ? childCode : (wrote.length ? 1 : 0));
 });

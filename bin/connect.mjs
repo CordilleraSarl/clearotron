@@ -54,36 +54,18 @@ import { atomicWrite } from "../driver/progress.mjs";
 // — F40. SERVER_INSTALL_SET is what `bin/start.mjs` re-exports as
 // BACKGROUND_UNITS; taken from shared/ so this verb does not reach into another bin/ entry point.
 import { SERVER_INSTALL_SET, unitHealthVerdict } from "../shared/server-units.mjs";
+import { checkoutMove, movePosture, describeMove, describeConflict } from "../shared/checkout-move.mjs";   // tracker issue 193
 import { unitEnvironment, unitValue, couldNotDetermine } from "../driver/unit-environment.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
+import { looksLikeBusFailure, systemdSaid, userBusEnv, CAPTURE_STDERR,
+  systemdFailure as sharedSystemdFailure } from "../shared/systemd-failure.mjs";   // tracker issue 203 — `start` needed the same three answers
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
-/**
- * The environment `systemctl --user` needs, with the session bus filled in when it can be derived.
- *
- *. Under `su`/`sudo -u` these two are unset and systemctl cannot find the bus.
- * `/run/user/<uid>` is where it lives when a user session exists, so this supplies them from the uid
- * rather than asking a reader to. When the directory is absent there IS no user bus and no value would
- * help — busRemedy() says so in words instead.
- */
-function userBusEnv() {
-  const env = { ...process.env };
-  if (env.XDG_RUNTIME_DIR && env.DBUS_SESSION_BUS_ADDRESS) return env;
-  const dir = env.XDG_RUNTIME_DIR || `/run/user/${process.getuid?.() ?? ""}`;
-  if (!existsSync(dir)) return env;             // no session: the remedy is words, not a guessed value
-  env.XDG_RUNTIME_DIR = dir;
-  env.DBUS_SESSION_BUS_ADDRESS ||= `unix:path=${dir}/bus`;
-  return env;
-}
-
-/** What to tell a reader whose shell has no user bus — the two exports, by name. */
-function busRemedy() {
-  const uid = process.getuid?.() ?? "$(id -u)";
-  return `systemctl --user needs a login session's bus, and this shell has none — which is what \`su\` and \`sudo -u\` leave you with.\n`
-    + `Either log in as this user properly (\`machinectl shell\`, or ssh as them), or export the two the bus is found through:\n`
-    + `  export XDG_RUNTIME_DIR=/run/user/${uid}\n`
-    + `  export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${uid}/bus`;
-}
+// `userBusEnv` and `busRemedy` MOVED TO shared/systemd-failure.mjs, unchanged, because
+// `start --background` needs the same answers and had none (tracker issue 203). Their reasoning went
+// with them; this file imports them and passes `userBusEnv()` at every `systemctl` call it makes,
+// `showUnit` included — which is the property that makes deriving the bus safe here and is why `start`
+// does not do it at two of its five.
 
 /**
  * What a half-finished connect has ALREADY written by the time `step` failed — tracker issue 121.
@@ -131,23 +113,18 @@ function alreadyApplied(step) {
  * is not open" — that mistranslation is the defect, and a second copy of this test is how the two would
  * come to disagree about which failures are bus failures.
  */
-export function looksLikeBusFailure(said) {
-  return /Failed to connect to( the)? bus|DBUS_SESSION_BUS_ADDRESS|XDG_RUNTIME_DIR|No medium found/i.test(String(said ?? ""));
-}
+export { looksLikeBusFailure, systemdSaid };
 
-/** What a failed `systemctl` said, preferring its own stderr over Node's wrapper message. */
-export function systemdSaid(e) {
-  return `${e?.stderr ?? ""}`.trim() || `${e?.message ?? e}`.trim();
-}
-
+/**
+ * This command's systemd failure: the shared diagnosis, plus THIS command's statement of what stands.
+ *
+ * The `step` argument stays here rather than moving into the shared file, and that is the whole reason
+ * the split is where it is. What systemd said and whether it is a bus problem are the same question for
+ * every caller; what has already been written when it said it is a different answer per command and
+ * per step, which `alreadyApplied` above spells out.
+ */
 export function systemdFailure(e, { step, unit = null } = {}) {
-  const said = systemdSaid(e);
-  const looksLikeBus = looksLikeBusFailure(said);
-  const remedy = looksLikeBus
-    ? busRemedy()
-    : `That is not a missing session bus, so the two exports will not help. Read what systemd itself says:\n`
-      + `  systemctl --user status ${unit ?? ""}`.trimEnd() + `\n  journalctl --user -u ${unit ?? "<unit>"} -n 50 --no-pager`;
-  return new Error(`${said}\n\n${remedy}\n\n${alreadyApplied(step)}`);
+  return sharedSystemdFailure(e, { unit, stands: alreadyApplied(step) });
 }
 
 const UNIT_DIR = join(homedir(), ".config", "systemd", "user");
@@ -192,6 +169,34 @@ function runningEnv() {
     readEnvFile: (p) => { try { return readFileSync(p, "utf8"); } catch { return null; } } });
   return { env: resolved.known ? resolved.env : process.env, known: resolved.known, hosted: true,
     why: resolved.why, resolved };
+}
+
+/**
+ * Which tree each installed unit's LIVE process is executing (tracker issue 193).
+ *
+ * NOT the units' env file, which is the file this verb is about to write — after the write the two
+ * agree and the drift is invisible. The running processes are the only witnesses, and they are
+ * witnesses precisely because they have not restarted.
+ *
+ * Every failure to look is carried as a `why` rather than dropped, so `movePosture` can tell a box
+ * with nothing running from a box this command could not read.
+ */
+function runningTrees({ show = showUnit, read = readFileSync, exists = existsSync } = {}) {
+  // DEDUPED: `SERVER_INSTALL_SET` already carries the client door, and listing it twice put the same
+  // unit in the reader's could-not-look sentence twice — visible in the first drive of this.
+  return [...new Set([...SERVER_INSTALL_SET, CLIENT_DOOR_UNIT])].map((unit) => {
+    const unitPath = join(UNIT_DIR, unit);
+    const unitText = exists(unitPath) ? read(unitPath, "utf8") : null;
+    if (unitText == null) return { unit, cmdline: null, unitText: null, why: "the unit is not installed here" };
+    const { fields, error } = show(unit, ["MainPID"]);
+    if (error) return { unit, cmdline: null, unitText, why: `systemctl could not be asked (${systemdSaid(error)})` };
+    const pid = Number(fields?.MainPID ?? 0);
+    if (!pid) return { unit, cmdline: null, unitText, why: "it is not running" };
+    // The process's OWN command line. `/proc` is Linux-only and that is stated rather than worked
+    // around: on a box without it this reads as a could-not-look, which is the honest answer.
+    try { return { unit, cmdline: read(`/proc/${pid}/cmdline`, "utf8"), unitText, why: null }; }
+    catch (e) { return { unit, cmdline: null, unitText, why: `/proc/${pid}/cmdline: ${e.code ?? e.message}` }; }
+  });
 }
 
 /** What this deployment has to offer, read once and handed to the pure resolver. */
@@ -383,7 +388,8 @@ export function unitIsHealthy(name, { show = showUnit, pause = settle } = {}) {
 }
 
 /** Turn the door on. Only reached because the chosen assistant cannot work without it. */
-function enableTheDoor({ have, identity, client = null, dryRun, portFree, portOwner = null, env = process.env, envKnown = true }) {
+function enableTheDoor({ have, identity, client = null, dryRun, portFree, portOwner = null, env = process.env, envKnown = true,
+  allowMove = false, trees = runningTrees }) {
   // F36 — whether this door is reachable from outside is a FACT we hold, so the sentence answers to it
   // rather than being printed unconditionally. `publicAddress` comes from the units' environment now
   // (F40), which is the only place it was ever true.
@@ -418,7 +424,30 @@ function enableTheDoor({ have, identity, client = null, dryRun, portFree, portOw
     // answerable; any other is left to the bind result, which is what it was always based on.
     portOwner: (p) => (p === have.port ? (portOwner ?? (portFree ? "free" : "stranger")) : "stranger") });
   if (!plan.possible) return { ok: false, blockers: plan.blockers, fix: plan.fix };
-  if (dryRun) return { ok: true, dryRun: true, says: describeChange(plan, { applied: false, ...reach }), would: plan.steps.map((s) => s.what) };
+
+  // ── A MACHINE-WIDE SETTING IS NOT THIS VERB'S TO MOVE IN SILENCE (tracker issue 193) ───────────────
+  //
+  // `plan.settings` carries CLEAROTRON_CHECKOUT_DIR set to THIS checkout, and `setEnvValue` replaces
+  // rather than preserves — so running this from a worktree repoints every unit's ExecStart and the
+  // deploy timer's fast-forward target. The comment at the settings site claimed the opposite about
+  // its own helper; the behaviour, driven, is a silent move.
+  //
+  // Refusing needs the live processes, and a box that cannot be read gets a warning rather than a
+  // refusal: a could-not-look must not become a verdict in either direction.
+  const move = checkoutMove(env.CLEAROTRON_CHECKOUT_DIR, REPO);
+  const posture = movePosture({ move, running: trees() });
+  const moveSays = [...describeMove(move), ...describeConflict(posture, move)];
+  if (posture.state === "conflict" && !allowMove) {
+    const trees_ = [...new Set(posture.conflicts.map((c) => c.tree))].join(", ");
+    return { ok: false, moveSays,
+      blockers: [{
+        why: `services on this box are executing from ${trees_}, and this would repoint the install at `
+          + `${move.to} — they keep working until they restart and then cannot start at all`,
+        fix: "run this from the checkout the box is deployed from, or restart the services onto this "
+          + "one first; `--allow-checkout-move` writes it anyway" }] };
+  }
+
+  if (dryRun) return { ok: true, dryRun: true, moveSays, says: describeChange(plan, { applied: false, ...reach }), would: plan.steps.map((s) => s.what) };
 
   const applied = applyEnablePlan(plan, {
     envPath: ENV_PATH,
@@ -444,13 +473,13 @@ function enableTheDoor({ have, identity, client = null, dryRun, portFree, portOw
       // whole remedy, and printing it costs nothing next to a reader who has to find it.
       // stderr is CAPTURED, not discarded. `stdio: "ignore"` threw away systemd's own explanation, which
       // is the whole reason this printed a command name and nothing a reader could act on.
-      try { execFileSync("systemctl", ["--user", "daemon-reload"], { stdio: ["ignore", "ignore", "pipe"], encoding: "utf8", env: userBusEnv() }); }
+      try { execFileSync("systemctl", ["--user", "daemon-reload"], { ...CAPTURE_STDERR, env: userBusEnv() }); }
       catch (e) { throw systemdFailure(e, { step: "daemon-reload" }); }
     },
     // The same bus, for the same reason — a connect that reloads and then dies on enable has moved the
     // failure one line without helping anybody.
     startUnit: (name) => {
-      try { execFileSync("systemctl", ["--user", "enable", "--now", name], { stdio: ["ignore", "ignore", "pipe"], encoding: "utf8", env: userBusEnv() }); }
+      try { execFileSync("systemctl", ["--user", "enable", "--now", name], { ...CAPTURE_STDERR, env: userBusEnv() }); }
       catch (e) { throw systemdFailure(e, { step: "enable", unit: name }); }
     },
     unitIsHealthy,
@@ -499,7 +528,7 @@ function enableTheDoor({ have, identity, client = null, dryRun, portFree, portOw
  *   It was neither — `running` was read from main()'s scope, which threw ReferenceError on every served
  *   http client.  — F40's own defect, one function along.
  */
-async function render(offer, have, { dryRun, running }) {
+async function render(offer, have, { dryRun, running, allowMove = false }) {
   say("");
   say(`  ${offer.client.name}`);
   say("");
@@ -556,7 +585,10 @@ async function render(offer, have, { dryRun, running }) {
     const identity = have.operator;
     const bound = await portIsFree(have.port);
     const r = enableTheDoor({ have, identity, client: offer.client.id, dryRun, env: running.env,
-      envKnown: running.known, portFree: bound, portOwner: portOwnerOf(have.port, bound) });
+      envKnown: running.known, portFree: bound, portOwner: portOwnerOf(have.port, bound), allowMove });
+    // SAID BEFORE THE OUTCOME, whichever way it goes (tracker issue 193): a reader who is about to be
+    // told the door is open needs to have already read that the deployment moved trees to open it.
+    for (const line of r.moveSays ?? []) say(line);
     if (!r.ok) {
       // One finding, one remedy, on its own line. A list of reasons above a single fix invites the
       // reader to apply that fix to the reason it does not answer.
@@ -615,10 +647,14 @@ async function main() {
     say("    --client <name>   skip the question (see --list for the names)");
     say("    --list            the assistants this build knows");
     say("    --dry-run         say what would change, change nothing");
+    say("    --allow-checkout-move");
+    say("                      write this checkout's path even though services are running from");
+    say("                      another one. Every unit's ExecStart follows that value, so the ones");
+    say("                      that have not restarted keep working and then cannot start again.");
     say("");
     return 0;
   }
-  const known = new Set(["--client", "--list", "--dry-run", "--help", "-h"]);
+  const known = new Set(["--client", "--list", "--dry-run", "--allow-checkout-move", "--help", "-h"]);
   const unknown = argv.filter((a) => a.startsWith("--") && !known.has(a));
   if (unknown.length) {
     console.error(`connect: unrecognised flag(s): ${unknown.join(", ")}`);
@@ -669,7 +705,7 @@ async function main() {
     if (!chosen) { console.error("connect: not one of the listed assistants."); process.exit(2); }
   }
 
-  return await render(whatItNeeds(chosen, have), have, { dryRun, running });
+  return await render(whatItNeeds(chosen, have), have, { dryRun, running, allowMove: argv.includes("--allow-checkout-move") });
 }
 
 // THE DISPATCH RUNS ONLY WHEN THIS FILE IS THE COMMAND (tracker issue 121). Without the guard, importing
