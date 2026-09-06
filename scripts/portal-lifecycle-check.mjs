@@ -221,7 +221,7 @@ const HELPERS = `
     return false;
   };
   const txt = () => document.body.innerText;
-  // #1809 — A MISS THROWS, NAMING WHAT IT MISSED. Same defect as composer-render-check.mjs, in this
+  // tracker issue 1809 — A MISS THROWS, NAMING WHAT IT MISSED. Same defect as composer-render-check.mjs, in this
   // file's own copy of the helper: six sites below dereference the result immediately, so a button that
   // had not painted arrived as "Cannot read properties of undefined (reading 'click')".
   // maybeByText keeps the undefined return for the one site where absence is the thing being measured.
@@ -315,7 +315,7 @@ ${HELPERS}
   out.topbarHeading = (document.querySelector('.topbar h1') || {}).innerText || null;
 
   await goto('/portal/new');
-  // #1809 — THIS WAIT WAS IDENTITY-DEPENDENT AND SILENTLY DEAD FOR ONE OF THE THREE. "Brand owner" is
+  // tracker issue 1809 — THIS WAIT WAS IDENTITY-DEPENDENT AND SILENTLY DEAD FOR ONE OF THE THREE. "Brand owner" is
   // the rail switcher's eyebrow (AppShell.tsx), which a SINGLE-OWNER client never gets — that identity
   // reads its owner in the Account corner instead. So this timed out on every client run, and because
   // settle returned false without objecting it degraded into an 8-second sleep. Waits on the context

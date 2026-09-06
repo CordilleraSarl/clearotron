@@ -31,7 +31,7 @@ skipped         14             1      13 of these are root declaring what it can
 assertions    8617
 ```
 
-**Nothing fails because of root.** The two failures are byte-identical in both runs: `#854` and `#1764`
+**Nothing fails because of root.** The two failures are byte-identical in both runs: `tracker issue 854` and `tracker issue 1764`
 compare against the tree `node_modules` actually holds, so a checkout whose install predates a
 dependency change reports them. CI's cold install passes both. If you see only those two, you have
 measured nothing about root.

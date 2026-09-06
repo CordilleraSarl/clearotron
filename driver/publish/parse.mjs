@@ -225,11 +225,11 @@ export function stripTelemetry(md) {
     .join('\n');
 }
 
-// ── #831 — THE CLIENT CUT OF THE AUDIT BLOCK'S CROSS-REFERENCE LINES ────────────────────────────────
+// ── tracker issue 831 — THE CLIENT CUT OF THE AUDIT BLOCK'S CROSS-REFERENCE LINES ────────────────────────────────
 //
 // `disposition` is a PLACEMENT key. stages.mjs dictates it as the posture that sets only WHERE a card is
 // placed and never the band; findings-model's DISPOSITION_GROUP maps it to the section heading the report
-// already prints. #762 D5 took it off the report's risk chip and #833 added the `disposition` KEY to
+// already prints. tracker issue 762 D5 took it off the report's risk chip and tracker issue 833 added the `disposition` KEY to
 // scrubCards' strip list — and the word still reached client principals, because audit-from-spine.mjs
 // re-encodes it into two OTHER keys that survive an allowlist keyed on names:
 //
@@ -243,7 +243,7 @@ export function stripTelemetry(md) {
 // packaged MCP and any future consumer get it from one definition.
 //
 // WHY NOT RE-WORD THE BUILDER. The audit workbook and the internal surfaces keep the engine's vocabulary
-// by ruling (#831 "Out of scope"), and `resolution` is the audit trail's own record of which finding a
+// by ruling (tracker issue 831 "Out of scope"), and `resolution` is the audit trail's own record of which finding a
 // claim resolved to. Changing what buildAuditMd stamps would take the word off an internal surface that is
 // entitled to it. The boundary is where the audience changes, so the boundary is where the cut belongs —
 // the same shape as scrubCards' `rated_under` → ratedUnderForClient, which is the precedent in that file.
@@ -252,11 +252,11 @@ export function stripTelemetry(md) {
 // resolved to, and which fragment of a contradicted pair the record supports. Deleting the key deletes the
 // pointer along with the word.
 //
-// THIS IS NOT THE SUBSTITUTION #669 FORBIDS. Nothing here reads arbitrary client prose for a vocabulary.
+// THIS IS NOT THE SUBSTITUTION tracker issue 669 FORBIDS. Nothing here reads arbitrary client prose for a vocabulary.
 // Each rule is ANCHORED to one position in a grammar THIS ENGINE writes: the disposition token at the head
 // of `resolution`, and the disposition token inside the `(finding #N, …)` parenthetical the contradiction
 // line builds. A mark named ADVERSARIAL survives both — it is not at position 0 of a resolution line, and
-// it is not inside a finding-reference parenthetical. That is the #656 lesson applied: match a POSITION in
+// it is not inside a finding-reference parenthetical. That is the tracker issue 656 lesson applied: match a POSITION in
 // a grammar we own, never a word anywhere in a string we do not.
 //
 // The enum is IMPORTED (top of file), never retyped: a sixth disposition added to findings-model must not
@@ -290,9 +290,9 @@ export function contradictionResolutionForClient(v) {
   return String(v).replace(CONTRADICTION_DISPOSITION_RE, '$1)');
 }
 
-// ── #669 — ENGINE_PLAIN AND plainify ARE DELETED ────────────────────────────────────────────────────
+// ── tracker issue 669 — ENGINE_PLAIN AND plainify ARE DELETED ────────────────────────────────────────────────────
 //
-// doc-52 put nineteen find-and-replace rules on the rendered client surface. #656 is what that cost:
+// doc-52 put nineteen find-and-replace rules on the rendered client surface. tracker issue 656 is what that cost:
 // `axis` -> `group` turned "AXIS Bank filed in class 36" into "group Bank filed in class 36" — a report
 // naming a mark that does not exist, inside the report that clears it. AXIS and SLICE are both live
 // trademarks. The ban list and the trademark register overlap, and this engine exists to search the

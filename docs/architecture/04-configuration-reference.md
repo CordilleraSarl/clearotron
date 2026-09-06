@@ -340,7 +340,7 @@ cannot be read as one list.
 
 ### Retired — set these and nothing happens
 
-`#1838` deleted the settings below. Nothing in any environment set them, so each became the constant it
+`tracker issue 1838` deleted the settings below. Nothing in any environment set them, so each became the constant it
 had always resolved to. **They are listed because an operator whose `.env` still carries one needs to
 know it is inert** — an unread setting is indistinguishable from a setting that works.
 

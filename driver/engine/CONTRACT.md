@@ -50,7 +50,7 @@ ladder consumes it without knowing which engine produced it ([gateway.mjs](../ga
                                      // "text-parsed" on resetsAtBasis means it was read out of vendor
                                      // prose that stated no timezone, so it resolved in the running
                                      // box's zone — a reading, never a provider fact. Absent whenever
-                                     // `resetsAt` is absent. (#697)
+                                     // `resetsAt` is absent. (tracker issue 697)
   reads:      string[] | absent,     // READS GAUGE — file paths this turn's Read tool_use blocks
                                      // opened; [] = recorded "read nothing"; key absent = engine cannot
                                      // observe reads (openai-agent) → gateway journals `reads: null`

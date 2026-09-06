@@ -16,7 +16,7 @@ Documentation=https://github.com/CordilleraSarl/Clearotron/blob/main/driver/READ
 # watched only the headless dir below, which does not exist in an agent-workspace deployment, so event-driven
 # pickup was dead and the queue drained on the timer alone — and wedged entirely whenever the timer was down).
 #
-# ── #774 — THESE GLOBS ARE THIS DEPLOYMENT'S WORKSPACE ROOT, NOT THE CODE DEFAULT ────────────────────
+# ── tracker issue 774 — THESE GLOBS ARE THIS DEPLOYMENT'S WORKSPACE ROOT, NOT THE CODE DEFAULT ────────────────────
 #
 # A .path unit CANNOT read an environment variable. There is no `%E`, no EnvironmentFile, no expansion:
 # the prefix below is a literal, and it is the one thing in the queue lane that CLEAROTRON_WORK_DIR
@@ -28,7 +28,7 @@ Documentation=https://github.com/CordilleraSarl/Clearotron/blob/main/driver/READ
 # the only thing still draining is the 90s prelim-driver.timer — so the lane looks alive and every job is
 # late. If the timer is also down, the queue simply stops.
 #
-# #774 moved the CODE default for CLEAROTRON_WORK_DIR from `$HOME/.openclaw` to
+# tracker issue 774 moved the CODE default for CLEAROTRON_WORK_DIR from `$HOME/.openclaw` to
 # `$HOME/trademark/workspace`. These globs did NOT move with it, and that is correct: they must track the
 # deployment, and the deployment pins `CLEAROTRON_WORK_DIR=<home>/.openclaw` in its EnvironmentFile
 # (the production env example) precisely so its run directories do not move under a live queue. Change one of
@@ -56,7 +56,7 @@ PathExistsGlob=@CLEAROTRON_WORK_DIR@/workspace-clawdi/studio/prelim-search/queue
 # One line per ADDITIONAL prelim-capable agent this deployment onboards, e.g.
 #PathExistsGlob=%h/.openclaw/workspace-<agent>/studio/prelim-search/queue/*.json
 # Two lines here named individual people at this firm and shipped their identities to every clone
-# (#1014). They are a deployment's own roster, not the product's. Omitting a line costs LATENCY and
+# (tracker issue 1014). They are a deployment's own roster, not the product's. Omitting a line costs LATENCY and
 # not correctness: as the note above says, the 90s timer and the dynamic config.queueDirs still
 # collect that agent's jobs — the watch only makes them immediate.
 # HEADLESS deployment (docs/INTAKE.md): a standalone product with no agent workspaces instead watches the one

@@ -500,11 +500,11 @@ export function parseCoverageLedgerJson(raw, { allowedAxes = REGISTER_AXES, acti
   return rows;
 }
 
-// ── #476 — `renderCoverageLedgerJson` IS DELETED, AND THE DIRECTION WITH IT ─────────────────────────
+// ── tracker issue 476 — `renderCoverageLedgerJson` IS DELETED, AND THE DIRECTION WITH IT ─────────────────────────
 //
 // Map #3 code-derived this JSON FROM the model's `## Coverage ledger` prose, which was an improvement
 // (the model stopped authoring the JSON) that left the real source of truth where it was: a markdown
-// table the model wrote. Under #476 the DRIVER-WRITTEN coverage form is the source and both the table
+// table the model wrote. Under tracker issue 476 the DRIVER-WRITTEN coverage form is the source and both the table
 // and this JSON are renders of it — coverage-form.renderCoverageLedgerJsonFromForm. There is no
 // prose→JSON direction left to keep, and keeping one would be the legacy path this build has none of.
 //

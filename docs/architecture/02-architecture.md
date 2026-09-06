@@ -81,7 +81,7 @@ flowchart TB
     OB -. "wake" .-> AG
     POOL -.-> MCPQ
 
-    classDef product fill:#12324f,stroke:#4a90d9,color:#fff
+    classDef product fill:tracker issue 12324f,stroke:#4a90d9,color:#fff
     class DRV,RUN,PIPE,STG,GWM,ENG,SKL,PROF,PUB product
 ```
 

@@ -982,7 +982,7 @@ export const pharmaMatter = (job) =>
 // that silently breaks per-customer framework selection). stages-followup.test.mjs pins message() and
 // skillReadsFor emitting the SAME list, under a custom profile and under a pharma matter, so the two call
 // sites cannot drift apart.
-// #253 — the report prose standard. General rules ONCE, in one shared file, reached by every stage that
+// tracker issue 253 — the report prose standard. General rules ONCE, in one shared file, reached by every stage that
 // writes a line a reader sees and by no other. There was no such file before: the three prose stages
 // overlap only on the per-customer framework, so the general rules had to be duplicated (they were, in
 // synthesis-rules.md and delivery-contract.md) or reach only some stages. A standard that reaches some
@@ -1097,7 +1097,7 @@ const scriptFloorDirective = (job, profile) => {
   return `SCRIPT COVERAGE (MANDATORY, and the validator refuses a manifest without it): this matter is scoped to territories that register marks in ${scripts.length > 1 ? "scripts" : "a script"} other than Latin — ${scripts.map(([s, t]) => `${s} (${t.join(", ")})`).join("; ")}. State AT LEAST ONE rendering of the mark in each, as a "transliteration" variant carrying its "romanization" field. A conflicting right in one of these territories is commonly registered in the local script under characters a Latin-only family never asks for, so the search would come back clean because it never looked. ONE rendering per script is the floor — how many the mark deserves, and which of them bite, is your judgment and this floor never touches it. If the mark genuinely has no defensible rendering in one of these scripts, say so in the manifest prose rather than inventing one: a fabricated transliteration is a search we cannot stand behind.`;
 };
 
-// ── #445 — THE SIX CATEGORY NAMES WERE GIVEN AND NONE OF THEM WAS DEFINED ───────────────────────────
+// ── tracker issue 445 — THE SIX CATEGORY NAMES WERE GIVEN AND NONE OF THEM WAS DEFINED ───────────────────────────
 //
 // An evidence run scored 7 of 9 found, 2 lost, **withheld 0**. Nothing was
 // retrieved and dropped — DELPHI SCIENTIFIC and DELFITY were never searched for. The variant dispatch

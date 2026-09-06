@@ -377,7 +377,7 @@ export function writeBoundarySettings({ skillsRoots = [], profilesDir = null, ru
   return JSON.stringify({
     hooks: {
       PreToolUse: [{
-        // #997 — Bash is in the matcher because seats have it and it walked past this hook entirely.
+        // tracker issue 997 — Bash is in the matcher because seats have it and it walked past this hook entirely.
         // What the Bash arm can and cannot do is stated at its declaration in deny-authority-write.mjs;
         // it is a detector, and naming it here does not make it a boundary.
         matcher: "Write|Edit|MultiEdit|NotebookEdit|Bash",
@@ -401,7 +401,7 @@ export function synthesizeEnvelope({ resultEvent, usage, killed }) {
 
 export const anthropicAgentEngine = {
   name: "anthropic-agent",
-  // #954 — WHAT THIS ENGINE GUARANTEES ABOUT SEAT WRITES, said out loud in the run record.
+  // tracker issue 954 — WHAT THIS ENGINE GUARANTEES ABOUT SEAT WRITES, said out loud in the run record.
   // `deny-authority-write.mjs` is a `claude -p` PreToolUse hook, so it refuses a seat's writes into the
   // doctrine tree, the profile store and `<runDir>/_driver/` at the moment of the write. That is a real
   // boundary and this engine has it.
@@ -409,7 +409,7 @@ export const anthropicAgentEngine = {
   async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, stallSec, progressFiles } = {}) {
     if (!message) throw new Error("anthropic-agent.runTurn: message is required");
     const { args, input, grantNote } = buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites });
-    // #1022 — the cross-check speaks. Driver stderr is what an operator reads, and it is where the other
+    // tracker issue 1022 — the cross-check speaks. Driver stderr is what an operator reads, and it is where the other
     // drift notices in this engine already land ([ledger], [env-aliases], [queue-watch]).
     if (grantNote) process.stderr.write(`${grantNote}\n`);
     const t0 = Date.now();
@@ -435,7 +435,7 @@ export const anthropicAgentEngine = {
       // inheriting that would load the dev-assistant instructions into every stage (context pollution +
       // cost). It also avoids the EACCES when the inherited cwd is unreadable by the runner's user.
       //
-      // #524 — cwd is a granted WRITE root here (file tools are confined to cwd + --add-dir), so it is
+      // tracker issue 524 — cwd is a granted WRITE root here (file tools are confined to cwd + --add-dir), so it is
       // the run dir when there is one. See resolveSpawnCwd in common.mjs for why, and for what it deletes.
       const spawnCwd = resolveSpawnCwd({ cwd, runDir });
       // stdin is a PIPE (not "ignore"): the prompt rides stdin, not a `-p` argv element, so it is never
@@ -494,7 +494,7 @@ export const anthropicAgentEngine = {
       // "omitted" on Opus 5, so an ENGAGED block streams with a zero-length `thinking` string and a real
       // `signature` — reading the text would report "no thinking" on every production turn.
       let thought = false;
-      // MODEL GAUGE (#238 corruption 3): which model the PROVIDER says served this turn. Until now
+      // MODEL GAUGE (tracker issue 238 corruption 3): which model the PROVIDER says served this turn. Until now
       // nothing on any record was a function of the provider's response — `modelUsed` was
       // `resolveModel(<the alias we asked for>)`, a pure function of the request, so a substitution or a
       // tier bounce was unobservable by construction. The truth is on the wire twice: `system:init`
@@ -525,7 +525,7 @@ export const anthropicAgentEngine = {
       // (A repeat of an already-recorded path is NOT truncation — nothing is lost.)
       const READS_CAP = 500;
       let readsTruncated = false;
-      // ── #1111 — THE TWO NUMBERS THAT MAKE A SLOW TURN A DIAGNOSIS RATHER THAN AN INFERENCE ────────
+      // ── tracker issue 1111 — THE TWO NUMBERS THAT MAKE A SLOW TURN A DIAGNOSIS RATHER THAN AN INFERENCE ────────
       //
       // `tokensPerSec` says so itself: "the denominator still contains the turn's own tool waits… it
       // records the ratio; it does not diagnose it." Establishing that a slow stage was WAITING rather
@@ -543,7 +543,7 @@ export const anthropicAgentEngine = {
       let toolCalls = 0;
       let toolWaitMs = 0;
       let toolAskedAt = null;
-      // #1111 — WHAT THE WAIT IS MADE OF, keyed by the tool(s) that caused it.
+      // tracker issue 1111 — WHAT THE WAIT IS MADE OF, keyed by the tool(s) that caused it.
       //
       // The total alone cannot answer the question it was collected for. "Exclude tool wait from the kill
       // clock because a turn waiting on a tool is the harness working" is TRUE of `register_execute_plan`
@@ -709,7 +709,7 @@ export const anthropicAgentEngine = {
           progress();
         }
         else if (ev.type === "user") {
-          // #1111 — the result of the ask above. Only counted when an ask is outstanding, so a `user`
+          // tracker issue 1111 — the result of the ask above. Only counted when an ask is outstanding, so a `user`
           // event with no preceding tool_use adds nothing rather than charging the turn for a gap it
           // never spent waiting.
           // Which ask is this the result OF? The id on the wire answers it. Falling back to the
@@ -776,7 +776,7 @@ export const anthropicAgentEngine = {
       const watchdog = setInterval(() => {
         artifactProgress();
         const now = Date.now();
-        // #1780 — THE STARTUP DEBT. #1692 widened the deadline below until the first byte but left this
+        // tracker issue 1780 — THE STARTUP DEBT. tracker issue 1692 widened the deadline below until the first byte but left this
         // clock's ORIGIN at spawn, so the startup interval stayed on the meter: the moment the grace let
         // go, progIdle already WAS the whole boot, and any NOPROG shorter than startup had expired before
         // the child was observed at all. The kill then landed on the next tick, before the ask could reach
@@ -784,12 +784,12 @@ export const anthropicAgentEngine = {
         // Releasing a clock is not starting one: the first byte is this clock's origin, not its green light.
         const progFrom = firstOutputAt === null ? lastProgress : Math.max(lastProgress, firstOutputAt);
         const idle = now - lastMove, progIdle = now - progFrom;
-        // ── #1692 — STARTUP IS NEITHER SILENCE NOR WORK ──────────────────────────────────────────────
+        // ── tracker issue 1692 — STARTUP IS NEITHER SILENCE NOR WORK ──────────────────────────────────────────────
         // Every clock here USED TO start at SPAWN, so until the child's first byte they were all timing
         // process startup: an idle clock that had not yet seen silence, and an active clock that had not
-        // yet seen work. Past tense deliberately — #1780 finished this, and the sentence stayed true of
+        // yet seen work. Past tense deliberately — tracker issue 1780 finished this, and the sentence stayed true of
         // the byte-stall below (`lastMove`) while being false of the progress clock above, which is
-        // precisely the gap that let the defect sit here for a day looking like ambient flake. #1703 established this for the byte-stall in common.mjs — which this engine does not use,
+        // precisely the gap that let the defect sit here for a day looking like ambient flake. tracker issue 1703 established this for the byte-stall in common.mjs — which this engine does not use,
         // because it spawns its own child, so that fix never reached this watchdog. Under full-suite load
         // a starved spawn crossed a 400ms test ceiling before the mock had emitted anything, and the kill
         // was recorded as a no-progress stall against a turn that had not yet been given a chance to
@@ -800,7 +800,7 @@ export const anthropicAgentEngine = {
         // kill it NOW, well below the wall, and record it as a STALL — never let the ceiling raise turn
         // into extended stall burn, and never let this kill read as "the stage needed more time".
         else if (progIdle >= (started ? NOPROG : Math.max(NOPROG, GRACE))) { stallKill = true; noProgressKill = true; killed = true; killTree(); }
-        // ── #1111 — THE CEILING MEASURES ACTIVE TIME, NOT ELAPSED ────────────────────────────────────
+        // ── tracker issue 1111 — THE CEILING MEASURES ACTIVE TIME, NOT ELAPSED ────────────────────────────────────
         //
         // Owner ruling: "there isnt such thing as a hung model. it always delivers something or fails."
         // So this ceiling exists for the harness's own failure modes, not to budget the model, and a turn
@@ -824,7 +824,7 @@ export const anthropicAgentEngine = {
         // quantity: a long turn has three causes — tool latency, a generation stall, and sheer VOLUME
         // (one healthy stage ran 40.9 minutes at a normal rate producing 186k tokens) — and nothing that
         // keys on elapsed can tell them apart.
-        // #1692: measured from the FIRST BYTE, never from spawn. Startup is not active time either, and
+        // tracker issue 1692: measured from the FIRST BYTE, never from spawn. Startup is not active time either, and
         // against a tight pin it was the whole budget — a 900ms spawn hit a 500ms ceiling having done
         // nothing at all, and the turn died carrying `hardWall` with zero tool calls to explain it.
         else if (started && activeElapsedMs({ wall: now - firstOutputAt, toolWaitMs, toolAskedAt, now }) >= hardMs) {
@@ -852,10 +852,10 @@ export const anthropicAgentEngine = {
       });
       child.stderr.on("data", (d) => {
         if (settled || overflow) return;
-        // #1813 — STDERR DOES NOT START THE CLOCKS, and this line used to. This engine's protocol is
+        // tracker issue 1813 — STDERR DOES NOT START THE CLOCKS, and this line used to. This engine's protocol is
         // stream-json on STDOUT; stderr carries node warnings and CLI notices, which a child can emit
         // before it has done anything at all. Treating one as "the child has spoken" ended the grace and
-        // — since #1780, which made the first byte the progress clock's ORIGIN — started that clock too,
+        // — since tracker issue 1780, which made the first byte the progress clock's ORIGIN — started that clock too,
         // so a turn whose real startup was still running got its no-progress ceiling measured from a
         // deprecation warning. A child that writes ONLY stderr is still bounded: it never starts, so the
         // byte-stall below fires at max(STALL, GRACE) exactly as it does for a silent spawn.
@@ -889,11 +889,11 @@ export const anthropicAgentEngine = {
         // defect from the inside.
         const endedAt = Date.now();
         const wall = (endedAt - t0) / 1000;
-        // #1111 — THE TWO CLOCKS MUST TILE THE WALL, in every case including the one that matters.
+        // tracker issue 1111 — THE TWO CLOCKS MUST TILE THE WALL, in every case including the one that matters.
         //
         // A turn killed mid-tool-call has an OPEN ask that `toolWaitMs` has not closed. Reporting the
         // unclosed accumulator left `activeMs + toolWaitMs` short of the wall by exactly that gap — and
-        // only on turns killed during a call, which is the population #1111 is about. A guard asserting
+        // only on turns killed during a call, which is the population tracker issue 1111 is about. A guard asserting
         // the identity would have held on every ordinary attempt and quietly not held on the interesting
         // one. Closed here, ONCE, so both fields are derived from the same number.
         //
@@ -924,7 +924,7 @@ export const anthropicAgentEngine = {
         const stderrOut = overflow
           ? (stderr + `\nanthropic-agent output overflow: stdout/stderr exceeded ${maxBuffer} chars — killed the tree and failed the turn (truncated tail never parsed)`)
           : noProgressKill
-            // #1780 — THE SPECIMEN RIDES THE FAILURE, because the broken state expires. This kill has
+            // tracker issue 1780 — THE SPECIMEN RIDES THE FAILURE, because the broken state expires. This kill has
             // twice reddened `main` from a test whose ANTI-VACUITY check failed — the turn died having
             // opened no tool ask — and neither the box's ambient load nor a full-suite run reproduces
             // it on demand. So the discriminating bit is recorded HERE, where the kill happens, rather
@@ -962,11 +962,11 @@ export const anthropicAgentEngine = {
           // from this list is unreliable and the consumer must downgrade it to "not observed").
           reads: [...reads], readsTruncated,
           toolCalls, toolWaitMs: settledToolWaitMs,   // #1111 — two integers, no content
-          // #1780 — ms from spawn to the child's FIRST byte, or null when it never spoke. RECORDING
+          // tracker issue 1780 — ms from spawn to the child's FIRST byte, or null when it never spoke. RECORDING
           // ONLY: nothing branches on it. A recording field is protected by a test or by nothing, so
           // engine.anthropic.test.mjs pins it — deleting it must red something.
           firstByteMs: firstOutputAt === null ? null : Math.round(firstOutputAt - t0),
-          // #1111 — WHICH CLOCK RAN OUT, and WHAT the wait was made of.
+          // tracker issue 1111 — WHICH CLOCK RAN OUT, and WHAT the wait was made of.
           //
           // The hard wall measures ELAPSED, and elapsed includes time the model spent waiting on tools
           // rather than generating. A wall kill whose elapsed is mostly tool wait is a different event from
@@ -987,7 +987,7 @@ export const anthropicAgentEngine = {
           // nothing unmeasurable), following toolWaitByTool's own rule that absence and "cannot report"
           // must not look alike. `toolWaitMs` and the per-tool split are untouched.
           toolWaitUnmeasurable: [...unmeasurable],
-          // MODEL GAUGE (#238): the id the WIRE reported, or null when the stream never said. Assistant
+          // MODEL GAUGE (tracker issue 238): the id the WIRE reported, or null when the stream never said. Assistant
           // message first (what served the call), init second (what the session was configured with).
           // Never the requested alias — see the declaration above.
           modelWire: wireModelAssistant ?? wireModelInit ?? null,
@@ -1023,7 +1023,7 @@ function errResult(t0, e, resumeRef) {
     stderr: `anthropic-agent spawn error: ${e?.message ?? e}`, laneWaitMs: 0,
     // reads: a spawn error means NO turn ran — [] is the true observation (nothing was read), not a gap.
     // modelWire: null for the opposite reason — no turn ran, so the wire said nothing about a model, and
-    // the record must say UNKNOWN rather than inherit the alias that was asked for (#238).
+    // the record must say UNKNOWN rather than inherit the alias that was asked for (tracker issue 238).
     json: null, usage: null, reads: [], readsTruncated: false, modelWire: null, sessionRef: resumeRef ?? null,
   };
 }

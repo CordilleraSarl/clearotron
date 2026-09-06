@@ -54,7 +54,7 @@ flowchart LR
     E -.- e2["Client's framework and format;<br/>lawyer vets, then it moves"]
 
     classDef phase fill:#1a3a5c,stroke:#4a90d9,color:#fff
-    classDef note fill:none,stroke:none,color:#888,font-size:12px
+    classDef note fill:none,stroke:none,color:tracker issue 888,font-size:12px
     class A,B,C,D,E phase
     class a2,b2,c2,d2,e2 note
 ```

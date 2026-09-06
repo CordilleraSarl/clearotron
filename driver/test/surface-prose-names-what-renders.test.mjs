@@ -101,7 +101,7 @@ test("#1450 pool-admin's regen message names only what that command writes", () 
 
   // THE MESSAGE IS BOUND TO THE SEAM, not to today's wording. `regen` calls regenIndex (which writes
   // index.html) and regenSurfaces (which writes nothing). The day regenSurfaces gains a writer, this
-  // arm reds and asks for the message to grow with it — which is the failure #1450 is made of, caught
+  // arm reds and asks for the message to grow with it — which is the failure tracker issue 1450 is made of, caught
   // from the other direction.
   const seamIsEmpty = /\{\s*\}\s*$/.test(regenSurfaces.toString().trim());
   assert.equal(seamIsEmpty, true,

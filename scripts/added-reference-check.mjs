@@ -39,28 +39,31 @@ import { execFileSync } from "node:child_process";
 // duplicate-skip arms were dropped in the same branch, so twelve reach main. They came across
 // byte-exact, which is what made their arms trustworthy and also brought their references with them.
 // Exempted for that one merge and removed by the cleanup; see the note above.
-const RESTORED_VERBATIM = new Set([
-  "driver/test/a-bail-on-an-unmeetable-precondition-is-a-skip.test.mjs",
-  "driver/test/a-signal-immune-fixture-is-reaped-by-its-owner.test.mjs",
-  "driver/test/a-wait-the-driver-could-not-measure-says-so.test.mjs",
-  "driver/test/browser-check-membership.test.mjs",
-  "driver/test/commonlaw-reconciliation-callsite.test.mjs",
-  "driver/test/e2e-assertions.test.mjs",
-  "driver/test/engine.anthropic.test.mjs",
-  "driver/test/engine.openai.integration.test.mjs",
-  "driver/test/floor-duty.test.mjs",
-  "driver/test/pipeline.mock.test.mjs",
-  "driver/test/render-frozen.test.mjs",
-  "driver/test/suite-ledger-is-not-the-box-ledger.test.mjs",
-]);
+// RESTORED_VERBATIM IS GONE (tracker issue 188). It exempted twelve files by literal path so that a
+// byte-for-byte restoration could land without the guard refusing its own restored text. Their tokens
+// are now retired like everything else, so the list exempts nothing real — and a stale exemption list is
+// worse than none: it silently covers files nobody is checking any more, and it is invisible in a diff
+// that does not touch this file.
 
 const TOKEN = /#[0-9]{3,}/g;
+
+// A `#` COMMENT IS A COMMENT WHEREVER THE FILE FORMAT SAYS SO, not only in YAML (tracker issue 188).
+//
+// This read `#` as a comment for YAML alone, so the same sentence was refused in a .yml file and waved
+// through in .env.example, a systemd unit or a shell script. Those comments are exactly as publicly
+// visible, and `# REQUIRED — tracker issue 774 removed the code default` was sitting in .env.example on the public
+// tree while this guard reported the tree clean. Found while measuring the class for the retirement pass:
+// the guard's own rule flagged 359 tokens, and thousands more sat in files it had never classified.
+//
+// Extensionless is deliberate: a systemd unit or a dotfile often has no extension worth matching, so the
+// KNOWN `#`-comment names are listed and everything else keeps the source rule.
+const HASH_COMMENT = /(^|\/)(\.env[^/]*|[^/]*\.(ya?ml|sh|bash|service|timer|path|socket|conf|ini|toml|properties)|Dockerfile[^/]*|Makefile|\.gitignore|\.gitattributes)$/;
 
 /** Is this added line one the check reads at all? Comments in source, everything in markdown. */
 export const isProse = (path, line) => {
   if (/\.mde?$/.test(path) || path.endsWith(".md")) return true;
   const t = line.trim();
-  if (/\.(ya?ml)$/.test(path)) return t.startsWith("#");
+  if (HASH_COMMENT.test(path)) return t.startsWith("#");
   return t.startsWith("//") || t.startsWith("*") || t.startsWith("/*");
 };
 
@@ -112,7 +115,6 @@ function main() {
   // difference between "looked and found nothing" and "had nothing to look at".
   const hits = [];
   for (const { path, line } of added) {
-    if (RESTORED_VERBATIM.has(path)) continue;
     for (const token of offendingTokens(path, line)) hits.push({ path, token, line: line.trim().slice(0, 100) });
   }
   console.log(`added-reference-check: read ${added.length} added line(s) against ${base}`);

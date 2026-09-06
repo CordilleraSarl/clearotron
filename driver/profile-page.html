@@ -256,7 +256,7 @@ function collect() {
   // writes ABSENCE and never `false` (tracker issue 1991). It was a checkbox, which rendered absent and
   // `false` identically and wrote a boolean on every save — so a customer who had given no instruction
   // was recorded as "strip the line" the first time anybody pressed Save on an unrelated field, and
-  // their next report shipped with no confidentiality line. That is #761's incident on this door.
+  // their next report shipped with no confidentiality line. That is tracker issue 761's incident on this door.
   // `true` is retired and renders as the default (shared/brand.mjs confPosture), so it folds to the same
   // option and saves as absence rather than storing a distinction the output can no longer carry.
   if ($("f_priv").value === "no") delivery.privileged = false; else delete delivery.privileged;

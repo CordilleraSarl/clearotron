@@ -354,7 +354,7 @@ CLARIVATE_API_KEY=...                    # the credential for the provider named
 # EUIPO_CLIENT_ID=... / EUIPO_CLIENT_SECRET=...
 EUIPO_ENVIRONMENT=production              # REQUIRED with euipo — sandbox | production are SEPARATE
                                           # deployments over different corpora. There is no default:
-                                          # unset, the adapter refuses by name (#1149 item 2).
+                                          # unset, the adapter refuses by name (tracker issue 1149 item 2).
 
 # ── Web research — REQUIRED for all four products (see §1) ─────────────
 PERPLEXITY_API_KEY=...
