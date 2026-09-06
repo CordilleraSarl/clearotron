@@ -1,5 +1,13 @@
 # prelim-driver
 
+## 0.1.11
+
+### Patch Changes
+
+- 83970de: Fixed: A what-if on a delivered report now returns its memo. The previous release announced this before it worked; from this version it does.
+- d534f53: For operators: On a box running the services, the check-up now reports what those services read rather than what the shell you typed in happens to carry.
+- 29ba234: For operators: `npm install clearotron` gives you the tested release. `npm install clearotron@beta` gives you the newest, published within minutes of every merge.
+
 ## 0.1.10
 
 ### Patch Changes
