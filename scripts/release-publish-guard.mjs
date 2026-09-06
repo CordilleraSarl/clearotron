@@ -29,6 +29,27 @@ export const WORKFLOW = ".github/workflows/release.yml";
 /** The repository npm attests provenance for. It is in the workflow's job conditions too. */
 export const REPOSITORY = "CordilleraSarl/clearotron";
 
+/**
+ * Every job in the workflow that actually publishes, as [id, text].
+ *
+ * TEXT, NOT YAML. This guard is deliberately a string reader — it must keep working on a workflow whose
+ * YAML is malformed, because "the file no longer parses" is not a reason to let a publish through, and a
+ * parser would throw before reaching a single check.
+ *
+ * A job is "publishing" if its own block runs `npm publish`. Comments are already stripped by the caller.
+ */
+export function publishingJobs(live) {
+  const out = [];
+  const starts = [...live.matchAll(/^ {2}([A-Za-z_][A-Za-z0-9_-]*):$/gm)];
+  for (let i = 0; i < starts.length; i++) {
+    const from = starts[i].index;
+    const to = i + 1 < starts.length ? starts[i + 1].index : live.length;
+    const block = live.slice(from, to);
+    if (/\bnpm\s+publish\b/.test(block)) out.push([starts[i][1], block]);
+  }
+  return out;
+}
+
 /** Credential spellings that would let this repository publish without the OIDC exchange. */
 export const CREDENTIAL_TOKENS = Object.freeze([
   "NPM_TOKEN",
@@ -67,6 +88,23 @@ export function refusals({ workflow, rootPkg }) {
   // available to discover it.
   if (!/id-token:\s*write/.test(live)) add("the release workflow cannot request an OIDC token (`id-token: write` is gone)");
   if (!/environment:\s*npm\b/.test(live)) add("the release workflow no longer runs in the `npm` environment the publisher is registered under");
+
+  // ── AND EVERY PUBLISHING JOB CARRIES BOTH, not merely the file somewhere (tracker issue 208) ────────
+  //
+  // The two checks above ask whether the strings appear ANYWHERE. That was sufficient while one job
+  // published. It stopped being sufficient the moment a second publishing job was added: a workflow
+  // where one job holds `id-token: write` and the other does not passes both lines above and then fails
+  // at the registry, mid-run, after the first version has already gone out and cannot be recalled.
+  //
+  // Found by an arm going green that should not have — the mutation that strips the permission used a
+  // regex with no `g`, so it removed one of two occurrences and the guard still passed. The weakened
+  // guard was the finding; the arm was only how it surfaced.
+  for (const [id, block] of publishingJobs(live)) {
+    if (!/id-token:\s*write/.test(block))
+      add(`job \`${id}\` publishes but does not request an OIDC token (\`id-token: write\`), so its publish fails at the registry`);
+    if (!/environment:\s*npm\b/.test(block))
+      add(`job \`${id}\` publishes but does not run in the \`npm\` environment the publisher is registered under`);
+  }
 
   // The last thing that runs before a publish from a working tree. It is not what protects CI — CI
   // publishes a tarball and npm runs no lifecycle script for one — it is what a laptop still hits.

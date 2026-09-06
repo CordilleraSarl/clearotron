@@ -125,12 +125,19 @@ jobs:
       # So the policy read is best-effort by design. It fails soft and the finding says the policy could
       # not be read from here and names it as the setting to look at, which is still better than a value
       # this file remembers and the repository has changed.
-    # EITHER STEP MAY ANSWER, NEVER BOTH. `cut` answers on the push that IS the version merge; `awaited`
-    # answers on the push that CUT the version pull request and then waited for it. An unset output from
-    # a skipped step is the empty string, so `||` picks the one that ran.
+    # `cut` answers about the version THIS PUSH found on main — a version cut earlier and never
+    # published, or the one this push's own merge carried. `pr_number` names the version pull request
+    # this push opened or updated, which is a DIFFERENT version and is published by its own job below.
+    #
+    # THE WAIT USED TO LIVE IN THIS JOB AND COULD NOT ARM. It was conditioned on `cut != true`, so on any
+    # push that both published a stranded version and cut a new one it was skipped — and that is the
+    # ordinary rhythm, not an edge: a version pull request self-merges (firing nothing), the next push
+    # publishes it and cuts another, and the wait is skipped again every single time. Measured three
+    # times on 2026-09-06. It is its own job now, and it arms whenever a pull request was cut.
     outputs:
-      cut: ${{ steps.cut.outputs.cut || steps.awaited.outputs.cut }}
-      version: ${{ steps.cut.outputs.version || steps.awaited.outputs.version }}
+      cut: ${{ steps.cut.outputs.cut }}
+      version: ${{ steps.cut.outputs.version }}
+      pr_number: ${{ steps.changesets.outputs.pr-number }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -301,42 +308,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/release-version-pr-checks.mjs "${{ steps.changesets.outputs.pr-number }}"
 
-      # ── THE RUN A PERSON STARTED IS THE ONE THAT WAITS (tracker issue 208) ──────────────────────────
-      #
-      # THE PREVIOUS ATTEMPT IS DELETED RATHER THAN KEPT BESIDE THIS, and why matters. It hung the wait
-      # off `workflow_run` on the version branch's CI, reasoning that the completion `auto-merge` is
-      # waiting on fires "regardless of who pushed". It does not. Measured 2026-09-06 with the trigger
-      # live on main: version pull request 58 self-merged at 16:12:48Z as "Release 0.1.8", both CI
-      # completions on `changeset-release/main` fired NOTHING, and across the last sixty runs of every
-      # workflow on this repository there is not one `workflow_run` event. The suppression that swallows
-      # the merge push swallows the event its CI would raise too, because that CI was itself started by
-      # `GITHUB_TOKEN` activity. A trigger that has never fired is not a net; it is a line that reads
-      # like one.
-      #
-      # SO THE WAIT RIDES THE ONE RUN THAT IS DEFINITELY A PERSON'S: this one. A human push to main
-      # opened or updated the version pull request three steps up. That pull request merges itself
-      # minutes later and fires nothing — so rather than wait for an event that will not come, this run
-      # stays alive and watches main for the merge it just set in motion, then publishes it.
-      #
-      # ONLY WHEN THERE IS SOMETHING TO WAIT FOR. No version pull request means this push was not a cut
-      # and there is nothing coming; `cut` above has already answered for the push that IS the merge.
-      #
-      # AND ONLY WHEN NOTHING IS ALREADY STRANDED, which is a trade rather than an oversight. A push can
-      # do both at once — release the version sitting cut and unpublished, AND cut the next one — and
-      # this run publishes ONE version. So the stranded one wins: it has been waiting, and it is the one
-      # a reader is missing from the registry. The version this push cut then waits for the cron, or for
-      # the next push, exactly as it would have before.
-      #
-      # Covering both in one run means publishing twice from one job, which is a change to the publish
-      # gate and does not belong in the same change as the reason for making it.
-      #
-      # GIVING UP IS THE ORDINARY OUTCOME, NOT A FAULT — checks that fail, a pull request somebody
-      # dismisses, a re-cut mid-flight. The cron floor stays underneath either way, which is what makes
-      # a quiet give-up safe.
-      - name: Wait for the version pull request this push cut to merge, then publish it
-        if: steps.changesets.outputs.pr-number != '' && steps.cut.outputs.cut != 'true'
-        id: awaited
-        run: node scripts/release-await-cut.mjs
 
   # ── THE DETECTOR THAT CANNOT BE SKIPPED BY THE THING IT DETECTS (tracker issue 229) ────────────────
   #
@@ -443,6 +414,71 @@ jobs:
       - name: Did a merge leave a version on main with no tag
         id: cut
         run: node scripts/release-cut-decision.mjs
+
+  # ── THE WAIT, AS ITS OWN JOB SO IT CAN ACTUALLY ARM (tracker issue 208) ────────────────────────────
+  #
+  # It lived inside `version`, conditioned on `cut != 'true'`, and could not arm in the rhythm this
+  # repository actually has: a version pull request self-merges firing nothing, the next push publishes
+  # that stranded version AND cuts a new one — so `cut` is true, the wait is skipped, and the new cut is
+  # stranded in its turn. Measured three times on 2026-09-06. The limitation was written up as an edge
+  # case; it was the steady state.
+  #
+  # AFTER `publish`, NOT BESIDE IT. `release-await-cut.mjs` asks whether main carries a version with no
+  # tag. Run in parallel with the first publish, it would see the STRANDED version still untagged and
+  # answer about that one — and the job below would publish it a second time. Ordering it behind the
+  # publish means the only untagged version it can find is the new one.
+  #
+  # A SKIPPED `publish` IS NOT A BLOCK. On a push with nothing stranded, `publish` does not run and this
+  # job is the whole mechanism.
+  # ONE WORD, NO HYPHEN, DELIBERATELY. `needs.await-the-cut.outputs.cut` does not read a job's output —
+  # the expression parser takes the hyphens as subtraction and the condition silently evaluates to
+  # something that is never `'true'`, so the job below would never run and nothing would say why.
+  awaited:
+    name: Wait for the version this push cut to merge itself
+    needs: [version, publish]
+    # THE REHEARSAL REACHES THIS JOB, and that is deliberate. A step nobody rehearses is a step whose
+    # first real run is the day it matters. `workflow_dispatch` carries no version pull request to wait
+    # for, so it runs the loop once with a zero budget — which proves the wiring, the checkout, the
+    # credential guard and the decision, and holds a runner for none of it.
+    if: >-
+      !failure() && !cancelled()
+      && github.repository == 'CordilleraSarl/clearotron'
+      && ((github.event_name == 'push' && github.ref == 'refs/heads/main'
+           && needs.version.outputs.pr_number != '')
+          || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    # THE BUDGET CONTAINS THE WAIT, with room for the checkout and the fetches around it. A timeout under
+    # the wait cancels this at the moment it was about to answer, and a cancelled job reads as neither a
+    # pass nor a failure to anybody scanning the run. An arm couples the two numbers.
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    outputs:
+      cut: ${{ steps.awaited.outputs.cut }}
+      version: ${{ steps.awaited.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0      # tags included: the cut decision reads them, and refuses without them
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: This pipeline publishes only the way it was authorised to
+        run: node scripts/release-publish-guard.mjs
+
+      # GIVING UP IS THE ORDINARY OUTCOME, NOT A FAULT — checks that fail, a pull request somebody
+      # dismisses, a re-cut mid-flight. The cron floor stays underneath, so a quiet give-up loses
+      # nothing; reporting it as a failure would train every reader to ignore this job.
+      - name: Watch main for the merge this push set in motion
+        id: awaited
+        env:
+          # A rehearsal has nothing coming, so it reads once and reports. Set ONLY here — a real run
+          # takes the file's own fifteen minutes.
+          CLEAROTRON_RELEASE_WAIT_MS: ${{ github.event_name == 'workflow_dispatch' && '0' || '' }}
+        run: node scripts/release-await-cut.mjs
 
   publish:
     name: Publish the release to npm
@@ -678,4 +714,251 @@ jobs:
             gh release create "v$VERSION" --target "$GITHUB_SHA" --title "v$VERSION" --notes-file release-notes.md $PRERELEASE
           else
             gh release create "v$VERSION" --target "$GITHUB_SHA" --title "v$VERSION" --generate-notes $PRERELEASE
+          fi
+
+  publish-awaited:
+    name: Publish the version this push cut, once it merges itself
+    # BOTH DECIDERS ARE NEEDED AND EITHER MAY BE SKIPPED. `version` runs on a push to main and `pending`
+    # on the cron, so on any given run one of them did not happen — which is why the condition opens with
+    # `!failure() && !cancelled()` rather than relying on the default, and why a skipped decider reads as
+    # "not this path" instead of blocking the job.
+    needs: [version, publish, awaited]
+    # THE SECOND PUBLISH OF THE RUN, and it publishes a DIFFERENT version from the first.
+    #
+    # `publish` above releases whatever was already sitting on main unpublished. This one releases the
+    # version pull request THIS push cut, after `await-the-cut` has watched it merge itself. One run,
+    # two versions, because a push routinely does both and publishing only the older one is what left a
+    # version stranded after every merge.
+    #
+    # `!failure() && !cancelled()` for the same reason the first job carries it: `publish` is skipped on
+    # a push with nothing stranded, and a skipped predecessor must read as "not that path" rather than
+    # as a block.
+    if: >-
+      !failure() && !cancelled()
+      && github.repository == 'CordilleraSarl/clearotron'
+      && (needs.awaited.outputs.cut == 'true' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # THIS NAME IS THE REGISTRY'S, AND IT IS ALL IT IS NOW. npm's trusted publisher for this package is
+    # registered against the repository, this workflow's FILENAME and this ENVIRONMENT NAME; renaming any
+    # of the three makes the registry refuse the publish. Nothing else hangs on it.
+    #
+    # IT USED TO CARRY THE APPROVAL GATE, AND NO LONGER DOES. A required reviewer plus a protected-
+    # branches policy lived here, added after this job once started on a version nobody had cut, and the
+    # owner's 2026-09-05 ruling removed both: during the pre-release phase a merge publishes with no
+    # click anywhere. Measured the same day — the repository has zero environments, so this line
+    # re-creates `npm` unprotected on the next run. Its protected-branches half was what stopped a
+    # publish from a pull-request branch; the explicit ref check in the step below is what carries that
+    # now, and it is the reason that check is spelled out rather than left implied.
+    #
+    # The environment holds no secrets and must not be given any: the credential is minted per publish
+    # from the run's OIDC token and never stored.
+    environment: npm
+    permissions:
+      contents: write     # the tag and the GitHub release
+      id-token: write     # the OIDC token npm exchanges for a short-lived publish credential
+    steps:
+      # THE NEW main, NOT THE COMMIT THIS RUN STARTED ON. The version being published here landed after
+      # this run began — that is the whole point of the wait — so a default checkout would pack the
+      # bytes of the previous version and publish them under the new number.
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Use an npm that can publish through OIDC
+        run: |
+          set -euo pipefail
+          npm install -g "npm@${NPM_VERSION}"
+          npm --version
+
+      - run: npm ci
+
+      - name: This pipeline publishes only the way it was authorised to
+        run: node scripts/release-publish-guard.mjs
+
+      # THE REFUSALS, ALL IN ONE PLACE AND BEFORE ANYTHING IS BUILT.
+      #  · a real publish happens on a push and nowhere else; `workflow_dispatch` is a rehearsal.
+      #  · a tag and the manifest must name the same version. A tag is the one thing a person makes by
+      #    hand, and one that disagrees with the manifest ships an artefact nobody can trace back. It
+      #    refuses rather than reconciling: two spellings disagreeing means somebody's intention is
+      #    unrecorded, and guessing which they meant is how the wrong one wins.
+      #  · the channel is derived, never defaulted. `npm publish` with no `--tag` publishes to `latest`,
+      #    and a version reaching `latest` by default rather than by decision is the failure. DURING THE
+      #    PRE-RELEASE PHASE `latest` IS the pre-release, by the owner's ruling — "latest has all our
+      #    fixes" — and `beta` is deliberately not also set: npm exchanges its OIDC token inside
+      #    `npm publish` and nowhere else, so a second tag would need a long-lived credential in this
+      #    repository, which is the one thing this design forbids. One publish, one tag.
+      - name: What is being published, and whether this run may publish it
+        id: what
+        run: |
+          set -euo pipefail
+          VERSION=$(node -p "require('./package.json').version")
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            # A rehearsal, and it stays one on whatever branch it was dispatched from — that is the
+            # point of being able to dispatch it. The branch check below is skipped here BECAUSE the
+            # dry-run flag is already set: a rehearsal that refused to rehearse anywhere but main would
+            # be a rehearsal of nothing.
+            echo "This is a rehearsal: the publish step will run with --dry-run."
+            echo "dry_flag=--dry-run" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "push" ] || [ "${{ github.event_name }}" = "schedule" ]; then
+            # `schedule` is a real publish, not a rehearsal: it is the path a self-merged version takes,
+            # and it reaches here only when `pending` found a version on main with no tag. A scheduled
+            # run's ref IS the default branch, so the branch check below holds it to the same rule.
+            echo "dry_flag=" >> "$GITHUB_OUTPUT"
+            # ── THE BRANCH, EXPLICITLY, BECAUSE THESE GUARDS ARE NOW THE WHOLE GATE ────────────────────
+            #
+            # There is no human between a merge and a publish any more: the environment's approval gate
+            # is gone by the owner's ruling, and its protected-branches half went with it. What stands
+            # between this repository and the registry is this step — the event, the repository, the
+            # branch, a version read from the commit, and the check that it has not already been
+            # released. A tag push is the other way in and is named as itself.
+            case "${{ github.ref }}" in
+              refs/heads/main|refs/tags/v*) ;;
+              *)
+                echo "::error::A release publishes from main or from a v* tag. This run is on ${{ github.ref }}."
+                exit 1
+                ;;
+            esac
+          else
+            echo "::error::A release publishes on a push, or on the cron that notices a self-merged cut. This run is a ${{ github.event_name }}."
+            exit 1
+          fi
+          case "${{ github.ref }}" in
+            refs/tags/v*)
+              TAG_VERSION="${GITHUB_REF_NAME#v}"
+              if [ "$TAG_VERSION" != "$VERSION" ]; then
+                echo "::error::Tag ${GITHUB_REF_NAME} does not match package.json $VERSION. One of them is wrong and this cannot tell which."
+                exit 1
+              fi
+              ;;
+          esac
+          DIST_TAG=$(node scripts/release-dist-tag.mjs "$VERSION")
+          # THE CHANNEL AND THE FLAG ARE TWO QUESTIONS, and in pre mode they come apart. `0.1.1-beta.0`
+          # goes to the `latest` CHANNEL by the owner's ruling, and it is still a pre-release. This was
+          # `[ "$DIST_TAG" != "latest" ]` further down, which marks a beta as the stable release on the
+          # page a reader opens to find out — so the flag is asked of the VERSION, by the function that
+          # exists for it.
+          PRERELEASE=$(node scripts/release-dist-tag.mjs "$VERSION" --prerelease)
+          {
+            echo "version=$VERSION"
+            echo "dist_tag=$DIST_TAG"
+            echo "prerelease=$PRERELEASE"
+            echo "tarball=release-artefacts/clearotron-$VERSION.tgz"
+          } >> "$GITHUB_OUTPUT"
+          echo "Publishing clearotron@$VERSION to the \`$DIST_TAG\` channel (prerelease: $PRERELEASE)."
+
+      # The bundle is built, not committed, so a pack that runs before this ships a portal with nothing
+      # to serve. The completeness check below is what proves it landed.
+      - run: npm run build:ui
+
+      # PACK ONCE, SEAL, SCAN THOSE BYTES, PUBLISH THOSE BYTES. `--pack-destination` does not create the
+      # directory, and npm's failure for a missing one reads like a packing failure rather than a missing
+      # folder. The seal below is inside the "once": it rewrites the manifest in place, before anything
+      # scans or measures the artefact, so every step after it reads the bytes that go to the registry.
+      - name: Pack the exact bytes that will be published
+        run: |
+          set -euo pipefail
+          mkdir -p release-artefacts
+          npm pack --pack-destination ./release-artefacts
+          test -f "${{ steps.what.outputs.tarball }}"
+
+      # THE PUBLISHED MANIFEST IS NOT THIS REPOSITORY'S MANIFEST, AND FIVE RELEASES SHIPPED AS THOUGH IT
+      # WERE (tracker issue 180). `overrides: { "buffers": "$buffers" }` pins the clean-room replacement
+      # for the unlicensed `buffers@0.1.1` while resolving THIS tree; npm's `$name` syntax resolves only
+      # in a root project's own manifest, so a consumer installing this package as a dependency has
+      # nothing to resolve it against and npm aborts the whole install. `npm install clearotron` failed
+      # on 0.1.1-beta.0 through 0.1.3, five for five, before a single file was written.
+      #
+      # `scripts/pack-publishable.mjs` has stripped this since 2026-08-23 and cannot be called from here:
+      # it needs `cut/packed-artifact.mjs`, which is withheld from the public repository, and exits 2
+      # without it. Its refusal says an exported tree is not one a publishable tarball is packed from —
+      # true until the public repository became the working home, false since. So the seal below applies
+      # that script's own exported policy function to the packed artefact instead of restating it.
+      - name: The published manifest is not this repository's manifest
+        run: node scripts/release-artifact-seal.mjs --tarball "${{ steps.what.outputs.tarball }}"
+
+      - name: No secret leaves in the packed bytes
+        run: |
+          set -euo pipefail
+          curl -sSfL -o gitleaks.tgz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "${GITLEAKS_SHA256}  gitleaks.tgz" | sha256sum -c -
+          tar -xzf gitleaks.tgz gitleaks
+          mkdir -p packed
+          tar -xzf "${{ steps.what.outputs.tarball }}" -C packed
+          COUNT=$(find packed -type f | wc -l)
+          echo "scanning $COUNT file(s) from the packed artefact"
+          # A SCAN OVER NOTHING EXITS 0. That is the shape where the extract failed and the scan reported
+          # clean, so the count is the check and the scan is what it enables.
+          if [ "$COUNT" -eq 0 ]; then
+            echo "::error::nothing was extracted from the tarball, so nothing was scanned."
+            exit 1
+          fi
+          ./gitleaks dir packed --config .gitleaks.toml --redact --no-banner
+          rm -rf packed gitleaks gitleaks.tgz
+
+      - name: What a stranger installs is complete
+        run: node scripts/release-completeness-check.mjs --tarball "${{ steps.what.outputs.tarball }}"
+
+      # AND THE ONLY QUESTION A VISITOR ASKS, TYPED AT THE BYTES ABOUT TO BE PUBLISHED. Every check
+      # above passed on all five broken releases, because each asked something about the tarball and
+      # none of them installed it. This one installs the artefact AS A DEPENDENCY of a throwaway
+      # project, which is the only shape the `$buffers` failure exists in — a root install and a
+      # `--dry-run` both exit 0 on the exact bytes that refuse for every real user. It is keyed to no
+      # known cause, so it also catches the next packaging fault of a different shape.
+      - name: "`npm install clearotron` works, on these exact bytes"
+        run: node scripts/release-install-check.mjs --tarball "${{ steps.what.outputs.tarball }}"
+
+      # PROPERTY 2, PROVED RATHER THAN ASSERTED (tracker issue 97: "prove the beta-to-stable promotion moves no
+      # bytes; compare the artefacts, do not assert it from the configuration"). A promotion that rebuilt
+      # would produce a different digest here, and two runs can be compared by anyone reading them.
+      - name: Record the artefact digest, so a promotion can be shown to move no bytes
+        run: |
+          set -euo pipefail
+          sha256sum "${{ steps.what.outputs.tarball }}" | tee release-artefacts/SHA256SUMS
+          {
+            echo "### clearotron@${{ steps.what.outputs.version }} → \`${{ steps.what.outputs.dist_tag }}\`"
+            echo
+            echo '```'
+            cat release-artefacts/SHA256SUMS
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # The tarball scanned above is the one published — not a second pack of the same tree.
+      # `./` IS LOAD-BEARING. Without it npm reads `release-artefacts/clearotron-0.1.0.tgz` as the
+      # `owner/repo` shorthand for a git dependency and refuses: "Refusing to fetch
+      # github:release-artefacts/clearotron-0.1.0.tgz". A relative path with a directory in it is
+      # ambiguous to npm's spec parser and a leading `./` is what makes it a file.
+      - name: Publish to npm through Trusted Publishing
+        run: npm publish "./${{ steps.what.outputs.tarball }}" --provenance --access public --tag "${{ steps.what.outputs.dist_tag }}" ${{ steps.what.outputs.dry_flag }}
+
+      # The tag and the release come AFTER the publish: a tag naming a version that is not on the
+      # registry is a worse lie than a publish that is not yet tagged, and this order means the failure
+      # leaves the tag unwritten rather than pointing at nothing.
+      - name: Tag it, and say what changed
+        if: steps.what.outputs.dry_flag == ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.what.outputs.version }}
+          PRERELEASE_FLAG: ${{ steps.what.outputs.prerelease }}
+        run: |
+          set -euo pipefail
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "The GitHub release v$VERSION already exists."
+            exit 0
+          fi
+          # Read from the VERSION above, never from the channel — see the step that computed it.
+          PRERELEASE=""
+          if [ "$PRERELEASE_FLAG" = "true" ]; then PRERELEASE="--prerelease"; fi
+          NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
+          if [ -n "$NOTES" ]; then
+            printf '%s\n' "$NOTES" > release-notes.md
+            gh release create "v$VERSION" --target "$(git rev-parse HEAD)" --title "v$VERSION" --notes-file release-notes.md $PRERELEASE
+          else
+            gh release create "v$VERSION" --target "$(git rev-parse HEAD)" --title "v$VERSION" --generate-notes $PRERELEASE
           fi

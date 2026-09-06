@@ -192,32 +192,48 @@ test("tracker issue 180 — `bin` is read in both of its shapes, because one of 
   assert.deepEqual(binNames({ name: "x" }), []);
 });
 
-test("tracker issue 180 — the publish job seals BEFORE anything measures the artefact", () => {
+test("tracker issue 180 — every publishing job seals BEFORE anything measures the artefact", () => {
   // Order is the design and it is invisible in the file unless somebody asks. A seal after the scans
-  // would publish bytes that nothing scanned, which is the invariant the pack step's own comment
-  // states — and it is the kind of comment that stays true only because an arm holds it.
-  // EACH ANCHOR IS REQUIRED TO BE UNIQUE, because the first draft of this arm read `npm publish` and
-  // found it in a comment eleven steps early — an ordering arm that compares positions is only ever as
-  // good as the certainty that each position is the step it is named for, and this file is mostly prose.
-  const at = (label, needle) => {
-    const first = RELEASE_YML.indexOf(needle);
-    assert.ok(first > 0, `the publish job has no ${label} step — the anchor moved or the step is gone`);
-    assert.equal(RELEASE_YML.indexOf(needle, first + 1), -1,
-      `${label}'s anchor ${JSON.stringify(needle)} appears more than once, so its position is not a step's`);
-    return first;
-  };
-  const pack = at("pack", "- name: Pack the exact bytes that will be published");
-  const seal = at("seal", "node scripts/release-artifact-seal.mjs");
-  const scan = at("secret scan", "- name: No secret leaves in the packed bytes");
-  const complete = at("completeness", "node scripts/release-completeness-check.mjs --tarball");
-  const check = at("install check", "node scripts/release-install-check.mjs");
-  const publish = at("publish", "- name: Publish to npm through Trusted Publishing");
-  assert.ok(pack < seal && seal < scan,
-    "the seal does not sit between the pack and the scan, so the bytes that are scanned are not the "
-    + "bytes that are published");
-  assert.ok(complete < check && check < publish,
-    "the install check does not run before the publish, which is the only placement that can stop a "
-    + "broken release — five went out with every other check green");
+  // would publish bytes that nothing scanned, which is the invariant the pack step's own comment states
+  // — and it is the kind of comment that stays true only because an arm holds it.
+  //
+  // ── ASKED OF EVERY PUBLISHING JOB, NOT OF THE FILE (tracker issue 208) ──────────────────────────
+  //
+  // This read the anchors from the whole workflow and required each to be UNIQUE — a sound way to be
+  // sure a position belonged to the step it was named for, in a file that is mostly prose. A second
+  // publishing job was added on 2026-09-06 and every anchor appeared twice, so the arm fired on the
+  // duplication rather than on any ordering fault.
+  //
+  // Widening it to "somewhere in the file, pack comes before seal" would have made it pass and measure
+  // nothing: with two jobs, the first job's pack precedes the second job's seal no matter how badly the
+  // second job is ordered. So the uniqueness requirement moves INSIDE each job, where it still means
+  // what it meant, and the ordering is asserted once per job that publishes.
+  const jobs = [...RELEASE_YML.matchAll(/^ {2}([A-Za-z_][A-Za-z0-9_-]*):$/gm)];
+  const blocks = jobs.map((m, i) => [m[1], RELEASE_YML.slice(m.index, i + 1 < jobs.length ? jobs[i + 1].index : RELEASE_YML.length)])
+    .filter(([, text]) => /\bnpm\s+publish\b/.test(text) && /release-install-check\.mjs/.test(text));
+  assert.ok(blocks.length >= 1, "no job in the release workflow publishes — this arm could not look");
+
+  for (const [id, job] of blocks) {
+    const at = (label, needle) => {
+      const first = job.indexOf(needle);
+      assert.ok(first > 0, `job \`${id}\` has no ${label} step — the anchor moved or the step is gone`);
+      assert.equal(job.indexOf(needle, first + 1), -1,
+        `${label}'s anchor ${JSON.stringify(needle)} appears more than once inside job \`${id}\`, so its position is not a step's`);
+      return first;
+    };
+    const pack = at("pack", "- name: Pack the exact bytes that will be published");
+    const seal = at("seal", "node scripts/release-artifact-seal.mjs");
+    const scan = at("secret scan", "- name: No secret leaves in the packed bytes");
+    const complete = at("completeness", "node scripts/release-completeness-check.mjs --tarball");
+    const check = at("install check", "node scripts/release-install-check.mjs");
+    const publish = at("publish", "- name: Publish to npm through Trusted Publishing");
+    assert.ok(pack < seal && seal < scan,
+      `in job \`${id}\` the seal does not sit between the pack and the scan, so the bytes that are `
+      + "scanned are not the bytes that are published");
+    assert.ok(complete < check && check < publish,
+      `in job \`${id}\` the install check does not run before the publish, which is the only placement `
+      + "that can stop a broken release — five went out with every other check green");
+  }
 });
 
 test("tracker issue 180 — every step handles the one artefact, and the check never runs a rehearsal", () => {

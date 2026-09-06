@@ -3238,8 +3238,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 38,
-          "asserts": 206,
+          "tests": 47,
+          "asserts": 229,
           "skips": 0,
           "todos": 0
         },
@@ -4313,7 +4313,7 @@
         },
         "the-published-manifest-is-not-the-repos-manifest.test.mjs": {
           "tests": 18,
-          "asserts": 64,
+          "asserts": 65,
           "skips": 1,
           "todos": 0
         },
