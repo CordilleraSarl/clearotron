@@ -21,8 +21,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { foreignTreeNote, collect, undeclaredProblems } from "../../scripts/third-party-notices.mjs";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
 
-const BORROWED = "/home/x/other-worktree/node_modules";
+// DERIVED, NEVER A LITERAL HOME — see `#644 no executable line names a specific account's home
+// directory`. A borrowed tree in the wild is under somebody's home; naming one in code is the leak
+// that guard exists for, and this fixture only ever appears in a compared string.
+const BORROWED = join(tmpdir(), "ct146-other-worktree", "node_modules");
 const linked = () => BORROWED;
 const notLinked = () => null;
 const extraneous = (n) => Array.from({ length: n }, (_, i) => `extraneous: pkg-${i}@1.0.0 /w/node_modules/pkg-${i}`);
@@ -42,7 +47,7 @@ const threw = (fn) => {
 
 test("tracker issue 146 — a SYMLINKED node_modules is named, with the tree it was borrowed from", () => {
   const note = foreignTreeNote("/w", BORROWED_SHAPE, { linkTarget: linked });
-  assert.match(note, /SYMLINK to \/home\/x\/other-worktree\/node_modules/);
+  assert.match(note, new RegExp(`SYMLINK to ${BORROWED}`));
   assert.match(note, /2485 missing, 306 extraneous, 5 invalid/, "the shape is counted, so a reader can recognise it again");
   assert.match(note, /working correctly/, "the reader must be told the arms are right before they go looking for a code defect");
   assert.match(note, /npm install` from this repo root/, "and told the one command that fixes it");
@@ -94,7 +99,7 @@ test("tracker issue 146 — DRIVEN through the real refusal: appended, never sub
   assert.match(e.message, /Fix the tree, or declare it in DECLARED_LS_PROBLEMS/);
   // …and then the cause.
   assert.match(e.message, /BEFORE READING THIS AS A LICENCE DEFECT/);
-  assert.match(e.message, /SYMLINK to \/home\/x\/other-worktree\/node_modules/);
+  assert.match(e.message, new RegExp(`SYMLINK to ${BORROWED}`));
   // The 3100 rows do not scroll the cause off the screen — that is why nobody saw it.
   assert.match(e.message, /…and 2784 more/);
   assert.ok(e.message.split("\n").length < 30,

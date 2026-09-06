@@ -30,8 +30,14 @@ import { fileURLToPath } from "node:url";
 const DRIVER = dirname(dirname(fileURLToPath(import.meta.url)));
 const src = (f) => readFileSync(join(DRIVER, f), "utf8");
 
-const WORKER = "/home/x/.config/systemd/user/clearotron-worker.service";
-const TIMER = "/home/x/.config/systemd/user/prelim-driver.timer";
+// DERIVED, NEVER A LITERAL HOME. `#644 no executable line names a specific account's home directory`
+// refuses a `/home/<user>/` written into code, and it is right to: a fixture path that names one
+// operator's account is wrong under every other service account and in every public clone. These are
+// only ever compared as strings, so where they live is immaterial — but the shape must be the sanctioned
+// one, or the next person copies the literal into somewhere it matters.
+const UNITS = join(tmpdir(), "ct206-fixture", ".config", "systemd", "user");
+const WORKER = join(UNITS, "clearotron-worker.service");
+const TIMER = join(UNITS, "prelim-driver.timer");
 
 const on = (unit) => ({ unit, present: true, enabled: true, error: null });
 const off = (unit) => ({ unit, present: true, enabled: false, error: null });
