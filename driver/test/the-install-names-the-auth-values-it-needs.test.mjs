@@ -114,10 +114,17 @@ test("133 INSTALL.md's isolation boundary names the ports", () => {
   // PORTS were not on the list. A second instance with all four set still crash-loops on the shared
   // door port, and the symptom is a unit failing at boot rather than a port already in use.
   const install = readFileSync(join(ROOT, "INSTALL.md"), "utf8");
-  const i = install.indexOf("Two instances on one machine");
+  // A UNIQUE ANCHOR, ASSERTED TO BE ONE. The bare phrase appears TWICE — §6 cross-references this
+  // section in italics — and anchoring on it made the window span half the document, including the
+  // Ports section, which names two of these variables for a different reason. The arm then passed
+  // through a plant that deleted them from the boundary itself. Same defect as the release-workflow
+  // order arms, and the same repair: assert the anchor occurs once, or it is not a section's.
+  const ANCHOR = "**Two instances on one machine.**";
+  const i = install.indexOf(ANCHOR);
   assert.ok(i > 0, "the isolation-boundary section is gone or renamed");
-  // TO THE SECTION'S OWN CLOSING SENTENCE, not a character count — a fixed window silently stopped
-  // short of the list it was written to check, and reported the ports missing when they were there.
+  assert.equal(install.indexOf(ANCHOR, i + 1), -1, `${ANCHOR} appears more than once, so its position is not a section's`);
+  // To the section's own closing sentence, not a character count: a fixed window stopped short of the
+  // list it was written to check.
   const end = install.indexOf("Nothing else separates them.", i);
   assert.ok(end > i, "the section's closing sentence is gone, so this arm cannot bound what it reads");
   const section = install.slice(i, end);
