@@ -132,3 +132,21 @@ export function doorGates(job, opts = {}) {
   const r = resolveForDoor(job);
   return { ...r, ...gateResolvedRequest({ job, ...r }, opts) };
 }
+
+// ── WHY tracker issue 216'S REFUSAL IS NOT ALSO A DOOR GATE ─────────────────────────────────────────
+//
+// It was, briefly, and it was removed with a measurement rather than an opinion. Adding "is this box
+// configured to search at all" here reddened `driver/test/doors-agree.test.mjs` — nineteen arms green
+// with it out and six red with it in, including the product-parity arms whose whole subject is that
+// every door names the same product for one request. A gate that changes what a door RESOLVES, rather
+// than only what it refuses, is not the advisory it was meant to be.
+//
+// AND THE ANSWER WAS NEVER TRUSTWORTHY FROM HERE. This function runs in whatever process holds the
+// door, and one of those is the CLI enqueuer in an OPERATOR'S SHELL — an environment that is not the
+// one the units read. So a pass here would have been a pass about the wrong environment, on exactly the
+// box that fails: the shape F41 is made of.
+//
+// The refusal lives at `driver/runner.mjs`'s intake wall, which is in the process that would actually
+// dispatch the stage and is still BEFORE any spend — which is what 216 asks for. Saying it earlier at
+// the portal's own door is worth doing and is a separate change, because it needs the portal's
+// environment answered honestly rather than this process's.

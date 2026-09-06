@@ -54,6 +54,29 @@
 //     to the operator; it is not a reason to refuse.
 //
 // The split is about what the CLIENT receives, not about how important a value feels.
+//
+// ── AND WHEN EACH ONE IS ASKED FOR, WHICH IS A SECOND AXIS AND NOT THE SAME ONE ─────────────────────
+//
+// Owner ruling 2026-09-06, in session: "someone can install and select key later so it should still
+// start." So a hosted install comes up with no register configured — the doors answer, the portal
+// answers, and the box is a working install waiting for one value.
+//
+// THE PROTECTION MOVES; IT DOES NOT GO AWAY. What F41 cost was never the refusal, it was a run that
+// died at its first stage and told a client "Clearotron has been notified" on a box that notified
+// nobody. That outcome is impossible whether the refusal lands at start or at order time, and only one
+// of the two also bricks an install somebody is halfway through configuring.
+//
+//   at:"start"   the value START ITSELF WRITES. Absent, this process failed to do its own job, and the
+//     units it is about to place would read a file missing something no operator was ever asked for.
+//     Refusing here is refusing over OUR bug, and there is nothing for a reader to go and set.
+//
+//   at:"order"   the value an OPERATOR supplies — the register, its credential, the engine and the
+//     binary it drives. Absent, the install is not finished. The doors come up and every run is refused
+//     AT ORDER TIME, before a stage dispatches and before anything is spent, naming what is missing.
+//
+// The axis is on the ROW, not in the caller, for the reason the whole module exists: a start that
+// decides for itself which names are its own and a runner that decides separately are two opinions
+// about one list, and they drift in the direction where the second asks for less.
 
 /** The pool a report is written into. Named once; the supervisor already writes it. */
 export const POOL_ENV = "CLEAROTRON_REPORTS_DIR";
@@ -62,6 +85,11 @@ export const REGISTER_ENV = "CLEAROTRON_DATABASE";
 export const ENGINE_ENV = "CLEAROTRON_AI";
 /** Narrowing, never blocking — see the header. */
 export const RESEARCH_ENV = "PERPLEXITY_API_KEY";
+
+/** WHEN a blocking value is asked for. `START` is what `clearotron start` writes itself; `ORDER` is what
+ *  an operator configures, and its absence refuses a RUN rather than an install. See the header. */
+export const START = "start";
+export const ORDER = "order";
 
 const val = (env, name) => String(env?.[name] ?? "").trim();
 
@@ -77,9 +105,11 @@ const val = (env, name) => String(env?.[name] ?? "").trim();
  */
 export function runRequirements(env = {}, { registers = [], engines = {}, defaultEngine = null } = {}) {
   const out = [];
-  const push = (name, blocking, why) => out.push({ name, blocking, why, present: Boolean(val(env, name)) });
+  const push = (name, blocking, why, at = ORDER) =>
+    out.push({ name, blocking, why, at, present: Boolean(val(env, name)) });
 
-  push(POOL_ENV, true, "the directory a finished report is written into — without it a run has nowhere to deliver");
+  // WRITTEN BY START ITSELF, so its absence is this product's fault and not a reader's — see the header.
+  push(POOL_ENV, true, "the directory a finished report is written into — without it a run has nowhere to deliver", START);
 
   // ── THE REGISTER, AND ITS CREDENTIALS FROM THE PROVIDER'S OWN ROW ────────────────────────────────
   const register = val(env, REGISTER_ENV);
@@ -129,5 +159,48 @@ export function runRequiredNames(env = {}, tables = {}) {
  */
 export function missingRequirements(env = {}, tables = {}) {
   const rows = runRequirements(env, tables).filter((r) => !r.present);
-  return { blocking: rows.filter((r) => r.blocking), narrowing: rows.filter((r) => !r.blocking) };
+  const blocking = rows.filter((r) => r.blocking);
+  return {
+    blocking,
+    narrowing: rows.filter((r) => !r.blocking),
+    // THE TWO HALVES OF `blocking`, SPLIT HERE AND NOWHERE ELSE. A caller that filtered on `at` itself
+    // would be the second opinion this module exists to prevent — and the failure mode is the quiet one:
+    // a start that decides fewer names are its own than the runner thinks, so neither refuses.
+    /** What a START may refuse over: only what start itself writes. */
+    atStart: blocking.filter((r) => r.at === START),
+    /** What an ORDER must refuse over, before a stage dispatches and before anything is spent. */
+    atOrder: blocking.filter((r) => r.at === ORDER),
+  };
+}
+
+/**
+ * The order-time refusal, in two vocabularies, from ONE list.
+ *
+ * `operator` NAMES THE VARIABLES AND THE FILE, because the person reading it can go and set them.
+ * `client` NAMES NEITHER, and that is not tidiness: `driver/test/portal-service.test.mjs` refuses any
+ * `CLEAROTRON_*` or variable-shaped name in a body a browser renders, and it is right to — a client
+ * cannot act on an environment variable and should never be shown one.
+ *
+ * BOTH ARE HONEST REFUSALS. Neither says the run was accepted, neither promises a report, and neither
+ * says anybody has been notified — which is the sentence F41 delivered while nobody had been.
+ *
+ * Returns null when nothing blocks, so a caller cannot mistake "configured" for "could not look".
+ */
+export function orderTimeRefusal(env = {}, tables = {}, { envFile = null } = {}) {
+  const missing = missingRequirements(env, tables).atOrder;
+  if (!missing.length) return null;
+  const names = missing.map((r) => r.name);
+  const where = envFile
+    ? ` Set them in ${envFile} and restart, or run \`clearotron install\` in a terminal, which writes them for you.`
+    : " Run `clearotron install` in a terminal to configure them, or set them in the file this install's units read.";
+  return {
+    names,
+    operator: `this installation cannot run a search yet — it is installed but not configured:\n`
+      + missing.map((r) => `    ${r.name} — ${r.why}`).join("\n")
+      + `\n\n  Nothing has been searched and nothing has been spent.${where}`,
+    // ONE SENTENCE, NO NAMES, AND NO PROMISE. "Contact" rather than "we have been notified": this
+    // product has no outbox on a box in this state, so a notice would be the F41 lie one level up.
+    client: "This installation is not configured to run searches yet. Nothing has been searched and "
+      + "nothing has been charged. Please contact whoever administers it.",
+  };
 }

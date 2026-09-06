@@ -28,6 +28,8 @@ import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — 
 // other nine. Behaviour here is unchanged: the same object and the same three suffixes, sourced.
 import { isLiveQueueMarker, PROSE_PARTS, CLAIM_SIDECAR_SUFFIXES, TERMINAL_QUEUE_SUFFIXES } from "./queue-markers.mjs";
 import { matterLedgerPath } from "./usage-ledger.mjs";   // ONE ledger-path calculation, shared with the portal pre-check
+import { orderTimeRefusal } from "./run-requirements.mjs";   // tracker issue 216 — one authority for what a run needs, and when it is asked for
+import { unitEnvPath } from "../shared/env-local.mjs";   // tracker issue 216 — the file the units read, named by its one author
 import { fileURLToPath } from "node:url";
 import { config, preflightDeploymentUrls } from "./driver.config.mjs";
 import { deriveSlug, todayISO, mintFreshCodename } from "./phase0.mjs";
@@ -574,15 +576,47 @@ async function failAtIntake(procPath, qdir, base, agentId, job, v, reasons) {
 
 // Best-effort duplicate-skip notice (mirrors intakeNotify: one outbox packet). Returns the audit-trail
 // outcome string for the .reason file.
-async function duplicateNotify(agentId, base, job) {
+async function duplicateNotify(agentId, base, job, prior = null, sig = null) {
   const mark = job?.markName ?? job?.name ?? job?.marks?.[0]?.name ?? base;
-  const text = `⚠️ Prelim request "${mark}" looks like a duplicate of a matter already in progress or just delivered — ` +
-    `skipped to avoid a second search. The original run will deliver. Tell me if you genuinely need a fresh run.`;
+  // ── tracker issue 136 — A REFUSAL DELIVERED AS SILENCE IS INDISTINGUISHABLE FROM A LOST JOB ────────
+  //
+  // The observable outcome of a dedup park was an empty queue and no run, which is exactly what an
+  // enqueue that vanished looks like — and the two want completely different next actions. That got
+  // sharper when `clearotron cancel` shipped: a stop of a parked run became a documented first-class
+  // operation, so an operator reaching this window went from uncommon to expected.
+  //
+  // WHICH PRIOR RUN, NOT JUST "A DUPLICATE". A sentence saying "duplicate" without saying WHICH one
+  // satisfies the letter and leaves the submitter where they were: they cannot tell whether the thing
+  // they are waiting for exists. The prior message id and when it was recorded are what turn this from
+  // a refusal into an answer, and both are already in hand — the park computed them to decide.
+  //
+  // THE FORCE-RUN ROUTE TRAVELS WITH IT. This refusal is the one place a person meets the dedup window,
+  // so it is where the override belongs; `--dup-override` on the CLI, `dupOverride` on `start_run` and
+  // the cockpit's checkbox are the product paths, and naming one here is what stops a hand edit to the
+  // ledger being the only route anybody finds.
+  const when = prior?.ts ? new Date(prior.ts).toISOString() : null;
+  const which = prior?.msgId
+    ? ` The run already under way was submitted as ${prior.msgId}${when ? ` at ${when}` : ""} — that is the one that will deliver.`
+    : " The earlier run will deliver.";
+  const text = `⚠️ Prelim request "${mark}" matches a matter already in progress or just delivered, so it was `
+    + `NOT run — a second search would spend twice for one answer.${which}`
+    + ` If you genuinely need a fresh run of the same matter, re-submit it with dupOverride (\`--dup-override\` on the`
+    + ` command line) and it will go through.`;
   const p = writeOutboxPacket(`intake-${base}.duplicate`, {
     kind: "duplicate-skipped", base, agent: agentId,
     jobId: job?.id ?? null, msgId: job?.msgId ?? null,
     forwarder: job?.forwarder ?? null, forwarderEmail: job?.forwarderEmail ?? null,
-    markName: (job?.markName ?? job?.name ?? job?.marks?.[0]?.name) || null, text,
+    markName: (job?.markName ?? job?.name ?? job?.marks?.[0]?.name) || null,
+    // THE COLLIDING SIGNATURE AND THE PRIOR RUN, AS FIELDS. The sentence is for a person; these are for
+    // whatever reads the packet — and a field is what lets a surface show which run without re-deriving
+    // a signature it would compute differently.
+    matterSignature: sig ?? null,
+    priorMsgId: prior?.msgId ?? null,
+    priorJobId: prior?.id ?? null,
+    priorRecordedAt: when,
+    matchedBy: prior?.conversationId && prior.conversationId === String(job?.conversationId ?? "").trim()
+      ? "thread" : "matter-signature",
+    text,
   });
   return p ? `packet ${p}` : "packet-failed";
 }
@@ -605,7 +639,7 @@ async function parkDuplicate(procPath, qdir, base, agentId, job, prior, sig) {
     `to force a genuine re-run, re-enqueue with "dupOverride": true (a bare ${base}.duplicate -> ${base}.json rename re-matches the prior within the ${DEDUP_WINDOW_MS / 3600000}h window and re-parks)`,
   ].join("\n");
   writeFileSync(join(qdir, `${base}.duplicate.reason`), reason + "\n");
-  const notified = await duplicateNotify(agentId, base, job);
+  const notified = await duplicateNotify(agentId, base, job, prior, sig);
   try { appendFileSync(join(qdir, `${base}.duplicate.reason`), `notify: ${notified}\n`); } catch { /* best-effort */ }
 }
 
@@ -706,6 +740,43 @@ async function backstopFailureNotice({ res, job, agentId, base, codename, studio
 // one-at-a-time so the dedup check+record stays race-free even while prior jobs' pipelines run concurrently
 // (Phase-4). Returns the prepared {procPath, base, job} to execute, or null when the job was terminally
 // parked/failed-at-intake, or the claim was lost.
+// ── tracker issue 216 — THE ORDER-TIME REFUSAL, AND WHY IT IS HERE ──────────────────────────────────
+//
+// A hosted install now STARTS with no register configured (owner ruling 2026-09-06: "someone can install
+// and select key later so it should still start"). The protection that used to live in
+// `clearotron start --background` moves here — it does not go away.
+//
+// THIS IS THE WALL, and the difference from a door matters. The doors say it earlier and are fail-open
+// by their own doctrine; more importantly, a door may be running in an operator's SHELL — the CLI
+// enqueuer does — and that shell's environment is not the one the units read. Only this process is the
+// one that would actually dispatch the stage, so only this process's answer is authoritative.
+//
+// BEFORE THE PRODUCT IS RESOLVED, deliberately. A box with no register cannot run ANY product, so
+// resolving which one was requested answers a question that does not arise, and the refusal should not
+// depend on a resolution that could itself fail.
+//
+// REJECT, NOT CLARIFY. `reject` is not re-sendable and is not notified as though it were. The requester
+// cannot fix this by asking again — nothing about their request is wrong. Calling it a clarify would
+// invite a second attempt that fails identically, which is the shape this file already refuses for a
+// demo account.
+//
+// WHAT IT MUST NEVER DO is what F41 did: fail at the first stage and tell the client "Clearotron has
+// been notified" on a box with no outbox. `failAtIntake` writes the honest refusal and the run never
+// starts, so nothing is spent and nothing is promised.
+let __runTables = null;
+async function runTables() {
+  // AT CALL TIME, never a static import. `driver/run-requirements.mjs`'s header states the reason and it
+  // is load-bearing: the register SELECTION table lives in `bin/onboard.mjs`, a CLI entry point, and a
+  // static import from `driver/` would point the driver at `bin/` — the cycle that makes `clearotron
+  // doctor` exit 13 after printing most of a report.
+  if (!__runTables) {
+    const { PROVIDERS } = await import("../bin/onboard.mjs");
+    const { ENGINE_BINARIES, DEFAULT_ENGINE_ID } = await import("./driver.config.mjs");
+    __runTables = { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: DEFAULT_ENGINE_ID };
+  }
+  return __runTables;
+}
+
 async function claimAndPrep(jsonFile, qdir, agentId) {
   const base = jsonFile.replace(/\.json$/, "");
   const procPath = join(qdir, `${base}.processing`);
@@ -777,6 +848,16 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
     note(`[runner] invalid job ${base} (${v.classify}): ${v.errors.join("; ")}`);
     await failAtIntake(procPath, qdir, base, agentId, job, v, v.errors);
     return null;
+  }
+  // ── tracker issue 216 — IS THIS BOX CONFIGURED TO SEARCH AT ALL? See the header above claimAndPrep.
+  {
+    const refusal = orderTimeRefusal(process.env, await runTables(), { envFile: unitEnvPath() });
+    if (refusal) {
+      note(`[runner] ${base} REFUSED at order time — this install is not configured to run a search: ${refusal.names.join(", ")}`);
+      await failAtIntake(procPath, qdir, base, agentId, job,
+        { classify: "reject", errors: [refusal.client] }, [refusal.operator]);
+      return null;
+    }
   }
   // Search-depth spine — resolve WHICH product shape this job selects (job selector → project/customer
   // default → house prelim), then gate on what this deployment can actually run. A selection that cannot

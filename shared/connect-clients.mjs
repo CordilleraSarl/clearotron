@@ -192,6 +192,24 @@ export const CONNECT_CLIENTS = Object.freeze([
   // ── Anything else. We do not know what it can do, so we do not pretend to. ──────────────────────
   {
     id: "other", name: "Another agent", accepts: "either", stdioShape: "generic-json",
+    // THE PASTE SENTENCE, ON THE ROW, because it cannot be composed from the name here.
+    //
+    // Every other row's name is a proper noun and `Paste it into {name}` reads: Claude, ChatGPT,
+    // Perplexity. This row's name is a DESCRIPTION, and "Paste it into Another agent" is not English. It
+    // passes every gate on that page — not mechanism vocabulary, no banned word, and the label is right
+    // where it stands alone — so only the composed sentence stumbles, on a page whose whole subject is
+    // being read by somebody who is not us. Found by driving the four decks; neither instrument could
+    // see it, because both ask whether the right row rendered and neither asks whether the sentence reads.
+    //
+    // Owner's ruling 2026-09-06, tracker issue 147, option B: this row gets its own line and the approved
+    // sentence is left untouched for the three named ones. Option A — renaming the row to "your
+    // assistant" — was rejected because it edits a line he approved to repair a line he did not.
+    //
+    // HERE RATHER THAN IN THE SCREEN, and that is this table's own rule enforced by
+    // `connect-clients-are-data.test.mjs`: no surface may branch on a client's identity, because a branch
+    // in a screen drifts from the row silently and both keep rendering while the reader follows whichever
+    // one is wrong. A fifth row that needs its own sentence writes it here and the page needs no edit.
+    pasteAs: "Paste it wherever your assistant takes it.",
     steps: () => [
       "If your agent can run a local command, paste what we copied and run it — it needs nothing else",
       "If it can only reach a web link, use Advanced under these steps, which carries both lines it wants",
