@@ -48,8 +48,30 @@ export function tagsHere({ run = (args) => execFileSync("git", args, { encoding:
   return run(["tag", "--list"]).split("\n").map((t) => t.trim()).filter(Boolean);
 }
 
+/**
+ * WHICH COMMIT THE QUESTION IS ABOUT — tracker issue 208, measured on run 34050690448.
+ *
+ * `versionAtHead()` reads a COMMIT rather than the working tree, deliberately, and the header above says
+ * why at length. That is necessary and it was not sufficient: in the `version` job the changesets action
+ * has already run `changeset version` AND COMMITTED THE BUMP by the time this runs, so HEAD carries the
+ * version branch's number — 0.1.11 — while main carries 0.1.10. The step read a real commit; it was not
+ * the commit the question is about.
+ *
+ * The consequences were both invisible until a push arrived with nothing stranded:
+ *   · `cut` was true on essentially every push, so a wait conditioned on `cut != 'true'` never armed;
+ *   · `publish` ran every time and, with nothing genuinely stranded, tried to republish a released
+ *     version — `cannot publish over the previously published versions: 0.1.10`.
+ *
+ * So the caller NAMES the commit. `$GITHUB_SHA` is the push, whatever the checkout has become since.
+ * Unset falls back to HEAD, which is right for the cron and for a hand run, where nothing has moved.
+ */
+export function cutRef(env = process.env) {
+  const named = String(env.CLEAROTRON_CUT_REF ?? "").trim();
+  return named || "HEAD";
+}
+
 function main() {
-  const version = versionAtHead();
+  const version = versionAtHead({ ref: cutRef() });
   const tags = tagsHere();
   // A CHECKOUT WITH NO TAGS AT ALL CANNOT ANSWER THIS. Every version would read as never released, and
   // the pipeline would publish on every push. `fetch-depth: 0` brings tags; if it ever stops, this

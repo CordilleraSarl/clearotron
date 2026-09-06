@@ -87,10 +87,24 @@ test("tracker 97 the release pipeline publishes the way it was authorised to, an
 
   // And the two halves of the registry's own configuration, which no test can read from npmjs.com. A
   // workflow that loses either is refused HERE rather than by the registry on release day.
-  for (const [what, gone] of [["the OIDC permission", /id-token:\s*write/], ["the npm environment", /environment:\s*npm\b/]]) {
+  for (const [what, gone] of [["the OIDC permission", /id-token:\s*write/g], ["the npm environment", /environment:\s*npm\b/g]]) {
+    // GLOBAL. Without `g` this removed ONE of two occurrences once a second publishing job existed, the
+    // guard still found the other, and the arm went green over a workflow that would fail at the
+    // registry mid-run. The weakened guard was the finding; this was only how it surfaced.
     const stripped = read(WORKFLOW).replace(gone, "removed-by-this-arm");
     assert.ok(publishRefusals({ workflow: stripped, rootPkg: rootPkg() }).length,
       `the guard passed a workflow that had lost ${what}`);
+
+    // AND LOSING IT IN ONE PUBLISHING JOB IS ENOUGH. This is the case a file-wide check cannot see: the
+    // first version publishes, the second reaches the registry with no token, and the run fails after
+    // something irreversible has already happened.
+    const wf = read(WORKFLOW);
+    const at = wf.indexOf("  publish-awaited:");
+    assert.ok(at > 0, "the second publishing job is gone — this plant could not be placed");
+    const got = publishRefusals({ workflow: wf.slice(0, at) + wf.slice(at).replace(gone, "removed-by-this-arm"), rootPkg: rootPkg() });
+    assert.ok(got.some((r) => /publish-awaited/.test(r)),
+      `the guard passed a workflow where only the SECOND publishing job had lost ${what} — it checks the `
+      + `file, not the job that publishes. Refusals were: ${JSON.stringify(got)}`);
   }
 
   // The last thing between a person publishing from a laptop and an incomplete package.
@@ -771,8 +785,11 @@ test("tracker 97 a version that merged itself still publishes, because that merg
   // on main unpublished used to be `pending`, which is downstream of the version gate on the push path
   // and skipped whenever that gate failed — so it could not run in the one state it exists to detect.
   // The new job has no `needs:` at all, which is the whole of its design and has its own arm.
-  assert.deepEqual(jobs, ["version", "stranded", "pending", "publish"],
-    "the release workflow's jobs are not the four this file is written about");
+  // SIX NOW. `awaited` and `publish-awaited` joined on 2026-09-06: a push routinely publishes a version
+  // already stranded AND cuts a new one, and publishing only the older one is what left a version
+  // stranded after every merge.
+  assert.deepEqual(jobs, ["version", "stranded", "pending", "awaited", "publish", "publish-awaited"],
+    "the release workflow's jobs are not the six this file is written about");
 
   // IT DECIDES WITH THE SAME FUNCTION THE PUSH PATH USES. Two answers to one question is how a pipeline
   // publishes on one path what it refuses on the other.
@@ -913,7 +930,8 @@ test("tracker 97 the manifest names the repository provenance will be attested f
 //   · giving up is NOT reported as a cut               → break: return cut:true, arm 2 red
 //   · the wait fires only on the version branch's CI   → break: drop `branches`, arm 4 red
 //   · the rehearsal path is untouched                  → break: let dispatch publish, arm 5 red
-import { awaitCut, WAIT_MS, STEP_MS } from "../../scripts/release-await-cut.mjs";
+import { awaitCut, WAIT_MS, STEP_MS, waitBudget } from "../../scripts/release-await-cut.mjs";
+import { cutRef } from "../../scripts/release-cut-decision.mjs";
 
 /** This repository's root, and the workflow this section reads. Named here rather than reusing a
  *  constant from another section, because a constant that moves under an arm is how a guard comes to
@@ -987,12 +1005,13 @@ test("208 the wait rides the run a PERSON started, and the dead trigger is gone"
   assert.match(on, /schedule:/, "the cron floor is gone — it is what catches everything the wait gives up on");
 
   // THE WAIT IS IN THE JOB A HUMAN PUSH STARTS, and scoped to the only case with something to wait for.
-  const version = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  version:"), RELEASE_YML.indexOf("\n  pending:"));
-  assert.match(version, /id: awaited\n\s+run: node scripts\/release-await-cut\.mjs/,
-    "the version job does not wait for the pull request it just cut, so nothing publishes it but the cron");
-  assert.match(version, /if: steps\.changesets\.outputs\.pr-number != '' && steps\.cut\.outputs\.cut != 'true'/,
-    "the wait is unscoped — it would hold a runner on every push to main, including the merge that "
-    + "already answered `cut` for itself");
+  // THE WAIT MOVED OUT OF THIS JOB and has its own arms below. Inside `version` it was conditioned on
+  // nothing being stranded, which made it unreachable in the ordinary rhythm.
+  const version = jobText("version");
+  assert.match(version, /pr_number: \$\{\{ steps\.changesets\.outputs\.pr-number \}\}/,
+    "the version job does not report the pull request it cut, so nothing downstream can wait for it");
+  assert.ok(!/release-await-cut\.mjs/.test(version),
+    "the wait is back inside the version job, where it cannot arm on a push that also publishes a stranded version");
 });
 
 test("208 the job's budget can contain its own longest step", () => {
@@ -1011,11 +1030,13 @@ test("208 both deciders answer the same question, and a skipped one cannot answe
   // The `version` job now has two steps and exactly one answers: `cut` on the push that IS the merge,
   // `awaited` on the push that cut the pull request and waited. An unset output from a skipped step is
   // the empty string; reading only one would report "not this path" on the event that did answer.
-  const version = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  version:"), RELEASE_YML.indexOf("\n  pending:"));
-  assert.match(version, /cut: \$\{\{ steps\.cut\.outputs\.cut \|\| steps\.awaited\.outputs\.cut \}\}/,
-    "the job reads one decider's output only — the other path's answer is dropped and nothing publishes");
+  const version = jobText("version");
+  // ONE DECIDER PER JOB NOW. `version` answers about the version already on main; the `awaited` job
+  // answers about the one this push cut. Different versions, different publishing jobs.
+  assert.match(version, /cut: \$\{\{ steps\.cut\.outputs\.cut \}\}/,
+    "the version job's decider changed shape — check which version its `cut` output is now about");
   // AND `pending` IS THE CRON ALONE AGAIN. It carried the second entry while the trigger existed.
-  const pending = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  pending:"), RELEASE_YML.indexOf("\n  publish:"));
+  const pending = jobText("pending");
   assert.match(pending, /if: github\.event_name == 'schedule' &&/, "the cron job answers to some other event too");
   assert.ok(!/steps\.awaited/.test(pending), "the waiting step is still wired into the cron job, where there is nothing to wait for");
   // THE DECISION ITSELF IS STILL ONE FUNCTION. Two paths asking one question in two ways is how a
@@ -1039,14 +1060,17 @@ test("208 the stranded-cut detector does not sit downstream of the gate that str
   // this issue is a SEPARATE run in which `version` is skipped rather than failed — and a skipped job is
   // not a failure, so `publish` still reaches `pending`'s answer.
   const jobs = RELEASE_YML.slice(RELEASE_YML.indexOf("\njobs:"));
-  const pending = jobs.slice(jobs.indexOf("\n  pending:"), jobs.indexOf("\n  publish:"));
+  // SLICED BY THE ONE HELPER. This ended at `publish:`, a job was later inserted between the two, and
+  // the slice swallowed it — so this arm read that job's `needs:` as `pending`'s and failed on a
+  // neighbour moving rather than on the property it guards.
+  const pending = jobText("pending");
   assert.ok(pending.length > 200, "the pending job could not be sliced out — this arm measured nothing");
   assert.ok(!/^\s{4}needs:/m.test(pending),
     "the stranded-cut detector now depends on another job. A failure in that job skips this one, which is "
     + "precisely the state a stranded cut is in — measured on 0.1.7, 2026-09-06");
   // AND THE PUBLISH GATE STILL TOLERATES A SKIPPED DECIDER, which is the other half: one of the two
   // deciders is always skipped, because they run on different events.
-  const publish = jobs.slice(jobs.indexOf("\n  publish:"));
+  const publish = jobText("publish");
   assert.match(publish, /!failure\(\) && !cancelled\(\)/,
     "the publish gate no longer opens with !failure() — a skipped decider would read as a blocked path "
     + "rather than as 'not this route'");
@@ -1164,4 +1188,205 @@ test("230 the notes contract tells a note's author which reader it is written fo
   const contract = readFileSync(join(REPO, ".changeset", "README.md"), "utf8");
   assert.match(contract, /beta/i, "the notes contract does not mention the channel a note reaches first");
   assert.match(contract, /docs\/RELEASES\.md/, "the contract restates the channels instead of pointing at the one doc");
+});
+
+/**
+ * One job's text, ending at the NEXT job whatever that is.
+ *
+ * Arms here used to slice from one named job to another named job, and every one of them broke — silently,
+ * by reading a NEIGHBOUR's text as the subject's — the first time a job was inserted between the two. One
+ * of them then asserted that `pending` had a `needs:` it did not have. An arm that fails when something
+ * moves next door is an arm people delete rather than fix.
+ */
+function jobText(id) {
+  const at = RELEASE_YML.indexOf(`\n  ${id}:`);
+  assert.ok(at >= 0, `there is no job called \`${id}\` — this arm could not look, which is not a pass`);
+  const rest = RELEASE_YML.slice(at + 1);
+  const nextLine = rest.slice(1).search(/^ {2}[A-Za-z_][A-Za-z0-9_-]*:$/m);
+  return nextLine < 0 ? rest : rest.slice(0, nextLine + 1);
+}
+
+test("208 the wait is its own job and arms on any push that cut a version", () => {
+  const job = jobText("awaited");
+  assert.ok(job.length > 200, "the waiting job is gone — this arm could not look");
+  assert.match(job, /needs\.version\.outputs\.pr_number != ''/,
+    "the wait no longer keys off a version pull request having been cut, which is the only thing it can wait for");
+  assert.ok(!/needs\.version\.outputs\.cut != 'true'/.test(job),
+    "the wait is gated on nothing being stranded again — that is the condition that made it unreachable, "
+    + "because a push routinely publishes a stranded version and cuts a new one in the same run");
+  // AND IT IS NOT STILL SITTING IN THE version JOB. Two waits would be two answers to one question.
+  const version = jobText("version");
+  assert.ok(!/release-await-cut\.mjs/.test(version),
+    "the version job still runs the wait, so a push has two of them and they can disagree");
+});
+
+test("208 the wait runs AFTER the first publish, or it answers about the wrong version", () => {
+  // `release-await-cut.mjs` asks whether main carries a version with no tag. Run beside the first
+  // publish it would find the STRANDED version still untagged and answer about that one — and the job
+  // behind it would publish the same version twice.
+  const job = jobText("awaited");
+  assert.match(job, /needs: \[version, publish\]/,
+    "the wait does not run behind the first publish, so it can read the version that publish is still tagging");
+});
+
+test("208 the second publish proves its OWN bytes — it does not reuse the first artefact", () => {
+  // Founding's requirement, and the reason this is a duplicated job rather than a promotion step: a
+  // second publish that reused the first tarball would ship the previous version's bytes under a new
+  // number, and every check that passed did so on the wrong content.
+  const second = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:"));
+  for (const [what, pattern] of [
+    ["packs its own bytes", /npm pack --pack-destination/],
+    ["seals the published manifest", /release-artifact-seal\.mjs/],
+    ["scans those bytes for secrets", /gitleaks dir packed/],
+    ["proves a stranger's install", /release-install-check\.mjs|npm install clearotron/],
+    ["publishes with provenance", /npm publish .*--provenance/],
+    ["derives the channel rather than defaulting", /release-dist-tag\.mjs/],
+    ["checks the branch it publishes from", /refs\/heads\/main\|refs\/tags\/v\*/],
+  ]) assert.match(second, pattern, `the second publish no longer ${what}`);
+});
+
+test("208 the second publish takes the NEW main, and tags the commit it actually published", () => {
+  const second = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:"));
+  assert.match(second, /ref: main/,
+    "the second publish checks out the commit this run started on, so it packs the PREVIOUS version's "
+    + "bytes and publishes them under the new number");
+  assert.ok(!/--target "\$GITHUB_SHA"/.test(second),
+    "the release is tagged against the commit this run started on, not the one that was published");
+  assert.match(second, /--target "\$\(git rev-parse HEAD\)"/, "the tag does not name the published commit");
+});
+
+test("208 the two publish jobs carry the same steps, so they cannot drift apart", () => {
+  // DUPLICATED ON PURPOSE — the registry's trusted publisher is bound to this workflow FILE, and
+  // extracting the sequence into a reusable workflow would publish from a different one. Trusted
+  // Publishing cannot be exercised from a test, so converting a just-proven publish path into an
+  // unproven shape is the one risk not worth taking on an action that cannot be undone.
+  //
+  // The cost of duplication is drift, and this is what pays it: the same steps, in the same order.
+  const names = (block) => [...block.matchAll(/^      - name: (.+)$/gm)].map((m) => m[1].trim());
+  const first = names(jobText("publish"));
+  const second = names(RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:")));
+  assert.ok(first.length >= 10, `only ${first.length} steps found in the first publish — this arm could not look`);
+
+  // EVERY STEP OF THE FIRST APPEARS IN THE SECOND, IN ORDER. A subsequence rather than equality, because
+  // the second job legitimately has work the first cannot have — it publishes a tip that landed after
+  // the run began, so it must prove that tip is the one it awaited. Requiring equality would have made a
+  // correct addition look like drift, which is how an arm gets loosened to `ok(true)` by the next person.
+  //
+  // The direction that matters is preserved exactly: a check added to `publish` and not to
+  // `publish-awaited` breaks the subsequence, and that is the failure this exists for — a version
+  // published without a check the other version got.
+  const EXTRA_BY_DESIGN = ["The tip this packs is the version this run awaited"];
+  let i = 0;
+  const missing = [];
+  for (const step of first) {
+    const at = second.indexOf(step, i);
+    if (at < 0) missing.push(step); else i = at + 1;
+  }
+  assert.deepEqual(missing, [],
+    `these steps run in \`publish\` and not, in order, in \`publish-awaited\`: ${missing.join(" | ")}. `
+    + "The awaited version would be published without them");
+  const extras = second.filter((n) => !first.includes(n));
+  assert.deepEqual(extras, EXTRA_BY_DESIGN,
+    `\`publish-awaited\` carries steps the first publish does not, and they are not the ones this arm `
+    + `knows about: ${extras.join(" | ")}. Either the first version publishes without them, or this list `
+    + "is stale — say which in the arm rather than widening it");
+});
+
+test("208 the rehearsal exercises both publishes, and waits for nothing while doing it", () => {
+  const job = jobText("awaited");
+  const second = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:"));
+  assert.match(job, /workflow_dispatch/, "a rehearsal never reaches the wait, so its wiring is unrehearsed");
+  assert.match(second, /workflow_dispatch/, "a rehearsal never reaches the second publish");
+  assert.match(job, /CLEAROTRON_RELEASE_WAIT_MS/,
+    "a rehearsal would hold a runner for the full wait to establish that nothing is coming");
+});
+
+test("208 the waiting job's budget contains the wait", () => {
+  const job = jobText("awaited");
+  const budget = Number(/timeout-minutes:\s*(\d+)/.exec(job)?.[1]);
+  assert.ok(Number.isFinite(budget), "the waiting job declares no timeout — this arm could not look");
+  assert.ok(budget * 60_000 > WAIT_MS,
+    `the job is capped at ${budget} minutes and its wait alone is ${WAIT_MS / 60_000}. It is cancelled at `
+    + "the moment it was about to answer, and a cancelled job reads as neither a pass nor a failure");
+});
+
+test("208 an unreadable wait budget refuses rather than guessing in either direction", () => {
+  assert.equal(waitBudget({}), WAIT_MS, "the default bound is no longer the file's own");
+  assert.equal(waitBudget({ CLEAROTRON_RELEASE_WAIT_MS: "0" }), 0, "the rehearsal cannot ask for a single pass");
+  for (const bad of ["soon", "-1", "1.5", "15m"])
+    assert.throws(() => waitBudget({ CLEAROTRON_RELEASE_WAIT_MS: bad }), /not a whole number/,
+      `"${bad}" was accepted — a real run would take it as 0 and give up without waiting at all`);
+});
+
+test("208 no job output is read through a hyphenated name", () => {
+  // `needs.await-the-cut.outputs.cut` does not read an output: the expression parser takes the hyphens
+  // as subtraction, the condition never equals 'true', and the job it guards silently never runs.
+  const executable = RELEASE_YML.split("\n").filter((l) => !/^\s*#/.test(l)).join("\n");
+  const bad = [...executable.matchAll(/needs\.([A-Za-z0-9_]*-[A-Za-z0-9_-]*)\./g)].map((m) => m[1]);
+  assert.deepEqual(bad, [], `these job outputs are read through a hyphenated name and evaluate to nothing: ${bad.join(", ")}`);
+});
+
+// ── 208 · THE DECISION IS ASKED OF THE PUSH, NOT OF WHATEVER HEAD BECAME ────────────────────────────
+//
+// Measured on run 34050690448. In the `version` job the changesets action has already run `changeset
+// version` AND COMMITTED the bump before the cut decision runs, so HEAD carries the version branch's
+// number. The step said `v0.1.11 has no tag — this push cut it` in the same run where the independent
+// detector, checking out main, said `v0.1.10 is already released`. One tree, two answers.
+//
+// `cut` was therefore true on essentially every push, which is why the wait — conditioned on
+// `cut != 'true'` — never armed, and why `publish` ran with nothing stranded and failed on
+// `cannot publish over the previously published versions: 0.1.10`.
+
+test("208 the version job asks its cut decision about the commit that was pushed", () => {
+  const version = jobText("version");
+  assert.match(version, /CLEAROTRON_CUT_REF: \$\{\{ github\.sha \}\}/,
+    "the cut decision is asked of whatever HEAD has become after the changesets action committed the "
+    + "bump — it answers about the version branch, and `cut` is then true on every push");
+  // AND THE STEP IT SCOPES IS THE ONE THAT DECIDES. An env on the wrong step is a variable nothing reads.
+  const at = version.indexOf("CLEAROTRON_CUT_REF");
+  const decides = version.indexOf("release-cut-decision.mjs", at);
+  assert.ok(decides > at && decides - at < 200,
+    "CLEAROTRON_CUT_REF is set somewhere other than the step that runs the cut decision");
+});
+
+test("208 an unnamed ref still means HEAD, which is right for the cron and a hand run", () => {
+  // The cron checks out main and nothing has moved under it, so HEAD is the question there. This must
+  // not become a variable every caller has to remember.
+  assert.equal(cutRef({}), "HEAD");
+  assert.equal(cutRef({ CLEAROTRON_CUT_REF: "   " }), "HEAD");
+  assert.equal(cutRef({ CLEAROTRON_CUT_REF: "d534f531" }), "d534f531");
+});
+
+test("208 a wait that could not LOOK is not a wait that found nothing", () => {
+  // Giving up quietly is the ordinary outcome and stays exit 0 — red checks, a dismissed pull request,
+  // a re-cut mid-flight. A fetch that failed is a different thing, and reporting it as "nothing to
+  // publish" hands the job below a verdict this never reached.
+  const src = readFileSync(join(REPO, "scripts", "release-await-cut.mjs"), "utf8");
+  assert.match(src, /process\.exitCode = 2/,
+    "a failure to read main no longer exits 2, so it is indistinguishable from finding nothing merged");
+  assert.match(src, /looked=false/, "the two negatives are not separated in the output the job reads");
+  assert.match(src, /looked=true/, "a successful look does not say it looked, so `looked` proves nothing");
+});
+
+test("208 the loop propagates a read failure rather than answering with it", async () => {
+  // Driven: the catch that turns this into exit 2 lives in main(), and it can only do that if the loop
+  // itself refuses to invent an answer.
+  await assert.rejects(
+    () => awaitCut({ refresh: async () => { throw new Error("fetch died"); }, read: () => ({ cut: false, version: "0.0.0" }),
+      sleep: async () => {}, waitMs: 0, stepMs: 1, now: () => 0 }),
+    /fetch died/, "a refresh that threw was swallowed into a 'nothing merged' verdict");
+});
+
+test("208 the second publish refuses a tip that is not the one it awaited", () => {
+  const second = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:"));
+  assert.match(second, /needs\.awaited\.outputs\.version/,
+    "the second publish never compares what it checked out against what it awaited, so a merge landing "
+    + "inside the wait is published by a run that reported awaiting something else");
+  assert.match(second, /exit 2/, "an absent awaited version is not treated as a could-not-look");
+  assert.match(second, /Refusing to publish either/,
+    "a tip that moved is resolved in favour of one of the two numbers — neither is safe once they differ");
+  // BEFORE ANYTHING IS PACKED. A check after the pack certifies bytes it did not gate.
+  const guard = second.indexOf("The tip this packs is the version this run awaited");
+  const pack = second.indexOf("- name: Pack the exact bytes that will be published");
+  assert.ok(guard > 0 && pack > guard, "the tip check does not run before the pack, so it gates nothing");
 });

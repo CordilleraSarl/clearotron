@@ -59,6 +59,29 @@ import { cutDecision, versionAtHead, tagsHere } from "./release-cut-decision.mjs
  * success nor a failure to anybody scanning the list.
  */
 export const WAIT_MS = 15 * 60 * 1000;
+
+/**
+ * The bound, overridable for one caller only: the dry-run rehearsal.
+ *
+ * A rehearsal must exercise this path — a step nobody rehearses is a step that first runs for real on
+ * the day it matters — but it has nothing to wait FOR, and fifteen minutes of polling to establish that
+ * is fifteen minutes of a runner held for no answer. `awaitCut` asks before its first sleep, so a bound
+ * of 0 does exactly one read and returns, which is the whole of what a rehearsal needs to prove.
+ *
+ * REFUSES A VALUE IT CANNOT READ rather than falling back to the default. A typo here would silently
+ * restore the full wait on the rehearsal, or — worse in the other direction — a real run would take a
+ * malformed value as 0 and give up without waiting at all, which is this whole file not running.
+ */
+export function waitBudget(env = process.env) {
+  const raw = String(env.CLEAROTRON_RELEASE_WAIT_MS ?? "").trim();
+  if (!raw) return WAIT_MS;
+  const n = Number(raw);
+  if (!Number.isInteger(n) || n < 0) {
+    throw new Error(`release-await-cut: CLEAROTRON_RELEASE_WAIT_MS="${raw}" is not a whole number of `
+      + "milliseconds. Publishing would either wait when it should not, or not wait when it must.");
+  }
+  return n;
+}
 export const STEP_MS = 30 * 1000;
 
 /**
@@ -92,6 +115,7 @@ function main() {
   const out = process.env.GITHUB_OUTPUT;
   const started = Date.now();
   return awaitCut({
+    waitMs: waitBudget(),
     // FETCH THE TAGS TOO. `cutDecision` answers "is there a tag for this version", and a checkout whose
     // tags never arrived answers "no tag" about every version there has ever been. That is the one wrong
     // answer this pipeline cannot afford, so it is refreshed on every pass rather than once at checkout.
@@ -99,13 +123,32 @@ function main() {
     read: () => cutDecision({ version: versionAtHead({ ref: "origin/main" }), tags: tagsHere() }),
     sleep: (ms) => new Promise((r) => setTimeout(r, ms)),
     now: () => Date.now() - started,
+  }).catch((e) => {
+    // ── A FAILURE TO LOOK IS NOT "NOT MERGED YET" (tracker issue 208) ───────────────────────────────
+    //
+    // Giving up quietly is the ordinary outcome of this loop and stays exit 0: checks that went red, a
+    // pull request somebody dismissed, a re-cut mid-flight. None of those is a release gone missing.
+    //
+    // A fetch that failed, a checkout with no tags, a git that is not there — those are a different
+    // thing entirely, and reporting them as "nothing to publish" would hand the job below a verdict
+    // this never reached. Exit 2 is the house meaning for could-not-look, and it is louder than the
+    // quiet give-up on purpose: a wait that never looked must not read as a wait that found nothing.
+    console.error(`::error::release-await-cut: could not read main to see whether the version merged `
+      + `(${String(e?.message ?? e).slice(0, 200)}). This is a failure to LOOK, not a finding that `
+      + "nothing was cut — nothing downstream may treat it as one.");
+    process.exitCode = 2;
+    if (out) appendFileSync(out, "cut=false\nversion=\nlooked=false\n");
   }).then((r) => {
+    if (!r) return;
     const secs = Math.round(r.waitedMs / 1000);
     if (r.cut) console.log(`release-await-cut: main carries ${r.version} with no tag, after ${secs}s. Publishing.`);
     else console.log(`release-await-cut: nothing to publish after ${secs}s — main carries ${r.version} and it is `
       + "already tagged, or the version branch did not merge. This is the ordinary outcome and not a fault; "
       + "the scheduled check is still underneath it.");
-    if (out) appendFileSync(out, `cut=${r.cut ? "true" : "false"}\nversion=${r.version}\n`);
+    // `looked` SEPARATES the two negatives above: a loop that ran and found nothing merged, from one
+    // that could not read main at all. The publish job below requires `cut=true`, so neither publishes —
+    // but a reader deciding whether a release went missing needs to know which of the two happened.
+    if (out) appendFileSync(out, `cut=${r.cut ? "true" : "false"}\nversion=${r.version}\nlooked=true\n`);
   });
 }
 
