@@ -4,6 +4,12 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.1.12
+
+### For operators
+
+- A release now publishes both the version waiting and the one it just prepared, so neither sits unpublished.
+
 ## 0.1.11
 
 ### Fixed
