@@ -166,6 +166,48 @@ test("203 the bus branch and the not-the-bus branch give DIFFERENT remedies", ()
   for (const said of [refused, nobus]) assert.match(said, /HALF STARTED/);
 });
 
+test("203 the OTHER systemd catch still lands, and now leads with what systemd said", async () => {
+  // NOTHING DRIVES THIS PATH ANYWHERE ELSE — `reachedTheEnable` above excludes it by name, so the
+  // daemon-reload catch was changed with no arm over it. It keeps its own two-cause remedy, which is
+  // right and is not the shared one: at that point the question is whether this session can reach a
+  // user manager at all, and the answer is lingering or the two exports, not a unit's journal.
+  //
+  // AND IT MUST NOT DERIVE THE BUS. `connect` passes `userBusEnv()` at every systemctl call it makes,
+  // `showUnit` included. This file has five and a first cut of this change derived it at two — worse
+  // than at none, because `enable --now` would then succeed against a bus the health read three screens
+  // down still does not ask, and every unit would start and be reported as not running. Held to the
+  // uniform shape here so that improving it is a deliberate act with its own drive.
+  const home = mkdtempSync(join(tmpdir(), "ct203r-"));
+  const bin = join(home, "bin");
+  mkdirSync(bin, { recursive: true });
+  const shim = join(bin, "systemctl");
+  writeFileSync(shim, '#!/bin/sh\necho "Failed to connect to bus: No medium found" >&2\nexit 1\n');
+  chmodSync(shim, 0o755);
+  mkdirSync(join(home, ".config", "clearotron"), { recursive: true });
+  writeFileSync(join(home, ".config", "clearotron", ".env"),
+    "CLEAROTRON_DATABASE=corsearch\nCLEAROTRON_AI=claude\nCLEAROTRON_CLAUDE_PATH=/usr/bin/true\n"
+    + "CORSEARCH_SESSION_KEY=drive-only-not-a-real-key\n"
+    + `CLEAROTRON_REPORTS_DIR=${join(home, "pool")}\n`);
+  const ports = { portal: await freePort(), mcp: await freePort(), client: await freePort() };
+  try {
+    const r = spawnSync(process.execPath, [START, "--background"], { encoding: "utf8", timeout: 180_000,
+      env: handRunEnv({ HOME: home, PATH: `${bin}:${process.env.PATH}`,
+        PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
+        CLIENT_MCP_HTTP_PORT: String(ports.client) }) });
+    const said = `${r.stdout ?? ""}${r.stderr ?? ""}`;
+    assert.match(said, /user manager is not reachable/,
+      `this drive did not reach the daemon-reload catch:\n${said.slice(-1200)}`);
+    assert.match(said, /Failed to connect to bus: No medium found/,
+      `systemd's own words are still being discarded here — the half of tracker issue 121 that was `
+      + `never done in this file:\n${said.slice(-1200)}`);
+    assert.match(said, /loginctl enable-linger/, "the lingering cause is gone");
+    assert.match(said, /export DBUS_SESSION_BUS_ADDRESS/, "the bus-unset cause is gone");
+    // This one HAS nothing better to say about consequence, so the generic trailer is right here.
+    assert.match(said, /This run had already written state/);
+    assert.equal(r.status, 1);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
 test("203 the inventory names every unit already up, not just the one that refused", () => {
   // A refusal on the third unit leaves two running, and "half started" is not enough to act on when the
   // reader is deciding whether the portal in front of them is theirs. Read at the function, because a

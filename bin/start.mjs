@@ -75,7 +75,7 @@
 // long-lived engine credential is written to disk by a command whose job is to show you the product.
 
 import { envLocalPath, envFileRead } from "../shared/env-local.mjs";
-import { systemdFailure, userBusEnv, systemdSaid, CAPTURE_STDERR } from "../shared/systemd-failure.mjs";   // tracker issue 203 — a refusal, not a stack trace   // side effect: apply this install's .env when THIS file is the CLI entry (never on library import)
+import { systemdFailure, systemdSaid, CAPTURE_STDERR } from "../shared/systemd-failure.mjs";   // tracker issue 203 — a refusal, not a stack trace   // side effect: apply this install's .env when THIS file is the CLI entry (never on library import)
 import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic write for every file holding credentials, and it creates the directory
 // — ONE AUTHORITY for what a clearance needs from its environment, used twice
 // below: to COMPOSE the units' environment and to GUARD it before this command reports success. The
@@ -1250,7 +1250,17 @@ if (isMain) {
     // anyone could read it, which is half of what tracker issue 121 fixed in `connect` and was never
     // done here. The two-cause remedy below is right and stays; what was missing was the sentence
     // systemd itself wrote.
-    try { execFileSync("systemctl", ["--user", "daemon-reload"], { ...CAPTURE_STDERR, env: userBusEnv() }); }
+    //
+    // ✕ AND NOT `userBusEnv()`, WHICH `connect` PASSES HERE AND THIS FILE MUST NOT — not yet. That
+    // helper derives XDG_RUNTIME_DIR and DBUS_SESSION_BUS_ADDRESS when the runtime directory exists, and
+    // `connect` passes it at EVERY systemctl call it makes, `showUnit` included. This file has five, and
+    // deriving the bus at two of them is worse than at none: `enable --now` would succeed against the
+    // derived bus while the health read three screens down still asks the bus-less one, so every unit
+    // would start and then be reported as not running. Driven into by accident while building
+    // tracker issue 203 — "4 of 4 unit(s) did not come up" over four units that had just been enabled.
+    // Making all five derive it is a real improvement to the install path and is its own change with its
+    // own drive, not a side effect of repairing a refusal.
+    try { execFileSync("systemctl", ["--user", "daemon-reload"], CAPTURE_STDERR); }
     // ── BOTH REMEDIES, BECAUSE TWO INDEPENDENT THINGS CAN BE MISSING (Refs issue 2176 — F32) ──────
     //
     // This named the problem and stopped one sentence short, leaving an operator to work out which of
@@ -1298,7 +1308,7 @@ if (isMain) {
     // which is why the sentence names them as done rather than describing the install as untouched.
     const enabled = [];
     for (const u of BACKGROUND_UNITS) {
-      try { execFileSync("systemctl", ["--user", "enable", "--now", u], { ...CAPTURE_STDERR, env: userBusEnv() }); }
+      try { execFileSync("systemctl", ["--user", "enable", "--now", u], CAPTURE_STDERR); }
       catch (e) {
         fatal(systemdFailure(e, { unit: u, stands: startStands({ unit: u, enabled, unitDir: UNIT_DIR }) }).message,
           { stated: true });
