@@ -294,22 +294,9 @@ test("tracker issue 180 — a relative tarball path is the caller's, not the ins
   }
 });
 
-test("tracker issue 180 — and the seal takes one too, since it is handed the same path", () => {
-  const dir = scratch();
-  const cwd = process.cwd();
-  try {
-    const tgz = packTarball(dir, { name: "relative-seal-probe", version: "1.0.0",
-      overrides: { buffers: "$buffers" } });
-    const base = tgz.split("/").pop();
-    process.chdir(dir);
-    const r = sealTarball(`./${base}`);
-    assert.deepEqual(r.stripped, ["overrides"]);
-    process.chdir(cwd);
-    assert.equal("overrides" in manifestOf(tgz), false,
-      "the seal reported a strip and the tarball at the caller's path still carries the key — it "
-      + "rewrote something else, or somewhere else");
-  } finally {
-    process.chdir(cwd);
-    rmSync(dir, { recursive: true, force: true });
-  }
-});
+// THE ARM THAT WAS HERE IS DELETED RATHER THAN KEPT AS COVERAGE. It drove `sealTarball` with a relative
+// path and asserted the same property as the one above. Planted against — `resolve()` removed from the
+// seal — it stayed GREEN, because that function never changes directory, so a relative path reaches
+// `tar` unharmed either way. There is no failure mode there to arm today. The `resolve()` in the seal
+// stays as the one-line closure of a class that IS live one file over; it is defensive and unarmed, and
+// that is said here rather than implied by a test that cannot fail.

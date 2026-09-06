@@ -66,8 +66,10 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
  *   silent success on one is how a caller concludes the seal ran.
  */
 export function sealTarball(tarballPath) {
-  // Absolute for the same reason the install check is, even though nothing here changes directory
-  // today: a relative path plus a child with its own cwd is one edit away, and it fails as ENOENT.
+  // Absolute for the same reason the install check is — and DEFENSIVE, not armed. Nothing here changes
+  // directory, so a relative path reaches `tar` unharmed with or without this line; an arm written for
+  // it stayed green when the line was removed, and was deleted rather than kept. It stays because the
+  // class is live one file over, where npm's own cwd is the throwaway project.
   const abs = resolve(tarballPath);
   const staging = mkdtempSync(join(tmpdir(), "clearotron-seal-"));
   try {
