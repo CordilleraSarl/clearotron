@@ -141,10 +141,26 @@ somebody working in a checkout. Nothing is wrong with your install.
 
 Skip this unless you are the one producing the `.tgz`.
 
-**`npm pack` is not the command.** The repository manifest carries `overrides: { "buffers": "$buffers" }`,
-which resolves only inside the checkout; a consumer installing that tarball dies with `Unable to resolve
-reference $buffers` before a single file is written. **`node scripts/pack-publishable.mjs` is the only
-route** — it strips that key from the published manifest and leaves the repository's own untouched.
+**`npm pack` alone is not the command.** The repository manifest carries
+`overrides: { "buffers": "$buffers" }`, which resolves only inside the checkout; a consumer installing that
+tarball dies with `Unable to resolve reference $buffers` before a single file is written. Five consecutive
+releases went out that way. **The published manifest has to be sealed** — that key stripped from the
+tarball, the repository's own manifest left untouched. Which route does it depends on the tree you are on:
+
+- **A tree that carries `cut/`**: `node scripts/pack-publishable.mjs`. It packs, strips, reconciles against
+  the withheld-file list and scans the packed tree in one step.
+- **A public checkout**, which is what the release workflow runs on: `npm pack`, then
+  `node scripts/release-artifact-seal.mjs --tarball <path>`. `pack-publishable.mjs` refuses here — it needs
+  `cut/packed-artifact.mjs`, which a public tree does not carry, and exits 2 rather than packing something
+  nobody checked.
+
+Either way, prove it before publishing it:
+
+    node scripts/release-install-check.mjs --tarball <path>
+
+That installs the artefact as a dependency of a throwaway project, which is the only shape this failure
+exists in. Installing at the root of a checkout and `npm install --dry-run` both exit 0 on a tarball that
+refuses for every real user.
 
 Two further constraints, both of which stop a package being cut from just anywhere:
 

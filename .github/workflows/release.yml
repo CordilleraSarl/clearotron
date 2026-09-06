@@ -451,15 +451,31 @@ jobs:
       # to serve. The completeness check below is what proves it landed.
       - run: npm run build:ui
 
-      # PACK ONCE, SCAN THOSE BYTES, PUBLISH THOSE BYTES. `--pack-destination` does not create the
+      # PACK ONCE, SEAL, SCAN THOSE BYTES, PUBLISH THOSE BYTES. `--pack-destination` does not create the
       # directory, and npm's failure for a missing one reads like a packing failure rather than a missing
-      # folder.
+      # folder. The seal below is inside the "once": it rewrites the manifest in place, before anything
+      # scans or measures the artefact, so every step after it reads the bytes that go to the registry.
       - name: Pack the exact bytes that will be published
         run: |
           set -euo pipefail
           mkdir -p release-artefacts
           npm pack --pack-destination ./release-artefacts
           test -f "${{ steps.what.outputs.tarball }}"
+
+      # THE PUBLISHED MANIFEST IS NOT THIS REPOSITORY'S MANIFEST, AND FIVE RELEASES SHIPPED AS THOUGH IT
+      # WERE (tracker issue 180). `overrides: { "buffers": "$buffers" }` pins the clean-room replacement
+      # for the unlicensed `buffers@0.1.1` while resolving THIS tree; npm's `$name` syntax resolves only
+      # in a root project's own manifest, so a consumer installing this package as a dependency has
+      # nothing to resolve it against and npm aborts the whole install. `npm install clearotron` failed
+      # on 0.1.1-beta.0 through 0.1.3, five for five, before a single file was written.
+      #
+      # `scripts/pack-publishable.mjs` has stripped this since 2026-08-23 and cannot be called from here:
+      # it needs `cut/packed-artifact.mjs`, which is withheld from the public repository, and exits 2
+      # without it. Its refusal says an exported tree is not one a publishable tarball is packed from —
+      # true until the public repository became the working home, false since. So the seal below applies
+      # that script's own exported policy function to the packed artefact instead of restating it.
+      - name: The published manifest is not this repository's manifest
+        run: node scripts/release-artifact-seal.mjs --tarball "${{ steps.what.outputs.tarball }}"
 
       - name: No secret leaves in the packed bytes
         run: |
@@ -483,6 +499,15 @@ jobs:
 
       - name: What a stranger installs is complete
         run: node scripts/release-completeness-check.mjs --tarball "${{ steps.what.outputs.tarball }}"
+
+      # AND THE ONLY QUESTION A VISITOR ASKS, TYPED AT THE BYTES ABOUT TO BE PUBLISHED. Every check
+      # above passed on all five broken releases, because each asked something about the tarball and
+      # none of them installed it. This one installs the artefact AS A DEPENDENCY of a throwaway
+      # project, which is the only shape the `$buffers` failure exists in — a root install and a
+      # `--dry-run` both exit 0 on the exact bytes that refuse for every real user. It is keyed to no
+      # known cause, so it also catches the next packaging fault of a different shape.
+      - name: "`npm install clearotron` works, on these exact bytes"
+        run: node scripts/release-install-check.mjs --tarball "${{ steps.what.outputs.tarball }}"
 
       # PROPERTY 2, PROVED RATHER THAN ASSERTED (tracker issue 97: "prove the beta-to-stable promotion moves no
       # bytes; compare the artefacts, do not assert it from the configuration"). A promotion that rebuilt
