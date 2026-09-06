@@ -609,6 +609,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-arrival-check-exercises-the-trigger-lane.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "an-evidence-demand-that-cannot-be-met.test.mjs": {
           "tests": 9,
           "asserts": 21,
@@ -1038,6 +1044,12 @@
         "connect-clients-are-data.test.mjs": {
           "tests": 12,
           "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "connect-does-not-move-the-deployment-in-silence.test.mjs": {
+          "tests": 16,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
@@ -2371,6 +2383,12 @@
           "tests": 3,
           "asserts": 7,
           "skips": 2,
+          "todos": 0
+        },
+        "no-test-writes-inside-the-checkout.test.mjs": {
+          "tests": 16,
+          "asserts": 35,
+          "skips": 0,
           "todos": 0
         },
         "no-vendor-provenance-in-the-public-cut.test.mjs": {
@@ -4143,9 +4161,21 @@
           "skips": 0,
           "todos": 0
         },
+        "the-install-names-the-auth-values-it-needs.test.mjs": {
+          "tests": 9,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
         "the-install-places-what-a-server-needs.test.mjs": {
           "tests": 22,
           "asserts": 51,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-installer-advice-matches-the-box-it-is-given.test.mjs": {
+          "tests": 9,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },

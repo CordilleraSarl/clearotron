@@ -40,9 +40,18 @@ function surfaces({ url = "", token = "" } = {}) {
         env: { ...process.env, CLEAROTRON_REPORTS_DIR: join(dir, "pool"), CLEAROTRON_WORK_DIR: join(dir, "ws"),
           PORTAL_MCP_URL: url, PORTAL_OPS_TOKEN: token } });
     } catch (e) { out = `${e.stdout ?? ""}${e.stderr ?? ""}`; }
+    // DID THE CHECK EVEN GET TO ITS SURFACES? It has one preflight refusal (an unset
+    // CLEAROTRON_REPORTS_DIR, exit 2) and it can also die on an unhandled throw, and in BOTH cases it
+    // prints no surface lines at all. Without this the next assertion reads that silence as "the
+    // trigger lane surface is missing" — the finding this file exists to make — and four arms would
+    // report a runner that could not start the script as the feature being absent. Absence is a
+    // finding, but it has to be the RIGHT one: say could-not-look, and quote what the script said.
+    assert.ok(/== live surface check —/.test(out),
+      `the arrival check never reached its report, so this arm could not look at the trigger lane `
+      + `(preflight refusal or crash — its own words follow):\n${out.slice(0, 800)}`);
     const lane = out.split("\n").filter((l) => /trigger lane/i.test(l));
     assert.ok(lane.length >= 2,
-      `the arrival check reported no trigger-lane surface at all, which is the finding:\n${out.slice(0, 800)}`);
+      `the arrival check ran to its report but named no trigger-lane surface, which is the finding:\n${out.slice(0, 800)}`);
     return { lane, out };
   } finally { rmSync(dir, { recursive: true, force: true }); }
 }
