@@ -46,6 +46,46 @@ export function buffersDirs(root, out = []) {
 
 const keep = process.argv.includes("--keep");
 const staging = mkdtempSync(join(tmpdir(), "clearotron-verify-"));
+// ── CAN THIS RUN ON THE TREE IT IS POINTED AT — tracker issue 196 ───────────────────────────────────
+//
+// THIS SCRIPT WAS INVOKED BY NOTHING for as long as it has existed on the public tree: no workflow, no
+// npm script, every other mention of its name a comment. That is tracker issue 189's shape — an
+// instrument that exists, has stopped being reachable, and whose silence is indistinguishable from a
+// pass. Five uninstallable releases shipped past it.
+//
+// AND IT COULD NOT HAVE RUN IF IT HAD BEEN WIRED. Its first act shells out to `pack-publishable.mjs`,
+// whose reconcile step imports `cut/packed-artifact.mjs` — the table saying which files may leave this
+// repository — and exits 2 without it. There are ZERO files under `cut/` on the public tree, by design:
+// the cut withheld them. So wiring this into CI as it stood would have produced a could-not-look on
+// every run, which is the same silence one layer up wearing a green tick.
+//
+// SO IT SAYS SO, ITSELF, BEFORE IT SPENDS A MINUTE. An absence with a reason beside it is a different
+// thing from a gap, and this is the reason: `pack-publishable.mjs` needs the cut table to reconcile the
+// staged tree, that table is withheld from this repository, and reviving the reconcile-and-scan half on
+// a public tree is a separate decision nobody has taken — three of its four jobs still have meaning here
+// and one does not.
+//
+// EXIT 2, THE HOUSE MEANING FOR COULD-NOT-LOOK, never 0. A checker that cannot look and exits 0 is the
+// defect this whole file is about. When the reconcile question is settled, delete this block: the check
+// below stops being true the moment `cut/` is present or the pack no longer needs it.
+const CUT_TABLE = join(ROOT, "cut", "packed-artifact.mjs");
+if (!existsSync(CUT_TABLE)) {
+  console.error("verify-publishable: COULD NOT LOOK (exit 2) — this tree cannot pack a publishable tarball.\n");
+  console.error("  `scripts/pack-publishable.mjs` reconciles the staged tree against `cut/packed-artifact.mjs`,");
+  console.error("  the table that says which files may leave this repository. That table is withheld from the");
+  console.error("  public tree and is not present here, so the pack refuses (exit 2) and there is nothing for");
+  console.error("  this script to install.\n");
+  console.error("  This is NOT a pass. What this script alone can prove — that the published tarball installs");
+  console.error("  into a tree that has never seen this repository, that every verb answers there, and that the");
+  console.error("  clean-room licence substitution survives the trip — is unproven on this tree.\n");
+  console.error("  Partly covered elsewhere: the release path seals the manifest and installs the artifact as a");
+  console.error("  dependency, in CI and again at publish. That covers the manifest. It does not type the verbs");
+  console.error("  and it does not check the substitution.\n");
+  console.error("  To make this runnable, the pack's reconcile step needs either the cut table or a decision that");
+  console.error("  it does not need it. That decision is tracker issue 196's stated out-of-scope and is nobody's yet.");
+  process.exit(2);
+}
+
 const consumer = join(staging, "consumer");
 try {
   console.log("packing (publishable manifest)…");
