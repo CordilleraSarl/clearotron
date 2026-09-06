@@ -244,6 +244,26 @@ export const SYSTEM_OWNED = new Set([
   // pushed back is right to have made this an explicit decision rather than an omission: they ARE read
   // by product code, and the only honest answers were a row or this list.
   "NO_COLOR", "FORCE_COLOR",
+  // ── THE GITHUB ACTIONS RUNTIME (tracker issue 213) ──────────────────────────────────────────────
+  //
+  // `CI` above is already here for exactly this reason; these two arrived with the release scripts and
+  // want the same answer. GitHub sets both INSIDE a workflow run — `GITHUB_OUTPUT` is the step-output
+  // file the runner creates, `GITHUB_REPOSITORY` the owner/name of the repository the run belongs to —
+  // and `scripts/release-await-cut.mjs`, `release-cut-decision.mjs` and `release-version-pr-checks.mjs`
+  // read them there.
+  //
+  // A row in `.env.example` for `GITHUB_OUTPUT` would tell an operator to set a variable GitHub sets
+  // for them, on a machine where it has no meaning at all. That makes the catalogue LESS true, not more
+  // — and `INSTALL.md §8` points a new user at that file as the register they must read. The ratchet
+  // was right that these are undocumented; the honest answer is the one `NO_COLOR` got, not a row.
+  //
+  // They surfaced only when the withheld `ops/` bucket was laid back over the public tree, so these
+  // arms had had no subject since the cut. Not a regression, and not a documentation gap.
+  //
+  // NARROW ON PURPOSE — these two names, not a `GITHUB_*` prefix. This list is closed so that a name
+  // genuinely ours cannot vanish from the audit by resembling a system name, and a prefix arm here
+  // would silently swallow any future `GITHUB_`-prefixed variable this product did come to own.
+  "GITHUB_OUTPUT", "GITHUB_REPOSITORY",
 ]);
 
 /** A file that ships and runs in production, as opposed to one that only ever runs a test. */
