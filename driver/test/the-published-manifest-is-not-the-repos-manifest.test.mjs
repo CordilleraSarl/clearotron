@@ -386,3 +386,19 @@ test("tracker issue 180 — the exit codes CI reads carry the house meanings", (
       "an artefact that installs did not exit 0");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+
+test("tracker issue 180 — an install this gave up waiting for is a could-not-look too", () => {
+  // THE MEMBER OF THE CLASS THE CLASSIFIER CANNOT SEE. On a timeout npm is killed by signal and writes
+  // nothing recognisable, so a check that only reads the message blames the artefact for a slow
+  // network or a loaded machine. Driven by giving it a deadline nothing can meet, which is the same
+  // path a fifteen-minute hang takes.
+  const dir = scratch();
+  try {
+    const tgz = packTarball(dir, { name: "timeout-probe", version: "1.0.0" });
+    const r = offline(() => installsAsADependency(tgz, { timeoutMs: 1 }));
+    assert.equal(r.ok, false);
+    assert.equal(r.couldNotLook, true,
+      `npm was killed before it could answer and the check blamed the artefact: ${r.why}`);
+    assert.match(r.why, /not about these bytes/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});

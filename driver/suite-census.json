@@ -4222,8 +4222,8 @@
           "todos": 0
         },
         "the-published-manifest-is-not-the-repos-manifest.test.mjs": {
-          "tests": 15,
-          "asserts": 52,
+          "tests": 16,
+          "asserts": 55,
           "skips": 0,
           "todos": 0
         },
