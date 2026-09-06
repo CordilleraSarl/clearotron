@@ -4510,8 +4510,8 @@
           "todos": 0
         },
         "unit-entries-load-env-local.test.mjs": {
-          "tests": 4,
-          "asserts": 18,
+          "tests": 5,
+          "asserts": 23,
           "skips": 1,
           "todos": 0
         },
