@@ -50,8 +50,18 @@ export const WHATIF_MAX_CONCURRENT = Math.max(1, Number(process.env.CLEAROTRON_W
 // list of markers kept here. This file used to carry its own list, and it included `.failed` where the
 // MCP door's copy did not — so a failed run was planned, enqueued and then refused here. See the
 // declaration for what that cost and why `failed` is now eligible.
-const refusalFor = (runDir) =>
-  whatIfRefusal({ markers: WHATIF_REFUSED_MARKERS.filter((m) => existsSync(join(runDir, m))) });
+// ── THE MARKERS ARE KIND-INDEPENDENT; THE VERDICT IS NOT (tracker issue 132) ────────────────────────
+//
+// This used to render the verdict here, calling whatIfRefusal with NO `kind` — so it defaulted to
+// "stage" and refused every memo on a delivered run with "what-if runs on live runs only", the third
+// consecutive gate to do exactly that. It could not have been right: the scan walks RUN DIRECTORIES and
+// a run directory does not know what kind of job is queued inside it. The kind lives on the job, and the
+// job is not parsed until it is claimed.
+//
+// So the split is: read the markers here, where the filesystem cost belongs and the answer is the same
+// for every job in the directory — and render the verdict in settleOne, where the claimed job's own kind
+// is finally in hand. One source of truth, and it is the one that knows what it is judging.
+const markersFor = (runDir) => WHATIF_REFUSED_MARKERS.filter((m) => existsSync(join(runDir, m)));
 
 /**
  * Every live run dir under the given studio roots. Deliberately NOT the archive: an archived run is
@@ -80,7 +90,7 @@ export function scanPendingWhatIf(studioRoots, { now = Date.now() } = {}) {
   const out = [];
   for (const runDir of liveRunDirs(studioRoots)) {
     const pending = pendingWhatIf(runDir, { now });
-    if (pending.length) out.push(...pending.map((p) => ({ ...p, refusal: refusalFor(runDir) })));
+    if (pending.length) out.push(...pending.map((p) => ({ ...p, markers: markersFor(runDir) })));
   }
   return out;
 }
@@ -108,11 +118,15 @@ async function settleOne(entry, exec) {
   const job = claimWhatIf(entry);
   if (!job) return null;                       // another worker won it, or the manifest was recorded bad
   const { runDir, id } = entry;
-  if (entry.refusal) {
+  // The verdict is rendered HERE and not in the scan, because only now is the job's kind known. A
+  // delivered run refuses a stage re-run and welcomes a memo — that is the whole of tracker issue 132 —
+  // and a scan over run directories cannot tell those apart.
+  const refusal = whatIfRefusal({ markers: entry.markers ?? [], kind: job.op?.kind ?? "stage" });
+  if (refusal) {
     // A run that reached a terminal state after the job was queued. Recorded as a refusal in the words
     // whatIfPlan uses, rather than left pending: a job nothing will ever run is not "still queued".
-    note(`[whatif] ${id} refused — ${entry.refusal}`);
-    return finishWhatIf(runDir, id, { ok: false, op: job.op, error: entry.refusal });
+    note(`[whatif] ${id} refused — ${refusal}`);
+    return finishWhatIf(runDir, id, { ok: false, op: job.op, error: refusal });
   }
   try {
     // THE TOKEN IS RE-MINTED FROM THE STORED OP, not carried as a string. whatIfRun's contract is that it

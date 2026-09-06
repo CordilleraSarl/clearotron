@@ -280,8 +280,8 @@
           "todos": 0
         },
         "a-memo-has-a-door-onto-it.test.mjs": {
-          "tests": 21,
-          "asserts": 66,
+          "tests": 24,
+          "asserts": 80,
           "skips": 0,
           "todos": 0
         },
