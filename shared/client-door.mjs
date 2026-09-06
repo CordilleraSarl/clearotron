@@ -360,6 +360,24 @@ export function allowedHosts(port, env = {}) {
   return [...new Set(hosts)].join(",");
 }
 
+/**
+ * The allow-list an existing one should become, once the door's port has moved (tracker issue 197).
+ *
+ * The loopback entries are THIS INSTALLER'S and are re-derived from the port; every other host in the
+ * list belongs to the operator and is kept. That split is the whole point: a repair about a port must
+ * not delete a proxy hostname somebody added by hand, and an allow-list that still names last month's
+ * port turns every request into a 403 while the door reports itself up.
+ *
+ * @param {string} existing  the value currently in the env file
+ * @param {string|number} port  the port the door will actually bind
+ */
+export function allowedHostsMerged(existing, port, env = {}) {
+  const derived = allowedHosts(port, env).split(",");
+  const mine = /^(127\.0\.0\.1|localhost):\d+$/;
+  const theirs = String(existing ?? "").split(",").map((s) => s.trim()).filter(Boolean).filter((h) => !mine.test(h));
+  return [...new Set([...derived, ...theirs])].join(",");
+}
+
 export function enablePlan({ env = {}, address, identity, accessFile = null, port = null, portIsFree = null, portOwner = null,
   grantedAccounts = undefined, checkoutDir = null, denylistPath = null, unitEnvHasSecret = undefined,
   issuesKey = true } = {}) {

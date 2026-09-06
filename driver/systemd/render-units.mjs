@@ -271,7 +271,7 @@ if (isEntrypoint(import.meta.url)) {
 export async function writeInstallEnv(envFile) {
   const { mergeEnvFile } = await import("../../shared/env-file-merge.mjs");
   const { laneValuesFor, LANE_VALUE_NOTES, signingSecretIfAbsent } = await import("../../shared/lane-address.mjs");
-  const { enablePlan } = await import("../../shared/client-door.mjs");
+  const { enablePlan, allowedHostsMerged } = await import("../../shared/client-door.mjs");
   const { randomBytes } = await import("node:crypto");
   const { resolvePorts } = await import("../../bin/start.mjs");
 
@@ -292,11 +292,24 @@ export async function writeInstallEnv(envFile) {
   // change, and the reader meets it in the output of the command that does it rather than discovering
   // it in a file.
   const fresh = signingSecretIfAbsent(fileEnv.TRADEMARK_MCP_TOKEN_SECRET ?? process.env.TRADEMARK_MCP_TOKEN_SECRET, { randomBytes });
+  // ── HELD, NOT PRINTED (tracker issue 194) ─────────────────────────────────────────────────────────
+  //
+  // These lines used to print here, and the refusal below exits before anything reaches disk — so a
+  // refused run announced "Written to the env file at mode 600" about two files it never wrote. That
+  // is worse than silence: a reader who has been told a secret exists does not go looking for the
+  // reason their door will not start, and the value they were promised is not in the file.
+  //
+  // THE MINT STAYS HERE and only the ANNOUNCEMENT moves, because `enablePlan`'s `unitEnvHasSecret`
+  // asks whether the door will find a secret where it looks — a question that cannot be answered
+  // before the secret is minted. So a refused run does generate 32 bytes and drop them. That costs
+  // nothing: they never leave memory, nothing has been signed with them, and the next run mints
+  // afresh. Announcing them is the part that had to move.
+  const announcements = [];
   if (fresh) {
     want.TRADEMARK_MCP_TOKEN_SECRET = fresh;
-    console.log("  GENERATED a signing secret for this install (32 bytes). Every key is signed with");
-    console.log("  it, so replacing it later invalidates every key already issued. Written to the env");
-    console.log("  file at mode 600, and never printed.");
+    announcements.push("  GENERATED a signing secret for this install (32 bytes). Every key is signed with",
+      "  it, so replacing it later invalidates every key already issued. Written to the env",
+      "  file at mode 600, and never printed.");
   }
 
   // ── AND THE PORTAL'S SECRET, WHICH THE SAME ARGUMENT ALWAYS COVERED (tracker issue 122) ───────────
@@ -316,9 +329,9 @@ export async function writeInstallEnv(envFile) {
   const freshPortal = signingSecretIfAbsent(fileEnv.PORTAL_SECRET ?? process.env.PORTAL_SECRET, { randomBytes });
   if (freshPortal) {
     want.PORTAL_SECRET = freshPortal;
-    console.log("  GENERATED the portal's secret for this install (32 bytes). It signs confirmation");
-    console.log("  tokens and the local sign-in cookie, so replacing it later signs everybody out and");
-    console.log("  voids outstanding confirmations. Written to the env file at mode 600, never printed.");
+    announcements.push("  GENERATED the portal's secret for this install (32 bytes). It signs confirmation",
+      "  tokens and the local sign-in cookie, so replacing it later signs everybody out and",
+      "  voids outstanding confirmations. Written to the env file at mode 600, never printed.");
   }
 
   // ── THE CLIENT DOOR'S SETTINGS, FROM `enablePlan` AND AFTER THE SECRET ────
@@ -370,6 +383,35 @@ export async function writeInstallEnv(envFile) {
   }
   for (const [k, v] of Object.entries(doorPlan.settings)) want[k] = v;
 
+  // ── THE SECRETS ARE ON DISK'S SIDE OF THE REFUSAL NOW (tracker issue 194) ─────────────────────────
+  for (const line of announcements) console.log(line);
+
+  // ── A DERIVED VALUE MAY NOT GO STALE (tracker issue 197) ──────────────────────────────────────────
+  //
+  // Driven on a greenfield install: `--apply`, then an operator edits `CLIENT_MCP_HTTP_PORT` by hand
+  // and runs `--apply` again. The door binds the new port; the allow-list still names the old one;
+  // every request 403s. And the installer reported "already carries the lane and the client door's
+  // settings, LEFT AS THE OPERATOR SET THEM" — about a value the operator never set.
+  //
+  // Add-only is right for everything a person typed and wrong for everything this code DERIVES. The
+  // allow-list is derived from the port two lines above it, so the two cannot be allowed to disagree.
+  //
+  // NOT A BLIND OVERWRITE, and that distinction is the whole design. `allowedHostsMerged` re-derives
+  // only the loopback entries — the ones this installer wrote — and keeps every other host in the
+  // list, because an operator who added their own proxy hostname would otherwise lose it to a repair
+  // about a port. And `CLIENT_MCP_HTTP_PORT` itself is NOT refreshed: it is the SOURCE the allow-list
+  // is derived FROM, and rewriting a source is how a repair silently overrides someone's choice.
+  //
+  // `CLEAROTRON_CHECKOUT_DIR` is deliberately not here either, for the same reason one issue over.
+  const derived = [];
+  if (fileEnv.CLIENT_MCP_ALLOWED_HOSTS && want.CLIENT_MCP_HTTP_PORT) {
+    const merged = allowedHostsMerged(fileEnv.CLIENT_MCP_ALLOWED_HOSTS, want.CLIENT_MCP_HTTP_PORT, { ...fileEnv, ...want });
+    if (merged !== fileEnv.CLIENT_MCP_ALLOWED_HOSTS) {
+      want.CLIENT_MCP_ALLOWED_HOSTS = merged;
+      derived.push("CLIENT_MCP_ALLOWED_HOSTS");
+    }
+  }
+
   // AN EMPTY ROW IS NOT A CHOICE, and this is the case that matters most rather than an edge.
   // the deployment env example ships `PORTAL_MCP_URL=` empty, so the operator most likely to hit
   // this path has that exact line — and add-only would leave it, report "already carries the
@@ -381,12 +423,19 @@ export async function writeInstallEnv(envFile) {
     const blank = new RegExp(`^[ \\t]*${k}[ \\t]*=[ \\t]*$`, "m");
     if (blank.test(body)) { body = body.replace(blank, `${k}=${v}`); filled.push(k); }
   }
-  const merged = mergeEnvFile(body, want, { by: "`render-units.mjs --apply`", notes: LANE_VALUE_NOTES });
+  const merged = mergeEnvFile(body, want, { by: "`render-units.mjs --apply`", notes: LANE_VALUE_NOTES, refresh: derived });
   const changed = [...filled, ...merged.added];
-  if (changed.length) {
+  if (changed.length || merged.refreshed.length) {
     writeFileSync(envFile, merged.text, { mode: 0o600 });
     // NAMES ONLY. One of these is the signing secret.
-    return `  ${envFile} — set ${changed.join(", ")}`;
+    //
+    // REFRESHED IS REPORTED SEPARATELY FROM SET, because they are different acts. "Set" added a line
+    // that was not there; "re-derived" REPLACED a line that was, and an operator reading this needs to
+    // know their file changed under a name they can go and look at.
+    const parts = [];
+    if (changed.length) parts.push(`set ${changed.join(", ")}`);
+    if (merged.refreshed.length) parts.push(`re-derived ${merged.refreshed.join(", ")} from the port it binds`);
+    return `  ${envFile} — ${parts.join("; ")}`;
   }
   return `  ${envFile} already carries the lane and the client door's settings, left as the operator set them`;
 }
