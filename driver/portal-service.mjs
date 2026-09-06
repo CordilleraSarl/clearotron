@@ -2972,6 +2972,39 @@ export function bundleFreshnessCached(present, { now = Date.now(), ttl = BUNDLE_
   return verdict;
 }
 
+/**
+ * How to re-mint the trigger token WITH an accounts cap, and without changing anything else about it.
+ *
+ * ── tracker issue 107 ────────────────────────────────────────────────────────────────────────────
+ *
+ * This used to be a fixed string in the warning itself: `--sub portal --verbs start_run,stop_run`. An
+ * operator whose token carries a third verb, or a different subject, was told to re-mint as something
+ * NARROWER than what they already had — and the only symptom is the verb they silently lost failing
+ * later as an upstream refusal, which reads as an engine fault. The advice is "add an accounts cap",
+ * so nothing else about the token may move because a reader followed it.
+ *
+ * `shared/trigger-lane.mjs` and the stop_run warning one branch below both already derive their flags
+ * from the token in hand. This was the last site in that family still printing a constant.
+ *
+ * AN UNREADABLE PAYLOAD GETS NO COMMAND. `opsTokenPosture` answers `readable: false` with every claim
+ * null, and that lands here because `accountCapped` is false when nothing could be read. A command
+ * composed from those nulls would be a guess presented as an instruction — and it is exactly the case
+ * where following it destroys a token nobody could inspect.
+ */
+export function accountCapAdvice(posture) {
+  if (!posture?.readable) {
+    return "Its payload could not be read, so the command to re-mint it cannot be composed here — read "
+      + "the token's own claims first, then re-mint with the same `--sub` and `--verbs`, plus "
+      + "`--accounts <keys>`.";
+  }
+  return "Re-mint with `mcp-server/mint-token.mjs --scope ops"
+    + `${posture.sub ? ` --sub ${posture.sub}` : ""}`
+    // NO `--verbs` FLAG AT ALL when the token is full-ops: `verbs: null` means EVERY verb, and naming a
+    // list there would be the narrowing this whole function exists to stop.
+    + `${posture.verbs ? ` --verbs ${posture.verbs.join(",")}` : ""}`
+    + " --accounts <keys>` to make it two walls.";
+}
+
 export function opsTokenPosture(token, { now = Date.now() } = {}) {
   const none = { readable: false, scope: null, sub: null, verbs: null, accounts: null, accountCapped: false,
     expiresAt: null, daysLeft: null, expired: false, implausibleExp: false };
@@ -4020,8 +4053,26 @@ const PORT = PORT_CHOICE.port;
     // PREFIXED WHEN THE LANE IS DEAD, so this line cannot be read on its own as evidence of a working
     // lane — a journal is skimmed by grepping one phrase, and the phrase people grep is this one.
     log(`trigger lane${laneWired ? "" : " (NOT WIRED — see above)"}: ops token sub=${posture.sub ?? "-"} verbs=${posture.verbs?.join(",") ?? "(full ops)"} accounts=${posture.accounts?.join(",") ?? "UNCAPPED (every account)"}${expiry}${posture.readable ? "" : " — token payload unreadable, posture unknown"}`);
-    if (!posture.accountCapped)
-      log("WARNING: the trigger ops token carries no `accounts` claim, so it is NOT account-capped — the only thing bounding a trigger to one customer is this portal's own principal check. Re-mint with `mcp-server/mint-token.mjs --scope ops --sub portal --verbs start_run,stop_run --accounts <keys>` to make it two walls.");
+    if (!posture.accountCapped) {
+      // ── THE PRINTED COMMAND IS DERIVED FROM THE TOKEN IN HAND (tracker issue 107) ──────────────────
+      //
+      // It used to be a fixed string: `--sub portal --verbs start_run,stop_run`. An operator whose
+      // token carries a third verb, or a different subject, is told to re-mint as something NARROWER
+      // than what they have — and the only symptom is the verb they silently lost failing later as an
+      // upstream refusal, which reads as an engine fault. The advice here is "add an accounts cap",
+      // and nothing else about the token should move because the reader followed it.
+      //
+      // The warning one branch below already derives its flag this way. This is the same pattern, and
+      // copying it is the whole change.
+      //
+      // AN UNREADABLE PAYLOAD PRINTS NO COMMAND AT ALL. `opsTokenPosture` answers `readable: false`
+      // with every claim null — which lands here, because `accountCapped` is false when nothing could
+      // be read. A command composed from those nulls would be a guess presented as an instruction, and
+      // it is exactly the case where following it destroys a token nobody could inspect.
+      log("WARNING: the trigger ops token carries no `accounts` claim, so it is NOT account-capped — "
+        + "the only thing bounding a trigger to one customer is this portal's own principal check. "
+        + accountCapAdvice(posture));
+    }
     // The token is VERB-scoped, so a portal minted before Stop existed can start runs and cannot stop
     // them — and that refusal arrives from upstream looking like an engine fault. Name it here, at boot,
     // where it is one line in the journal instead of a mystery at the moment someone needs to stop a run.

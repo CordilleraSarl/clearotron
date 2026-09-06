@@ -29,7 +29,7 @@
 // to start), no auth, no TLS. Never expose it; production ingress is Caddy + the auth proxy. The /dev
 // intake writes ONLY into the dev instance's own queue (INSTALL.md §8 isolation invariants).
 
-import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS file is the CLI entry (never on library import)
+import { envFileRead } from "../shared/env-local.mjs";   // side effect: apply this install's .env when THIS file is the CLI entry (never on library import)
 import { createServer, request as httpRequest } from "node:http";
 import { readFileSync, existsSync, statSync, readdirSync, writeFileSync, renameSync, mkdirSync } from "node:fs";
 import { join, resolve, extname, dirname } from "node:path";
@@ -499,7 +499,7 @@ if (isEntrypoint(import.meta.url)) {
     server = await startPortal({ port, host });
   } catch (e) {
     const { listenErrorMessage } = await import("../shared/listen.mjs");
-    process.stderr.write(`[dev-portal] ${listenErrorMessage(e, { what: "the dev portal", host, port, portVar: "PORTAL_PORT", portFlag: "--port" })}\n`);
+    process.stderr.write(`[dev-portal] ${listenErrorMessage(e, { what: "the dev portal", host, port, portVar: "PORTAL_PORT", portFlag: "--port", portFile: envFileRead() })}\n`);
     process.exit(1);
   }
   const a = server.address();

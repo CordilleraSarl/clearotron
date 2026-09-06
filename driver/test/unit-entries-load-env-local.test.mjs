@@ -78,7 +78,14 @@ const code = (src) => String(src ?? "").split("\n").filter((l) => !COMMENT_LINE.
 /** Does this entry translate the env names, by either sanctioned route? */
 export function emitsRetiredWarning(src) {
   const t = code(src);
-  return /^\s*import\s+["']\.{1,2}\/[^"']*env-local\.mjs["']/m.test(t) || /\bwarnRetiredEnv\s*\(/.test(t);
+  // BOTH IMPORT FORMS, because what this asks is whether the module is LOADED, not how it is spelled.
+  // The pattern used to require the bare side-effect form, `import "../shared/env-local.mjs"`. A named
+  // import — `import { envFileRead } from "../shared/env-local.mjs"` — evaluates the same module and so
+  // runs the same unconditional translation at the bottom of it, but read as no import at all: adding
+  // one to a unit entry reported that entry as translating nothing, which was false and which is how
+  // this was found (tracker issue 200).
+  return /^\s*import\s+(?:[^"';]*\bfrom\s+)?["']\.{1,2}\/[^"']*env-local\.mjs["']/m.test(t)
+    || /\bwarnRetiredEnv\s*\(/.test(t);
 }
 
 /**
@@ -121,6 +128,21 @@ test("#1222 a pass-through spread is not a read — a guard must not manufacture
   assert.equal(readsEnv('const v = process.env["CLEAROTRON_WORK_DIR"];'), true, "an index read is in scope");
   assert.equal(readsEnv('const e = process.env; use(e.CLEAROTRON_WORK_DIR);'), true,
     "aliasing the whole object is still a read — only the SPREAD form is stripped");
+});
+
+test("#1222 the loader counts as loaded however the import is spelled", () => {
+  const bare = 'import "../shared/env-local.mjs";\nconst x = process.env.A;';
+  const named = 'import { envFileRead } from "../shared/env-local.mjs";\nconst x = process.env.A;';
+  const dflt = 'import loader from "./shared/env-local.mjs";\nconst x = process.env.A;';
+  assert.equal(emitsRetiredWarning(bare), true, "the side-effect form is the one this always caught");
+  assert.equal(emitsRetiredWarning(named), true,
+    "a named import evaluates the module and runs the same translation — reading it as absent is the defect");
+  assert.equal(emitsRetiredWarning(dflt), true, "a default import loads the module too");
+  // Still not satisfied by a mention that loads nothing.
+  assert.equal(emitsRetiredWarning('// import "../shared/env-local.mjs"\nconst x = process.env.A;'), false,
+    "a commented-out import loads nothing and must not count");
+  assert.equal(emitsRetiredWarning('const s = "../shared/env-local.mjs";\nconst x = process.env.A;'), false,
+    "the path in a string is not an import");
 });
 
 test("#1222 every unit-run entry point loads shared/env-local.mjs", (ctx) => {

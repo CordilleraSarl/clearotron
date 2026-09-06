@@ -360,6 +360,24 @@ export function allowedHosts(port, env = {}) {
   return [...new Set(hosts)].join(",");
 }
 
+/**
+ * The allow-list an existing one should become, once the door's port has moved (tracker issue 197).
+ *
+ * The loopback entries are THIS INSTALLER'S and are re-derived from the port; every other host in the
+ * list belongs to the operator and is kept. That split is the whole point: a repair about a port must
+ * not delete a proxy hostname somebody added by hand, and an allow-list that still names last month's
+ * port turns every request into a 403 while the door reports itself up.
+ *
+ * @param {string} existing  the value currently in the env file
+ * @param {string|number} port  the port the door will actually bind
+ */
+export function allowedHostsMerged(existing, port, env = {}) {
+  const derived = allowedHosts(port, env).split(",");
+  const mine = /^(127\.0\.0\.1|localhost):\d+$/;
+  const theirs = String(existing ?? "").split(",").map((s) => s.trim()).filter(Boolean).filter((h) => !mine.test(h));
+  return [...new Set([...derived, ...theirs])].join(",");
+}
+
 export function enablePlan({ env = {}, address, identity, accessFile = null, port = null, portIsFree = null, portOwner = null,
   grantedAccounts = undefined, checkoutDir = null, denylistPath = null, unitEnvHasSecret = undefined,
   issuesKey = true } = {}) {
@@ -479,9 +497,19 @@ export function enablePlan({ env = {}, address, identity, accessFile = null, por
   // identity. Its own preconditions are exactly what this plan has already established — the signing
   // secret, account access on, a loopback host, and an allow-list.
   const settings = {
-    // Written, not required. The value is this checkout's own path, which the caller cannot be wrong
-    // about; an installer that already set it keeps its value, because setEnvValue replaces only what
-    // this plan names and the installer's spelling is the same key with the same meaning.
+    // Written, not required — and this REPLACES whatever was there (tracker issue 193).
+    //
+    // The comment here used to say the opposite: "an installer that already set it keeps its value,
+    // because setEnvValue replaces only what this plan names". That reads as a preservation guarantee
+    // and it is not one — this plan DOES name the key, and `setEnvValue` replaces every key it is
+    // given. `client-door.test.mjs` states the true behaviour in its own title: "setEnvValue REPLACES
+    // an explicit value — which mergeEnvFile deliberately will not."
+    //
+    // So the value is right for the caller and wrong for the machine: every unit's ExecStart is
+    // ${CLEAROTRON_CHECKOUT_DIR}/…, and a `connect` run from a worktree repoints the whole deployment.
+    // The write stays — the unit needs it — and `bin/connect.mjs` now says so before it happens and
+    // refuses when live services are executing another tree. Preserving it instead would be a change
+    // to what every other key on this plan does, which is not a repair to make in passing.
     CLEAROTRON_CHECKOUT_DIR: checkoutDir,
     CLIENT_MCP_ACCOUNT_ACCESS: "1",
     CLIENT_MCP_TOKEN_ONLY: "1",

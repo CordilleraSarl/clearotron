@@ -315,6 +315,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-port-refusal-names-the-file-it-reads.test.mjs": {
+          "tests": 7,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
         "a-printed-command-runs-from-where-the-reader-stands.test.mjs": {
           "tests": 14,
           "asserts": 59,
@@ -606,6 +612,12 @@
         "an-arm-that-produced-nothing-is-not-ok.test.mjs": {
           "tests": 5,
           "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-arrival-check-exercises-the-trigger-lane.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -1038,6 +1050,12 @@
         "connect-clients-are-data.test.mjs": {
           "tests": 12,
           "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "connect-does-not-move-the-deployment-in-silence.test.mjs": {
+          "tests": 16,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
@@ -2371,6 +2389,12 @@
           "tests": 3,
           "asserts": 7,
           "skips": 2,
+          "todos": 0
+        },
+        "no-test-writes-inside-the-checkout.test.mjs": {
+          "tests": 16,
+          "asserts": 35,
+          "skips": 0,
           "todos": 0
         },
         "no-vendor-provenance-in-the-public-cut.test.mjs": {
@@ -4041,6 +4065,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-demo-help-names-every-product-it-ships.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "the-door-answers-the-address-it-advertises.test.mjs": {
           "tests": 6,
           "asserts": 17,
@@ -4143,9 +4173,21 @@
           "skips": 0,
           "todos": 0
         },
+        "the-install-names-the-auth-values-it-needs.test.mjs": {
+          "tests": 9,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
         "the-install-places-what-a-server-needs.test.mjs": {
           "tests": 22,
           "asserts": 51,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-installer-advice-matches-the-box-it-is-given.test.mjs": {
+          "tests": 9,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -4468,8 +4510,8 @@
           "todos": 0
         },
         "unit-entries-load-env-local.test.mjs": {
-          "tests": 4,
-          "asserts": 18,
+          "tests": 5,
+          "asserts": 23,
           "skips": 1,
           "todos": 0
         },

@@ -23,7 +23,7 @@
 // The handler logic lives in lib/http-handler.mjs (undici-free, testable); this file wires config, the SDK
 // transport (lazy-imported), and the listener.
 
-import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS file is the CLI entry (never on library import)
+import { envFileRead } from "../shared/env-local.mjs";   // side effect: apply this install's .env when THIS file is the CLI entry (never on library import)
 import { envFrom } from "../shared/env-aliases.mjs";   // — a refusal names the name in force
 import { accessAudience, audienceLabel } from "../shared/access-audience.mjs";   // — F54; jose-free on purpose
 import { doorPostureVerdict } from "./door-posture.mjs";   // — say when this door's mode came from another door's variables
@@ -294,7 +294,7 @@ if (isMain) {
   // async main and this one is a bare top-level `if`, where a dynamic import would make the whole module
   // async for everything that imports `grantedAccounts` from it.
   listenOrDie(createServer(handler), {
-    port: PORT, host: HOST, what: "the MCP staff surface", portVar: "TRADEMARK_MCP_HTTP_PORT", portSource: PORT_CHOICE.source, log,
+    port: PORT, host: HOST, what: "the MCP staff surface", portVar: "TRADEMARK_MCP_HTTP_PORT", portSource: PORT_CHOICE.source, portFile: envFileRead(), log,
     onReady: ({ port: bound }) => log(`listening on http://${HOST}:${bound}/mcp — READ-ONLY staff surface, firmDomains=[${ALLOWED_DOMAINS.join(", ")}], ${door}`),
   });
 }
