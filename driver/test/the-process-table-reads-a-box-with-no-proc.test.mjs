@@ -76,10 +76,14 @@ test("2099 a ps that could not look is null, and null is never an empty box", ()
 test("2099 a command line beginning with a number is not mistaken for a pid", () => {
   // The parse anchors on `lstart`, and this is the case that says so: the pid column and a command that
   // starts with digits are told apart by the date between them, not by position alone.
-  const line = "  4242 Mon Sep  1 08:21:53 2026 2026-report.mjs --pool /srv/pool";
-  const [row, ...rest] = processTable({ platform: "darwin", runPs: () => ({ status: 0, stdout: `${line}\n` }) });
+  // TWO leading numbers now — pid and the owning user — and the command still begins with digits. The
+  // date between them is what tells all three apart; position alone never could.
+  const line = "  4242 1000 Mon Sep  1 08:21:53 2026 2026-report.mjs --pool /srv/pool";
+  const [row, ...rest] = processTable({ platform: "darwin", uid: 1000,
+    runPs: () => ({ status: 0, stdout: `${line}\n` }) });
   assert.deepEqual(rest, [], "one line produced more than one row");
   assert.equal(row.pid, 4242);
+  assert.equal(row.uid, 1000);
   assert.equal(row.cmd, "2026-report.mjs --pool /srv/pool");
   assert.equal(row.startedAt, Date.parse("Mon Sep  1 08:21:53 2026"));
 });

@@ -66,7 +66,7 @@ const shown = (names) => names.map((n) => n);
  * and only one of them describes who gets the invoice.
  */
 export function engineInventory(env = process.env) {
-  // THE SAME EXPRESSION AS THE RUN DOOR, character for character (driver.config.mjs:1660,
+  // THE SAME EXPRESSION AS THE RUN DOOR, character for character (driver.config.mjs:1880,
   // preflightEngineBinary). The obvious rewrite — `String(env.CLEAROTRON_AI ?? "").trim() || DEFAULT` —
   // reads better and disagrees on a whitespace-only value: it falls back to the default while the door
   // resolves `""` and refuses with "that is not an engine". The page would then name a known engine that

@@ -79,6 +79,16 @@ function run(args, env = {}) {
       // they run on happens to be. So they declare the checkout pinned — the same answer the check
       // already gives a branch with no upstream — and the arm below proves the check still fails a real
       // deployment that is behind. `env` spreads last, so a test that wants the real reader can unset it.
+      //
+      // ── — CLEAROTRON_NO_ENV_FILE AND INVOCATION_ID CANNOT REACH THIS CHILD ─────
+      //
+      // This environment is COMPOSED, not inherited, and one arm below depends on that: "--check reads
+      // a .env" writes `<repo>/.env` and requires the wizard to read it. Either of those two variables
+      // would make `shared/env-local.mjs` skip the file and hand the command BUILT-IN DEFAULTS with no
+      // error — the suite runner sets the first for every child, and the second is inherited by any
+      // descendant of a systemd unit, which on a hosted CI runner includes the job (tracker issue 204).
+      // Neither is spread here, so neither arrives. Recorded rather than left to be re-derived, and
+      // measured: this file passes with both set in the parent.
       env: {
         HOME: env.HOME ?? tmpdir(), PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"),
         CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...env,

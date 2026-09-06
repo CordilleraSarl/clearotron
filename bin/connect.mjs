@@ -57,34 +57,15 @@ import { SERVER_INSTALL_SET, unitHealthVerdict } from "../shared/server-units.mj
 import { checkoutMove, movePosture, describeMove, describeConflict } from "../shared/checkout-move.mjs";   // tracker issue 193
 import { unitEnvironment, unitValue, couldNotDetermine } from "../driver/unit-environment.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
+import { looksLikeBusFailure, systemdSaid, userBusEnv, CAPTURE_STDERR,
+  systemdFailure as sharedSystemdFailure } from "../shared/systemd-failure.mjs";   // tracker issue 203 — `start` needed the same three answers
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
-/**
- * The environment `systemctl --user` needs, with the session bus filled in when it can be derived.
- *
- *. Under `su`/`sudo -u` these two are unset and systemctl cannot find the bus.
- * `/run/user/<uid>` is where it lives when a user session exists, so this supplies them from the uid
- * rather than asking a reader to. When the directory is absent there IS no user bus and no value would
- * help — busRemedy() says so in words instead.
- */
-function userBusEnv() {
-  const env = { ...process.env };
-  if (env.XDG_RUNTIME_DIR && env.DBUS_SESSION_BUS_ADDRESS) return env;
-  const dir = env.XDG_RUNTIME_DIR || `/run/user/${process.getuid?.() ?? ""}`;
-  if (!existsSync(dir)) return env;             // no session: the remedy is words, not a guessed value
-  env.XDG_RUNTIME_DIR = dir;
-  env.DBUS_SESSION_BUS_ADDRESS ||= `unix:path=${dir}/bus`;
-  return env;
-}
-
-/** What to tell a reader whose shell has no user bus — the two exports, by name. */
-function busRemedy() {
-  const uid = process.getuid?.() ?? "$(id -u)";
-  return `systemctl --user needs a login session's bus, and this shell has none — which is what \`su\` and \`sudo -u\` leave you with.\n`
-    + `Either log in as this user properly (\`machinectl shell\`, or ssh as them), or export the two the bus is found through:\n`
-    + `  export XDG_RUNTIME_DIR=/run/user/${uid}\n`
-    + `  export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${uid}/bus`;
-}
+// `userBusEnv` and `busRemedy` MOVED TO shared/systemd-failure.mjs, unchanged, because
+// `start --background` needs the same answers and had none (tracker issue 203). Their reasoning went
+// with them; this file imports them and passes `userBusEnv()` at every `systemctl` call it makes,
+// `showUnit` included — which is the property that makes deriving the bus safe here and is why `start`
+// does not do it at two of its five.
 
 /**
  * What a half-finished connect has ALREADY written by the time `step` failed — tracker issue 121.
@@ -132,23 +113,18 @@ function alreadyApplied(step) {
  * is not open" — that mistranslation is the defect, and a second copy of this test is how the two would
  * come to disagree about which failures are bus failures.
  */
-export function looksLikeBusFailure(said) {
-  return /Failed to connect to( the)? bus|DBUS_SESSION_BUS_ADDRESS|XDG_RUNTIME_DIR|No medium found/i.test(String(said ?? ""));
-}
+export { looksLikeBusFailure, systemdSaid };
 
-/** What a failed `systemctl` said, preferring its own stderr over Node's wrapper message. */
-export function systemdSaid(e) {
-  return `${e?.stderr ?? ""}`.trim() || `${e?.message ?? e}`.trim();
-}
-
+/**
+ * This command's systemd failure: the shared diagnosis, plus THIS command's statement of what stands.
+ *
+ * The `step` argument stays here rather than moving into the shared file, and that is the whole reason
+ * the split is where it is. What systemd said and whether it is a bus problem are the same question for
+ * every caller; what has already been written when it said it is a different answer per command and
+ * per step, which `alreadyApplied` above spells out.
+ */
 export function systemdFailure(e, { step, unit = null } = {}) {
-  const said = systemdSaid(e);
-  const looksLikeBus = looksLikeBusFailure(said);
-  const remedy = looksLikeBus
-    ? busRemedy()
-    : `That is not a missing session bus, so the two exports will not help. Read what systemd itself says:\n`
-      + `  systemctl --user status ${unit ?? ""}`.trimEnd() + `\n  journalctl --user -u ${unit ?? "<unit>"} -n 50 --no-pager`;
-  return new Error(`${said}\n\n${remedy}\n\n${alreadyApplied(step)}`);
+  return sharedSystemdFailure(e, { unit, stands: alreadyApplied(step) });
 }
 
 const UNIT_DIR = join(homedir(), ".config", "systemd", "user");
@@ -497,13 +473,13 @@ function enableTheDoor({ have, identity, client = null, dryRun, portFree, portOw
       // whole remedy, and printing it costs nothing next to a reader who has to find it.
       // stderr is CAPTURED, not discarded. `stdio: "ignore"` threw away systemd's own explanation, which
       // is the whole reason this printed a command name and nothing a reader could act on.
-      try { execFileSync("systemctl", ["--user", "daemon-reload"], { stdio: ["ignore", "ignore", "pipe"], encoding: "utf8", env: userBusEnv() }); }
+      try { execFileSync("systemctl", ["--user", "daemon-reload"], { ...CAPTURE_STDERR, env: userBusEnv() }); }
       catch (e) { throw systemdFailure(e, { step: "daemon-reload" }); }
     },
     // The same bus, for the same reason — a connect that reloads and then dies on enable has moved the
     // failure one line without helping anybody.
     startUnit: (name) => {
-      try { execFileSync("systemctl", ["--user", "enable", "--now", name], { stdio: ["ignore", "ignore", "pipe"], encoding: "utf8", env: userBusEnv() }); }
+      try { execFileSync("systemctl", ["--user", "enable", "--now", name], { ...CAPTURE_STDERR, env: userBusEnv() }); }
       catch (e) { throw systemdFailure(e, { step: "enable", unit: name }); }
     },
     unitIsHealthy,

@@ -75,6 +75,7 @@
 // long-lived engine credential is written to disk by a command whose job is to show you the product.
 
 import { envLocalPath, envFileRead } from "../shared/env-local.mjs";   // side effect: apply this install's .env when THIS file is the CLI entry (never on library import)
+import { systemdFailure, systemdSaid, CAPTURE_STDERR } from "../shared/systemd-failure.mjs";   // tracker issue 203 — a refusal, not a stack trace
 import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic write for every file holding credentials, and it creates the directory
 // — ONE AUTHORITY for what a clearance needs from its environment, used twice
 // below: to COMPOSE the units' environment and to GUARD it before this command reports success. The
@@ -165,6 +166,33 @@ export const LAUNCHER_MINTED = Object.freeze(["PORTAL_OPS_TOKEN"]);
  */
 export function homeEnvUpdate(homeText, union) {
   return mergeEnvFile(homeText, union, { refresh: LAUNCHER_MINTED });
+}
+
+/**
+ * What a `--background` run has ALREADY DONE when systemd refuses to enable a unit — tracker issue 203.
+ *
+ * THE READER'S QUESTION IS NOT THAT A STEP FAILED. It is whether they now have a half-installed
+ * deployment, and whether to run this again, undo it, or leave it alone. This step is the worst-placed
+ * refusal in the command — everything this run writes is already written by the time it is reached — and
+ * it was the one refusal that said nothing about that. `connect` has the same sentence for the same
+ * reason and states it by stage, because the true answer changes between them; this is `start`'s answer
+ * and lives here rather than in `shared/systemd-failure.mjs` for exactly that reason.
+ *
+ * ENABLED UNITS ARE NAMED. The loop enables four in order, so a refusal on the third leaves two running,
+ * and "this install is half started" is not enough to act on when the reader is deciding whether the
+ * portal in front of them is theirs.
+ */
+export function startStands({ unit, enabled = [], unitDir, invocation = invoke("start") }) {
+  const lines = [
+    "This install is now HALF STARTED, and nothing is lost:",
+    "  · the settings file, the data directories, the grants roster and the seeded example were written",
+    `  · every unit file was rendered into ${unitDir}`,
+  ];
+  if (enabled.length) lines.push(`  · enabled and started: ${enabled.join(", ")}`);
+  lines.push(`  · ${unit} was NOT enabled${enabled.length ? ", and nothing after it was reached" : ""}`);
+  lines.push(`Every write this command makes is idempotent, so re-running \`${invocation} --background\` finishes it `
+    + `once systemd will take the unit. \`${invoke("stop")}\` takes back down whatever is up.`);
+  return lines.join("\n");
 }
 
 export function installedUnits(dir = UNIT_DIR, exists = existsSync) {
@@ -534,9 +562,12 @@ if (isMain) {
   // moment, and one the screen never answered while the writes sat above the port probe.
   let wroteState = false;
   const markStateWritten = () => { wroteState = true; };
-  const fatal = (msg) => {
+  // `stated` is a caller that has already said what stands, in terms this generic line cannot reach —
+  // which unit refused, which ones are up, what re-running does. Without it the systemd refusal printed
+  // both, and the pair read as two different answers to the reader's one question (tracker issue 203).
+  const fatal = (msg, { stated = false } = {}) => {
     err(`\nstart: ${msg}\n`);
-    if (wroteState) err("  This run had already written state (env file, data directories, grants, seeded example).\n  Every one of those writes is idempotent — re-running `clearotron start` is safe and nothing needs undoing.\n");
+    if (wroteState && !stated) err("  This run had already written state (env file, data directories, grants, seeded example).\n  Every one of those writes is idempotent — re-running `clearotron start` is safe and nothing needs undoing.\n");
     process.exit(1);
   };
 
@@ -1124,11 +1155,39 @@ if (isMain) {
       const willRead = { ...already, ...union };
       const miss = missingRequirements(willRead, RUN_TABLES);
       if (miss.blocking.length) {
+        // ── — THE FILES ARE NAMED, BECAUSE THE COMMAND OFFERED CANNOT BE RUN ──
+        //
+        // This said "Set these where this command can see them" and named no file, on a product with two
+        // of them, and offered `install` as the route. `install` REFUSES a non-terminal — "this is an
+        // interactive wizard and stdin is not a terminal", rc 2 — so the one reader who arrives here by a
+        // scripted or hosted install was handed a route they cannot take and no address for the route
+        // they can. Same defect as naming a variable and not the file, one level up (tracker issue 202).
+        //
+        // BOTH FILES, and that is the difference from the port refusals, which say `~/.env` "is NOT read
+        // here". They are right: nothing in that file reaches a port decision. Here both are true. The
+        // block above reads HOME_ENV into `already` and merges it into `willRead`, so a value set there
+        // satisfies this check on the next run; and the CLI's own file reaches it too, through the
+        // `runRequiredNames(process.env, …)` loop that copies its values into `union`. Driven rather than
+        // read: three blocking names cleared from the CLI's file alone, and the refusal came back naming
+        // a fourth that the first three had newly required.
+        //
+        // `envFileRead()` for the CLI half, never a path composed here. Null means this process read no
+        // file of its own — a systemd-started service, or CLEAROTRON_NO_ENV_FILE=1 — and then HOME_ENV is
+        // the only honest address there is. That function's header carries the reasoning.
+        const cliEnv = envFileRead();
+        const where = cliEnv
+          ? `Set them in either of these — both reach this check:\n`
+            + `    ${cliEnv}\n        the file this command reads — this install's own configuration\n`
+            + `    ${HOME_ENV}\n        the file the units read, named above`
+          : `Set them in ${HOME_ENV} — the file the units read, named above. This command read no `
+            + `environment file of its own, so that is the address.`;
         fatal(`--background would install units that cannot run a clearance. ${HOME_ENV} is what they read, and `
           + `it would not carry:\n`
           + miss.blocking.map((r) => `    ${r.name} — ${r.why}`).join("\n")
-          + `\n\n  Nothing has been installed and nothing has been started. Set these where this command can see `
-          + `them — \`${invoke("install")}\` writes them — and run this again. Refusing here rather than at a `
+          + `\n\n  Nothing has been installed and nothing has been started. ${where}\n`
+          + `\n  \`${invoke("install")}\` writes them for you IN A TERMINAL — it is an interactive wizard and `
+          + `refuses when stdin is not one, which is why this refusal names the file to edit. Run this again after.\n`
+          + `\n  Refusing here rather than at a `
           + `client's first search, which is where this surfaced before: as a failed run and a notice saying `
           + `they had been notified.`);
       }
@@ -1187,7 +1246,21 @@ if (isMain) {
       const text = readFileSync(join(REPO, "driver", "systemd", u), "utf8");
       writeFileSync(join(UNIT_DIR, u), renderUnit(text, { ...process.env, ...union }));
     }
-    try { execFileSync("systemctl", ["--user", "daemon-reload"], { stdio: "ignore" }); }
+    // STDERR IS CAPTURED, not discarded. `stdio: "ignore"` threw systemd's own explanation away before
+    // anyone could read it, which is half of what tracker issue 121 fixed in `connect` and was never
+    // done here. The two-cause remedy below is right and stays; what was missing was the sentence
+    // systemd itself wrote.
+    //
+    // ✕ AND NOT `userBusEnv()`, WHICH `connect` PASSES HERE AND THIS FILE MUST NOT — not yet. That
+    // helper derives XDG_RUNTIME_DIR and DBUS_SESSION_BUS_ADDRESS when the runtime directory exists, and
+    // `connect` passes it at EVERY systemctl call it makes, `showUnit` included. This file has five, and
+    // deriving the bus at two of them is worse than at none: `enable --now` would succeed against the
+    // derived bus while the health read three screens down still asks the bus-less one, so every unit
+    // would start and then be reported as not running. Driven into by accident while building
+    // tracker issue 203 — "4 of 4 unit(s) did not come up" over four units that had just been enabled.
+    // Making all five derive it is a real improvement to the install path and is its own change with its
+    // own drive, not a side effect of repairing a refusal.
+    try { execFileSync("systemctl", ["--user", "daemon-reload"], CAPTURE_STDERR); }
     // ── BOTH REMEDIES, BECAUSE TWO INDEPENDENT THINGS CAN BE MISSING (Refs issue 2176 — F32) ──────
     //
     // This named the problem and stopped one sentence short, leaving an operator to work out which of
@@ -1196,10 +1269,12 @@ if (isMain) {
     // gets it from PAM and never sees this. "An admin becomes a service account with `sudo -i`" is the
     // common shape for exactly this install, and the product knows the uid, so it can name both rather
     // than make the reader guess which applies.
-    catch {
+    catch (e) {
       const uid = process.getuid?.() ?? "$(id -u)";
       const who = userInfo().username;
-      fatal("systemd's user manager is not reachable from this session — `--background` needs it.\n"
+      const said = systemdSaid(e);
+      fatal(`${said}\n\n`
+        + "  systemd's user manager is not reachable from this session — `--background` needs it.\n"
         + "  Two independent things cause this. Either may be the one:\n"
         + `    1. this account has no lingering user manager. As root:  loginctl enable-linger ${who}\n`
         + `    2. this shell was entered with \`su\`/\`sudo -i\`, which leaves the bus unset. In it:\n`
@@ -1214,7 +1289,32 @@ if (isMain) {
       try { execFileSync("systemctl", ["--user", "disable", "--now", u], { stdio: "ignore" }); }
       catch { /* not installed, or already down — both are the state we want */ }
     }
-    for (const u of BACKGROUND_UNITS) execFileSync("systemctl", ["--user", "enable", "--now", u], { stdio: "ignore" });
+    // ── — A REFUSAL HERE IS A SENTENCE, NOT A STACK TRACE ─────────────────────
+    //
+    // This loop ran uncaught. When systemd declined to enable a unit the whole output was
+    // `node:internal/errors:983`, a Node stack trace and a status code — no name for what failed, and no
+    // statement of what had happened to the install (tracker issue 203). It is the worst-placed refusal
+    // in this command: by here the env file, the data directories, the grants roster and the seeded
+    // example are written and every unit file is rendered, so the reader is left not knowing whether
+    // they have a half-installed deployment. Every other refusal in this command says whether anything
+    // was written; this one said nothing.
+    //
+    // `shared/listen.mjs` decided this question one layer down and its rule is the one applied here: an
+    // unrecognised failure still gets a sentence and still exits non-zero; what it must not do is arrive
+    // as a stack trace with no statement of consequence.
+    //
+    // WHICH UNIT, not "a unit" — the loop enables four, and the reader's next command is
+    // `systemctl --user status <that one>`. The units before it in the set are enabled and stay so,
+    // which is why the sentence names them as done rather than describing the install as untouched.
+    const enabled = [];
+    for (const u of BACKGROUND_UNITS) {
+      try { execFileSync("systemctl", ["--user", "enable", "--now", u], CAPTURE_STDERR); }
+      catch (e) {
+        fatal(systemdFailure(e, { unit: u, stands: startStands({ unit: u, enabled, unitDir: UNIT_DIR }) }).message,
+          { stated: true });
+      }
+      enabled.push(u);
+    }
     // enable --now on an ALREADY-ACTIVE unit is a no-op, so a refresh would leave the old process
     // running the old files. EVERY long-running unit in the set is restarted, not a hardcoded pair
     // (, Hera's review): the pair here matched the pair the health check used three

@@ -176,13 +176,29 @@ export function programsFromAnotherCheckout({ table, checkoutDir, entrypoints = 
       detail: "no installed unit names a module under the checkout directory, so no command line can be attributed to this product" };
   }
   const programs = [];
+  let attributed = 0;                         // running programs this product could actually place
   for (const p of table) {
     const argv = String(p?.cmd ?? "").split(/\s+/).filter(Boolean);
     for (const rel of entrypoints) {
       const { tree } = treeOfRunning(argv, rel);
-      if (tree && tree !== want) { programs.push({ pid: p.pid, tree, cmd: String(p.cmd).slice(0, 120) }); break; }
-      if (tree) break;                        // attributed, and on the right tree
+      if (tree && tree !== want) { attributed++; programs.push({ pid: p.pid, tree, cmd: String(p.cmd).slice(0, 120) }); break; }
+      if (tree) { attributed++; break; }       // attributed, and on the right tree
     }
   }
-  return { state: programs.length ? "elsewhere" : "current", programs, detail: null };
+  if (programs.length) return { state: "elsewhere", programs, detail: null };
+  // AN EMPTY RESULT IS TWO ANSWERS AND THIS USED TO GIVE ONE. `current` meant "every running program is
+  // on the tree this install names" — which is only true if a running program was PLACED on a tree at
+  // all. When nothing could be attributed, the same word was returned, and "I could not place anything"
+  // was reported to the reader as "everything agrees". That is the absence-as-pass this repository keeps
+  // paying for, wearing a verdict's clothes.
+  //
+  // Two shapes reach here with nothing attributed and they are indistinguishable from outside: nothing
+  // of this product is running, or something is and its command line does not name its module. Neither
+  // is agreement, so neither gets the word, and the verdict says which question went unanswered.
+  if (!attributed) {
+    return { state: "unplaced", programs: [],
+      detail: "no running program could be attributed to this install — either nothing of it is "
+        + "running, or what is running does not name its module on the command line. Not agreement" };
+  }
+  return { state: "current", programs, detail: null, attributed };
 }

@@ -87,6 +87,18 @@
           "skips": 0,
           "todos": 0
         },
+        "a-change-a-reader-can-see-arrives-with-something-to-read.test.mjs": {
+          "tests": 10,
+          "asserts": 20,
+          "skips": 2,
+          "todos": 0
+        },
+        "a-check-does-not-read-another-accounts-processes.test.mjs": {
+          "tests": 6,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-claim-may-not-outlive-its-evidence.test.mjs": {
           "tests": 14,
           "asserts": 46,
@@ -174,6 +186,12 @@
         "a-doubt-cannot-answer-itself.test.mjs": {
           "tests": 17,
           "asserts": 40,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-drive-of-a-real-command-says-what-environment-it-drives-it-in.test.mjs": {
+          "tests": 8,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
@@ -274,8 +292,8 @@
           "todos": 0
         },
         "a-missing-bus-is-not-a-closed-door.test.mjs": {
-          "tests": 9,
-          "asserts": 37,
+          "tests": 10,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },
@@ -317,7 +335,7 @@
         },
         "a-port-refusal-names-the-file-it-reads.test.mjs": {
           "tests": 7,
-          "asserts": 18,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -381,6 +399,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-refusal-names-the-file-when-the-command-it-offers-cannot-be-run.test.mjs": {
+          "tests": 8,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "a-refusal-names-what-resolves-it.test.mjs": {
           "tests": 7,
           "asserts": 23,
@@ -390,6 +414,12 @@
         "a-refused-mcp-call-is-not-a-call-nobody-made.test.mjs": {
           "tests": 7,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-refused-unit-says-what-is-half-started.test.mjs": {
+          "tests": 9,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
@@ -3809,7 +3839,7 @@
         },
         "start-background-units.test.mjs": {
           "tests": 6,
-          "asserts": 19,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -4247,7 +4277,7 @@
         },
         "the-process-table-reads-a-box-with-no-proc.test.mjs": {
           "tests": 7,
-          "asserts": 24,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
