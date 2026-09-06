@@ -141,10 +141,26 @@ somebody working in a checkout. Nothing is wrong with your install.
 
 Skip this unless you are the one producing the `.tgz`.
 
-**`npm pack` is not the command.** The repository manifest carries `overrides: { "buffers": "$buffers" }`,
-which resolves only inside the checkout; a consumer installing that tarball dies with `Unable to resolve
-reference $buffers` before a single file is written. **`node scripts/pack-publishable.mjs` is the only
-route** — it strips that key from the published manifest and leaves the repository's own untouched.
+**`npm pack` alone is not the command.** The repository manifest carries
+`overrides: { "buffers": "$buffers" }`, which resolves only inside the checkout; a consumer installing that
+tarball dies with `Unable to resolve reference $buffers` before a single file is written. Five consecutive
+releases went out that way. **The published manifest has to be sealed** — that key stripped from the
+tarball, the repository's own manifest left untouched. Which route does it depends on the tree you are on:
+
+- **A tree that carries `cut/`**: `node scripts/pack-publishable.mjs`. It packs, strips, reconciles against
+  the withheld-file list and scans the packed tree in one step.
+- **A public checkout**, which is what the release workflow runs on: `npm pack`, then
+  `node scripts/release-artifact-seal.mjs --tarball <path>`. `pack-publishable.mjs` refuses here — it needs
+  `cut/packed-artifact.mjs`, which a public tree does not carry, and exits 2 rather than packing something
+  nobody checked.
+
+Either way, prove it before publishing it:
+
+    node scripts/release-install-check.mjs --tarball <path>
+
+That installs the artefact as a dependency of a throwaway project, which is the only shape this failure
+exists in. Installing at the root of a checkout and `npm install --dry-run` both exit 0 on a tarball that
+refuses for every real user.
 
 Two further constraints, both of which stop a package being cut from just anywhere:
 
@@ -1006,6 +1022,44 @@ curl -sSI https://<host>/mcp | grep -i 'www-authenticate\|^HTTP/'
 This is a property of the application at your provider, not of this product, which is precisely why it is
 easy to lose an afternoon to. Set `TRADEMARK_MCP_AUTH_MODE=cf-access` on a fronted door so the origin
 re-validates the proxy's JWT.
+
+#### The two settings that decide whether an assistant can sign in at all
+
+Both live at your provider, neither is visible from this product's side, and **each fails in a different
+shape**. Named here because a reader following this page from scratch has to find them in a console, and
+"enable the OAuth option" is not a thing anyone can search for.
+
+**1. The application must issue OAuth tokens itself, rather than sign a browser in.** That is the general
+rule for any auth proxy: an MCP route has to answer with a Bearer challenge and serve
+`/.well-known/oauth-authorization-server`, never a redirect to HTML. On **Cloudflare Access** the control
+is the application's **Advanced settings → Managed OAuth**, and it is **OFF on a newly created
+application**. Off, the route answers `302` with `www-authenticate: Cloudflare-Access` and the standard
+discovery paths redirect too. On, it answers `401` with `www-authenticate: Bearer realm="OAuth"` and
+serves the discovery document. Only the second is followable by an assistant, which is what the `curl`
+above measures.
+
+**2. The application must allow the vendor's own redirect address.** This one is invisible until late:
+with the allowed-redirect list empty, dynamic client registration refuses every cloud assistant, and the
+only symptom is the connector failing *after* the browser opens — which reads as a different bug
+entirely. **The localhost and loopback toggles do not cover this**: they permit clients on your own
+machine, and an assistant's sign-in comes back to its maker's cloud. On Cloudflare Access the control is
+the application's **Allowed redirect URIs**. The addresses, measured 2026-09-04:
+
+```
+https://claude.ai/api/mcp/auth_callback
+https://claude.com/api/mcp/auth_callback
+https://chatgpt.com/connector_platform_oauth_redirect
+```
+
+`npx clearotron doctor --probe-connector` asks your own door whether each of those can register, with a
+localhost control first so a broken endpoint is never reported as a policy refusal. It is opt-in because
+each successful attempt creates a throwaway OAuth client on your account — every other `doctor` check
+writes nothing.
+
+> ⚠ **Deleting and recreating an application silently loses both settings AND changes its audience.**
+> One cause, two unrelated-looking symptoms: sign-in stops working, and the origin's configured audience
+> goes stale. Nothing on either side says so. If a connector that used to work has stopped, check
+> whether the application was recreated before you change anything else.
 
 **Seeing what a client sees.** There is no "view as" screen. The documented route is a **client-scoped
 connector key**: issue one for that client with `npx clearotron key issue`, point an assistant at the

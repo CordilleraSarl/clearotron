@@ -273,6 +273,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-missing-bus-is-not-a-closed-door.test.mjs": {
+          "tests": 9,
+          "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
         "a-packaged-install-resolves-every-workspace-dependency.test.mjs": {
           "tests": 2,
           "asserts": 7,
@@ -360,6 +366,12 @@
         "a-refusal-is-not-a-pass.test.mjs": {
           "tests": 6,
           "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-refusal-means-nothing-without-its-control.test.mjs": {
+          "tests": 8,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },
@@ -480,6 +492,12 @@
         "a-unit-configuration-cannot-reach-is-resolved-at-install.test.mjs": {
           "tests": 5,
           "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-verb-is-a-module-until-it-is-the-command.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -1788,6 +1806,12 @@
         "every-tool-declares-what-it-does.test.mjs": {
           "tests": 3,
           "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "every-value-a-unit-needs-has-a-writer.test.mjs": {
+          "tests": 9,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -4120,8 +4144,8 @@
           "todos": 0
         },
         "the-install-places-what-a-server-needs.test.mjs": {
-          "tests": 20,
-          "asserts": 44,
+          "tests": 22,
+          "asserts": 51,
           "skips": 0,
           "todos": 0
         },
@@ -4167,6 +4191,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-portal-asks-whether-its-engine-will-take-it.test.mjs": {
+          "tests": 4,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "the-portal-bundle-is-the-one-its-sources-would-build.test.mjs": {
           "tests": 11,
           "asserts": 23,
@@ -4188,6 +4218,12 @@
         "the-published-door-must-answer-not-merely-exist.test.mjs": {
           "tests": 5,
           "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-published-manifest-is-not-the-repos-manifest.test.mjs": {
+          "tests": 16,
+          "asserts": 55,
           "skips": 0,
           "todos": 0
         },

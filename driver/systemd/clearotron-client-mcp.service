@@ -45,12 +45,25 @@ Type=simple
 EnvironmentFile=%h/.env
 Environment=PATH=%h/.local/bin:%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
 Environment=CLEAROTRON_NO_ENV_FILE=1
-# Loopback, and not configurable here for the same reason bin/start.mjs gives: this door carries a
-# credential in clear, and reaching this install from another machine is a TLS-terminating proxy in
-# front of it — which is a deployment, and a deployment brings its own doors.
-Environment=CLIENT_MCP_HTTP_HOST=127.0.0.1
-Environment=CLIENT_MCP_HTTP_PORT=18811
-Environment=CLIENT_MCP_ALLOWED_HOSTS=127.0.0.1:18811,localhost:18811
+# ── NO PORT, NO HOST, NO ALLOW-LIST HERE (tracker issue 191) ─────────────────────────────────────────
+#
+# This unit used to carry three Environment= lines pinning the host, the port and the allow-list, and it
+# was the ONLY one of the four that pinned anything a box can legitimately differ on. `Environment=` is
+# applied AFTER `EnvironmentFile=`, so those three did not default anything — they OVERRODE the
+# operator's own values, silently, every time the units were reinstalled.
+#
+# It took a running door down on a shared box: two installs, two ports, one baked value, and the
+# reinstall pointed the second install's door at the first's port. Worse, the allow-list travelled with
+# it — pinned to 18811 whatever port the door actually bound — which is the `Invalid Host header`
+# failure of tracker issue 130 one layer down, produced by our own unit rather than by a tunnel.
+#
+# The values live in %h/.env, which BOTH install paths write through one authority (`enablePlan`), and
+# the code's own defaults are the same 127.0.0.1 and 18811 these lines carried — so a box that has
+# never been configured is unchanged, and a box that HAS been configured is now obeyed.
+#
+# The loopback reasoning the old comment gave is still true and is enforced where it belongs: the door
+# itself REFUSES to bind a non-loopback address in token-only mode, with the reason printed. A unit file
+# is the wrong place to enforce it, because it enforces it only until somebody edits the unit.
 ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/mcp-server/http-server-client.mjs
 Restart=on-failure
 RestartSec=10

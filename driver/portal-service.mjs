@@ -3956,6 +3956,65 @@ const PORT = PORT_CHOICE.port;
       + "`clearotron start` derives PORTAL_MCP_URL from its resolved ports; a box that launches this "
       + "service directly must set it to the engine door's own ORIGIN (no /mcp — the client appends it).");
   }
+  // ── AND WHETHER THE DOOR WILL TAKE IT (tracker issue 174) ────────────────────────────────────────
+  //
+  // Every line in this block describes the PORTAL'S HALF — the token, its verbs, its accounts, its
+  // expiry — and not one of them asks whether the door it is pointed at will accept a caller shaped
+  // like this one. That gap is what the outage was made of. The engine interface was switched to
+  // `cf-access` at 09:59Z so a desktop assistant could reach it; the portal's last successful start_run
+  // was 09:10Z; every Start after that was a 401 upstream and a 502 to the client. The portal logged
+  // `trigger lane: ops token sub=portal …` and the interface logged `auth ON — issuer=CF Access`. Both
+  // sentences were true, neither was the one the operator needed, and the owner found it by submitting
+  // a clearance.
+  //
+  // The probe is UNAUTHENTICATED and costs one request at boot: what challenge does this door answer
+  // with? A door fronted by a browser sign-in cannot be reached by anything holding an access key, and
+  // that is knowable without presenting one.
+  //
+  // ONE AUTHORITY, NOT A SECOND OPINION. `triggerLaneVerdict` already reads this exact pair for
+  // `doctor`; a judgement written here would be a second reader of the same facts, and the two would
+  // drift. This asks the same function and prints what it says.
+  if (laneWired) {
+    try {
+      const { triggerLaneVerdict, HOSTED } = await import("../shared/trigger-lane.mjs");
+      let probe = null;
+      try {
+        const res = await fetch(new URL("/mcp", MCP_URL), { method: "GET", redirect: "manual",
+          signal: AbortSignal.timeout(2500) });
+        probe = { ok: res.status < 500, status: res.status, error: null,
+          challenge: res.headers.get("www-authenticate") };
+      } catch (e) { probe = { ok: false, status: null, error: String(e?.cause?.code ?? e?.name ?? e?.message ?? e) }; }
+      // `verbs` IS DELIBERATELY NOT PASSED. That check short-circuits ahead of the probe, so handing it
+      // in would answer a question about the TOKEN where a question about the DOOR was asked — and the
+      // block below already reports the verbs, with the re-mint command. One question per line.
+      const lane = triggerLaneVerdict({ url: MCP_URL, hasToken: true, verbs: null,
+        posture: HOSTED, probe, invoke: "npx " });
+      // ── THE SAME ANSWER MEANS OPPOSITE THINGS TO TWO CALLERS ─────────────────────────────────────
+      //
+      // `triggerLaneVerdict` is shared with `doctor`, and its `pass` was written for the question "can
+      // an assistant follow this challenge". A `401` with `Bearer realm="OAuth"` is a pass to that
+      // question and is the shape that CAUSED this outage: the door was moved to a proxy identity, and
+      // this portal holds an access key rather than a proxy identity. Printing that verdict here would
+      // put a confident tick on the exact configuration the incident was made of.
+      //
+      // So the two unambiguous states pass straight through, and the ambiguous one is REPORTED rather
+      // than judged — with the mechanism, so a reader knows what to look at. Claiming more than was
+      // measured is how a check starts refusing deployments that work.
+      if (lane.state === "fail") log(`WARNING: trigger lane — ${lane.message}`);
+      else if (lane.state === "unprobed") log(`trigger lane: ${lane.message}`);
+      else if (probe?.challenge && /bearer/i.test(probe.challenge)) {
+        log(`trigger lane: the engine door answered ${probe.status} with an OAuth challenge, so an identity `
+          + "proxy is in front of it. This portal presents an ACCESS KEY, not a proxy identity, and whether "
+          + "that key is honoured behind such a door is not readable from here — it is the shape that took "
+          + "the Start button down once, silently, while every other check passed. Submit one clearance "
+          + "after any change to the door's auth mode, and read the door's own `auth ON` line.");
+      } else log(`trigger lane: the engine door answered ${probe?.status ?? "?"} and takes an access key.`);
+    } catch (e) {
+      // The probe is a diagnostic. It must never be the reason a portal does not come up.
+      log(`trigger lane: could not check whether the engine door accepts this portal (${e.message}) — not a verdict either way.`);
+    }
+  }
+
   if (OPS_TOKEN) {
     const expiry = posture.expiresAt ? ` expires=${posture.expiresAt.slice(0, 10)} (${posture.daysLeft}d)` : " expires=UNKNOWN";
     // PREFIXED WHEN THE LANE IS DEAD, so this line cannot be read on its own as evidence of a working

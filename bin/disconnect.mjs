@@ -61,6 +61,7 @@ import { CONNECT_CLIENTS, clientById } from "../shared/connect-clients.mjs";
 import { defaultDenylistPath, disablePlan, revokeEveryonePlan, applyDisablePlan, describeClosure, recordedKeysFor, removeRecordedKeys } from "../shared/client-door.mjs";
 import { loadGrants } from "../shared/scope.mjs";
 import { envFrom } from "../shared/env-aliases.mjs";
+import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 import { atomicWrite } from "../driver/progress.mjs";
 
 const UNIT_DIR = join(homedir(), ".config", "systemd", "user");
@@ -256,4 +257,13 @@ async function cutEveryoneOff({ dryRun }) {
   return 0;
 }
 
-main().then((code) => process.exit(code ?? 0), (e) => { console.error(`disconnect: ${e.message}`); process.exit(2); });
+// THE DISPATCH RUNS ONLY WHEN THIS FILE IS THE COMMAND (tracker issue 183). Importing a verb to reach
+// something inside it must read a module, not start a command — `bin/connect.mjs` opened its interactive
+// prompt and hung a suite when an arm imported it for one message helper.
+//
+// This file gets the guard because it HAS a `main()` and the guard is therefore one line. The nine other
+// unguarded verbs run their bodies at module top level and are declared, with that reason, in
+// driver/test/a-verb-is-a-module-until-it-is-the-command.test.mjs rather than being refactored here.
+if (isEntrypoint(import.meta.url)) {
+  main().then((code) => process.exit(code ?? 0), (e) => { console.error(`disconnect: ${e.message}`); process.exit(2); });
+}

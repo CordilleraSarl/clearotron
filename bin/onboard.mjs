@@ -7,6 +7,7 @@
 //   npx clearotron doctor                     report what this machine is configured for. Writes NOTHING.
 //   npx clearotron doctor --probe-engine      …and spend one cheap turn proving the engine can run
 //   npx clearotron doctor --probe-providers   …and spend one cheap paired call proving each register lane
+//   npx clearotron doctor --probe-connector   …and ask your own door whether an assistant could sign in
 //
 // DESIGN RULES THIS FILE IS HELD TO
 //
@@ -130,6 +131,12 @@ const PROBE_ENGINE = has("--probe-engine");
 // issue 1871 — the same opt-in shape, for the credentials that had no proof at all. Never implied by
 // a plain --check: this SPENDS, and on two of the register adapters the count IS a billable search.
 const PROBE_PROVIDERS = has("--probe-providers");
+// tracker issue 149 — the same opt-in shape again, and this one WRITES: every registration it gets
+// accepted CREATES an OAuth client on the operator's account. `doctor` promises in INSTALL.md that it
+// writes nothing, and that promise is why a reader runs it on a production box without thinking. So
+// this is never implied, it says what it is about to create before it creates it, and it reports what
+// it left behind.
+const PROBE_CONNECTOR = has("--probe-connector");
 
 // ── output ───────────────────────────────────────────────────────────────────────────────────────────
 // WEIGHT WHERE THE MEANING IS (, owner ruling 2026-08-31). Every line here used to
@@ -2214,6 +2221,50 @@ export async function runCheck() {
     if (reach.state === "pass") ok(reach.message);
     else if (reach.state === "fail") problem(reach.message);
     else info(reach.message);
+
+    // ── CAN AN ASSISTANT ACTUALLY SIGN IN? (tracker issue 149, opt-in) ────────────────────────────
+    //
+    // The check above reads the CHALLENGE FORM, which is the first of two provider settings that decide
+    // this. The second — whether the vendor's own redirect address may register — has no symptom a
+    // reader can interpret: the connector fails after the browser opens, which looks like a different
+    // bug. It cannot be read; it has to be asked, and asking CREATES a client. So it is opt-in, it
+    // announces the side effect first, and its control runs before any vendor.
+    if (PROBE_CONNECTOR && String(published ?? "").trim()) {
+      const { registrationEndpointFrom, probeRegistration, describeRegistration } =
+        await import(join(REPO, "shared", "connector-signin-probe.mjs"));
+      say("");
+      say("  --probe-connector: asking this door's sign-in whether each assistant vendor could register.");
+      say("  Each attempt that SUCCEEDS creates a throwaway OAuth client on your account, which you may");
+      say("  delete afterwards. Nothing else in this command writes anything.");
+      let disco = { error: "not asked" };
+      try {
+        const wk = new URL("/.well-known/oauth-authorization-server", published);
+        const res = await fetch(wk, { signal: AbortSignal.timeout(5000), redirect: "manual" });
+        disco = { status: res.status, document: res.status === 200 ? await res.json().catch(() => null) : null };
+      } catch (e) { disco = { error: String(e?.cause?.code ?? e?.name ?? e?.message ?? e) }; }
+      const found = registrationEndpointFrom(disco);
+      if (!found.endpoint) {
+        // COULD-NOT-LOOK AND WILL-NOT-REGISTER ARE DIFFERENT ANSWERS, and `looked` is what separates
+        // them: one is a blind spot to report, the other is a fact about the provider.
+        (found.looked ? info : warn)(`sign-in registration: ${found.why}`);
+      } else {
+        const post = async (url, body) => {
+          try {
+            const r = await fetch(url, { method: "POST", headers: { "content-type": "application/json" },
+              body: JSON.stringify(body), signal: AbortSignal.timeout(15_000) });
+            return { status: r.status, error: null };
+          } catch (e) { return { status: null, error: String(e?.cause?.code ?? e?.name ?? e?.message ?? e) }; }
+        };
+        const result = await probeRegistration({ post, endpoint: found.endpoint });
+        for (const line of describeRegistration(result, { host: new URL(published).host })) {
+          if (line.state === "pass") ok(line.text);
+          else if (line.state === "fail") problem(line.text);
+          else warn(line.text);
+        }
+        const made = result.vendors.filter((v) => v.accepted).length + (result.looked ? 1 : 0);
+        if (made) info(`${made} throwaway OAuth client(s) were created by this probe, including the control.`);
+      }
+    }
   } catch (e) { warn(`the client-connector state could not be read: ${e.message}`); }
 
   say("");

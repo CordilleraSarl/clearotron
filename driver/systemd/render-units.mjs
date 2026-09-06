@@ -299,6 +299,28 @@ export async function writeInstallEnv(envFile) {
     console.log("  file at mode 600, and never printed.");
   }
 
+  // ── AND THE PORTAL'S SECRET, WHICH THE SAME ARGUMENT ALWAYS COVERED (tracker issue 122) ───────────
+  //
+  // The block above was written for the signing secret alone, and `PORTAL_SECRET` is the identical case
+  // one door along: 32 random bytes, minted by `bin/start.mjs` and by nothing else, with no value a
+  // reader could look up. `driver/portal-service.mjs` REFUSES TO START without it — so a box installed
+  // strictly from the document got a portal unit that exited at boot, and the only route to a working
+  // one was running the local-install command the instructions say a server does not need.
+  //
+  // That is the family tracker issue 122 is about: a value whose sole writer is a command outside the
+  // documented install. Naming the variable in a warning does not help, because there is no action
+  // behind the name — the reader cannot invent 32 random bytes that the portal will accept.
+  //
+  // Add-only and never replaced, for the same reason as above: a live secret invalidates every
+  // confirmation token and every local session signed with it.
+  const freshPortal = signingSecretIfAbsent(fileEnv.PORTAL_SECRET ?? process.env.PORTAL_SECRET, { randomBytes });
+  if (freshPortal) {
+    want.PORTAL_SECRET = freshPortal;
+    console.log("  GENERATED the portal's secret for this install (32 bytes). It signs confirmation");
+    console.log("  tokens and the local sign-in cookie, so replacing it later signs everybody out and");
+    console.log("  voids outstanding confirmations. Written to the env file at mode 600, never printed.");
+  }
+
   // ── THE CLIENT DOOR'S SETTINGS, FROM `enablePlan` AND AFTER THE SECRET ────
   //
   // ORDER IS LOAD-BEARING AND THE HANDOVER NAMED IT: `enablePlan`'s first blocker is the missing
