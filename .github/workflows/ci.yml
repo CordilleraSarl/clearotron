@@ -274,12 +274,28 @@ jobs:
       # writing and fails ENOENT if the parent is missing. A fresh checkout never has ./packed, so this
       # step failed on its first real run — ported from the private tree, where the directory happened
       # to exist, and never exercised until here. `mkdir -p` and nothing else.
+      #
+      # AND THEN IT IS INSTALLED, WHICH IS THE QUESTION NONE OF THE OTHERS ASK (tracker issue 180). Five
+      # consecutive releases published a package `npm install clearotron` refused, with every check in
+      # both workflows green: each asked something ABOUT the tarball and none of them installed it. The
+      # paragraph above is the whole argument for asking it here rather than at publish time — by then
+      # the author has moved on and the correction is a second pull request. It costs one install of a
+      # dependency-free consumer project and it is keyed to no known cause, so it also catches the next
+      # packaging fault of a different shape.
+      #
+      # THE SEAL COMES FIRST BECAUSE THE REPOSITORY MANIFEST IS NOT THE PUBLISHED ONE. `overrides` pins
+      # the clean-room `buffers` replacement while resolving THIS tree and resolves nowhere else, so the
+      # bytes `npm pack` produces are expected to refuse an install until they are sealed. Sealing here
+      # and installing the result is what makes the pair meaningful; that the RELEASE workflow seals in
+      # the same order is held by driver/test/the-published-manifest-is-not-the-repos-manifest.test.mjs.
       - name: What a stranger installs is complete
         run: |
           set -euo pipefail
           mkdir -p ./packed
           TARBALL=$(npm pack --pack-destination ./packed | tail -1)
           node scripts/release-completeness-check.mjs --tarball "./packed/${TARBALL}"
+          node scripts/release-artifact-seal.mjs --tarball "./packed/${TARBALL}"
+          node scripts/release-install-check.mjs --tarball "./packed/${TARBALL}"
 
   guards:
     name: The pattern guards
