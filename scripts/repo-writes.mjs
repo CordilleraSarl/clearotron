@@ -38,11 +38,18 @@ export const NEVER_WALK = Object.freeze(new Set(["node_modules", ".git"]));
 /**
  * Build outputs a run may move, relative to the checkout root.
  *
- * EMPTY BY MEASUREMENT, not by omission. A full green suite — 7,917 tests, 2026-09-06 — moved exactly
- * two paths under the root: `portal-audit.log` (the portal service defaulting its audit log to the
- * checkout) and `build-info.json` (`npm pack`, including `--dry-run`, running this repository's
- * `prepack`). Both were defects and both were fixed rather than exempted, which is why nothing is
- * listed here. An entry added to this array needs a measurement saying why, never a convenience.
+ * EMPTY BY MEASUREMENT, not by omission — and the measurement covers EVERY suite this guard is armed
+ * on, not just the big one. All four route through `test-run.mjs`, so all four were driven on
+ * 2026-09-06: driver 7,933, portal-ui 545, providers 454, mcp-server 451 — 9,383 tests, none failing,
+ * and afterwards not one path under this root had moved.
+ *
+ * Before the two repairs that ship with this file, a driver run moved exactly two: `portal-audit.log`
+ * (the portal service defaulting its audit log to the checkout root) and `build-info.json` (`npm
+ * pack`, INCLUDING `--dry-run`, running this repository's `prepack`). Both were defects and both were
+ * fixed rather than exempted, which is why nothing is listed here.
+ *
+ * An entry added to this array needs a measurement saying why, never a convenience. The cheap repair
+ * for the next offender is to name its path here, and that would retire this guard one line at a time.
  */
 export const ALLOWED_TO_MOVE = Object.freeze([]);
 
