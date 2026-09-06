@@ -706,6 +706,12 @@ jobs:
       # The tag and the release come AFTER the publish: a tag naming a version that is not on the
       # registry is a worse lie than a publish that is not yet tagged, and this order means the failure
       # leaves the tag unwritten rather than pointing at nothing.
+      # A PRE-RELEASE IS TAGGED AND GETS NO RELEASE ENTRY (owner's ruling, 2026-09-06). The Releases
+      # page is what somebody opens to find out which version to install, and one entry per beta
+      # buries the stable they came for. The TAG still has to land: `release-cut-decision.mjs` reads
+      # tags to decide whether a version is already published, so a beta with no tag is a version
+      # this pipeline would cut again, and again. `pre exit` folds the betas into the stable, and the
+      # stable keeps its entry and its changelog.
       - name: Tag it, and say what changed
         if: steps.what.outputs.dry_flag == ''
         env:
@@ -714,19 +720,35 @@ jobs:
           PRERELEASE_FLAG: ${{ steps.what.outputs.prerelease }}
         run: |
           set -euo pipefail
+          TARGET="$GITHUB_SHA"
+          # Read from the VERSION above, never from the channel — see the step that computed it.
+          if [ "$PRERELEASE_FLAG" = "true" ]; then
+            # THE EXACT REF, NOT A PREFIX. Measured on this repository, 2026-09-06:
+            # `git/matching-refs/tags/v0.1.1` answers with six refs — v0.1.1, v0.1.1-beta.0,
+            # v0.1.1-beta.1, v0.1.10, v0.1.11, v0.1.12 — so a prefix read would report the stable
+            # that follows a beta as already tagged and it would never get a tag of its own.
+            # `git/ref/tags/v0.1.11` answers with that one ref and `git/ref/tags/v0.1` is a 404, so
+            # the singular read is exact. The answer is still compared in full, because this step
+            # should not rest on that distinction holding.
+            EXISTING=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/v$VERSION" --jq '.ref' 2>/dev/null || true)
+            if [ "$EXISTING" = "refs/tags/v$VERSION" ]; then
+              echo "The tag v$VERSION already exists."
+              exit 0
+            fi
+            gh api "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/v$VERSION" -f sha="$TARGET" >/dev/null
+            echo "Tagged v$VERSION at $TARGET, and wrote no release entry: the Releases page carries stable versions only."
+            exit 0
+          fi
           if gh release view "v$VERSION" >/dev/null 2>&1; then
             echo "The GitHub release v$VERSION already exists."
             exit 0
           fi
-          # Read from the VERSION above, never from the channel — see the step that computed it.
-          PRERELEASE=""
-          if [ "$PRERELEASE_FLAG" = "true" ]; then PRERELEASE="--prerelease"; fi
           NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
           if [ -n "$NOTES" ]; then
             printf '%s\n' "$NOTES" > release-notes.md
-            gh release create "v$VERSION" --target "$GITHUB_SHA" --title "v$VERSION" --notes-file release-notes.md $PRERELEASE
+            gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --notes-file release-notes.md
           else
-            gh release create "v$VERSION" --target "$GITHUB_SHA" --title "v$VERSION" --generate-notes $PRERELEASE
+            gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --generate-notes
           fi
 
   publish-awaited:
@@ -977,6 +999,12 @@ jobs:
       # The tag and the release come AFTER the publish: a tag naming a version that is not on the
       # registry is a worse lie than a publish that is not yet tagged, and this order means the failure
       # leaves the tag unwritten rather than pointing at nothing.
+      # A PRE-RELEASE IS TAGGED AND GETS NO RELEASE ENTRY (owner's ruling, 2026-09-06). The Releases
+      # page is what somebody opens to find out which version to install, and one entry per beta
+      # buries the stable they came for. The TAG still has to land: `release-cut-decision.mjs` reads
+      # tags to decide whether a version is already published, so a beta with no tag is a version
+      # this pipeline would cut again, and again. `pre exit` folds the betas into the stable, and the
+      # stable keeps its entry and its changelog.
       - name: Tag it, and say what changed
         if: steps.what.outputs.dry_flag == ''
         env:
@@ -985,17 +1013,33 @@ jobs:
           PRERELEASE_FLAG: ${{ steps.what.outputs.prerelease }}
         run: |
           set -euo pipefail
+          TARGET="$(git rev-parse HEAD)"
+          # Read from the VERSION above, never from the channel — see the step that computed it.
+          if [ "$PRERELEASE_FLAG" = "true" ]; then
+            # THE EXACT REF, NOT A PREFIX. Measured on this repository, 2026-09-06:
+            # `git/matching-refs/tags/v0.1.1` answers with six refs — v0.1.1, v0.1.1-beta.0,
+            # v0.1.1-beta.1, v0.1.10, v0.1.11, v0.1.12 — so a prefix read would report the stable
+            # that follows a beta as already tagged and it would never get a tag of its own.
+            # `git/ref/tags/v0.1.11` answers with that one ref and `git/ref/tags/v0.1` is a 404, so
+            # the singular read is exact. The answer is still compared in full, because this step
+            # should not rest on that distinction holding.
+            EXISTING=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/v$VERSION" --jq '.ref' 2>/dev/null || true)
+            if [ "$EXISTING" = "refs/tags/v$VERSION" ]; then
+              echo "The tag v$VERSION already exists."
+              exit 0
+            fi
+            gh api "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/v$VERSION" -f sha="$TARGET" >/dev/null
+            echo "Tagged v$VERSION at $TARGET, and wrote no release entry: the Releases page carries stable versions only."
+            exit 0
+          fi
           if gh release view "v$VERSION" >/dev/null 2>&1; then
             echo "The GitHub release v$VERSION already exists."
             exit 0
           fi
-          # Read from the VERSION above, never from the channel — see the step that computed it.
-          PRERELEASE=""
-          if [ "$PRERELEASE_FLAG" = "true" ]; then PRERELEASE="--prerelease"; fi
           NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
           if [ -n "$NOTES" ]; then
             printf '%s\n' "$NOTES" > release-notes.md
-            gh release create "v$VERSION" --target "$(git rev-parse HEAD)" --title "v$VERSION" --notes-file release-notes.md $PRERELEASE
+            gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --notes-file release-notes.md
           else
-            gh release create "v$VERSION" --target "$(git rev-parse HEAD)" --title "v$VERSION" --generate-notes $PRERELEASE
+            gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --generate-notes
           fi
