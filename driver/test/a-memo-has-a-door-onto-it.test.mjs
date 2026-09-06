@@ -9,10 +9,12 @@
 // arm (a-memo-over-a-delivered-report-leaves-it-alone) proves the composer; this one proves the door.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { whatIfPlan, decodeOp } from "../../mcp-server/lib/whatif.mjs";
+import { whatIfPlan, decodeOp, whatIfEnqueue, whatIfRun } from "../../mcp-server/lib/whatif.mjs";
+import { drainWhatIfQueues } from "../whatif-worker.mjs";
+import { enqueueWhatIf } from "../whatif-queue.mjs";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
 import { askArchivedRun, digestRunDir, movedArtifacts, parentRatedUnder, seatReason, validateMemoReply, composeMemoMessage, MEMO_FAILS, MEMO_DIR } from "../whatif-memo-run.mjs";
@@ -278,4 +280,101 @@ test("parentRatedUnder reads the FROZEN sidecar, and null means none was frozen"
   mkdirSync(join(corrupt, "_driver"), { recursive: true });
   writeFileSync(join(corrupt, "_driver", "profile.json"), "{ not json");
   assert.equal(parentRatedUnder(corrupt), null, "an unreadable sidecar is a could-not-look, never a customer");
+});
+
+// ── THE WHOLE PATH, BECAUSE ROUTING ARMS COULD NOT SEE THE NEXT GATE (tracker issue 132) ────────────
+//
+// The arms above and in mcp-server/test/whatif.test.mjs inject the composer. They prove ROUTING — that
+// whatIfRun sends a memo op to askArchivedRun instead of refusing it or running a stage — and that is
+// all they can prove. A routing arm cannot see a gate one link further down, and there were two:
+//
+//   1. `enqueueWhatIf` required `op.stage`, while decodeOp refuses a memo token that CARRIES a stage.
+//      Two consecutive guards, mutually exclusive for a memo.
+//   2. the worker's scan rendered its refusal with NO `kind`, so it defaulted to "stage" and refused
+//      every memo on a delivered run — the third consecutive gate to make the same mistake.
+//
+// Both were found by driving, after a fix that was about exactly this had already shipped and been
+// proved by arms that could not reach them. So this arm drives the REAL path end to end: plan, the real
+// enqueue, the real queue file, the real worker claim, the real composer, a memo on disk.
+//
+// THE ONLY FAKE IS THE SEAT. `reason` is the model boundary and nothing else is stubbed — resolveRun is
+// injected because a temp fixture is not a pool, which is a lookup and not a decision.
+
+function deliveredStudio() {
+  const studio = mkdtempSync(join(tmpdir(), "memo-chain-"));
+  const runDir = join(studio, "acme", "teal-otter");        // liveRunDirs walks studio/slug/run
+  mkdirSync(join(runDir, "_driver"), { recursive: true });
+  writeFileSync(join(runDir, "findings.json"), JSON.stringify({ findings: [{ ordinal: 2, mark: "ALIGN" }] }));
+  writeFileSync(join(runDir, "report.md"), "# Clearance report\n");
+  writeFileSync(join(runDir, "_driver", "profile.json"), JSON.stringify({ profileKey: "petcary" }));
+  writeFileSync(join(runDir, ".delivered"), "");            // the marker the worker's scan reads
+  const run = { runId: "acme-2026-09-01-teal-otter", runDir, markName: "ALIGN", slug: "acme",
+                location: "archive", state: "delivered", status: {} };
+  return { studio, runDir, run };
+}
+
+const drainWith = (studio, run) => drainWhatIfQueues([studio], {
+  runWhatIf: ({ confirmationToken }) => whatIfRun({ confirmationToken }, {
+    resolveRun: () => run,
+    askArchivedRun: (a) => askArchivedRun(a, { resolveRun: () => run, reason }),
+  }),
+});
+
+test("a memo travels the REAL path — plan, enqueue, worker, composer — and lands on disk", async () => {
+  const { studio, runDir, run } = deliveredStudio();
+  const assumption = "treat the Align Networks Korean application as expired/abandoned";
+
+  const plan = whatIfPlan({ run, kind: "memo", instructions: assumption });
+  const queued = await whatIfEnqueue({ run, confirmationToken: plan.confirmationToken });
+  assert.equal(queued.queued, true, "the real enqueue refused a memo for want of a stage it may not carry");
+  assert.equal(queued.kind, "memo");
+
+  const settled = await drainWith(studio, run);
+  assert.equal(settled.length, 1, "the worker did not settle the memo it was queued");
+  assert.equal(settled[0].state, "done", `the worker refused it: ${settled[0].error ?? "(no reason)"}`);
+
+  // THE POINT OF THE ARM: a memo exists on disk, read from the delivery and never from the queue answer.
+  const memoDir = join(runDir, MEMO_DIR);
+  assert.ok(existsSync(memoDir), "no memo directory beside the run");
+  const memos = readdirSync(memoDir).filter((f) => f.endsWith(".md"));
+  assert.equal(memos.length, 1, "expected exactly one memo");
+  const body = readFileSync(join(memoDir, memos[0]), "utf8");
+  assert.ok(body.includes(assumption), "the assumption must be stamped VERBATIM — it is the reader's own words");
+  assert.match(body, /Korean register status check/, "a stated limit must name the smallest search that would settle it");
+});
+
+// THE MEMBER THAT MUST KEEP FAILING, AND IT HAS TO NAME WHICH GATE REFUSED IT.
+//
+// The worker's refusal is now kind-aware; the risk that introduces is that "kind-aware" quietly becomes
+// "unenforced". The first draft of this arm asserted only that a stage re-run was refused — and it
+// stayed GREEN through the plant that removes the worker's gate entirely, because whatIfRun refuses it
+// one link later and the outcome looks identical from here. An arm that cannot fail for the reason it
+// is named after is not evidence; the plant is what found that, not review.
+//
+// The two refusals are distinguishable at the one place it matters: whatIfRun THROWS, so settleOne
+// records its message with the `whatIfRun:` prefix, while the worker's own refusal is recorded verbatim
+// with no prefix. Asserting the absence of that prefix is what pins this arm to the worker's gate.
+//
+// Worth knowing rather than only guarding: the stage refusal is defended TWICE. Removing the worker's
+// gate does not admit a stage re-run on a delivered run — it just moves who says no.
+test("the WORKER still refuses a stage re-run on a delivered run — not merely something downstream", async () => {
+  const { studio, runDir, run } = deliveredStudio();
+  enqueueWhatIf(runDir, { op: { runId: run.runId, stage: "report-overview" } });
+  const settled = await drainWith(studio, run);
+  assert.equal(settled.length, 1);
+  assert.equal(settled[0].state, "failed", "a stage re-run on a delivered run was admitted");
+  assert.match(settled[0].error, /delivered or archived/i);
+  assert.doesNotMatch(settled[0].error, /^whatIfRun:/,
+    "this was refused downstream, not by the worker's own gate — the gate this arm is named for is gone");
+});
+
+// AND A DIFFERENT MEMBER AGAIN: cancelled. A memo is exempt from "finished", never from "stopped".
+test("the worker still refuses a memo over a CANCELLED run, and says why a memo in particular cannot run", async () => {
+  const { studio, runDir, run } = deliveredStudio();
+  writeFileSync(join(runDir, ".cancelled"), "");
+  const plan = whatIfPlan({ run: { ...run, state: "delivered" }, kind: "memo", instructions: "assume it lapsed" });
+  await whatIfEnqueue({ run, confirmationToken: plan.confirmationToken });
+  const settled = await drainWith(studio, run);
+  assert.equal(settled[0].state, "failed", "a memo over a stopped run was admitted");
+  assert.match(settled[0].error, /evidence was complete|stopped/i);
 });
