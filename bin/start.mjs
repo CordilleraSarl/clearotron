@@ -1124,11 +1124,39 @@ if (isMain) {
       const willRead = { ...already, ...union };
       const miss = missingRequirements(willRead, RUN_TABLES);
       if (miss.blocking.length) {
+        // ── — THE FILES ARE NAMED, BECAUSE THE COMMAND OFFERED CANNOT BE RUN ──
+        //
+        // This said "Set these where this command can see them" and named no file, on a product with two
+        // of them, and offered `install` as the route. `install` REFUSES a non-terminal — "this is an
+        // interactive wizard and stdin is not a terminal", rc 2 — so the one reader who arrives here by a
+        // scripted or hosted install was handed a route they cannot take and no address for the route
+        // they can. Same defect as naming a variable and not the file, one level up (tracker issue 202).
+        //
+        // BOTH FILES, and that is the difference from the port refusals, which say `~/.env` "is NOT read
+        // here". They are right: nothing in that file reaches a port decision. Here both are true. The
+        // block above reads HOME_ENV into `already` and merges it into `willRead`, so a value set there
+        // satisfies this check on the next run; and the CLI's own file reaches it too, through the
+        // `runRequiredNames(process.env, …)` loop that copies its values into `union`. Driven rather than
+        // read: three blocking names cleared from the CLI's file alone, and the refusal came back naming
+        // a fourth that the first three had newly required.
+        //
+        // `envFileRead()` for the CLI half, never a path composed here. Null means this process read no
+        // file of its own — a systemd-started service, or CLEAROTRON_NO_ENV_FILE=1 — and then HOME_ENV is
+        // the only honest address there is. That function's header carries the reasoning.
+        const cliEnv = envFileRead();
+        const where = cliEnv
+          ? `Set them in either of these — both reach this check:\n`
+            + `    ${cliEnv}\n        the file this command reads — this install's own configuration\n`
+            + `    ${HOME_ENV}\n        the file the units read, named above`
+          : `Set them in ${HOME_ENV} — the file the units read, named above. This command read no `
+            + `environment file of its own, so that is the address.`;
         fatal(`--background would install units that cannot run a clearance. ${HOME_ENV} is what they read, and `
           + `it would not carry:\n`
           + miss.blocking.map((r) => `    ${r.name} — ${r.why}`).join("\n")
-          + `\n\n  Nothing has been installed and nothing has been started. Set these where this command can see `
-          + `them — \`${invoke("install")}\` writes them — and run this again. Refusing here rather than at a `
+          + `\n\n  Nothing has been installed and nothing has been started. ${where}\n`
+          + `\n  \`${invoke("install")}\` writes them for you IN A TERMINAL — it is an interactive wizard and `
+          + `refuses when stdin is not one, which is why this refusal names the file to edit. Run this again after.\n`
+          + `\n  Refusing here rather than at a `
           + `client's first search, which is where this surfaced before: as a failed run and a notice saying `
           + `they had been notified.`);
       }

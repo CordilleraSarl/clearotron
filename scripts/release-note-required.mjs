@@ -36,9 +36,22 @@
 //
 // ── WHAT THIS CANNOT SEE ─────────────────────────────────────────────────────────────────────────────
 //
-// Whether the note is TRUE, whether it describes this change, or whether a `Release-note: none` reason is
+// Whether a note is TRUE, whether it describes this change, or whether a `Release-note: none` reason is
 // honest. It checks that somebody was asked and answered. `release-notes-lint.mjs` reads the answer's
 // form; a person still has to read its meaning.
+//
+// AND THE ONE WORTH SAYING OUT LOUD, because it is this check's own failure wearing a smaller size: it
+// asks for AT LEAST ONE note in the range, and cannot tell which change any note is about. A bundle of
+// nine repairs with one note between them passes here — eight of them reaching the releases page as the
+// same silence this exists to stop. The range that prompted it had zero, which is why zero is what it
+// can catch.
+//
+// Left as it is on purpose. Mapping notes to changes would need the check to know which file each note
+// is about, and it does not and cannot: the notes are written for a reader who has never opened this
+// repository and deliberately name no paths. A count-matching rule would be false precision — two notes
+// for two changes is no evidence they are the right two — and it would push people to write filler to
+// reach a number, which is the failure this repository has already paid for once. The remaining half is
+// a person reading the diff and asking what a lawyer would want told.
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
