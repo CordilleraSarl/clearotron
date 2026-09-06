@@ -333,3 +333,18 @@ jobs:
         # `origin/main` is the version branch's real base; on a push to main it resolves to HEAD, and
         # the guard prints a zero-line read rather than a clean verdict on a change it never had.
         run: node scripts/added-reference-check.mjs --base "${{ github.event.pull_request.base.sha || 'origin/main' }}"
+
+      # THE SAME BASE, AND THE SAME REASON FOR WRITING IT OUT. This asks whether a change a reader can
+      # see arrived with something for them to read. It refuses a range that changes shipped code and
+      # adds no release note, unless a commit in it says `Release-note: none` and gives a reason.
+      #
+      # It sits beside the reference guard rather than in the job that lints the notes, because that job
+      # only runs once a note EXISTS — which is precisely the state this check is about not being in. A
+      # bundle of nine operator-facing repairs landed green with no note at all, and the release cut
+      # nothing (tracker issue 200).
+      #
+      # The version pull request needs no exemption here: `changeset version` consumes notes and moves
+      # versions and changelogs, and changes no shipped code, so the rule answers on its own. Measured
+      # against the live version branch rather than reasoned about.
+      - name: A change a reader can see arrives with something to read
+        run: node scripts/release-note-required.mjs --base "${{ github.event.pull_request.base.sha || 'origin/main' }}"
