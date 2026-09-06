@@ -128,22 +128,37 @@ test("203 the generic post-write trailer does not double the specific one", () =
 test("203 and the generic trailer still fires where nothing better was said", async () => {
   // THE PLANT FOR THE SUPPRESSION. `fatal(msg, { stated: true })` is opt-in, and an opt-in that turned
   // out to be always-on would delete the re-running-is-safe line from every other post-write refusal in
-  // this command with nothing going red. Driven at a DIFFERENT post-write refusal: no engine values, so
-  // it stops at missing requirements, which is after `markStateWritten()` and passes no `stated`.
+  // this command with nothing going red. So it is driven at a DIFFERENT post-write refusal.
+  //
+  // WHICH ONE CHANGED WITH tracker issue 216. This used to withhold the engine values and stop at the
+  // missing-requirements refusal. The owner ruled on 2026-09-06 that an install comes up without those
+  // and every run is refused at ORDER time instead, so that refusal is gone from this command and this
+  // arm lost its trigger — not its subject. It drives the CLIENT DOOR'S refusal now: an occupied port
+  // makes `enablePlan` impossible, and the fatal for that sits after `markStateWritten()` and passes no
+  // `stated`, which is exactly the shape this arm needs.
+  //
+  // WHY NOT AN OCCUPIED PORT, which was the obvious swap and is wrong: `start` probes the ports BEFORE
+  // it writes anything, so a held port refuses with "already in use" and never reaches the trailer. That
+  // was driven, not reasoned about. The revocation list is read AFTER `markStateWritten()`, so a path
+  // that cannot be a file is a post-write refusal with nothing else to say — which is what this arm is.
   const home = mkdtempSync(join(tmpdir(), "ct203g-"));
   // Real free ports, not 0: the launcher refuses "0" by name as not a port number, and that refusal is
   // BEFORE any state is written — the drive would prove nothing and say so.
   const ports = { portal: await freePort(), mcp: await freePort(), client: await freePort() };
+  // HELD, so the client door's port is genuinely taken when the plan asks.
+  // A DIRECTORY WHERE THE REVOCATION LIST'S FILE BELONGS. `ensureDenylistFile` cannot write it and the
+  // refusal that follows is post-write and carries no `stated`.
+  mkdirSync(join(home, ".config", "clearotron", "token-denylist"), { recursive: true });
   try {
     const r = spawnSync(process.execPath, [START, "--background"], { encoding: "utf8", timeout: 180_000,
-      // CLEAROTRON_NO_ENV_FILE is set BACK here on purpose: this drive wants the refusal that comes
-      // from having no engine values, and reading a file would be a way to accidentally have some.
+      // CLEAROTRON_NO_ENV_FILE is set BACK here on purpose: this drive wants a refusal that comes from
+      // the box rather than from a file, and reading one would be a way to accidentally have values.
       env: handRunEnv({ HOME: home, CLEAROTRON_NO_ENV_FILE: "1",
         PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
         CLIENT_MCP_HTTP_PORT: String(ports.client),
         CLEAROTRON_DATABASE: undefined, CLEAROTRON_AI: undefined, CLEAROTRON_CLAUDE_PATH: undefined }) });
     const said = `${r.stdout ?? ""}${r.stderr ?? ""}`;
-    assert.match(said, /would install units that cannot run a clearance/,
+    assert.match(said, /could not use the revocation list/,
       `this drive did not reach a post-write refusal, so it proves nothing about the trailer:\n${said.slice(-1200)}`);
     assert.match(said, /This run had already written state/,
       `the generic trailer is gone from a refusal that has nothing else to say:\n${said.slice(-1200)}`);

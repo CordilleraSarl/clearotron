@@ -688,6 +688,18 @@ export type ConnectOffer = {
    */
   readonly verifiedOn?: string
   readonly by?: string
+  /**
+   * THIS ROW'S OWN PASTE SENTENCE, when the composed one does not read.
+   *
+   * The page composes `Paste it into {name}`, which works for every proper noun — Claude, ChatGPT,
+   * Perplexity — and not for a row whose name is a description: "Paste it into Another agent" is not
+   * English (tracker issue 147, owner ruling 2026-09-06, option B). Absent on every row where the
+   * composed sentence reads, and absent means compose it — never an empty string.
+   *
+   * ON THE ROW RATHER THAN IN THE SCREEN because no surface may branch on a client's identity; a branch
+   * in a screen drifts from the table silently and both keep rendering.
+   */
+  readonly pasteAs?: string
   /** False ⇒ NOT A BUTTON. `reason` and `fix` are then both present, because an absence with no reason reads as breakage. */
   readonly served: boolean
   readonly route: string | null

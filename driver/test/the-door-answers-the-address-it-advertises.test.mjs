@@ -113,3 +113,132 @@ test("2163 the PLAN writes what the derivation produces — driven, not assumed"
     `127.0.0.1:${localOnly.settings.CLIENT_MCP_HTTP_PORT},localhost:${localOnly.settings.CLIENT_MCP_HTTP_PORT}`,
     "a local install's allow-list changed shape");
 });
+
+// ── tracker issue 192 — TWO DOORS, ONE SHAPE, AND ONLY ONE OF THEM WAS WRITTEN ──────────────────────
+//
+// `CLIENT_MCP_ALLOWED_HOSTS` and `TRADEMARK_MCP_ALLOWED_HOSTS` are the same value one door apart: the
+// `host:port` list that arms DNS-rebinding protection. Both doors refuse to start without theirs, in the
+// same sentence. The client door's was composed by the installer; the engine door's was composed by
+// NOTHING on a hosted install — `bin/start.mjs` injects one into its own children's environment, which
+// no systemd unit inherits. So the documented install asked a reader for a value while writing the
+// identical one beside it.
+//
+// DRIVEN AT THE INSTALLER'S DOOR, never read off the source, and that is this issue's own instruction:
+// the `PORTAL_MCP_URL` repair's first cut passed a hand-made two-line env and failed the shipped
+// template's empty row. What is exercised here is `writeInstallEnv` writing a real file.
+//
+// BREAK MATRIX:
+//   · the engine door's list is written at all      → break: drop it from the loop, arm 1 red
+//   · it is derived from the ENGINE door's port      → break: read the client's, arm 1 red
+//   · it carries the ENGINE door's public address    → break: read CLEAROTRON_CLIENT_MCP_URL, arm 1 red
+//   · it FOLLOWS the port when the port moves        → break: make it add-only, arm 2 red
+//   · an operator's own host survives the follow     → break: overwrite the list, arm 2 red
+//   · one author composes both                       → break: give the engine door its own, arm 3 red
+import { mkdtempSync, writeFileSync, readFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { DOOR_ALLOW_LISTS, ENGINE_DOOR_URL_ENV, CLIENT_DOOR_URL_ENV } from "../../shared/client-door.mjs";
+import { writeInstallEnv } from "../systemd/render-units.mjs";
+
+/** A greenfield hosted install's env file, with the preconditions `enablePlan` refuses without.
+ *  PORTS ARE HIGH AND OURS. The shipped defaults (18790/18811/18802) reach a live install on a
+ *  developer box — a drive on this file's subject has hit the owner's production portal before. */
+function scratchInstall({ enginePort = 29790, clientPort = 29811 } = {}) {
+  const dir = mkdtempSync(join(tmpdir(), "door-allow-"));
+  const access = join(dir, "grants.json");
+  writeFileSync(access, "{}\n");
+  const envFile = join(dir, ".env");
+  writeFileSync(envFile, [
+    "CLEAROTRON_REPORTS_DIR=/srv/example/pool",
+    "CLEAROTRON_WORK_DIR=/srv/example/workspace",
+    "CLEAROTRON_QUEUE_DIR=/srv/example/queue",
+    `TRADEMARK_MCP_HTTP_PORT=${enginePort}`,
+    `CLIENT_MCP_HTTP_PORT=${clientPort}`,
+    "PORTAL_SERVICE_PORT=29802",
+    `${ENGINE_DOOR_URL_ENV}=https://engine.example.org/mcp`,
+    `${CLIENT_DOOR_URL_ENV}=https://client.example.org/mcp`,
+    `CLEAROTRON_ACCESS_FILE=${access}`,
+    "",
+  ].join("\n"));
+  return { dir, envFile };
+}
+
+const valueOf = (envFile, name) => {
+  const m = new RegExp(`^${name}=(.*)$`, "m").exec(readFileSync(envFile, "utf8"));
+  return m ? m[1].trim() : null;
+};
+
+test("192 the engine door's allow-list is WRITTEN by the install, from its own port and its own address", async () => {
+  const { envFile } = scratchInstall();
+  // The defect, reproduced first: nothing on disk for the engine door before the installer runs.
+  assert.equal(valueOf(envFile, "TRADEMARK_MCP_ALLOWED_HOSTS"), null,
+    "the fixture already carries the value — this arm would pass over the defect it is named for");
+  await writeInstallEnv(envFile);
+
+  const engine = valueOf(envFile, "TRADEMARK_MCP_ALLOWED_HOSTS");
+  assert.ok(engine, "the engine door's allow-list is still written by nothing — the door refuses to start without it");
+  const hosts = engine.split(",");
+  // ITS OWN PORT. 29790, not the client door's 29811 — a re-implementation that reads the wrong door's
+  // port produces a list that looks right and turns every request away.
+  assert.ok(hosts.includes("127.0.0.1:29790"), `the engine door's list does not name the port it binds: ${engine}`);
+  assert.ok(hosts.includes("localhost:29790"), `loopback is incomplete: ${engine}`);
+  assert.ok(!hosts.some((h) => h.endsWith(":29811")), `the engine door's list names the CLIENT door's port: ${engine}`);
+  // ITS OWN PUBLIC ADDRESS, bare and with :443, for the reason arm 1 of this file gives.
+  assert.ok(hosts.includes("engine.example.org"), `the engine door's public name is absent: ${engine}`);
+  assert.ok(hosts.includes("engine.example.org:443"), `the engine door's public name has no :443 form: ${engine}`);
+  assert.ok(!hosts.includes("client.example.org"), `the engine door's list carries the CLIENT door's address: ${engine}`);
+
+  // AND THE CLIENT DOOR IS UNTOUCHED BY THE CHANGE — the arm that would catch a fix that fixed one door
+  // by breaking the other.
+  const client = valueOf(envFile, "CLIENT_MCP_ALLOWED_HOSTS");
+  assert.ok(client, "the client door's allow-list stopped being written");
+  assert.ok(client.split(",").includes("127.0.0.1:29811"), `the client door's list lost its own port: ${client}`);
+  assert.ok(client.split(",").includes("client.example.org"), `the client door's list lost its own address: ${client}`);
+});
+
+test("192 PLANTED AGAINST THE PORT, not the value — and an operator's own host survives it", async () => {
+  // This issue's own instruction, and the reason for it: an arm that pins the composed string passes a
+  // re-implementation that ignores the operator's port. So the plant MOVES the port and asserts the list
+  // follows, which no hard-coded literal can satisfy.
+  const { envFile } = scratchInstall({ enginePort: 29790 });
+  await writeInstallEnv(envFile);
+  assert.ok(valueOf(envFile, "TRADEMARK_MCP_ALLOWED_HOSTS").includes("127.0.0.1:29790"), "the first apply did not derive");
+
+  // The operator moves the port by hand and adds a host of their own — the two edits tracker issue 197
+  // was filed for, on the door that had no writer at all until now.
+  let body = readFileSync(envFile, "utf8")
+    .replace(/^TRADEMARK_MCP_HTTP_PORT=.*$/m, "TRADEMARK_MCP_HTTP_PORT=29795")
+    .replace(/^(TRADEMARK_MCP_ALLOWED_HOSTS=.*)$/m, "$1,my-own-proxy.internal:8443");
+  writeFileSync(envFile, body);
+  await writeInstallEnv(envFile);
+
+  const after = valueOf(envFile, "TRADEMARK_MCP_ALLOWED_HOSTS").split(",");
+  assert.ok(after.includes("127.0.0.1:29795"), `the list did not follow the port: ${after.join(",")}`);
+  assert.ok(!after.includes("127.0.0.1:29790"), `the stale loopback entry survived: ${after.join(",")}`);
+  // THE HALF THAT IS NOT THE INSTALLER'S. A repair about a port that deletes a hostname somebody added
+  // by hand is a worse outcome than the stale entry it fixed.
+  assert.ok(after.includes("my-own-proxy.internal:8443"),
+    `the operator's own host was deleted by a repair about a port: ${after.join(",")}`);
+});
+
+test("192 ONE AUTHOR composes both doors — the pair is data, and the address's name is a parameter", () => {
+  // The asymmetry existed because two places composed `host:port` independently. A fix that only wrote
+  // the missing value would have left the shape that produced it, so the arm is about the shape.
+  const doors = DOOR_ALLOW_LISTS.map((d) => d.door);
+  assert.ok(doors.includes("client") && doors.includes("engine"),
+    `both doors must be in the one table, got: ${doors.join(",")}`);
+  nonEmpty(DOOR_ALLOW_LISTS, "the door table is empty — every arm keyed on it would pass over nothing");
+  for (const d of DOOR_ALLOW_LISTS)
+    for (const k of ["port", "hosts", "url"])
+      assert.ok(String(d[k] ?? "").trim(), `the ${d.door} door's row names no ${k}`);
+  // The two rows must not share a variable, which is the specific way one door's fix breaks the other.
+  const [a, b] = DOOR_ALLOW_LISTS;
+  for (const k of ["port", "hosts", "url"])
+    assert.notEqual(a[k], b[k], `both doors claim the same ${k} variable (${a[k]}) — one of them is wrong`);
+  // DRIVEN, so this is not a shape assertion about a table nobody calls: the same helper composes a
+  // different list for each door's address, which is the whole of what "one author" buys.
+  const eng = allowedHosts(1234, { [ENGINE_DOOR_URL_ENV]: "https://e.example/mcp" }, { urlName: ENGINE_DOOR_URL_ENV });
+  const cli = allowedHosts(1234, { [CLIENT_DOOR_URL_ENV]: "https://c.example/mcp" }, { urlName: CLIENT_DOOR_URL_ENV });
+  assert.ok(eng.includes("e.example") && !eng.includes("c.example"), `the engine door read the wrong address: ${eng}`);
+  assert.ok(cli.includes("c.example") && !cli.includes("e.example"), `the client door read the wrong address: ${cli}`);
+});

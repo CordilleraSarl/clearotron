@@ -1764,7 +1764,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // What this constant guards is unchanged and still armed: the NEXT licence sweep that drags a
 // behavioural edit along with it moves these bytes and fails here rather than in the first assertion,
 // which could only ever say "something changed".
-const FROZEN_BEFORE_SPDX = "3c18aa3d5a679ff427605edf3ffbdcb8ff6cc15e851e599e73d77bfc0640fbeb";
+// Advanced again by the seventh break above (tracker issue 147): a behaviour change on the connect
+// block, so both constants move together for the same measured reason as the sixth.
+const FROZEN_BEFORE_SPDX = "a5ace818689af3abdf958a3c3db6e3e7f975822d453d766eadd0e2909ffaf7f7";
 // FIFTH BREAK (2026-08-26, tracker issue 1903 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -1932,7 +1934,45 @@ const FROZEN_BEFORE_SPDX = "3c18aa3d5a679ff427605edf3ffbdcb8ff6cc15e851e599e73d7
 // is no change — a republish renders the same bytes it always did; it could not live in report.css or
 // brand.mjs for the same reason; and this hash moves in the commit that restores the arm, which is
 // the commit that says why.
-const FROZEN = "dcb73b7aaf227a05b867d94314c6cc89d32d3872bc4fcbef3255a7532cd6c358";
+// SEVENTH BREAK (2026-09-06, tracker issue 147 ruling 5 — the report told a client to sign in, and
+// nobody had ever done that).
+//
+// A behaviour change on the surface with the least supervision. The block said:
+//
+//     3. Connect → sign in (Clearotron email)
+//
+// and that step was never driven. The one recorded drive — the owner's, 2026-09-04, written down in
+// `shared/connect-clients.mjs` with its `verifiedOn` stamp — connected by setting Authentication to
+// None and adding an `Authorization: Bearer` request header. A client following the old step three
+// waits for a sign-in that does not come. Same class as F37, on a document nobody watches being read.
+//
+// THE CHECKLIST, ANSWERED.
+//
+//   1. Reachable from a republish? YES, and that is the point. `doRepublish()` re-renders archived
+//      runs, so every already-delivered report picks up steps that work in place of one that does not.
+//      Precedent is the second break exactly: a connector URL pointing at a host that does not exist
+//      was repaired the same way. This is a REPAIR of delivered reports, not a rewrite of substance —
+//      no finding, no verdict and no evidence line moves.
+//   2. Could it live in report.css or brand.mjs? No. It is the connector recipe, not a visual. What IS
+//      visual went there: `.askai-checked` and `.askai-note` are two rules in report.css.
+//   3. Both constants advance here, in this commit, and the body says why.
+//
+// WHY THE REPORT'S CLAUDE RECIPE IS NOT THE PORTAL'S, WORD FOR WORD. The approved copy carries a fifth
+// step — "Add a request header: Authorization = Bearer, then the key above" — and it was written for
+// the PORTAL page, which copies TWO lines for the reader: a bare address and a separate key. This
+// surface copies ONE. `askAi` renders `mcpUrl` as the only field in the block and it is composed as
+// `base?token=<tok>`, so the key is already inside the address and there is no second line to name.
+// `mcp-server/lib/http-handler.mjs` reads that `?token=` first, calling it "the report link's
+// `?token=`" in its own header. Shipping the fifth step here would send a client hunting for a key
+// they were never shown — which is the fault this break exists to remove. Owner's decision, taken
+// 2026-09-06: drop it, and let step two say where the key already is.
+//
+// AND THE STAMP COVERS WHAT WAS DRIVEN AND NOTHING ELSE. "✓ Checked 4 September 2026" sits on the
+// vendor steps that were observed. Step two's added clause — "it already carries your key" — is a
+// claim about OUR address, read out of `render.mjs`'s own composition and the door that accepts it,
+// not a claim about a dialog anybody opened. The ChatGPT recipe stays unstamped because it stays
+// undriven.
+const FROZEN = "91944d77e61bcc9c62de45df0f450a4a74942d36662c88d121c139fbda0596df";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

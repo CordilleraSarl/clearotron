@@ -91,8 +91,15 @@ function reachedTheRefusal(d) {
   assert.ok(!/cannot start — 127\.0\.0\.1:\d+ is already in use/.test(d.said),
     `this drive met a PORT collision and never reached the missing-values refusal these arms are about — `
     + `nothing below could be measured:\n${d.said.slice(0, 900)}`);
-  assert.ok(/--background would install units that cannot run a clearance/.test(d.said),
-    `this drive did not refuse on missing values, so there was no refusal to read:\n${d.said.slice(0, 900)}`);
+  // tracker issue 216 — THE SUBJECT MOVED FROM A REFUSAL TO AN ANNOUNCEMENT, on the same screen. An
+  // install now comes up without these values (owner ruling 2026-09-06) and every run is refused at order
+  // time instead, so what proves this drive reached its subject is the announcement naming them.
+  //
+  // STILL A POSITIVE CHECK, and that is the whole job of this function: without it every assertion below
+  // would pass over a drive that printed nothing at all, which is how "the arms are green" comes to mean
+  // "the arms never looked".
+  assert.ok(/This install is not configured to run a search yet/.test(d.said),
+    `this drive never announced the missing values, so there was nothing here to read:\n${d.said.slice(0, 900)}`);
   return d.said;
 }
 
@@ -106,9 +113,29 @@ function reachedTheRefusal(d) {
  * assertion satisfied by a line that is not the remedy is the false pass this arm exists to catch.
  */
 function remedy(said) {
-  const from = said.indexOf("Nothing has been installed");
+  // ── WHERE THIS BLOCK LIVES SINCE tracker issue 216 ────────────────────────────────────────────────
+  //
+  // These values used to REFUSE the start, and this scoper opened at "Nothing has been installed". The
+  // owner ruled on 2026-09-06 that an install comes up without them and every run is refused at ORDER
+  // time instead, so `start --background` no longer refuses over them at all — it announces them, on the
+  // same screen, with the same remedy, composed by the same function.
+  //
+  // THE ARMS WERE RE-POINTED RATHER THAN DELETED, and the distinction matters. 202's property is that a
+  // message about a value names the file that sets it, and that property is not about which gate printed
+  // the message. Deleting these would have retired a live guard because its subject moved one screen.
+  //
+  // `lastIndexOf`, not `indexOf`: this phrase can appear in the refusal above on a run that reaches
+  // both, and the announcement is the one being measured.
+  const from = said.lastIndexOf("Nothing has been installed");
   assert.notEqual(from, -1, `no remedy block in this output:\n${said.slice(0, 900)}`);
-  const to = said.indexOf("This run had already written state", from);
+  // BOUNDED AT BOTH ENDS, and this file's own history is why: an unbounded window here already lied
+  // once, running off the end of one message and into the next so a reverted site stayed green. The
+  // announcement ends where the narrowing warnings begin, and everything after it — including the
+  // two-environment-files explainer, which names the CLI's path legitimately — belongs to other
+  // messages. An arm that read those would report a remedy naming a file the remedy never named.
+  const ends = [said.indexOf("\n  ⚠ ", from), said.indexOf("This run had already written state", from)]
+    .filter((i) => i !== -1);
+  const to = ends.length ? Math.min(...ends) : -1;
   return said.slice(from, to === -1 ? undefined : to);
 }
 

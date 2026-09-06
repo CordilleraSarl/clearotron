@@ -341,6 +341,25 @@ export const LEGACY_ENV_LOCAL_LOCATION = "package-root";
  * PURE and fully parameterised so an arm can drive a candidate that is not the one in force. A switch
  * whose unchosen branches are never executed is wiring that asserts itself.
  */
+/**
+ * `~/.env` — THE FILE THE UNITS READ, which is a different file from the one above.
+ *
+ * The services are installed with `EnvironmentFile=%h/.env` and `CLEAROTRON_NO_ENV_FILE=1`, which severs
+ * the inheritance a foreground run relies on. So on a backgrounded install this file is the whole of
+ * what a run can see, and it is the only honest address to give a reader whose units are missing a value.
+ *
+ * NAMED HERE BECAUSE TWO PLACES NEED IT AND ONE OF THEM IS NOT A CLI. `bin/start.mjs` composed this
+ * literal inline while it was the only writer; tracker issue 216 moved the run-configuration refusal to
+ * `driver/runner.mjs`, which must name the same file in the same words. Two `join(homedir(), ".env")`
+ * calls are two authorities for one path, and the way that breaks is quiet: a refusal that sends an
+ * operator to edit a file the units do not read.
+ *
+ * PURE, and parameterised for the same reason as its neighbour.
+ */
+export function unitEnvPath({ home = homedir() } = {}) {
+  return join(home, ".env");
+}
+
 export function envLocalPath({ repoRoot = REPO_ROOT, home = homedir(), location = ENV_LOCAL_LOCATION } = {}) {
   switch (location) {
     case "package-root": return join(repoRoot, ".env");

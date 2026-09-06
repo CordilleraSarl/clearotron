@@ -12,12 +12,25 @@
 // severs inheritance on purpose — so only what the supervisor WRITES arrives. It wrote the paths and the
 // door secrets and not the register, its credential, the research key, the engine or the engine path.
 //
+// ── WHERE THE REFUSAL LIVES NOW — tracker issue 216, owner ruling 2026-09-06 ────────────────────────
+//
+// "someone can install and select key later so it should still start." So the register, its credential,
+// the engine and the engine's binary NO LONGER refuse a `--background` start. They refuse AT ORDER TIME,
+// at `driver/runner.mjs`'s intake wall, before a stage dispatches and before anything is spent.
+//
+// THE F41 OUTCOME IS STILL FORECLOSED, which is the only thing these arms ever protected. A run on an
+// unconfigured box is refused before it starts and the requester is told so honestly — never a first-
+// stage crash, and never "Clearotron has been notified" on a box that notified nobody. What changed is
+// WHEN the product says no, not WHETHER it says no, and arm 1 below asserts the new answer rather than
+// being deleted for having the old one.
+//
 // These arms are driven against the REAL register and engine tables, never fixtures. A fixture would let
 // the authority and the product's own tables drift apart in the one direction that passes: the arm
 // asking for less than the product needs.
 //
 // BREAK MATRIX:
-//   · the F41 environment REFUSES at start          → break: soften the blocking set, arm 1 red
+//   · the F41 environment REFUSES at ORDER time      → break: soften the blocking set, arm 1 red
+//   · only what START WRITES may refuse a start     → break: mark the register at:"start", arm 1b red
 //   · composing from the supervisor fixes it        → break: drop the carry loop, arm 2 red
 //   · the credential set is DERIVED per register    → break: hardcode SIGNA_API_KEY, arm 3 red
 //   · a narrowing value never refuses a start       → break: mark research blocking, arm 4 red
@@ -28,8 +41,11 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { runRequirements, runRequiredNames, missingRequirements, REGISTER_ENV, RESEARCH_ENV } from "../run-requirements.mjs";
-import { PROVIDERS as REGISTER_TABLE } from "../../bin/onboard.mjs";
+import { runRequirements, runRequiredNames, missingRequirements, orderTimeRefusal,
+  REGISTER_ENV, RESEARCH_ENV, POOL_ENV, START, ORDER } from "../run-requirements.mjs";
+// tracker issue 216 — from the module that OWNS the table now, not through the wizard's re-export. The
+// arm should break if the data moves again, and reading it through `bin/` would hide that.
+import { PROVIDERS as REGISTER_TABLE } from "../../shared/register-selection.mjs";
 import { ENGINE_BINARIES, DEFAULT_ENGINE_ID } from "../driver.config.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
@@ -67,16 +83,60 @@ const compose = (unitEnv, supervisor) => {
   return out;
 };
 
-test("the environment F41 found refuses the start, naming what a clearance cannot do without", () => {
+test("the environment F41 found refuses AT ORDER TIME, naming what a clearance cannot do without", () => {
   const miss = missingRequirements(AS_FOUND, T);
   nonEmpty(miss.blocking, "nothing blocked on the environment that failed a client's search");
-  const names = miss.blocking.map((r) => r.name);
+  // THE SAME NAMES, AT THE OTHER GATE. `atOrder` is what the runner's intake wall refuses over; the set
+  // is unchanged, only when it is asked for. An empty `atOrder` here would mean F41 can happen again.
+  nonEmpty(miss.atOrder, "nothing refuses at order time — a run on this box would reach its first stage");
+  const names = miss.atOrder.map((r) => r.name);
   assert.ok(names.includes(REGISTER_ENV), "the register is what threw at the client's first stage and it is not blocking");
   assert.ok(names.includes("CLEAROTRON_AI"), "the engine is not blocking");
   assert.ok(names.includes("CLEAROTRON_CLAUDE_PATH"), "the engine's binary is not blocking");
   // EVERY BLOCKING ROW CARRIES ITS CONSEQUENCE. A refusal listing bare names sends an operator to a
-  // search engine; the whole point of refusing at start is that the reader can act on it here.
+  // search engine; the whole point of refusing early is that the reader can act on it where they are.
   for (const r of miss.blocking) assert.ok(r.why.trim().length > 30, `${r.name} refuses without saying what it costs`);
+  // AND THE START IS NOT REFUSED OVER ANY OF THEM. This is the half of tracker issue 216 that a
+  // soften-the-set fix would get wrong in the safe-looking direction: leaving one of these at:"start"
+  // still bricks the install the owner said must come up.
+  for (const n of [REGISTER_ENV, "CLEAROTRON_AI", "CLEAROTRON_CLAUDE_PATH"])
+    assert.ok(!miss.atStart.some((r) => r.name === n),
+      `${n} still refuses a --background start — the owner ruled an install comes up without it`);
+});
+
+test("216 only what START ITSELF WRITES may refuse a start, and the pool is the whole of that", () => {
+  // The split is a decision, so it is pinned rather than left to whoever edits the table next. A value
+  // start writes is one whose absence is OUR bug and gives the reader nothing to go and set; a value an
+  // operator supplies is one the install can legitimately come up without.
+  const bare = missingRequirements({}, T);
+  assert.deepEqual(bare.atStart.map((r) => r.name), [POOL_ENV],
+    "something other than the pool refuses a start — a value an operator supplies must never brick the install");
+  nonEmpty(bare.atOrder, "nothing refuses at order time on a bare environment");
+  // NO ROW MAY BE BOTH, AND NONE MAY BE NEITHER. A blocking row with no `at` would be refused by nobody.
+  for (const r of runRequirements({}, T).filter((r) => r.blocking))
+    assert.ok(r.at === START || r.at === ORDER, `${r.name} blocks but names no gate to block at`);
+  assert.equal(bare.atStart.length + bare.atOrder.length, bare.blocking.length,
+    "a blocking row is missing from both halves — it can stop nothing");
+});
+
+test("216 the order-time refusal speaks two vocabularies, and only one of them may reach a browser", () => {
+  const r = orderTimeRefusal(AS_FOUND, T, { envFile: "/srv/example/.env" });
+  assert.ok(r, "an unconfigured box produced no refusal at all");
+  // THE OPERATOR'S: names, reasons, and the file to edit — they can act on all three.
+  for (const n of r.names) assert.match(r.operator, new RegExp(n), `${n} is missing from the operator refusal`);
+  assert.match(r.operator, /\/srv\/example\/\.env/, "the operator refusal names no file to edit");
+  // THE CLIENT'S: no variable name of any shape. `driver/test/portal-service.test.mjs` refuses exactly
+  // this on a body a browser renders, and a client cannot act on an environment variable anyway.
+  assert.doesNotMatch(r.client, /CLEAROTRON_|PORTAL_/, `a switch name reached the client: ${r.client}`);
+  assert.doesNotMatch(r.client, /[A-Z][A-Z0-9]*_[A-Z0-9_]+/, `a variable-shaped name reached the client: ${r.client}`);
+  // AND NEITHER PROMISES ANYTHING. F41's whole damage was the sentence after the failure, not the
+  // failure: "Clearotron has been notified and will follow up", on a box with no outbox.
+  for (const [who, text] of [["operator", r.operator], ["client", r.client]]) {
+    assert.doesNotMatch(text, /has been notified|will follow up/i, `the ${who} refusal promises a notice nobody sent`);
+    assert.match(text, /[Nn]othing has been (searched|spent)/, `the ${who} refusal does not say nothing was spent`);
+  }
+  // A CONFIGURED BOX GETS NULL, not an empty-ish object a caller could read as a refusal.
+  assert.equal(orderTimeRefusal(SUPERVISOR, T), null, "a fully configured box was refused at order time");
 });
 
 test("composing from the supervisor's own configuration is what makes that box work", () => {
@@ -135,6 +195,13 @@ test("start.mjs wires both halves — composition and guard — at the --backgro
     "--background no longer composes the unit environment from the run requirements");
   assert.match(src, /missingRequirements\(willRead, RUN_TABLES\)/,
     "--background no longer guards the environment it just composed");
+  // tracker issue 216 — and it guards on the START half alone. `miss.blocking` here would refuse over a
+  // register the owner ruled an install may come up without.
+  assert.match(src, /if \(miss\.atStart\.length\)/,
+    "--background refuses over more than what start itself writes");
+  assert.match(src, /miss\.atOrder\.length/,
+    "--background no longer TELLS the operator what is unconfigured — a silent unconfigured install "
+    + "is the failure one step along from the one 216 fixed");
   // THE GUARD IS CHECKED AGAINST WHAT THE UNITS WILL READ, not against this shell. Checking process.env
   // would pass on exactly the box that fails, because the supervisor always has what the units lack.
   assert.match(src, /const willRead = \{ \.\.\.already, \.\.\.union \}/,

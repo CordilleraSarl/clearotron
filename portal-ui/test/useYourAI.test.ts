@@ -179,7 +179,13 @@ test('PARITY: the recipes the delivered report carries are the ones the hand-set
   // surfaces that must agree still has two sides. Read off each file's source rather than a shared
   // helper, because `render.mjs` is byte-frozen at a content hash and exporting from it to import here
   // would move that hash for a test's convenience.
-  const band = /steps\('Set up Claude'[\s\S]*?steps\('Set up ChatGPT'[^\n]*/.exec(read('../../driver/publish/render.mjs'))?.[0] ?? ''
+  // THE ANCHOR STOPS AT THE LABEL'S FIRST WORDS, not at its closing quote. tracker issue 147 put a
+  // dated stamp inside that label — `Set up Claude <span…>· ✓ Checked 4 September 2026</span>` — and the
+  // old anchor required the quote immediately after "Claude", so it matched nothing and this arm failed
+  // with "the report no longer carries its own set-up block" on a report that very much did. A slice
+  // that reads -1 or empty is a could-not-look, and the assert below is what turns it into one rather
+  // than letting the parity pass over an empty string.
+  const band = /steps\('Set up Claude[\s\S]*?steps\('Set up ChatGPT'[^\n]*/.exec(read('../../driver/publish/render.mjs'))?.[0] ?? ''
   assert.ok(band, 'the report no longer carries its own set-up block — if so, this parity is moot and should be deleted')
   const doc = read('../../mcp-server/CONNECT.md')
   for (const [who, needle] of [
@@ -251,4 +257,70 @@ test('the copy helper reports a REFUSAL, so a blocked clipboard is not read as s
   const helper = SCREEN.slice(SCREEN.indexOf('async function copy('))
   assert.match(helper, /return true/, 'the copy helper never reports success')
   assert.match(helper, /catch \{ return false \}/, 'a refused clipboard is swallowed rather than reported')
+})
+
+test('EVERY ROW COMPOSES A SENTENCE THAT READS — the generic one carries its own, as data', async () => {
+  // Owner's ruling 2026-09-06 (tracker issue 147, option B). Approved copy line 8 is `Paste it into
+  // {assistant}`, and it reads for every proper noun — "Paste it into Claude", "Paste it into ChatGPT",
+  // "Paste it into Perplexity" — and not for the one row a reader reaches when their assistant is not
+  // listed: "Paste it into Another agent" is not English. Option A (rename the row) was rejected because
+  // it edits a line he approved to repair a line he did not.
+  //
+  // THE EXCEPTION IS DATA, NOT A BRANCH, and that was not my first cut. Keying the screen on
+  // `offer.id === 'other'` is what I wrote, and `driver/test/connect-clients-are-data.test.mjs` refused
+  // it — correctly: no surface may branch on a client's identity, because a branch in a screen drifts
+  // from the table silently and both keep rendering while the reader follows whichever one is wrong. The
+  // sentence lives on the row now, so a fifth client needing its own line is a row edit.
+  //
+  // DRIVEN AGAINST THE REAL TABLE, not a fixture and not the three names the defect was found on.
+  // `mask()` above establishes the technique: lift the expression out of the page's source and run it,
+  // so what is measured is the page's own rule rather than a second copy of it in this file.
+  const m = SCREEN.match(/const pasteLine = \(offer: ConnectOffer\): string =>\n\s*([^\n]*)/)
+  assert.ok(m, 'pasteLine() is gone or has changed shape — the sentence has no single author any more')
+  const pasteLine = new Function('offer', `return (${m![1]})`) as (o: { name: string; pasteAs?: string }) => string
+
+  const { CONNECT_CLIENTS } = await import('../../shared/connect-clients.mjs')
+  assert.ok(CONNECT_CLIENTS.length >= 4, 'the client table is too small for this arm to prove anything')
+
+  // THE WHOLE CLASS, one row at a time — the arm that would have caught the defect, because the two
+  // instruments that missed it both ask whether the right row rendered and neither asks whether the
+  // sentence reads.
+  let carriedOwn = 0
+  for (const c of CONNECT_CLIENTS) {
+    const line = pasteLine(c as { name: string; pasteAs?: string })
+    assert.ok(line.trim().length > 0, `${c.id} composes no sentence at all`)
+    if (c.pasteAs) { assert.equal(line, c.pasteAs, `${c.id} carries its own sentence and the page ignored it`); carriedOwn++ }
+    else assert.ok(line === `Paste it into ${c.name}`, `${c.id} lost the approved sentence: ${line}`)
+  }
+  assert.ok(carriedOwn >= 1,
+    'no row carries its own paste sentence — the branch this arm exists for would pass over nothing')
+
+  // THE ROW THE DEFECT WAS ABOUT, by its own vocabulary rather than by its id. `accepts: "either"` is
+  // what makes a row generic in this table, so a fifth generic row is judged here too and not silently
+  // exempted for not being called "other".
+  const generic = CONNECT_CLIENTS.find((c: { accepts: string }) => c.accepts === 'either')
+  assert.ok(generic, 'no generic row exists — the assertion below would pass over nothing')
+  assert.equal(pasteLine(generic as { name: string; pasteAs?: string }),
+    'Paste it wherever your assistant takes it.', 'the generic row no longer carries the approved sentence')
+  assert.ok(!pasteLine(generic as { name: string; pasteAs?: string }).includes(`into ${generic.name}`),
+    'the generic row still composes the ungrammatical sentence')
+
+  // NO IDENTITY IN THE SCREEN. Driven with a plant: a row with no sentence of its own composes the
+  // default whatever it is called, so a future edit that keys on a name fails here rather than in a
+  // browser.
+  assert.equal(pasteLine({ name: 'Something Else' }), 'Paste it into Something Else',
+    'pasteLine() branches on something other than the row carrying its own sentence')
+  // AGAINST THE CODE, NOT THE FILE. `code()` strips comments, and the comment above `pasteLine` QUOTES
+  // the branch it replaced so the next reader knows why it is not there — a whole-file match reads that
+  // sentence as the defect. An arm that cannot tell an explanation from the thing it explains forces the
+  // next person to delete the explanation to go green, which is how a file loses its reasons.
+  assert.doesNotMatch(code(SCREEN), /offer\.id === '[a-z]+'/,
+    'the screen branches on a client id — connect-clients-are-data.test.mjs refuses this, and it is right')
+
+  // ONE AUTHOR, TWO SLOTS. The row label and the panel heading render the same sentence and each had its
+  // own copy before this. Two copies of a sentence is how one of them gets fixed.
+  assert.ok(!/Paste it into \{offer\.name\}/.test(SCREEN),
+    'a slot still interpolates the name directly instead of calling pasteLine()')
+  assert.equal((SCREEN.match(/pasteLine\(offer\)/g) ?? []).length, 2,
+    'the two slots no longer both route through pasteLine()')
 })

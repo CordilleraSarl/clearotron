@@ -408,18 +408,6 @@ const section = (title) => say(`\n${style.head(title)}`);
 // and find it (and they are hard to find)." The product knew the domain the whole time — it is in the
 // architecture docs and in the adapter's own source — just not in either place the person being asked
 // for a key would look. EUIPO's array opens with its URL and is the shape this now matches.
-const SIGNA_SIGNUP = [
-  "1. Create an account at https://signa.so/ and open the API section — it is self-serve: no sales",
-  "   call, no contract, no waiting.",
-  "2. Issue an API key and paste it here. See providers/README.md for the base-URL override.",
-];
-const EUIPO_SIGNUP = [
-  "1. Sign in at https://euipo.europa.eu/ (create an account if you have none).",
-  "2. Open the API portal and register an application for the trademark-search API.",
-  "3. It issues a client id and a client secret. The secret is shown once.",
-  "4. Ask for PRODUCTION access. The sandbox is a SEPARATE DEPLOYMENT holding a different corpus —",
-  "   a sandbox credential searches marks that do not exist.",
-];
 // — WHAT THE FREE US REGISTER ACTUALLY COSTS, in the place a newcomer meets it.
 //
 // This said "on the order of a gigabyte, and it takes a while". Telling an adopter the steady-state
@@ -434,17 +422,6 @@ const EUIPO_SIGNUP = [
 // drift from the document again.
 //
 // The EU half needs none of it, and that is said first — the free tier is reachable today without this.
-const USPTO_WARNINGS = [
-  "USPTO_LOCAL_DB is not an API key: it is a path to a database you build first.",
-  "THE ONE-OFF COST, in full:",
-  `  · ~${USPTO_ARCHIVE_GB} GB downloaded from the USPTO bulk products`,
-  `  · ~${usptoBuildHours()} hours of ingest (measured ${USPTO_INGEST_GB_PER_HOUR} GB/h; yours scales with disk and CPU)`,
-  `  · it settles to a ~${USPTO_INDEX_GB} GB index, then ~${USPTO_DAILY_TOPUP_MB} MB of nightly top-ups`,
-  `  · provision ~${usptoProvisionGB()} GB free — the archives are deleted as they are ingested, so they never all exist at once`,
-  "The EU register needs NONE of this and works as soon as your EUIPO credentials are in.",
-  "A USPTO API key needs an ID.me identity verification, which is a real-world identity check.",
-  "Build it with:  npm run sync:uspto      (resumable — an interrupted build picks up where it stopped)",
-];
 
 // item 1 — THE DOWNLOAD IS NOW SOMETHING THE WIZARD CAN START, SO CONSENT IS NOW REAL.
 //
@@ -584,50 +561,16 @@ export async function offerUsptoSync(dbPath, io, deps = {}) {
 // sales-gated. It used to open with the free tier, and a test asserted that it must — an assertion that
 // argued a case the ADR had already answered. The reasoning is in ADR-0001 and in providers/README.md,
 // which is the canonical statement; this list carries no competing recommendation of its own.
-export const PROVIDERS = [
-  {
-    id: "signa", label: "Signa — recommended: US + EU + WIPO and eight more offices", cost: "subscription",
-    covers: "the US and EU registers together, plus WIPO/Madrid, the UK, Switzerland, Canada, Australia, "
-      + "France, Singapore, Norway and Sweden — eleven offices — with native sound-alike search, exact "
-      + "result counts and opposition state. One self-serve key, no sales call.",
-    credentials: ["SIGNA_API_KEY"],
-    signup: SIGNA_SIGNUP,
-  },
-  {
-    id: "free-tier", label: "Free tier — EU + US, no subscription", cost: "free",
-    covers: "the EU register and the US register together, from two free sources composed into one. "
-      + "Everywhere else is a disclosed gap.",
-    credentials: ["EUIPO_CLIENT_ID", "EUIPO_CLIENT_SECRET"],
-    // OPTIONAL, and that is the whole point of the free tier being reachable. Requiring the US
-    // index here told a newcomer to build a 41.5 GB index over two bulk products before anything could
-    // run — the first thing an open-source reader hits, on the configuration that exists precisely so a
-    // clearance needs no subscription. Without it the US office is split off at plan compile and
-    // disclosed as a deferred coverage row; the EU half runs.
-    optionalCredentials: ["USPTO_LOCAL_DB"],
-    extra: { EUIPO_ENVIRONMENT: "production" },
-    signup: EUIPO_SIGNUP,
-    warnings: USPTO_WARNINGS,
-    validateEuipo: true,
-    uspToLocalKey: "USPTO_LOCAL_DB",
-  },
-  {
-    id: "euipo", label: "EUIPO — the EU register only", cost: "free",
-    covers: "the EU register, and nothing else. Every other territory becomes a disclosed gap in the report.",
-    credentials: ["EUIPO_CLIENT_ID", "EUIPO_CLIENT_SECRET"],
-    extra: { EUIPO_ENVIRONMENT: "production" },
-    signup: EUIPO_SIGNUP,
-    validateEuipo: true,
-  },
-  {
-    id: "uspto-local", label: "USPTO (local index) — the US register only", cost: "free",
-    covers: "the US register, and nothing else, from an index you build and hold locally.",
-    credentials: ["USPTO_LOCAL_DB"],
-    warnings: USPTO_WARNINGS,
-    uspToLocalKey: "USPTO_LOCAL_DB",
-  },
-  { id: "corsearch", label: "Corsearch — global", cost: "subscription", covers: "a global sweep.", credentials: ["CORSEARCH_SESSION_KEY"] },
-  { id: "clarivate", label: "Clarivate — global", cost: "subscription", covers: "a global sweep.", credentials: ["CLARIVATE_API_KEY"] },
-];
+// ── THE REGISTER SELECTION TABLE MOVED TO `shared/register-selection.mjs` (tracker issue 216) ───────
+//
+// Re-exported here under the name every existing reader uses — this file's own call sites read
+// `PROVIDERS`, and so does the run-requirements arm. It moved because the runner's intake wall and the
+// intake doors need it and neither is a CLI: a static import from `driver/` into this file closes the
+// load-time cycle that makes `clearotron doctor` exit 13 after printing most of a report. The vendor
+// sign-up steps travelled with it — they are facts about the register, and this wizard is one reader of
+// them rather than their owner. That module's header carries the reasoning.
+export { PROVIDERS } from "../shared/register-selection.mjs";
+import { PROVIDERS } from "../shared/register-selection.mjs";
 
 // Every credential this wizard may find lying around, so ambient detection knows what it is looking at.
 // EXPORTED since: it is also the answer to "which credential names does this product
@@ -2686,9 +2629,16 @@ try {
     // the run has started. So setup will not write an engine it has not exercised — and the menu's last
     // row exists so that refusal always has somewhere to go.
     say("");
-    info("An executable file is not a working engine. Setup will not write one it has not exercised:");
-    info("  a .env naming a signed-out engine becomes a stage failure ninety minutes into a clearance,");
-    info("  wearing the shape of a model fault, after every stage before it has spent.");
+    // — tracker issue 100 point 2, the owner's own words on reading the three lines this replaces:
+    // "wtf does this mean". They named `.env` and "stage failure" and "wearing the shape of a model
+    // fault" at a reader who is about to answer yes or no, and every one of those is our vocabulary.
+    //
+    // THE CHECK IS UNCHANGED AND THE REFUSAL IS UNCHANGED. He valued both, and the issue puts them out
+    // of scope explicitly — what was wrong was the sentence around them, so only the sentence moved.
+    // ONE LINE, saying the two things a reader needs to decide with: this costs a moment now, and
+    // skipping it costs an hour later.
+    info("A file that exists is not an engine that works — so setup tries one before writing anything.");
+    info("It takes a few seconds here. Skipped, a broken engine surfaces an hour into a real search.");
     if (!await confirm(`Prove ${pick.id} on the ${authPick.id} lane now with one ${PROBE_MODEL}-tier turn (a few tokens, ${PROBE_TIMEOUT_SEC}s ceiling)?`, true)) {
       info("Not proven, so not written. Pick again — the last row configures no engine at all.");
       continue;
@@ -2862,7 +2812,16 @@ try {
     }
   }
   if (registerSelected && !spec.validateEuipo && !spec.uspToLocalKey) {
+    // — tracker issue 100 point 7. The owner asked "why not validate the register provider quickly?" and
+    // the issue sets the fallback where a cheap non-billing call does not exist: say in ONE LINE why it
+    // cannot be checked AND what happens if it is wrong. The first half was already here; the second was
+    // not, so a reader was told about our billing scruple and nothing about their own risk.
+    //
+    // EUIPO IS CHECKED and this branch is the one that cannot be — see `spec.validateEuipo` above. The
+    // asymmetry the owner noticed is real and this is the honest account of it, not a defence of it.
     info(`${spec.label} is a paid vendor. Setup does not test it: a probe call against a metered subscription is a charge you did not ask for.`);
+    info("If the key is wrong you will find out on your first real search — it refuses at the register");
+    info(`step, before anything is spent, and names ${spec.credentials.join(" and ")}. Nothing is delivered half-done.`);
   }
 
   // 6 ── research and web-search credentials, DERIVED from the driver's own tables
