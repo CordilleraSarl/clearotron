@@ -1,5 +1,24 @@
 # prelim-driver
 
+## 0.1.4
+
+### Patch Changes
+
+- 7f37550: Fixed: A server install now generates the portal secret it needs, so the portal starts instead of exiting at boot.
+- 6595180: Fixed: A report now says a case-law source could not be confirmed, rather than saying this installation does not have it.
+- 6595180: For operators: The live-surface check no longer calls a healthy installation broken over a service file the product never shipped.
+- 7f37550: Fixed: An address only this machine can reach is no longer described as reachable from the internet. A key that could not be written down now names the missing setting.
+- 19a1869: For operators: the configuration page now shows this deployment's live settings, and says if the last run used different ones.
+- 7f37550: Fixed: Connecting an assistant no longer reports the connector as closed when it cannot reach the session bus. It also no longer stops on a signing secret the installation already holds.
+- 6595180: Fixed: Connecting an assistant now says what went wrong when it stops part-way, and what it had already changed.
+- 6595180: Fixed: Checking a settings file now reports on the file you named, not the one this machine happens to use.
+- 13858ed: Fixed: Installing Clearotron from npm works again — recent releases failed before any files were written, so nothing could be installed or run.
+- 5828fc1: For operators: the shipped multi-country demo is now the same run family as the other three, not an older capture from a different customer.
+- 6595180: For operators: The end-to-end harness now recognises the worker draining queues here, instead of offering to start a second one.
+- 7f37550: New: The install guide names both provider settings an assistant's sign-in depends on. `clearotron doctor --probe-connector` asks your address whether each assistant maker can sign in.
+- 7f37550: New: The portal now checks at start-up whether the engine it submits to will accept it, and says so in its log. Changing the engine's sign-in used to break Start silently.
+- 7f37550: Fixed: Reinstalling the services no longer overrides the port and address you set for the assistant connector. The connector's unit reads them from your settings file like every other service.
+
 ## 0.1.3
 
 ### Patch Changes

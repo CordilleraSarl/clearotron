@@ -1,5 +1,11 @@
 # trademark-artifacts-mcp
 
+## 0.1.4
+
+### Patch Changes
+
+- 19a1869: New: Ask a what-if about a delivered report and get a supplementary memo over its archived evidence, without touching the report.
+
 ## 0.1.3
 
 ## 0.1.2
