@@ -25,8 +25,8 @@ import { programsFromAnotherCheckout } from "../../shared/checkout-move.mjs";
 const psOf = (lines) => () => ({ status: 0, stdout: lines.join("\n") + "\n" });
 const line = (pid, uid, cmd) => `${pid} ${uid} Mon Sep  1 08:21:53 2026 ${cmd}`;
 
-const OURS = "/home/me/clearotron";
-const THEIRS = "/home/someone-else/app/node_modules/clearotron";
+const OURS = "/opt/clearotron";
+const THEIRS = "/srv/another-install/node_modules/clearotron";
 const ENTRY = ["driver/portal-service.mjs"];
 
 test("193/109 a process belonging to another account is not in the table this product reads", () => {
@@ -66,7 +66,7 @@ test("193 another account's install is never counted, and never advised on", () 
 test("193 nothing attributable is NOT everything agreeing", () => {
   // A box where this product is not running at all. The old code answered `current` — the word for
   // "every running program is on the tree this install names" — from having placed nothing.
-  const ps = psOf([line(303, 1000, "/usr/bin/node /home/me/something-else.mjs"), line(304, 1000, "sshd")]);
+  const ps = psOf([line(303, 1000, "/usr/bin/node /opt/unrelated/something-else.mjs"), line(304, 1000, "sshd")]);
   const v = programsFromAnotherCheckout({
     table: processTable({ platform: "darwin", runPs: ps, uid: 1000 }),
     checkoutDir: OURS, entrypoints: ENTRY });
