@@ -4,6 +4,12 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.2.1-beta.0
+
+### For operators
+
+- The configuration reference now explains the two deprecated search-log variables in full, instead of stopping mid-sentence.
+
 ## 0.2.0
 
 ### New
