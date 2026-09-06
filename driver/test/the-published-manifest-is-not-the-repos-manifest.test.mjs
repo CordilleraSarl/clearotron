@@ -47,7 +47,8 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { publishableManifest, STRIP_KEYS } from "../../scripts/pack-publishable.mjs";
 import { sealTarball } from "../../scripts/release-artifact-seal.mjs";
-import { installsAsADependency, manifestOf, binNames } from "../../scripts/release-install-check.mjs";
+import { installsAsADependency, manifestOf, binNames, looksLikeCouldNotLook }
+  from "../../scripts/release-install-check.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const RELEASE_YML = readFileSync(join(REPO, ".github", "workflows", "release.yml"), "utf8");
@@ -300,3 +301,88 @@ test("tracker issue 180 — a relative tarball path is the caller's, not the ins
 // `tar` unharmed either way. There is no failure mode there to arm today. The `resolve()` in the seal
 // stays as the one-line closure of a class that IS live one file over; it is defensive and unarmed, and
 // that is said here rather than implied by a test that cannot fail.
+
+test("tracker issue 180 — a registry it could not reach is not a broken package", () => {
+  // THREE-VALUED, BECAUSE THIS RUNS ON EVERY PULL REQUEST. npm exits non-zero for a DNS failure, a
+  // registry timeout, a 503, a full disk — none of them a fact about these bytes. Reported as "this is
+  // what a visitor gets", each one accuses the artefact of a fault it does not have, and a gate that
+  // cries wolf on infrastructure is a gate somebody deletes. The first real CI run proved the risk
+  // rather than the theory: an ENOENT caused by the CALLER came out as a refusal about the package.
+  //
+  // The strings are npm's own, measured rather than guessed.
+  assert.equal(looksLikeCouldNotLook("npm error code ENOTCACHED\nnpm error request to "
+    + "https://registry.npmjs.org/left-pad failed: cache mode is 'only-if-cached'"), true);
+  for (const said of ["npm error code ENOTFOUND", "npm error code ETIMEDOUT", "npm error code ECONNRESET",
+    "npm error code EAI_AGAIN", "npm error code ENOSPC", "npm error syscall open\nnpm error code ENOENT"]) {
+    assert.equal(looksLikeCouldNotLook(said), true, `${said} was read as a verdict about the artefact`);
+  }
+
+  // AND THE ONES THAT REALLY ARE ABOUT THE BYTES STAY REFUSALS. Widening this predicate until a broken
+  // package reads as could-not-look is the failure in the other direction, and it publishes.
+  for (const said of ['npm error code EINVALIDTAGNAME\nnpm error Invalid tag name "not a range at all"',
+    "npm error code EINTEGRITY", "npm error TAR_BAD_ARCHIVE: Unrecognized archive format",
+    "npm error Unable to resolve reference $buffers"]) {
+    assert.equal(looksLikeCouldNotLook(said), false,
+      `${said} was excused as a could-not-look, so a package that genuinely will not install publishes`);
+  }
+});
+
+test("tracker issue 180 — and it answers could-not-look on a real npm that cannot reach anything", () => {
+  // DRIVEN, not asserted from the predicate above: the branch has to be reachable from the install
+  // path, and a classifier nothing routes to is the same as no classifier. `npm_config_offline` with a
+  // dependency that is not in the cache is npm genuinely unable to look.
+  const dir = scratch();
+  try {
+    const tgz = packTarball(dir, { name: "unreachable-probe", version: "1.0.0",
+      dependencies: { "a-package-no-cache-here-holds": "1.0.0" } });
+    const r = offline(() => installsAsADependency(tgz));
+    assert.equal(r.ok, false);
+    assert.equal(r.couldNotLook, true,
+      `npm could not reach the registry and the check called the artefact broken: ${r.why}`);
+    assert.match(r.why, /not about these bytes/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("tracker issue 180 — and npm's own refusal is still a refusal, not an excuse", () => {
+  // The pair to the arm above, on the same code path: the EINVALIDTAGNAME case must come back as a
+  // verdict about the bytes. Without this, widening the could-not-look predicate would go unnoticed —
+  // and a package that refuses to install would publish with the gate green.
+  const dir = scratch();
+  try {
+    const tgz = packTarball(dir, { name: "still-refusing-probe", version: "1.0.0",
+      dependencies: { "left-pad": "not a range at all" } });
+    const r = offline(() => installsAsADependency(tgz));
+    assert.equal(r.ok, false);
+    assert.equal(r.couldNotLook, false, "a malformed manifest was excused as an unreachable registry");
+    assert.match(r.why, /npm refused to install the packed artefact/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("tracker issue 180 — the exit codes CI reads carry the house meanings", () => {
+  // THE THREE ANSWERS AS A CALLER SEES THEM. Everything above tests the function; the workflow reads
+  // the process's status, and a branch that returns the right object under an exit code nobody set is
+  // the same silence one layer down. Driven through the command line, which is how CI invokes it.
+  const dir = scratch();
+  const run = (args, env = {}) => {
+    try {
+      execFileSync(process.execPath, [join(REPO, "scripts", "release-install-check.mjs"), ...args],
+        { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, ...env } });
+      return { code: 0, said: "" };
+    } catch (e) { return { code: e.status, said: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }
+  };
+  try {
+    assert.equal(run(["--tarball", join(dir, "not-there.tgz")]).code, 2,
+      "a tarball that is not there exited something other than 2 — a could-not-look read as a verdict");
+
+    const unreachable = packTarball(dir, { name: "exit-probe-unreachable", version: "1.0.0",
+      dependencies: { "a-package-no-cache-here-holds": "1.0.0" } });
+    const cnl = run(["--tarball", unreachable], { npm_config_offline: "true" });
+    assert.equal(cnl.code, 2, `an unreachable registry exited ${cnl.code}: ${cnl.said.slice(-300)}`);
+    assert.match(cnl.said, /COULD NOT LOOK/);
+
+    const good = packTarball(dir, { name: "exit-probe-good", version: "1.0.0" },
+      { "index.js": "module.exports = 1;\n" });
+    assert.equal(run(["--tarball", good], { npm_config_offline: "true" }).code, 0,
+      "an artefact that installs did not exit 0");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});

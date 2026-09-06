@@ -34,6 +34,20 @@
 // five broken releases while appearing to test the thing. It is recorded here because the flag is the
 // obvious way to make this check cheaper and somebody will reach for it again.
 //
+// ── AND A REGISTRY IT COULD NOT REACH IS NOT A BROKEN PACKAGE ──────────────────────────────────────
+//
+// This runs on every pull request, and npm exits non-zero for reasons that have nothing to do with
+// these bytes: a DNS failure, a registry timeout, a 503, a disk with nothing left on it. Reported as
+// "REFUSING to publish — this is what a visitor gets", every one of them accuses the artefact of a
+// fault it does not have, and a gate that cries wolf on infrastructure is a gate somebody deletes.
+//
+// The first real run of this check proved the risk rather than the theory: it was handed a relative
+// path, npm looked for the tarball inside the throwaway project, and the ENOENT came out as a refusal
+// about the package. The fault was in the caller.
+//
+// So there are three answers, not two. Exit 1 is a refusal ABOUT THESE BYTES. Exit 2 is a could-not-
+// look, in the house meaning, and it says so in those words.
+//
 // ── AN INSTALL THAT SUCCEEDED AND LANDED NOTHING IS NOT A PASS ──────────────────────────────────────
 //
 // npm exits 0 on plenty of installs that put nothing where the caller expected it. So the exit status
@@ -44,6 +58,22 @@ import { mkdtempSync, writeFileSync, readFileSync, rmSync, existsSync } from "no
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
+
+/**
+ * Is this npm failure about reaching the world, rather than about the artefact?
+ *
+ * MEASURED STRINGS, not guessed ones. `ENOTCACHED` is what an offline npm says when a dependency is not
+ * in the cache — "request to https://registry.npmjs.org/… failed" — and it is the one this file's own
+ * arm drives. The rest are the ordinary network and disk codes. `EINVALIDTAGNAME`, `EINTEGRITY` and a
+ * malformed tarball are deliberately absent: those ARE about the bytes, and calling them could-not-look
+ * would let a genuinely broken package publish.
+ */
+export function looksLikeCouldNotLook(said) {
+  return /\b(ENOTCACHED|ENOTFOUND|EAI_AGAIN|ETIMEDOUT|ECONNRESET|ECONNREFUSED|ENETUNREACH|EAGAIN|ENOSPC|ENOENT|ERR_SOCKET_TIMEOUT)\b/i
+    .test(String(said ?? ""))
+    || /request to https?:\/\/[^\s]*registry[^\s]*\s+failed/i.test(String(said ?? ""))
+    || /\bnetwork\b/i.test(String(said ?? ""));
+}
 
 /** The manifest inside a packed tarball, without unpacking the rest of it. */
 export function manifestOf(tarballPath) {
@@ -85,31 +115,35 @@ export function installsAsADependency(tarballPath, { keep = false, timeoutMs = 9
         { cwd: consumer, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: timeoutMs });
     } catch (e) {
       const said = `${e?.stderr ?? ""}`.trim() || `${e?.stdout ?? ""}`.trim() || `${e?.message ?? e}`;
-      return { ok: false, missingBins: [],  installed: null,
+      if (looksLikeCouldNotLook(said)) {
+        return { ok: false, couldNotLook: true, missingBins: [], installed: null,
+          why: `npm could not complete an install here for a reason that is not about these bytes:\n\n${said}` };
+      }
+      return { ok: false, couldNotLook: false, missingBins: [],  installed: null,
         why: `npm refused to install the packed artefact as a dependency:\n\n${said}` };
     }
 
     const landed = join(consumer, "node_modules", ...manifest.name.split("/"), "package.json");
     if (!existsSync(landed)) {
-      return { ok: false, installed: null, missingBins: [],
+      return { ok: false, couldNotLook: false, installed: null, missingBins: [],
         why: `npm exited 0 and there is no ${manifest.name} under node_modules — the install reported `
           + "success and put nothing where a consumer would look for it" };
     }
     const installed = JSON.parse(readFileSync(landed, "utf8"));
     if (installed.version !== manifest.version) {
-      return { ok: false, installed, missingBins: [],
+      return { ok: false, couldNotLook: false, installed, missingBins: [],
         why: `the tarball is ${manifest.name}@${manifest.version} and the installed tree holds `
           + `${installed.version} — something other than these bytes answered the install` };
     }
     const missingBins = binNames(manifest)
       .filter((b) => !existsSync(join(consumer, "node_modules", ".bin", b)));
     if (missingBins.length) {
-      return { ok: false, installed, missingBins,
+      return { ok: false, couldNotLook: false, installed, missingBins,
         why: `the package installed and its command(s) did not reach .bin: ${missingBins.join(", ")}. `
           + "`npx clearotron demo` resolves through .bin, so this is the front door still shut with a "
           + "green install behind it" };
     }
-    return { ok: true, why: null, installed, missingBins: [] };
+    return { ok: true, couldNotLook: false, why: null, installed, missingBins: [] };
   } finally {
     if (keep) console.log(`kept: ${consumer}`);
     else rmSync(consumer, { recursive: true, force: true });
@@ -137,6 +171,12 @@ function main() {
     process.exit(2);
   }
 
+  if (r.couldNotLook) {
+    console.error(`  COULD NOT LOOK (exit 2): ${r.why}\n`);
+    console.error("  This says nothing about the artefact. It has not been cleared and it has not been "
+      + "refused — the install did not get far enough to answer.");
+    process.exit(2);
+  }
   if (!r.ok) {
     console.error(`  REFUSING to publish ${tarball}:\n  ${r.why}\n`);
     console.error("  This is what a visitor gets from the command on clearotron.ai's copy button, and it "
