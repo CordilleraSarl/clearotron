@@ -2311,7 +2311,12 @@ export async function runCheck() {
     // rather than beside the unit, because the unit running and the address being reachable are
     // different facts and the second is the one a client depends on.
     const { clientDoorReachability } = await import(join(REPO, "shared", "client-door.mjs"));
-    const published = process.env.CLEAROTRON_CLIENT_MCP_URL ?? null;
+    // FROM THE FILE THE UNITS LOAD, NOT THE SHELL THIS COMMAND WAS TYPED IN (the tracker issue 226
+    // family, met again here). On a hosted box the published address lives in the units' environment,
+    // and reading `process.env` reported "no client connector address is published — that is correct
+    // for a local install" about a deployment that publishes one. Every verdict below rests on this
+    // value, including the audience comparison, so a wrong reading here is not one wrong line.
+    const published = effectiveForService("CLEAROTRON_CLIENT_MCP_URL")?.v ?? null;
     // A SHORT, CHEAP ASK, and a failure to reach IS the finding rather than a failure to look — the
     // property under test is reachability itself. What would be dishonest is calling an address green
     // because nothing asked, which is why `probe` stays null when there is nothing to ask about.
@@ -2327,14 +2332,47 @@ export async function runCheck() {
         // returns null when the header is absent — a looked-and-none answer, not a did-not-look — and
         // the readers separate those, so a probe that omits the field reads as never-looked rather
         // than silently as "no challenge".
+        // THE REDIRECT TARGET TRAVELS WITH IT (tracker issue 241). This request is already made with
+        // `redirect: "manual"`, so the Location an unauthenticated caller is handed is right here —
+        // and it is where Cloudflare Access puts the audience. Reading it from THIS response rather
+        // than asking a second time keeps `doctor` to one request per address, and keeps both answers
+        // about the same moment.
         probe = { ok: res.status < 500, status: res.status, error: null,
-          challenge: res.headers.get("www-authenticate") };
+          challenge: res.headers.get("www-authenticate"), location: res.headers.get("location") };
       } catch (e) { probe = { ok: false, status: null, error: String(e?.cause?.code ?? e?.name ?? e?.message ?? e) }; }
     }
     const reach = clientDoorReachability({ url: published, probe });
     if (reach.state === "pass") ok(reach.message);
     else if (reach.state === "fail") problem(reach.message);
     else info(reach.message);
+
+    // ── AND IS IT THE AUDIENCE THIS INSTALL CHECKS AGAINST? (tracker issue 241) ───────────────────
+    //
+    // The other half of the recreation trap, and the half with no symptom of its own. Deleting and
+    // recreating an Access application changes the audience; the existing warning fires on the
+    // CHALLENGE being wrong, so on a box where somebody recreated the application and then fixed the
+    // sign-in, everything above reads healthy and the stale audience stays invisible until a real
+    // request is rejected.
+    //
+    // No new credential and no provider API: the audience is in the redirect handed to a caller with
+    // no session at all, which is the request just made.
+    {
+      const { readAudience, audienceVerdict } = await import(join(REPO, "shared", "access-audience.mjs"));
+      const configuredAud = effectiveForService("CLEAROTRON_OIDC_AUDIENCE")?.v ?? "";
+      const read = readAudience(probe ?? { error: "the published address was never asked" });
+      // NOTHING IS CLAIMED ABOUT A BOX THAT USES NO EDGE. With no audience configured AND no Access
+      // challenge in front of the address, there is no question here — a local install is not a
+      // misconfigured hosted one, and saying so every time is how a reader learns to skim this.
+      if (configuredAud || read.kind !== "not-fronted") {
+        const v = audienceVerdict({ configured: configuredAud, read });
+        if (v.ok) ok(v.message);
+        // A COULD-NOT-LOOK IS SAID, NOT RAISED. The line above has already reported the address as
+        // unreachable; repeating it as a second failure teaches the reader that this section
+        // double-counts. It still states what was NOT established, which is the whole job.
+        else if (v.kind === "could-not-look") info(v.message);
+        else problem(v.message);
+      }
+    }
 
     // ── CAN AN ASSISTANT ACTUALLY SIGN IN? (tracker issue 149, opt-in) ────────────────────────────
     //
