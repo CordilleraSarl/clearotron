@@ -243,9 +243,19 @@ const optedOut = (env) => {
 
 // ── A SERVICE NEVER READS THE CHECKOUT, AND NOBODY HAS TO REMEMBER THAT ──────────────────────────────
 //
-// systemd sets INVOCATION_ID on every unit it starts, and nothing else does — a hand-run command, a
+// systemd sets INVOCATION_ID on every unit it starts, and nothing else SETS it — a hand-run command, a
 // test, an MCP client spawning the stdio server all have it unset. So "was I started as a service?" is
 // answerable without configuration, and this is the answer.
+//
+// SETS is not HAS, and the difference is inherited. Every descendant of a unit carries the variable, so
+// this answers yes for anything a unit launched however indirectly — a deploy timer running the CLI, a
+// wrapper script inside a service, a hosted CI runner's job, which is a descendant of the runner
+// agent's own unit. That is the right answer for all of them: each is unattended and configured by its
+// EnvironmentFile. It is written down because reading the line above as "only a unit itself has it"
+// costs a CI cycle to discover — a drive standing in for a hand-run CLI inherited the runner's
+// INVOCATION_ID, read no file, and failed three arms with a symptom three steps downstream. Measured
+// on this box: an interactive login shell inside a session scope has it UNSET, so the paragraph below
+// about a human-started process holds.
 //
 // It exists because the OTHER guard cannot be relied on. `Environment=CLEAROTRON_NO_ENV_FILE=1` lives in
 // the git-tracked unit files, and a unit file in git is not a unit file on a box: the deploy syncs
