@@ -3,7 +3,7 @@
 // The delivered narrative's coverage claims against what the run actually searched (tracker issue 134).
 //
 // WHAT THIS IS ABOUT. `coverage_line:` is code-stamped from scope-facts.json; the narrative is prose a
-// model writes. Nothing bound them. On `amber-summit` the masthead read `registers: JP, WO` while the
+// model writes. Nothing bound them. On one recorded run the masthead read `registers: JP, WO` while the
 // narrative said "Register searches covered Japan and Korea" — one of them was wrong and a human found
 // it by eye. They agree on today's runs because the prompt stopped contradicting itself, which is
 // evidence the INPUT was fixed, not evidence the surfaces are bound. This is the binding.
@@ -18,7 +18,7 @@ import { coverageClaimChecks } from "../predelivery-lint.mjs";
 const fired = (r) => r.filter((c) => !c.pass);
 const detail = (r) => fired(r).map((c) => c.detail).join(" ~ ");
 
-test("the recorded amber-summit failure fires: prose claims Korea, the run searched JP + WO", () => {
+test("the recorded coverage-claim failure fires: prose claims Korea, the run searched JP + WO", () => {
   const r = coverageClaimChecks({
     text: "Register searches covered Japan and Korea.",
     searchedJurisdictions: ["JP", "WO"],

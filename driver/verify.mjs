@@ -170,8 +170,8 @@ function needs(content, markers, label, names = []) {
 //
 // THE CLASS. Every gate below keys on prose the MODEL composes, so each is one phrasing drift away
 // from killing a run that produced the section perfectly. Measured across three runs and two engines:
-// pewter-lantern (codex) wrote "## Negative-results matrix" and was rejected twice, killing a client
-// run; umber-beacon (anthropic) wrote "## Negative results (per-cell detail)" — different spelling AND
+// one run on codex wrote "## Negative-results matrix" and was rejected twice, killing the run; another
+// on anthropic wrote "## Negative results (per-cell detail)" — different spelling AND
 // different trailing words, same skill. PR 336 widened the regex to `[\s-]`, which fixed those two
 // instances and left the class exactly where it was: the gate still asks the model to guess a spelling.
 //

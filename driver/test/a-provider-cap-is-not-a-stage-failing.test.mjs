@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // Cap parks: their own ladder, and the provider's clock beats it (tracker issue 103).
 //
-// Owner, watching indigo-falcon spend 4 of its 6 recovery parks against one subscription cap:
+// Owner, watching a run spend 4 of its 6 recovery parks against one subscription cap:
 // "surely it can work out when the cap expires and try after that time and not just keep trying and
 // then die." The run died on "exhausted retries" when the true state was "blocked until the provider's
 // clock ticks" — a temporary condition translated into a terminal one.
@@ -61,7 +61,7 @@ test("a hint inside the floor is not honoured — a cap resetting 'now' must not
   assert.equal(r.basis, "ladder", "a reset five seconds out would otherwise probe immediately, and again, and again");
 });
 
-// The classification, over the population rather than the one message indigo-falcon happened to carry.
+// The classification, over the population rather than the one message that run happened to carry.
 test("cap classification: a quota is a cap, an outage is not", () => {
   for (const reason of [
     "codex usage limit reached — try again later",
@@ -116,7 +116,7 @@ test("the schedule is PURE — same inputs, same answer, no clock read", () => {
 // "stayed overloaded or unreachable … Re-trigger once the provider is healthy." Every clause of that
 // is wrong for a cap: the provider was healthy, re-triggering hits the same cap, and it points the
 // reader at an availability problem they cannot act on. The owner pre-committed the wording watching
-// indigo-falcon: a subscription outcome, never an engine finding.
+// The pre-committed wording: a subscription outcome, never an engine finding.
 
 const capRow = (over = {}) => ({ sig: "s", stage: "synthesis", lane: "weather", capPark: true, recoveryWaitMin: 60, recoveryWaitBasis: "ladder", ...over });
 
