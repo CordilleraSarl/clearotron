@@ -59,7 +59,12 @@ test("tracker issue 174 — the shared verdict calls the outage's own door shape
 
   // And the two it gets unambiguously right, which is why it is still the authority for those.
   assert.equal(verdictFor({ status: 302, ok: true, challenge: "Cloudflare-Access", error: null }).state, "fail");
-  assert.equal(verdictFor({ status: null, ok: false, challenge: null, error: "ECONNREFUSED" }).state, "fail");
+  // A REFUSED CONNECTION MOVED TO `unsettled` (tracker issue 222) — see the arms at the foot of this
+  // file. It is not a `fail` because at boot it is far more often a startup race than an outage, and
+  // the old branch stated the outage in the present tense with a 502 attached.
+  assert.equal(verdictFor({ status: null, ok: false, challenge: null, error: "ECONNREFUSED" }).state, "unsettled");
+  // A door that ANSWERED something wrong is still a fail — waiting does not fix a 500.
+  assert.equal(verdictFor({ status: 500, ok: false, challenge: null, error: null }).state, "fail");
   assert.equal(verdictFor(null).state, "unprobed", "no probe was read as a verdict");
   assert.equal(verdictFor({ status: 401, ok: true, challenge: null, error: null }).state, "pass");
 });
@@ -103,4 +108,63 @@ test("tracker issue 174 — a boot diagnostic never stops the portal coming up",
     "a probe that could not run reports nothing at all, which reads as a lane that was checked and passed");
   assert.match(block, /AbortSignal\.timeout/,
     "the boot probe has no timeout, so an unreachable door delays every start by however long the OS waits");
+});
+
+// ── 222 · A STARTUP RACE IS NOT AN OUTAGE ───────────────────────────────────────────────────────────
+//
+// On a simultaneous restart of the unit set the portal binds before the engine door — the units carried
+// no ordering between them — and the boot probe logged an outage in the present indicative with a
+// client-facing consequence: "a clearance ordered from the portal returns 502 while the portal's own
+// health endpoint stays 200."
+//
+// That sentence is false twice. It is false seconds later, once the door finishes binding. And it is
+// false as a prediction at any time: the submit path makes a fresh upstream call per request inside its
+// own try/catch and never consults this verdict, so nothing about a boot-time refusal determines what a
+// clearance does. It printed on every reboot and cost a diagnostic detour during the 0.1.6 upgrade.
+
+test("222 nothing listening yet does not claim a clearance returns 502", () => {
+  const v = verdictFor({ status: null, ok: false, challenge: null, error: "ECONNREFUSED" });
+  assert.equal(v.state, "unsettled");
+  assert.doesNotMatch(v.message, /502/,
+    "the boot probe still predicts a 502 from a connection nothing answered — the submit path re-probes "
+    + "per request and never reads this verdict, so it cannot know that");
+  assert.doesNotMatch(v.message, /DOES NOT ANSWER/,
+    "the message still states an outage in the present indicative about a box that is probably starting");
+  assert.match(v.message, /BOOT-TIME OBSERVATION, NOT A VERDICT/,
+    "the message does not say what kind of claim it is, which is the whole finding");
+  // AND IT STILL SAYS WHAT TO DO IF IT PERSISTS. Softening a message into saying nothing would trade
+  // one useless line for another.
+  assert.match(v.message, /still true after the box has settled/,
+    "a reader whose door is genuinely down is left with no next step");
+});
+
+test("222 a door that ANSWERED wrongly keeps the full warning — the fix is not a mute", () => {
+  // The same branch emits the real thing, and that is exactly why the split has to be on evidence
+  // rather than on tone. A 500 is a fault no amount of waiting repairs.
+  for (const probe of [{ status: 500, ok: false, challenge: null, error: null },
+                       { status: 404, ok: false, challenge: null, error: null }]) {
+    const v = verdictFor(probe);
+    assert.equal(v.state, "fail", `a door answering ${probe.status} stopped being reported as a failure`);
+    assert.match(v.message, /DOES NOT ANSWER/);
+  }
+});
+
+test("222 only `fail` is logged as a WARNING, so the word still means something", () => {
+  const src = readFileSync(join(REPO, "driver", "portal-service.mjs"), "utf8");
+  assert.match(src, /if \(lane\.state === "fail"\) log\(`WARNING: trigger lane/,
+    "a real lane failure no longer announces itself as a warning");
+  assert.match(src, /lane\.state === "unsettled" \|\| lane\.state === "unprobed"/,
+    "the unsettled state is not handled at the log site, so it falls through to the branch that reports "
+    + "a door which answered — and prints a status of `?` for a probe that got nothing");
+});
+
+test("222 the portal unit is ordered after the engine door it calls", () => {
+  const unit = readFileSync(join(REPO, "driver", "systemd", "clearotron-portal.service"), "utf8");
+  assert.match(unit, /^After=clearotron-mcp-face\.service$/m,
+    "the portal carries no ordering against the engine door, so a simultaneous restart races them");
+  // `Wants=` WOULD BE A DIFFERENT CHANGE. A portal serving with no engine door is a supported state —
+  // the pages work, only the Start button's upstream is missing — so pulling the door in as a
+  // dependency would change what installing this unit means.
+  assert.doesNotMatch(unit, /^Wants=clearotron-mcp-face\.service$/m,
+    "the ordering became a dependency, which changes what installing the portal unit does");
 });

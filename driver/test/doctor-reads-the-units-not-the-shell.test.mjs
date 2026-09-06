@@ -254,3 +254,92 @@ test("2192-F9 a loginctl that cannot answer is a could-not-look, never an 'it is
       "and the shim's raw stderr must not reach the report any more than systemctl's did");
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
+
+// ── 226 · THE DOOR SECTION IS THE THIRD SECTION THAT READ THE WRONG FILE ─────────────────
+//
+// F34 fixed two sections that claimed facts about the units while reading the operator's shell. The
+// door check was a third, and it made the loudest claim in the command: a hard ✗ reading "NOBODY can
+// use this portal … Any identity that signs in is refused at the door on every page", present
+// indicative, about the live box, with a non-zero exit.
+//
+// MEASURED 2026-09-06 on a healthy packaged install: that ✗ printed while `GET /portal/api/me` returned
+// `{"role":"staff"}` for the local user. The units' file carried `PORTAL_STAFF_DOMAINS=localhost` and
+// the identity was `<user>@localhost`, so the running service admitted it as staff on every request.
+// Doctor read the CLI's own `.env`, where that name does not appear.
+//
+// BOTH DIRECTIONS ARE DRIVEN HERE, and that pairing is the acceptance rather than a courtesy: a fix
+// that only satisfies the quiet direction is indistinguishable from deleting the check, and the check
+// guards a real incident — 2026-08-26, a leftover PORTAL_STAFF_DOMAINS locked the owner out of his own
+// portal while every surface looked healthy.
+
+const LOCKOUT = /NOBODY can use this portal/;
+
+function homeWithGrants(envLines, grants = { tenants: {} }) {
+  const home = installedHome("");   // units + an ~/.env we are about to rewrite
+  const grantsPath = join(home, "grants.json");
+  writeFileSync(grantsPath, JSON.stringify(grants));
+  writeFileSync(join(home, ".env"),
+    [...envLines, `CLEAROTRON_ACCESS_FILE=${grantsPath}`, ...GOOD_ENV.trim().split("\n")].join("\n") + "\n");
+  return home;
+}
+
+test("226 a local install whose UNITS name a staff domain is not reported as locking everybody out", () => {
+  // The measured shape: local sign-in, one user, no guest-list rows, and the staff domain that admits
+  // them living in the file the units load and nowhere else.
+  const home = homeWithGrants([
+    "PORTAL_AUTH_MODE=local",
+    "PORTAL_STAFF_DOMAINS=localhost",
+    "PORTAL_LOCAL_USER=op@localhost",
+  ]);
+  try {
+    const r = doctor(home);
+    assert.doesNotMatch(r.out, LOCKOUT,
+      `doctor claimed nobody can use a portal whose units admit op@localhost as staff:\n${r.out}`);
+    // AND IT SAYS WHERE IT LOOKED. The old text disclaimed itself in a `·` — "what THIS environment
+    // implies, not what the running service serves" — directly above the ✗. A caveat does not repair a
+    // false claim standing beside it; naming the file does, because the reader can check it.
+    assert.match(r.out, /the file the units load/,
+      "the door section does not say which file it read, so a reader cannot tell a real lockout from a misread file");
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("226 THE PLANT — a genuine lockout still fires, or the fix is a silencer", () => {
+  // No staff domain, no rows, and a mode that is not local: nothing here admits anybody, and this is
+  // the 2026-08-26 incident's shape. If this goes quiet the check has been deleted, not repaired.
+  const home = homeWithGrants(["PORTAL_AUTH_MODE=auth-proxy"]);
+  try {
+    const r = doctor(home);
+    assert.match(r.out, LOCKOUT,
+      `the real lockout stopped being reported — the fix silenced the check rather than aiming it:\n${r.out}`);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("226 a local install with NO staff domain and no rows is still reported — the mode is not an exemption", () => {
+  // The fix originally filed was "exempt PORTAL_AUTH_MODE=local". It would have been wrong twice: the
+  // variable was absent from the file being read, AND a local install genuinely admitting nobody is a
+  // real lockout. `portal-service.mjs:4438` states the rule — a local sign-in produces an email and
+  // nothing else, and the roster still decides.
+  const home = homeWithGrants(["PORTAL_AUTH_MODE=local", "PORTAL_LOCAL_USER=op@localhost"]);
+  try {
+    const r = doctor(home);
+    assert.match(r.out, LOCKOUT,
+      `a local install that admits nobody was let through on its mode alone:\n${r.out}`);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("226 units whose environment cannot be read withhold the verdict rather than guessing it", () => {
+  // Every name resolves empty when the read fails, which is indistinguishable from a box that has
+  // configured nothing — and would print the loudest ✗ in this command on no evidence at all. This is
+  // F34's own lesson applied to the section F34 did not reach.
+  const home = installedHome("");
+  try {
+    const unitDir = join(home, ".config", "systemd", "user");
+    for (const u of UNITS)
+      writeFileSync(join(unitDir, u), `[Service]\nEnvironmentFile=%h/gone.env\nExecStart=/bin/true\n`);
+    const r = doctor(home);
+    assert.doesNotMatch(r.out, LOCKOUT,
+      `doctor asserted a lockout from a read that failed:\n${r.out}`);
+    assert.match(r.out, /could not be read|not judged here/,
+      "the failure to look is not stated, so silence here is indistinguishable from a clean box");
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});

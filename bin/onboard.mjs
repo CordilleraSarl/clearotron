@@ -1638,16 +1638,68 @@ export async function runCheck() {
     }
   }
 
+  // ── ONE READING OF THE UNITS' ENVIRONMENT, FOR EVERY SECTION THAT CLAIMS ANYTHING ABOUT THEM ─────
+  //
+  // F34: two sections asserted facts about the units while reading the operator's shell, and both of
+  // their reported problems were false on a correctly-running install. Resolving this once, here, is
+  // deliberate — a second reader would drift from this one exactly as the composer and the checker did
+  // in F41, and the drift is invisible because both sides keep passing their own arms.
+  const unitDir = join(homedir(), ".config", "systemd", "user");
+  const { BACKGROUND_UNITS } = await import(join(REPO, "bin", "start.mjs"));
+  const hosted = BACKGROUND_UNITS.some((u) => existsSync(join(unitDir, u)));
+  const unitEnv = hosted
+    ? unitEnvironment({
+        units: BACKGROUND_UNITS.map((u) => ({ name: u, text: readIfPresent(join(unitDir, u)) })),
+        readEnvFile: readIfPresent,
+        // These are USER units under ~/.config/systemd/user, so systemd's %h is this home.
+        home: homedir() })
+    : null;
+
+  // ── AND THE DOOR SECTION IS THE THIRD SUCH SECTION (tracker issue 226) ──────────────────────────
+  //
+  // The reading above was hoisted here from further down for this. It used to be resolved BELOW the
+  // door check, so the one section making the loudest claim about the running service — "NOBODY can
+  // use this portal" — was the one section that could not consult it.
+  //
+  // MEASURED 2026-09-06 on a healthy packaged install: `doctor` printed that ✗ and exited 1 on a box
+  // where the local user signs in and `GET /portal/api/me` returns `{"role":"staff"}`. The units' file
+  // carries `PORTAL_STAFF_DOMAINS=localhost`, the identity is `<user>@localhost`, and the running
+  // service admits it as staff. This command reads the CLI's own `.env`, where neither that name nor
+  // `PORTAL_AUTH_MODE` appears — so the check was not ignoring the auth mode, it never saw it.
+  //
+  // The disclosure was already here and one severity too quiet: a `·` saying "what THIS environment
+  // implies, not what the running service serves", directly above a `✗` phrased in the present
+  // indicative about the live box. A caveat does not repair a false claim standing beside it.
+  //
+  // SO THE VALUES COME FROM THE FILE THE SERVICE READS when this box is hosted, and the source is named
+  // beside the verdict rather than left to a caveat. Not an exemption for `PORTAL_AUTH_MODE=local`,
+  // which was the fix originally filed: that variable is absent from the file this command was reading,
+  // so exempting on it would have changed nothing at all.
+  const serviceEnvLabel = hosted ? "the units' environment" : "your environment file";
+  const serviceEnvFile = hosted ? join(homedir(), ".env") : READ_ENV_PATH();
+  // A HOSTED BOX WHOSE UNIT ENVIRONMENT COULD NOT BE READ ANSWERS `null`, NEVER `fileEnv`. Falling back
+  // to the CLI's file there would reproduce this defect exactly, and silently — `unitEnvironment`
+  // already distinguishes a failure to look, and the door check below refuses to claim a lockout on one.
+  const serviceKnown = !hosted || unitEnv?.known === true;
+  const serviceFileEnv = hosted ? (unitEnv?.known === true ? unitEnv.env : null) : fileEnv;
+  const effectiveForService = (k, names = [k]) => {
+    for (const name of names) {
+      if (present(process.env[name])) return { v: process.env[name], from: "environment", name };
+      if (serviceFileEnv && present(serviceFileEnv[name])) return { v: serviceFileEnv[name], from: serviceEnvLabel, name };
+    }
+    return null;
+  };
+
   say("\n  Portal door");
   {
     const { authView } = await import("../driver/portal-config-view.mjs");
     const door = authView({
-      mode: effective("PORTAL_AUTH_MODE")?.v ?? "",
-      oidcIssuer: effective("PORTAL_OIDC_ISSUER")?.v ?? "",
-      team: effective("CF_ACCESS_TEAM")?.v ?? "",
-      jwksUrl: effective("PORTAL_JWKS_URL")?.v ?? "",
-      emailClaim: effective("PORTAL_EMAIL_CLAIM")?.v ?? "",
-      authHeader: effective("PORTAL_AUTH_HEADER")?.v ?? "",
+      mode: effectiveForService("PORTAL_AUTH_MODE")?.v ?? "",
+      oidcIssuer: effectiveForService("PORTAL_OIDC_ISSUER")?.v ?? "",
+      team: effectiveForService("CF_ACCESS_TEAM")?.v ?? "",
+      jwksUrl: effectiveForService("PORTAL_JWKS_URL")?.v ?? "",
+      emailClaim: effectiveForService("PORTAL_EMAIL_CLAIM")?.v ?? "",
+      authHeader: effectiveForService("PORTAL_AUTH_HEADER")?.v ?? "",
     });
     const typed = door.declared ? `PORTAL_AUTH_MODE=${door.declared}` : "PORTAL_AUTH_MODE is unset";
     // NOT A TICK, AND THAT IS THE POINT. This reads the environment THIS command is
@@ -1661,9 +1713,17 @@ export async function runCheck() {
     // The reading is still worth printing — it is what a hand-run process here would use, and it is
     // what `clearotron start` would launch from. It is stated as that, and the sentence below says
     // where the running answer lives.
-    info(`what THIS environment implies, not what the running service serves — a portal started by `
-      + `\`${invocationPrefix()}clearotron start\` is launched with PORTAL_AUTH_MODE injected, and a systemd unit's `
-      + `EnvironmentFile can differ again. The running door is in the service's own boot log.`);
+    // NAMED, NOT CAVEATED (tracker issue 226). This used to disclaim itself — "what THIS environment
+    // implies, not what the running service serves" — directly above a ✗ that asserted a lockout on the
+    // live box. The values now come from the file the service actually loads, so the line says which
+    // file that was and the verdicts below stand on it.
+    info(hosted
+      ? `read from ${serviceEnvFile} — the file the units load, which is what the running service sees`
+      : `read from ${serviceEnvFile} — this box has no units installed, so a portal here is one `
+        + `\`${invocationPrefix()}clearotron start\` launches from this file`);
+    if (!serviceKnown)
+      info(`the units are installed but their environment could not be read (${unitEnv?.why ?? "no reason given"}) — `
+        + "the door verdicts below are withheld rather than guessed, because a failure to look is not a finding");
     if (door.shape === "local") {
       say(`  · local passphrase door (${typed}) — one operator, one passphrase, no identity provider`);
       info(`a lost passphrase is recoverable: ${invocationPrefix()}clearotron passphrase --reset`);
@@ -1700,9 +1760,12 @@ export async function runCheck() {
     // this command's whole contract.
     try {
       const { makePrincipal } = await import("../driver/portal-access.mjs");
-      const staffDomains = String(effective("PORTAL_STAFF_DOMAINS")?.v ?? "")
+      // ASKED OF THE SERVICE'S OWN ENVIRONMENT (tracker issue 226). Reading this command's file here is
+      // what produced a hard ✗ claiming nobody could use a portal that was admitting its operator as
+      // staff on every request.
+      const staffDomains = String(effectiveForService("PORTAL_STAFF_DOMAINS")?.v ?? "")
         .split(",").map((d) => d.trim()).filter(Boolean);
-      const grantsFile = effective("CLEAROTRON_ACCESS_FILE")?.v ?? "";
+      const grantsFile = effectiveForService("CLEAROTRON_ACCESS_FILE")?.v ?? "";
       let grants = null, unreadable = null;
       if (grantsFile) {
         try { grants = JSON.parse(readFileSync(grantsFile, "utf8")); }
@@ -1711,15 +1774,21 @@ export async function runCheck() {
       const rows = Object.values(grants?.tenants ?? {})
         .reduce((n, t) => n + Object.keys(t?.users ?? {}).length, 0);
 
-      if (unreadable) {
+      // A FAILURE TO LOOK IS NOT A LOCKOUT (tracker issue 226). On a hosted box whose unit environment
+      // could not be read, every name above resolves empty — which is indistinguishable from a box that
+      // has genuinely configured nothing, and would print the loudest ✗ in this command on no evidence.
+      if (!serviceKnown) {
+        info("who may use this portal is not judged here: the units' environment could not be read, so a "
+          + "staff domain or a guest list configured there would be invisible to this check");
+      } else if (unreadable) {
         problem(`the guest list at ${grantsFile} could not be read (${unreadable}) — the portal refuses `
           + `every request while that is true, and this is a failure to look rather than an empty list`);
       } else if (!staffDomains.length && !rows) {
         // PRESENT-AND-WRONG vs ABSENT. A configured portal that grants nobody is wrong: every page
         // refuses and the symptom reads as a broken login. A box that has configured neither is a
         // fresh install, which is loud but not a failure — the same rule the rest of this command uses.
-        const configured = Boolean(grantsFile) || Boolean(effective("PORTAL_AUTH_MODE")?.v);
-        const sentence = "NOBODY can use this portal: no staff domain is set (PORTAL_STAFF_DOMAINS) and "
+        const configured = Boolean(grantsFile) || Boolean(effectiveForService("PORTAL_AUTH_MODE")?.v);
+        const sentence = `NOBODY can use this portal, per ${serviceEnvFile}: no staff domain is set (PORTAL_STAFF_DOMAINS) and `
           + `the guest list holds no rows${grantsFile ? ` (${grantsFile})` : " (CLEAROTRON_ACCESS_FILE is unset)"}. `
           + "Any identity that signs in is refused at the door on every page, which reads as a broken "
           + `login rather than as missing access. Fix with \`${invocationPrefix()}clearotron grant add\`, `
@@ -1733,7 +1802,7 @@ export async function runCheck() {
         // AND THE ONE IDENTITY THIS BOX SIGNS IN, when the local door is what this environment implies.
         // NAMES the address because it is this operator's own, on their own box, in a report they asked
         // for — the same address `clearotron start` prints back at them.
-        const localUser = effective("PORTAL_LOCAL_USER")?.v ?? "";
+        const localUser = effectiveForService("PORTAL_LOCAL_USER")?.v ?? "";
         if (door.shape === "local" && localUser) {
           if (makePrincipal({ email: localUser, grants, staffDomains })) ok(`  and ${localUser} is one of them`);
           else problem(`  but ${localUser} — the identity this box's local sign-in produces — is on no staff `
@@ -1859,23 +1928,6 @@ export async function runCheck() {
   // Every surface on that box was green while the portal's Start button had no engine to call. This is
   // the only check that asks the question the client's own path asks, so it goes before the connector
   // section: a dead submit lane matters more than a connector nobody has configured yet.
-  // ── ONE READING OF THE UNITS' ENVIRONMENT, FOR EVERY SECTION THAT CLAIMS ANYTHING ABOUT THEM ─────
-  //
-  // F34: two sections asserted facts about the units while reading the operator's shell, and both of
-  // their reported problems were false on a correctly-running install. Resolving this once, here, is
-  // deliberate — a second reader would drift from this one exactly as the composer and the checker did
-  // in F41, and the drift is invisible because both sides keep passing their own arms.
-  const unitDir = join(homedir(), ".config", "systemd", "user");
-  const { BACKGROUND_UNITS } = await import(join(REPO, "bin", "start.mjs"));
-  const hosted = BACKGROUND_UNITS.some((u) => existsSync(join(unitDir, u)));
-  const unitEnv = hosted
-    ? unitEnvironment({
-        units: BACKGROUND_UNITS.map((u) => ({ name: u, text: readIfPresent(join(unitDir, u)) })),
-        readEnvFile: readIfPresent,
-        // These are USER units under ~/.config/systemd/user, so systemd's %h is this home.
-        home: homedir() })
-    : null;
-
   // ── SETTINGS THIS BUILD DOES NOT READ ( tracker issue 168) ────────────────────────────────────────
   //
   // THE SURFACE AN OPERATOR CHECKS AFTER AN UPGRADE, and until now the surface that told them
