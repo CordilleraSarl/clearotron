@@ -19,7 +19,7 @@
 // receives, so it loads the brand webfonts the client's browser loads. Two scripts, two intents; do not
 // "fix" either to match the other.
 import { spawn } from "node:child_process";
-import { assertPageLoaded } from "./headless-page.mjs";   // tracker issue 227 — did chrome open the report, or its own error page?
+import { assertPageLoaded, cjkCharsIn, cjkVerdict, fontsCovering } from "./headless-page.mjs";   // tracker issue 227 — did chrome open the report, or its own error page?
 import { mkdtempSync, writeFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname, resolve } from "node:path";
@@ -123,6 +123,32 @@ if (typeof top !== "number") {
   console.error(`report-screenshot: no element matched ${JSON.stringify(ANCHOR)} — nothing to anchor the frame to.`);
   chrome.kill(); process.exit(1);
 }
+// ── CAN THIS BOX DRAW WHAT THE PAGE SAYS? (tracker issue 227) ───────────────────────────────────────
+//
+// The default demo product's report carries the mark's native-script renderings — ベンクリ, ベンコリ,
+// ヴェンコリ — and they are load-bearing: the verdict sentence reads "A live Japanese class 9
+// registration reading ベンクリ covers measuring and testing instruments". With no CJK-capable font
+// those render as empty boxes, twice in the captured frame, and nothing said so.
+//
+// The wait for `document.fonts.ready` above was written against exactly this class — "the failure is a
+// screenshot in the wrong typeface that nobody notices until it is in the README" — and solved the
+// TYPEFACE half. This is the WRITING-SYSTEM half, in the same script.
+//
+// REFUSES rather than warns. This writes an image that goes into the README by hand; a warning on a
+// terminal nobody is reading when the file is already written is the shape that produced the defect
+// above it. `--allow-tofu` is there for a reader who genuinely wants the frame anyway and has been told
+// what is in it.
+const pageText = await evaluate("document.body ? document.body.innerText : ''");
+const cjkChars = cjkCharsIn(pageText);
+const glyphs = cjkVerdict({ cjkChars, covering: fontsCovering("ja"),
+  sample: (String(pageText).match(/[\u3040-\u30ff\u4e00-\u9fff]{2,8}/u) ?? [])[0] ?? "" });
+if (!glyphs.ok && !process.argv.includes("--allow-tofu")) {
+  console.error(`report-screenshot: ${glyphs.why}`);
+  console.error("  Pass --allow-tofu to capture it anyway, knowing the frame is missing those glyphs.");
+  chrome.kill(); process.exit(1);
+}
+if (!glyphs.ok) console.error(`report-screenshot: WARNING — ${glyphs.why} Capturing anyway (--allow-tofu).`);
+
 const y = Math.max(top - 56, 0);   // a little air above the title, so the page does not read as cropped
 const shot = await cmd("Page.captureScreenshot", { format: "png", captureBeyondViewport: true,
   clip: { x: 0, y, width: WIDTH, height: HEIGHT, scale: 1 } });
@@ -132,4 +158,4 @@ const fonts = await cmd("Runtime.evaluate", { expression: "document.fonts.size +
 chrome.kill();
 // NAMES WHAT IT CERTIFIED. "an h1 was found" is true of the error page this used to photograph; the
 // run id is read out of the document and is the thing a reader can check against the report they meant.
-console.log(`report-screenshot: wrote ${OUT} of run ${runId || "(no run id in the page)"} (${WIDTH}x${HEIGHT}, anchor ${JSON.stringify(ANCHOR)} at y=${Math.round(y)}, fonts ${fonts?.result?.result?.value ?? "?"})`);
+console.log(`report-screenshot: wrote ${OUT} of run ${runId || "(no run id in the page)"} (${WIDTH}x${HEIGHT}, anchor ${JSON.stringify(ANCHOR)} at y=${Math.round(y)}, fonts ${fonts?.result?.result?.value ?? "?"}, ${glyphs.kind})`);

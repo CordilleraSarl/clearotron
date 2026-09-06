@@ -3,6 +3,8 @@
 //
 // headless-page.mjs — did the browser open the page we asked for, or something of its own?
 //
+// (and, since tracker issue 227 criteria 3-4, whether this box can draw what that page says)
+//
 // ── WHY THIS EXISTS (tracker issue 227) ─────────────────────────────────────────────────────────────
 //
 // Seven scripts drive headless Chrome and none of them asked. They cannot ask the obvious way: Chrome is
@@ -29,6 +31,8 @@
 // is readable, and is not the artefact this script is about would pass the address check — an empty
 // render, a stale page, a half-written document. So the caller names one thing that only its own artefact
 // carries, and the verdict says which of the two failed.
+
+import { execFileSync } from "node:child_process";
 
 /** Chrome's own error pages live under this scheme. Nothing a real document is served from does. */
 export const CHROME_ERROR_SCHEME = "chrome-error:";
@@ -149,4 +153,73 @@ export function chromeErrorPage(dom = "") {
   return /chrome-error:\/\//.test(t)
     || /id="?main-frame-error"?/.test(t)
     || /jstcache=|<body[^>]*\bid="?neterror"?/.test(t);
+}
+
+// ── CAN THIS BOX DRAW WHAT THE PAGE SAYS? (tracker issue 227, criteria 3 and 4) ──────────────────────
+//
+// The default demo product is a full-country search, and its report carries the mark's native-script
+// renderings — ベンクリ, ベンコリ, ヴェンコリ. They are LOAD-BEARING: the verdict sentence reads "A live
+// Japanese class 9 registration reading ベンクリ covers measuring and testing instruments".
+//
+// On a box with no CJK-capable font those render as `□□□`, twice in the captured frame, and nothing
+// says so. The script's own comment already names this class of failure — "the failure is a screenshot
+// in the wrong typeface that nobody notices until it is in the README" — and it waits for
+// `document.fonts.ready` to prevent it. That solved the TYPEFACE problem and left the WRITING-SYSTEM one,
+// in the same script, with the same failure mode.
+//
+// ASKED OF FONTCONFIG, not of the page. `document.fonts` reports the faces a page ASKED for and got; it
+// says nothing about whether the glyphs exist. `fc-list :lang=ja` answers the question actually being
+// asked — can anything on this box draw these characters — and it is the same source a reader would
+// check by hand.
+
+/** Han, Hiragana, Katakana, Hangul — the ranges a Latin-only font set leaves as tofu. */
+const CJK = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uac00-\ud7af]/gu;
+
+/** How many characters in this text need a CJK-capable font. */
+export function cjkCharsIn(text = "") {
+  return (String(text).match(CJK) ?? []).length;
+}
+
+/**
+ * PURE. Given what the page needs and what the box has, is the frame trustworthy?
+ *
+ * `covering` is the number of fonts fontconfig reports for the writing system — `null` means the caller
+ * could not ask, which is NOT zero: a box where `fc-list` is missing is a box this cannot judge, and
+ * reporting it as "no coverage" would refuse a machine that may be fine.
+ */
+export function cjkVerdict({ cjkChars = 0, covering = 0, sample = "" } = {}) {
+  if (!cjkChars) return { ok: true, kind: "no-cjk", why: "the page carries no CJK characters." };
+  if (covering === null) {
+    return { ok: true, kind: "unknown-coverage",
+      why: `the page carries ${cjkChars} CJK character(s) and this run could not ask fontconfig what can `
+        + "draw them. Not a refusal — a box that cannot be asked is not a box known to be missing fonts — "
+        + "but the frame is unverified on that point." };
+  }
+  if (covering > 0) {
+    return { ok: true, kind: "covered",
+      why: `the page carries ${cjkChars} CJK character(s) and ${covering} installed font(s) cover them.` };
+  }
+  return { ok: false, kind: "tofu",
+    why: `the page carries ${cjkChars} CJK character(s)${sample ? ` (${sample})` : ""} and NO installed `
+      + "font can draw them — `fc-list :lang=ja` reports none. They render as empty boxes, and the frame "
+      + "would go out with the mark's own native-script rendering missing. Install a CJK font (on Debian "
+      + "and Ubuntu: `fonts-noto-cjk`), or set XDG_DATA_HOME to a directory holding one." };
+}
+
+/**
+ * How many installed fonts cover a writing system, per fontconfig — or `null` if we could not ask.
+ *
+ * `null` IS THE POINT. `fc-list` missing, or a fontconfig that errors, is a box this cannot judge, and
+ * collapsing that into 0 would refuse a machine that may be perfectly able to draw the page. The caller
+ * treats the two differently, which is the whole reason this returns three values and not a number.
+ */
+export function fontsCovering(lang = "ja", { run } = {}) {
+  try {
+    const out = run
+      ? run(["-f", "%{file}\\n", `:lang=${lang}`])
+      : execFileSync("fc-list", ["-f", "%{file}\\n", `:lang=${lang}`], { encoding: "utf8", timeout: 20_000 });
+    return String(out).split("\n").map((l) => l.trim()).filter(Boolean).length;
+  } catch {
+    return null;
+  }
 }
