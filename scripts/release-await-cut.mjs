@@ -54,11 +54,33 @@ import { cutDecision, versionAtHead, tagsHere } from "./release-cut-decision.mjs
 /**
  * Default bound: fifteen minutes at thirty-second steps. Both are arguments so an arm can drive the loop.
  *
- * FIFTEEN, and the job's `timeout-minutes` is 30 to contain it — a budget smaller than its own longest
- * step cancels the job at the moment it was about to publish, and a cancelled run reads as neither a
- * success nor a failure to anybody scanning the list.
+ * TWENTY-FIVE, RAISED FROM FIFTEEN (tracker issue 247), because this waits for the version pull
+ * request's OWN CI and that is what it must clear. Measured over the first three cuts, the wait held
+ * 552 s, 622 s and 686 s against a 900 s budget — rising every time, and the thing it waits on is the
+ * offline suite, which grows on purpose every time anybody adds an arm. The margin was one slow queue.
+ *
+ * AND THE FAILURE IS SILENT, which is why the margin has to be generous rather than adequate. Running
+ * out is a quiet exit 0 by design — an ordinary "nothing merged" must not read as a fault — so the
+ * first time this budget is exceeded, the release is simply stranded behind a green tick. There is no
+ * red to notice. The cron floor underneath would eventually publish it, which makes the silence worse
+ * rather than better: the version ships late, from a different run, with nobody told why.
+ *
+ * THE JOB'S `timeout-minutes` MUST EXCEED THIS, with room for the checkout and install above it. A
+ * budget smaller than its own longest step cancels the job at the moment it was about to publish, and a
+ * cancelled run reads as neither a success nor a failure to anybody scanning the list. The comment here
+ * used to say the job was capped at 30 while the job actually said 25 — harmless at a 15 minute wait,
+ * and exactly the sort of thing that stops being harmless when somebody raises one number and believes
+ * a sentence about the other. `MIN_JOB_MARGIN_MS` is what an arm holds the pair to now.
  */
-export const WAIT_MS = 15 * 60 * 1000;
+export const WAIT_MS = 25 * 60 * 1000;
+
+/**
+ * How far the job's budget must exceed the wait's: enough for the checkout, the install and the pack
+ * that surround it. Five minutes, which is generous against the ~90 s those actually take, because the
+ * cost of being wrong in this direction is a cancelled publish and the cost of being wrong in the other
+ * is a runner held slightly longer.
+ */
+export const MIN_JOB_MARGIN_MS = 5 * 60 * 1000;
 
 /**
  * The bound, overridable for one caller only: the dry-run rehearsal.

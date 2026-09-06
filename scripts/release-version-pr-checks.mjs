@@ -131,7 +131,31 @@ export function checksVerdict({ checkRuns = [], workflowRuns = [], policy = null
  * incident, and this is the difference between a false red on the version job — cheap, loud, retried by
  * the next push — and a red that means what it says.
  */
-export async function waitForChecks({ read, sleep, attempts = 32, everyMs = 15000 } = {}) {
+/**
+ * This file's own window: 32 attempts at 15 s, or eight minutes.
+ *
+ * NAMED SO AN ARM CAN COUPLE THE JOB'S BUDGET TO IT (tracker issue 247). The `version` job's
+ * `timeout-minutes` has to contain THIS wait, and the arm that claimed to check that compared the job
+ * against `release-await-cut.mjs`'s constant instead — a different wait, in a different job, which this
+ * job never runs. It held by luck and would have failed the moment that unrelated number was raised.
+ */
+export const CHECK_ATTEMPTS = 32;
+export const CHECK_EVERY_MS = 15_000;
+export const CHECKS_WINDOW_MS = CHECK_ATTEMPTS * CHECK_EVERY_MS;
+
+/**
+ * What the `version` job spends around this wait: checkout, install, the changesets action that cuts the
+ * pull request, and the cut/awaited steps either side of it.
+ *
+ * This margin belongs to THIS file for the same reason the window does. `release-await-cut.mjs` exports a
+ * margin of its own with the same name-shape and a different subject — the checkout and install around the
+ * `awaited` job's wait. Coupling the version job's budget to that one repeats the very defect this issue
+ * closes, one size smaller: raising the other job's margin would move this job's requirement, about a job
+ * whose behaviour had not changed. Two jobs, two waits, two margins, and no number shared between them.
+ */
+export const CHECKS_JOB_MARGIN_MS = 4 * 60 * 1000;
+
+export async function waitForChecks({ read, sleep, attempts = CHECK_ATTEMPTS, everyMs = CHECK_EVERY_MS } = {}) {
   if (typeof read !== "function") throw new Error("release-version-pr-checks: waitForChecks needs a read()");
   let seen = null;
   for (let i = 1; i <= attempts; i++) {
