@@ -108,18 +108,26 @@ function matches(path, glob) {
 /** Paths that ship as code but say nothing to a reader on their own. */
 export const NEVER_A_NOTE = [/(^|\/)CHANGELOG\.md$/, /(^|\/)package(-lock)?\.json$/, /^\.changeset\//];
 
-const baseArg = () => {
-  const i = process.argv.indexOf("--base");
+const argAfter = (flag) => {
+  const i = process.argv.indexOf(flag);
   return i === -1 ? null : process.argv[i + 1];
 };
 
 function main() {
-  const base = baseArg() || "origin/main";
+  const base = argAfter("--base") || "origin/main";
+  // ── `--head`, SO THE ACCEPTANCE TEST CAN BE STATED AT ALL ────────────────────────────────────────
+  //
+  // This check exists because one merge landed sixteen shipped files and no note, and the way to prove
+  // it works is to replay it against that merge. With HEAD hardwired, `--base <merge>^` from any later
+  // branch reaches that branch's own notes and PASSES — correctly, and answering a different question.
+  // An arm named for the replay was asserting only that the check did not exit 2, which it could not
+  // have failed, and would have reported the acceptance met for the life of the branch.
+  const head = argAfter("--head") || "HEAD";
   const git = (...a) => execFileSync("git", a, { encoding: "utf8", maxBuffer: 1 << 28 });
   let changed, log;
   try {
-    changed = git("diff", "--name-only", `${base}...HEAD`).split("\n").filter(Boolean);
-    log = git("log", "--format=%B", `${base}..HEAD`);
+    changed = git("diff", "--name-only", `${base}...${head}`).split("\n").filter(Boolean);
+    log = git("log", "--format=%B", `${base}..${head}`);
   } catch (e) {
     // COULD NOT LOOK, never a pass — an unresolvable base is the shape this repository cares about.
     console.error(`release-note-required: cannot read the range against ${base}: ${e.message.split("\n")[0]}`);
@@ -135,7 +143,8 @@ function main() {
   const notes = changed.filter((p) => p.startsWith(".changeset/") && p.endsWith(".md") && !p.endsWith("README.md"));
   const declined = NO_NOTE.exec(log);
 
-  console.log(`release-note-required: ${changed.length} changed file(s) against ${base}; `
+  console.log(`release-note-required: ${changed.length} changed file(s) against ${base}`
+    + `${head === "HEAD" ? "" : ` (head ${head})`}; `
     + `${visible.length} ship as code; ${notes.length} release note(s) in the range`);
 
   if (!visible.length) return;                              // nothing a reader could see

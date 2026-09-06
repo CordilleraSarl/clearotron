@@ -122,9 +122,21 @@ test("1863 the disarm runs BEFORE the enable, so the box never holds both draine
   // tables. Read from the source, because there is no way to observe systemd from a unit test.
   const src = readFileSync(START, "utf8");
   const disarm = src.indexOf("for (const u of BACKGROUND_RETIRED)");
-  const enable = src.indexOf("for (const u of BACKGROUND_UNITS) execFileSync");
+  // ANCHORED ON THE CALL, NOT ON THE LOOP AROUND IT — and both weaker anchors were tried and failed
+  // here, which is worth writing down. It first matched `for (const u of BACKGROUND_UNITS) execFileSync`
+  // and lost its subject when that loop grew a body, which it did when the enable step learned to catch
+  // a systemd refusal instead of throwing a stack trace (tracker issue 203). Matching the loop HEADER
+  // instead was worse: three loops in that file open with those exact words, `indexOf` found the first
+  // — the one that renders the unit files, which is legitimately BEFORE the disarm — and the ordering
+  // assertion failed over code that is correctly ordered.
+  //
+  // The property is about when the units are ENABLED, so the anchor is the enable itself. The arm said
+  // "aimed at nothing" both times rather than passing, which is the assertion earning its place.
+  const enable = src.indexOf('"--user", "enable", "--now", u');
   assert.ok(disarm > 0, "nothing disarms the retired units — an armed timer beside the worker is a second claimant");
-  assert.ok(enable > 0, "the enable loop moved; this arm is aimed at nothing");
+  assert.ok(enable > 0, "the enable call moved; this arm is aimed at nothing");
+  assert.equal(src.indexOf('"--user", "enable", "--now", u', enable + 1), -1,
+    "there is more than one enable call now, so reading the first one decides nothing about the rest");
   assert.ok(disarm < enable,
     "the retired units are disarmed AFTER the replacement is enabled, so there is a window with both "
     + "the old timer and the new worker draining one queue");

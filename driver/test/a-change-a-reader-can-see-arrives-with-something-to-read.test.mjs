@@ -132,12 +132,33 @@ test("source that is BUILT into something shipped counts, though the built file 
 });
 
 // ── THE PLANT THAT MATTERS: the range this check exists because of ───────────────────────────────────
-test("replayed against the bundle that landed with no note, it refuses", () => {
-  const r = spawnSync(process.execPath, [CHECK, "--base", "14e3822^"],
-    { cwd: ROOT, encoding: "utf8", timeout: 60_000,
-      env: { ...process.env } });
-  // Driven from this repository, so it needs that commit to exist; if history is shallow, say could-not-look.
+test("replayed against the bundle that landed with no note, it refuses", (ctx) => {
+  // THIS ARM WAS ASSERTING NOTHING, and the way it failed is the thing worth keeping. It ran the check
+  // with `--base 14e3822^` and no head, so the range ran from that merge's parent to whatever branch the
+  // suite was on — which reaches the branch's OWN notes and passes, correctly, having answered a
+  // different question. The only assertion was `status !== 2`, a could-not-look it could not have hit.
+  // So an arm named for the acceptance test would have reported it met for the life of the branch.
+  // `--head` exists so the range can actually be named; the assertion is now the refusal itself.
   const has = spawnSync("git", ["cat-file", "-e", "14e3822^{commit}"], { cwd: ROOT }).status === 0;
-  if (!has) return;                       // a shallow clone cannot look, and that is not a pass either
-  assert.notEqual(r.status, 2, `the check could not read its own history:\n${r.stdout}${r.stderr}`);
+  if (!has) return ctx.skip("this clone's history does not reach 14e3822^, so the range this check was "
+    + "written against cannot be read here — a shallow clone, and not a pass");
+  const r = spawnSync(process.execPath, [CHECK, "--base", "14e3822^", "--head", "14e3822"],
+    { cwd: ROOT, encoding: "utf8", timeout: 60_000, env: { ...process.env } });
+  const said = `${r.stdout ?? ""}${r.stderr ?? ""}`;
+  assert.notEqual(r.status, 2, `the check could not read that range:\n${said}`);
+  assert.equal(r.status, 1,
+    `the check does not refuse the range it was written for — sixteen files that ship as code and not `
+    + `one note between them:\n${said}`);
+  assert.match(said, /that ship as code changed, and this range adds no release note/);
+  assert.match(said, /0 release note\(s\) in the range/,
+    `the replay found notes in a range that had none, so it is not reading the range it names:\n${said}`);
+});
+
+test("and the same check passes a range whose notes are there", (ctx) => {
+  // The other half, so "it refuses" is not a check that refuses everything. This branch's own range.
+  const r = spawnSync(process.execPath, [CHECK, "--base", "14e3822"],
+    { cwd: ROOT, encoding: "utf8", timeout: 60_000, env: { ...process.env } });
+  const said = `${r.stdout ?? ""}${r.stderr ?? ""}`;
+  if (r.status === 2) return ctx.skip(`the check could not read this range: ${said}`);
+  assert.equal(r.status, 0, `the check refuses a range that carries notes:\n${said}`);
 });
