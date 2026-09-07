@@ -5,7 +5,7 @@
 // kept in its OWN table: the knockout lane is a different product shape (a 5–15 mark triage batch), and
 // its stages must never leak into the clearance STAGE_ORDER. New-named stages get [] MCP tool groups
 // automatically (gather-config prefix map — the matter-frame precedent), so frame/assess run lean.
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { validators as koValidators } from "./verify-knockout.mjs";
@@ -18,6 +18,30 @@ export { kebab };   // one definition (search-policy) — re-exported for the la
 
 const lines = (...xs) => xs.filter(Boolean).join("\n");
 const reads = (skillReads) => `First, read and follow exactly: ${skillReads.join(", ")}.`;
+
+/**
+ * One line per owner the driver looked up, for the assess dispatch (tracker issue 276).
+ *
+ * BOTH OUTCOMES ARE NAMED, and that is the point. A row whose search answered gets its payload path; a
+ * row whose search did NOT answer says so in the dispatch itself. Listing only the answered ones would
+ * leave the seat unable to tell "nobody searched this owner" from "the search found nothing", and those
+ * two license completely different reads — the second is a fact about the owner's visibility, the first
+ * is a gap the seat would fill by inferring from the name, which is the defect this whole issue is about.
+ *
+ * Returns [] when the lane did not run or the store is unreadable, so the dispatch simply omits the block
+ * rather than naming a path that is not there.
+ */
+export function ownerCheckLines(K) {
+  let doc = null;
+  try { doc = existsSync(K.ownerChecks) ? JSON.parse(readFileSync(K.ownerChecks, "utf8")) : null; } catch { doc = null; }
+  const checks = Array.isArray(doc?.checks) ? doc.checks : [];
+  return checks.map((c) => {
+    const who = `${c.owner} (proprietor of a filing for ${c.mark})`;
+    return c.ok && c.payloadFile
+      ? `- ${who}: ${join(K.runDir, "research", c.payloadFile)}`
+      : `- ${who}: THE SEARCH RETURNED NOTHING. Say so in the read; do not infer the trade from the name.`;
+  });
+}
 
 // ── Paths (knockout-own; beside the standard _driver sidecars) ───────────────────────────────────────
 export function koPaths(runDir) {
@@ -39,6 +63,11 @@ export function koPaths(runDir) {
     // rows were left exactly as they were rather than gaining a matching marker: their shape is pinned
     // byte-for-byte by register-count.test.mjs, and a discriminator only one side needs is enough.
     registerRecords: driverDir(runDir, "register-records.json"),
+    // The scoped owner lookups this run owes its promoted filings, and their receipts (tracker issue
+    // 276). Both under `_driver/` because both are the DRIVER's own measurement of a call it made — the
+    // rule stated fourteen lines above. The seat reads the payloads under research/, never these.
+    ownerChecks: driverDir(runDir, "owner-checks.json"),
+    ownerCheckLedger: driverDir(runDir, "owner-check.jsonl"),
     researchDir: join(runDir, "research"),
     research: (markKebab) => join(runDir, "research", `${markKebab}.md`),
     sweepLedger: driverDir(runDir, "knockout-sweep.jsonl"),
@@ -288,6 +317,28 @@ export const KO_STAGES = {
       // a path that is not there teaches the seat that a missing file is normal.
       existsSync(K.registerRecords)
         ? `THE REGISTER FILINGS THIS RUN ALREADY FETCHED — ${K.registerRecords}. Real records, retrieved before you started: owner, jurisdiction, status, classes, dates. Read them and WEIGH them for the marks you are rating. A registration on this list is evidence about the name it names — treat its owner, its scope and its vulnerability the way the firm-wide reasoning tells you to (revocability above the lowest band; an enforcer's portfolio profile; a crowd as a mitigant under its gating precondition). What you may NOT do is describe the lane that fetched them — see the coverage rule below.`
+        : "",
+      // ── WHAT THE OWNER ACTUALLY SELLS, ALREADY SEARCHED (tracker issue 276) ────────────────────────
+      //
+      // The defect this closes is not that the seat lacked an instruction — it is that the seat had no
+      // way to know. It was handed an owner's NAME and its class numbers and nothing else, so a read
+      // about what that owner sells could only ever be an inference from the string. The driver now runs
+      // the scoped query before this stage and hands the answer over.
+      //
+      // ORDERED, NOT OFFERED. Naming a payload the seat may read is what produces "read and not applied,
+      // no refusal" — a rule that names a downstream effect rather than the field the seat writes. This
+      // names the field: the read on that filing's registerReads row.
+      //
+      // AND THE NEGATIVE CASE IS ORDERED TOO, because it is the one that produced the original defect:
+      // where the lookup did not answer, the honest sentence is that it did not, NOT a fresh inference
+      // from the owner's name dressed as a finding.
+      ownerCheckLines(K).length
+        ? [
+          `WHAT THESE OWNERS ACTUALLY SELL — the driver ran ONE scoped web search per promoted filing's proprietor BEFORE this stage, so you are not guessing from the company name. Payloads:`,
+          ...ownerCheckLines(K),
+          `USE THEM. When you write a registerReads row for one of these filings, your "read" must state what the owner actually sells ACCORDING TO THAT PAYLOAD, not what the company's name suggests and not what its class numbers imply. An owner's name is not evidence of its trade. A company name that reads as a line of business is a guess that happens to land sometimes, and the run where it lands is indistinguishable from the run where it does not — which is the reasoning this rule exists to stop.`,
+          `WHERE A PAYLOAD SAYS THE SEARCH FOUND NOTHING, say that plainly in the read — "a search for the proprietor's trade returned nothing" — and reason from the register record alone. Do NOT substitute an inference from the owner's name for the answer the search did not give. The report prints the source line itself, from the driver's own record of the call, so you never type a URL and never need to.`,
+        ].join("\n")
         : "",
       // ── THE READ REACHES THE PAGE ────────────────────────────────────────────
       //

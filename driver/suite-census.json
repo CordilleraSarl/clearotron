@@ -4323,6 +4323,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-owner-of-a-promoted-filing-is-searched.test.mjs": {
+          "tests": 15,
+          "asserts": 43,
+          "skips": 0,
+          "todos": 0
+        },
         "the-package-ships-only-the-demo-customers.test.mjs": {
           "tests": 2,
           "asserts": 6,
