@@ -123,3 +123,37 @@ test("the classes the ruling leaves ALONE are still left alone", () => {
   assert.deepEqual(offendingTokens("driver/x.mjs", '  closes: "#865 — shared doctrine",'), [],
     "a string literal was flagged");
 });
+
+// ── A COLOUR IS NOT A CITATION ───────────────────────────────────────────────────────────────────────
+//
+// The token pattern matches digits only, so a six-digit hex colour was read as its leading digits and
+// refused as a reference. An earlier sweep acted on that reading and rewrote sixteen colour literals
+// as issue text — two of them live mermaid `classDef` directives, so the diagrams rendered broken, and
+// thirteen comments stated a value that was no longer there. Restoring them hit this guard, whose
+// refusal told the author to write the very text that had caused it.
+//
+// The arm below is written to fail in BOTH directions, because a rule that only ever passes colours is
+// indistinguishable from having deleted the check.
+
+test("a hex colour is passed, and the same digits in prose are still refused", () => {
+  // 1. Letters settle it: an issue number is decimal, so anything carrying a-f cannot be one.
+  for (const [path, line] of [
+    ["docs/architecture/02-architecture.md", "    classDef product fill:#12324f,stroke:#4a90d9,color:#fff"],
+    ["shared/brand.mjs", "// the pack (#17150f ground, #ece5d8 text) and error colours with no home at all."],
+    ["driver/test/brand.test.mjs", "// #860F09 == --accent, so a High risk dot was pixel-identical to the button."],
+    ["portal-ui/test/lockup.test.ts", "// the accent is #860F09 and the ground #17150f"],
+  ]) assert.deepEqual(offendingTokens(path, line), [], `a colour was refused: ${line.trim()}`);
+
+  // 2. The all-digit case is the one the digits CANNOT settle: three digits is both a short colour and a
+  //    plausible issue number, so the SITE decides — and it must decide both ways.
+  assert.deepEqual(
+    offendingTokens("docs/architecture/01-product-overview.md", "    classDef note fill:none,stroke:none,color:#888,font-size:12px"),
+    [], "a colour whose property names it was refused");
+  assert.deepEqual(
+    offendingTokens("docs/x.md", "This was decided in #888 last week."),
+    ["#888"], "the same digits in prose must still be refused — otherwise the exemption is a hole");
+
+  // 3. The check's whole purpose, unchanged: a bare reference in a comment is still caught.
+  assert.deepEqual(offendingTokens("driver/x.mjs", "// see #1431 for the ruling"), ["#1431"]);
+  assert.deepEqual(offendingTokens("driver/x.mjs", "// tracker issue 2038 is the right form"), []);
+});

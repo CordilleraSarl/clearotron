@@ -40,8 +40,8 @@
           "todos": 0
         },
         "a-bare-reference-added-in-a-diff-is-refused.test.mjs": {
-          "tests": 14,
-          "asserts": 27,
+          "tests": 15,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
