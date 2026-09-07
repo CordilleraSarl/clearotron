@@ -55,7 +55,6 @@ const EXECUTABLE = [
   "driver/test/mock-spew-immune.mjs",
   "driver/test/refusing-engine.mjs",
   "scripts/added-reference-check.mjs",
-  "scripts/deploy-test.sh",
   "scripts/home-render-check.mjs",
   "scripts/queue-inflight.mjs",
 ];

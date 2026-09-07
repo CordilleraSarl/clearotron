@@ -674,7 +674,7 @@ export function scoreRecall({ reference, findings = [], retrieved = [], scopeCla
   // proprietor with more than one mark. A large filer can perfectly well have one mark the run withheld
   // and a DIFFERENT mark, not in the reference, that it surfaced. Both rows are true.
   //
-  // It fired on R2 russet-kestrel: `Novartis AG: reference "DELFITY" is withheld, surfaced "DELPHINA"
+  // It fired on a delivered R2 run: `<large filer>: reference "DELFITY" is withheld, surfaced "DELPHINA"
   // is noise`. Different marks, different records, one proprietor that files a great many. And because
   // score.mjs prints a collision as "do not read the recall numbers above", ONE such proprietor
   // suppressed the whole run's recall measurement — a real 88% → 63% movement went unquoted on the

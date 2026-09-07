@@ -447,6 +447,30 @@ async function measureAtZoom(zoom, deadlineMs = 90_000) {
   }
 }
 
+/**
+ * PURE. Did the in-frame probe post, and if not, which of the two causes does the evidence name?
+ *
+ * SEPARATED SO EVERY BRANCH CAN BE DRIVEN. The whole finding here is a check that reported three failed
+ * measurements about values it never read, and an arm that could only reach this through a real browser on
+ * a starved runner would be the same shape one level up: untestable except by luck.
+ *
+ * `heightMsgs` is the discriminator and was already being collected. It counts messages from the report's
+ * OWN height bridge, which travels the same postMessage path as the probe — so non-zero means the frame
+ * loaded, ran scripts and reached this shell, and a missing probe is then the probe's problem. Zero means
+ * nothing arrived from inside at all, and the probe is not the thing to look at.
+ */
+export function probeVerdict({ innerScrollbar, hOverflowPx, slackPx, heightMsgs = 0 } = {}) {
+  const missing = innerScrollbar === "no-probe" || hOverflowPx === "no-probe" || slackPx === null;
+  if (!missing) return { measured: true, cause: null, why: null };
+  return heightMsgs > 0
+    ? { measured: false, cause: "probe-only",
+        why: `${heightMsgs} height post(s) DID arrive, so the frame loaded and its scripts ran and reached `
+          + "this shell. The probe alone is missing — look at the probe, not at the report." }
+    : { measured: false, cause: "nothing-from-inside",
+        why: "No message of any kind arrived from inside the frame. The frame did not load, or its scripts "
+          + "did not run. The probe is not the thing to look at." };
+}
+
 async function main() {
   const { pool: POOL, built } = resolvePool();
   const runId = pickRun(POOL);
@@ -473,11 +497,39 @@ async function main() {
     console.log("  Expect the sideways assertion to FAIL. A clean run here means the instrument is blind.\n");
   }
   let failures = 0;
+  // A COULD-NOT-LOOK IS NOT A FAILED MEASUREMENT (tracker issue 239). Counted apart from `failures`
+  // because the two mean different things to whoever reads the exit code: 1 says the layout is wrong,
+  // 2 says nothing was measured. Merging them is how a starved runner sends a reader to look at CSS.
+  let unmeasured = 0;
 
   for (const zoom of ZOOMS) {
     const measured = await measureAtZoom(zoom);
     if (!measured.ok) { console.log(`  zoom ${zoom}: FAILED — ${measured.why}`); failures++; continue; }
     const r = measured.state;
+
+    // ── THE THREE ASSERTIONS BELOW READ THE IN-FRAME PROBE, AND IT MAY NEVER HAVE POSTED ────────────
+    //
+    // `no-probe` and `null` are not measurements that disagreed with the expectation — they are the
+    // expectation never being tested. Rendering them as `FAIL … (got "no-probe")` is a check that could
+    // not look, reported as a check that looked and disliked what it saw, and it sends a reader to the
+    // report's CSS where there is nothing to find. Measured on a starved runner: three assertions failed
+    // on a branch whose diff was comments, a documentation line and a new test file.
+    //
+    // `heightMsgs` separates the two causes and was already being collected. It counts messages from the
+    // report's OWN height bridge, which travels the same postMessage path as the probe: non-zero means
+    // the frame loaded, ran scripts and reached the parent, so a missing probe is the probe's problem.
+    // Zero means nothing from inside arrived at all, and the probe is not the thing to look at.
+    const probe = probeVerdict(r);
+    if (!probe.measured) {
+      unmeasured++;
+      console.log(`  zoom ${zoom}:  (ready by ${r.readyBy}, heights ${r.heightsQuiet}, `
+        + `settled after ${r.settleTries} × 25ms, ${r.heightMsgs} height post(s), ${r.probeMsgs} probe post(s))`);
+      console.log(`    COULD NOT MEASURE — the in-frame probe never posted, so the report's own scrollbar,`);
+      console.log(`    its sideways overflow and the frame's slack were not read at zoom ${zoom}.`);
+      console.log(`    ${probe.why}`);
+      console.log(`    ── raw state: ${JSON.stringify(r)}`);
+      continue;
+    }
 
     const checks = [
       ["no border stealing from the frame's viewport", r.borderSteals === 0, r.borderSteals],
@@ -539,6 +591,13 @@ async function main() {
       : "\nrender-check: THE PLANTED OVERFLOW WAS NOT CAUGHT. The sideways assertion did not fail, so a "
         + "clean run of this check is not evidence the report is clean.");
     process.exit(caught ? 0 : 1);
+  }
+  if (unmeasured) {
+    // EXIT 2, THE HOUSE MEANING FOR COULD-NOT-LOOK. It still stops CI — nothing is waved through — but it
+    // does not claim the layout was measured and found wrong.
+    console.error(`\nrender-check: nothing was measured at ${unmeasured} zoom level(s) — the in-frame probe `
+      + `never posted. This is a failure to LOOK, not a finding about the report.`);
+    process.exit(2);
   }
   console.log(failures ? `\nrender-check: ${failures} FAILED` : "\nrender-check: all checks passed");
   process.exit(failures ? 1 : 0);

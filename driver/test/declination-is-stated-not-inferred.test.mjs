@@ -27,7 +27,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import {
   DECLINATION_REASONS, DECLINATION_REASON_TOKENS, MIN_GROUNDS,
@@ -287,4 +288,60 @@ test("the dictation names the tool's ACTUAL refusal, and no other — the drift 
     "guard for the arm below: the tool must ACCEPT this, or the assertion after it is asserting the wrong thing");
   assert.doesNotMatch(text, /unrelated-goods["'’]? when it is registered in one of/,
     "the dispatch still describes the class-overlap refusal, which was deleted");
+});
+
+// ── ECONOMY IS NOT A REASON ABOUT A LIVE IN-CLASS MARK ───────────────────────────────────────────────
+//
+// Owner ruling 2026-09-07. `not-worth-the-line` says the report had no room; it says nothing about the
+// record. On a live registration inside one of the matter's own instructed classes that is the one thing
+// the seat may not say — the reader is paying for a judgment about that mark.
+//
+// Measured on the run that prompted the ruling: 26 of 49 declinations at this seam were this token, and
+// two of the lawyer's reference marks were among them, one of which every earlier run had carried.
+//
+// ✕ THE ARM THAT MATTERS IS THE ONE PROVING THIS IS NOT A BAN ON DECLINING. A refusal keyed on class
+// overlap was built here once and removed after firing on 170 of 170 records. The distinguishing test is
+// that every OTHER reason still passes on the very same record — so the seat can still omit it, just not
+// for taking up space.
+
+test("a live record in an instructed class cannot be declined for want of room", () => {
+  const scope = { classes: [5, 42, 44], marks: ["BIODELPHIS"] };
+  const live = { mark: "OSLER DELPHI", status: "REGISTERED", classes: [1, 5, 9, 42] };
+  const clash = contradictionFor("not-worth-the-line", live, scope);
+  assert.ok(clash, "a live in-class record declined on economy must be refused");
+  assert.match(clash, /class 5, 42/, "the refusal must name the shared classes it rests on");
+  assert.match(clash, /never omitted for want of room/);
+  // It must tell the seat what to do instead, or it is a wall rather than a correction.
+  for (const alternative of ["unrelated-goods", "off-field-not-major", "own-right", "duplicate-of-delivered"])
+    assert.match(clash, new RegExp(alternative), `the refusal must name ${alternative} as still open`);
+});
+
+test("EVERY OTHER REASON still passes on that same record — this is not a ban on declining it", () => {
+  // The control that separates this from the refusal that was removed. If these start failing, the
+  // change has become a class-overlap ban and the engine is deciding relatedness, which is not its call.
+  const scope = { classes: [5, 42, 44], marks: ["BIODELPHIS"] };
+  const live = { mark: "OSLER DELPHI", status: "REGISTERED", classes: [1, 5, 9, 42] };
+  for (const reason of ["unrelated-goods", "off-field-not-major", "own-right", "duplicate-of-delivered"])
+    assert.equal(contradictionFor(reason, live, scope), "",
+      `${reason} must remain available on a live in-class record — the seat may still omit it, on a reason about the mark`);
+});
+
+test("the refusal rests on BOTH facts, so a dead record and an out-of-class one still pass", () => {
+  const scope = { classes: [5, 42, 44], marks: ["BIODELPHIS"] };
+  // Not live: the rule is about a live right. An unknown status is not live either — the refusal must
+  // rest on a fact, and "we never established it" is not one.
+  for (const status of ["EXPIRED", "DEAD", "", null, "SOMETHING WE DO NOT KNOW"])
+    assert.equal(contradictionFor("not-worth-the-line", { mark: "X", status, classes: [5, 42] }, scope), "",
+      `status ${JSON.stringify(status)} is not live, so the economy refusal must not fire`);
+  // Not in an instructed class.
+  assert.equal(contradictionFor("not-worth-the-line", { mark: "X", status: "REGISTERED", classes: [25] }, scope), "");
+  // …and with no scope classes at all there is nothing to share, so nothing to refuse on.
+  assert.equal(contradictionFor("not-worth-the-line", { mark: "X", status: "REGISTERED", classes: [5] }, { classes: [] }), "");
+});
+
+test("the seat is TOLD before it calls, not only refused after", () => {
+  // Avoiding the error beats recovering from it: a seat that learns this by refusal has spent a turn.
+  const src = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "stages.mjs"), "utf8");
+  assert.match(src, /is a statement about the report's budget rather than about the mark/,
+    "the declination dictation does not warn the seat, so the rule is enforced only by refusal");
 });

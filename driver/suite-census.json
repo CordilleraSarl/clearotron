@@ -579,6 +579,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-unit-is-attributed-by-what-it-runs-not-only-by-what-it-declares.test.mjs": {
+          "tests": 10,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
         "a-verb-is-a-module-until-it-is-the-command.test.mjs": {
           "tests": 3,
           "asserts": 8,
@@ -732,6 +738,12 @@
         "an-ordered-field-is-a-field-the-tool-can-express.test.mjs": {
           "tests": 1,
           "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-unread-probe-is-not-a-failed-measurement.test.mjs": {
+          "tests": 5,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -1366,8 +1378,8 @@
           "todos": 0
         },
         "declination-is-stated-not-inferred.test.mjs": {
-          "tests": 20,
-          "asserts": 60,
+          "tests": 24,
+          "asserts": 69,
           "skips": 0,
           "todos": 0
         },
@@ -1415,7 +1427,7 @@
         },
         "deployment-hostnames.test.mjs": {
           "tests": 13,
-          "asserts": 37,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
@@ -2473,6 +2485,12 @@
           "tests": 3,
           "asserts": 7,
           "skips": 2,
+          "todos": 0
+        },
+        "no-run-codenames-in-tracked-files.test.mjs": {
+          "tests": 6,
+          "asserts": 13,
+          "skips": 4,
           "todos": 0
         },
         "no-test-writes-inside-the-checkout.test.mjs": {
@@ -3898,8 +3916,8 @@
           "todos": 0
         },
         "start-background-units.test.mjs": {
-          "tests": 6,
-          "asserts": 20,
+          "tests": 9,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
