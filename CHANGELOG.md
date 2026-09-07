@@ -4,6 +4,24 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.0
+
+### New
+
+- A Knockout report now carries the whole assessment behind its ratings. You get the reviewer's notes and the reviewer's own opening read of each name. You also get the reasoning that holds a name at its rating, and what would move it. This was written during every search and reached only the audit workbook, so the report showed a rating without the thinking under it. The notes are marked as reference material rather than mixed into the findings.
+- The tools that show how a search reached its answer now work on a Knockout search. You can ask what it found, what it looked at, where it searched and came back empty, and read the delivered report itself. Until now they returned nothing at all for a Knockout search, so anyone asking how one of these results was reached saw a blank record.
+
+### Fixed
+
+- A what-if memo is now refused if it writes anywhere in the delivered run except its own memo folder, and the refusal names the file.
+- A what-if question left queued when its run is archived now comes back with a reason, instead of never being answered.
+- The delivery record now states plainly when a report's write-up length and ranking rules could not be checked against the delivered text. It says the rules were applied to nothing on that run. Before, this was recorded as an unlabelled failed check. It looked like any other, so a run could deliver with those rules unverified and nobody would see it.
+- The demo and the install steps now start on native Windows, where they previously crashed on the first internal module they loaded.
+
+### For operators
+
+- Each run record now says whether the model id it observed was a pinned snapshot or an alias the provider can repoint.
+
 ## 0.2.1
 
 ### New
