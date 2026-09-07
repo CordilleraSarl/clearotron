@@ -23,7 +23,7 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
 const execFileP = promisify(execFile);
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -277,4 +277,76 @@ test("241 doctor does not call a stale audience healthy when the two agree", asy
     assert.match(out, /audience matches the one the edge issues/,
       `doctor said nothing at all about an audience it successfully read and agreed with\n${out.slice(-2500)}`);
   } finally { edge.close(); }
+});
+
+// ── THREE DOORS, NOT ONE (tracker issue 251) ───────────────────────────────────────────────────────
+//
+// `not-fronted` was returned for every response with no redirect. Measured against production's four
+// configured hostnames, that one label covered three materially different states — and called the
+// install's main MCP door "not fronted" when it is fronted and working.
+//
+// The responses below are RECORDED from those real hostnames, not authored: a hand-written Access
+// stand-in is what produced both the over-claim and the over-correction this family has already paid for.
+const REAL = {
+  // trademark.cordillera.ch — the browser-facing portal
+  browser: { status: 302, location: "https://cordillera-ch.cloudflareaccess.com/cdn-cgi/access/login/trademark.cordillera.ch?kid=abc&meta=x.y.z", wwwAuthenticate: "", viaEdge: true },
+  // mcp.cordillera.ch/mcp — Managed OAuth on an API path, RFC 9728 style
+  api: { status: 401, location: "", viaEdge: true,
+    wwwAuthenticate: 'Bearer realm="OAuth", error="invalid_token", error_description="Missing or invalid access token", resource_metadata="https://mcp.cordillera.ch/.well-known/cloudflare-access-protected-resource/mcp"' },
+  // agent-mcp.cordillera.ch/mcp — the legacy door whose origin is gone
+  originDown: { status: 502, location: "", wwwAuthenticate: "", viaEdge: true },
+  // a hostname genuinely behind nothing
+  bare: { status: 200, location: "", wwwAuthenticate: "", viaEdge: false },
+};
+
+test("251 an Access-fronted API path is FRONTED, not `not-fronted`", () => {
+  const r = readAudience(REAL.api);
+  assert.equal(r.kind, "fronted-api",
+    "a 401 naming a cloudflare-access-protected-resource document is a door that is present and answering "
+    + "— saying nothing fronts this hostname sends a reader hunting a configuration that exists");
+  const v = audienceVerdict({ configured: "aaa", read: r });
+  assert.equal(v.ok, false, "it is still not a pass — the audience was never compared");
+  assert.match(v.message, /IS fronted/);
+  assert.match(v.message, /could-not-look about the audience and not a finding about the door/);
+});
+
+test("251 a 5xx through the edge is the ORIGIN failing, not an absent door", () => {
+  const r = readAudience(REAL.originDown);
+  assert.equal(r.kind, "origin-failed");
+  const v = audienceVerdict({ configured: "aaa", read: r });
+  assert.equal(v.ok, false);
+  assert.match(v.message, /the edge is up and the origin behind it is not/);
+  assert.match(v.message, /it says the service is down/,
+    "and it must not be read as anything about the audience");
+});
+
+test("251 a hostname genuinely behind nothing keeps the old wording and the old verdict", () => {
+  const r = readAudience(REAL.bare);
+  assert.equal(r.kind, "not-fronted", "narrowing the label must not empty it");
+  assert.equal(audienceVerdict({ configured: "aaa", read: r }).ok, false);
+});
+
+test("251 the marker is Cloudflare's, not any OAuth resource's", () => {
+  // `Bearer` alone is sent by every OAuth-protected resource on the internet. Keying on it would file
+  // any 401 as an Access door.
+  const genericOAuth = { status: 401, location: "", viaEdge: false,
+    wwwAuthenticate: 'Bearer realm="example", error="invalid_token"' };
+  assert.equal(readAudience(genericOAuth).kind, "not-fronted",
+    "a generic Bearer challenge is not evidence of Cloudflare Access");
+});
+
+test("251 the browser path is untouched — the case that WORKS must not move", () => {
+  const r = readAudience(REAL.browser);
+  assert.notEqual(r.kind, "fronted-api");
+  assert.notEqual(r.kind, "origin-failed");
+  assert.ok(["read", "unreadable", "disagree"].includes(r.kind),
+    `a redirect must still be read as a challenge, got ${r.kind}`);
+});
+
+test("251 probeAudience CARRIES the two headers, or the reader can never see the difference", () => {
+  // The distinction is made from headers already on the response. A probe that drops them makes the
+  // reader's three outcomes unreachable — the fully-composed-and-unreachable shape.
+  const src = readFileSync(join(HERE, "..", "..", "shared", "access-audience.mjs"), "utf8");
+  assert.match(src, /wwwAuthenticate:\s*res\.headers/, "the probe must return www-authenticate");
+  assert.match(src, /viaEdge:\s*Boolean\(res\.headers/, "and whether the edge answered at all");
 });
