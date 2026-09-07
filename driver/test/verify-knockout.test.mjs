@@ -57,3 +57,48 @@ test("RF-15 v3 — the register estimate is required only where the run fetched 
   assert.equal(validators.knockoutAssessChunk(mkRun(true), chunk({ registerEstimate: ESTIMATE })).ok, true,
     "…and an estimate that arrives anyway is not forbidden, only no longer required");
 });
+
+// ── the band on a register read is optional, and closed when present (tracker issue 274) ─────────────
+//
+// The read half of `registerReads` shipped without a band, so a promoted register card was the only card
+// on the page that could carry no rating. The band closes that, and it is validated HERE rather than
+// coerced in the renderer for the reason the issue rules: the renderer inferring a band would be a rating
+// nobody performed. Two properties, and the optional one is the one that protects delivery — a run whose
+// rater sends no band must publish exactly as it always did.
+test("274 — registerReads[].band: optional, and refused when it is not a ladder word", () => {
+  const FW = { framework_key: "triage", bands: [{ label: "High" }, { label: "Medium" }, { label: "Low" }] };
+  const RECORD_ID = "R-LINSENFINDER";
+  const d = mkdtempSync(join(tmpdir(), "ko-readband-"));
+  mkdirSync(join(d, "_driver"), { recursive: true });
+  mkdirSync(join(d, "research"), { recursive: true });
+  writeFileSync(join(d, "research", "frozen.md"), "# research payload for FROZEN\n\nSome findings.\n");
+  writeFileSync(join(d, "_driver", "framework.json"), JSON.stringify(FW));
+  writeFileSync(join(d, "_driver", "register-records.json"), JSON.stringify({
+    marks: [{ name: "FROZEN", records: [{ recordId: RECORD_ID, mark: "FROZEN", owner: "Linsenfinder GmbH" }] }],
+  }));
+  const file = join(d, "knockout-assess-0.json");
+  const mark = {
+    name: "FROZEN", rating: "High", classesDriving: [9], basis: "The name is close to a known property.",
+    factors: ["A first load-bearing observation.", "A second load-bearing observation."],
+    counterFactors: ["What holds it at this band."], mitigation: "",
+    bullets: ["One honest evidence bullet."], findings: [], purpleNotes: [],
+    registerEstimate: "Register search pending — moderate volume of filings expected.",
+  };
+  const chunk = (reads) => JSON.stringify({
+    framework: FW, batch: { productContext: "x", standardCaveats: [] },
+    marks: [{ ...mark, registerReads: reads }], chunkSummary: "A measured sentence about this chunk of marks.",
+  });
+  const read = "The owner's filings sit in optical goods.";
+
+  assert.equal(validators.knockoutAssessChunk(file, chunk([{ recordId: RECORD_ID, read }])).ok, true,
+    "ABSENCE IS NEVER REFUSED: a read with no band is what every run before this one sent, and it still validates");
+  assert.equal(validators.knockoutAssessChunk(file, chunk([{ recordId: RECORD_ID, read, band: "Medium" }])).ok, true,
+    "a ladder word is accepted");
+  assert.equal(validators.knockoutAssessChunk(file, chunk([{ recordId: RECORD_ID, read, band: "medium" }])).ok, true,
+    "…case-insensitively, the same tolerance the mark's own rating gets");
+
+  const bad = validators.knockoutAssessChunk(file, chunk([{ recordId: RECORD_ID, read, band: "Catastrophic" }]));
+  assert.equal(bad.ok, false, "a word outside the frozen ladder is refused rather than printed as a chip");
+  assert.match(bad.reason, /knockout_band_unknown/, "tokenised for the corrective ladder, like the mark's rating");
+  assert.ok(bad.reason.includes("Catastrophic"), "and the message names the word the turn sent");
+});
