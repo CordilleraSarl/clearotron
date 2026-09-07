@@ -901,7 +901,7 @@ jobs:
 
       # THE REFUSALS, ALL IN ONE PLACE AND BEFORE ANYTHING IS BUILT.
       #  · a real publish happens on a push, on the cron, or on a `workflow_dispatch` whose `cut` input
-      #    is `beta` — the on-demand cut that replaced the scheduled one. Every other dispatch is still a
+      #    is `beta` — the on-demand cut. Every other dispatch is still a
       #    rehearsal and still runs `npm publish --dry-run`. THE BRANCH CHECK BELOW IS WHAT HOLDS A
       #    DISPATCHED CUT TO `main`: a rehearsal may run from any branch precisely because it cannot
       #    publish, and a cut may not.
@@ -1243,7 +1243,7 @@ jobs:
 
       # THE REFUSALS, ALL IN ONE PLACE AND BEFORE ANYTHING IS BUILT.
       #  · a real publish happens on a push, on the cron, or on a `workflow_dispatch` whose `cut` input
-      #    is `beta` — the on-demand cut that replaced the scheduled one. Every other dispatch is still a
+      #    is `beta` — the on-demand cut. Every other dispatch is still a
       #    rehearsal and still runs `npm publish --dry-run`. THE BRANCH CHECK BELOW IS WHAT HOLDS A
       #    DISPATCHED CUT TO `main`: a rehearsal may run from any branch precisely because it cannot
       #    publish, and a cut may not.
