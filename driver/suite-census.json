@@ -4299,6 +4299,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-inventory-names-the-units-this-box-runs.test.mjs": {
+          "tests": 9,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
         "the-lockfile-agrees-about-install-scripts.test.mjs": {
           "tests": 4,
           "asserts": 10,
