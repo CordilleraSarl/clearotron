@@ -13,7 +13,7 @@
 // to read it that narrowly, and one artifact then told them no EUIPO search happened while another
 // reported EUIPO figures.
 //
-// SO THE ARM IS OVER EVERY SEAT, NOT THE TWO WE KNOW ABOUT. 's cure survived in one seat for months
+// SO THE ARM IS OVER EVERY SEAT, NOT THE TWO WE KNOW ABOUT. That cure survived in one seat for months
 // precisely because it was applied by hand to the seat that had failed. A prompt that TELLS a seat to
 // stay off the registers has, by saying so, given it a fact about the run it will reach for when it
 // writes about scope — so a prompt that says the first thing must say the second.

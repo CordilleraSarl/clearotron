@@ -21,7 +21,7 @@
 // is. This file mints no row, no id, no unit label and no definition of "settled": `coverageFormRows`
 // and `rowIsSettled` both come from coverage-form.mjs — the same code the GATE judges with. A union that
 // preserved a status the gate would refuse, or dropped one it would accept, would make the outstanding
-// count mean two different things in two places, which is 's defect exactly.
+// count mean two different things in two places, which is the defect exactly.
 
 import { coverageFormRows, rowIsSettled, seatFields, formRowKey, seatRows, SEAT_ROW_CONTRACT } from "./coverage-form.mjs";
 

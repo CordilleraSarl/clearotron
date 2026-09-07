@@ -66,7 +66,7 @@ const restoreHome = () => {
 
 // ──: the RECORD log left the home directory, and the ladder no longer reaches it ───────────────
 //
-// The five tests that used to live here pinned 's existence ladder as `assembleRunRecords` walked
+// The five tests that used to live here pinned the existence ladder as `assembleRunRecords` walked
 // it — legacy name read where it sits, neutral name preferred, unread sibling announced. That contract
 // is now the CALL ledger's alone, and its unit coverage is providers/_shared/test/ledger-path.test.mjs.
 // What replaces them is the pair that makes the move non-silent: the global file is NOT read, and an

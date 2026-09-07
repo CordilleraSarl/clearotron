@@ -235,7 +235,7 @@ test('delivery.privileged is a BOOLEAN on the wire, not the string the dropdown 
   assert.equal((applyField({}, f, 'yes').delivery as Record<string, unknown>).privileged, true)
   assert.equal((applyField({}, f, 'no').delivery as Record<string, unknown>).privileged, false)
   // …and back into the box. `true` no longer renders as 'yes': it is retired, the engine deletes it, and
-  // 's interim removed the option, so it folds to the cleared state — which is what it
+  // That interim removed the option, so it folds to the cleared state — which is what it
   // MEANS. Driven separately in that issue's own arms; asserted here so the round trip is not read as
   // symmetric when it deliberately is not.
   assert.equal(fieldInput({ delivery: { privileged: true } }, f), '')

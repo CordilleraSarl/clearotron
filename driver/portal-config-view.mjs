@@ -336,7 +336,7 @@ export function accessView({ grants, staffDomains = [], knownAccounts = [], gran
  * because a log is unbounded by nature and this runs inside a web request.
  */
 /**
- * 's outcome rows — the events that record a request being TURNED AWAY rather than done. Kept
+ * That outcome rows — the events that record a request being TURNED AWAY rather than done. Kept
  * beside the reader rather than in portal-service.mjs so this file has no import cycle with the
  * service that writes them; the names are the contract between the two and are asserted in the test.
  */

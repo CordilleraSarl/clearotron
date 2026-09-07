@@ -59,7 +59,7 @@ export const REFUSAL_TERMINAL_KIND = "designed-refusal";
 // rejection carried one, and the errno tokens below matched it; but undici reports a codeless fault as
 // a bare `TypeError: fetch failed` (no cause.code), and that line — transport noise by construction —
 // carried no token either regex knew, so it classified DETERMINISTIC at fan-in: loud-terminal, but it
-// defeated 's weather lane for exactly the unreachable-provider case the lane exists for.
+// defeated the weather lane for exactly the unreachable-provider case the lane exists for.
 export const TRANSIENT_RE = /\btimeout\b|\blane_wedge\b|\bembedded_fallback\b|\bnonzero_exit|\bunparseable_json\b|\bstatus_(timeout|overloaded|error|aborted|rate_limited)\b|\brate_limited\b|\boverloaded\b|\beconnreset\b|\betimedout\b|\benotfound\b|\beai_again\b|socket hang\s?up|\bhttp\s?5\d\d\b|\btransport failure\b/i;
 
 // STRUCTURAL REFUSAL: the provider ANSWERED, and its answer is a verdict on the REQUEST. The remedy is
@@ -140,7 +140,7 @@ export const DETERMINISTIC_RE = /\bhttp\s?4(0[0349]|1[04])\b|uri too long|own no
 //
 // The axis outcome survives as evidence in exactly one case: THE AXIS LANDED NOTHING. Zero qid-stamped
 // blocks means the executor never wrote, so its transport failure really is this slice's story and
-// 's weather lane keeps working for the dead-provider case it exists for. Once the axis HAS landed
+// That weather lane keeps working for the dead-provider case it exists for. Once the axis HAS landed
 // qid-stamped blocks the executor demonstrably ran and wrote, and this qid's absence is an identity or
 // coverage hole that no repair outcome from its axis speaks to.
 //
@@ -695,7 +695,7 @@ export function humanWait(min) {
 // failure's `quantity` and the last recorded quantity for the SAME signature in the park history. It
 // changes no branch below and no caller reads it as an input: the point of the issue is that the
 // comparison can SEE 25 → 9 → 9 as different from 29 → 11 → 0, where today both hash identically.
-// What the machinery DOES with that difference is 's decision, not this function's.
+// What the machinery DOES with that difference is the decision, not this function's.
 export function decideRecovery({ failClass, sig, reason = "", history = [], priorAttempts = 0, recoveryMax = 3, nonRecoverable = false, hasRunDir = true, runCeiling = null, weatherAttempts = 0, defectAttempts = null, weatherCeiling = null, quantity = null }) {
   const hist = Array.isArray(history) ? history : [];
   const sigAttempts = hist.filter((h) => h?.sig === sig).length;

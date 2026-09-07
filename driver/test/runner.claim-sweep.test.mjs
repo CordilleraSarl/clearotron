@@ -172,7 +172,7 @@ test("#785 a marker covered by another runner's token is neither retired nor swe
 //
 //   cleanupClaimSidecars   deletes `.meta`, which at the .failed site IS the A5 reclaim counter
 //   cleanupProseParts      deletes the prose the winner's job is RE-ASSEMBLED from
-//   `<base>.<state>.result` asserts a terminal that is not on disk — 's defect, one call below its fix
+//   `<base>.<state>.result` asserts a terminal that is not on disk — the defect, one call below its fix
 //   dropMatter             marks the ledger row failed, and findDuplicateMatter SKIPS failed rows, so the
 //                          dedup gate re-opens against a matter the winner may be mid-resume
 //

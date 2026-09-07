@@ -297,7 +297,7 @@ test("THE AUDIT READS THE LEDGER: the written artifact carries the calls and the
   };
   writeFileSync(P.commonLaw, "merged findings\n");
   // — a REAL one-batch ledger rather than "{}", so the audit has query strings to name. The first
-  // entry is phrase-quoted on purpose: it is 's own input, and it makes this pin fail if a quote
+  // entry is phrase-quoted on purpose: it is its own input, and it makes this pin fail if a quote
   // transform is ever reintroduced on this path.
   writeFileSync(P.commonLawGrid, JSON.stringify({ cells: [], extras: { pr_risk: [
     { query: '"Project Sable" video game controversy', results: [] },
@@ -324,7 +324,7 @@ test("THE AUDIT READS THE LEDGER: the written artifact carries the calls and the
   // — THE ORIGINAL PIN, UNDER THE NAME THAT SAYS WHAT IT COUNTS. The assertion is unchanged in
   // substance: the unruled-scoped histogram is empty here because nothing is outstanding, and that was
   // always correct. What changed is that it no longer occupies the name `refusalReasons`, which promised
-  // every refusal and delivered a subset — the reading that cost 's criterion C a false MET.
+  // every refusal and delivered a subset — the reading that cost the criterion C a false MET.
   assert.equal(artifact.unruledRefusalReasons.anchor_unbound ?? 0, 0,
     "no obligation is outstanding in this fixture, so the addressed-but-unruled histogram must stay empty — it counts unruled rows, not every refusal");
   assert.equal(artifact.refusalReasons.anchor_unbound, 3,
@@ -386,7 +386,7 @@ test("WITH NO LEDGER the artifact says so — an absence is not a zero", async (
 // returned no rows and the map the audit built from those rows was empty.
 //
 // **The number was right and the name was wrong.** `refusalReasons: {}` reads as "nothing was refused" on
-// a run that refused 193 times, and 's pre-registered criterion C — which checked that the fields
+// a run that refused 193 times, and the pre-registered criterion C — which checked that the fields
 // were PRESENT and that `ledger.calls` was non-zero — read MET while the histogram it exists to check was
 // empty. Presence tested, content not.
 //
@@ -440,7 +440,7 @@ test("#1171 — a discharged run still records what the seat MET, and the two po
   assert.equal(a.ledger.calls, 12);
 
   // CARDINALITY, AGAINST THE RIGHT NUMBER. The issue asked for this to equal `distinctReasons`; it must
-  // not. `distinctReasons` is 's count of distinct executed query SHAPES (2 here — two dictated
+  // not. `distinctReasons` is the count of distinct executed query SHAPES (2 here — two dictated
   // shapes), and it is unrelated to refusal tokens (3 here). Asserting they agree would assert something
   // false, and the run that produced this issue is the proof: 14 shapes, 8 refusal types.
   assert.equal(a.distinctRefusalReasons, Object.keys(a.refusalReasons).length);

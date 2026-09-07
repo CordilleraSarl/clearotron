@@ -102,7 +102,7 @@ import { batchMarkName } from "./mark-name.mjs";
 import { DEFAULT_CLIENT_DAILY_RUNS, accountUsage } from "./usage-ledger.mjs";
 import { productIdentity } from "../shared/product-identity.mjs";   // AGPL §13 — one answer, three surfaces
 import { engineCommit } from "./engine-build.mjs";                  // — the SAME stamp pool meta records
-// — siblings, on their own line: 's guard pins the line above and its subject is the JOIN
+// — siblings, on their own line: the guard pins the line above and its subject is the JOIN
 // (this endpoint and pool meta stamp the same function), not the import list. Kept separate so that
 // pin keeps reading the shape it was written against.
 import { engineCommitDate, engineProvenance } from "./engine-build.mjs";
@@ -948,7 +948,7 @@ const DENIAL_REASON = Object.freeze({
  *
  * The capture path it gates is intact: `feedback-store.mjs`, `feedback-issues.mjs`, `feedback-mint.mjs`,
  * `scripts/feedback-mint.mjs` and their suites are untouched and still green. Re-enabling is this
- * constant, the `feedback: true` argument at the serve call site, and reverting 's portal-ui half.
+ * constant, the `feedback: true` argument at the serve call site, and reverting the portal-ui half.
  */
 const FEEDBACK_CAPTURE = false;
 
@@ -968,7 +968,7 @@ const NON_MUTATING_POSTS = Object.freeze(["/portal/api/compose/read", "/portal/a
 /**
  * Does a refusal on this route owe the audit log a line?
  *
- * ── WIDENS 's ANSWER, and the reason is on that issue ─────────────────
+ * ── WIDENS the ANSWER, and the reason is on that issue ─────────────────
  *
  * scoped this to `/portal/admin/*` plus the one named client write, on the reasoning that the
  * other write routes "already file a richer row" of their own. Measured, that is true of their
@@ -980,9 +980,9 @@ const NON_MUTATING_POSTS = Object.freeze(["/portal/api/compose/read", "/portal/a
  *
  * So the rule is now the PREFIX, not a list: a POST under `/portal/api` or `/portal/admin` is a write
  * unless it is named above. A route added later is covered without anybody remembering to add it,
- * which is the half of 's shape that kept failing.
+ * which is the half of the shape that kept failing.
  *
- * STILL REFUSALS ONLY, and 's cost argument is why that half is unchanged: `/portal/admin/observed`
+ * STILL REFUSALS ONLY, and the cost argument is why that half is unchanged: `/portal/admin/observed`
  * reads this log back through a fixed 256 KiB tail, so every row a success files is span that panel can
  * no longer see. The routes that file a rich success row keep filing it and nothing duplicates it.
  *
@@ -1077,7 +1077,7 @@ export function makePortalService({
   // — IS THE PER-FINDING FLAG CAPTURE ON? It is not, and `FEEDBACK_CAPTURE` is why (see above).
   //
   // A SEAM SO THE RETAINED PATH STAYS TESTED, which is the whole difference between disabled and
-  // rotting. The resolver below carries 's two-lane shape and 's disposition read; the owner
+  // rotting. The resolver below carries the two-lane shape and the disposition read; the owner
   // ruled disable rather than delete, and code nothing can execute is code nobody can prove still works.
   // The eleven route tests in portal-service.test.mjs pass `feedbackCapture: true` and keep exercising it.
   //
@@ -2500,7 +2500,7 @@ export function makePortalService({
         // row, and a retired-endpoint row is a different fact from a not-yours row. If an old open tab is
         // still clicking Flag, that is a thing worth being able to count.
         //
-        // WHAT IS DELIBERATELY STILL BELOW THIS LINE: the whole resolver — 's two-lane shape, 's
+        // WHAT IS DELIBERATELY STILL BELOW THIS LINE: the whole resolver — the two-lane shape, 's
         // disposition read, the server-side-locator rule. The owner ruled "disable services and any code",
         // and the acceptance criterion says re-enabling must be a switch and not a rebuild. Deleting 130
         // lines of hard-won doctrine would have made it a rebuild.
@@ -2568,7 +2568,7 @@ export function makePortalService({
         //
         // JOINED ON ORDINAL **AND** MARK, and it resolves NOTHING on a mismatch. report-data projects the
         // same parsed findings array publish read from that same findings.json, so the ordinals are one
-        // set — but a wrong disposition on a lawyer's flag is worse than no disposition ('s ruling on
+        // set — but a wrong disposition on a lawyer's flag is worse than no disposition (the ruling on
         // the batch lane, applied here), so the mark is checked rather than assumed.
         //
         // CLEARANCE ONLY, on purpose. publish/knockout.mjs emits no disposition, so `found?.disposition`
@@ -3408,7 +3408,7 @@ export function makeHttpHandler({ verify, limiter, service, log = () => {}, devI
     // PATHNAME ONLY. `req.url` carries the query string and this row must not; parsed defensively
     // because the outer catch can run before `url` was successfully built.
     const pathOnly = (u) => { try { return new URL(String(u ?? ""), "http://localhost").pathname; } catch { return ""; } };
-    // SAME SCOPE AS THE ROUTER'S ('s Out of scope). Without this the door files a row for every
+    // SAME SCOPE AS THE ROUTER'S (the Out of scope). Without this the door files a row for every
     // 302 to the login page and every rate-limited poll of /portal/api/runs — which is per-request
     // access logging arriving through the other entrance, and the first cut of this change did exactly
     // that. Computed once so a redirect and a 500 on the same request cannot disagree about it.
@@ -3669,7 +3669,7 @@ export function makeHttpHandler({ verify, limiter, service, log = () => {}, devI
         // THE ROW THE ISSUE WAS FILED ABOUT. Both doors throw this shape — the Cloudflare edge's verify
         // and the local sign-in's LocalAuthError — so one line here covers a refused write on either
         // deployment. Before the Accept split below, because a refusal is one event however it renders.
-        // A FIXED VOCABULARY, NEVER `e.message` ('s third criterion: "a refusal must not become a
+        // A FIXED VOCABULARY, NEVER `e.message` (the third criterion: "a refusal must not become a
         // new disclosure surface"). This message comes out of `verify()` — the Cloudflare edge's JWT
         // check, a third-party library on some deployments — and nothing constrains what it puts in
         // there: a claim value, a subject, a fragment of the token it just rejected. The row is read
@@ -3929,7 +3929,7 @@ const PORT = PORT_CHOICE.port;
   // is what an operator reads, never mentioned the file existed.
   //
   // So triage of "I clicked Retire and it errored" looked at 17 lines of startup banner and concluded
-  // the request never arrived. 's own triage recorded that same absence as its central lead and
+  // the request never arrived. its own triage recorded that same absence as its central lead and
   // called it "the first thing to explain" — there was nothing to explain, and a second investigation
   // spent itself on the same non-signal.
   //

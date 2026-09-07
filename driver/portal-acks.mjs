@@ -6,7 +6,7 @@
 // On the test instance they are the dominant content — a wall of dead runs crowding out the work
 // actually running, which is the one thing that section exists to show.
 //
-// WHAT THIS IS NOT. It is not a state change on the run, not a delete, and NOT 's retire. Retiring
+// WHAT THIS IS NOT. It is not a state change on the run, not a delete, and NOT the retire. Retiring
 // writes `archive-tags.json`, which is pool-wide: it hides a run from everyone, including the brand
 // owner. Dashboard clutter is one person's annoyance, so it gets one person's store. Giving both to one
 // control would mean a staff member tidying their own dashboard silently hiding a client's run.

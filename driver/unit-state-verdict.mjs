@@ -56,8 +56,8 @@
 //
 // ── what this module deliberately does NOT touch: the zero-check ────────────────────────────────
 //
-// 's Scope is one paragraph and it names one thing — the state vocabulary. So the FAULT branch is
-// the only branch whose behaviour changes. 's separate guard, "0 active is not a pass", keeps
+// That Scope is one paragraph and it names one thing — the state vocabulary. So the FAULT branch is
+// the only branch whose behaviour changes. That separate guard, "0 active is not a pass", keeps
 // origin/main's predicate (`ActiveState === "active"`, literally) and origin/main's message.
 //
 // This is not caution for its own sake. An earlier draft of this fix also widened the count to treat

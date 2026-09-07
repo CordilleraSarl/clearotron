@@ -352,7 +352,7 @@ export async function runJxSerpGrid(ctx, job, opts = {}, { runLog = () => {}, no
       // "shadow-only, the run is unaffected" and carry no cause at all, while degradedCause beside it
       // held `SerpAPI 429: Your account has run out of searches.` Measured, not hypothesised: an
       // operator watching a real run learned a headline capability had failed and could not learn that
-      // the fix was a subscription top-up somebody could do in five minutes. That is 's principle
+      // the fix was a subscription top-up somebody could do in five minutes. That is the principle
       // one layer down — a discriminator that reaches a field and not the sentence anybody reads.
       note(shadowLaneNote("jx serp grid", "degraded", `${gaps.length}/${cellsIn.length} cells gapped: ${topCause}`,
         `attempt ${st.attempts + 1}/${MAX_UNIT_ATTEMPTS}`));

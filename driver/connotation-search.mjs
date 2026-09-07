@@ -138,7 +138,7 @@ export const MEANING_ANGLES_RE = /^[ \t]*(?:[-*]\s+)?meaning angles\s*[:—-]\s*
 // gap row. Verified on E2E's preserved R1 run of 2026-08-13 (test build 4353a74): 61 dictated, 61 receipts, 0 gaps, one
 // dictated query unrecorded and one recorded query never dictated — the same angle, minus the quote. The
 // merge threw `deterministic`, the ladder correctly refused to retry, and the run died at common-law after
-// 26m15s with nothing delivered and the whole gather already paid for. 's class, inverted: the driver
+// 26m15s with nothing delivered and the whole gather already paid for. That class, inverted: the driver
 // corrupted a well-formed model output.
 //
 // THE RULE: peel an outer pair only when both ends carry the SAME quote character AND the interior carries
@@ -469,7 +469,7 @@ export function livePassages(snippet) {
 export function usableSnippet(s) { return quoteWeight(s) >= QUOTE_MIN; }
 
 // ── — WHY A QUOTE DID NOT BIND, NOT MERELY THAT IT DID NOT ──────────────────────────────────────
-// `quoteJoins` is a predicate and stays one: its answer is the gate's, and 's comment thread withdrew
+// `quoteJoins` is a predicate and stays one: its answer is the gate's, and the comment thread withdrew
 // loosening it. What was missing is the REASON, and the reason is the whole.
 //
 // R6 (Full country search into China) died after four dispatches, byte-identical, on
@@ -1326,7 +1326,7 @@ export function renderConnotationObligations(ob, { ledgerPath = "your half ledge
       // The ordinal is 1-based and per-row, matching `receipt_index` on the form exactly — the seat is
       // never asked to hold two different numbering schemes at once.
       //
-      // THE REAL IDS STAY. 's acceptance is that the gate cannot fail a seat for an obligation the
+      // THE REAL IDS STAY. That acceptance is that the gate cannot fail a seat for an obligation the
       // tool result never named, and these are what a failure names. What was removed is the METAVARIABLE
       // and the instruction to cite one — a model shown `R-XXXXXXXX` writes `R-RECEIPT`, whereas a model
       // shown a list of real ids it is told not to type has nothing to pattern-match.
@@ -1493,7 +1493,7 @@ export function meaningSweepReceiptsInstruction({
     //
     // Keyed on the OBLIGATIONS now, which is the thing the sentence is actually about. Same family as
     // the rest of this bundle: a decision taken on a surface token while the thing itself says the
-    // opposite ('s axis outcome, 's status code, 's trailing default, 's deleted arm).
+    // opposite (the axis outcome, the status code, the trailing default, the deleted arm).
     ...(mayOwnNoQueries ? ["Your half may own zero meaning queries. If so the grid tool lists you no"
       + " obligations, and recording nothing is the complete and correct outcome for you — do not invent"
       + " rulings and do not create any dispositions file."] : []),
@@ -1525,7 +1525,7 @@ export function renderDispositionTable(rows, ob) {
   // The park broke that premise. A parked row is undecided AND the stage completes, so the document IS
   // delivered — and `ruling` is null on it, so this filter silently dropped it. The reader received a
   // table that looks complete, with the one obligation nobody could decide simply absent. No gap, no
-  // marker, nothing to notice. That is 's lying receipt reached by the shortest path there is.
+  // marker, nothing to notice. That is the lying receipt reached by the shortest path there is.
   //
   // Rendered as its OWN block rather than as rows of the ruling table, deliberately: an undecided row
   // sitting in a column headed "Ruling" is read as a ruling, whatever the cell says.
@@ -1595,7 +1595,7 @@ const NO_POLICED_SECTION = "(no PR / reputational / connotation section)";
 // that did not RUN is a different failure from a sweep that was not ruled on, and keeping them apart is
 // what makes the warm lane safe (gateway.mjs WARM_ELIGIBLE_RE).
 //
-// 's lesson survives the collapse and is the reason `form_damaged` is not folded into `no_ruling`:
+// That lesson survives the collapse and is the reason `form_damaged` is not folded into `no_ruling`:
 // the gate must never destroy a completed clearance by conflating "did not do the work" with "wrote the
 // answer in a shape that did not bind". Under the form the second class is a two-field correction the
 // seat can finish, and the union means the rest of its work cannot be lost while it makes it.
@@ -1622,7 +1622,7 @@ const NO_POLICED_SECTION = "(no PR / reputational / connotation section)";
 //
 // It is its own reason and not a `detail` on `no_ruling` because the two have different remedies and the
 // hint is routed on the token: "add a ruling" sent to a seat that has ruled is a closed loop.
-// CARRIES THE SAME ARGUMENT ONE CLAUSE FURTHER, ON THE EVIDENCE THAT 's FIX DID NOT REACH.
+// CARRIES THE SAME ARGUMENT ONE CLAUSE FURTHER, ON THE EVIDENCE THAT the FIX DID NOT REACH.
 // R6 died three times on `no_ruling=75` over a 75-row form. The seat held a 144-line findings document it
 // had just written, was told "75 rows carry no ruling", saw 75 rulings in the document in front of it, and
 // changed nothing. It had written THE WRONG ARTIFACT: the disposition form was the deliverable and the
@@ -1631,7 +1631,7 @@ const NO_POLICED_SECTION = "(no PR / reputational / connotation section)";
 // findable. `no_ruling` fires identically whether a row carries no ruling token, a ruling with no
 // receipt, or NOTHING AT ALL because the form was never opened, and those have different remedies.
 //
-// THE SPLIT IS STRICTLY NARROWER, exactly as 's was. Every state below failed before and fails now;
+// THE SPLIT IS STRICTLY NARROWER, exactly as the was. Every state below failed before and fails now;
 // `no_ruling` survives as the residual so nothing can fall out of the vocabulary. The whole-population
 // collapse states of the retired hand-edited form (`form_untouched`, `form_unparseable`) died with the
 // form path — their subject matter is carried by the call audit's own states below, read from the run's
@@ -1852,7 +1852,7 @@ export function obligationRows(ob, { spotChecks = QUOTE_SPOT_CHECKS } = {}) {
   // `segmentBinding` through the same `snippetSegments`. One derivation, both ends — the display and the
   // check cannot disagree, which they would the moment either recomputed its own split.
   //
-  // 's defect is the one this avoids, arriving from the other direction: a seat ordered to set a
+  // That defect is the one this avoids, arriving from the other direction: a seat ordered to set a
   // field it was never shown the values for. `receipt_index` is safe precisely because the candidate list
   // is in front of the seat; a segment ordinal is only safe on the same terms.
   //
@@ -2066,7 +2066,7 @@ export function findConnotationViolations(commonLawContent, prRiskCount = 0, { r
     //
     // The order is load-bearing: this is reached ONLY when the row is otherwise ruled, so a genuinely
     // unruled row can never be reported as a quote problem. `quote_unbound` cannot mask missing work —
-    // it is strictly narrower than the state it splits off from, which is what 's warning demands.
+    // it is strictly narrower than the state it splits off from, which is what the warning demands.
     const otherwiseRuled = s
       && RULING_SET.has(String(s.ruling ?? "").trim().toLowerCase())
       && String(s.note ?? "").trim()

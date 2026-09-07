@@ -275,7 +275,7 @@ test("the email access note is omitted when no identity domain is configured", (
 
 test("#1014 the SECOND widening is pinned by value, on the trees it actually added", () => {
   // asserts scripts/, driver/test/ and bin/, and backstops with `files.length > 200`. Neither
-  // reaches the four trees 's widening added — driver/ alone is ~825 files, so it clears that
+  // reaches the four trees the widening added — driver/ alone is ~825 files, so it clears that
   // backstop on its own and every one of mcp-server/, providers/, portal-ui/ and shared/ could fall
   // out together in silence. The operator path in a .yml under mcp-server/ that survived until
   // ef475931 is what that gap costs, and "the walker was widened" is not observable.

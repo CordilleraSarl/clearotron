@@ -43,7 +43,7 @@
 // IT DOES NOT SET A MODE, and this change alters no behaviour on disk. Pinning 0o750 here in the same
 // commit would be a semantic change riding inside a seam, and the seam is the part that has to be
 // reviewable by reading nineteen call sites and agreeing they still mean what they meant. The mode is
-// 's business, and when it is taken it is one line in this file.
+// That business, and when it is taken it is one line in this file.
 //
 // IT WOULD NOT RESTRAIN THE SEAT IF IT DID. The agent runs as the same account that owns these
 // directories, so owner bits apply whatever the group bits say. A tighter mode removes GROUP write,

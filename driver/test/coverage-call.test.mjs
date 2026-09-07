@@ -330,7 +330,7 @@ test("recordCoverage: an unstamped run and a stamped-but-inputless run answer pl
 
 // ── — THE REFUSAL BOUND AT THIS SEAM ───────────────────────────────────────────────────────────
 //
-// Coverage is the second member of 's live-lock class: a loop of per-item obligations settled
+// Coverage is the second member of the live-lock class: a loop of per-item obligations settled
 // through validated tool calls, where before this nothing counted a refusal. `open_clean` is the
 // repeatable refusal — a row the machine computed as OPEN can never be called confirmed-clean, so a seat
 // that keeps claiming it is refused correctly, forever. That is the killer's shape exactly: the refusals
@@ -372,7 +372,7 @@ test("#1239 coverage: a row refused past the bound parks, the loop ends, and no 
   assert.equal(last.outstanding, outIds.length,
     "and the tool's count agrees with the form's, with the parked row out of both");
 
-  // THE COUNT STAYS TRUE. 's corpse was a narrative reporting every row recorded over a
+  // THE COUNT STAYS TRUE. That corpse was a narrative reporting every row recorded over a
   // machine-checked shortfall; a park that banked a status would rebuild it in one line.
   const cf = readCoverageForm(dir);
   const parkedRow = cf.rows.find((r) => r.row_id === open.row_id);
@@ -436,7 +436,7 @@ test("#1239/#1233 the park PERSISTS in the accumulator and the counts are three-
   assert.equal(kept.parked, true, "a row parked on call 30 is still parked on call 31");
   assert.equal(kept.parked_refusals, PARK_AFTER_REFUSALS, "and keeps its evidence");
 
-  // 3. THREE STATES, THREE COUNTS. This is the assertion 's corpse would have failed: a narrative
+  // 3. THREE STATES, THREE COUNTS. This is the assertion the corpse would have failed: a narrative
   // reporting every row recorded over a machine-checked shortfall.
   assert.equal(again.parked, 1);
   // PINNED INDEPENDENTLY, because the obvious check is a tautology: `outstanding` is DERIVED as

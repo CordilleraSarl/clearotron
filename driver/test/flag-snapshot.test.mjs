@@ -230,7 +230,7 @@ test("#1149 item 8 — an EMPTY flag comparison is reported as vacuous, never as
 });
 
 test("the test box's posture is reported line by line, not as one word", () => {
-  // 's state minus the three jx flags, which item 8 deleted: EUIPO defaulting to sandbox with
+  // That state minus the three jx flags, which item 8 deleted: EUIPO defaulting to sandbox with
   // no credentials is still a two-row difference, and each row still names itself.
   const d = postureDelta(buildFlagSnapshot({}, { capturedAt: POSTURE_AT }));
   const names = d.map((r) => r.what);

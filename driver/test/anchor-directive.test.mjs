@@ -6,7 +6,7 @@
 //
 // THESE TESTS PIN THE INTENT, NOT THE WORDING, and that is deliberate. A test asserting the exact
 // sentence would be a change-detector: it would go red on an honest rewrite and stay green on the
-// defect it exists to prevent, which is precisely what 's test did for weeks before anyone read it.
+// defect it exists to prevent, which is precisely what the test did for weeks before anyone read it.
 // So what is asserted here is the three properties the sentence must have, and one property of the
 // codebase — that there is only one of it.
 //
@@ -30,7 +30,7 @@ const served = () => [
 ];
 
 test("both composers serve the evidence order, and neither serves it as a preference", () => {
-  // — the ordered field became TWO (`segment_index` + `fragment`), and 's property is unchanged
+  // — the ordered field became TWO (`segment_index` + `fragment`), and the property is unchanged
   // by that: whatever is ordered must be ordered as an IMPERATIVE, in BOTH composers. The 0-of-9 defect
   // was phrasing a required field as something the row "wants".
   for (const text of served()) {

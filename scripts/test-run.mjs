@@ -65,7 +65,7 @@ import { snapshotRepo, repoWrites, explainRepoWrites } from "./repo-writes.mjs";
 //     CLEAROTRON_DATABASE=clarivate node scripts/test-run.mjs node -e '<print>'
 //       -> CLEAROTRON_DATABASE = "corsearch"
 //
-// The operator named a vendor and the suite ran as a different one, in silence. That is 's own
+// The operator named a vendor and the suite ran as a different one, in silence. That is its own
 // sentence — "a default is the one wrong value that never announces itself" — reached through the
 // compatibility window rather than through a code default.
 //

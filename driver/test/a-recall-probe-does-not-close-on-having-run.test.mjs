@@ -5,7 +5,7 @@
 // THE TRAIL THIS REPRODUCES. In the R2 scenario, DELPHI GENETICS — a HIGH-graded LIVE US registration —
 // produced no doubt of any kind. Both of its recall asks ended `kind:executed` / `handoff:null` via the
 // plan-execution join: satisfied by the query having RUN, not by the result reaching findings. The ask
-// closed before a doubt would be minted, so 's provenance rule never saw it. Nothing on any
+// closed before a doubt would be minted, so the provenance rule never saw it. Nothing on any
 // delivered surface said the right existed.
 //
 // The rule keys on what the probe RETURNED, never on execution — because a probe that ran and found

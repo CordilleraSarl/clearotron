@@ -30,7 +30,7 @@
 // merged by hand after a diff, so their live copy is expected to DIFFER. Copying a template over a live
 // unit replaces working auth with placeholders that look configured — the 2026-07-19 incident.
 //
-// This matters here because 's correction gave client-mcp and client-mcp-apikey the tracked files
+// This matters here because the correction gave client-mcp and client-mcp-apikey the tracked files
 // they always had, in mcp-server/remote/. Comparing a template byte-for-byte against its live copy is a
 // guaranteed red on every production run, and an instrument that is red by construction on day one is an
 // instrument that gets discounted by day two.

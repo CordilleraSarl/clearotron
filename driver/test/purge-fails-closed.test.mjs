@@ -206,7 +206,7 @@ test("#641 the teardown reads the root off the dry run it ran, and refuses to ap
   assert.match(call, /--expect=\$\{expect\}/, "…and the count, as before");
 
   // WHERE THE VALUE COMES FROM IS THE WHOLE POINT. `CLEAROTRON_REPORTS_DIR` read here would satisfy the flag
-  // and defeat the guard — 's rule is that a dry run on one estate cannot authorise an apply on
+  // and defeat the guard — the rule is that a dry run on one estate cannot authorise an apply on
   // another, and a root this process asserts about itself proves nothing about the run reviewed.
   const derive = src.slice(src.indexOf("let expectRoot"), i);
   assert.match(derive, /dry\.match\(/, "the root is PARSED OUT of the dry run's own output");

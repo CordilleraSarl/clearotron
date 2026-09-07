@@ -330,7 +330,7 @@ export function recordsForMark(doc, name) {
  * WHAT REPLACES A FOREIGN URL, and why it is not an origin swap: `null`, so the surfaces fall through to
  * `recordId` — the `/mark/<cc>/<number>` path that IS the canonical record identity this system stores.
  * The reader gets the record number in plain text beside the office label, which is word for word the
- * remedy 's refusal message prescribes. Composing the run provider's origin onto the path instead
+ * remedy the refusal message prescribes. Composing the run provider's origin onto the path instead
  * would invent a URL nobody fetched, and on `free-tier` there are two offices and no single origin to
  * swap to.
  *
@@ -394,7 +394,7 @@ export function recordsLine(entry) {
       + `appears here.`
     : "";
   // — the ordered territories this register never covered. Appended to whichever sentence comes
-  // back, and needed most in the EMPTY-LIST branch below for the same reason 's note is: "the
+  // back, and needed most in the EMPTY-LIST branch below for the same reason the note is: "the
   // register returned none under the name or any close variation of it" is a clean negative, and over a
   // matter that ordered Japan on a register with no Japanese coverage it is a false one.
   const outside = entry.deferredScope ?? [];

@@ -12,7 +12,7 @@ import { clipProviderText, ELISION } from "../provider-text.mjs";
 const REFUSAL = "HTTP 500: INTERNAL_SERVER_ERROR - Count Failed - IL - Near/Adj queries with sub "
   + "queries that can return a huge amount of results are not allowed";
 
-// 's predicate, copied here rather than imported: this is a PROVIDER-side module and the driver is
+// That predicate, copied here rather than imported: this is a PROVIDER-side module and the driver is
 // not on its import path. Kept byte-identical to driver/repairs.mjs on purpose — if the two ever
 // diverge, this test is the place that says so, because its whole subject is the two agreeing.
 const STRUCTURAL = /\b(?:are|is)\s+not\s+allowed\b/i;

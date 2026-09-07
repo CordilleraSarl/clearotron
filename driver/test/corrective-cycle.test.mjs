@@ -201,7 +201,7 @@ test("AD-2 A1 / #393: a lint repair that moves an actual FINDING still re-does t
   // The companion to the test above. Same run shape, same staling repair, but the redo turn edits a
   // FINDING object rather than a coverage note. The card built from it genuinely is stale, so the tail
   // repair must still fire and the delivered report must carry the post-repair prose. A projection that
-  // reported this fresh would be the gate lying, which is the failure mode 's ruling names.
+  // reported this fresh would be the gate lying, which is the failure mode the ruling names.
   const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
     MOCK_PERMISSION_PROSE: "1", MOCK_LINT_REPAIR_TOUCH_FINDING: "1" });
   assert.equal(res.ok, true, JSON.stringify(res));
@@ -281,7 +281,7 @@ test("T3a/#1674: a review that flips to BLOCKING during the delivery stale-repai
   // MOCK_NARRATIVE_OVER_CAP reproduces the staling: finding 1's write-up breaches the word cap, the
   // lint repair rewrites narrative.md, and narrative.md is a DECLARED INPUT of narrative-refutation —
   // so the reviewer goes stale and the delivery gate re-runs it. The lint-repair-touches-findings knobs
-  // deliberately do NOT reach it ('s projection), which is why this needed its own knob.
+  // deliberately do NOT reach it (the projection), which is why this needed its own knob.
   const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
     MOCK_NARRATIVE_OVER_CAP: "1", MOCK_REVIEW_BLOCKS_AFTER_VERDICT: "1" });
 

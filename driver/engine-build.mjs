@@ -91,7 +91,7 @@ export function resetEngineCommit() { cached = undefined; source = undefined; re
 // wrong rulings in two days.
 //
 // A SIBLING, NOT A WIDER RETURN TYPE. `engineCommit()` keeps its bare-string contract exactly:
-// 's guard pins its import line by regex AND pins the literal `engineCommit: engineCommit` in
+// That guard pins its import line by regex AND pins the literal `engineCommit: engineCommit` in
 // the publisher, four consumers read the string, and `scripts/freeze-example-run.mjs` asserts in prose
 // that it "is cached to one value and cannot differ between the two". Widening it would break all of
 // that to add a field only one new caller wants.

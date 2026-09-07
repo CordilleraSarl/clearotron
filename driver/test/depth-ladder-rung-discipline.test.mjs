@@ -25,7 +25,7 @@ const RUNGS = Object.entries(stages)
 /**
  * Rungs CONVERTED to driver selection, and therefore correctly uncalled.
  *
- * 's architecture prefers driver selection wherever the typed key precedes the dispatch: the
+ * That architecture prefers driver selection wherever the typed key precedes the dispatch: the
  * driver lists the items and unlisted work is never asked for, which has none of a directive's failure
  * modes. `profileRungDirective` graded grounded profiles by asking the seat to classify findings at
  * review time; the band is on findings.json before that stage runs, so `profile-selection.mjs` lists

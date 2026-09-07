@@ -42,7 +42,7 @@ import { FINDINGS_FILE as REGISTER_FINDINGS_FILE, refusalsFor as registerDigestR
 // file edit, and this table is what the warm patch reads to know that. It grows by one row per conversion,
 // so its membership IS the conversion record — and a stage absent from it still gets the write-mode tails,
 // correctly, because its seat still holds Write.
-// EXPORTED for 's agreement guard, which derives each recording stage's artifact from this table
+// EXPORTED for the agreement guard, which derives each recording stage's artifact from this table
 // rather than from a second hand-written list: stage → its granted record tool → the row whose `tool`
 // matches → the basename. A conversion that adds the grant and forgets the row leaves the guard unable to
 // name an artifact for that stage, and it fails there rather than quietly checking one direction less.
@@ -577,7 +577,7 @@ export function selectEngine() {
 //      move-blindness this repo has counted seven instances of.
 //
 // What died here with the form path (2026-08-17 owner ruling, delete-not-gate): reading the seat's file
-// as a SUBMISSION, preserving it, refereeing whose bytes it held ('s isDriverOwnBytes machinery) and
+// as a SUBMISSION, preserving it, refereeing whose bytes it held (the isDriverOwnBytes machinery) and
 // rewriting the seat-facing copy. The seat writes no file, so there is no submission to read, no bytes
 // to referee, and no seat-facing copy to keep in step. The capture duty moved to the receiver
 // (disposition-tool.mjs captureCall — the payload as handed to the process, indexed before the work).
@@ -1342,7 +1342,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // turn did not report completion, and completeness of its write is exactly what is unknown.
     // Still never applies to a rate-limit rejection either (0 tokens, nothing written).
     const killClass = isTaintRow({ fail, code, killed, signals: turn.signals });
-    // ONE artifact judgement, shared by both rescues below ('s rule: never a second, drifting copy of
+    // ONE artifact judgement, shared by both rescues below (the rule: never a second, drifting copy of
     // the contract). Present + written by THIS attempt (the per-attempt snapshot — an inherited file and
     // equally an earlier attempt's file never rescue a failed turn) + passes the stage's own validator.
     const attemptWroteTruth = () => {
@@ -1482,7 +1482,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // and `rate_limited` drive retry policies this must not override. `modelMismatch` is journalled on
     // the row either way, so the mismatch is never lost — only the classification defers.
     //
-    // Default-ON gate through `envGateOn` ('s rule): `CLEAROTRON_MODEL_WIRE_CHECK=0` disarms it without
+    // Default-ON gate through `envGateOn` (the rule): `CLEAROTRON_MODEL_WIRE_CHECK=0` disarms it without
     // a deploy if a provider ever starts reporting an id this build's family regex misreads. Disarming
     // silences the REFUSAL, never the record — `modelActual`/`modelMismatch` keep landing on every row.
     if (modelMismatch === true && !fail && envGateOn("CLEAROTRON_MODEL_WIRE_CHECK")) {
@@ -1550,7 +1550,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       // how a stale build-stage note came to describe a live field as dead. Measured on preserved runs
       // whose engine commit is byte-identical to this file: the R5 register-unit attempt row of 08-12
       // carries {input:8349, output:18374, cacheRead:1805815, cacheWrite:96608, total:1929146}. Every
-      // figure in 's own table is a verbatim read of these rows — the issue was minted BY reading
+      // figure in its own table is a verbatim read of these rows — the issue was minted BY reading
       // the field this comment called null. The shape is `mapUsage`'s canonical
       // {input, output, cacheRead, cacheWrite, total}, written by both engines
       // (anthropic-agent.mjs mapUsage, openai-agent.mjs from turn.completed).
@@ -1701,7 +1701,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         stdoutTail: (fail && !json) ? streamDigest(turn.stdout) || undefined : undefined,
       });
       // AD-4 — `attempt` lands on run.jsonl too (ADDITIVE: _driver/<stage>.jsonl keeps the full per-attempt
-      // detail and 's harness keeps reading it there; run.jsonl gets the lean per-attempt spine it never
+      // detail and the harness keeps reading it there; run.jsonl gets the lean per-attempt spine it never
       // had — its readers previously saw one "stage" event with attempts:N and no causes, and the knockout
       // lane logs no stage events at all, so run.jsonl alone could not distinguish "no retries happened"
       // from "retries not recorded here"). Best-effort like every telemetry write.
@@ -2004,7 +2004,7 @@ export function correctiveMessage(baseMessage, attempt, lastFail, expectFile, { 
   if (!maxTok && !/^(invalid_file|missing_file)/.test(inner)) return baseMessage;
   const files = (Array.isArray(expectFile) ? expectFile : [expectFile]).filter(Boolean);
   const names = files.map(rel).join(", ");
-  // DIRECTION (b) — THE COLD CORRECTIVE IS A REPAIR SURFACE, AND 's SWEEP STOPPED AT THE WARM ONE.
+  // DIRECTION (b) — THE COLD CORRECTIVE IS A REPAIR SURFACE, AND the SWEEP STOPPED AT THE WARM ONE.
   //
   // `warmPatchMessage` consults TOOL_WRITTEN_ARTIFACTS and turns a repair into a CALL. This composer did not,
   // so a converted seat that hit the output ceiling was told to "CALL THE WRITE TOOL" for an artifact whose
@@ -2378,7 +2378,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // — THE REPAIR RIDES THE TYPED TOOL, because the seat no longer holds Write or Edit. This used to
     // end "Correct it in place — the file is the stage's only output", which after the conversion orders an
     // act the grant denies: a failure on obedience, mid-round, on the first repair rung that fires. Same
-    // shape as 's ten anchor sites, caught before it shipped rather than after. The one-change
+    // shape as the ten anchor sites, caught before it shipped rather than after. The one-change
     // invariant covers a dictation AND the ladder that corrects it.
     hint = `the model is a set of VALUES you hand to the \`record_blind_frame\` tool: dominant_element, ` +
       `variants[] (each {value, direction (add|drop|phonetic|homophone|neighbour|composite), rationale}), ` +
@@ -2835,7 +2835,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
   return hint;
 }
 
-// ── 's DEFERRED-SLICE BLOCK IS GONE ──────────────────────────────────────────────────────
+// ── the DEFERRED-SLICE BLOCK IS GONE ──────────────────────────────────────────────────────
 //
 // `deferredSlicesRequiredRows` composed a prose block listing every deferred qid and told the stage each
 // one "must appear VERBATIM in a Coverage-ledger row". Its own doc block recorded why it had to ship
@@ -2950,7 +2950,7 @@ const MAX_FORM_REPAIRS = 2;
 // wrote the quote. R6's four byte-identical attempts were not evidence that warm cannot fix this; they
 // were evidence that the seat was told to fix something else. The token now names the state and the arm
 // names the remedy, so there is something to change. A warm turn that STILL returns byte-identical output
-// is 's subject, not this one, and is handled where byte-identical output is detected.
+// is the subject, not this one, and is handled where byte-identical output is detected.
 // connotation_* (the family, via CONNOTATION_FORM_TOKEN_SRC; 2026-08-01 ruling, carried through B's
 // typed transport): WHY THESE ARE SAFE TO WARM. Every member is emitted only over an obligation set
 // built from `recorded.filter(e => e.results.length)` — a violation is therefore PROOF the meaning sweep
@@ -3027,12 +3027,12 @@ const WARM_ELIGIBLE_RE = new RegExp(`^(missing_file|invalid_file:[^:]*:(use_chec
 // instead of a resume, on every timeout, as a side effect of an attribution fix. A rename must not
 // change what a failure costs.
 //
-// The issue notes that 's argument applies: "the retry ladder cannot help a deterministic tool
+// The issue notes that the argument applies: "the retry ladder cannot help a deterministic tool
 // timeout — this failure class is an argument for the same disclosed-deferral treatment when the ladder
 // is provably futile." That is a real question and it is NOT settled here. Two reasons to leave it:
 // this issue's OTHER half raised the bridge cap, so a retry is no longer provably futile — R5's four
 // attempts all died at a 300s cap that no longer applies; and turning a failure class into a disclosed
-// deferral is a doctrine change, which is 's to make and not an attribution fix's.
+// deferral is a doctrine change, which is the to make and not an attribution fix's.
 
 // — a rejected draft may be CARRIED across a recovery park only when its repair is a PATCH, not a
 // re-search. That is exactly the judgement WARM_ELIGIBLE_RE already encodes: the tokens meaning "the
@@ -3065,7 +3065,7 @@ export function warmEligible(fail, json) {
 // predicate the gate judges with). It is DELIBERATELY NOT a token list. The first cut keyed this veto on
 // TOTAL_DEFECT_TOKENS, a closed list of two form-path tokens — and when the typed transport armed, the
 // failure tokens moved out of the list and the veto silently stood down with every assertion still green
-// ('s hold). An enrolled-token veto is an ENUMERATED check: a future fifth token forgetting to
+// (the hold). An enrolled-token veto is an ENUMERATED check: a future fifth token forgetting to
 // enrol is the move-blindness this repo has counted seven instances of. The direct state keys the veto
 // on the condition it exists for, and nothing has to remember to join.
 //
@@ -3110,7 +3110,7 @@ export function vetoResumeRuledNone(attempt, state) {
 // validation)": framediff_* → frame-diff.json, coverage_* → register-coverage-ledger.json, findings_*
 // → findings.json, grid_* → the failing half's own ledger, named_band_* → <axis>-band.json.
 //
-// 's in-dispatch repair has to know that, because it decides whether a repair LANDED by looking at
+// That in-dispatch repair has to know that, because it decides whether a repair LANDED by looking at
 // a file's bytes — and looking at the expectFile after a sibling repair would read a compliant model's
 // correct answer as "wrote nothing". Rather than re-deriving the routing in the gateway (two copies of
 // one rule, drifting from the day they are written), the derivation is lifted here and BOTH callers use
@@ -3215,7 +3215,7 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
   // rulings reach the driver's accumulator only through `record_dispositions`, so a warm patch that
   // ordered any file edit would aim the seat at an artifact it cannot affect — the two halves of one
   // message disagreeing about where the work lands, which is the exact defect class the token split and
-  // 's routing fixes each closed one layer up.
+  // That routing fixes each closed one layer up.
   if (CONNOTATION_FORM_TOKEN_RE.test(lastFail ?? "") && files.length) {
     // The ABSOLUTE spec path, derived from the failing member's own output by exactly the rule
     // gridLedgerNameFor states and for exactly the same reason: a warm patch carries no base prompt
@@ -3223,7 +3223,7 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
     // name — and a half must be aimed at ITS spec, never the canonical one.
     const halfM = basename(String(files[0])).match(/^common-law-findings\.half-([a-z0-9]+)\.md$/);
     const specPath = driverDir(dirname(files[0]), halfM ? `grid-spec.half-${halfM[1]}.json` : "grid-spec.json");
-    // THE CLOSING SENTENCE IS PER STATE ('s lesson, kept): "record every outstanding row" is right
+    // THE CLOSING SENTENCE IS PER STATE (the lesson, kept): "record every outstanding row" is right
     // for a partial and WRONG for a quote defect, where every row is ruled and re-recording rulings is
     // work already done. A truncated call's close must forbid the one compliance a wrongly-accused seat
     // reaches for — re-deriving its rulings.

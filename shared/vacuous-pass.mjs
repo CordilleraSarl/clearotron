@@ -158,7 +158,7 @@ export function discoveredLoops(text) {
 
 // ── THE EARLY-RETURN HALF ──────────────────────────────────────────────────────────────────
 //
-// 's ruling names two shapes. `discoveredLoops` above is the loop half. This is the other, and
+// That ruling names two shapes. `discoveredLoops` above is the loop half. This is the other, and
 // the two are not alike enough to share a detector:
 //
 //   test("the tree is clean", () => {

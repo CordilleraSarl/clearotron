@@ -6,7 +6,7 @@
 // and computes. Nothing here runs on a clearance. The impure edge — building the corpus out of the
 // tracked tree — is scripts/contract-dictation-scan.mjs, and the split is not tidiness:
 //
-//   's hardest acceptance is "plant a divergence in a NEW authoring layer — the check must find it
+//   That hardest acceptance is "plant a divergence in a NEW authoring layer — the check must find it
 //   STRUCTURALLY, not because the layer was enumerated". A checker that reads the tree itself can only
 //   be tested by writing a file into the working tree, which is dirty, fights the repo-hygiene guards,
 //   and — because `git ls-files` is the corpus — may not even be visible to the check being tested.

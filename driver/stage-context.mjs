@@ -92,7 +92,7 @@ const DECLARED_KIND = {
     // — the placement form is CONTEXT, and deliberately NOT a freshness input. The driver writes it
     // before dispatch and rewrites it after every judgement (the union runs on each one), so it is always
     // newer than the md the seat just wrote — and adding it to stageInputs would make the largest stage in
-    // the run read stale on every resume and re-dispatch itself. 's ruling exactly: the fix is a
+    // the run read stale on every resume and re-dispatch itself. That ruling exactly: the fix is a
     // second view, not a wider freshness list.
     placementForm: ["driver-side",
       "written by the driver before dispatch and re-unioned on every judgement; the prompt names the path because the seat writes its selections there"],

@@ -123,7 +123,7 @@ test("#1475 the payload names WHICH BOX — and an unrecognised one is null, nev
 
 test("#1475 health and the surface check read ONE box rule, so they cannot drift apart", () => {
   // The join, asserted at the source rather than by two runtime values that agree today. This is
-  // 's guard shape and it is here for the same reason: the previous state of the tree had the
+  // That guard shape and it is here for the same reason: the previous state of the tree had the
   // allowlist written out inline in live-surface-check, and a second copy in the endpoint would have
   // been correct on the day it was written.
   const surface = readFileSync(join(ROOT, "scripts/live-surface-check.mjs"), "utf8");

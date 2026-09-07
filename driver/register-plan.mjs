@@ -470,7 +470,7 @@ const slug = (s) => latinFold(s) || "q";
 // So a non-Latin term's identity carried nothing about WHICH TERM IT IS. It was its position in the
 // compile order — and the counter is per-plan, not per-script, so adding a Devanagari term renumbers
 // the Cyrillic ones. Fourth site of a Latin normaliser standing where an identity should be, after
-// 's fold key, 's script-exact arm and 's term-substance check.
+// That fold key, the script-exact arm and the term-substance check.
 //
 // ── WHAT IT COSTS, MEASURED ON THE SHIPPED extendRegisterPlan RATHER THAN REASONED ────────────
 //
@@ -1277,7 +1277,7 @@ export function entryQuestionKey(entry, plan) {
  * straight out of model-authored common-law markdown, and it is where R2b's two heading
  * rows entered a plan that had already been declared clean.
  *
- * — AND IT SCREENS FOR THE QUESTION, not just the qid. Same argument as 's term screen and
+ * — AND IT SCREENS FOR THE QUESTION, not just the qid. Same argument as the term screen and
  * the same funnel: an entry whose resolved question is already in the plan is refused here, because
  * this is the one place that holds both the plan and the incoming row. See entryQuestionKey above
  * for what "the same question" means and why `regions` is the field that hides it.
@@ -1628,7 +1628,7 @@ export function joinPlanToBands(plan, bandBlocksByAxis) {
 //
 //   1. THE PROVIDER MUST HAVE ANSWERED. Deferral is earned by a band block stamped `error:true` with the
 //      provider's own reason on it. A qid with NO block ran nothing and recorded nothing — an absence,
-//      not a finding — and still throws. That is 's condition, untouched: a genuinely-unrun,
+//      not a finding — and still throws. That is the condition, untouched: a genuinely-unrun,
 //      undisclosed slice fails the run.
 //   2. THE LADDER MUST BE SPENT, WHERE THE LADDER CAN DO ANYTHING. Only a qid the run has ALREADY
 //      recorded as missing (or already deferred this way) converts. On its first fan-in a hard-errored
@@ -1847,7 +1847,7 @@ export function deriveCoverageSkeleton(plan, join) {
  * predicate, no clean-claim precondition — had already fired and returned first. Main's own doc block
  * called that pair a deliberate superset/subset. So the fold removes a token the validator could not
  * reach, not a check. THE FOLD IS PROVED BY THE REPLAY CORPUS, not by that argument: the corpus flips
- * only where the SUPERSET stops firing, and it comes back to 's 9 with the superset alone restored.
+ * only where the SUPERSET stops firing, and it comes back to the 9 with the superset alone restored.
  * (The argument alone has a hole — this function keys its skeleton map on raw `s.axis` and the superset
  * trims, so an untrimmed skeleton axis would separate them. Degenerate, and no preserved run carries it.)
  *

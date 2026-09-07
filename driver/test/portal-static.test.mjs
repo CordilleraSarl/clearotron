@@ -108,7 +108,7 @@ test("#306: an UNKNOWN path still gets the SPA — this closes the registered se
 
 test("serves the SPA document for /portal and for any client-routed path below it", () => {
   withDist((handle) => {
-    // The two-segment result path is 's route — ONE name out of a knockout, opened in the shell.
+    // The two-segment result path is the route — ONE name out of a knockout, opened in the shell.
     // A deep link to it has to be answered by the SPA or the route works only when you are already
     // inside the app: pasted, bookmarked or mailed, it would 404 while client-side navigation to the
     // same URL worked, which is the hardest kind of broken to reproduce.

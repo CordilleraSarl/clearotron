@@ -5,7 +5,7 @@
 // The reviewer is the report's only check, and until now it wrote its own review as free prose with
 // Write/Edit. Everything downstream then parsed that prose back out: the verdict token, the flag list,
 // the optional `[kind:]` and `[on:]` channels, and the count that decides whether a BLOCKING is
-// degenerate. The seat chose the enumeration style, so the parse could miss — 's lettered flags
+// degenerate. The seat chose the enumeration style, so the parse could miss — the lettered flags
 // were invisible for exactly that reason, and records a second walk that could not see `**1.`.
 //
 // The seat now hands VALUES and the driver renders the document. The style becomes the driver's, so

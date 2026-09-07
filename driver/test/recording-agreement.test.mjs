@@ -29,7 +29,7 @@
 //       a write from seats whose grant no longer carries `Write`.
 //
 // Direction (c) is green and NOT vacuous: it reproduces exactly the two `skeptic` rows already named on
-// 's backlog, which is what proves the union reaches `phase2-execution.md`.
+// That backlog, which is what proves the union reaches `phase2-execution.md`.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
@@ -591,7 +591,7 @@ test("…and the converted seats get the CALL form of that same corrective, not 
 // ── SIX PLANTS — two stages by three directions, through the pure predicate ──────────────────────────
 //
 // Every green above is a walk over a corpus that happens to be clean. These are what make it a detection.
-// Pure, so each is a few lines and nothing is written into the tree ('s reason for splitting the
+// Pure, so each is a few lines and nothing is written into the tree (the reason for splitting the
 // checker from its scan).
 
 const plantBase = (stage) => ({

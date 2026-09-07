@@ -10,7 +10,7 @@
 //
 // ── WHY A HOOK, AND NOT THE THING YOU WOULD TRY FIRST ────────────────────────────────────────────────
 //
-// 's incident was a live clearance writing two files into the skills tree. The obvious reading is
+// That incident was a live clearance writing two files into the skills tree. The obvious reading is
 // "a seat did something it should not". Reading the grant layer first says otherwise: `buildClaudeArgs`
 // grants that tree with `--add-dir`, WHICH HAS NO READ-ONLY FORM, under `--permission-mode acceptEdits`
 // which auto-approves Write/Edit so each stage can save its output without prompting. The tree was

@@ -21,7 +21,7 @@
 // definition of "ruled" and — since the review of this build — no row LOOKUP either. `obligationRows`,
 // `formRowFinder` and `isRuled` all come from connotation-search.mjs, the same code the GATE
 // judges with. A union that preserved a ruling the gate would refuse, or dropped one it would accept,
-// would make the outstanding count mean two different things in two places, which is 's defect
+// would make the outstanding count mean two different things in two places, which is the defect
 // exactly: one calculation running twice, silently disagreeing, both copies looking correct. The lookup
 // had been written out twice — here and in the gate — and both copies carried the same punctuation defect.
 
@@ -160,7 +160,7 @@ export function unionDispositionForm(prior, submitted, ob, { half = null, genera
   const findSubmitted = formRowFinder(submitted, form.rows);
   // — a park is STICKY, for the same reason a ruling is. This module exists because the outstanding
   // count churned instead of shrinking (see the header): a park that could lift would let the count rise
-  // again, which is 's defect in new clothes. So the prior form's park is authority, and `parkedIds`
+  // again, which is the defect in new clothes. So the prior form's park is authority, and `parkedIds`
   // only ever ADDS.
   const newlyParked = new Set((parkedIds ?? []).map((x) => String(x ?? "").trim()).filter(Boolean));
   let ruled = 0, carried = 0, parked = 0;

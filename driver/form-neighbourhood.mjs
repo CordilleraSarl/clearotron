@@ -483,7 +483,7 @@ export function floorSeeds(manifestMd, { model = null, mark = "" } = {}) {
   //
   // It is NOT fixed by romanising. variantCompletenessGaps' per-script floor validates and never
   // generates, on the stated principle that the moment code mints a search term, judgment has moved into
-  // the funnel — and that was 's own reason for excluding non-rule-based transliteration. A
+  // the funnel — and that was its own reason for excluding non-rule-based transliteration. A
   // romanisation is a minted term. So the deterministic floor genuinely does not exist for this mark, and
   // the honest move is to say which mark, and why, where a reader will see it.
   if (!seeds.length) {

@@ -226,7 +226,7 @@ export function commitWithAuditRow({ audit, gitCommit, files, message, by, row }
 //   portal-service   RECIPE_REPO_ROOT || <the profile repo root>   → the config store → saves work
 //   recipe-service   RECIPE_REPO_ROOT || join(HERE, "..")          → the PRODUCT CHECKOUT → FATAL
 //
-// Two ends of one contract measuring different things ('s class). The portal consulted the profile
+// Two ends of one contract measuring different things (the class). The portal consulted the profile
 // root as a second chance and the recipe-service did not, so one door came up and the other exited 1.
 //
 // AND THE DIVERGENT FALLBACK IS THE DANGEROUS ONE, which is why this is not merely tidying. The product
@@ -320,7 +320,7 @@ export function makeStoreCommit({ repoRoot, log = () => {}, what = "store", retr
       } catch (e) {
         const detail = detailOf(e);
         if (isTransientGitFault(detail) && attempt <= retries) { napping(waitMs * attempt); continue; }
-        // NAMED, not merely reported. 's line held that a failed commit is a permanent sync blocker
+        // NAMED, not merely reported. That line held that a failed commit is a permanent sync blocker
         // and belongs in the journal; it is no longer permanent — the next save completes it — but the
         // operator still needs to know WHICH fault, because a hook and a full disk want different people.
         log(`${what} COMMIT FAILED after the write landed — the save is LIVE and the paths are STAGED, `

@@ -108,7 +108,7 @@ export const CROWD_RULING_UNIT_GRAMMAR = `<axis> / ${CROWD_RULING_TOKEN} (<N> me
 // was accepted, carried through the union, passed the coverage gate, and blocked the run three gates
 // later over a ruling the seat had made. Both readers now call this, so call time and delivery time
 // cannot disagree about what a count is. That is the point of the function, not a tidiness: two copies
-// of this regex would let the refusal and the block drift apart, which is 's defect.
+// of this regex would let the refusal and the block drift apart, which is the defect.
 //
 // THREE ANSWERS, and the middle one is the whole reason the return is not a boolean:
 //   null  — the cell rules no crowd. Every other coverage row, and the overwhelming majority.

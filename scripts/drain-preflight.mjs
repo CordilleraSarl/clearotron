@@ -132,7 +132,7 @@ export function watchedQueueDirs(unitText, home) {
     //
     // Reading the list without the reset is wrong in BOTH directions — it keeps globs the deployment
     // has disowned, and (because the caller then compares against a superset) it can report a directory
-    // as watched that nothing watches. The second is 's original harm, produced by the guard built
+    // as watched that nothing watches. The second is the original harm, produced by the guard built
     // to prevent it.
     if (!m[1].trim()) { out.length = 0; continue; }
     // EXTENSION-AGNOSTIC. The queue watcher globs `*.json` and the outbox watcher globs `*.pending`;
@@ -223,7 +223,7 @@ export function runnerRunning() {
   return { known: true, procs };
 }
 
-// ── THE OUTBOX IS THE SAME HAZARD, ONE LANE OVER ('s tail) ───────────────────────────────────────
+// ── THE OUTBOX IS THE SAME HAZARD, ONE LANE OVER (the tail) ───────────────────────────────────────
 //
 // `prelim-outbox.path` carries the identical literal glob and says so in its own header: "this literal
 // and the driver's `config.outboxDir` are two spellings of one fact with nothing checking them against

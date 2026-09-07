@@ -69,7 +69,7 @@ at runtime.
   exceed the threshold, 15 were already named by an ancestor**, and three one-line additions closed the
   rest. The mechanism was not new — it was unchecked.
 
-  **This paragraph is what 's absence-record predicted it would become.** That record said "a new
+  **This paragraph is what the absence-record predicted it would become.** That record said "a new
   directory ships without a front door and nothing says so", named itself as a known gap rather than a
   mechanism, and ended "if the guard is built later, this paragraph is what it replaces". It has been.
 

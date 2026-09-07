@@ -37,7 +37,7 @@
 //
 // The demo is SPAWNED rather than reimplemented, and that is a safety property, not a shortcut: it
 // inherits bin/example.mjs's FORBIDDEN containment refusal, so a fixture pool can never resolve inside
-// /srv/trademark-archive or this environment's CLEAROTRON_REPORTS_DIR. 's rule is untouched — there is
+// /srv/trademark-archive or this environment's CLEAROTRON_REPORTS_DIR. That rule is untouched — there is
 // still no default pool; `--fixture-pool` is an explicit request that writes only to a fresh temp dir
 // and deletes it again unless `--keep`.
 //
@@ -219,7 +219,7 @@ const PROBE = `<script>
 /**
  * A DELIBERATE 26px sideways overflow, injected into the report on `--plant-overflow`.
  *
- * 's acceptance has two halves and this is the one that matters more: nine green assertions prove
+ * That acceptance has two halves and this is the one that matters more: nine green assertions prove
  * nothing unless the same harness still REDDENS on a report that is actually broken. The old check
  * returned `stale-probe` for the sideways assertion in most runs, so it could not have caught this —
  * and a run of nine PASSes from an instrument that cannot fail is the exact false authority the whole

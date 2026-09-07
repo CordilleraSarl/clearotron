@@ -227,7 +227,7 @@ export function accountRemedyTerms({ terms = [], blocksByQid = new Map(), execut
 }
 
 /**
- * THE CLOSURE READ ('s second criterion). `domClosed` may be true only over the ACCOUNTED set: a
+ * THE CLOSURE READ (the second criterion). `domClosed` may be true only over the ACCOUNTED set: a
  * dominant-element directive must be verified-closed AND every remedy term that directive restated must
  * be `found` or `searched-empty`. One unaccounted term and the dominant-element gap is not closed —
  * because it demonstrably is not: something the remedy named either never ran or ran into a shape the

@@ -167,7 +167,7 @@ test("#1723 setup REFUSES a configuration directory inside the checkout", () => 
 
 // ── — THE BOUNDARY THAT HAD NO ARM ──────────────────────────────────────────────────────────
 //
-// 's PR body called the explicit-`dir` boundary "the most important line in this PR" and then
+// That PR body called the explicit-`dir` boundary "the most important line in this PR" and then
 // shipped it untested, because every arm above exercises ONE side at a time: the explicit-`dir` arms
 // run with the env var unset, and the env arms pass no `dir`. The boundary only ACTS when both are
 // present, and that configuration appeared in no test.

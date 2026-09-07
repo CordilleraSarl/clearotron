@@ -87,7 +87,7 @@ const statExists = (p) => {
  * drains continuously under `--watch`, so there is no arrival to trigger and no schedule to wait for.
  * This module could not see that posture at all, which is why a box in it produced a permanent
  * "the .path unit could not be read" — honest, correct, and indistinguishable from an open finding
- * forever ('s third criterion, in the consumer that actually printed the line).
+ * forever (the third criterion, in the consumer that actually printed the line).
  *
  * ENABLED, NOT MERELY PRESENT, for the same reason the timer is read that way: an installed unit nobody
  * enabled drains nothing, and answering "present" would license the strongest sentence this module has

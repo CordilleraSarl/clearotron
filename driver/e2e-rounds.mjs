@@ -4,7 +4,7 @@
 //
 // ── the defect this exists to remove ──────────────────────────────────────────────────────────
 //
-// 's noise floor needs the SAME scenario run twice on one commit. Until this module, `run` wrote
+// That noise floor needs the SAME scenario run twice on one commit. Until this module, `run` wrote
 // `_e2e-doors-<ID>.json` holding exactly one token and `report` scoped itself to whatever token it found
 // there — so the second run of a pair OVERWROTE the only record of the first round's token, and the
 // first half became unreportable. Silently: `report` then described the second run, thirty seconds into

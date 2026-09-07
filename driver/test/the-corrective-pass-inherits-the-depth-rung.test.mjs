@@ -55,7 +55,7 @@ test("#1503 the UNGRADED product adds nothing — the corrective pass stays byte
 });
 
 test("#1503 THE CALL SITE passes the depth — a composer arm cannot see a dispatch that never asked", () => {
-  // 's lesson applied to its own fix. The arms above hand `correctionsExtra` a depth and check what
+  // That lesson applied to its own fix. The arms above hand `correctionsExtra` a depth and check what
   // it builds, which is true of a function nobody calls that way. The defect was never in the composer:
   // it was a dispatch calling it WITHOUT a depth, so the composer answered correctly for the argument it
   // got and the rung still never shipped. This reads the call site instead.

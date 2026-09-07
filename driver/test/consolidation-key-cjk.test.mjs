@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// 's CLASS AT A THIRD SITE — a Latin normaliser standing where a comparison should be.
+// That CLASS AT A THIRD SITE — a Latin normaliser standing where a comparison should be.
 //
 // `consolidationKey` folds owner and mark with `[^a-z0-9]`, which reduces any CJK, Cyrillic or Arabic
 // value to the EMPTY STRING. Measured on origin/main before this fix:

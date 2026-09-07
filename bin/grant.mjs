@@ -46,7 +46,7 @@
 //
 // It is also why FILE below reads the CLEAROTRON_* spelling. An operator sets CLEAROTRON_ACCESS_FILE;
 // `applyEnvAliases` translates it. Reading the operator's spelling directly would work — and would put
-// the first direct CLEAROTRON_* product read in the tree, which 's arm catches, because the
+// the first direct CLEAROTRON_* product read in the tree, which the arm catches, because the
 // declaration ratchet is keyed on the CLEAROTRON_* prefix and goes blind the moment that premise stops
 // holding. One reader, one spelling.
 import "../shared/env-local.mjs";

@@ -127,7 +127,7 @@ export function returnedPhrase(info) {
  *
  * THE LEGITIMATE CLOSE IS PRESERVED, and it is the whole reason this keys on the RETURN rather than on
  * execution: a probe that ran and found NOTHING has nothing to hand anyone, and closes exactly as it
- * does today. 's own build named that trap before this rule existed.
+ * does today. its own build named that trap before this rule existed.
  *
  * THREE STATES, and only one of them discharges:
  *

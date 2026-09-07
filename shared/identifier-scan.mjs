@@ -288,7 +288,7 @@ const COMMENT_LINE = /^\s*(\/\/|#|\*|<!--)/;
 // address, and a reader sent looking for one would be looking in the wrong place.
 // `contact` joins on the owner's ruling of 2026-08-24: the launch documents collapsed to ONE public
 // mailbox, and counsel's pack (ADDITIONAL-TERMS.md, NOTICES.md, TRADEMARKS.md) prints it. Added here in
-// the same PR that introduced it, per 's rule above — a ruled mailbox joins this list, it never gets
+// the same PR that introduced it, per the rule above — a ruled mailbox joins this list, it never gets
 // a domain exemption. `interested` and `security` stay: they are no longer printed by any shipping
 // document, but removing a localpart from an allowlist is how a future document that uses one again
 // fails for a reason nobody expects.
@@ -390,7 +390,7 @@ export function scanOperatorIdentity(files, readFn, { withheld = () => false } =
 // ──: THE RETIRED PLATFORM ───────────────────────────────────────────────────────────────────
 //
 // The sixth pattern, and the narrowest: one token, matched case-insensitively, anywhere in a tracked
-// file. It is here rather than in a one-off script because 's last scope line asks for exactly
+// file. It is here rather than in a one-off script because the last scope line asks for exactly
 // this — "extend the battery so this class cannot return" — and because the class it guards is the
 // one the other five provably could not see. An integrator platform's name is not a person, not a
 // home path, not a classification stamp, not an audience, and not a vendor standing where a category
@@ -439,7 +439,7 @@ export const namesRetiredPlatform = (text) => RETIRED_PLATFORM.test(String(text 
 // reasonably concludes they need a Cloudflare account.
 //
 // WHY A QUALIFIER RATHER THAN A BAN. The vendor name must keep appearing — a runbook worked through
-// one real proxy end to end is worth more to an installer than an abstract one, and 's rewrite
+// one real proxy end to end is worth more to an installer than an abstract one, and the rewrite
 // deliberately kept it. What must not happen is the name standing where the CATEGORY belongs. So the
 // rule is: name the vendor as much as you like, provided the line (or the one either side of it) says
 // it is an example, a reference, or what THIS deployment happens to use.

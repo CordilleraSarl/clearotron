@@ -93,7 +93,7 @@ test("a LEGITIMATE field in the WRONG object is refused BY PATH, not accepted an
   assert.equal(recordReportOverview(d, FULL).refused, null);
 
   // `handling_note` is a real field of this tool — at the TOP level. Inside an action it is nothing.
-  // This is 's measured shape: the synthesis seat sent a real `corrections` marker
+  // This is the measured shape: the synthesis seat sent a real `corrections` marker
   // into `narrative`, a typed object that does not declare it, and the call was accepted while the
   // value reached no delivered artifact. A top-level-only unknown-key check passes on exactly that.
   const misplaced = { ...FULL, actions: [{ text: "A real bullet.", handling_note: "legitimate field, wrong object" }] };

@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // profile-selection.mjs — which findings the refutation seat is asked to profile, chosen by the DRIVER.
 //
-// 's architecture: "prefer driver selection wherever the key precedes the dispatch." The band is
+// That architecture: "prefer driver selection wherever the key precedes the dispatch." The band is
 // on findings.json before narrative-refutation is dispatched, so there is nothing for a directive to
 // ask the seat to judge — the driver lists the ordinals and unlisted work is never requested.
 //

@@ -882,7 +882,7 @@ export function resolveEffectiveProfile(job, { profiles = loadProfiles(), projec
   //
   // Attached here rather than threaded through four call sites because this is the one place that KNOWS
   // — every caller that resolves a profile now carries its provenance whether or not it thought to ask,
-  // and 's hand-bridge at the §B2 door (`{...profile, origins }`) becomes a no-op rather than the
+  // and the hand-bridge at the §B2 door (`{...profile, origins }`) becomes a no-op rather than the
   // only correct call site. The sibling stays in the return for the callers that read it directly.
   return { profile: { ...profile, origins }, projectKey: overlay.projectKey, projectName: overlay.projectName, origins };
 }

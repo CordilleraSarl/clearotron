@@ -16,7 +16,7 @@
 // declared-and-nulled field satisfies it perfectly. It is a completeness check, and completeness was
 // never the claim in doubt: the claim in doubt is the sentence three lines above the list, which says
 // what `carries` means. Prose asserting a behaviour with a test beside it that looks like it checks the
-// assertion and checks a different one — the same shape as 's "an invitation nothing honours", one
+// assertion and checks a different one — the same shape as the "an invitation nothing honours", one
 // level up.
 //
 // ── why this is derived and not a list ───────────────────────────────────────────────────────────────

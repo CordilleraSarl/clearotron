@@ -119,9 +119,9 @@ told rather than finding out from a red build.
 
 **One correction, recorded rather than quietly fixed.** The entry-fork heading landed for in
 `d91dd13f` read *"Saved searches · start from one you built"* — the retired term. It was chosen because
-the screen already said *"Saved searches"* twenty lines down and because 's own title uses that
+the screen already said *"Saved searches"* twenty lines down and because its own title uses that
 wording; neither is evidence about the product's canonical noun, and the wider measurement had not been
-taken. Both headings now read **Custom searches**. 's acceptance criterion was *"a tag, a label, or
+taken. Both headings now read **Custom searches**. That acceptance criterion was *"a tag, a label, or
 its own group under its own heading"* — noun-agnostic — so this changes the word, not the fix.
 
 ---
@@ -167,7 +167,7 @@ An absence, reported as one rather than read as "already consistent":
 
 | term | occurrences in the UI |
 |---|---|
-| **Search type** | **0** — yet 's *Labels* section recommends it as a label |
+| **Search type** | **0** — yet the *Labels* section recommends it as a label |
 | **Result** | **0** — the screen file is `Result.tsx`; no user-visible string says the word |
 
 Both need a ruling: adopt the term, or drop it from the list this map is checked against.
@@ -176,7 +176,7 @@ Both need a ruling: adopt the term, or drop it from the list this map is checked
 
 ## Not yet mapped
 
-The concepts below are on 's minimum list and have not been measured. They belong to the per-screen
+The concepts below are on the minimum list and have not been measured. They belong to the per-screen
 sweeps, which that issue says should be split by screen rather than attempted as one change:
 
 Name · Mark · Project · Territory · Country · Region · Worldwide · Goods and services · Class ·

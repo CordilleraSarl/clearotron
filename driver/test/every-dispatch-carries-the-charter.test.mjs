@@ -147,7 +147,7 @@ test("#1603 every warm dispatch that could carry a charter does — counted, not
   assert.ok(sites.length >= 20, `the scan found ${sites.length} stage() call(s) — instrument fault`);
 
   const bite = sites.filter(bitesHere);
-  // CONTROL 2 — and the CLASSIFIER selects. 's shape: assert the COUNT, because "none missing" is
+  // CONTROL 2 — and the CLASSIFIER selects. That shape: assert the COUNT, because "none missing" is
   // satisfied forever by a filter that stopped selecting. If this number moves, a dispatch was added or
   // removed and somebody decides deliberately which it was — it is not a free update.
   assert.equal(bite.length, 8,

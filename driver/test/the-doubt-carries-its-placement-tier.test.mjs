@@ -134,7 +134,7 @@ test("#1503 the note states what was dropped and what was asked for want of a ke
 
 // THE RULED CUTS, and where they come from — because the provenance is the whole risk here.
 //
-// 's architecture table has THREE rows and its columns are `P4 | P3 | P2`. The row that carries
+// That architecture table has THREE rows and its columns are `P4 | P3 | P2`. The row that carries
 // these tier words is `placement-inquiry trace`, whose typed key is the placement tier. The
 // `doubt-closure` row carries `all | bands 1+2 | band 1`, keyed on FINDING CLASS — and eggie measured
 // 0 of 420 open doubts joining on finding class, which is why the key had to move at all.
@@ -142,7 +142,7 @@ test("#1503 the note states what was dropped and what was asked for want of a ke
 // So these values are the placement-inquiry row's, adopted for doubt-closure BECAUSE IT IS NOW THE SAME
 // KEY. That is an inference, not a transcription, and it is the reason this arm names its source rather
 // than just its values: the owner's one-word answer settles the KEY, and whoever merges this is also
-// assenting to the CUTS. Products: 's body names product 3 as multi-country; product 4 is
+// assenting to the CUTS. Products: the body names product 3 as multi-country; product 4 is
 // full-country-search, pinned byte-identical by owner ruling ("its already great") and therefore absent
 // from this set — its row stays `every-doubt`.
 const RULED_CUTS = Object.freeze([
@@ -245,7 +245,7 @@ test("#1503 the pipeline reads the cut, and the SIDECAR lists exactly what the D
   //
   // It exists because everything above tests `doubtsForClosure` and the two mints DIRECTLY. Nothing
   // tested that the pipeline passes the cut in or uses the answer, and a helper whose call site has no
-  // arm is 's shape exactly: a full suite green with the change reverted.
+  // arm is the shape exactly: a full suite green with the change reverted.
   const { readFileSync } = await import("node:fs");
   const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
 
@@ -308,7 +308,7 @@ test("#1503 no cut still reports null ids when a doubt carries no id at all", ()
 test("#1503 the event names WHICH silence it resolved — a typo does not read like the shipped cut", () => {
   // `keptTiersFor` returns null for `every-doubt` and for a word it does not know, deliberately: a typo
   // must not silently drop every keyed doubt. The cost is that both record identically, so a misspelt
-  // row looks graded while the dispatch is not. 's arm catches a bad word on the ROW; this is the
+  // row looks graded while the dispatch is not. That arm catches a bad word on the ROW; this is the
   // same question on the run that actually happened.
   assert.equal(cutStateFor("every-doubt"), "every-doubt");
   assert.equal(cutStateFor("headline-candidate"), "live");

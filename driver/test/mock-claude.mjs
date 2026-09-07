@@ -203,7 +203,7 @@ if (process.env.MOCK_WARM_MODE) {
       if (warmResume) { process.stderr.write("mock kill after write\n"); process.exit(137); }
       okTurn(); break;
     }
-    // The repair turn that WRITES NOTHING — issue 's shape, reproduced here on purpose and where it
+    // The repair turn that WRITES NOTHING — issue the shape, reproduced here on purpose and where it
     // is visible, because it is the one case an in-dispatch repair could read as a fix: the turn ends
     // clean, the bytes on disk are the SAME malformed bytes, and re-judging them must NOT be allowed to
     // say "repaired". Call 1 writes the malformed file; every resume returns ok and writes nothing.
@@ -426,7 +426,7 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
         usage: { input_tokens: 1, output_tokens: 1, cache_read_input_tokens: 0, cache_creation_input_tokens: 0 } } });
     }
     // TOOL-WAIT fixture (MOCK_CLAUDE_TOOL_WAIT=<json array of {name, ms}>): an assistant message asking
-    // for the named tool(s), a real pause, then the `user` event that closes the ask. 's gauge times
+    // for the named tool(s), a real pause, then the `user` event that closes the ask. That gauge times
     // exactly that gap, and until this existed the suite could only prove the field was PRESENT AT ZERO —
     // which is the same instrument-cannot-show-nonzero hole the gauge itself was built to close.
     //
@@ -446,7 +446,7 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
     // OVERLAPPING-ASK fixture (MOCK_CLAUDE_TOOL_OVERLAP=<json array of {name, ms}>): EVERY ask is
     // emitted before ANY result, which is the shape a single-slot ask clock cannot hold. The tool-wait
     // fixture above strictly alternates ask/result, so nothing in the suite ever put two asks in flight
-    // at once — which is exactly why 's keying defect stayed latent and invisible.
+    // at once — which is exactly why the keying defect stayed latent and invisible.
     //
     // `tool_use_id` is carried on both halves here because it is carried on both halves on the wire.
     // The engine ignored it until the keying fix; with it, each result closes the ask it belongs to.

@@ -663,7 +663,7 @@ export function validateJob(job, { atClaim = false } = {}) {
   // Every other check in this build lives at one or two of them: `checkClearanceScopeRules` runs at the
   // runner, the portal and plan_run but at neither start_run nor the CLI; the mark budget and the
   // availability gate run at the runner alone. A rule placed at a door is a rule the other doors do not
-  // have, and 's acceptance test is that all three refuse the same request in the same words.
+  // have, and the acceptance test is that all three refuse the same request in the same words.
   //
   // WHAT IS JUDGED HERE: everything the REQUEST states. Each of the offering's illegal shapes is visible
   // without resolving anything — a narrowed Global preliminary, a two-country Full country search, a

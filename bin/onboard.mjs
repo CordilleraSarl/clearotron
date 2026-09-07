@@ -2521,7 +2521,7 @@ try {
   say("");
   say(`  ${style.bold("Before you start")} — what this setup can take, so nothing here surprises you:`);
   // `vendor`, not `label`: the labels are engineer sentences carrying flag names, and a question a
-  // lawyer reads may not ('s first rule).
+  // lawyer reads may not (the first rule).
   say(`    · Which AI runs the searches (${Object.values(ENGINE_BINARIES).map((e) => e.vendor).join(" or ")}),`);
   say("      and how it bills — the subscription you already sign in with, or an API key.");
   say("    · Your trademark register vendor's credential, if you have one (a register can be chosen later).");
@@ -3279,7 +3279,7 @@ try {
   // named the product nowhere). They keep their place as an afterthought line rather than an option.
   // THE COMMAND LINE STAYS A PLAIN LITERAL, DELIBERATELY. onboard-wizard.test.mjs reads this screen
   // STATICALLY — it extracts every say() literal and asserts which command leads — and that guard is
-  // the only thing standing between this screen and 's defect coming back. Wrapping the command in
+  // the only thing standing between this screen and the defect coming back. Wrapping the command in
   // style.bold() puts a nested template literal inside the say(), the extractor stops matching, and the
   // corpus goes empty. Its own comment records the previous generation of exactly this: the arms went
   // vacuous the moment these lines became template literals.

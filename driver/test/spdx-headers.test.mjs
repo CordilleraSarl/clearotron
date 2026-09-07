@@ -108,7 +108,7 @@ test("#854 the generated bundle is excluded, and the exclusion is NARROW", () =>
 
 
 test("#854 the guard sees the whole tree, not one directory", () => {
-  // 's lesson, one seam along: a repo-wide walk found four tracked units living outside
+  // That lesson, one seam along: a repo-wide walk found four tracked units living outside
   // driver/systemd/, and any conclusion drawn from listing one directory was wrong by construction.
   // The same trap applies here — the authored source is spread across driver, providers, portal-ui,
   // mcp-server, scripts, shared, bin and docs.

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// contract-audit.mjs — the machinery behind 's E1, E2 and E3 checks.
+// contract-audit.mjs — the machinery behind the E1, E2 and E3 checks.
 //
 // PURE and OFFLINE, like coverage-ledger.mjs and findings-model.mjs: it reads source text and the
 // declarations, and it computes. Nothing here runs on a clearance — no pipeline path imports it and no
@@ -363,7 +363,7 @@ export function stageSourceBlocks(stagesSource) {
 }
 
 /**
- * MECHANICAL **AND** UNSPOKEN-FOR — the highest-value target set for 's moves.
+ * MECHANICAL **AND** UNSPOKEN-FOR — the highest-value target set for the moves.
  *
  * An element in this set is not the model's judgment AND no validator polices it: nothing catches it
  * going wrong, and nothing about it needs a model. Every one is a candidate for the moves, and the set

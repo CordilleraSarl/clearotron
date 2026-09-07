@@ -36,7 +36,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const source = (f) => readFileSync(join(ROOT, f), "utf8");
 
 // The measured shape: ~130 characters of prose, then an absolute run-dir path. Built under the real
-// tmpdir rather than typed, because a /home/<user> literal is refused by 's guard and because a
+// tmpdir rather than typed, because a /home/<user> literal is refused by the guard and because a
 // path this test can actually stat is the only kind that proves anything.
 function realisticRunDir() {
   const pool = mkdtempSync(join(tmpdir(), "prelim-search-"));
@@ -86,7 +86,7 @@ test("#1406 the marker rides INSIDE the bound — `reason` is still the 200 the 
 //     ("the run DELIVERS, with the open points printed") and in t3a-deliver-with-open-points.test.mjs.
 //     That is a stronger carrier than a failure record: the client sees it.
 //
-//   · The `detail`-shape arm's LESSON did survive, and it generalises. 's defect was an artifact
+//   · The `detail`-shape arm's LESSON did survive, and it generalises. That defect was an artifact
 //     path interpolated into `reason`, where the 200-char cap severs it and a reader who stats the result
 //     gets ENOENT. That was a property of EVERY throw; it was pinned on the one site that happened to
 //     have it. Pinned across the corpus below, it outlives any single site.

@@ -89,7 +89,7 @@ function runUpdate({ config = {}, path, argv = [] }) {
   // pinEnvAll writes EVERY spelling, so no alias of these names can answer from somewhere else and
   // decide the arm — including a .env this checkout may or may not have.
   // QUOTED keys, deliberately. pinEnvAll already writes every spelling, so the behaviour is right
-  // either way — but 's sweep finds a site by the variable's LITERAL name appearing beside a
+  // either way — but the sweep finds a site by the variable's LITERAL name appearing beside a
   // helper call, and a bare object key is invisible to it. Quoting is what makes the coverage legible.
   pinEnvAll(env, {
     "CLEAROTRON_CUSTOMERS_DIR": config.profiles ?? "",

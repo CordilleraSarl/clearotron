@@ -334,7 +334,7 @@ values the staff MCP face already reads as `TRADEMARK_MCP_OIDC_ISSUER`, `TRADEMA
 never passed them, which is how one product shipped a provider-agnostic API face and a single-vendor
 web portal.
 
-**ALL FIVE DOORS READ THE FOUR NOW, and 's "the auth mechanism is out of scope" boundary is
+**ALL FIVE DOORS READ THE FOUR NOW, and the "the auth mechanism is out of scope" boundary is
 superseded** (owner, 2026-08-23: an installation brings its own identity provider and this product may
 not force one). The two write services and the client MCP origin gained the set they lacked; the table
 below names every one of the twelve. The client door's four fall back to the staff face's equivalents

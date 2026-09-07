@@ -44,7 +44,7 @@ import { mcpToolCall } from "../driver/portal-mcp-client.mjs";
 // resolve the depth the same way every other door does — never from a word the scenario file typed.
 import { reportIdentityFor, ORDERABLE_PRODUCTS, RETIRED_PRODUCTS } from "../driver/search-policy.mjs";
 // The queue's filename vocabulary, from the module that owns it. created that module because the
-// vocabulary "has now been written down three times and the copies disagreed"; 's first draft wrote it
+// vocabulary "has now been written down three times and the copies disagreed"; the first draft wrote it
 // down twice more here, from memory, and false-alarmed on every prose sidecar of every live job. Sourced,
 // so the next suffix the engine adds reaches this harness the day it lands. queue-markers.mjs is PURE —
 // importing it pulls in nothing, which is why this file can have it and cannot have runner.mjs (that chain
@@ -82,7 +82,7 @@ import { readReceipt, appendRound, stampRound, tokenFromRef, roundsFromRuns, mer
   roundLetters, receiptPath, scenarioRefs as scenarioRefsOf, findRunsByRef as findRunsIn,
   SCENARIO_FILE, byScenarioNumber, tierOf, SCENARIO_TIERS, DEFAULT_TIER }
   from "../driver/e2e-rounds.mjs";
-// 's refusal — "is this data plane production" — sourced, because this file used to restate it and
+// That refusal — "is this data plane production" — sourced, because this file used to restate it and
 // the two copies had ALREADY drifted, in both directions:
 //   CLEAROTRON_REPORTS_DIR=/srv/trademark-archive-dev  the guard passes (it matches the archive as a path
 //     PREFIX, and its own test requires that a name merely resembling production's passes). The copy
@@ -403,7 +403,7 @@ export function lintScenarios(scenarios) {
     //
     // Deliberately here rather than at a selection site, because that is what gets the SCOPE right for
     // nothing: `sweepStoreOrDie()` bare (cmdList) refuses on any scenario's finding, and
-    // `sweepStoreOrDie(id)` (cmdRun) refuses only on the named scenario's — 's split, already
+    // `sweepStoreOrDie(id)` (cmdRun) refuses only on the named scenario's — the split, already
     // implemented at the two call sites. A round that selects BY tier has to read every tier to choose,
     // so a typo anywhere corrupts the selection rather than one entry; a run that named its scenario is
     // answerable only for that one. Both fall out of where this line sits.
@@ -886,7 +886,7 @@ function enqueueViaCli(job) {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 }
 
-// EXPORTED for 's arm: the not-configured branch is the whole subject, and the only honest way to
+// EXPORTED for the arm: the not-configured branch is the whole subject, and the only honest way to
 // drive it is to call this function in a process with no MCP port in scope — the state a rebuilt box
 // is actually in. Asserting on the source text instead would pass on a file that no longer runs it.
 export async function enqueueViaMcp(job, { clientPrincipal = false, forwarder = null } = {}) {
@@ -1601,7 +1601,7 @@ function queueDrainState({
 // THREE STATES, NOT TWO, and the third is the reason this is a function rather than a field read.
 // A scenario that states nothing must read as CANNOT TELL — never as synthetic, and never as silence.
 // Defaulting an absent label to "synthetic" would be a guess presented as a fact, and letting it print
-// nothing is 's defect exactly: a benchmark that printed only when the key was present rendered as
+// nothing is the defect exactly: a benchmark that printed only when the key was present rendered as
 // silence, which reads exactly like a benchmark that was met. An unstated label is reported, every time.
 export const MARK_PROVENANCE = { LIVE: "live", SYNTHETIC: "synthetic", UNSTATED: "unstated" };
 

@@ -1210,7 +1210,7 @@ export function parseFindingsJsonLenient(raw, opts = {}) {
 // A1: a withdrawn finding is a non-mergeable singleton — folding a LIVE filing into a
 // withdrawn base (or vice versa) would either resurrect a killed conflict or silently kill a live
 // one. The `~withdrawn~` suffix keeps it in its own group without touching live-group keys.
-// ── A LATIN NORMALISER STANDING WHERE A COMPARISON SHOULD BE ('s class, third site) ─────────────
+// ── A LATIN NORMALISER STANDING WHERE A COMPARISON SHOULD BE (the class, third site) ─────────────
 //
 // `[^a-z0-9]` folds a CJK, Cyrillic or Arabic value to the EMPTY STRING, and this key is built from two
 // of them. Measured on origin/main before the fix:
@@ -1670,7 +1670,7 @@ const PRESCRIPTION_RE = /\b(we recommend|we advise|we suggest|you should|should 
 //   · NOT A QUALITY JUDGMENT. "Does this read as a conclusion" is the lawyer's call and the reviewer
 //     stage's; code cannot make it without re-judging the finding, which is the rules-engine failure
 //     this codebase keeps refusing.
-//   · NOT THE WORD "so". 's prose names "a semicolon, an arrow, or the word so", but a word match is
+//   · NOT THE WORD "so". That prose names "a semicolon, an arrow, or the word so", but a word match is
 //     not mechanical: it fires on "also", "so-called", "so long as the owner". Punctuation cannot be
 //     mistaken for anything else, and the prose rule survives in synthesis-rules.md where a reader
 //     applies judgment to it.
@@ -1910,7 +1910,7 @@ function recordUrlOrigin(value) {
  * `"not a url"` and `mailto:…` at this site — a documented decision that the host gate does not judge
  * them. A blanket not-a-URL rule refutes it silently. So this refuses exactly the shapes names:
  * a fragment (addresses THIS document, never a record), a bare path (names no host), and whitespace
- * (a value that is only shaped like one). Anything else is still 's to rule on.
+ * (a value that is only shaped like one). Anything else is still the to rule on.
  *
  * That leaves `mailto:…` and free text composing a live-but-wrong href rather than a dead anchor. It is
  * a real gap and it is NOT this issue's class; recorded on rather than widened into here.
@@ -2275,7 +2275,7 @@ export function validateKnockoutFinding(f, idx, seenOrdinals = new Set(), opts =
       throw new Error(`knockout_finding_band_invalid:${kshort(f.band)} (this run's framework "${manifest.framework_key}" rates in EXACTLY these words: ${manifest.bands.map((b) => b.label).join(" / ")})`);
     f.band = canonical;
   }
-  // THE CONCLUSION SENTENCE — 's contract, unchanged, on the other product. One rule, one gate: a
+  // THE CONCLUSION SENTENCE — the contract, unchanged, on the other product. One rule, one gate: a
   // knockout card and a clearance card are read by the same lawyer in the same week.
   if (typeof f.net !== "string" || !f.net.trim())
     throw new Error(`knockout_finding_net_missing:${ord} (every knockout finding carries the one conclusion sentence the card leads with — see synthesis-rules.md "The finding sentence")`);

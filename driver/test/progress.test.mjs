@@ -403,7 +403,7 @@ test("#249: every STAGES key has a display step or is declared step-less — no 
     assert.ok(Number.isInteger(i) && i >= 0 && i < DISPLAY_STEPS.length, `STAGE_TO_STEP["${s}"] = ${i} is not a DISPLAY_STEPS index`);
 });
 
-// ── deliveredAt: HARDENING, not a bug fix ('s first-observation survey, 2026-08-14) ─────────────
+// ── deliveredAt: HARDENING, not a bug fix (the first-observation survey, 2026-08-14) ─────────────
 //
 // `deliveredAt` is written with a fresh timestamp by both terminal writers — the same patch-wins shape
 // that destroyed `reportedAt`. The survey could NOT establish a reachable second write: writeRunStatus

@@ -496,7 +496,7 @@ function print(id, ref, run, s, delta, refPath) {
   console.log(deliveryLine(run));
   // — THE INSTRUMENT, BESIDE THE NUMBER. `--json` has carried `scorer_version` since this file
   // shipped; the human path did not, and the human path is the one whose numbers get pasted into an
-  // issue. 's body states 6/9 for a run that re-scores 5/2/2 today across two scorer changes
+  // issue. That body states 6/9 for a run that re-scores 5/2/2 today across two scorer changes
   // (`fd9938ce`, `212cdf73`), so every delta quoted from it crosses an unmarked boundary. A number a
   // reader can carry away must carry the instrument with it.
   //

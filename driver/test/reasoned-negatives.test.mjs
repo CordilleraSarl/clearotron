@@ -24,7 +24,7 @@ import { contentModelChecks, schemaVersionChecks } from "../predelivery-lint.mjs
 
 // EXACTLY what the live pipeline derives (pipeline.mjs, lintNow: `contentModelExpected: lintSv >= 5`,
 // where lintSv is the parsed findings.json's own schema_version, defaulting to 1 when the file is absent
-// or unparseable). Hard-coding `expected: true` was how 's gap survived its own covering test: a test
+// or unparseable). Hard-coding `expected: true` was how the gap survived its own covering test: a test
 // that asserts the caller's assertion can never demonstrate what happens when the caller does not assert.
 const contentModelExpectedFor = (declaredVersion) => declaredVersion >= 5;
 
@@ -341,7 +341,7 @@ test("#340: the off-field findings report.md dropped are present, grouped by the
 });
 
 test("#340: the sentence is the TYPED net — this surface summarises nothing of its own", () => {
-  // 's defect was two AUTHORS of one summary, not one summary on two surfaces. Both surfaces read
+  // That defect was two AUTHORS of one summary, not one summary on two surfaces. Both surfaces read
   // findings.json and print `net`, so they cannot disagree.
   const md = buildReasonedNegativesSection([OFF_FIELD]);
   assert.ok(md.includes(OFF_FIELD.net), "verbatim, not re-condensed");

@@ -277,7 +277,7 @@ of truncations.
 ### Surfaces beside the driver — portal, demo, e2e harness
 
 These are read by code that ships in this repository but is not a clearance stage. They are here
-because 's rule is about what PRODUCT CODE reads, not about what a run reads.
+because the rule is about what PRODUCT CODE reads, not about what a run reads.
 
 | Var | Default | Meaning |
 |---|---|---|

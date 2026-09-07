@@ -113,7 +113,7 @@ export function fetchPulls(sha, repo, run = ghJson) {
 /**
  * `owner/repo` for the checkout this runs in, from its own origin remote.
  *
- * DERIVED, NOT CONFIGURED, and deliberately not an environment variable: 's ratchet is right that
+ * DERIVED, NOT CONFIGURED, and deliberately not an environment variable: the ratchet is right that
  * a new knob owes a documented row, and this one would document a fact the checkout already knows.
  * It also keeps the script honest in a fork — a published clone asks about ITS repository
  * rather than about ours.

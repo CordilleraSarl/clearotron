@@ -3,7 +3,7 @@
 // — A PATH VARIABLE WITH NO SAFE DEFAULT MUST REFUSE, AND THAT MUST BE A RULE RATHER THAN ONE
 // VARIABLE'S HABIT.
 //
-// `config.poolRoot` refuses when its variable is unset or blank, and 's own test pins that. But
+// `config.poolRoot` refuses when its variable is unset or blank, and its own test pins that. But
 // poolRoot is a POPULATION OF ONE. Nothing here made the next author of a no-default path accessor
 // write the same refusal, and a single-member population exercises none of the interaction that lets a
 // rule be got wrong. That is the gap this file closes.

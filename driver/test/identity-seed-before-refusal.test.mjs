@@ -26,7 +26,7 @@
 //
 // ONE OF THE TWO IS GONE ( acceptance 6, 2026-08-20). The research-credential door no longer
 // refuses: a screen with no research credential launches, delivers its register half and discloses the
-// half that did not run, so there is no throw there to order against. 's guarantee is UNCHANGED
+// half that did not run, so there is no throw there to order against. That guarantee is UNCHANGED
 // and now rests on one door instead of two — which makes the remaining assertion more load-bearing,
 // not less, and is why the arm below pins the refusal's ABSENCE rather than being deleted. A
 // reintroduced throw at that door would be a silent return of the orphaning bug.

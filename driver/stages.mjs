@@ -287,14 +287,14 @@ export function paths(runDir) {
     // form's era stamp (`form_required`/`form_path`). One file, two facts, written by runDigest before
     // every digest pass it dispatches and BEFORE the form itself, so a failed form write fails closed.
     coverageEnum: p(driverRel("coverage-enum.json")),
-    // — the seat-facing coverage form. DICTATED here so 's stray-artifact sweep knows the
+    // — the seat-facing coverage form. DICTATED here so the stray-artifact sweep knows the
     // driver put it there; the accumulator beside it in `_driver/` is derived from this name.
     narrative: p("narrative.md"),
     findings: p("findings.json"),  // Phase 1 — the per-finding machine contract; synthesis mirrors its RATED findings into this JSON, the report/Excel render consume it
     caseLaw: p("case-law-findings.md"),
     // — the RETRIEVAL RECORD beside the prose. Until this existed, `case-law-findings.md` was the
     // only artifact case law produced and its whole contract was a non-empty check, so "the sweep ran"
-    // and "the dive read something" were unanswerable and 's record trace had nothing to join to.
+    // and "the dive read something" were unanswerable and the record trace had nothing to join to.
     caseLawCitations: p("case-law-citations.json"),
     seniorEyeReview: p("senior-eye-review.md"),
     // delivery contract (file-gated; rendered to the page by the pure-code publish step)
@@ -303,7 +303,7 @@ export function paths(runDir) {
     reportCardsDir: p("report-cards"),              // B1 — per-finding card files (one isolated LLM call each)
     reportCard: (ord) => p(join("report-cards", `${ord}.md`)),  // B1 — LLM (report-card): ONE card from finding[ord]'s own record
     audit: p("audit.md"),         // CODE (buildAuditMd from the spine) — full audit record
-    // THE SEAT WRITES THIS ONE, so it cannot live in `_driver/`. 's write boundary makes
+    // THE SEAT WRITES THIS ONE, so it cannot live in `_driver/`. That write boundary makes
     // `<runDir>/_driver/**` a tree a seat may NEVER write into (authority-trees.mjs:70, `live: true`) —
     // and this stage's dispatch handed the seat a path inside it. The deny fires, the seat writes the
     // only place it can (the run root), the validator looks in `_driver/` and reports `missing_file`,
@@ -356,7 +356,7 @@ export const AGENT_WHATSAPP = (() => {
 // clearances later the evidence is one-sided: the meaning seat has never converged on attempt 1 on
 // haiku/low, on any run, and the two candidate confounds have both been eliminated by shipping them —
 // `cdec607`'s write mode did not close it (a run on that engine still took 3 attempts and 26m48s) and
-// 's clause split did not close it (5 attempts across 2 ladders on the acceptance round). Its
+// That clause split did not close it (5 attempts across 2 ladders on the acceptance round). Its
 // ladder costs 15–28 minutes of critical path per clearance, every clearance, because the halves fan in
 // and this seat is the wave maximum whenever its matter is dense.
 //
@@ -368,7 +368,7 @@ export const AGENT_WHATSAPP = (() => {
 // WHAT IT WILL NOT FIX, STATED SO THE ROUND IS NOT MISREAD. Every measured failure is bookkeeping, not
 // judgment: a literal `RULED-BENIGN` written where a receipt id belongs, a well-formed id bound to the
 // wrong row, a form left untouched while a polished narrative was written. A stronger model does
-// bookkeeping better; it does not stop the bookkeeping being the seat's job. 's class ruling — hand
+// bookkeeping better; it does not stop the bookkeeping being the seat's job. That class ruling — hand
 // the constraint to the model instead of grading it against one — is the cure, and this is not it.
 //
 // WHY THE SEATS NEEDED SEPARATING. gave the meaning seat its own job and left it on the tier the
@@ -427,7 +427,7 @@ export const AGENT_WHATSAPP = (() => {
 // override stays: `CLEAROTRON_MEANING_SEAT_MODEL=sonnet` on the box restores the old behaviour with no code
 // change and no second path, which is the same one-line data edit that moved it here. And it does not
 // fix the class of defect above: every measured failure is bookkeeping, and a cheaper model does
-// bookkeeping no worse than a dearer one did — 's ruling remains the cure.
+// bookkeeping no worse than a dearer one did — the ruling remains the cure.
 //
 // SAVES ~20 MINUTES OF CRITICAL PATH PER CLEARANCE. This seat is the wave maximum whenever its matter is
 // dense, so its wall is the fan-in's wall.
@@ -1191,7 +1191,7 @@ export const VARIANT_CATEGORY_BRIEF =
 // THERE IS NO BARE `mechanical`. A mechanical element must name what discharges it — "mechanical" on
 // its own is a label a defect can wear, which is the failure exists to end.
 //
-// THE CLASS IS THE DOCTRINAL CLASS — what discharges the element under 's plan — NOT a claim that
+// THE CLASS IS THE DOCTRINAL CLASS — what discharges the element under the plan — NOT a claim that
 // the move has landed. `receipt_id` reads mechanical:pre-bound while a model still types it; M1 is what
 // makes that true. stays open for the moves.
 //
@@ -2591,7 +2591,7 @@ export const STAGES = {
       // A NO-FORM arm stood here until M6, saying "this run has NO coverage form, so the ## Coverage
       // ledger table in your findings is yours to write and it is what every coverage gate reads". It
       // was the one condition could not reach — the driver armed the form only when the plan
-      // apparatus was in reach — and inside it, 's whole correction was reversed: the model's prose
+      // apparatus was in reach — and inside it, the whole correction was reversed: the model's prose
       // was the source of truth again. One contract per stage, not one per runtime condition.
       //
       // The driver now always arms and always writes (pipeline.mjs runDigest). A run that can carry no
@@ -2712,10 +2712,10 @@ export const STAGES = {
       // — THE DICTATED LINE SHAPE AND THE PATH ARE BOTH GONE. `writeReturn(P.skepticFlags)` closed this
       // dispatch and the prose above dictated `ESCALATE: <axis> — <one-line reason>` in a named section, a
       // shape pipeline.mjs re-parses. The seat now sends VALUES and the driver renders the file, so the one
-      // authority for the line shape is `renderSkepticFlags` — which is what 's "typed rows, code
+      // authority for the line shape is `renderSkepticFlags` — which is what the "typed rows, code
       // renders" asked for, and what the E3 backlog row on this dictation was waiting for.
       // DIRECTION (a) — THE GRANT CARRIED THIS TOOL AND NO SERVED TEXT NAMED IT. `search_run_artifacts`
-      // landed with the conversion ('s unlock path 1) as the sanctioned replacement for the seven Bash
+      // landed with the conversion (the unlock path 1) as the sanctioned replacement for the seven Bash
       // reads O3c measured on this stage, and then appeared in no dispatch, no skill doc and no repair
       // prose — so the seat was handed a capability it had no way to know about while the doctrine it DOES
       // read still tells it to build every row from files. A granted-but-unnamed tool does not fail loudly:
@@ -3111,7 +3111,7 @@ export const STAGES = {
       // it appears in a register receipt. The second gave the common-law layer a record of its own and
       // named common-law-findings.md as it. That file is the common-law stage's NARRATIVE, not a
       // receipt: treating it as proof a check ran is exactly how one stage's unsupported assertion
-      // becomes the next stage's supported fact, which is 's shape and the shape this whole build
+      // becomes the next stage's supported fact, which is the shape and the shape this whole build
       // exists to stop.
       //
       // So: ONE layer has a driver-computed receipt and the line says which. Everywhere else the
@@ -3131,7 +3131,7 @@ export const STAGES = {
       // clean statement — two opposed instructions about one file in one dispatch. The carve-out is
       // DIRECTIONAL, which is what makes it safe: that ledger constrains (a `coverage-limited` row
       // forbids a clean negative) and never licenses (a `confirmed-clean` row is still the stage's own
-      // word, so a clean claim still needs a source). 's shape stays blocked.
+      // word, so a clean claim still needs a source). That shape stays blocked.
       ...synthesisRegisterRecordLines({ dispatchBlocks, paths: P, registerOnly }),
       // A3 (F5/F8) — the machine's own open items are FIRST-CLASS judgment inputs, not telemetry:
       // every reopen deferral and every skeptic flag must be weighed, and the weighing must LAND somewhere
@@ -3260,7 +3260,7 @@ export const STAGES = {
       // would be ordering an empty ritual.
       // THE ORDER IS UNCONDITIONAL; ONLY THE LIST IS NOT. The first draft gated this whole block on
       // `findingsSurface`, reasoning that a stage handed no list should not be ordered to answer one.
-      // 's agreement guard refused it, and it was right: `record_declination` was then a tool the
+      // That agreement guard refused it, and it was right: `record_declination` was then a tool the
       // grant carried and no dictation mentioned — "granted-but-never-ordered", which is the silent
       // capability hole in the other direction, and the one that shipped before. A seat that is never
       // told a tool exists does not use it, and nothing records that it did not.
@@ -3338,7 +3338,7 @@ export const STAGES = {
       `among your inputs. The report states what was retrieved in code, from the run's own records. A`,
       `sentence like "no registry certificate was obtained, so goods were compared from class numbers" is`,
       `the exact claim this rule exists to stop, and it has already been shipped to a client once.`,
-      // ── — SAME SEAT, DIFFERENT FAILURE, AND 's PROHIBITION DOES NOT REACH IT ──────────
+      // ── — SAME SEAT, DIFFERENT FAILURE, AND the PROHIBITION DOES NOT REACH IT ──────────
       //
       // The rule above is about MACHINERY the seat cannot see. This one is about PARTIES it can. In the
       // same refused report this seat described the client's own company: a named therapeutic pipeline
@@ -3845,7 +3845,7 @@ export const STAGES = {
       //
       // The Source row is the sharpest: the seat was composing a URL from a host table it is not even
       // given (providers/<name>.md is NOT in this stage's skillReads) plus a path on the record. That is
-      // the transcription class in its purest form, and 's link-to-nowhere shipped from it once.
+      // the transcription class in its purest form, and the link-to-nowhere shipped from it once.
       //
       // The suppression rule did not vanish with its row — it moved to the ACCEPTANCE BOUNDARY, where a
       // bullet carrying a registration number is refused in the turn rather than flagged at delivery.

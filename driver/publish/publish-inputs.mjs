@@ -19,7 +19,7 @@
 //
 // Modelled on mcp-server/lib/coverage.mjs:65-75 (assertValidatorCoverage): a closed partition asserted
 // at LOAD, so a new store cannot be added without consciously choosing its gating. The failure that
-// mechanism exists to prevent is 's — a hand-copied mirror that silently stopped covering an
+// mechanism exists to prevent is the — a hand-copied mirror that silently stopped covering an
 // artifact and still answered "complete: yes" about a file it never checked.
 
 import { existsSync, readFileSync } from "node:fs";
@@ -93,7 +93,7 @@ export const NOT_READ_BY_NAME = {
   "token-ledger": "the per-recipe token rollup, read through tokens.mjs rollupTokens(runDir) which walks the run's own telemetry; absent ⇒ the meta simply omits the tokens field",
 };
 
-// Neither of these is a run-side store, and both have been miscounted as one ('s own issue body
+// Neither of these is a run-side store, and both have been miscounted as one (its own issue body
 // lists audit.md among the stores publishReport reads). They are FUNCTION ARGUMENTS — publishReport is
 // handed the two contract markdown paths by its caller and reads them from wherever it is told, so an
 // absent one is the caller's error and already throws. Declared so the source scan can tell "argument"

@@ -27,7 +27,7 @@
 // It follows that a MISSING LOG proves nothing at all, and this module says so by returning null rather
 // than false. No log means the servers never ran, or ran without a run dir, or this is a replay of an
 // archived run that predates the log. A caller must treat null as "no evidence" and keep whatever
-// verdict it already had — reading null as "the call returned fine" would re-create 's incident
+// verdict it already had — reading null as "the call returned fine" would re-create the incident
 // class in a new file.
 
 import { readFileSync, existsSync } from "node:fs";

@@ -89,7 +89,7 @@ test("whatever goes in, the link that comes out addresses ONE run under /portal/
 // ── the knockout lane's two addresses ─────────────────────────────────────────────────────────
 //
 // The same defect, found twice more: the knockout audit link (live on every knockout ever delivered)
-// and 's per-mark report links (never delivered to a client — prod does not carry the fan-out yet).
+// and the per-mark report links (never delivered to a client — prod does not carry the fan-out yet).
 // Both were composed by naming a file in the pool directory. Both were well-formed. Neither was served.
 
 test("the workbook route is composable WITHOUT a report URL — a batch has none, and that is the bug's home", () => {

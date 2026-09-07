@@ -238,7 +238,7 @@ test("#1907 the closing screen does not recommend a command that will refuse", (
 });
 
 test("#1907 the search-credential prompt is skippable, and both routes print ONE sentence", () => {
-  // Re-aimed at 's derived loop: the Perplexity-only block became one prompt per
+  // Re-aimed at the derived loop: the Perplexity-only block became one prompt per
   // adapter row, so the property now holds for EVERY search credential by construction — the confirm
   // defaults YES (Enter walks into a key prompt the reader never chose unless the skip line exists),
   // and the skip sentence has one author used by both routes.

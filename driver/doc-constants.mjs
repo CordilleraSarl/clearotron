@@ -350,7 +350,7 @@ export const DOC_CONSTANTS = [
     doc: "providers/uspto-local/README.md",
     pattern: /last successful sync goes past (\d+) hours/,
   },
-  // The same figure, twice in the same file — 's shape, and the reason each occurrence is a row.
+  // The same figure, twice in the same file — the shape, and the reason each occurrence is a row.
   {
     constant: "FRESHNESS_HOURS.sync",
     source: { file: "providers/uspto-local/src/index-store.js", symbol: "FRESHNESS_HOURS.sync" },

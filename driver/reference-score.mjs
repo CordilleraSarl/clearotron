@@ -749,7 +749,7 @@ export function scoreRecall({ reference, findings = [], retrieved = [], scopeCla
  * AND THE DIRECTION IS THE DANGEROUS ONE. A `withheld` that over-counted would be investigated the first
  * round it appeared. This one reads clean.
  *
- * This does NOT compute carry-through — that needs the run's screened set and is 's acceptance 1.
+ * This does NOT compute carry-through — that needs the run's screened set and is the acceptance 1.
  * What it does is stop a bare `0` from reading as "nothing was dropped", by naming on the line how many
  * retrieved marks the number could not have spoken to. The file already refuses a bare `0` for the
  * no-`_driver/` case, in as many words; this is the same refusal for the case that reads clean.
@@ -1638,7 +1638,7 @@ export function ownersMatch(a, b) {
  * derives the same sentence from the delivery-time record instead: slice 1 from its per-lane map
  * (`slices.candidates.lanes[lane]`), slices 2–3 from their own `lane` field. PER LANE, never the
  * run-level join: the SERP grid is zh-only, so `lane ja: executes=candidates+serp-grid` would be a
- * claim about the ja lane that no record supports ('s fix, kept exact here).
+ * claim about the ja lane that no record supports (the fix, kept exact here).
  *
  * THREE ANSWERS, AND THE THIRD IS THE ONE THAT MATTERS:
  *   "candidates+serp-grid"  the named slices ran for this lane

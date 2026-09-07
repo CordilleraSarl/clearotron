@@ -180,7 +180,7 @@ test("#1564 the synthesis seat is told a party fact must resolve to a source the
 });
 
 test("#1564 the seat is told goods wording is not evidence about a party, which is the category rule", () => {
-  // 's prohibition and a generic "source your claims" line both leave this open: the seat WILL
+  // That prohibition and a generic "source your claims" line both leave this open: the seat WILL
   // source a class-5 indication, correctly, to a document it really read, and still be wrong.
   const prompt = synthesisPrompt();
   assert.match(prompt, /GOODS AND SERVICES WORDING IS NEVER EVIDENCE ABOUT A PARTY'S ACTIVITIES/);

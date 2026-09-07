@@ -26,7 +26,7 @@
 // do it in silence. `forEachLedgerLine` maps ENOENT to `error: null` deliberately, because a run before
 // any fetch genuinely has no ledger. A renamed default would therefore read a file that is not there,
 // collect zero records, and report no fault: nineteen `verified-from-record` meters with no record on
-// disk and no flag anywhere. That is 's incident exactly, re-created by the fix for.
+// disk and no flag anywhere. That is the incident exactly, re-created by the fix for.
 //
 // Hence resolution is by EXISTENCE, not by name alone — and since moved the DIRECTORY as well as
 // the filename, by existence over both:
@@ -124,7 +124,7 @@ const present = (p) => { try { return existsSync(p); } catch { return false; } }
  *                         mutating the real environment.
  * @returns {{path: string, source: string, legacy: {path: string, bytes: number|null}|null}}
  *   source — "env" | "suite" | "default" | "legacy-default" | "default-fresh"   ( removed "legacy-env")
- *            "suite" is 's redirect: a suite run's ledgers live under its own temp root.
+ *            "suite" is the redirect: a suite run's ledgers live under its own temp root.
  *   legacy — set ONLY when a legacy-named file exists and is NOT the one being used, i.e. when rows are
  *            being left unread. Callers must surface it; nothing here logs.
  */
@@ -221,7 +221,7 @@ export const neutralLedgerPath = (which) => join(homedir(), "trademark", "teleme
 // below matches the writer that produces it (`logRecordBody`) and cannot be confused with it.
 //
 // The CALL ledger does NOT move, for a REAL run. `provider-usage.mjs`'s billing tallies read it across
-// runs, and — the part that matters for 's own safety — it is the evidence that a run made record
+// runs, and — the part that matters for its own safety — it is the evidence that a run made record
 // fetches at all.
 //
 // QUALIFIES THAT SENTENCE AND NOTHING ELSE ABOUT IT: a SUITE run redirects both ledgers into its

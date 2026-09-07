@@ -1145,7 +1145,7 @@ test("#1912 a deployment behind its upstream still FAILS — the pinned answer m
 // The arm above proves `pinned` is returned when asked for, but it passes NO `run`, so it never builds
 // an overtaken checkout. That is an arm that cannot fail for the reason it exists: move the pinned
 // branch below the behind computation and it keeps passing while CI reds exactly as before. The gap was
-// found by re-reading 's third criterion against the diff instead of against the
+// found by re-reading the third criterion against the diff instead of against the
 // intention behind it.
 //
 // So: ONE fake git, three commits behind — the precise state a queued job reaches when main moves under

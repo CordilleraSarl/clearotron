@@ -449,7 +449,7 @@ export function fixture(name, msg, dir = null) {
     // (ordinal 1, band High = rank 1), so it is legitimately kept and legitimately under the cap — the
     // padding below is 360 CHARS, some three dozen words, nowhere near the 270/330 word ceiling.
     // — MOCK_NARRATIVE_OVER_CAP: finding 1's write-up breaches the word cap on the FIRST emission
-    // and heals on the lint-repair redo. That is 's chain: the over-cap lint failure
+    // and heals on the lint-repair redo. That is the chain: the over-cap lint failure
     // rewrites narrative.md, which is a DECLARED INPUT of narrative-refutation, so the delivery freshness
     // gate stales the reviewer and re-runs it — which is the pass whose verdict nothing reads.
     // Keyed on narrative.md not yet existing, so the redo is recognised by run state rather than by

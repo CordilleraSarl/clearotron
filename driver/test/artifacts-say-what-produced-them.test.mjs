@@ -114,7 +114,7 @@ test("#1846 a sidecar that cannot be written never costs a completed grid", () =
 test("#1846 the HUMAN score output names the scorer version and the run's engine", () => {
   const src = readFileSync(join(dirname(dirname(dirname(new URL(import.meta.url).pathname))), "scripts", "score.mjs"), "utf8");
   // `--json` has carried `scorer_version` since this file shipped. The gap was the HUMAN path, which is
-  // the one whose numbers get pasted into an issue: 's body states 6/9 for a run that re-scores
+  // the one whose numbers get pasted into an issue: the body states 6/9 for a run that re-scores
   // 5/2/2 today, across two scorer changes, so every delta quoted from it crosses an unmarked boundary.
   assert.match(src, /console\.log\(`scorer:\s+v\$\{SCORER_VERSION\}/,
     "print() must state the instrument beside the number a reader carries away");

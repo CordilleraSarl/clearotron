@@ -491,7 +491,7 @@ export function commonLawCarryEvent({ trigger = null, artifact = null, reason = 
 
 // ── THE RECONCILIATION, AS TWO RATES WITH THEIR ARITHMETIC ATTACHED ───────────────────────
 //
-// 's measurement: of 2116 retrieved common-law candidates, 1609 carried no ground at all, and 253
+// That measurement: of 2116 retrieved common-law candidates, 1609 carried no ground at all, and 253
 // of 292 candidate-bearing cells lacked the negative row the dictation owes each of them. The
 // discriminator was never in doubt — 272 rows carry `step-stated` against 1609 `absent`, so the
 // instrument distinguishes. Nothing compared it to anything.

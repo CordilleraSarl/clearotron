@@ -74,7 +74,7 @@ export const NEUTRAL_TOOL_RESULT_SHAPE = Object.freeze({
     // this file learns the trap instead of rediscovering it.
     reservedScalars: Object.freeze({ screened: "number", asked: "number" }),
   }),
-  // Audited alongside batch screen ('s "worth checking at the same time"): NO split. Every
+  // Audited alongside batch screen (the "worth checking at the same time"): NO split. Every
   // provider that implements search answers `results[]` — corsearch and clarivate through
   // `normalizeSearchResponse`, euipo/uspto-local/free-tier directly — and the driver reads exactly
   // that name (driver/driver.config.mjs `recordsFromSearch`, and the `clarivate` entry).

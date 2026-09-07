@@ -120,7 +120,7 @@ test("productCoverageNote: every level states its coverage; adjacent depths neve
   assert.match(productCoverageNote("prelim-jx"), /native-script/);
 });
 
-// charter ruling 1, NAME-LED (match 's registry-name pills): the note LEADS with the product's
+// charter ruling 1, NAME-LED (match the registry-name pills): the note LEADS with the product's
 // registry name — never a rung ("Depth 4") and never the bare "This depth" — so the depth is visibly
 // clear the way the pills made it clear: by naming the product.
 test("productCoverageNote is name-led: every registry level's note leads with its report identity", () => {

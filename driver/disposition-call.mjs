@@ -145,7 +145,7 @@ export const CALL_REFUSALS = Object.freeze([
   "obstacle_absent",      // an obstacle was claimed with nothing said about what blocks the proof
 ]);
 
-// The proof-of-reading arms, and ONLY those. 's obstacle waives this duty and no other, so this set
+// The proof-of-reading arms, and ONLY those. That obstacle waives this duty and no other, so this set
 // is the exact boundary between "you have not proved you read it" and "you have not judged it" — derived
 // by prefix from the vocabulary above rather than retyped, so a new evidence arm joins it automatically
 // and a new judgment arm cannot wander in.
@@ -183,7 +183,7 @@ export const RETIRED_CALL_REFUSALS = Object.freeze([
 // and it must never appear in the same bucket, because the two demand opposite responses — one says
 // "change your answer", the other says "stop asking, it is ours".
 //
-// 's leading unproven hypothesis lives here. The accumulator's rows and candidates are REGENERATED
+// That leading unproven hypothesis lives here. The accumulator's rows and candidates are REGENERATED
 // on every pass, and `seatFields` re-resolves an already-resolved row against whatever the current pass
 // holds (`disposition-union.mjs:98`, which discards `resolveCandidate`'s `state`). If that second
 // resolution misses, a row the tool accepted lands with an empty receipt and reads as unruled. This
@@ -442,7 +442,7 @@ export function detectRulingDrift(ledger) {
  *
  * ── WHY THE TOTAL IS RETURNED TOO ───────────────────────────────────────────────────────────────────
  *
- * 's warning sits in this exact number: filtering it after a split reported
+ * That warning sits in this exact number: filtering it after a split reported
  * `obligationsNeverAddressed: 0` on the run that died owing 75. So the total comes back as its own field
  * and the two parts must sum to it. Nothing can go to zero without a companion number rising to meet it.
  *
@@ -822,7 +822,7 @@ export function validateDispositionCall(rows, recorded, { told = null } = {}) {
 /**
  * CAN THIS ROW'S EVIDENCE DEMAND EVER BE SATISFIED?
  *
- * — the agreement guard for the `evidence_owed` seam, and it is 's shape one module over. The
+ * — the agreement guard for the `evidence_owed` seam, and it is the shape one module over. The
  * demand (`quote_required`) is SET at form-build against candidates that carried text; the satisfaction is
  * enforced by `segmentBinding` against the candidate's snippet AS IT IS NOW. Between the two, candidates
  * regenerate. When they come back without quotable passages the flag survives and its justification does

@@ -1302,7 +1302,7 @@ function readCoverageJudgment(P) {
 // back in `unknown` — carried in `jurisdictions` too (never dropped), but the caller must surface them
 // LOUDLY (a jurisdiction nobody can place must never be a silent row in the machine record).
 // item 13 — `extractSearchedJurisdictions` LIVED HERE AND IS GONE. It ran a two-letter scan over the
-// coverage ledger's prose to decide which territories a run had searched, and 's narrowing (drop
+// coverage ledger's prose to decide which territories a run had searched, and the narrowing (drop
 // tokens that are not known jurisdiction codes) closed only the half where the junk token was not a real
 // code. The other half cannot be closed by any token list: SA, AG, KG, SL and SE are simultaneously real
 // jurisdiction codes and ordinary European company suffixes, so "… GmbH & Co. KG" reads as Kyrgyzstan and
@@ -2668,7 +2668,7 @@ function deriveFloorDuty(ctx, r, trigger = null) {
     try { placements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements; }
     catch (e) { return notComputable(`placements.json unparseable: ${String(e?.message ?? e).slice(0, 80)}`); }
     const artifact = reconcileFloorDuty({ floors, placements });
-    // The pass's own outcome, beside the rows. 's lesson: a stage that failed or skipped makes every
+    // The pass's own outcome, beside the rows. That lesson: a stage that failed or skipped makes every
     // record it did not reach an UPSTREAM ABSENCE, not a judgment, and a reader blaming the seat for a
     // crash is reading the artifact wrong.
     artifact.pass = { ok: r?.ok === true, skipped: r?.skipped === true };
@@ -2960,7 +2960,7 @@ function recordSynthesisSeam(ctx, r, trigger = null) {
       // say only that synthesis had not delivered it. The sibling seam one stage earlier
       // (`recordDigestSeam`) has read its stage's own output per record since it was written; this one
       // had nothing to read until `record_declination` gave synthesis somewhere to say it.
-      // The judgment itself is `seamReasonFor`, pure and next door, so 's guarantee has an arm
+      // The judgment itself is `seamReasonFor`, pure and next door, so the guarantee has an arm
       // that does not need a run directory. This callback is now only the plumbing around it.
       return seamReasonFor(declined, uri);
     },
@@ -3024,7 +3024,7 @@ export function deriveRecordCarry(ctx, trigger, { findings = null } = {}) {   //
     // ── THE RECONCILIATION RATCHET ────────────────────────────────────────────────────────────
     //
     // RECORDED ON EVERY RUN, tripping only against the committed floor. Both halves are deliberate:
-    // a gate that fires on every current run teaches its reader that red means nothing ('s whole
+    // a gate that fires on every current run teaches its reader that red means nothing (the whole
     // complaint), and a warning that never bites is decoration. The floor is what the contract achieves
     // today, dated and seeded from a delivered round, and it moves UP when the seat-compliance work
     // lands.
@@ -3431,7 +3431,7 @@ async function runDigest(ctx, opts = {}) {
   // — THE SAME SENTINEL IS THE COVERAGE FORM'S ERA STAMP, AND THE WRITE ORDER IS THE FAIL-CLOSED
   // LEG. `armCoverageForm` stamps `form_required: true` BEFORE `writeCoverageForm` puts the form on
   // disk. Get that order wrong and a failed form write leaves no stamp, the gate never arms, and the run
-  // passes having judged nothing — which is 's confirmed blocker (a missing sidecar returns
+  // passes having judged nothing — which is the confirmed blocker (a missing sidecar returns
   // {rows:null,error:null}, the validator finds nothing to judge, and a run with NO ruling artifact is
   // byte-for-byte indistinguishable from a fully ruled one). It is reachable: a full disk fails as
   // "artifact absent", not as a disk error. In this order a failed write leaves a stamp saying a form
@@ -3579,7 +3579,7 @@ async function runDigest(ctx, opts = {}) {
 export function digestDispatchExtra(ctx, { trigger = "fresh", willRun = true, extra = undefined } = {}) {
   const P = ctx.paths;
   let out = extra;
-  // — THE COVERAGE FORM BRIEF, replacing 's deferred-slice block (was A8, 2026-07-30).
+  // — THE COVERAGE FORM BRIEF, replacing the deferred-slice block (was A8, 2026-07-30).
   //
   // What stood here composed a prose list of every deferred qid and told the stage each one "must appear
   // VERBATIM in a Coverage-ledger row". The block's own doc block explained why it could not elide any of
@@ -4197,7 +4197,7 @@ async function stageOnce(name, ctx, opts = {}) {
   // path all reach the seat through here, and three separate pre-dispatch writes would be three chances
   // to disagree about what the seat was handed.
   //
-  // ORDER MATTERS AND IT IS THE FAIL-CLOSED WAY ROUND ('s lesson): the era stamp lands first, above,
+  // ORDER MATTERS AND IT IS THE FAIL-CLOSED WAY ROUND (the lesson): the era stamp lands first, above,
   // so a form write that fails leaves a stamp saying a form was required and no form to fill — a named,
   // loud state — rather than no stamp at all, which would silently disarm the whole arm on exactly the
   // run it governs.
@@ -4267,7 +4267,7 @@ async function stageOnce(name, ctx, opts = {}) {
   // The carry fills the gap BEHIND them: a cold re-dispatch that would otherwise re-commission the stage
   // from def.message(ctx) and throw away everything the parked cycle achieved.
   // — WHAT THIS RUN HAS ALREADY CORRECTED FOR THIS SEAT. Read from `_driver/<seat>.jsonl`, the
-  // same per-attempt record 's acceptance criterion is written against, so the fix and its test
+  // same per-attempt record the acceptance criterion is written against, so the fix and its test
   // bind to one authority. Best-effort by construction: no log, an unreadable log or a damaged line
   // yields an empty list and the followup is byte-identical to what it was before.
   const carry = (opts.followup == null && opts.freshMessage == null && out)
@@ -4717,7 +4717,7 @@ export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortR
     // `failed: true` and `kind: "run-failed"` (added by both callers) are UNCHANGED on a refusal, and
     // deliberately: they are the packet's ROUTING — "this run delivered nothing, send the no-delivery
     // notice" — and every relay, the outbox and docs/DELIVERY.md are built on them. `refused` is the
-    // discriminator beside them, written true OR false on every packet for 's reason: an absent key
+    // discriminator beside them, written true OR false on every packet for the reason: an absent key
     // must not be the only thing separating "not a refusal" from "a packet written before the field
     // existed".
     runId, agent, failed: true, refused,
@@ -5145,7 +5145,7 @@ export function projectStageInput(label, absPath) {
 // that receipt, and this is where it becomes readable off the run rather than inferable from a token
 // that no longer names it.
 //
-// WHY IT ALSO FIRES ON THE FAILURE PATH. The two numbers this writes are the ones 's sequencing
+// WHY IT ALSO FIRES ON THE FAILURE PATH. The two numbers this writes are the ones the sequencing
 // ruling says the boundary gets tuned against — obligations carrying a written disposition that failed
 // to bind, against obligations the model never addressed. Recorded only where the gate PASSED, they
 // would be missing from exactly the runs that need explaining: a run that still goes terminal at
@@ -5183,7 +5183,7 @@ export function connotationAuditSeats(P, runDir) {
 }
 
 // EXPORTED FOR THE SAME REASON `connotationAuditSeats` IS: the seat resolution was testable and the
-// numbers it produces were not, so 's whole point — that the audit READS the verdict ledger — was
+// numbers it produces were not, so the whole point — that the audit READS the verdict ledger — was
 // asserted only in the pure functions it calls. A wiring that never runs in a test is a wiring nobody has
 // seen work.
 export function recordConnotationAudit(run, P) {
@@ -5192,7 +5192,7 @@ export function recordConnotationAudit(run, P) {
     let didNotBind = 0, neverAddressed = 0, quotesUnbound = 0, recordedQueries = 0;
     // — the three numbers that make "never addressed" falsifiable. `unruledAll` is the TOTAL this
     // audit used to report under `obligationsNeverAddressed`, kept as its own field so the split can
-    // never take a headline number to zero without a companion rising to meet it ('s hazard, in the
+    // never take a headline number to zero without a companion rising to meet it (the hazard, in the
     // very number is about).
     let unruledAll = 0, addressedNotDischarged = 0, ledgerCalls = 0, ledgerSeats = 0;
     const refusalReasons = {};              // — the LEDGER's reasons: every refusal and drop recorded
@@ -5296,7 +5296,7 @@ export function recordConnotationAudit(run, P) {
         if (!id || groundsSeen.has(id)) continue;
         groundsSeen.set(id, classifyGroundsNote(r?.note));
       }
-      // The two states 's sequencing ruling asks to be counted apart, in the form's vocabulary: a row
+      // The two states the sequencing ruling asks to be counted apart, in the form's vocabulary: a row
       // the seat WROTE that the gate cannot accept (a damaged form — the disposition exists and is
       // readable) against a row it never filled in at all.
       const damaged = conn.filter((v) => v.reason === "form_damaged");
@@ -5363,7 +5363,7 @@ export function recordConnotationAudit(run, P) {
       // The rename is the fix, not a tidy-up. On R5 round 7a30934b the artifact carried
       // `refusalReasons: {}` beside a ledger of 193 refusals over 8 types, because everything had been
       // discharged by the end. Nothing was wrong with the number; the name promised the other population,
-      // so an empty map read as "nothing was refused" and took 's acceptance criterion C with it.
+      // so an empty map read as "nothing was refused" and took the acceptance criterion C with it.
       if (foldIntoRunTotals) for (const [reason, n] of Object.entries(ledgerReasonHistogram(ledger)))
         refusalReasons[reason] = (refusalReasons[reason] ?? 0) + n;
       // — the part of that histogram that belongs to no row, kept separately so `refusalReasons`
@@ -5444,7 +5444,7 @@ export function recordConnotationAudit(run, P) {
       unruledRefusalReasons,
       // ITS OWN CARDINALITY, NAMED. The issue that found the empty histogram read
       // `distinctReasons: 14` as its count and concluded the map had been dropped after being counted.
-      // It had not: `distinctReasons` is 's SECOND SCALE — distinct executed query SHAPES, from
+      // It had not: `distinctReasons` is the SECOND SCALE — distinct executed query SHAPES, from
       // `connotationReasonKey` over the grid — and has nothing to do with refusal tokens. Two unrelated
       // numbers, one of them named `…Reasons`, one screenful apart. Naming both is the fix for that
       // reading; asserting they agree, which the issue asked for, would assert something false.
@@ -7125,7 +7125,7 @@ export function fullProseOrdinals(findings) {
 // ADVISORY_KINDS member could never reach a client document at all. The 2026-07-16 comment described the
 // behaviour it shipped with and became stale prose sitting next to code that contradicted it.
 //
-// Owner ruling 2026-08-19 (relayed), on a renewal-deadline example: it renders. 's intent is the
+// Owner ruling 2026-08-19 (relayed), on a renewal-deadline example: it renders. That intent is the
 // ruled behaviour. The tag is REQUIRED, not decoration — `advisoryLine` interpolates ADVISORY_TAG[a.kind]
 // directly, so a kind that passes the filter without an entry here renders "- **undefined** …" into a
 // client document. Whoever adds a fifth kind adds it in both places, and render.mjs needs the matching
@@ -7193,7 +7193,7 @@ export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), wit
   //
   // WHAT DOES NOT HOLD, and is not claimed: an ask may still name a party THE RUN NEVER SAW — a
   // supplier, a licensee, a distributor no finding carries. No index built from findings can see it.
-  // 's orphan lint is what catches that at delivery, and this is the producer telling the truth
+  // That orphan lint is what catches that at delivery, and this is the producer telling the truth
   // about its own reach instead of covering for it.
   const byOrd = new Map((findings ?? []).filter((f) => f && f.disposition !== "withdrawn").map((f) => [f.ordinal, f]));
   const partyIndex = cardedParties(findings);
@@ -7721,7 +7721,7 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
     // that was checked, and nothing made them.
     //
     // FULL TEXT. Nothing on any surface shortens a judgment sentence — the renderer's 240-character fold
-    // was deleted with (2026-08-06) and no cap replaced it; the sentence is bounded by 's shape
+    // was deleted with (2026-08-06) and no cap replaced it; the sentence is bounded by the shape
     // contract instead. Whitespace is collapsed only so the value cannot break the one-line `- key:`
     // shape parseCards keys on.
     //
@@ -8136,7 +8136,7 @@ async function pipelineInner(job, opts = {}) {
   // recovery ladder's weather lane exists so a 529 does not spend the defect budget. Refusing there would
   // replace a park that recovers with a terminal failure and a human.
   //
-  // GATED like the credential check, not like the binary check, and that is 's ruling rather than
+  // GATED like the credential check, not like the binary check, and that is the ruling rather than
   // this file's: lanes with an injected recordFetcher and explicitly-selected knockout products do not
   // pay for the turn. Both of those lanes DO spawn the engine (preflightEngineBinary's header says so in
   // as many words), so the exemption is narrower than the reasoning that produced it — recorded on the
@@ -9440,7 +9440,7 @@ async function pipelineInner(job, opts = {}) {
           // correctly; renaming would churn a documented vocabulary across two producers, a map and a
           // parameter, to fix a field that is not the one lying.
           //
-          // So the row gains the result as a SIBLING — 's other remedy — and the push moves below the
+          // So the row gains the result as a SIBLING — the other remedy — and the push moves below the
           // taint re-read so there IS a result to state. `cleared` is the same fact `axesRec[a].status`
           // records two lines down, from this same read.
           if (taintRerunDispatch !== null) {
@@ -12118,7 +12118,7 @@ async function pipelineInner(job, opts = {}) {
         // — what the DECLARED scope was and whether the pass honoured it. Recorded, never refused:
         // a gate here costs a whole extra dispatch on the stage this change exists to make cheaper, and
         // the reviewer is about to read the table anyway — it is better placed than a diff to say
-        // whether a knock-on edit was right. `unbound` is 's `cite_unbound` shape one gate over and
+        // whether a knock-on edit was right. `unbound` is the `cite_unbound` shape one gate over and
         // would earn a refusal if it recurs; this round measures whether it does.
         correctionsScope = scopeDrift(rows, preDoc, postDoc);
         atomicWrite(P.correctionsApplied, JSON.stringify({ ts: new Date().toISOString(), verdict,
@@ -14983,7 +14983,7 @@ async function pipelineInner(job, opts = {}) {
       // lane's spend is recomputed from the record rather than from a second counter that could drift
       // (writeRunStatus shallow-merges, so the full array is passed each time).
       // — a PARKED run is the one a reader diagnoses from status.json alone, and this cut at 200
-      // and said nothing. `recovering` is not terminal, so it was never covered by 's terminal
+      // and said nothing. `recovering` is not terminal, so it was never covered by the terminal
       // fields; the reader's problem is identical either way — a sentence that stops mid-thought with
       // no key admitting it stopped. Same three fields, same function, so the two cannot drift.
       writeRunStatus(ctx, { state: "recovering", recoveryAttempts: attempt, recoveryMax, failedStage,
@@ -15480,7 +15480,7 @@ async function runExperimentInner(job, opts) {
   // against REGISTER_AXES would refuse the two arms this issue exists to make work.
   //
   // So the membership test is kept and made PER STAGE: every stage that takes an axis names its own
-  // vocabulary, and a stage that takes none still refuses a stray one — 's guarantee, unchanged,
+  // vocabulary, and a stage that takes none still refuses a stray one — the guarantee, unchanged,
   // over a valid set that is now true for each stage rather than true for one of them.
   const vocab = AXIS_VOCABULARY[name] ?? null;
   if (!vocab && axis !== null)
@@ -15952,7 +15952,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
 
   // — reading the job file used to sit OUTSIDE the try below, so a path typo or a stray comma
   // exited on a raw V8 stack trace: a non-clean exit with no honest message, and the one shape of
-  // mistake a first-time reader is likeliest to make. Kept guarded here through 's rebase — the
+  // mistake a first-time reader is likeliest to make. Kept guarded here through the rebase — the
   // pool check above is a separate refusal and must not swallow this one.
   let job;
   try { job = JSON.parse(readFileSync(a.job, "utf8")); }

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// park-clock-names-its-kind.test.mjs — 's field-name residual, and the behaviour hiding under it.
+// park-clock-names-its-kind.test.mjs — the field-name residual, and the behaviour hiding under it.
 //
 // Both pipeline parks return their due clock as `res.resetsAt`; the recovery park does so deliberately,
 // because that field is "the runner's due-clock contract". The queue-marker writer then stamped it as

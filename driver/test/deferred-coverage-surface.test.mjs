@@ -8,7 +8,7 @@
 // named Japan on a provider with no Japanese coverage got counts over the territories that ARE covered,
 // with nothing on any rendered surface saying Japan was not among them.
 //
-// That is 's defect exactly — `deferred_coverage` rode the plan, the field existed, and nothing a
+// That is the defect exactly — `deferred_coverage` rode the plan, the field existed, and nothing a
 // reader sees read it, so the run shipped an EU-only clean with no row saying the US register was never
 // searched. The correction comment in register-availability.mjs says so in those words, and the same
 // sentence was true of this field until now.

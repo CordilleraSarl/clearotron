@@ -271,7 +271,7 @@ test("arm 10 — the connotation family has NO name source left — deleting it 
 
 // ── → B: the LAST sentence now has ONE name for every token ─────────────────────────────────────
 //
-// 's two-file clause existed because the hint disqualified the write-up while this clause re-ordered
+// That two-file clause existed because the hint disqualified the write-up while this clause re-ordered
 // it — two halves of one message contradicting each other about which FILE to finish. B deleted the
 // second file: rulings ride `record_dispositions`, the stage output is the only file the seat owes, and
 // re-adding a second name here would re-open the exact contradiction measured.

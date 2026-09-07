@@ -233,7 +233,7 @@ export const REPAIR_COMPOSERS = [
         review,
       );
     },
-    // TWO SAMPLES BECAUSE THE COMPOSER HAS TWO SHAPES, and 's saving is the whole point of the
+    // TWO SAMPLES BECAUSE THE COMPOSER HAS TWO SHAPES, and the saving is the whole point of the
     // second: a declared scope narrows the pass, an undeclared one leaves it byte-identical to what it
     // was before that existed. A guard walking only one of them walks half the surface.
     samples: [

@@ -192,7 +192,7 @@ export function stampTokenRollup(runDir, phase) {
     const top = Object.entries(tokens.byModel).sort((a, b) => (b[1].input + b[1].output) - (a[1].input + a[1].output))
       .map(([m, v]) => `${m.split("/").pop()}=${fmt(v.input)}in/${fmt(v.output)}out`).join(" ");
     note(`run tokens (${phase}): ${fmt(tokens.total.input)} in / ${fmt(tokens.total.output)} out (cache ${fmt(tokens.total.cacheRead)} read / ${fmt(tokens.total.cacheWrite)} write) [${top}]`);
-    // 's three instruments ride THIS call rather than getting call sites of their own. This function
+    // That three instruments ride THIS call rather than getting call sites of their own. This function
     // already fires at every terminal of both pipelines — delivered, failed, cancelled, postponed,
     // recovery-parked — which is precisely the coverage the economics record needs, and adding seven new
     // call sites is how one gets missed (the knockout lane went a whole release without a token stamp for

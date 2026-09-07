@@ -64,7 +64,7 @@ const BODY_FLOOR_CHARS = 60;
  * READ FROM THE RUN, not from the payload. The card's `- Source:` bullet is declared
  * `mechanical:code-rendered` and the record already carries `source.resolved_link`, so the seat is not
  * asked for a URL it would have to compose from a host table it is not even given — the transcription
- * class in its purest form, and 's link-to-nowhere in a document a client reads.
+ * class in its purest form, and the link-to-nowhere in a document a client reads.
  */
 export function findingForOrdinal(runDir, ordinal) {
   return findingsDocFor(runDir, ordinal).finding;

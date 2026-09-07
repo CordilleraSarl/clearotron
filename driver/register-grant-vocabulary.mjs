@@ -7,7 +7,7 @@
 // `unit.md` is provider-INDEPENDENT doctrine, and it named three provider-DEPENDENT tools flat:
 // "Your register key also carries register_record_fetch, register_image_fetch and register_batch_screen."
 // On a signa deployment two thirds of that sentence is false and the seat is told it holds tools its
-// grant does not carry; the same shape is 's subject across six
+// grant does not carry; the same shape is the subject across six
 // providers. A dispatch that asserts a capability the active provider lacks is the defect, whatever the
 // seat then does with it.
 //
@@ -39,7 +39,7 @@ export const HELD_BUT_NOT_CALLED = Object.freeze([
  * ✕ NULL IS NOT AN EMPTY SENTENCE, and the difference is the defect this exists to fix. Ask
  * `providerUnavailableRegisterTools` on an unresolved provider and it answers with an empty withheld
  * set — deliberately, as a reporting helper that must never throw. Composed into this sentence, an empty
- * withheld set reads as "your grant carries all of them": 's defect, restored
+ * withheld set reads as "your grant carries all of them": the defect, restored
  * silently, on exactly the `--experiment` single-stage path a diagnosis reaches for. So resolution is
  * asked for HERE, and an unresolved provider omits the sentence rather than composing a false one.
  */

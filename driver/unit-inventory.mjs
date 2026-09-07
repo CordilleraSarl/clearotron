@@ -57,7 +57,7 @@
 // each was already in the tree, in `mcp-server/remote/`. The repo's own governance doc names BOTH
 // directories (`docs/architecture/05-config-governance.md`, tier 2); the guard named one.
 //
-// That is the same defect one layer up from the one this file was built to fix. 's inline array made
+// That is the same defect one layer up from the one this file was built to fix. That inline array made
 // a unit's membership of the guarantee an omission; the hardcoded directory made a FILE's membership an
 // omission, and the result was three statements of fact that were false with nothing able to contradict
 // them. The tracked-file lookup is now a repo-wide walk (driver/unit-files.mjs), and `unitInventoryVerdict`
@@ -411,7 +411,7 @@ export const UNIT_INVENTORY = Object.freeze([
       + "production must be trusted never to enable.",
   },
   // register-ledger-prune is DELIBERATELY not listed, and the sequence is worth keeping because the
-  // row was right until the moment it was wrong. 's nightly rotation was retired in code by:
+  // row was right until the moment it was wrong. That nightly rotation was retired in code by:
   // bin/register-ledger-prune.mjs is deleted, record bodies now live in each run's own directory and
   // are purged with the run, so there is no global file left to rotate. The row stayed here on
   // purpose while the TIMER was still installed on the test box — dropping it first would have made

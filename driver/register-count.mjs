@@ -533,7 +533,7 @@ export function countLine(entry) {
   //
   // On the rendered line rather than only in `scope.deferredJurisdictions`, which has been written by
   // both Depth 2 lanes since they were built and which `git grep` finds no reader for. A field nobody
-  // sees is not a disclosure — that is 's defect exactly, where `deferred_coverage` rode the plan
+  // sees is not a disclosure — that is the defect exactly, where `deferred_coverage` rode the plan
   // and the run shipped an EU-only clean with no row saying the US register was never searched.
   const deferred = entry.deferredScope ?? [];
   const oneDeferred = deferred.length === 1;

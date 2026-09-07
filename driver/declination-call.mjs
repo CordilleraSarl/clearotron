@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // declination-call.mjs — a record that reached the findings surface leaves it BY A STATED DECISION.
 //
-// ── THE DEFECT THIS CLOSES (and 's half of the same seam) ────────────────────────────────
+// ── THE DEFECT THIS CLOSES (and the half of the same seam) ────────────────────────────────
 //
 // `record-carry.json` on R2 round `e48f7056` read `unreasoned: 0` and was telling the truth in the weak
 // sense only: every drop had a LABEL, and on 102 of them the label was inferred from where the record
@@ -70,7 +70,7 @@
 // that a note describing the material instead of stating a ground is the defect one artifact over.
 // Measured against seven realistic declinations before anything was built on it, that classifier refused
 // ALL SEVEN as `unclear` — including "already delivered as finding 4 under the EUIPO record for the same
-// proprietor". It is not a bug in the classifier. It answers a different question: 's notes must say
+// proprietor". It is not a bug in the classifier. It answers a different question: the notes must say
 // what could NOT BE ESTABLISHED about a charged rating, and a declination says why a record does not earn
 // a line. Two different speech acts, and a grammar built for one rejects the other on sight.
 //
@@ -263,7 +263,7 @@ export function contradictionFor(reason, row, scope) {
 }
 
 /**
- * THE SEAM'S DECISION, AS A PURE FUNCTION — 's guarantee, in the one place it can be asserted.
+ * THE SEAM'S DECISION, AS A PURE FUNCTION — the guarantee, in the one place it can be asserted.
  *
  * `recordSynthesisSeam` is module-private in pipeline.mjs and always will be; it does file I/O and takes
  * a run context. The JUDGMENT it makes about each discarded record is this, and it is extracted so a test

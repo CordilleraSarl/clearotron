@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // ── ONE REFUSAL BOUND FOR EVERY TRANSPORT THAT LOOPS PER-ITEM OBLIGATIONS ─────────────────────────────
 //
-// 's Part 2. is the incident: one row of a meaning sweep was refused 217 times across three
+// That Part 2. is the incident: one row of a meaning sweep was refused 217 times across three
 // attempts, exhausted the stage's recoveries, and killed a production run that had already ruled 72 of
 // its 73 obligations. Nothing delivered. The cure at that stage was a per-row bound and a park; this
 // module is that cure written once, so the other members of the class do not each grow their own.
@@ -33,7 +33,7 @@
 //                             1,256 rows before this was built: present and distinct in every one.
 
 /**
- * THE BOUND. Thirty, inherited from 's disposition park, where the number was argued from a real
+ * THE BOUND. Thirty, inherited from the disposition park, where the number was argued from a real
  * ledger rather than chosen: twelve is refuted (two rows that were CONVERGING sat at 17), and 30 is still
  * a sevenfold cut from the 217 that killed the run. That argument is about the SHAPE of a live-lock, not
  * about meaning obligations, so it carries to the other members unchanged.
@@ -56,7 +56,7 @@ function* refusals(verdicts) {
 /**
  * How many times each item has been refused so far. PURE — the park's own evidence.
  *
- * COUNTED PER ITEM ACROSS CALLS, which is the unit 's banner records an earlier investigation dying
+ * COUNTED PER ITEM ACROSS CALLS, which is the unit the banner records an earlier investigation dying
  * on when it joined per-item-final-state instead. A row refused on eight calls and ruled on the ninth
  * counts eight; a row refused eight times in ONE call also counts eight, because eight refusals is eight
  * refusals however they were batched.

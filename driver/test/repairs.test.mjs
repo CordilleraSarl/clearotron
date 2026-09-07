@@ -479,7 +479,7 @@ test("classify: a CODELESS transport fault ('fetch failed', no errno) is weather
   // regexes matched only that leading token. undici reports a codeless fault as a bare
   // "TypeError: fetch failed" (nothing on cause), so the one phrase faultText ALWAYS writes —
   // 'transport failure' — was the one phrase neither regex knew: the line classified deterministic at
-  // fan-in and 's weather lane never saw the unreachable provider it was built for.
+  // fan-in and the weather lane never saw the unreachable provider it was built for.
   const codeless = "provider error (after one in-tool retry): transport failure on the search call (no response from the provider): fetch failed";
   assert.equal(classifyFailureReason(codeless), "transient", "a provider that did not answer is retry territory");
   assert.equal(recoveryLaneOf("transient", codeless), "weather",
@@ -522,7 +522,7 @@ test("#958: a slice with no error of its own does NOT borrow the axis's repair o
 });
 
 test("#958: the honest transient path survives — an axis that landed NOTHING speaks for its slices", () => {
-  // 's weather lane exists for exactly this: the executor never wrote, so its transport failure IS
+  // That weather lane exists for exactly this: the executor never wrote, so its transport failure IS
   // this slice's story. Narrowing the fallback to nothing would have broken the dead-provider case.
   const { rows, failClass } = fanInMissingEvidence(["primary-sweep:exact:alpha"], {
     ownError: new Map(),
@@ -692,7 +692,7 @@ test("#849 the classifier NAMES the token the validator named, and the budget do
 
 test("#849 a reason the classifier legitimately cannot name is not a classifier gap", () => {
   // No structured token: the classifier had nothing to work from, so `unknown` is the honest answer and
-  // not a gap. Reporting it would bury the real ones, which is 's mistake in the other direction.
+  // not a gap. Reporting it would bury the real ones, which is the mistake in the other direction.
   const bare = failureSignature("gather", "the stage produced no output and said nothing about why");
   assert.equal(bare.quantityToken, null);
   assert.equal(unnamedStructuredFailure({ failClass: "unknown", classSource: "reason-text", token: null }), false);

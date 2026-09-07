@@ -26,7 +26,7 @@
 // ── THE TWO BEHAVIOURS DO NOT CONFLICT ──────────────────────────────────────────────────────────────
 //
 //   OMITTED key   → PRESERVE. The seat said nothing about it; the stored value stands.
-//   MISPLACED key → REFUSE, BY PATH, before the merge — 's measured shape, where a
+//   MISPLACED key → REFUSE, BY PATH, before the merge — the measured shape, where a
 //                   real field sent into a typed object that does not declare it was accepted and
 //                   dropped. A top-level-only check passes on exactly that call.
 import { test } from "node:test";
@@ -158,7 +158,7 @@ test("unit-note: a partial keeps the seat's observation and its null-result clai
 
 test("a LEGITIMATE field in the WRONG object is refused BY PATH, on all four", () => {
   // Each of these is a real field of its own tool, placed in a typed sub-object that does not declare
-  // it. That is 's shape, and a top-level-only unknown-key check passes on every one.
+  // it. That is the shape, and a top-level-only unknown-key check passes on every one.
   const cases = [
     ["prelim-variants", () => refuseVariants({ ...VARIANTS_FULL, elements: [{ value: "X", kind: "distinctive", search_floor: ["primary-sweep"] }] }), /variantmodel_undeclared_field:elements\.search_floor/],
     ["blind-frame", () => refuseBlindFrame({ ...BLIND_FULL, variants: [{ value: "X", direction: "drop", rationale: "r", ranking_basis: "goods-overlap" }] }), /blindframe_undeclared_field:variants\.ranking_basis/],

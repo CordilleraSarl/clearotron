@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// contract-audit.test.mjs — 's E1, E2 and E3 checks, in CI.
+// contract-audit.test.mjs — the E1, E2 and E3 checks, in CI.
 //
 // This file is the enforcement. Every later move on inherits it, so read what each arm asserts
 // before changing a declaration to make it pass —: "A stage-contract declaration that lists a
@@ -465,7 +465,7 @@ test("E2 arm 2: no stage gains an element that no validator token speaks about",
 });
 
 test("E2 arm 2: no PHANTOM row — a recorded element the stage no longer declares is a licence to re-incur it (#1201)", () => {
-  // THE MIRROR OF 's E3 HOLE, on the other instrument. `arm2Regressions` asks only whether a stage
+  // THE MIRROR OF the E3 HOLE, on the other instrument. `arm2Regressions` asks only whether a stage
   // GAINED an element, comparing against the RECORDED list — so a row naming an element the stage has
   // since retired is not inert: re-declaring that exact element is not a gain, and does not trip. The row
   // that recorded a debt has become permission to re-incur it.
@@ -666,7 +666,7 @@ test("E3: knockout-frame and knockout-assess are linted but carry no E1 declarat
 });
 
 test("E2: the mechanical-AND-unspoken set is findable — the highest-value target for the moves", () => {
-  // An element here is not the model's judgment AND nothing polices it. Both halves of 's argument
+  // An element here is not the model's judgment AND nothing polices it. Both halves of the argument
   // point at this set: it is work a model should not be doing, and a failure nothing would catch.
   // Recorded rather than gated — the moves are what shrink it, and arm 2's ratchet is what tracks it.
   const set = mechanicalAndUnspoken(STAGES);
@@ -965,7 +965,7 @@ test("E3 surface: every row declares one, from the closed enum, witnessed by a p
 });
 
 test("E3 surface: the per-surface census is exact in BOTH directions, and its arithmetic closes", () => {
-  // EXACT, NOT A CEILING. 's urgency claim is that `tool-response` GROWS; a ceiling on it fails
+  // EXACT, NOT A CEILING. That urgency claim is that `tool-response` GROWS; a ceiling on it fails
   // upward exactly as the E3 ceiling did in — a surface that shrank would pass silently and leave
   // room for a move nobody recorded. Red on a legitimate migration IS the recording step.
   const now = surfaceCensus(E3_BACKLOG);

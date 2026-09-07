@@ -11,7 +11,7 @@
 //
 // ── WHAT THIS FILE PINS, AND WHY EACH ONE COSTS SOMETHING TO GET WRONG ──────────────────────────────
 //
-// 1. ONE READ OF THE PLAN, shared by both seams. 's reason is specific: the plan is the grid
+// 1. ONE READ OF THE PLAN, shared by both seams. That reason is specific: the plan is the grid
 //    spec's `platforms`, NOT `ctx.profile.platforms`, because the two diverge on a generic profile
 //    where channels come from the matter frame. Two copies of a rule that specific is how one of them
 //    ends up reading the profile again and comparing the grid against a plan it was never given.

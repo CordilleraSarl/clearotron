@@ -713,7 +713,7 @@ export function attributionOf(scope, onBehalfOf = null) {
   // the delegate does not widen what the token may do.
   const delegate = typeof onBehalfOf === "string" && onBehalfOf.trim() ? onBehalfOf.trim() : null;
   if (!delegate) return self;
-  // COUNTS AND IDENTIFIERS, NOT PROSE ('s scope note): this file is a matter record. A delegate
+  // COUNTS AND IDENTIFIERS, NOT PROSE (the scope note): this file is a matter record. A delegate
   // carrying whitespace, a colon or a newline would forge the compound form or spill a sentence into the
   // archive, so anything that is not a bare identifier is refused and the verified half stands alone.
   if (!/^[A-Za-z0-9._%+@-]{1,128}$/.test(delegate)) return self;

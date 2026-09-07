@@ -74,7 +74,7 @@ export function resolveDemoData({
 /**
  * The demonstration note for a MARKDOWN surface.
  *
- * 's acceptance 3 asks for the banner on "the grouped knockout page … the one a
+ * That acceptance 3 asks for the banner on "the grouped knockout page … the one a
  * reader opens first". THAT PAGE DOES NOT EXIST: `knockout.mjs` states in its own header that a
  * multi-mark run "writes no `report.html` AT ALL — the documents are `report-<slug>.html`, one per
  * mark", and that `report.md` "is the ONLY file that names every mark together". It is also written

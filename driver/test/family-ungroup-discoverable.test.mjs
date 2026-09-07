@@ -34,7 +34,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const src = (rel) => readFileSync(join(HERE, "..", "..", rel), "utf8");
 // Comment lines are stripped where a claim is being asserted: this change's own comments quote the
 // problem so the next reader knows what was wrong, and a test that could not tell a quotation from a
-// claim would force the record to be deleted along with the defect ('s lesson, same file).
+// claim would force the record to be deleted along with the defect (the lesson, same file).
 const live = (rel) => src(rel).split("\n").filter((l) => !l.trim().startsWith("//") && !l.trim().startsWith("*") && !l.trim().startsWith("/*")).join("\n");
 
 test("#612 arm 1 — the family header offers Ungroup, where the family visibly is", () => {

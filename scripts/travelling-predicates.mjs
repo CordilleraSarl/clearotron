@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// travelling-predicates.mjs — 's candidate population, DISCOVERED rather than recalled.
+// travelling-predicates.mjs — the candidate population, DISCOVERED rather than recalled.
 //
 // hunts a class: a contract whose two ends measure different things — a demand computed against
 // one unit or snapshot, satisfaction enforced against another, with no guard asserting the two agree.
@@ -42,7 +42,7 @@
 //   looked like an assignment, and filed `const push = (row) => { if (!asks.some(…)) … }` as "stored"
 //   because the line starts with `const`. That is a proxy validating a proxy. This parses.
 //
-// ── THE SECOND QUESTION: WHERE DOES IT COME TO REST? ('s adjudication set) ──────────────────────
+// ── THE SECOND QUESTION: WHERE DOES IT COME TO REST? (the adjudication set) ──────────────────────
 //
 // "Travelling" is a candidate ceiling and this file has said so since it was written. Ninety-nine
 // candidates is not a population anybody adjudicates one essay at a time, and reading them as ninety-nine
@@ -59,7 +59,7 @@
 //
 //   structure   written into something that OUTLIVES the expression that computed it — an object field,
 //               an assignment, or a local that lands in a returned object. THIS is the class's shape:
-//               's `quote_required` was a flag on a form, judged later against candidates that had
+//               That `quote_required` was a flag on a form, judged later against candidates that had
 //               been rebuilt. A boolean at rest can be met by data that has moved.
 //
 // The three are exhaustive and mechanical, so the sweep's own numbers say how much reading is owed and

@@ -3,7 +3,7 @@
 // — the `evidence_owed` agreement guard: one contract, two ends, and only one of them could say the
 // work was impossible.
 //
-// 's class is "a demand computed against one unit or snapshot, satisfaction enforced against another,
+// That class is "a demand computed against one unit or snapshot, satisfaction enforced against another,
 // with no guard asserting the two agree". This is that, at the seam named:
 //
 //   SET        `evidence_owed` = `quote_required`, copied forward from form-build
@@ -16,7 +16,7 @@
 // and it is refused with `no_segments` — "a driver fault, not yours; do not re-send this row" — or
 // `segment_dead_end` — "this row cannot be evidenced at all". The OUTSTANDING path reported
 // `evidence_owed` unconditionally, so the answer kept printing "needs `segment_index` and `fragment`" for
-// a row on which neither can ever bind. The seat cannot reason its way out of that, and 's comment
+// a row on which neither can ever bind. The seat cannot reason its way out of that, and the comment
 // records a run that died owing one row after 116 further calls.
 
 import { test } from "node:test";

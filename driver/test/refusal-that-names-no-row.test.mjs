@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // — A REFUSAL THAT NAMES NO ROW IS STILL A REFUSAL, AND THE COUNT HAS TO SAY SO.
 //
-// 's first half — three seats folding one shared ledger — landed as `8efdb76e` and was verified on
+// That first half — three seats folding one shared ledger — landed as `8efdb76e` and was verified on
 // a three-half production round. Criterion 2 asks for the histogram to equal the ledger EXACTLY, and on
 // that same round it was one short:
 //
@@ -150,7 +150,7 @@ test("#1241 the row-scoped readers see exactly the rows they saw before", () => 
 test("#1241 THE PARK BOUND CANNOT SEE THIS CHANGE — it does not read the fold at all", () => {
   // The load-bearing safety claim. `parkedRowIds` and `refusalCounts` walk the raw verdict records with
   // their own `if (id)` guard; neither calls `foldCallVerdicts`. So counting an id-less refusal in the
-  // histogram cannot move a park decision, and 's cap is untouched by construction rather than by
+  // histogram cannot move a park decision, and the cap is untouched by construction rather than by
   // inspection. A future refactor that routes the cap through the fold reddens here.
   const { rd, P } = runDir("ct-1241-park-");
   // 31 refusals of one row — one past the bound — beside id-less refusals that must never contribute.

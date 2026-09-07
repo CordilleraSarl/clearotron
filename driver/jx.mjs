@@ -123,7 +123,7 @@ export function deriveJxSliceStatement({ sidecar, units = null, env = process.en
       continue;
     }
     // item 8 — the per-slice CLEAROTRON_JX_* arms are gone, so "armed" is now the ONE condition that
-    // survives: the lane not killed. 's warning still applies to how it is read — laneArmed is the
+    // survives: the lane not killed. That warning still applies to how it is read — laneArmed is the
     // fail-open reader, and reading it through the old default-OFF `envOn` made every unset lane report
     // not-armed on a run that had dispatched.
     const armed = laneArmed(s.lane, env);

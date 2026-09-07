@@ -192,7 +192,7 @@ test("#469 — the markers are punctuation and NOTHING else: no length, no quali
   const long = `Veltra Labs' registered VELTRA is more likely than not to prevail against VELTRA PHARMA in the United States ${"across every market the applicant has named in its filing instructions ".repeat(8)}on the register material this run holds.`;
   assert.ok(long.length > 600);
   assert.equal(parseAt(7, { net: long }).findings[0].net, long, "no maximum, at any version");
-  // 's prose names "the word so"; the gate deliberately does not, because a word match fires on
+  // That prose names "the word so"; the gate deliberately does not, because a word match fires on
   // "also" and "so-called" and that is a quality judgment code cannot make.
   for (const ok of [
     "The owner is dormant, so the practical exposure is low in the United States.",

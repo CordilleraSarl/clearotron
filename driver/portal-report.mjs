@@ -388,7 +388,7 @@ function dropConnectorToken(html) {
 //
 // That is not a subtle degradation. chrome.css is 35KB of shared typography and layout, and among the
 // rules that went missing was `.lk-flag{width:10px;height:10px}` — sizing a lockup element that has
-// since been retired ( applied 's ruling to this lockup too), an SVG with no intrinsic size
+// since been retired ( applied the ruling to this lockup too), an SVG with no intrinsic size
 // falling back to the browser default for a replaced element and painting at 300x150. The reported
 // symptoms — "a huge flag at the bottom", "font sizings inconsistent, multiple font types" — were one
 // cause: this file did not load. The example is historical; the failure mode is not, and any sizing

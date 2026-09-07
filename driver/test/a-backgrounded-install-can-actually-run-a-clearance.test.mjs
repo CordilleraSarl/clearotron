@@ -54,7 +54,7 @@ const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const T = { registers: REGISTER_TABLE, engines: ENGINE_BINARIES, defaultEngine: DEFAULT_ENGINE_ID };
 
 /** `~/.env` exactly as F41 measured it: paths and door secrets, nothing that runs a clearance. */
-// PATHS ARE SYNTHETIC, and 's guard is why: no executable line may name a specific account's home
+// PATHS ARE SYNTHETIC, and the guard is why: no executable line may name a specific account's home
 // directory. The finding measured real ones under a real service account; reproducing those literals
 // here would put that account's home in the shipped tree to say something the shape already says. What
 // matters to these arms is which NAMES travelled, never where they pointed.

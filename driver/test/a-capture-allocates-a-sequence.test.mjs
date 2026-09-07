@@ -29,7 +29,7 @@ test("1964 every recording transport allocates a capture sequence — none write
   // guard that bails that way reports its whole subject clean having measured none of it.
   if (files === null) return ctx.skip(skipReason(GUARD));
   const capturing = [], fixed = [];
-  // The wrapper AT THE SITE, which is the form 's guard asks for: it reads in the loop head where
+  // The wrapper AT THE SITE, which is the form the guard asks for: it reads in the loop head where
   // the next person meets it, and it cannot drift away from the loop it protects.
   for (const rel of nonEmpty(files, `${GUARD}: tracked driver/*-record.mjs files`)) {
     const src = readFileSync(join(ROOT, rel), "utf8");

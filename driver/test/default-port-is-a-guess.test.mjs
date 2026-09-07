@@ -246,7 +246,7 @@ test("1961 a REQUEST to the announced port is answered", async () => {
     // and it tells the next reader nothing about what this arm was asking.
     //
     // The catch RECORDS and the assertions below RUN EVERY TIME. An `assert.fail` inside the catch would
-    // be an assert site that never executes on a green run, which is the shape 's coverage census
+    // be an assert site that never executes on a green run, which is the shape the coverage census
     // exists to refuse — and it is right to: an assertion that never runs has never been checked.
     let text = null, refused = null;
     try {

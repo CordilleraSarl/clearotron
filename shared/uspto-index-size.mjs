@@ -102,7 +102,7 @@ export const USPTO_PEAK_GB = Math.round((USPTO_INDEX_GB + USPTO_PEAK_WAL_GB) * 1
 //
 // It was pessimistic by 4x. Charging 1.0 demanded ~43.8 GB for a build whose index came to 10.1 GB, and
 // INSTALL.md told the reader to provision 60 GB. On the free tier that is the difference between "I can
-// try this on the disk I have" and "I cannot", which is the whole of 's Why.
+// try this on the disk I have" and "I cannot", which is the whole of the Why.
 //
 // Carried at 0.35 against 0.24 measured — a 46% margin, and the margin is doing real work rather than
 // decorating a guess:

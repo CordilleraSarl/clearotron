@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // declination-duty.mjs — every record handed to synthesis left by a NAMED EXIT, or the run says which
-// ones did not. ('s missing half; the R2 round on is the incident.)
+// ones did not. (the missing half; the R2 round on is the incident.)
 //
 // THE RULE IS ALREADY DICTATED, AND IT WAS NEVER CHECKED. synthesis's own contract states it in one
 // line — "a record that reached your findings surface leaves this stage as a finding in findings.json

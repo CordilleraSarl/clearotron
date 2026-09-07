@@ -6,7 +6,7 @@
 // The tests are in three groups and the middle one is the point:
 //
 //   1. the SCANNER, because a scanner that desynchronises reports zero and reads as a pass
-//   2. the PLANTED DIVERGENCE, in a file that does not exist in this repository — 's judgment
+//   2. the PLANTED DIVERGENCE, in a file that does not exist in this repository — the judgment
 //      criterion is "plant a divergence in a NEW authoring layer; the check must find it structurally,
 //      not because the layer was enumerated", and a corpus passed as an argument is the only way to
 //      test that without writing into the working tree
@@ -84,7 +84,7 @@ test("a markdown unit is a paragraph, because that is how a seat reads a skill f
 test("the E1 declaration block is stripped — the audit that describes the contract is not an instance of it", () => {
   // stages.mjs's contractElements carries `why:` strings quoting the retired contract verbatim
   // ("disposition form `receipt_id` — copy one of that row's own candidate ids"). Left in, E12 fires on
-  // 's own audit, and the only way to green it would be to stop writing the audit down.
+  // its own audit, and the only way to green it would be to stop writing the audit down.
   const src = [
     '  "some-stage": {',
     "    contractElements: {",
@@ -104,7 +104,7 @@ test("the E1 declaration block is stripped — the audit that describes the cont
 const RECEIPTS = () => contracts().find((c) => c.id === "receipt-binding");
 
 test("A SEVENTH AUTHORING LAYER IS CAUGHT STRUCTURALLY — the file is not in this repository", () => {
-  // 's judgment criterion, literally. `driver/some-new-dispatch-surface.mjs` does not exist and is
+  // That judgment criterion, literally. `driver/some-new-dispatch-surface.mjs` does not exist and is
   // named nowhere in the checker, the registry or the scan script. It is found because the corpus is
   // "every tracked .mjs and .md under driver/", not a list.
   const planted = [{
@@ -155,7 +155,7 @@ test("a THIRD tool-order mismatch goes red — #865's acceptance, on an invented
 
 test("the backlog excuses ONLY its own pairs, never the tool or the stage on its own", () => {
   // TAKEN FROM THE LIVE BACKLOG, not named. This asserts a property of the EXCUSING MECHANISM, and it
-  // used to name 's seed pair — so resolving that pair turned a correct fix into a red, and the
+  // used to name the seed pair — so resolving that pair turned a correct fix into a red, and the
   // cheapest way back to green was to put the excuse row back. A ratchet whose own test rewards
   // re-adding a row is not a ratchet. Whichever pair is first today exercises the same property, and
   // when the backlog finally empties the guard above it (`length > 0`) is the one that speaks.

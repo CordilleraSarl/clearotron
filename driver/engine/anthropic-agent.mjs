@@ -102,7 +102,7 @@ const engineMaxBufferChars = () => Math.max(1024, Number(process.env.CLEAROTRON_
 // `gemini-flash: "sonnet"`, `deepseek-v4-pro: "opus"` and `azure: "sonnet"`, and the fall-through below
 // mapped ANY unrecognised alias to "sonnet". So `--model gemini` ran sonnet while the telemetry logged
 // `google/gemini-3.1-pro-preview` (gateway stamps `resolveModel(<requested alias>)`), and every
-// attribution downstream of that row — the A/B arm, the token rollup, 's billing classes — was
+// attribution downstream of that row — the A/B arm, the token rollup, the billing classes — was
 // keyed to a model that never ran. Nothing said so, because a substitution has no error to report.
 //
 // The four cross-provider aliases were already dead before this change: the model-failover chain was

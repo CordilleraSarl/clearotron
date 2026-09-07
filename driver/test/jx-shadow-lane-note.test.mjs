@@ -13,7 +13,7 @@
 //
 // The discriminator reached a field and not the sentence. An operator learned a headline capability
 // had produced nothing and could not learn that the fix was a subscription top-up — five minutes'
-// work for somebody with the account. That is 's principle one layer down, and it cost real
+// work for somebody with the account. That is the principle one layer down, and it cost real
 // verification time before anybody read the field.
 //
 // These assertions are against the STRING the module emits, not against a mock of it, because the

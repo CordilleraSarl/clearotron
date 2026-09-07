@@ -71,7 +71,7 @@ export function koPaths(runDir) {
     researchDir: join(runDir, "research"),
     research: (markKebab) => join(runDir, "research", `${markKebab}.md`),
     sweepLedger: driverDir(runDir, "knockout-sweep.jsonl"),
-    // 's SHAPE, APPLIED: the WORK MOVES OUT OF THE GUARDED TREE — the hook is never weakened.
+    // That SHAPE, APPLIED: the WORK MOVES OUT OF THE GUARDED TREE — the hook is never weakened.
     //
     // This chunk is a MODEL OUTPUT, and it sat under `_driver/` in flat contradiction of the rule stated
     // fourteen lines above: those files "are the driver's own measurements, NEVER a model's output". So

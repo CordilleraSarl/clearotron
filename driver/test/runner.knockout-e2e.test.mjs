@@ -279,7 +279,7 @@ test("a 3-mark knockout batch runs end to end: receipts, degrade, publish stamps
     assert.ok(typeof row.stage === "string" && row.stage.length, "every row names its stage");
     assert.ok("model" in row, `${row.stage} names the model it dispatched`);
     // THE BOUNDARY MUST ENCLOSE THE WORK, and this is the assertion that makes it mean something.
-    // 's own comment: capture tDispatch after the await instead and "every field is still present,
+    // its own comment: capture tDispatch after the await instead and "every field is still present,
     // every presence assertion still passes, and every interval is ~0ms — the journal would then assert
     // that a 14-minute half took nothing". A `wallSec >= 0` check passes cheerfully on that. So assert
     // ORDER against the stage's own attempt rows, which is independent of how fast the mock is: every

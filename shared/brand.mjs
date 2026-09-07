@@ -95,7 +95,7 @@ export const BRAND = {
  *
  * ABSENT IS NOT FALSE. The plain confidentiality line claims nothing and is what any legal deliverable
  * carries; collapsing absent into false is precisely the coercion that shipped House-default clearances
- * with no marking at all. That is 's property and it is untouched.
+ * with no marking at all. That is the property and it is untouched.
  *
  * `true` USED TO SELECT A LONGER LINE — the plain marking plus a legal characterisation of the document
  * — and the owner dropped that wording on 2026-08-20. It renders as the default here rather than being
@@ -574,7 +574,7 @@ header.rep .theme-toggle{float:right;margin-left:12px}
 // emitted page — including reports published by deployments with no connection to that firm (
 // measured it on the demo pool index, twice on one page). Stripping the label was the fix then;
 // removing the watermark removes the surface.
-// THE SWISS FLAG IS GONE, and it is 's ruling rather than a new one. The portal's lockup
+// THE SWISS FLAG IS GONE, and it is the ruling rather than a new one. The portal's lockup
 // dropped it when the product was renamed — portal-ui/src/components/Logo.tsx states the reason and
 // portal-ui/test/lockup.test.ts pins its ABSENCE so a well-meaning restore fails there:
 //

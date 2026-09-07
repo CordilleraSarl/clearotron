@@ -24,7 +24,7 @@ import { beat, workerAlive } from "../worker-heartbeat.mjs";
 const psStamp = (pid) => procStarttime(pid, undefined, { platform: "darwin" });
 
 // The `/proc` reader is asserted only where /proc EXISTS, and that is not a softening: this arm ran on
-// macOS for the first time in this repository's history ('s own verification run)
+// macOS for the first time in this repository's history (its own verification run)
 // and failed on its own premise — a Linux-only reader cannot be proved on a box with no Linux. The `ps`
 // reader carries no such condition and is asserted everywhere, which is the half that matters: it is the
 // one this issue added, and the one every non-Linux box depends on.

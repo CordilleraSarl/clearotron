@@ -4,9 +4,9 @@
 //
 // The dictation invited synthesis to author "one typed row per slice you weighed". The rows that name
 // which slices are still open — the facts a reader checks a sufficiency call against — were therefore
-// prose the model retyped out of a coverage ledger it had never been shown ('s other half: the
+// prose the model retyped out of a coverage ledger it had never been shown (the other half: the
 // ledger reached the reviewer as a table and the author not at all). That is the transcription
-// contract one artifact over, and 's answer applies unchanged: remove the contract, not the elision.
+// contract one artifact over, and the answer applies unchanged: remove the contract, not the elision.
 // The driver holds the ledger and the plan-execution receipt; it writes the rows. What stays the model's
 // is the part that cannot be derived — `sufficient`, and the `reason` for it.
 import { test } from "node:test";

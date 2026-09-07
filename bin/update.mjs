@@ -170,7 +170,7 @@ function reportRefusal(risky) {
  * update` from inside some other repository must not have that repository answered about.
  */
 export function isGitCheckout(repo = REPO, exists = existsSync) {
-  // NO SPAWN HERE, DELIBERATELY. 's arm requires that update.mjs hold exactly ONE spawn site, so
+  // NO SPAWN HERE, DELIBERATELY. That arm requires that update.mjs hold exactly ONE spawn site, so
   // that one helper owns every command and pins `cwd` — "a later addition inherits whatever directory
   // the user happened to be standing in". A `git rev-parse` here was that later addition, and the arm
   // caught it. It is also more than the question needs: a packaged install has no `.git` at all, and a

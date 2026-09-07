@@ -13,7 +13,7 @@
 //     "Wikipedia article documenting 1871 race riot, negative historical violence event"
 //
 // Both are true. Neither says what could not be established. A charged judgment recorded without its
-// grounds is the same shape as 's `step-silent`: the ledger has a label for the decision and
+// grounds is the same shape as the `step-silent`: the ledger has a label for the decision and
 // cannot say why for any single one, so a reader cannot tell "correctly judged" from "silently
 // asserted" — which are opposite repairs.
 //

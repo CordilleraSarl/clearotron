@@ -5,7 +5,7 @@
 //
 // ── WHY THIS EXISTS ──────────────────────────────────────────────────────────────────────────────
 //
-// merged at 18:45:01Z. The commit carrying 's own acceptance check was authored at
+// merged at 18:45:01Z. The commit carrying its own acceptance check was authored at
 // 18:53:12Z — eight minutes AFTER the merge — and never reached `main`. The pull request closed
 // green showing one commit, the branch was deleted, and was labelled ready-for-verification
 // against a fix whose check did not exist. Nothing in the repository noticed. It surfaced because
@@ -213,8 +213,8 @@ export function presenceOf(sha, git, base = "origin/main") {
   // ── LANDED-AND-SINCE-REMOVED IS NOT LOST WORK, AND CALLING IT LOST IS THE WHOLE FAILURE ────────
   //
   // The first cut of this script reported six MISSING rows and every one of them was a merge that
-  // landed perfectly and was later retired ON PURPOSE: 's bin/register-ledger-prune.mjs deleted
-  // by, 's snapshot machinery deleted by, three env-governance.test.mjs rows rewritten
+  // landed perfectly and was later retired ON PURPOSE: the bin/register-ledger-prune.mjs deleted
+  // by, the snapshot machinery deleted by, three env-governance.test.mjs rows rewritten
   // by the same. Publishing those as lost work would have been six false accusations drawn
   // from a real signal — the exact shape this check exists to catch, running in the other direction.
   //

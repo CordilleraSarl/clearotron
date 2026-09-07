@@ -183,7 +183,7 @@ describe("scrub: internal-only content is REMOVED", () => {
     }
   });
 
-  // 's lesson, as an arm rather than a promise: these rules match a POSITION in a grammar this engine
+  // That lesson, as an arm rather than a promise: these rules match a POSITION in a grammar this engine
   // writes, never a word anywhere in a string it does not. A trademark spelled like a disposition survives.
   test("#831: a MARK that spells a disposition is untouched — this is not a ban list", () => {
     const [c] = scrubCards([{

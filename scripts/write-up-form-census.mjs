@@ -34,7 +34,7 @@
 //   1. UNRESOLVED DEPTH. `depthFor` falls back to full-country depth stamped `default-ungraded` when it
 //      cannot resolve a policy, and `writeUpForm` maps every ungraded rung to `full`. A census built on a
 //      policy object that does not resolve therefore reports "every product authors every card, the ladder
-//      saves nothing" — quotable, and false. 's own ladder shipped dead for exactly this reason. So
+//      saves nothing" — quotable, and false. its own ladder shipped dead for exactly this reason. So
 //      the depth row is asserted resolved before a single finding is counted.
 //   2. NO BAND SHAPE. The floor tier joins from `band-shape.json`; absent, every finding reads as holding
 //      no floor and the graded products UNDER-count their full cards — erasing the one class the owner

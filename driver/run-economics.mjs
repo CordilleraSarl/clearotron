@@ -87,7 +87,7 @@
 // `modelUsed`. So the rows can now answer "what ran", per record, wherever the wire reported.
 //
 // What has NOT changed is this module: `byBilling` / `byStage` / `dispatches` still key on `modelUsed`,
-// i.e. on what was asked for. Switching them to prefer `modelActual` is 's call, not a side effect
+// i.e. on what was asked for. Switching them to prefer `modelActual` is the call, not a side effect
 //, and it cannot be a blanket flip — codex reports no model, and a killed turn may have none,
 // so a per-record basis is the only honest shape. `tokens.mjs` keys its rollup on the requested alias
 // for the same reason and is likewise untouched.
@@ -241,7 +241,7 @@ export const vendorOf = (engine) => ENGINE_VENDORS[String(engine ?? "")] ?? null
 //
 // CODE-SIDE IS NOT A VENDOR. `code:execute-plan` rides nearly every run (the driver executes the frozen
 // plan itself), stamps `authMode: "not-provider-billed"`, and costs no provider tokens. Counting it would
-// make every run in the product read as multi-vendor — the same defect as 's `web` channel, where a
+// make every run in the product read as multi-vendor — the same defect as the `web` channel, where a
 // member the driver always adds made every run look unplanned. Provider-billed rows only, and the count
 // of what was set aside is reported so the exclusion is visible rather than assumed.
 //

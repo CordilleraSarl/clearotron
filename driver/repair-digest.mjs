@@ -139,7 +139,7 @@ export function aggregateFailureRecurrence({ enumerate = enumerateRuns, now = Da
   // different orders), so it never enters bySig — but a count that nobody prints is a diagnostic
   // computed and dropped, which is the class this issue belongs to.
   const refusals = { count: 0, runIds: [], stages: [] };
-  // — counted and NAMED, never dropped: 's shape immediately above, for the same reason. A park
+  // — counted and NAMED, never dropped: the shape immediately above, for the same reason. A park
   // whose class was "unknown" over a reason a validator had already structured is a gap in the
   // classifier, not an unknowable failure, and the digest is where an operator would ever see it. It is
   // reported BESIDE the groups rather than inside them: it is a fact about how a failure was classified,

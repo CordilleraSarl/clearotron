@@ -61,7 +61,7 @@ test("#1277 every call site of the union is declared, with the route its park tr
   const files = tracked.map((f) => f.trim()).filter(Boolean).filter((f) => !f.startsWith("test/"));
   const read = (f) => readFileSync(new URL(f, new URL("../", import.meta.url)), "utf8");
   // Comments stripped first: this file and the union's own header discuss the call sites at length, and
-  // counting a comment as a call site is the inversion 's tripwire already had to fix once.
+  // counting a comment as a call site is the inversion the tripwire already had to fix once.
   const codeOf = (src) => src.replace(/\/\*[\s\S]*?\*\//g, "")
     .split("\n").map((l) => l.replace(/\/\/.*$/, "")).join("\n");
 

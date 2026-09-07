@@ -11,13 +11,13 @@
 // the tool's own schema sent the one field the validator ignores and omitted the two it refuses for,
 // and could only learn the real shape from refusal text — one round trip per discovery.
 //
-// That is 's class one level over: there, a tool was SERVED and not GRANTED; here, a shape is
+// That is the class one level over: there, a tool was SERVED and not GRANTED; here, a shape is
 // REFUSED and not ADVERTISED. Both are a surface disagreeing with itself, and both are invisible to
 // every test that exercises one side alone.
 //
 // ── WHAT IT DOES NOT CLAIM ──────────────────────────────────────────────────────────────────────────
 //
-// This is NOT 's fix and must not be read as one. 's ratified criterion is that the seat
+// This is NOT the fix and must not be read as one. That ratified criterion is that the seat
 // names a location and CODE extracts the text — no transcription at all. The obligation to copy
 // characters is dictated in gateway.mjs's corrective hints, which this lane does not own. An
 // advertisement that matches the refusal removes a round trip; it does not remove the tax.

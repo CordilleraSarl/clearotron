@@ -8,7 +8,7 @@
 // this was found against — an R2 comparison round, 2026-08-22 — the parser returned 10 lines with 0
 // carrying a `[kind:]` token, over a document holding 14 bold-numbered corrections of which 14 were typed.
 //
-// Three consumers, and only one is telemetry: the corrective pass's typed worklist, 's scope
+// Three consumers, and only one is telemetry: the corrective pass's typed worklist, the scope
 // narrowing (which never obtained, because the matched lines carry no `[on:]` either), and the BLOCKING
 // verdict's published `blockingGrounds` — which on that run were five self-check answers that all read as
 // PASSING, over a review whose real ground was a wrong regulatory fact on the opening page.
@@ -272,7 +272,7 @@ test("#1674 the body rule widened WITH the selector — excerpts under a lettere
 });
 
 test("#1674 the numbered and bulleted contracts are byte-unchanged — the widening is additive", () => {
-  // The regression pin. 's untyped-among-typed rule, 's fail-safe and 's body rule all key
+  // The regression pin. That untyped-among-typed rule, the fail-safe and the body rule all key
   // on shapes this change touches, so they are re-asserted against the SAME fixtures here.
   // 5 at HEAD and 5 patched, measured by importing both copies of the module against this same
   // fixture — not counted by eye off the source, which is how this arm first got written with a 4 in it.

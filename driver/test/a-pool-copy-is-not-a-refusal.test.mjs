@@ -25,7 +25,7 @@ test("2025 a delivered run still says so, and a refusal still leads — both unc
   const yes = deliveryLine(run({ hasStatus: true, deliveryState: "delivered", deliveredAt: "2026-08-28T10:00:00Z" }));
   assert.match(yes, /^delivered: YES — 2026-08-28T10:00:00Z$/);
 
-  // 's case, and it must keep working: a refusal after model work has every artifact a delivered
+  // That case, and it must keep working: a refusal after model work has every artifact a delivered
   // run has, so nothing further down the printout distinguishes them.
   const no = deliveryLine(run({ hasStatus: true, deliveryState: "failed" }));
   assert.match(no, /THE ORDER WAS REFUSED/);

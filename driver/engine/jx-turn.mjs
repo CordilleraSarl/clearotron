@@ -78,7 +78,7 @@ export function readJxTuple(tuple, { vendor, authMode, engine }) {
   const usage = u ? { input: u.input ?? 0, output: u.output ?? 0, cacheRead: u.cacheRead ?? 0,
                       cacheWrite: u.cacheWrite ?? 0, total: u.total ?? 0 }
                   : null;
-  // The model that actually served the turn, never the alias we asked for — 's criterion 4 is that
+  // The model that actually served the turn, never the alias we asked for — the criterion 4 is that
   // the receipt names who did the native-language work, and an alias does not name anyone. Both adapters
   // populate it (anthropic-agent from the assistant/init events, openai-agent from `ev.model`).
   const model = tuple?.modelWire ?? null;

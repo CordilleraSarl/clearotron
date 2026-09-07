@@ -155,7 +155,7 @@ export const VOCABULARY = [
   // red on any that no row covers. That is the census working the way the previous conversion's gap
   // taught it to — skeptic's nine tokens were raised for two conversions before anything could see them.
   { token: "reportoverview_", stages: ["report-overview"], site: "driver/report-overview-record.mjs acceptReportOverview", family: "driver/report-overview-record.mjs", dynamic: "D3" },
-  // Conversion 5's transport family. Declared in the SAME commit as the module — 's extractor reads
+  // Conversion 5's transport family. Declared in the SAME commit as the module — the extractor reads
   // the acceptance boundary, so `report-card-record.mjs` is read for the `reason:` shape and the E2
   // soundness tripwire sees every `reportcard_*` token the moment it exists.
   { token: "reportcard_", stages: ["report-card"], site: "driver/report-card-record.mjs acceptReportCard", family: "driver/report-card-record.mjs", dynamic: "D3" },
@@ -396,7 +396,7 @@ export const TRIPWIRE_OUT_OF_SCOPE = [
  * nothing.
  *
  * WHY NOT A VOCABULARY ROW. A row asserts "this stage emits this token", and for all nineteen of these
- * that assertion is false. 's own judging condition forbids writing it: *no row claims a stage emits
+ * that assertion is false. its own judging condition forbids writing it: *no row claims a stage emits
  * a token that stage cannot emit*.
  *
  * WHY NOT A BARE EXEMPTION. An out-of-scope rule excuses a token and asserts nothing, so it cannot fail.
@@ -541,7 +541,7 @@ export const COVERED_SOURCES = [
  */
 
 /**
- * The tables whose rows carry a citation — the population 's symbol arms walk.
+ * The tables whose rows carry a citation — the population the symbol arms walk.
  *
  * Named once, here, rather than retyped in the test: a fifth table added later and missed by a hand-typed
  * list would be unchecked while every arm stayed green. The test asserts this map's own membership too,

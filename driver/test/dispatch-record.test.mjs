@@ -50,7 +50,7 @@ test("#380: the message is written BYTE-FOR-BYTE and is never truncated at any s
 test("#380: THE ACCEPTANCE QUESTION — a hint that rides the message BODY is findable in the record", () => {
   const dir = mkdtempSync(join(tmpdir(), "dispatch-qid-"));
   try {
-    // 's shape exactly: the deferred-slice reasons were on disk before the digest started, and
+    // That shape exactly: the deferred-slice reasons were on disk before the digest started, and
     // nothing recorded whether they reached the prompt. They are not a declared INPUT — they are
     // composed into the message — so an input fingerprint proves nothing about them.
     const msg = `Deferred slices requiring a row:\n- owner-cross Q-SYNTH-1 — provider cannot express\n`;

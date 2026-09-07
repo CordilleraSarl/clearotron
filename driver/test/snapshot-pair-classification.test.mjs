@@ -8,7 +8,7 @@
 // `quote_required`, set at form-build against candidates that were later rebuilt textless — a flag from
 // one snapshot judging data from another.
 //
-// 's deliverable is a CLASSIFICATION, not a sample: a partial enumeration reading as a complete one
+// That deliverable is a CLASSIFICATION, not a sample: a partial enumeration reading as a complete one
 // is the very class the issue belongs to. So this takes the sub-shape that can be enumerated exactly —
 // every site in `driver/*.mjs` (tests excluded) whose own comment says a collection is REGENERATED or
 // REBUILT on every pass — and rules on all of them.

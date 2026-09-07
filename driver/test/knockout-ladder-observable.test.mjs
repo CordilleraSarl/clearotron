@@ -14,7 +14,7 @@
 //   · readBackLadder (pipeline-knockout.mjs) reads the sidecar back THE WAY THE CONSUMER READS IT, at the
 //     freeze, before any dispatch. Minted ⇒ hard fail (the driver wrote it itself and cannot read it
 //     back). Pre-existing ⇒ loud, run continues — a replayed archive turning red is how this fix would
-//     go wrong, and 's own "not claimed" says so.
+//     go wrong, and its own "not claimed" says so.
 //   · the validator emits `knockout-band-checks-inert` and does NOT fail. It rides the corrective ladder,
 //     so {ok:false} re-asks the SEAT, and no seat can repair a driver's sidecar.
 import { test } from "node:test";
@@ -123,7 +123,7 @@ test("MINTED, GOOD: a real ladder reads back and nothing is raised or logged", (
 });
 
 test("PRE-EXISTING: loud, and the run is NOT stopped — a replayed archive must not turn red", () => {
-  // The disposition 's "not claimed" asks for by name. These bytes predate this process and may
+  // The disposition the "not claimed" asks for by name. These bytes predate this process and may
   // predate this shape; refusing here would take down an archived run that renders fine today.
   const d = runDirWith({ framework_key: "legacy-shape", ladder: ["Blocking", "Low"] });
   readBackLadder(ctxFor(d), driverDir(d, "framework.json"), { minted: false });

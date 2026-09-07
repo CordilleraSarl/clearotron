@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// register-coverage-doors.test.mjs — 's top acceptance criterion: the refused products and the
+// register-coverage-doors.test.mjs — the top acceptance criterion: the refused products and the
 // reason strings are IDENTICAL across doors.
 //
 // ── WHY THIS IS A SOURCE DERIVATION AND NOT FIVE SERVERS ────────────────────────────────────────────

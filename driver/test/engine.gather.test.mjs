@@ -423,7 +423,7 @@ test("euipo server: handshake + the 7 NEUTRAL tools + creds-missing guard return
 test("recording server: handshake + the served list pinned + missing-run guard refuses by name, record and read paths both", async () => {
   const call = { jsonrpc: "2.0", id: 3, method: "tools/call", params: { name: "record_skeptic", arguments: { flags: [], escalations: [] } } };
   // The read surface must hold the SAME no-run contract as the record tools: a search with no run wired
-  // is a refusal by name, never a guess at a directory ('s lesson, applied to the read path too).
+  // is a refusal by name, never a guess at a directory (the lesson, applied to the read path too).
   const searchCall = { jsonrpc: "2.0", id: 4, method: "tools/call", params: { name: "search_run_artifacts", arguments: { file: "register-findings.md", terms: ["x"] } } };
   const r = await mcpSession("recording-server.mjs", [INIT, LIST, call, searchCall], { CLEAROTRON_BAND_RUN_DIR: "" });
   assert.equal(r.responses[1]?.result?.serverInfo?.name, "recording");

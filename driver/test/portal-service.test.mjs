@@ -805,7 +805,7 @@ test("#831 feedback: findings.json disagreeing about the mark resolves NO postur
     schema: "report-data/1", runId: "tmp1-aurora-run",
     findings: [{ ordinal: 1, mark: "KURENA", band: "Manageable", net: "Distinguished as wholes." }],
   }));
-  // A stale copy: ordinal 1 is a DIFFERENT mark. 's ruling, one field over — the wrong answer on a
+  // A stale copy: ordinal 1 is a DIFFERENT mark. That ruling, one field over — the wrong answer on a
   // lawyer's flag is worse than no answer, and a flag is evidence a revert cannot repair.
   writeFileSync(join(poolRoot, "tmp1-aurora-run", "findings.json"), JSON.stringify({
     findings: [{ ordinal: 1, mark: "SOMETHING ELSE", disposition: "adversarial" }],
@@ -1848,7 +1848,7 @@ test("the config surface never reports 'all off' from an absence, and names whic
 
 // ── the auth row rides the SAME response, and is read live rather than from the snapshot ────────────
 //
-// 's fifth criterion. The view function is unit-tested in portal-config-view.test.mjs; what these
+// That fifth criterion. The view function is unit-tested in portal-config-view.test.mjs; what these
 // two arms cover is the WIRING, which that file cannot see: that the route actually attaches the field,
 // and that it attaches it from THIS process's environment. A correct view function behind a route that
 // never mounted it is a wall in a field.
@@ -2573,7 +2573,7 @@ test("#723 a SUCCESSFUL write still audits exactly as before — one row, the sp
 
 // ── WIDENED THE POSITIVE HALF, and the negative half is why it is still here.
 //
-// 's out-of-scope line — "per-request access logging for the whole portal" — is unchanged and is
+// That out-of-scope line — "per-request access logging for the whole portal" — is unchanged and is
 // what the second loop below still asserts. What changed is the reading of "the write paths".
 // admitted only `/portal/admin/*` plus the one named client write, on the reasoning that the other
 // write routes "already file a richer row" of their own; measured, that is true of their OUTCOMES and

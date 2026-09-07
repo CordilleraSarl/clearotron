@@ -274,7 +274,7 @@ test("a malformed payload is REFUSED, never thrown — an exception tells the se
 
 // ── THE EVIDENCE MUST COME FROM THE RECEIPT THAT WAS RULED ON ───────────────────────────────────────
 //
-// Found reviewing this file AFTER it reached main (see 's comment): `anchorBinding` was called with
+// Found reviewing this file AFTER it reached main (see the comment): `anchorBinding` was called with
 // the whole row's candidate list, so a bound quote could be lifted out of a receipt the seat had not
 // ruled on. The accepted row then said "receipt X, and here is the passage proving it" over text from
 // receipt Y — that week's defect shape exactly, inside the module built to end it.

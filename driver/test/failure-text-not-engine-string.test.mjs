@@ -83,7 +83,7 @@ test("#614 arm 3 — home.ts routes `failed` through the mapper, like RiskDot do
     "the failed branch returned the engine's string; every other branch is a written sentence");
   assert.ok(!/r\.reason \?\? 'It stopped before it finished\.'/.test(t),
     "the raw pass-through is gone, not merely wrapped");
-  // 's own acceptance: more than one importer.
+  // its own acceptance: more than one importer.
   //
   // EXTENSION-AGNOSTIC, and that is the point. This regex used to require the specifier to end at
   // `failure'` — so it counted the two importers that had OMITTED the `.ts` and silently skipped

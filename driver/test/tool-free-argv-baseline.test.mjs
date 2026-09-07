@@ -253,7 +253,7 @@ test("⭐ THE ARGV DIFFERENTIAL — skeptic gained all three flags, and gained N
   // bridge, no register, no perplexity — and NOT blind-frame's record tool either (Shape 2: a
   // sibling's tool is never granted).
   //
-  // search_run_artifacts is 's ratification-hold unlock, path 1: O3c measured skeptic's only Bash
+  // search_run_artifacts is the ratification-hold unlock, path 1: O3c measured skeptic's only Bash
   // use as READS (7 calls, 0 writes / 11 attempts — literal-token greps over the run's own
   // register-findings.md / common-law-findings.md, plus two section reads of its served skill doc, which
   // the seeded Read grant covers). The tool replaces the artifact half of those reads with a scoped,

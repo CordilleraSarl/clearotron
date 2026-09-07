@@ -135,7 +135,7 @@ function tellObligations(spec, ledgerJson) {
     }, null, 2) + "\n",
   );
   // B — NO SEAT-FACING FORM IS WRITTEN, ANY MORE, BY ANYONE. The -era write-back that lived here
-  // (a union of the seat's file bytes into a rebuilt seat-facing form, plus 's whose-bytes referee)
+  // (a union of the seat's file bytes into a rebuilt seat-facing form, plus the whose-bytes referee)
   // died with the form path: the seat records rulings only through `record_dispositions`, the
   // accumulator in `_driver/` is the one copy and the tool is its writer mid-turn. What the seat needs
   // at this moment — the obligations, the candidates, the positions and the recording route — is all in

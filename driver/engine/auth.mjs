@@ -20,7 +20,7 @@
 // spelling list let the OpenAI half decide how an Anthropic run bills. deleted the old names, so
 // there is one variable, only the selected engine is ever consulted, and the hazard has no route left.
 //
-// And deliberately written OUT at each site rather than through a helper: 's guard in
+// And deliberately written OUT at each site rather than through a helper: the guard in
 // `env-governance.test.mjs` finds a product read by the literal `env.NAME`, so a helper taking the
 // name as an argument makes both reads invisible to it — measured, it turned them harness-only and
 // put both names on the "no longer read by product code" list. The repetition is what keeps them

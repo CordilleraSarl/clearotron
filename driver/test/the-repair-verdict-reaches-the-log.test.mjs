@@ -17,7 +17,7 @@
 //
 // ── WHY THE ARMS BELOW ARE MOSTLY ABOUT THE CALL SITES ───────────────────────────────────────────────
 //
-// 's own file already proves the ledger emits the verdict when a ceiling is named, and every arm in
+// its own file already proves the ledger emits the verdict when a ceiling is named, and every arm in
 // it passed throughout the period in which the field reached nothing. A component test cannot see an
 // unwired component. So the load-bearing arms here scan the CONSUMER.
 //
@@ -67,7 +67,7 @@ test("#1495 every repair record() site in the pipeline names a ceiling", () => {
 
 test("#1495 no site restates its ceiling as a literal — the two ends read ONE name", () => {
   // `canAttempt` enforces the budget and `record` reports against it. A literal at the record site is a
-  // second statement of the same rule, and 's whole class is two ends of one contract measuring
+  // second statement of the same rule, and the whole class is two ends of one contract measuring
   // different things with nothing asserting they agree. Passing the same identifier both ends makes the
   // drift impossible rather than merely unlikely — a wrong ceiling does not fail, it MISREPORTS: a stale
   // `max: 1` beside a real budget of 3 turns an in-budget repair into `cannot-repair`, which is the

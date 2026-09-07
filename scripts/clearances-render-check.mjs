@@ -360,7 +360,7 @@ const toggle = await value(TOGGLE)
 // is what it did the first time this ran.
 await value(`(async () => { const b = document.querySelector('label.group-toggle input'); if (b && !b.checked) { b.click(); await new Promise(r => setTimeout(r, 300)); } return true })()`)
 
-// The drift probe: the SAME page with one run title made much longer. 's own acceptance test —
+// The drift probe: the SAME page with one run title made much longer. its own acceptance test —
 // "lengthen a run title in the fixture data and nothing except that title moves".
 longTitle = true
 await reload()

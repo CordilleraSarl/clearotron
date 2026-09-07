@@ -91,7 +91,7 @@ test("#1644 NO caller anywhere still passes a first argument — servers were to
   for (const f of files) {
     // THIS FILE IS EXCLUDED FROM ITS OWN CORPUS. It quotes the removed shapes verbatim in its prose —
     // `proposeSupplemental("s-key", …)`, `("COOKIE", …)` — so scanning itself reports its own
-    // explanation as four offences. Same exclusion 's guard makes for the same reason.
+    // explanation as four offences. Same exclusion the guard makes for the same reason.
     if (f.endsWith("no-credential-rides-the-supplemental-mint.test.mjs")) continue;
     const src = readFileSync(f, "utf8");
     if (!src.includes("proposeSupplemental(")) continue;

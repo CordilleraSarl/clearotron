@@ -156,7 +156,7 @@ const PINNED = Object.freeze({
   // `Write Edit` are GONE from the head and `mcp__recording-register-digest__record_register_digest` is
   // on the tail: the seat hands back rows and prose and the driver renders register-findings.md. That is
   // a real change to the bytes the engine is handed for this stage, on a stage no live run has exercised
-  // under the new surface, so it ships `status:merged-awaiting-e2e` — the same treatment 's rename
+  // under the new surface, so it ships `status:merged-awaiting-e2e` — the same treatment the rename
   // took and for the same reason.
   //
   // WHAT DID NOT MOVE IS THE POINT OF THE ROW: `Read` still leads, the three band tools are byte-

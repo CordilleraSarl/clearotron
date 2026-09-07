@@ -6,7 +6,7 @@
 // plan: they resolved regions against the FULL declared coverage and handed them to the adapter, which
 // on a composite fans out to every member. The unconfigured one refuses, the composite correctly
 // declines to return a partial sum, and a box with a working EU half reported every count as
-// unavailable. 's own acceptance — "free-tier starts and ships a disclosed US deferral" — was met
+// unavailable. its own acceptance — "free-tier starts and ships a disclosed US deferral" — was met
 // on the plan lane and never on these two, which is what observed.
 //
 // THE TWO HALVES ONLY MAKE SENSE TOGETHER, so they are asserted together throughout:

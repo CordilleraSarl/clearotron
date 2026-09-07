@@ -182,7 +182,7 @@ function main() {
     console.log(`\n${ws}: ${Object.keys(next.workspaces[ws].perFile ?? {}).length} file(s)`);
     for (const f of added) console.log(`  + ${f}  (${b[f].tests} tests, ${b[f].asserts} asserts)`);
     // A file leaving the census, or shrinking inside it, is the shape this whole thing exists for.
-    // Printed loudly and separately, and — since 's loss arm — REFUSED below unless --allow-loss
+    // Printed loudly and separately, and — since the loss arm — REFUSED below unless --allow-loss
     // is passed. This comment used to end "an --apply that scrolls past these is the laundering", which
     // was an accurate description of what the code then did: it printed both lines and wrote the file.
     for (const f of gone) console.log(`  REMOVED  ${f}  (was ${a[f].tests} tests, ${a[f].asserts} asserts)`);

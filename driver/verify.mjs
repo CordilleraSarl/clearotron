@@ -146,7 +146,7 @@ function nonEmpty(content, min = MIN) {
  * The obvious fix — emit the failing marker INSTEAD of the label — silently breaks the corrective hints.
  * `correctionHint` branches on the label text (`gateway.mjs:2181` on `findings+ledger`, `:2188` on
  * `negative-results|coverage-ledger|audit-trail|findings-heading`), so a renamed token would fall through
- * to a generic hint. 's comment records that arm being removed once already on a reading that was
+ * to a generic hint. That comment records that arm being removed once already on a reading that was
  * true for only one lane, and put back. Appending keeps every existing matcher matching — they all test
  * substrings — and gives the seat the one word it was missing.
  *
@@ -692,7 +692,7 @@ export function verdictHardenedTo(carried, reviewMd) {
 // The trailing `\*{0,2}` is the bold CLOSER: reviewers write both `**1. [kind: …]** text` (bold around
 // the marker and its tokens) and `**1.** text` (bold around the marker alone). The second counted ZERO
 // on both walks — consistently, so it is not the asymmetry above, but it is the same defect wearing a
-// different style, and 's criterion says a bold-numbered flag must count. It cannot swallow prose:
+// different style, and the criterion says a bold-numbered flag must count. It cannot swallow prose:
 // a single letter or digit must still be followed by its own `.` or `)`, so `**Note.** …` matches nothing.
 const LIST_MARKER = String.raw`(?:\*{0,2})(?:[-*•]|\d+[.)]|[A-Za-z][.)])(?:\*{0,2})\s+`;
 const LIST_LINE_RE = new RegExp(`^${LIST_MARKER}\\S`);
@@ -819,7 +819,7 @@ function parseOn(line) {
 // deferrals`, `Headline, re-derived independently`, `Grounded profiles` and the plan audit.
 //
 // THE HEADLESS FALLBACK IS DELIBERATE AND IT IS NOT A DENYLIST IN DISGUISE. A review with NO corrections
-// heading anywhere still has corrections — 's fixture is exactly that, and 's writes them under
+// heading anywhere still has corrections — the fixture is exactly that, and the writes them under
 // `## Corrections`. So: if the document names a corrections section, ONLY that section is read; if it
 // names none, the whole document is read as before. The fallback cannot reopen this defect, because it
 // only applies to documents that have no section structure to get wrong.
@@ -840,7 +840,7 @@ export const NOT_A_CORRECTIONS_SECTION_RE =
 //
 // THE FAILURE IS SILENT IN THE WORST DIRECTION. An unreadable flag does not error — it is simply not
 // there, and every downstream count agrees with itself about a document it never read. Both directions
-// of 's lesson apply at the LINE level too: too permissive publishes noise as grounds, too strict
+// of the lesson apply at the LINE level too: too permissive publishes noise as grounds, too strict
 // drops the grounds entirely.
 //
 // SCOPE OF THE WIDENING, MEASURED RATHER THAN ASSUMED. Across the 28 distinct reviews on both scratch
@@ -874,7 +874,7 @@ export const opensWithKind = (content) => /^\[kind:/i.test(String(content ?? "")
  * matched and the whole document was skipped". The allowlist fails closed on purpose, and a guard that
  * fails closed silently is how a real defect reads as a clean run.
  *
- * `named: false` is not a fault — it is the headless document 's fixture is built from, and the walk
+ * `named: false` is not a fault — it is the headless document the fixture is built from, and the walk
  * falls back to the whole document. It is reported so a caller can tell the two apart.
  *
  * PURE.
@@ -918,7 +918,7 @@ export function parseCorrections(reviewMd) {
     // underneath as `- "…"` bullets. Those are evidence FOR a correction, not five more corrections,
     // and counting them is how five quoted excerpts became five of the published grounds of a BLOCKING
     // verdict. A review that writes its flags as BULLETS never trips this — no numbered flag is ever
-    // seen, so every bullet stays a flag, which is 's contract and 's fail-safe both intact.
+    // seen, so every bullet stays a flag, which is the contract and the fail-safe both intact.
     // ORDER MATTERS: ask "is this enumerated" FIRST. `**2. [kind: …]` begins with an asterisk, so a
     // bullet test run before the enumerated test swallows every flag after the first as the first
     // one's body.

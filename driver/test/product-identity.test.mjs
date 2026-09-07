@@ -37,7 +37,7 @@ test("sourceUrl pins to the commit, so the offer resolves to THIS build", () => 
   resetProductIdentity();
   const id = productIdentity();
   // BOTH BRANCHES ASSERT. The `if` had no `else`, so off a checkout this arm exercised nothing
-  // and still reported ok — the shape 's member exists to catch, in its early-return spelling.
+  // and still reported ok — the shape the member exists to catch, in its early-return spelling.
   if (id.commit) {
     assert.equal(id.sourceUrl, `${SOURCE_REPO}/tree/${id.commit}`);
     assert.ok(id.sourceUrl.includes(id.commit), "a source offer that omits the sha is a branch link");

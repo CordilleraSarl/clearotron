@@ -184,7 +184,7 @@ test("2084 the #1846 provenance sidecar is DECLARED — and only beside the ledg
   // The owner's 2026-08-31 run warned `[stray-artifact] common-law-grid.half-m.provenance.json — no
   // stage dictates this path`. The writer is grid-provenance.mjs (which provider served the grid,
   // written beside the verbatim ledger because the ledger cannot carry it), and its reader is the
-  // run-dir AUDITOR — real, per 's own header: the 2026-08-24 round mis-reported this lane as
+  // run-dir AUDITOR — real, per its own header: the 2026-08-24 round mis-reported this lane as
   // quota-starved off a SerpAPI counter, with no artifact naming the true provider. Declared, from
   // the writer's own path function, never a second spelling.
   const P = paths("/tmp/stray-check-run");

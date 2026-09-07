@@ -349,7 +349,7 @@ test("#665 a recycled pid defeats a bare-pid claim and cannot defeat a pid+start
 // not exist; the parenthetical named the caller's intent. Everything about the state was safe and
 // everything about the sentence was wrong.
 //
-// Driven directly rather than through the race, because the race is 's and is out of scope here:
+// Driven directly rather than through the race, because the race is the and is out of scope here:
 // the branch is reached whenever the source marker is absent, for any reason.
 test("#745 a lost retire says the rename did NOT happen, and never names a file it did not create", () => {
   const dir = mkdtempSync(join(tmpdir(), "retire-honesty-"));

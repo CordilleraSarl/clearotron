@@ -328,7 +328,7 @@ export function assembleRunRecords(runDir, runPrefix,
       writeFileSync(driverDir(runDir, "receipts.json"), JSON.stringify({ schema_version: 1, receipts: rows }, null, 2) + "\n");
     }
   } catch { /* best-effort — the records map above remains the gate substrate */ }
-  // 's legacy-name notice is REPLACED, not deleted. That one told an operator which of four
+  // That legacy-name notice is REPLACED, not deleted. That one told an operator which of four
   // global candidates was being read; nothing reads any of them for a new run any more, so the sentence
   // had become false. What an operator still needs is the fact underneath it: a box upgraded across this
   // change is carrying a large global record log that is now written by nothing and read by nothing —
@@ -951,7 +951,7 @@ const recClasses = (rec) => {
  * WHICH owner name a delivery artifact SHOWS. ONE definition, deliberately, because the renderer
  * and bindFindingsToRecords each resolve the owner independently — publish/render.mjs does its own
  * record lookup and preferred the record outright, so binding the finding alone changed no heading and
- * no lint surface. A second copy of the same decision is how 's provider default survived two fixes.
+ * no lint surface. A second copy of the same decision is how the provider default survived two fixes.
  *
  * The record decides, not a guess about what "looks romanised": a record carrying BOTH a Latin name and
  * a native-script one is itself saying the Latin field is a transliteration, and only then does a

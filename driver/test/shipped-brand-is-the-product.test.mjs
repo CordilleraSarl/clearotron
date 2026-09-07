@@ -26,7 +26,7 @@
 // WHAT IT DELIBERATELY DOES NOT POLICE. Comments, the licence header, the trademark notice in
 // TRADEMARKS.md, the AGPL §13 source-repository URL and About.tsx's attribution all name the firm
 // truthfully and MUST keep doing so — a fork that strips its own copyright headers has broken the
-// licence, not fixed the branding. Prose comments that name the deployment's operator are 's sweep
+// licence, not fixed the branding. Prose comments that name the deployment's operator are the sweep
 // and are out of scope here on purpose: this file is about EMITTED bytes.
 import { test } from "node:test";
 import assert from "node:assert/strict";

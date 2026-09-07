@@ -8,7 +8,7 @@
 // products simply run at one-country depth and the ladder's whole observable effect is that nothing
 // happens. So this file builds the REAL stage message and reads what comes out.
 //
-// The one-country arm is 's central acceptance criterion — "product 4 untouched" — and it is
+// The one-country arm is the central acceptance criterion — "product 4 untouched" — and it is
 // asserted the strongest way available: the whole message, byte for byte, against the same stage built
 // with no depth at all.
 import test from "node:test";

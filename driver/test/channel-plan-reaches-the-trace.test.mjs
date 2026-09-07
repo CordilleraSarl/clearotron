@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// channel-plan-reaches-the-trace.test.mjs — 's call site: the plan now reaches the comparison.
+// channel-plan-reaches-the-trace.test.mjs — the call site: the plan now reaches the comparison.
 //
 // The pure comparison landed first and reported `state: "unknown"` on every run, because the ordered list
 // was not in the artifact it reads: `common-law-grid.json`'s top-level keys are `cells`, `extras`, `gaps`

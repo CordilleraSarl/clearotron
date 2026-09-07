@@ -196,7 +196,7 @@ export async function settleReceipt({ P, plan, receipt, dispatch = null, rejoin 
 
 /**
  * The settled facts a digest dispatch needs, as a message section — mechanical only, quoting the executor's
- * own reason. Every digest pass gets this, not just the first: 's dispatch hint reaches FRESH dispatches
+ * own reason. Every digest pass gets this, not just the first: the dispatch hint reaches FRESH dispatches
  * by construction (stageOnce ignores `extra` when opts.followup is set), and the flush passes it misses are
  * exactly where the evidence run burned 2,908 seconds failing the same validator twice more.
  *

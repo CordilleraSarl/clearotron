@@ -111,7 +111,7 @@ test("#246 ZERO SEMANTICS: a failure with no quantity records ABSENT (null), nev
 
 test("#246 the signature is UNCHANGED — the quantity is the sole new discriminator", () => {
   // Pinned to the pre- literals. These are what the machinery signs; a diff that moves them moves
-  // which runs go repeat-signature terminal, which is 's decision and not this issue's.
+  // which runs go repeat-signature terminal, which is the decision and not this issue's.
   const sigs = [6, 9, 11, 25, 29].map((n) => failureSignature("common-law-half:b", REASON(n)).sig);
   for (const s of sigs) assert.equal(s, "common-law-half:b|022c140ae114", "the sig still collapses the digit — unchanged");
   // …and the count that the sig cannot see now rides beside it
@@ -189,7 +189,7 @@ test("#246 ladder 7 → 6 → 5, park, 6 → 3 → pass: the count crosses the p
   assert.equal(before.quantity, 5, "the count the run parks ON");
 
   // the park's fresh sample re-rolled ABOVE where it parked (6 > 5) and then converged to a pass. The
-  // ledger says so; whether that is worth another park is 's call, not this record's.
+  // ledger says so; whether that is worth another park is the call, not this record's.
   const after = await replay("resumed", [6, 3, null], { maxRetries: 2 });
   assert.equal(after.ok, true);
   assert.deepEqual(counts("resumed"), [6, 3, null]);

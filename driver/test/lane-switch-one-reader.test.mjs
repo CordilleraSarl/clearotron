@@ -137,7 +137,7 @@ test("#552 a slice whose UNIT RECORD exists is never reported not-armed", () => 
     degradedCause: '42/42 cells gapped — below the coverage floor. Dominant cause (42/42): SerpAPI 429' } } };
   // item 8 deleted the two per-slice arms this line used to set. They were never what armed the
   // slice — `laneArmed` reads CLEAROTRON_NATIVE_LANGUAGE_ZH and fails OPEN — so an empty environment is the same setup
-  // with the noise removed, and it states 's property directly: unset is ARMED, not not-armed.
+  // with the noise removed, and it states the property directly: unset is ARMED, not not-armed.
   const env = {};   // CLEAROTRON_NATIVE_LANGUAGE_ZH deliberately unset — and unset must read as armed
 
   const { slices } = deriveJxSliceStatement({ sidecar, units, env });

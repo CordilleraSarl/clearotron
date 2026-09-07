@@ -13,7 +13,7 @@
 // design is FOR:
 //
 //   · a HARD gate would fire on 253 of 292 cells today — every run red, which teaches a reader that red
-//     means nothing ('s entire complaint), and
+//     means nothing (the entire complaint), and
 //   · a bare WARNING never bites, which is decoration.
 //
 // So: record always, trip only against a committed floor seeded from a delivered round, and a trip

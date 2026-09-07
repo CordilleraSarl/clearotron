@@ -79,7 +79,7 @@ export const REGISTER_SERVERS = {
   //   register_search / register_record_fetch — served since the thin days.
   //   register_enumerate     — SERVED and now granted.  built the page loop on the shared kernel;
   //     capabilities.js records the bounds it runs against as live-probed 2026-08-17 (pageSize 100 is the
-  //     API's hard refusal, verified at 200/250/500). This is the tool 's owner-window ceiling is
+  //     API's hard refusal, verified at 200/250/500). This is the tool the owner-window ceiling is
   //     passed into (OWNER_SCOPED_WINDOW → ceilingFor → makeEnumerate), so withholding it put that
   //     criterion out of reach of any round.
   //   register_execute_plan  — SERVED and now granted. Two corrective-ladder hints name it unconditionally
@@ -188,7 +188,7 @@ export const REGISTER_SERVERS = {
 // (server-tools-granted-or-stated.test.mjs: every record tool has exactly one granting stage).
 const RECORDING_SERVER = "recording-server.mjs";
 const RECORDING = Object.freeze({
-  // FIRST OCCUPANT — blind-frame ('s transport, wired by, dictation deleted by).
+  // FIRST OCCUPANT — blind-frame (the transport, wired by, dictation deleted by).
   //
   // `seatWrites: false` is the half, and it is the only thing that closes the regression door BY
   // CONSTRUCTION rather than by prose. Once the driver writes blind-frame-model.json, nothing this stage is
@@ -686,7 +686,7 @@ const LOCAL = {
   "unit-note": { script: "unit-note-server.mjs", tools: ["record_unit_note"] },
   // ── RECORDING — DERIVED from the registry above, one entry per stage, in registry order ──────────
   //
-  // These rows were hand-written here until 's collapse. They are LAST in this object on purpose:
+  // These rows were hand-written here until the collapse. They are LAST in this object on purpose:
   // LOCAL_SERVER_SCRIPTS below is `Object.values(LOCAL).map(...)`, so insertion order is part of its
   // value, and `recording-server.mjs` appearing TWICE is the evidence both keys resolve to the one
   // module. recording-grant-preservation.test.mjs pins that array verbatim, duplicates included.
@@ -695,7 +695,7 @@ const LOCAL = {
 };
 
 // The scripts LOCAL grants, DERIVED. Exported because the server census would otherwise recite them, and
-// a recited list is one more population to keep in sync by hand — 's census derived the register
+// a recited list is one more population to keep in sync by hand — the census derived the register
 // half from REGISTER_SERVERS and hardcoded this half, so wiring a new local server left it reading as
 // ungranted. Derive both halves or neither.
 export const LOCAL_SERVER_SCRIPTS = Object.freeze(Object.values(LOCAL).map((e) => e.script));
@@ -873,7 +873,7 @@ export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, r
   // There is no production caller to break: `driver/gateway.mjs` is the only non-test call site in the
   // tree and it always passes the run it is dispatching for. A caller that reaches this without one has
   // a defect a refusal names immediately, instead of a record body somewhere its run will never look.
-  // ORDER MATTERS: resolve the register provider FIRST. 's "CLEAROTRON_DATABASE is not set"
+  // ORDER MATTERS: resolve the register provider FIRST. That "CLEAROTRON_DATABASE is not set"
   // is the more fundamental refusal and the one an operator acts on, so it must still come out ahead of
   // this one — a box with neither a provider nor a run should be told about the provider.
   if (localKeys.has("register")) {
@@ -964,7 +964,7 @@ export function toolGroupsForStage(name = "") {
   // the issue predicts, on the one matter where the confirmation step was most clearly indicated (four
   // `loaded` meaning rulings, see).
   //
-  // This changes engine behaviour and ships `status:merged-awaiting-e2e`, which 's out-of-scope block
+  // This changes engine behaviour and ships `status:merged-awaiting-e2e`, which the out-of-scope block
   // anticipates in as many words. The scoping is doctrine's, not the grant's: SKILL.md already caps it at
   // one probe per review and requires the query and its result recorded verbatim.
   // ── THE ONE BRANCH THAT RETURNS RETRIEVAL *AND* RECORDING, and it has to be here ────────────────
@@ -1027,7 +1027,7 @@ export function toolGroupsForStage(name = "") {
   //
   // NOT a prefix test, for either form. A prefix would hand the grant to any future stage whose name
   // merely began with a recording stage's. The base row must SAY it fans out — declaration, not
-  // inference, the same principle as 's declared phase.
+  // inference, the same principle as the declared phase.
   for (const [sep, flag] of SUFFIX_FORMS) {
     const at = name.lastIndexOf(sep);
     if (at <= 0) continue;
@@ -1153,7 +1153,7 @@ export function recordAxisFor(name = "") {
 // gains `--mcp-config`, `--strict-mcp-config` AND `--allowedTools` where it previously had none. That is
 // a change in KIND and the right one — these stages become constrained for the first time — but it must
 // be asserted at the argv level, not inferred from this map.
-// FIRST OCCUPANT — blind-frame ('s transport, wired here). SECOND — skeptic.
+// FIRST OCCUPANT — blind-frame (the transport, wired here). SECOND — skeptic.
 //
 // The safety basis is a SAMPLE and is stated as one: O3c measured blind-frame at 0 Bash calls across 15
 // attempts, alone among the eleven tool-free stages. That is why it converted first. On attempt 16 a
@@ -1189,7 +1189,7 @@ export const RECORDING_STAGES = Object.freeze(Object.fromEntries(
 //
 // ── DELIBERATELY NOT DERIVED FROM THE REGISTRY, unlike the four declarations above it ──────────────
 //
-// 's collapse made the LOCAL entries, the group resolution, the stage→group map and RECORDING_STAGES
+// That collapse made the LOCAL entries, the group resolution, the stage→group map and RECORDING_STAGES
 // derive from one registry. This table did NOT move, and the reason is the whole value of it: O1 asserts
 // the resolved grant EQUALS this row. Derive it from the same registry the grant derives from and O1
 // compares a value with itself — a guard turned tautology inside the PR that was meant to strengthen it.
@@ -1211,7 +1211,7 @@ export const RECORDING_TOOLS = Object.freeze({
     "mcp__recording-matter-frame__search_run_artifacts"]),
   skeptic: Object.freeze(["Read", "mcp__recording-skeptic__record_skeptic",
     "mcp__recording-skeptic__search_run_artifacts"]),
-  // 's third conversion. `Read` and its one record tool: the stage's reads are its two named input
+  // That third conversion. `Read` and its one record tool: the stage's reads are its two named input
   // files, which the seeded grant serves, and it gets no search tool because a stage with an enumerable
   // read set does not need one. BY HAND, like every row here — deriving it from the registry would make
   // O1 compare a value with itself.
@@ -1370,7 +1370,7 @@ export function seatWritesForGroups(groups = []) {
 }
 
 /**
- * THE ENUMERATION, derived and not hand-listed ('s third proof requirement).
+ * THE ENUMERATION, derived and not hand-listed (the third proof requirement).
  *
  * A naive grep for `seatWrites: false` returns TEN hits and the population is EIGHT: two of the hits are
  * comment text — one in the blind-frame FIRST OCCUPANT note, one in `allowedToolsFor`'s own

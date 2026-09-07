@@ -619,7 +619,7 @@ if (isMain) {
   const argv = process.argv.slice(2);
   const say = (s = "") => process.stdout.write(`${s}\n`);
   const err = (s) => process.stderr.write(`${s}\n`);
-  // Flipped at the first state-changing act ('s third criterion): a refusal AFTER
+  // Flipped at the first state-changing act (the third criterion): a refusal AFTER
   // writes must say what survives and that re-running is safe — the reader's only question at that
   // moment, and one the screen never answered while the writes sat above the port probe.
   let wroteState = false;
@@ -831,7 +831,7 @@ if (isMain) {
   say(`  reports        ${paths.pool}`);
   say(`  signs in as    ${user}`);
 
-  // ── THE PORTS, PROBED BEFORE ANYTHING IS WRITTEN ('s sibling,) ──
+  // ── THE PORTS, PROBED BEFORE ANYTHING IS WRITTEN (the sibling,) ──
   //
   // This block used to sit in section 4, after the secrets were minted, the data plane created, the
   // grants file written and an example report seeded. So a box where another copy already held the port
@@ -889,7 +889,7 @@ if (isMain) {
         continue;
       }
     }
-    // 's wording, not a second copy of it. That helper already distinguishes EADDRINUSE from EACCES
+    // That wording, not a second copy of it. That helper already distinguishes EADDRINUSE from EACCES
     // on a privileged port and from an address this host does not have, and names the way out of each;
     // the launcher having its own shorter sentence for one of the three would mean a user meets two
     // different answers to the same question depending on which door refused first.

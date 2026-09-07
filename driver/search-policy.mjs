@@ -351,7 +351,7 @@ export function reportIdentityFor(levelOrPolicy) {
 
 /** The product's coverage note for the report masthead (charter ruling 1, 2026-07-30: what was bought
  *  must be VISIBLY clear on the page — a reader must never confuse "the same section" in two different
- *  searches). One plain sentence, NAME-LED per the ruling (match 's registry-name pills: the
+ *  searches). One plain sentence, NAME-LED per the ruling (match the registry-name pills: the
  *  product's name leads, never a rung on our ladder), stating what THIS search covers and the material
  *  thing it does not. The name comes from the registry join (reportIdentityFor — today's name for what
  *  ran, exactly the  doctrine); the coverage clauses come from the run's own frozen COMPONENTS

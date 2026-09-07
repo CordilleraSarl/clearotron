@@ -80,7 +80,7 @@ test("#1236 the seven live ones bind exactly as the deployed replay showed", () 
 
 test("#1236 UNIFORMITY: the bar is quoteWeight, so a five-character CJK passage still binds", () => {
   // The measurement that makes a `.length` implementation provably wrong. If this ever fails, the fix has
-  // acquired a per-script partition and 's defect is back inside its own cure.
+  // acquired a per-script partition and the defect is back inside its own cure.
   assert.equal(segmentBinding({ segment_index: 1, fragment: "意味アザミ" }, { snippet: "意味アザミ" }).state, "bound",
     "a five-character CJK passage is being treated as a dead end — this is the per-script partition #1118 removed");
   assert.equal(segmentBinding({ segment_index: 1, fragment: "abcde" }, { snippet: "abcde" }).state, "segment_dead_end",

@@ -125,7 +125,7 @@ export const TRACE_SCOPE = {
 // the only direction that also hides the 2 unreasoned drops the common-law trace DID find.
 //
 // So the declaration is derived from which sibling tracers actually produced a computable artifact on
-// THIS run, exactly as 's dictated set is read from the paths factory and 's obligations are one
+// THIS run, exactly as the dictated set is read from the paths factory and the obligations are one
 // calculation. A hand-kept list whose staleness is invisible is not a contract; it is a comment.
 //
 // UNCHANGED IN THE CONSERVATIVE DIRECTION: a path only moves to `instrumented` on positive evidence that

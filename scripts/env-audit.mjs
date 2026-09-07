@@ -10,7 +10,7 @@
 // ── why this exists ──────────────────────────────────────────────────────────────────────────────
 //
 // `docs/architecture/05-config-governance.md` states its own maintenance rule: "adding a var anywhere
-// in the repo means adding its row here". 's review found that rule has NO enforcement — the
+// in the repo means adding its row here". That review found that rule has NO enforcement — the
 // placeholder-default guard checks fallbacks, not existence — so it has been prose since it was
 // written, and the surface has grown the whole time.
 //
@@ -36,7 +36,7 @@
 //
 // ── what it deliberately does not do ─────────────────────────────────────────────────────────────
 //
-// It deletes nothing. 's tier 2 (delete the dead) is explicitly not this, and the issue's own
+// It deletes nothing. That tier 2 (delete the dead) is explicitly not this, and the issue's own
 // queue note says deleting toggles mid-verification moves the range again. This reports; a person
 // decides.
 
@@ -108,7 +108,7 @@ const CODE_RE = /\.(mjs|js|cjs|ts)$/;
 // above describes happening again. Converting the eight numeric getters from
 // `Number(this.envValue("NAME") || d)` to `numericSetting("NAME")` moved the name out of a shape this
 // scanner knew and into one it did not: the audit stopped seeing CLEAROTRON_MAX_CLAIM_AGE_MS and
-// CLEAROTRON_CARD_CONCURRENCY, whose ONLY reads are accessor reads, and 's product-read arm went red.
+// CLEAROTRON_CARD_CONCURRENCY, whose ONLY reads are accessor reads, and the product-read arm went red.
 // It went red because that arm names those two variables — which is the whole reason it names them. A
 // conversion narrows this guard silently, so both spellings land in the same commit as the conversion.
 const ACCESSOR_RE = /\b(?:envValue|envOn|envGateOn|numericSetting|resolveNumericSetting)\s*\(\s*["']([A-Z][A-Z0-9_]*)["']|\benvFrom\s*\(\s*[^,()]+,\s*["']([A-Z][A-Z0-9_]*)["']/g;
@@ -230,7 +230,7 @@ export const SYSTEM_OWNED = new Set([
   // — both arrived with the injected-`env` widening above, and both are set by the service
   // manager rather than by any deployment of this product: systemd sets INVOCATION_ID (which is
   // exactly what shared/env-local.mjs reads it to detect), and the session bus sets
-  // DBUS_SESSION_BUS_ADDRESS. 's body asserts the audit already excluded these two. It did not —
+  // DBUS_SESSION_BUS_ADDRESS. That body asserts the audit already excluded these two. It did not —
   // they were absent from this list, and they only stayed out of the register because the scanner
   // could not see the reads at all.
   "INVOCATION_ID", "DBUS_SESSION_BUS_ADDRESS",
@@ -520,7 +520,7 @@ export function auditEnv(root = ROOT) {
 //                         1  CLEAROTRON_SEND_TOOL_PREFIX — genuinely dead, and this direction does not
 //                            catch it either: its one surviving mention is a governance-doc line, and
 //                            a mention is enough to spare a row. Under-firing is the cost of the
-//                            trade, taken deliberately. It is 's prose-sweep class.
+//                            trade, taken deliberately. It is the prose-sweep class.
 //
 //                       So SIX of ten deletions would have been wrong, two of them credential rows.
 //                       Evidence used instead: the bare NAME, on a name boundary, anywhere in the
@@ -639,7 +639,7 @@ export function orphanRows(rows, mentioned) {
 }
 
 // The catalogues describe the contract; they are not readers of it. Include them and every row is its
-// own evidence, which is the circularity 's "a check cannot use its own source as evidence" names.
+// own evidence, which is the circularity the "a check cannot use its own source as evidence" names.
 // — `docs/architecture/env-set-in-production.txt` joins them, and the reason is the rule this set
 // exists for. It is a LIST OF NAMES, committed as step 1's production evidence because a reviewer cannot
 // make that read. Left in the corpus it becomes an alibi for every catalogue row at once: each row

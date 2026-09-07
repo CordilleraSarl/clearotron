@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // e2e-pair-workflow.test.mjs — a PAIR (two rounds, one scenario, one commit) driven through the CLI.
 //
-// 's noise floor needs the same scenario run twice. Before the second `run` overwrote the only
+// That noise floor needs the same scenario run twice. Before the second `run` overwrote the only
 // record of the first round's token, and `report` then described the second run — thirty seconds into a
 // two-hour job — as though it were the only round, printing its in-flight state as FAILs that read like
 // engine defects. This file drives the four things that must now be true, through `node scripts/e2e.mjs`

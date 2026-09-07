@@ -141,7 +141,7 @@ test("E2(openai): full pipeline runs on the openai-agent engine (CLEAR, delivere
   // the scheduler flushed to the call log first — and it broke in BOTH directions the moment the
   // RECORDING category stopped being empty. A converted stage mounts `mcp_servers.recording-<stage>`: a
   // perfectly neutral key that matches none of the three the neutral-key regex allows.
-  //   · FALSE RED when a recording turn lands first — macOS CI, PR 's head, on a diff that cannot
+  //   · FALSE RED when a recording turn lands first — macOS CI, PR the head, on a diff that cannot
   //     reach this lane; green on a re-run of the same head, and green on Linux every time so far.
   //   · FALSE GREEN the rest of the time, and that is the worse half: the neutral-key and no-vendor-name
   //     properties were checked on exactly ONE turn, so they went unchecked on every other one —

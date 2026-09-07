@@ -1814,7 +1814,7 @@ test("the hero names the product the run resolved to — one name, no rung, and 
   const parsed = { fm: { title: "AquaPlus", matter: "TMP1", overall_label: "MEDIUM" }, secs: {} };
 
   // — with no delivery overlay the posture is the DEFAULT line, so the label composes it with the
-  // product. 's guarantee is unchanged and is what is asserted: ONE product name, and it is the
+  // product. That guarantee is unchanged and is what is asserted: ONE product name, and it is the
   // resolver's. The product's own assertions are scoped to the conf label so they cannot pass on some
   // other mention elsewhere in the document.
   const confLabel = (html) => html.match(/<div class="conf">.*?<span class="label">(.*?)<\/span>/)[1];
@@ -2234,7 +2234,7 @@ test("#242: an archived (pre-v6) run renders byte-identically to its pre-change 
 
 // ──: the hero verdict caption folds to its first sentence ────────────────────────────────────────
 //
-// 's design ruling — "above any fold, only a statement, a labelled row, a count or a one-line card;
+// That design ruling — "above any fold, only a statement, a labelled row, a count or a one-line card;
 // prose never appears until someone opens something, and once opened nothing is ever cut". cf8dd43 moved
 // the finding cards onto that rule and left the hero caption behind; PR recorded the bullet as
 // still owed and routed it here.

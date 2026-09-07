@@ -95,7 +95,7 @@ test("#577 a slice NOTHING answered on still kills the run — #440's condition 
 });
 
 test("#577 a deferred slice must be NAMED in the deliverable — the disclosure gate holds the line", () => {
-  // Deferring is not a way to make a slice go quiet. 's gate demands that every deferred qid appear
+  // Deferring is not a way to make a slice go quiet. That gate demands that every deferred qid appear
   // verbatim in a non-clean row on its own axis; the run does not ship until it does. That is what makes
   // "disclosed deferral" a contract rather than a label — and it applies to these rows exactly as it
   // applies to a capability gap, because they arrive in the same bucket.

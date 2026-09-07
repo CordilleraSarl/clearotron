@@ -12,7 +12,7 @@
 // property of the WRITING SITE, not of the name — a field called `outcome` carrying an outcome is fine,
 // and a field called `settled` carrying a dispatch return is the defect. Only reading the writer tells
 // them apart, so the population is SPLIT and classified rather than filtered down to the offenders.
-// Both halves are kept, for 's reason: a filtered population produces no number, and nobody can see
+// Both halves are kept, for the reason: a filtered population produces no number, and nobody can see
 // what was hidden.
 //
 // ── THE TWO HALVES ──────────────────────────────────────────────────────────────────────────────────

@@ -10,7 +10,7 @@
 //
 // shipped a 201-line test for the new dictation. It imports STAGES and card-frame.mjs and never
 // imports verify.mjs, so it pinned one end of a two-ended contract and was green. This file is the join:
-// it imports BOTH and asserts they cannot contradict each other. The class is 's — two ends of a
+// it imports BOTH and asserts they cannot contradict each other. The class is the — two ends of a
 // contract measuring different things with no agreement guard.
 //
 // The warning was already in verify.mjs, written for and sitting two lines above the line that

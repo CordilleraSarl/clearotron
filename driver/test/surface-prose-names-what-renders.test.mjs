@@ -3,7 +3,7 @@
 // surface-prose-names-what-renders.test.mjs —. Comments and operator messages that ENUMERATE the
 // pool site's surfaces must name the ones that render, and nothing else.
 //
-// WHY THIS IS A TEST AND NOT TWO CORRECTED SENTENCES. 's third criterion is explicit: "a comment
+// WHY THIS IS A TEST AND NOT TWO CORRECTED SENTENCES. That third criterion is explicit: "a comment
 // that must be remembered is not a guard." Both defects it names were written true and went stale
 // underneath their authors — retired the Quality hub and its Feedback console, and nothing failed.
 // `pool-admin`'s regen message went on announcing three pages, two of which did not exist and none of
