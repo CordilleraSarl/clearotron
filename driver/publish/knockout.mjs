@@ -364,6 +364,12 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   let registerRecords = null;
   try { registerRecords = JSON.parse(readFileSync(driverDir(runDir, 'register-records.json'), 'utf8')); }
   catch { registerRecords = null; }
+  // The owner lookups this run made (tracker issue 276), read the same tolerant way as the records above:
+  // an archived run that predates the lane has no file, and its cards then render exactly as they were
+  // delivered. The source line the report prints comes from HERE, not from anything the seat typed.
+  let ownerChecks = [];
+  try { ownerChecks = JSON.parse(readFileSync(driverDir(runDir, 'owner-checks.json'), 'utf8')).checks ?? []; }
+  catch { ownerChecks = []; }
 
   // ── — THIS LANE HAD NO RECORD-ORIGIN LOGIC AT ALL ─────────────────────────────────────────────
   //
@@ -518,7 +524,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     };
     const markBand = single ? overall : worstBand(framework, [m]);
     writeRO(file, renderKnockoutHtml(one, framework, {
-      runId, overall: markBand, issued, auditFile, probeRan, registerCounts, registerRecords, identity, matter: runId,
+      runId, overall: markBand, issued, auditFile, probeRan, registerCounts, registerRecords, ownerChecks, identity, matter: runId,
       // — an invented mark says so on its own report. Resolved ONCE above the loop:
       // the answer is a property of the run, and asking per mark would let a multi-mark demo mark some
       // documents and not others if the roster moved mid-publish.
@@ -534,7 +540,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     // native-render path has been reading for since before anything wrote it. One per report, so the
     // native render of a per-mark document is that mark's data and not the batch's.
     writeRO(dataFile, JSON.stringify(knockoutReportData(one, framework, {
-      runId, codename, overall: markBand, issued, registerCounts, registerRecords, auditFile, customerKey, matter: runId,
+      runId, codename, overall: markBand, issued, registerCounts, registerRecords, ownerChecks, auditFile, customerKey, matter: runId,
       identity: { ...identity, level: searchPolicy?.level ?? null },
       url: reportUrlFor(slug),
     }), null, 2));
