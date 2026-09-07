@@ -1,5 +1,7 @@
 # trademark-oauth-mcp-bridge
 
+## 0.3.0-beta.0
+
 ## 0.2.1
 
 ## 0.2.1-beta.2
