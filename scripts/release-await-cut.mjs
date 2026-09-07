@@ -52,7 +52,8 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 import { cutDecision, versionAtHead, tagsHere } from "./release-cut-decision.mjs";
 
 /**
- * Default bound: fifteen minutes at thirty-second steps. Both are arguments so an arm can drive the loop.
+ * Default bound: twenty-five minutes at thirty-second steps. Both are arguments so an arm can drive
+ * the loop.
  *
  * TWENTY-FIVE, RAISED FROM FIFTEEN (tracker issue 247), because this waits for the version pull
  * request's OWN CI and that is what it must clear. Measured over the first three cuts, the wait held
@@ -86,9 +87,10 @@ export const MIN_JOB_MARGIN_MS = 5 * 60 * 1000;
  * The bound, overridable for one caller only: the dry-run rehearsal.
  *
  * A rehearsal must exercise this path — a step nobody rehearses is a step that first runs for real on
- * the day it matters — but it has nothing to wait FOR, and fifteen minutes of polling to establish that
- * is fifteen minutes of a runner held for no answer. `awaitCut` asks before its first sleep, so a bound
- * of 0 does exactly one read and returns, which is the whole of what a rehearsal needs to prove.
+ * the day it matters — but it has nothing to wait FOR, and twenty-five minutes of polling to establish
+ * that is twenty-five minutes of a runner held for no answer. `awaitCut` asks before its first sleep,
+ * so a bound of 0 does exactly one read and returns, which is the whole of what a rehearsal needs to
+ * prove.
  *
  * REFUSES A VALUE IT CANNOT READ rather than falling back to the default. A typo here would silently
  * restore the full wait on the rehearsal, or — worse in the other direction — a real run would take a
