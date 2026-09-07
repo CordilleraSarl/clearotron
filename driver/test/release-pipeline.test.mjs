@@ -48,6 +48,27 @@ function releaseJobs(workflow) {
   return jobs.split("\n").filter((l) => /^  [a-z][a-z-]*:$/.test(l)).map((l) => l.trim().replace(/:$/, ""));
 }
 
+/**
+ * The same YAML with its comment lines removed — what the runner actually executes.
+ *
+ * EVERY ARM ASSERTING WHAT A JOB DOES WANTS THIS, NOT THE RAW TEXT (tracker issue 298). The workflow's
+ * comments are long by design and they name the scripts, jobs and settings they discuss, so a raw-text
+ * assertion is answered by prose. It fails in both directions and both were live here:
+ *
+ *   · an arm requiring a name found it in a comment and stayed GREEN after the step was deleted;
+ *   · three arms requiring a name to be ABSENT, or to come after another, went RED when a comment
+ *     mentioned it — a correct workflow, reddened by documenting it.
+ *
+ * The second kind is worse than it looks. It does not just cost a cycle: it teaches whoever hits it that
+ * the way to get green is to say less in the comments of the one file whose comments are load-bearing.
+ *
+ * This was already the house habit — seven arms hand-rolled this exact filter before it had a name.
+ * Having a name is what lets the next arm find it.
+ */
+function executableText(yaml) {
+  return yaml.split("\n").filter((l) => !/^\s*#/.test(l)).join("\n");
+}
+
 /** A tree that satisfies the completeness check, so each arm can break exactly one thing about it. */
 function completeTree() {
   const dir = mkdtempSync(join(tmpdir(), "release-complete-"));
@@ -175,7 +196,7 @@ test("tracker 230 a pre-release goes to `beta` and a stable to `latest` — the 
   // COMMENTS DROPPED FIRST. The workflow explains the old form in prose right beside the new one, and an
   // arm that reads the whole file refuses the explanation — the same way an earlier arm here matched
   // `/PAT/i` against `--pack-destination`. A guard that fires on ordinary English is a guard people delete.
-  const executable = workflow.split("\n").filter((l) => !/^\s*#/.test(l)).join("\n");
+  const executable = executableText(workflow);
   assert.ok(!/DIST_TAG" != "latest"/.test(executable),
     "the GitHub release's prerelease flag is derived from the CHANNEL again, so a beta on `latest` goes "
     + "up as the stable release");
@@ -583,19 +604,27 @@ test("tracker 97 the pipeline asks whether the version pull request's checks sta
   // endpoints — `checks: read` for `commits/{sha}/check-runs`, `actions: read` for `actions/runs`, which
   // is the only one that carries `action_required`. The step would fail loudly rather than pass
   // vacuously, but it would fail on every push, and only on main.
-  const versionJob = workflow.slice(workflow.indexOf("  version:"), workflow.indexOf("  publish:"));
+  // THE VERSION JOB, NOT FOUR OF THEM (tracker issue 298). This sliced from `version:` to `publish:`,
+  // which spans `stranded`, `pending` and `awaited` as well — so a permission granted by any of
+  // them answered a question asked about this one.
+  const versionJob = jobText("version");
   // AND NOT `administration: read`, which is not a permission a job may request. Asking for it does not
   // fail the job — GitHub refuses to parse the whole workflow, and reports it as a run named after the
   // file with no jobs and no log. On main that would have stopped every release with nothing legible to
   // say why. The policy read is best-effort instead, and fails soft.
-  const executableJob = versionJob.split("\n").filter((l) => !/^\s*#/.test(l)).join("\n");
+  const executableJob = executableText(versionJob);
   assert.ok(!/administration:/.test(executableJob),
     "the version job asks for `administration` scope, which GitHub does not accept in a job's "
     + "permissions — the whole workflow becomes unparseable and stops running");
-  for (const scope of ["checks: read", "actions: read"]) {
-    assert.ok(versionJob.includes(scope),
-      `the version job does not grant \`${scope}\`, so the step that reads whether its checks started `
-      + "gets a 403 — and naming any permission sets every unnamed one to `none`");
+  // OFF THE EXECUTABLE TEXT, AND `write` SATISFIES `read` (tracker issue 298). This read the raw job
+  // and asked for the literal `actions: read`, which appears in this job ONLY in the comment above —
+  // the job grants `actions: write`, a superset. So the check was answered by prose and would have
+  // stayed green with the permission deleted outright, on a job where an unnamed permission is
+  // `none`. It is the same defect the line above it had already been fixed for.
+  for (const scope of ["checks", "actions"]) {
+    assert.match(executableJob, new RegExp(`^\\s+${scope}: (read|write)\\s*(#.*)?$`, "m"),
+      `the version job does not grant \`${scope}\` read or write, so the step that reads whether its `
+      + "checks started gets a 403 — and naming any permission sets every unnamed one to `none`");
   }
   // THE AUTO-MERGE WRITES ITS OWN MESSAGE. Left to GitHub's default, the squash headline gains `(#23)` —
   // the bare `#NNN` this project bans from commit messages, put into public history by our own
@@ -629,7 +658,7 @@ test("tracker 97 the pipeline asks whether the version pull request's checks sta
   assert.match(ci, /^  workflow_dispatch:$/m, "ci.yml no longer accepts a dispatch, so the version pull request cannot check itself");
   // Comments dropped, for the fifth time in this file: ci.yml now EXPLAINS in prose that its jobs are
   // ungated, and an arm reading the whole file refuses the sentence saying the thing it wants.
-  const ciExecutable = ci.split("\n").filter((l) => !/^\s*#/.test(l)).join("\n");
+  const ciExecutable = executableText(ci);
   assert.ok(!/github\.event_name/.test(ciExecutable),
     "a job in ci.yml is now gated on the event, so a dispatched run may not produce every required check");
 
@@ -818,7 +847,7 @@ test("tracker 97 a version that merged itself still publishes, because that merg
 
   // AND IT IS STILL NOT A REHEARSAL. A scheduled run publishes for real; only `workflow_dispatch` is dry.
   const gate = workflow.slice(workflow.indexOf('id: what'), workflow.indexOf("- run: npm run build:ui"));
-  const dryLines = gate.split("\n").filter((l) => !/^\s*#/.test(l) && /dry_flag=--dry-run/.test(l));
+  const dryLines = executableText(gate).split("\n").filter((l) => /dry_flag=--dry-run/.test(l));
   assert.equal(dryLines.length, 1, "more than one path sets the dry-run flag, or none does");
   const dispatchArm = gate.indexOf('"workflow_dispatch"');
   const scheduleArm = gate.indexOf('"schedule"');
@@ -838,7 +867,7 @@ test("tracker 97 the action and the CLI agree about what a pre-release has alrea
   // COMMENTS DROPPED FIRST, and this file has now made the same mistake four times in a day: the
   // workflow explains each rename in prose beside the code, so an arm reading the whole file passes on
   // its own explanation and reports a change that is not there.
-  const executable = workflow.split("\n").filter((l) => !/^\s*#/.test(l)).join("\n");
+  const executable = executableText(workflow);
 
   // PINNED TO A COMMIT. `v1` and `v2` are BRANCHES on that repository — there is no tag `v1` at all — so
   // a floating ref is whatever was last pushed to it, on the step that opens a pull request with a token.
@@ -1010,7 +1039,7 @@ test("208 the wait rides the run a PERSON started, and the dead trigger is gone"
   const version = jobText("version");
   assert.match(version, /pr_number: \$\{\{ steps\.changesets\.outputs\.pr-number \}\}/,
     "the version job does not report the pull request it cut, so nothing downstream can wait for it");
-  assert.ok(!/release-await-cut\.mjs/.test(version),
+  assert.ok(!/release-await-cut\.mjs/.test(executableText(version)),
     "the wait is back inside the version job, where it cannot arm on a push that also publishes a stranded version");
 });
 
@@ -1028,7 +1057,11 @@ test("208 the job's budget can contain its own longest step", () => {
   const version = jobText("version");
   const budget = Number(/timeout-minutes:\s*(\d+)/.exec(version)?.[1]);
   assert.ok(Number.isFinite(budget), "the version job declares no timeout — this arm could not look");
-  assert.match(version, /release-version-pr-checks\.mjs/,
+  // EXECUTABLE TEXT AND THE RUN STEP, NOT THE BARE NAME (tracker issue 298). This asked for the
+  // filename anywhere in the job's raw text, so a comment naming the script answered it and the arm
+  // stayed green with the step deleted — proven by planting exactly that. The sibling arm on the
+  // `stranded` detector already anchored on the run step; this one now matches it.
+  assert.match(executableText(version), /run: node scripts\/release-version-pr-checks\.mjs/,
     "the version job no longer runs the wait this arm is about — check which budget now bounds it");
   assert.ok(budget * 60_000 > CHECKS_WINDOW_MS + CHECKS_JOB_MARGIN_MS,
     `the version job is capped at ${budget} minutes; its own wait for the checks to start is `
@@ -1158,7 +1191,11 @@ test("229 the detector SAYS SO — reachable is not the same as heard", () => {
 test("229 the cut decision is recorded BEFORE the gate that can fail", () => {
   // Order is the fix. The decision that notices a stranded cut used to run after the checks gate, so a
   // gate failure meant it was never even asked.
-  const version = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  version:"), RELEASE_YML.indexOf("\n  stranded:"));
+  // ORDER IS A CLAIM ABOUT STEPS, so it is read off the executable text (tracker issue 298). On the
+  // raw text a comment mentioning the gate ahead of the step reverses this comparison and reds a
+  // workflow whose order is correct.
+  const version = executableText(
+    RELEASE_YML.slice(RELEASE_YML.indexOf("\n  version:"), RELEASE_YML.indexOf("\n  stranded:")));
   const cutAt = version.indexOf("id: cut");
   const gateAt = version.indexOf("release-version-pr-checks.mjs");
   assert.ok(cutAt > 0 && gateAt > 0, "one of the two steps is gone — this arm could not look");
@@ -1238,7 +1275,7 @@ test("208 the wait is its own job, and it arms on the cut that can actually merg
     + "because a push routinely publishes a stranded version and cuts a new one in the same run");
   // AND IT IS NOT STILL SITTING IN THE version JOB. Two waits would be two answers to one question.
   const version = jobText("version");
-  assert.ok(!/release-await-cut\.mjs/.test(version),
+  assert.ok(!/release-await-cut\.mjs/.test(executableText(version)),
     "the version job still runs the wait, so a push has two of them and they can disagree");
 });
 
@@ -1367,7 +1404,7 @@ test("208 an unreadable wait budget refuses rather than guessing in either direc
 test("208 no job output is read through a hyphenated name", () => {
   // `needs.await-the-cut.outputs.cut` does not read an output: the expression parser takes the hyphens
   // as subtraction, the condition never equals 'true', and the job it guards silently never runs.
-  const executable = RELEASE_YML.split("\n").filter((l) => !/^\s*#/.test(l)).join("\n");
+  const executable = executableText(RELEASE_YML);
   const bad = [...executable.matchAll(/needs\.([A-Za-z0-9_]*-[A-Za-z0-9_-]*)\./g)].map((m) => m[1]);
   assert.deepEqual(bad, [], `these job outputs are read through a hyphenated name and evaluate to nothing: ${bad.join(", ")}`);
 });
@@ -1843,7 +1880,7 @@ test("238 planted: a refusal that only checks for emptiness is caught", () => {
 // RUNS are two statements, not one accident.
 test("245 no job checks out a moving branch name and then runs scripts from it", () => {
   const yml = RELEASE_YML;
-  const lines = yml.split("\n").filter((l) => !/^\s*#/.test(l));
+  const lines = executableText(yml).split("\n");
   const moving = lines.filter((l) => /^\s+ref:\s*main\s*$/.test(l));
   assert.deepEqual(moving, [],
     "`ref: main` re-resolves at checkout time and, on a dispatch, is not the ref under review. Pin to "
