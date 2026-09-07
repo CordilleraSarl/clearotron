@@ -242,7 +242,7 @@ test("tracker 97 the branch is checked explicitly, because these guards are the 
   for (const [what, re] of [
     ["the event", /github\.event_name.*=.*"push"/],
     ["the repository", /github\.repository == 'CordilleraSarl\/clearotron'/],
-    ["the branch", /refs\/heads\/main\|refs\/tags\/v\*/],
+    ["the branch", /refs\/heads\/main\) ;;/],
     ["the version, from the commit", /release-cut-decision\.mjs/],
   ]) {
     assert.match(workflow, re, `the publish path no longer checks ${what}`);
@@ -654,7 +654,7 @@ test("tracker 97 the pipeline asks whether the version pull request's checks sta
   assert.ok(push > -1, "the push arm of the publish gate is gone");
   const closes = lines.findIndex((l, i) => i > push && l.trim() === "fi" && indent(i) === opens);
   assert.ok(closes > -1, "the event conditional in the publish gate no longer closes where it opened");
-  const branchCase = lines.findIndex((l) => /refs\/heads\/main\|refs\/tags\/v\*/.test(l));
+  const branchCase = lines.findIndex((l) => /refs\/heads\/main\) ;;/.test(l));
   assert.ok(branchCase > -1, "the explicit branch check is gone");
   assert.ok(push < branchCase && branchCase < closes,
     "the branch check no longer sits inside the push arm, so a dispatched rehearsal now fails instead of rehearsing");
@@ -1258,7 +1258,7 @@ test("208 the second publish proves its OWN bytes — it does not reuse the firs
     ["proves a stranger's install", /release-install-check\.mjs|npm install clearotron/],
     ["publishes with provenance", /npm publish .*--provenance/],
     ["derives the channel rather than defaulting", /release-dist-tag\.mjs/],
-    ["checks the branch it publishes from", /refs\/heads\/main\|refs\/tags\/v\*/],
+    ["checks the branch it publishes from", /refs\/heads\/main\) ;;/],
   ]) assert.match(second, pattern, `the second publish no longer ${what}`);
 });
 
@@ -1539,17 +1539,25 @@ test("230 every job that publishes carries the tag/release step, and there is mo
   for (const [name, body] of PUBLISHING) tagStepScript(body, name);
 });
 
-test("230 a pre-release is tagged and yields no GitHub release entry", () => {
+// THIS TEST ASSERTED THE OPPOSITE UNTIL 2026-09-07, and the reversal is deliberate (tracker issue 264,
+// reversing his 2026-09-06 ruling). It read "a pre-release is tagged and yields no GitHub release
+// entry". Left as it was, it would hold the code to a rule that no longer stands — which is why it is
+// rewritten here rather than deleted: the next reader needs to see that the behaviour flipped
+// deliberately, not that a test quietly went missing.
+test("264 a pre-release is tagged AND gets an entry marked Pre-release", () => {
   for (const [name, body] of PUBLISHING) {
     const run = driveTagStep({ script: tagStepScript(body, name), version: "9.9.9-beta.3", prerelease: "true" });
-    assert.ok(!/release create/.test(run.log),
-      `${name}: a pre-release wrote a GitHub release entry. The Releases page is what a person opens to `
-      + `decide what to install, and it carries stable versions only.\n${run.log}`);
     assert.match(run.log, /api repos\/CordilleraSarl\/clearotron\/git\/refs .*refs\/tags\/v9\.9\.9-beta\.3/,
       `${name}: the pre-release was not tagged. The tag is what tells the next run this version is `
       + `already published — without it the pipeline cuts it again, forever.\n${run.log}`);
     assert.match(run.log, /-f sha=[0-9a-f]{40}/,
       `${name}: the tag was written at no resolvable commit\n${run.log}`);
+    assert.match(run.log, /release create v9\.9\.9-beta\.3 .*--prerelease/,
+      `${name}: a beta got no entry, or got one that is not marked as a pre-release. Unmarked is worse `
+      + `than absent: GitHub shows the latest NON-prerelease as the release, so an unmarked beta `
+      + `displaces the stable somebody came for.\n${run.log}`);
+    assert.equal(run.notesFile, `${KNOWN_NOTES}\n`,
+      `${name}: the pre-release entry was created from notes that are not the ones the generator produced`);
   }
 });
 
@@ -1581,7 +1589,10 @@ test("230 an existing beta tag does not stop the stable that follows it from bei
   }
 });
 
-test("230 the same version is not tagged twice", () => {
+// THE TAG AND THE ENTRY ARE TWO QUESTIONS NOW, and this test is why the step asks them separately.
+// Every beta cut before 2026-09-07 has a tag and no entry, so a step that exited on seeing the tag would
+// leave those betas permanently unlisted. The no-double-tag half is unchanged.
+test("264 an already-tagged pre-release is not tagged again, and still gets its entry", () => {
   for (const [name, body] of PUBLISHING) {
     const run = driveTagStep({
       script: tagStepScript(body, name),
@@ -1590,12 +1601,13 @@ test("230 the same version is not tagged twice", () => {
       existingTagRef: "refs/tags/v9.9.9-beta.4",
     });
     assert.ok(!/-f ref=/.test(run.log), `${name}: a tag that already exists was written again\n${run.log}`);
-    assert.ok(!/release create/.test(run.log),
-      `${name}: an already-tagged pre-release fell through to the release-entry path\n${run.log}`);
     // NOT MERELY THE ABSENCE OF A SECOND TAG — a job with no pre-release path at all writes no tag
     // either, and would read as a pass here. This is the step SAYING it looked and found one.
     assert.match(run.out, /The tag v9\.9\.9-beta\.4 already exists\./,
       `${name}: nothing reported an existing tag, so the absence of a second one proves nothing\n${run.out}`);
+    assert.match(run.log, /release create v9\.9\.9-beta\.4 .*--prerelease/,
+      `${name}: an existing tag stopped the entry being written. A beta cut before the ruling changed has `
+      + `a tag and no entry, and this is the path that gives it one.\n${run.log}`);
   }
 });
 
@@ -1860,4 +1872,130 @@ test("245 the jobs that ASK about main name main as the subject, so the pin did 
     + "deliberately different — it decides about the commit that was pushed.");
   assert.match(yml, /CLEAROTRON_CUT_REF:\s*\$\{\{\s*github\.sha\s*\}\}/,
     "and the version job still decides about the pushed commit, which is its own correct subject");
+});
+
+// ── tracker issue 264: a beta is cut on demand, and a merge publishes nothing ─────────────────────
+//
+// The cadence is the whole subject here. Before this, turning on auto-merge for the version pull
+// request happened on every push, so every merge cut and published a beta. These tests hold the three
+// properties that replaced it: a merge publishes nothing, one dispatch cuts one beta, and a dispatch
+// with nothing to cut refuses and says why.
+//
+// Each one is checked against a mutated copy of the workflow as well as the real one. A test that only
+// passes on the current file cannot tell a working check from one that stopped looking.
+
+/** One job's block, by name, sliced the same way the publish guard slices them. */
+function jobBlock(name) {
+  const jobs = RELEASE_YML.slice(RELEASE_YML.indexOf("\njobs:"));
+  const starts = [...jobs.matchAll(/^ {2}([A-Za-z_][A-Za-z0-9_-]*):$/gm)];
+  const i = starts.findIndex((m) => m[1] === name);
+  assert.ok(i >= 0, `the workflow has no job named ${name} — this test cannot look at what it is about`);
+  const to = i + 1 < starts.length ? starts[i + 1].index : jobs.length;
+  return jobs.slice(starts[i].index, to);
+}
+
+/** The `on:` section alone: `jobs:` has keys that look like triggers and vice versa. */
+function triggers() {
+  return RELEASE_YML.slice(RELEASE_YML.indexOf("\non:"), RELEASE_YML.indexOf("\nconcurrency:"));
+}
+
+test("264 the dispatch offers two modes and defaults to the one that cannot publish", () => {
+  const on = triggers();
+  assert.match(on, /workflow_dispatch:\s*\n\s+inputs:\s*\n\s+cut:/,
+    "the release can no longer be started on demand: the dispatch carries no `cut` input");
+  assert.match(on, /default:\s*rehearse/,
+    "the dispatch defaults to something other than `rehearse`. Whoever opens the Run workflow dialog and "
+    + "presses the button without reading it would publish a release.");
+  for (const option of ["rehearse", "beta"]) {
+    assert.match(on, new RegExp(`^\\s+- ${option}$`, "m"), `the \`cut\` input offers no \`${option}\` option`);
+  }
+});
+
+test("264 a merge to main publishes nothing, because auto-merge is turned on only by a dispatched cut", () => {
+  const version = jobBlock("version");
+  const step = version.slice(version.indexOf("- name: Let it merge itself once its checks pass"));
+  const condition = step.slice(step.indexOf("if:"), step.indexOf("\n        env:"));
+  assert.match(condition, /inputs\.cut == 'beta'/,
+    "the version pull request is set to merge itself without asking whether this run is a requested cut. "
+    + "That is the behaviour tracker issue 264 removed: it publishes a pre-release on every merge.\n"
+    + condition);
+  assert.match(condition, /github\.event_name == 'workflow_dispatch'/,
+    `the merge step does not require a dispatch, so a push could still reach it\n${condition}`);
+});
+
+test("264 mutated: a merge step that lost its dispatch condition is caught", () => {
+  // The mutation is the exact regression this replaced: the condition the file carried before.
+  const before = "if: steps.changesets.outputs.pr-number != ''";
+  const passes = (text) => /inputs\.cut == 'beta'/.test(text);
+  assert.ok(!passes(before),
+    "the check above would pass on the pre-2026-09-07 condition, so it cannot see the regression it exists for");
+});
+
+test("264 a dispatched cut with nothing to cut refuses, and the message says what to do", () => {
+  const version = jobBlock("version");
+  assert.match(version, /- name: A cut needs something to cut/,
+    "a dispatched cut with no accumulated release notes would exit 0 having published nothing, which "
+    + "reads exactly like a cut that happened");
+  const step = version.slice(version.indexOf("- name: A cut needs something to cut"));
+  assert.match(step, /steps\.changesets\.outputs\.pr-number == ''/,
+    "the refusal does not key on there being no version pull request, so it cannot tell empty from full");
+  assert.match(step, /::error::/, "the refusal does not surface as an error annotation on the run");
+  assert.match(step, /\.changeset\//,
+    "the refusal does not tell the reader where a release note goes, which is the one thing they need next");
+  assert.match(step, /exit 1/, "the refusal reports and then exits 0, so the run reads as a success");
+});
+
+test("264 a rehearsal still cannot publish, and a requested cut can — in each publishing job", () => {
+  for (const [name, body] of PUBLISHING) {
+    assert.match(body, /if \[ "\$\{\{ github\.event_name \}\}" = "workflow_dispatch" \] && \[ "\$\{\{ inputs\.cut \}\}" != "beta" \]; then/,
+      `${name}: the dry-run branch does not distinguish a rehearsal from a requested cut, so either every `
+      + `dispatch publishes for real or none of them can`);
+    assert.match(body, /dry_flag=--dry-run/, `${name}: the rehearsal no longer runs npm publish with --dry-run`);
+    // The branch check is what stops a cut being dispatched from a feature branch. A rehearsal is
+    // deliberately allowed anywhere, which is only safe while it cannot publish.
+    assert.match(body, /refs\/heads\/main\) ;;/,
+      `${name}: the publish path no longer checks the branch, so a requested cut could publish from anywhere`);
+  }
+  assert.ok(PUBLISHING.length >= 2,
+    `only ${PUBLISHING.length} publishing job(s) were found; this test checks each separately and a `
+    + "count below two means the splitter stopped seeing one");
+});
+
+test("264 the wait is real on a requested cut and instant on a rehearsal", () => {
+  const awaited = jobBlock("awaited");
+  const line = awaited.split("\n").find((l) => l.includes("CLEAROTRON_RELEASE_WAIT_MS"));
+  assert.ok(line, "the wait job sets no budget, so a rehearsal would hold a runner for the full wait");
+  assert.match(line, /inputs\.cut != 'beta'/,
+    "the wait is zeroed on every dispatch, including a requested cut — so the cut would stop waiting "
+    + `before the version pull request could merge, and publish nothing\n${line}`);
+});
+
+test("264 the cron is still there, because removing it is how every release stops", () => {
+  // The cadence ruling says no scheduled beta, and the schedule cuts nothing: it asks main whether a
+  // version is sitting there untagged. Deleting it was a plausible way to read that ruling, and it
+  // would strand every release whose wait gave up.
+  assert.match(triggers(), /schedule:\s*\n\s+- cron: '\*\/5 \* \* \* \*'/,
+    "the scheduled trigger is gone. Nothing publishes a version whose wait timed out, and the version "
+    + "pull request's own merge raises no event to catch it.");
+  assert.match(jobBlock("pending"), /github\.event_name == 'schedule'/,
+    "the job the cron drives no longer answers to it");
+});
+
+test("264 pushing a tag cannot publish, because tags are also how this pipeline remembers", () => {
+  // Deleting a tag is silent. RECREATING one used to start a real release run for the version at it —
+  // and recreating a tag is exactly what you do to repair the pipeline's memory of what was released.
+  // Restoring a fact attempted a release. Three of them did, on 2026-09-07, and only the registry
+  // refusing to overwrite a published version stopped them.
+  assert.ok(!/^\s+tags:/m.test(triggers()),
+    "the release workflow runs on a tag push again. `release-cut-decision.mjs` decides whether a version "
+    + "was released by asking whether its tag exists, so with this trigger present, restoring a deleted "
+    + "tag publishes the version at it.");
+  for (const [name, body] of PUBLISHING) {
+    assert.ok(!/startsWith\(github\.ref, 'refs\/tags\/v'\)/.test(body),
+      `${name}: the job still arms on a tag ref, which it can now only reach if the trigger comes back`);
+  }
+  // AND THE PATHS THAT ONLY A TAG RUN COULD REACH ARE GONE WITH IT. A check that cannot fire reads as
+  // protection to the next person who greps for one.
+  assert.ok(!/TAG_VERSION/.test(RELEASE_YML),
+    "the tag-versus-manifest check is still here, and no run can arrive on a tag ref to exercise it");
 });

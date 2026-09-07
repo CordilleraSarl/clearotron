@@ -8,7 +8,7 @@ nothing else.
 
 ```bash
 npm install -g clearotron          # stable — the tested one
-npm install -g clearotron@beta     # newest — every merge, minutes after it lands
+npm install -g clearotron@beta     # newest — cut when there is something worth testing
 ```
 
 ## What each channel promises
@@ -16,7 +16,7 @@ npm install -g clearotron@beta     # newest — every merge, minutes after it la
 | | `latest` (stable) | `beta` |
 |---|---|---|
 | **Version looks like** | `0.2.0` | `0.2.1-beta.4` |
-| **Cut when** | a beta has passed a full clearance run and a from-scratch install by somebody who has never seen the product, and the owner says go | every merge to `main`, automatically |
+| **Cut when** | a beta has passed a full clearance run and a from-scratch install by somebody who has never seen the product, and the owner says go | when a change lands that is worth testing, or while a stable is being prepared |
 | **Promises** | it installed and ran a real clearance end to end before it was published | it built, and the automated suite passed |
 | **Use it if** | you are running this for real work | you want a fix that landed today, or you are helping test |
 
@@ -35,8 +35,10 @@ suggest for yours.
 
 ## How often
 
-A stable is cut when a beta earns it, which we aim at roughly weekly. Betas arrive whenever something
-merges — several a day when a round is running, none for a day when nothing lands.
+A stable is cut when a beta earns it, which we aim at roughly weekly. **Betas are cut deliberately, days
+apart** — when a change lands that somebody should test, or while a stable is being prepared. They are not
+published on every merge, so `beta` is a version somebody chose to publish rather than whatever merged
+last. Some stables have several betas before them and some have none.
 
 Numbering follows the change, not the calendar: `0.2.x` for fixes, `0.3.0` when a feature lands, `1.0`
 when the hit-list redesign ships.

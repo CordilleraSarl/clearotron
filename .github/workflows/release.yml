@@ -5,9 +5,11 @@
 #
 # TWO ACTS, AND ONLY ONE OF THEM IS A PERSON'S. Every user-visible pull request leaves a note in
 # `.changeset/`. This workflow keeps a standing pull request that turns those notes into the next version
-# number and the plain-English changelog; merging it is the act of cutting a release, and it is the one
-# decision the owner makes per release. Everything after the merge — the tag, the GitHub release, the
-# publish to npm — happens here.
+# number and the plain-English changelog; merging it is the act of cutting a release. Everything after
+# the merge — the tag, the GitHub release, the publish to npm — happens here.
+#
+# WHO PERFORMS THAT ACT DEPENDS ON THE CHANNEL. A beta is a maintainer's call, dispatched on demand. A
+# stable is the owner's word: it exits pre mode and goes to `latest` (tracker issue 230, unchanged).
 #
 # HOW IT PUBLISHES, AND WHY THERE IS NO TOKEN. npm Trusted Publishing: the registry is configured to
 # trust this repository, this workflow file, and the `npm` environment, and npm exchanges the run's OIDC
@@ -21,19 +23,46 @@
 # act under the owner's 2026-08-26 ruling. Two rulings moved it — 2026-09-04, tag-triggered publish from
 # CI approved; 2026-09-05, Trusted Publishing configured for this repository.)
 #
-# WHAT FIRES THE PUBLISH. A tag pushed by a person, or a version this run just cut. It is deliberately
-# NOT "the tag the release step creates": a tag pushed with the built-in GITHUB_TOKEN starts no new
-# workflow run, so a pipeline that waited for one would cut versions forever and never publish. So the
-# publish job runs in the SAME run that cut the version.
+# WHAT FIRES THE PUBLISH, AND WHAT NO LONGER DOES (tracker issue 264, owner's ruling 2026-09-07).
+# A MERGE PUBLISHES NOTHING. A beta is cut on demand, by a maintainer, at the natural points — after a
+# bundle lands that a tester should see, or while a stable is being prepared — days apart, never hours.
+# That is `workflow_dispatch` with `cut: beta`. Everything else fires a publish exactly as before: a tag
+# pushed by a person, and the cron underneath.
 #
-# `workflow_dispatch` exists to rehearse all of this and CANNOT publish: the publish step is a dry run on
-# that event and the guard step below refuses a real publish on anything but a push.
+# WHY THE CADENCE CHANGED. Every merge used to cut and publish a beta, because this job turned on
+# auto-merge for the version pull request on every push. Measured against openclaw on 2026-09-07 — 252
+# npm versions, 240 GitHub releases, and betas before each stable running 2, 0, 0, 5, 10, 0, 1, 0 — the
+# difference between us and the practice we align to was never the naming or the tags. It was the
+# cadence: they cut deliberately, days apart, while a release is being prepared.
+#
+# THE PUBLISH STILL RUNS IN THE SAME RUN THAT CUT THE VERSION. It is deliberately NOT "the tag the
+# release step creates": a tag pushed with the built-in GITHUB_TOKEN starts no new workflow run, so a
+# pipeline that waited for one would cut versions forever and never publish.
+#
+# `workflow_dispatch` WITHOUT `cut: beta` IS STILL THE REHEARSAL and still cannot publish: the publish
+# step runs `--dry-run` on that input, from any branch. A dispatched CUT is held to `main` by the branch
+# check in the same step, because it can publish.
 name: Release
 
 on:
+  # A TAG PUSH IS NOT A PUBLISH PATH, AND MUST NOT BECOME ONE AGAIN (tracker issue 264).
+  #
+  # `tags: ['v*']` was here until 2026-09-07 and it made pushing a tag publish the version at it. That is
+  # dangerous in this pipeline specifically, because TAGS ARE ALSO ITS MEMORY: `release-cut-decision.mjs`
+  # decides whether a version has been released by asking whether its tag exists. Restoring a deleted tag
+  # — putting a fact back — therefore ATTEMPTED A RELEASE.
+  #
+  # That is not hypothetical. On 2026-09-07 three tags were deleted by hand while the manifest still named
+  # the newest of them, which left the pipeline reading that version as never released. Recreating the
+  # three tags fixed that and started three real publish runs, one per tag. All three built the package,
+  # passed every guard, and were stopped by the registry alone: "Cannot publish over previously published
+  # version". The registry refused because those versions had just been unpublished — timing, not a guard
+  # of ours. Had the versions still been live, the publishes would have succeeded.
+  #
+  # There is nothing left for the trigger to do. A release is cut on demand by dispatch, and the cron
+  # underneath catches a cut whose wait gave up. Both are in the same file, below.
   push:
     branches: [main]
-    tags: ['v*']
   # WHY A CRON IS HERE, AND WHY DELETING IT STOPS EVERY RELEASE. The version pull request merges itself,
   # and GitHub performs that merge with the built-in `GITHUB_TOKEN` — a push made with that token starts
   # NO workflow run. So the merge that cuts the version fires nothing at all: no CI, no release, no
@@ -71,11 +100,28 @@ on:
   # THIS CRON REMAINS THE FLOOR UNDER ALL OF IT, and deleting it is still how every release stops. It
   # catches what the wait gives up on: a version branch whose checks went red and merged an hour later, a
   # run cancelled mid-wait, anything that merges outside the fifteen minutes.
+  #
+  # IT DOES NOT CUT ANYTHING, AND THAT IS WHY IT SURVIVES tracker issue 264's "no scheduled beta". This
+  # asks main one question — is there a version here with no tag — and a version only reaches main when a
+  # dispatched cut merged the version pull request. With no cut dispatched there is nothing for it to
+  # find, which is the acceptance criterion "a night with no cut publishes nothing" holding by
+  # construction rather than by a second switch.
   schedule:
     - cron: '*/5 * * * *'
   #
-  # `workflow_dispatch` is UNTOUCHED and is still a rehearsal.
+  # `workflow_dispatch` IS HOW A BETA IS CUT (tracker issue 264, owner's ruling 2026-09-07), and it is
+  # still the rehearsal. Two modes, and the default is the old behaviour: `rehearse` dry-runs everything
+  # exactly as before, `beta` cuts one pre-release on demand. Nothing publishes on a merge any more, so
+  # this input is the only thing that starts a release during the pre-release phase.
   workflow_dispatch:
+    inputs:
+      cut:
+        description: Rehearse the pipeline, or cut one beta
+        type: choice
+        default: rehearse
+        options:
+          - rehearse
+          - beta
 
 concurrency:
   group: release-${{ github.ref }}
@@ -97,8 +143,16 @@ env:
 
 jobs:
   version:
-    name: Open the version pull request, or record the version this push cut
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'CordilleraSarl/clearotron'
+    name: Open the version pull request, or cut the beta this dispatch asked for
+    # A PUSH KEEPS THE VERSION PULL REQUEST CURRENT; A DISPATCH IS WHAT MERGES IT (tracker issue 264).
+    # Both events run this job and they leave by different doors: the push updates the standing pull
+    # request and stops there, the `beta` dispatch updates it and then turns on auto-merge. The rehearsal
+    # does not reach this job at all, which is what it has always done.
+    if: >-
+      github.repository == 'CordilleraSarl/clearotron'
+      && ((github.event_name == 'push' && github.ref == 'refs/heads/main')
+          || (github.event_name == 'workflow_dispatch' && inputs.cut == 'beta'
+              && github.ref == 'refs/heads/main'))
     runs-on: ubuntu-latest
     # 15 OF THESE MINUTES CAN BE THE WAIT BELOW (tracker issue 208), so this is not the 20 it was: a
     # budget that cannot contain its own longest step cancels the job at the moment it was about to
@@ -222,8 +276,23 @@ jobs:
       #
       # The version comes from the WORKING TREE here, and that is correct where reading it for the cut
       # decision is not: `changeset version` has just written it, and this commit is the one carrying it.
+      # NOTHING TO CUT IS A REFUSAL WITH A REASON, NOT A QUIET SUCCESS (tracker issue 264's third
+      # acceptance criterion). `changeset version` opens no pull request when no release notes have
+      # accumulated, so an empty `pr-number` on a `beta` dispatch means the last cut already carries
+      # everything on main. Saying so is the whole point: a dispatch that published nothing and exited 0
+      # would read as a cut that happened.
+      - name: A cut needs something to cut
+        if: github.event_name == 'workflow_dispatch' && inputs.cut == 'beta' && steps.changesets.outputs.pr-number == ''
+        run: |
+          echo "::error::Nothing to cut: no release notes have accumulated since the last beta, so there is no version pull request to merge. Land a change carrying a note in .changeset/, then dispatch again."
+          exit 1
+
+      # ONLY ON A DISPATCHED CUT (tracker issue 264). This step used to run on every push, which is what
+      # made a beta come out of every merge. The pull request still opens and updates on every push — it
+      # is the standing answer to "what would the next version be" — and it merges when a maintainer asks
+      # for a cut, days apart, never on its own.
       - name: Let it merge itself once its checks pass
-        if: steps.changesets.outputs.pr-number != ''
+        if: github.event_name == 'workflow_dispatch' && inputs.cut == 'beta' && steps.changesets.outputs.pr-number != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -580,7 +649,7 @@ jobs:
         env:
           # A rehearsal has nothing coming, so it reads once and reports. Set ONLY here — a real run
           # takes the file's own fifteen minutes.
-          CLEAROTRON_RELEASE_WAIT_MS: ${{ github.event_name == 'workflow_dispatch' && '0' || '' }}
+          CLEAROTRON_RELEASE_WAIT_MS: ${{ github.event_name == 'workflow_dispatch' && inputs.cut != 'beta' && '0' || '' }}
         run: node scripts/release-await-cut.mjs
 
   publish:
@@ -593,8 +662,7 @@ jobs:
     if: >-
       !failure() && !cancelled()
       && github.repository == 'CordilleraSarl/clearotron'
-      && (startsWith(github.ref, 'refs/tags/v')
-          || github.event_name == 'workflow_dispatch'
+      && ((github.event_name == 'workflow_dispatch' && inputs.cut != 'beta')
           || needs.version.outputs.cut == 'true'
           || needs.pending.outputs.cut == 'true')
     runs-on: ubuntu-latest
@@ -638,7 +706,11 @@ jobs:
         run: node scripts/release-publish-guard.mjs
 
       # THE REFUSALS, ALL IN ONE PLACE AND BEFORE ANYTHING IS BUILT.
-      #  · a real publish happens on a push and nowhere else; `workflow_dispatch` is a rehearsal.
+      #  · a real publish happens on a push, on the cron, or on a `workflow_dispatch` whose `cut` input
+      #    is `beta` — the on-demand cut tracker issue 264 ruled in. Every other dispatch is still a
+      #    rehearsal and still runs `npm publish --dry-run`. THE BRANCH CHECK BELOW IS WHAT HOLDS A
+      #    DISPATCHED CUT TO `main`: a rehearsal may run from any branch precisely because it cannot
+      #    publish, and a cut may not.
       #  · a tag and the manifest must name the same version. A tag is the one thing a person makes by
       #    hand, and one that disagrees with the manifest ships an artefact nobody can trace back. It
       #    refuses rather than reconciling: two spellings disagreeing means somebody's intention is
@@ -654,14 +726,15 @@ jobs:
         run: |
           set -euo pipefail
           VERSION=$(node -p "require('./package.json').version")
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.cut }}" != "beta" ]; then
             # A rehearsal, and it stays one on whatever branch it was dispatched from — that is the
             # point of being able to dispatch it. The branch check below is skipped here BECAUSE the
             # dry-run flag is already set: a rehearsal that refused to rehearse anywhere but main would
             # be a rehearsal of nothing.
             echo "This is a rehearsal: the publish step will run with --dry-run."
             echo "dry_flag=--dry-run" >> "$GITHUB_OUTPUT"
-          elif [ "${{ github.event_name }}" = "push" ] || [ "${{ github.event_name }}" = "schedule" ]; then
+          elif [ "${{ github.event_name }}" = "push" ] || [ "${{ github.event_name }}" = "schedule" ] \
+            || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             # `schedule` is a real publish, not a rehearsal: it is the path a self-merged version takes,
             # and it reaches here only when `pending` found a version on main with no tag. A scheduled
             # run's ref IS the default branch, so the branch check below holds it to the same rule.
@@ -674,25 +747,19 @@ jobs:
             # branch, a version read from the commit, and the check that it has not already been
             # released. A tag push is the other way in and is named as itself.
             case "${{ github.ref }}" in
-              refs/heads/main|refs/tags/v*) ;;
+              refs/heads/main) ;;
               *)
-                echo "::error::A release publishes from main or from a v* tag. This run is on ${{ github.ref }}."
+                echo "::error::A release publishes from main. This run is on ${{ github.ref }}."
                 exit 1
                 ;;
             esac
           else
-            echo "::error::A release publishes on a push, or on the cron that notices a self-merged cut. This run is a ${{ github.event_name }}."
+            echo "::error::A release publishes on a push, on the cron that notices a self-merged cut, or on a dispatched \`beta\` cut. This run is a ${{ github.event_name }}."
             exit 1
           fi
-          case "${{ github.ref }}" in
-            refs/tags/v*)
-              TAG_VERSION="${GITHUB_REF_NAME#v}"
-              if [ "$TAG_VERSION" != "$VERSION" ]; then
-                echo "::error::Tag ${GITHUB_REF_NAME} does not match package.json $VERSION. One of them is wrong and this cannot tell which."
-                exit 1
-              fi
-              ;;
-          esac
+          # The tag-versus-manifest check that stood here went with the tag trigger above: no run can
+          # arrive on a tag ref any more, so a check for one would be a check that cannot fire — worse
+          # than absent, because it reads as protection.
           DIST_TAG=$(node scripts/release-dist-tag.mjs "$VERSION")
           # THE CHANNEL AND THE FLAG ARE TWO QUESTIONS, and in pre mode they come apart. `0.1.1-beta.0`
           # goes to the `latest` CHANNEL by the owner's ruling, and it is still a pre-release. This was
@@ -796,12 +863,16 @@ jobs:
       # The tag and the release come AFTER the publish: a tag naming a version that is not on the
       # registry is a worse lie than a publish that is not yet tagged, and this order means the failure
       # leaves the tag unwritten rather than pointing at nothing.
-      # A PRE-RELEASE IS TAGGED AND GETS NO RELEASE ENTRY (owner's ruling, 2026-09-06). The Releases
-      # page is what somebody opens to find out which version to install, and one entry per beta
-      # buries the stable they came for. The TAG still has to land: `release-cut-decision.mjs` reads
-      # tags to decide whether a version is already published, so a beta with no tag is a version
-      # this pipeline would cut again, and again. `pre exit` folds the betas into the stable, and the
-      # stable keeps its entry and its changelog.
+      # A PRE-RELEASE IS TAGGED AND GETS A PRE-RELEASE ENTRY (owner's ruling 2026-09-07, tracker issue
+      # 264, reversing his 2026-09-06 ruling that it should get none). The objection that ruling was
+      # made on — one entry per beta buries the stable somebody came for — is answered by the flag
+      # rather than by silence: GitHub shows the latest NON-prerelease as the release, and marked
+      # pre-releases sit under it. That is what openclaw's page does with 240 entries on it, which is
+      # the practice this was aligned to.
+      #
+      # The TAG still has to land first: `release-cut-decision.mjs` reads tags to decide whether a
+      # version is already published, so a beta with no tag is a version this pipeline would cut again,
+      # and again. `pre exit` folds the betas into the stable, and the stable keeps its own entry.
       - name: Tag it, and say what changed
         if: steps.what.outputs.dry_flag == ''
         env:
@@ -823,10 +894,25 @@ jobs:
             EXISTING=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/v$VERSION" --jq '.ref' 2>/dev/null || true)
             if [ "$EXISTING" = "refs/tags/v$VERSION" ]; then
               echo "The tag v$VERSION already exists."
+            else
+              gh api "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/v$VERSION" -f sha="$TARGET" >/dev/null
+              echo "Tagged v$VERSION at $TARGET."
+            fi
+            # SEPARATE QUESTIONS, ASKED SEPARATELY. A beta cut before this change has a tag and no entry,
+            # so a run that exited as soon as it saw the tag would never give it one. The tag and the
+            # entry are checked independently for that reason.
+            if gh release view "v$VERSION" >/dev/null 2>&1; then
+              echo "The GitHub release v$VERSION already exists."
               exit 0
             fi
-            gh api "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/v$VERSION" -f sha="$TARGET" >/dev/null
-            echo "Tagged v$VERSION at $TARGET, and wrote no release entry: the Releases page carries stable versions only."
+            NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
+            if [ -n "$NOTES" ]; then
+              printf '%s\n' "$NOTES" > release-notes.md
+              gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --notes-file release-notes.md --prerelease
+            else
+              gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --generate-notes --prerelease
+            fi
+            echo "Released v$VERSION as a pre-release, marked Pre-release on the Releases page."
             exit 0
           fi
           if gh release view "v$VERSION" >/dev/null 2>&1; then
@@ -861,7 +947,8 @@ jobs:
     if: >-
       !failure() && !cancelled()
       && github.repository == 'CordilleraSarl/clearotron'
-      && (needs.awaited.outputs.cut == 'true' || github.event_name == 'workflow_dispatch')
+      && (needs.awaited.outputs.cut == 'true'
+          || (github.event_name == 'workflow_dispatch' && inputs.cut != 'beta'))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     # THIS NAME IS THE REGISTRY'S, AND IT IS ALL IT IS NOW. npm's trusted publisher for this package is
@@ -933,7 +1020,11 @@ jobs:
         run: node scripts/release-publish-guard.mjs
 
       # THE REFUSALS, ALL IN ONE PLACE AND BEFORE ANYTHING IS BUILT.
-      #  · a real publish happens on a push and nowhere else; `workflow_dispatch` is a rehearsal.
+      #  · a real publish happens on a push, on the cron, or on a `workflow_dispatch` whose `cut` input
+      #    is `beta` — the on-demand cut tracker issue 264 ruled in. Every other dispatch is still a
+      #    rehearsal and still runs `npm publish --dry-run`. THE BRANCH CHECK BELOW IS WHAT HOLDS A
+      #    DISPATCHED CUT TO `main`: a rehearsal may run from any branch precisely because it cannot
+      #    publish, and a cut may not.
       #  · a tag and the manifest must name the same version. A tag is the one thing a person makes by
       #    hand, and one that disagrees with the manifest ships an artefact nobody can trace back. It
       #    refuses rather than reconciling: two spellings disagreeing means somebody's intention is
@@ -973,14 +1064,15 @@ jobs:
         run: |
           set -euo pipefail
           VERSION=$(node -p "require('./package.json').version")
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.cut }}" != "beta" ]; then
             # A rehearsal, and it stays one on whatever branch it was dispatched from — that is the
             # point of being able to dispatch it. The branch check below is skipped here BECAUSE the
             # dry-run flag is already set: a rehearsal that refused to rehearse anywhere but main would
             # be a rehearsal of nothing.
             echo "This is a rehearsal: the publish step will run with --dry-run."
             echo "dry_flag=--dry-run" >> "$GITHUB_OUTPUT"
-          elif [ "${{ github.event_name }}" = "push" ] || [ "${{ github.event_name }}" = "schedule" ]; then
+          elif [ "${{ github.event_name }}" = "push" ] || [ "${{ github.event_name }}" = "schedule" ] \
+            || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             # `schedule` is a real publish, not a rehearsal: it is the path a self-merged version takes,
             # and it reaches here only when `pending` found a version on main with no tag. A scheduled
             # run's ref IS the default branch, so the branch check below holds it to the same rule.
@@ -993,25 +1085,19 @@ jobs:
             # branch, a version read from the commit, and the check that it has not already been
             # released. A tag push is the other way in and is named as itself.
             case "${{ github.ref }}" in
-              refs/heads/main|refs/tags/v*) ;;
+              refs/heads/main) ;;
               *)
-                echo "::error::A release publishes from main or from a v* tag. This run is on ${{ github.ref }}."
+                echo "::error::A release publishes from main. This run is on ${{ github.ref }}."
                 exit 1
                 ;;
             esac
           else
-            echo "::error::A release publishes on a push, or on the cron that notices a self-merged cut. This run is a ${{ github.event_name }}."
+            echo "::error::A release publishes on a push, on the cron that notices a self-merged cut, or on a dispatched \`beta\` cut. This run is a ${{ github.event_name }}."
             exit 1
           fi
-          case "${{ github.ref }}" in
-            refs/tags/v*)
-              TAG_VERSION="${GITHUB_REF_NAME#v}"
-              if [ "$TAG_VERSION" != "$VERSION" ]; then
-                echo "::error::Tag ${GITHUB_REF_NAME} does not match package.json $VERSION. One of them is wrong and this cannot tell which."
-                exit 1
-              fi
-              ;;
-          esac
+          # The tag-versus-manifest check that stood here went with the tag trigger above: no run can
+          # arrive on a tag ref any more, so a check for one would be a check that cannot fire — worse
+          # than absent, because it reads as protection.
           DIST_TAG=$(node scripts/release-dist-tag.mjs "$VERSION")
           # THE CHANNEL AND THE FLAG ARE TWO QUESTIONS, and in pre mode they come apart. `0.1.1-beta.0`
           # goes to the `latest` CHANNEL by the owner's ruling, and it is still a pre-release. This was
@@ -1115,12 +1201,16 @@ jobs:
       # The tag and the release come AFTER the publish: a tag naming a version that is not on the
       # registry is a worse lie than a publish that is not yet tagged, and this order means the failure
       # leaves the tag unwritten rather than pointing at nothing.
-      # A PRE-RELEASE IS TAGGED AND GETS NO RELEASE ENTRY (owner's ruling, 2026-09-06). The Releases
-      # page is what somebody opens to find out which version to install, and one entry per beta
-      # buries the stable they came for. The TAG still has to land: `release-cut-decision.mjs` reads
-      # tags to decide whether a version is already published, so a beta with no tag is a version
-      # this pipeline would cut again, and again. `pre exit` folds the betas into the stable, and the
-      # stable keeps its entry and its changelog.
+      # A PRE-RELEASE IS TAGGED AND GETS A PRE-RELEASE ENTRY (owner's ruling 2026-09-07, tracker issue
+      # 264, reversing his 2026-09-06 ruling that it should get none). The objection that ruling was
+      # made on — one entry per beta buries the stable somebody came for — is answered by the flag
+      # rather than by silence: GitHub shows the latest NON-prerelease as the release, and marked
+      # pre-releases sit under it. That is what openclaw's page does with 240 entries on it, which is
+      # the practice this was aligned to.
+      #
+      # The TAG still has to land first: `release-cut-decision.mjs` reads tags to decide whether a
+      # version is already published, so a beta with no tag is a version this pipeline would cut again,
+      # and again. `pre exit` folds the betas into the stable, and the stable keeps its own entry.
       - name: Tag it, and say what changed
         if: steps.what.outputs.dry_flag == ''
         env:
@@ -1142,10 +1232,25 @@ jobs:
             EXISTING=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/v$VERSION" --jq '.ref' 2>/dev/null || true)
             if [ "$EXISTING" = "refs/tags/v$VERSION" ]; then
               echo "The tag v$VERSION already exists."
+            else
+              gh api "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/v$VERSION" -f sha="$TARGET" >/dev/null
+              echo "Tagged v$VERSION at $TARGET."
+            fi
+            # SEPARATE QUESTIONS, ASKED SEPARATELY. A beta cut before this change has a tag and no entry,
+            # so a run that exited as soon as it saw the tag would never give it one. The tag and the
+            # entry are checked independently for that reason.
+            if gh release view "v$VERSION" >/dev/null 2>&1; then
+              echo "The GitHub release v$VERSION already exists."
               exit 0
             fi
-            gh api "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/v$VERSION" -f sha="$TARGET" >/dev/null
-            echo "Tagged v$VERSION at $TARGET, and wrote no release entry: the Releases page carries stable versions only."
+            NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
+            if [ -n "$NOTES" ]; then
+              printf '%s\n' "$NOTES" > release-notes.md
+              gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --notes-file release-notes.md --prerelease
+            else
+              gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --generate-notes --prerelease
+            fi
+            echo "Released v$VERSION as a pre-release, marked Pre-release on the Releases page."
             exit 0
           fi
           if gh release view "v$VERSION" >/dev/null 2>&1; then

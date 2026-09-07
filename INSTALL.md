@@ -115,12 +115,13 @@ Nothing here requires an agent platform or a database — reports are written to
 
 ```
 npm install -g clearotron          # stable — the tested one
-npm install -g clearotron@beta     # newest — every merge, minutes after it lands
+npm install -g clearotron@beta     # newest — cut when there is something worth testing
 ```
 
 A **stable** has run a real clearance end to end and had a from-scratch install driven by somebody who has
-never seen the product, before it was published. A **beta** is published automatically on every merge to
-`main`; it built and the suite passed, and nothing has driven a live register through it.
+never seen the product, before it was published. A **beta** is published when a change lands that is worth
+testing, or while a stable is being prepared — days apart, not on every merge; it built and the suite
+passed, and nothing has driven a live register through it.
 
 **Upgrade production to stables only.** What each channel promises and how often one is cut:
 **[docs/RELEASES.md](docs/RELEASES.md)**.

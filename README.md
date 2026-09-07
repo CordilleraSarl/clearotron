@@ -39,7 +39,8 @@ Node 22 or newer, on macOS, Linux, or Windows via WSL2. That puts `clearotron` o
 command below works in that short form.
 
 That command gives you the **stable** release — the one that has run a real clearance end to end before it
-was published. If you want the newest code instead, every merge publishes a beta within minutes:
+was published. If you want the newest code instead, a beta is published whenever there is something worth
+testing — deliberately, days apart, not on every merge:
 
 ```bash
 npm install -g clearotron@beta
