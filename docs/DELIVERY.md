@@ -53,7 +53,9 @@ both forms as defence.
 | `msgId` | string | thread with `In-Reply-To:` on the email |
 | `subject` | string | on a clearance, `<the product's own name> — <mark>` (`deliverySubject`, e.g. `Global preliminary search — NOVAPULSE`; the mark falls back to `ref`, then `matter`). On a knockout, `Knockout trademark review — <ref> (N marks)` |
 | `emailBodyHtml` | string | the FULL email body, one self-contained inline-HTML fragment — send **verbatim**, do not re-encode; report + audit links are already inside |
-| `whatsappTo` | string \| null | optional chat recipient |
+| `whatsappTo` | string \| null | the chat recipient: **the person who requested the run**, when a number is held for them. `null` when none is — see `whatsappToReason` |
+| `whatsappToReason` | string \| null | why `whatsappTo` is null. Present only when it is. The packet states the gap rather than quietly routing the notice somewhere else |
+| `whatsappCcOperator` | string \| null | the operator's own copy of the same notice, from the agent roster. `null` when the deployment has switched it off. Independent of `whatsappTo`: either, both or neither may be present |
 | `whatsappText` | string | ready-to-send completion line (includes every report URL) |
 | `url` | string \| null | the run's published report URL — **null for a multi-name knockout**, which has no single report. See below |
 | `reports` | `[{mark, url}]` | one entry per published document, one per name. Written by the KNOCKOUT lane only — **absent** on a clearance packet, whose single document is`url` |
@@ -145,7 +147,9 @@ The filesystem loop below remains equivalent for integrators that do have data-p
    for `state: "delivered", sendPending: true` (backstop).
 2. **Send**: for `delivered`, email `emailBodyHtml` verbatim to the requester behind
    `forwarder`/`forwarderEmail`, `Subject:` = `subject`, `In-Reply-To:` = `msgId`; optionally
-   chat `whatsappText` to `whatsappTo`. For every other kind, `text` is ready to route as-is.
+   chat `whatsappText` to `whatsappTo` and, separately, to `whatsappCcOperator` when present. A null
+   `whatsappTo` with a `whatsappToReason` means nobody is reachable for that requester — surface it, do
+   not redirect the notice to the operator instead. For every other kind, `text` is ready to route as-is.
 3. **Write back**: create a `.sent` marker in the (archived) run dir after a successful send —
    the idempotency guard that prevents double-sends if markers fire twice. Then clear the
    consumed `.pending` files. The MCP verb writes it as JSON

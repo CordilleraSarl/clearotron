@@ -4560,3 +4560,60 @@ export function assertTierSanity() {
   if (bad.length) throw new Error(`tier sanity: haiku+adaptive forbidden → ${bad.join(", ")}. ${HAIKU_ADAPTIVE_WHY}`);
   return true;
 }
+
+// ── WHO THE COMPLETION NOTICE IS FOR (tracker issue 289) ─────────────────────────────────────────────
+//
+// It went to whoever runs the agent, never to whoever asked. `AGENT_WHATSAPP` is keyed by AGENT ID, and
+// every user of this deployment shares the one agent, so on every run the operator was paged for work
+// somebody else ordered and the person who ordered it was told nothing. Owner ruling, 2026-09-07: route
+// to the requester where a number is held for them, and keep the operator's number as a copy the
+// operator can switch off.
+//
+// WHERE THE NUMBER IS READ FROM, stated plainly because it is contact data and the issue asks for it to
+// be stated: `CLEAROTRON_REQUESTER_WHATSAPP`, a JSON object of requester handle or email → number. THIS
+// IS A NEW CONFIG KEY and saying so is the point — no store in this product held a number for a
+// requester. A job carries `forwarder` and `forwarderEmail` and neither resolves to one.
+//
+// It is deliberately NOT `AGENT_WHATSAPP` with requesters added. That map is keyed by agent id, the two
+// namespaces are unrelated, and a requester whose handle collided with an agent id would be sent
+// somebody else's number — the kind of silent mis-delivery that is discovered by a person receiving mail
+// about a matter that is not theirs.
+//
+// EMPTY BY DEFAULT, and that is correct rather than lazy: a default roster of invented numbers is what
+// the agent map above carries for offline tests, and inventing one for REQUESTERS would mean a
+// deployment that never configured this quietly routing a client's completion notice at a fixture.
+export const REQUESTER_WHATSAPP = (() => {
+  try {
+    const m = JSON.parse(process.env.CLEAROTRON_REQUESTER_WHATSAPP || "");
+    if (m && typeof m === "object" && !Array.isArray(m)) return m;
+  } catch { /* no roster configured */ }
+  return {};
+})();
+
+// The operator's own copy, on by default and switchable per deployment. Off is spelled "0"/"false"/"no"
+// so an operator who wants out of everyone else's runs can say so without editing the requester roster —
+// the two halves the owner asked for, independently controlled.
+export const OPERATOR_WHATSAPP_COPY = !/^(0|false|no)$/i.test(String(process.env.CLEAROTRON_WHATSAPP_OPERATOR_COPY ?? "").trim());
+
+/**
+ * The chat routing for one delivery packet: who it is for, why it is nobody when it is, and the
+ * operator's separate copy.
+ *
+ * ABSENCE IS STATED, NEVER FILLED IN. When no number is held for the requester, `whatsappTo` is null and
+ * `whatsappToReason` says so — it does not silently fall back to the operator, which is the defect this
+ * replaces. A null with a reason is a fact the integrator can act on; a silent substitution is one nobody
+ * can see.
+ */
+export function whatsappRouting(job, agentId) {
+  const email = String(job?.forwarderEmail ?? "").trim().toLowerCase();
+  const handle = String(job?.forwarder ?? "").trim();
+  const byEmail = email ? REQUESTER_WHATSAPP[email] : null;
+  const byHandle = handle ? REQUESTER_WHATSAPP[handle] : null;
+  const to = byEmail ?? byHandle ?? null;
+  const who = email || handle || "the requester";
+  return {
+    whatsappTo: to,
+    whatsappToReason: to ? null : `no chat number is held for ${who} — set one in CLEAROTRON_REQUESTER_WHATSAPP to notify them`,
+    whatsappCcOperator: OPERATOR_WHATSAPP_COPY ? (AGENT_WHATSAPP[agentId] ?? null) : null,
+  };
+}

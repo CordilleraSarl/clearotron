@@ -206,7 +206,19 @@ test("E2: full pipeline runs on the anthropic-agent engine (CLEAR, delivered, al
   assert.doesNotMatch(packet.subject, /Preliminary clearance/, "the retired literal is gone from the wire");
   assert.ok(packet.emailBodyHtml && packet.emailBodyHtml.length > 0, "email body embedded for clawdi");
   assert.match(packet.whatsappText, /Prelim search for PROJECT NOVAPULSE.*is done\. Report:/);
-  assert.equal(packet.whatsappTo, "+10000000001");
+  // THE NOTICE IS ADDRESSED TO WHOEVER ASKED (tracker issue 289). This arm asserted
+  // `whatsappTo === "+10000000001"` — the AGENT's number from the demo roster — which is precisely the
+  // defect: every user of a deployment shares one agent id, so the operator was paged for work somebody
+  // else ordered and the requester was never told. Owner ruling 2026-09-07 routed it to the requester
+  // with the operator keeping a switchable copy.
+  //
+  // This fixture holds no number for its requester, so the honest packet has no recipient and SAYS SO —
+  // and the operator's copy is the number this line used to assert, now in its own field. Checking all
+  // three is what stops a later change quietly restoring the fallback: a bare `whatsappTo === null` would
+  // pass just as well on a packet that had silently dropped the notice altogether.
+  assert.equal(packet.whatsappTo, null, "no number is held for this fixture's requester, so none is invented");
+  assert.match(packet.whatsappToReason, /no chat number is held/, "and the packet states the gap");
+  assert.equal(packet.whatsappCcOperator, "+10000000001", "the operator's copy, in its own field");
   const sentinel = JSON.parse(readFileSync(join(res.runDir, ".delivered"), "utf8"));
   assert.equal(sentinel.sendPending, true, ".delivered marks sendPending for clawdi's watch");
 });

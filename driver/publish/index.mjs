@@ -1189,7 +1189,10 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
 
   const total = skipRegen ? null : regenIndex(poolRoot);
   if (!skipRegen) await regenSurfaces(poolRoot);
-  const url = poolUrl ? `${String(poolUrl).replace(/\/$/, '')}/${runId}/report.html` : null;
+  // THE PORTAL ROUTE, not the pool's directory layout (tracker issue 289). This was
+  // `<origin>/<runId>/report.html` — where the documents sit on disk, which is not an application route.
+  // Composed rather than spelled here so the report link is built the same way the audit link always was.
+  const url = reportRouteFor(poolUrl, runId);
   return { runId, auditFile, counts, total, url, poolRunDir, auditError, findingsError, customerKey: customerKey || 'generic', clientGate };
 }
 
@@ -1241,7 +1244,21 @@ export function accessNoteHtml(font, domain = config.accessDomain) {
  * the edge's own legacy-report regexp character for character, so this function admits exactly the URLs the
  * deployment admits and no others.
  */
-const REPORT_PATH_RE = /^\/([A-Za-z0-9][A-Za-z0-9._-]{0,180})\/report\.html$/;
+// ── TWO SHAPES, AND THE SECOND ONE IS HISTORY (tracker issue 289) ────────────────────────────────────
+//
+// The block quoted above describes an edge rewrite that IS NOT IN FORCE ON PRODUCTION. Settled by the
+// account owner against the live deployment, signed in as a delivered run's own owner: the emailed link
+// returned the portal application's own `{"error":"not_found"}` — the app answered, so nothing rewrote
+// the path ahead of it — while the portal's own link for that same run opened. The prose above, and the
+// notes in portal-service.mjs and publish/knockout.mjs that lean on it, describe a config that does not
+// live in this repository and were transcribed when it was true somewhere. A transcription is a claim
+// about a host at the moment somebody wrote it down, not a fact about the host today.
+//
+// So reports are addressed at the portal route now (reportRouteFor), and this pattern keeps matching the
+// LEGACY shape as well for one reason: `auditUrlFor` derives the workbook link by parsing the report URL,
+// and an archived run re-published from its stored legacy URL must not silently lose its audit link. The
+// two alternatives are read in one place so a future reader cannot fix one and miss the other.
+const REPORT_PATH_RE = /^\/(?:portal\/report\/([A-Za-z0-9][A-Za-z0-9._-]{0,180})\/?|([A-Za-z0-9][A-Za-z0-9._-]{0,180})\/report\.html)$/;
 
 // The run id as the edge and the portal both spell it: one path segment, no separators, no traversal.
 // Same character class as REPORT_PATH_RE's capture and as portal-service's own slug gate, because a
@@ -1259,6 +1276,29 @@ const RUN_SEGMENT_RE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,180}$/;
 export function auditRouteFor(origin, runId) {
   if (!origin || !runId || !RUN_SEGMENT_RE.test(String(runId))) return null;
   return `${String(origin).replace(/\/$/, '')}/portal/report/${runId}/audit.xlsx`;
+}
+
+/**
+ * THE REPORT'S ROUTE, from an origin and a run id (tracker issue 289).
+ *
+ * The delivered link used to be the pool's directory layout pasted behind the public origin —
+ * `<origin>/<runId>/report.html` — which is where the documents sit on disk and is not an application
+ * route. It resolved only where an edge rewrite happened to claim it, and on production no such rewrite
+ * is in force: the emailed link returned the portal's own `{"error":"not_found"}` for the run's OWN
+ * owner. Every delivered report on both lanes carried it, on all three surfaces that quote the URL.
+ *
+ * Composed here, beside auditRouteFor and markReportRouteFor, so the three links a delivery carries are
+ * built by three functions with one idea of where the portal lives. That is the property worth having:
+ * the audit link has been correct throughout precisely because it was composed against the route instead
+ * of derived from the file layout, and this makes the report link the same kind of thing.
+ *
+ * A link the portal will refuse is worse than none, so an unconfigured origin or a run id that is not a
+ * single clean path segment yields null — the same posture auditRouteFor takes, and the caller already
+ * treats null as "no link on any surface".
+ */
+export function reportRouteFor(origin, runId) {
+  if (!origin || !runId || !RUN_SEGMENT_RE.test(String(runId))) return null;
+  return `${String(origin).replace(/\/$/, '')}/portal/report/${runId}/`;
 }
 
 /**
@@ -1292,7 +1332,8 @@ export function auditUrlFor(reportUrl, auditFile) {
   let u;
   try { u = new URL(String(reportUrl)); } catch { return null; }
   const m = REPORT_PATH_RE.exec(u.pathname);
-  return m ? auditRouteFor(u.origin, m[1]) : null;
+  // Group 1 is the portal shape, group 2 the legacy one — exactly one of them matches.
+  return m ? auditRouteFor(u.origin, m[1] ?? m[2]) : null;
 }
 
 /**
