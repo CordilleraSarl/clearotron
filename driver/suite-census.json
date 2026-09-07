@@ -3311,7 +3311,7 @@
         },
         "release-pipeline.test.mjs": {
           "tests": 89,
-          "asserts": 343,
+          "asserts": 347,
           "skips": 0,
           "todos": 0
         },
