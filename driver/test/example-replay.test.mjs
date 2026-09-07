@@ -11,7 +11,7 @@ import { test } from "node:test";
 import { pinEnvAll } from "../../shared/env-aliases.mjs";   // — a spread carries EVERY spelling, so an override must clear every spelling
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, existsSync, readFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, existsSync, readFileSync, rmSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
@@ -174,4 +174,45 @@ test("a missing frozen demo says what a frozen demo is and how to make one", () 
   assert.match(r.out, /no frozen demo at/, r.out);
   assert.match(r.out, /freeze-example-run\.mjs/, r.out);
   assert.match(r.out, /Products with a demo in this tree:/, r.out);
+});
+
+// ── tracker issue 277: the demo shows a new reader everything the package ships ──────────────────────
+//
+// `npx clearotron demo` replayed `children[0]` and stopped. The package ships one finished report per
+// product; a first-time reader met one of them, with nothing on screen saying the other three existed.
+// The owner's ruling is that they auto-load: a demo reachable only by someone who already knows to ask
+// for it is not shipped.
+//
+// DRIVEN THROUGH THE REAL COMMAND, with the environment stripped, because the defect was in what the
+// command chooses rather than in what any function returns.
+
+test("277 the demo publishes every product the package ships, not just the first", () => {
+  const pool = join(mkdtempSync(join(tmpdir(), "demo-all-")), "pool");
+  const r = runDemo(["--pool", pool, "--once"]);
+  assert.equal(r.code, 0, `the demo exited ${r.code}:\n${r.out}`);
+
+  // The expected count comes from the shipped container, so a fifth demo landing does not need this arm
+  // edited — and cannot pass it by accident either.
+  const shipped = readdirSync(join(REPO, "demo"), { withFileTypes: true })
+    .filter((d) => d.isDirectory() && existsSync(join(REPO, "demo", d.name, "meta.json"))).length;
+  assert.ok(shipped >= 4, `the tree ships ${shipped} demo(s); this arm is about there being several`);
+
+  const published = (r.out.match(/^\s*published: /gm) ?? []).length;
+  assert.equal(published, shipped,
+    `${shipped} demo(s) ship and the command published ${published}. Before this it published one and `
+    + `said nothing about the rest.\n${r.out}`);
+
+  // AND IT SAYS SO. A reader who cannot see a count cannot tell four from one, which is how three
+  // missing demos went unnoticed on a first-run screen.
+  assert.match(r.out, new RegExp(`${shipped} demo reports are published and listed`),
+    `the command published ${shipped} and never said how many\n${r.out}`);
+});
+
+test("277 --product still narrows to one, because asking for one is a real thing to want", () => {
+  const pool = join(mkdtempSync(join(tmpdir(), "demo-one-")), "pool");
+  const r = runDemo(["--product", "knockout-search", "--pool", pool, "--once"]);
+  assert.equal(r.code, 0, `the demo exited ${r.code}:\n${r.out}`);
+  const published = (r.out.match(/^\s*published: /gm) ?? []).length;
+  assert.equal(published, 1, `--product published ${published} demos instead of the one asked for\n${r.out}`);
+  assert.match(r.out, /knockout/, `--product published something other than the product named\n${r.out}`);
 });

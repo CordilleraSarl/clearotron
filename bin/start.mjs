@@ -1057,6 +1057,12 @@ if (isMain) {
     // — `clearotron demo` hands over to this — so fixing the player alone left the defect where it was.
     const { publishSource } = await import("../driver/demo-container.mjs");
     const seed = await seedPool({ pool: paths.pool, examplesDir: publishSource(join(REPO, "demo"), { repoRoot: REPO }), republish: republishRun });
+    // WHAT WAS ALREADY THERE IS SAID TOO (tracker issue 277). This branch used to run only when the pool
+    // was empty; it now tops a stale pool up to the package's set, so "seeded 1" on an upgrade is a fact
+    // about what was MISSING and says nothing on its own about how many are now listed.
+    if (seed.already?.length) {
+      say(`  archive        ${seed.already.length} example report(s) already published here`);
+    }
     if (seed.seeded.length) {
       say(`  seeded         ${seed.seeded.length} example report(s) into ${paths.pool}`);
       // THE LABEL. is delivered: the report now carries the owner's own sample sentence on its
@@ -1070,6 +1076,7 @@ if (isMain) {
     }
     // Never a silent nothing. "The archive is empty" and "the archive is empty and nobody noticed why"
     // look identical in the browser, so both other outcomes are said out loud.
+    if (seed.skipped) say(`  archive        ${seed.skipped}`);
     for (const p of seed.problems) err(`  WARNING: sample seeding — ${p}`);
   } catch (e) {
     err(`  WARNING: the example report could not be seeded (${String(e?.message ?? e)}) — the archive will come up empty. Everything else works; \`npm run example\` shows a sample without touching this install.`);
