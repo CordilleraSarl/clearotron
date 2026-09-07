@@ -14,7 +14,8 @@
 // mapping and say nothing about whether the portal reads it.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { statSync, utimesSync, existsSync, readdirSync, mkdtempSync } from "node:fs";
+import { utimesSync, existsSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { createServer } from "node:http";
 import { request as httpRequest } from "node:http";
 import { tmpdir } from "node:os";
@@ -22,11 +23,51 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { bundleFreshnessCached, makeHttpHandler, makePortalService } from "../portal-service.mjs";
 import { healthUi, bundleVerdict } from "../../shared/bundle-freshness.mjs";
-import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
 const REPO = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const SRC = join(REPO, "portal-ui", "src");
 const DIST = join(REPO, "portal-ui", "dist");
+
+// ── A TREE OF ITS OWN, BECAUSE THESE ARMS USED TO MOVE THIS ONE'S CLOCK ──────────────────────────────
+//
+// Two arms below prove that a source file newer than the bundle reads as `stale` and that putting it
+// back restores the answer. They did that by picking a real file out of `portal-ui/src`, setting a future
+// mtime on it, and restoring it in a `finally`.
+//
+// THE RESTORE CANNOT PUT IT BACK EXACTLY. `utimesSync` does not round-trip a stat's sub-millisecond
+// mtime — the sibling guard says so in as many words — so the restore landed ~0.24ms away and every full
+// suite run reported `~ portal-ui/src/base.css — changed by the run`. Measured either side of a run: same
+// inode, same size, same sha256, mtime `…934.7593` → `…934.999`. Nothing wrote the file; only its clock
+// moved, and a stamp of `mtimeMs:size` cannot tell that from a write. Which is right — it must not.
+//
+// So the arms get their own checkout. It is a real one — `git init`, a real `portal-ui/src`, a real
+// `portal-ui/dist` left UNTRACKED so the verdict reaches the mtime comparison rather than stopping at
+// `tracked`. That keeps what these arms are for: they still read real mtimes off a real tree through the
+// real resolver, which is what the baseline comment below calls deliberate. They simply stop reading
+// THIS one.
+function bundleFixture() {
+  const root = mkdtempSync(join(tmpdir(), "bundle-fixture-"));
+  mkdirSync(join(root, "portal-ui", "src"), { recursive: true });
+  mkdirSync(join(root, "portal-ui", "dist"), { recursive: true });
+  writeFileSync(join(root, "portal-ui", "src", "base.css"), ":root{}\n");
+  writeFileSync(join(root, "portal-ui", "dist", "index.html"), "<!doctype html>\n");
+  const git = (...a) => execFileSync("git", ["-C", root, ...a], { stdio: "ignore" });
+  git("init", "-q");
+  git("config", "user.email", "t@example.invalid");
+  git("config", "user.name", "t");
+  // `portal-ui/src` is tracked and `portal-ui/dist` is NOT: an untracked dist is what sends the verdict
+  // past `tracked` and into the mtime comparison these arms are about.
+  git("add", "portal-ui/src");
+  git("commit", "-qm", "fixture");
+  // The bundle is newer than its sources to begin with, which is the state a fresh build leaves.
+  const later = new Date(Date.now() + 1000);
+  utimesSync(join(root, "portal-ui", "dist", "index.html"), later, later);
+  return {
+    root,
+    src: join(root, "portal-ui", "src", "base.css"),
+    drop: () => rmSync(root, { recursive: true, force: true }),
+  };
+}
 
 test("160 health reports a stale bundle as stale, and stops calling itself ok", () => {
   if (!existsSync(join(DIST, "index.html"))) {
@@ -37,32 +78,31 @@ test("160 health reports a stale bundle as stale, and stops calling itself ok", 
     return;
   }
 
-  const files = readdirSync(SRC, { withFileTypes: true }).filter((e) => e.isFile()).map((e) => join(SRC, e.name));
-  nonEmpty(files, "the portal's own source files");
-  const victim = files[0];
-  const was = statSync(victim);
-  // THE BASELINE IS THIS TREE'S OWN VERDICT, not "current". A developer who edited `portal-ui/src` and
-  // has not rebuilt has a genuinely stale bundle, and an arm demanding a fresh one would be red by the
-  // box rather than by the code. What this arm is about is that moving a source file forward CHANGES the
-  // answer to stale and that restoring it puts the answer back.
-  const baseline = bundleFreshnessCached(true, { ttl: 0 });
+  const fx = bundleFixture();
+  // THE BASELINE IS THE FIXTURE'S OWN VERDICT, not "current" — the same reasoning as before, on a tree
+  // whose clock these arms are allowed to move. A bundle newer than its sources reads current; what this
+  // arm is about is that moving a source forward CHANGES the answer to stale and putting it back
+  // restores it.
+  const baseline = bundleFreshnessCached(true, { ttl: 0, repo: fx.root });
 
   try {
     // Newer than anything in the bundle: this is what a pull does to the sources it moved.
     const future = new Date(Date.now() + 3_600_000);
-    utimesSync(victim, future, future);
-    const verdict = bundleFreshnessCached(true, { ttl: 0 });
+    utimesSync(fx.src, future, future);
+    const verdict = bundleFreshnessCached(true, { ttl: 0, repo: fx.root });
     assert.equal(verdict, "stale", `a source file newer than the bundle read as ${verdict}`);
     assert.deepEqual(healthUi(verdict), { ui: "stale", ok: false },
       "health still calls itself ok over a bundle it has just been told is stale");
+    // And back to what it was — a check that cannot return to its starting answer is one an operator
+    // learns to ignore. Asserted INSIDE the try, against the fixture, because the fixture is what the
+    // baseline was taken from and it does not outlive the `finally`.
+    const past = new Date(Date.now() - 3_600_000);
+    utimesSync(fx.src, past, past);
+    assert.equal(bundleFreshnessCached(true, { ttl: 0, repo: fx.root }), baseline,
+      "the verdict did not return to what it was before this arm moved a timestamp");
   } finally {
-    utimesSync(victim, was.atime, was.mtime);
+    fx.drop();
   }
-
-  // And back to what it was — a check that cannot return to its starting answer is one an operator
-  // learns to ignore.
-  assert.equal(bundleFreshnessCached(true, { ttl: 0 }), baseline,
-    "the verdict did not return to what it was before this arm moved a timestamp");
 });
 
 test("160 every verdict maps to something an operator can act on", () => {
@@ -131,22 +171,28 @@ test("160 the ROUTE says it, not just the predicate behind it", { timeout: 60_00
     assert.equal(body.ui, "missing", "an absent bundle is not reported as missing by the route");
     return;
   }
-  const files = readdirSync(SRC, { withFileTypes: true }).filter((e) => e.isFile()).map((e) => join(SRC, e.name));
-  nonEmpty(files, "the portal's own source files");
-  const victim = files[0];
-  const was = statSync(victim);
+  // THE ROUTE READS A CACHE, and that is what lets this arm keep its meaning without moving this tree's
+  // clock. The cache is keyed on `present` and time — not on which checkout produced the verdict — so a
+  // pull against the fixture with a live TTL is the verdict the route then answers from. The route, the
+  // handler and the mapping are all still the real ones; only the tree whose mtimes were read is ours.
+  const fx = bundleFixture();
   try {
     const future = new Date(Date.now() + 3_600_000);
-    utimesSync(victim, future, future);
-    bundleFreshnessCached(true, { ttl: 0 });   // the route reads a cache; this is the pull that fills it
+    utimesSync(fx.src, future, future);
+    bundleFreshnessCached(true, { ttl: 60_000, repo: fx.root });   // the pull that fills the cache
     const body = await healthBody();
     assert.equal(body.ui, "stale", `the route answered ui:${body.ui} over a bundle older than its sources`);
     assert.equal(body.ok, false, "the route still called itself ok over a stale bundle");
+
+    const past = new Date(Date.now() - 3_600_000);
+    utimesSync(fx.src, past, past);
+    const restored = bundleFreshnessCached(true, { ttl: 0, repo: fx.root });
+    bundleFreshnessCached(true, { ttl: 60_000, repo: fx.root });
+    const back = await healthBody();
+    assert.equal(back.ui, healthUi(restored).ui,
+      "the route did not return to the fixture's own answer after the timestamp was put back");
   } finally {
-    utimesSync(victim, was.atime, was.mtime);
-    bundleFreshnessCached(true, { ttl: 0 });
+    fx.drop();
+    bundleFreshnessCached(true, { ttl: 0 });   // leave the cache holding THIS tree's verdict, not ours
   }
-  const back = await healthBody();
-  assert.equal(back.ui, healthUi(bundleFreshnessCached(true, { ttl: 0 })).ui,
-    "the route did not return to this tree's own answer after the timestamp was put back");
 });
