@@ -8569,7 +8569,7 @@ async function pipelineInner(job, opts = {}) {
   ctx.exclusionSeed = applicantMatchesProfile(ctx.profile, job.customer) ? (ctx.profile.selfExclusionOwners ?? []) : [];
   if (ctx.exclusionSeed.length) runLog(run.runDir, { event: "profile-exclusion-seed", owners: ctx.exclusionSeed.length });
   // On resume, rehydrate the driver-owned notes that must survive a park. (The failover provenance that
-  // used to be rehydrated alongside is deleted with the chain, — no run ever carried any.)
+  // used to be rehydrated alongside is deleted with the chain — no run ever carried any.)
   if (isResume) {
     try {
       const prior = JSON.parse(readFileSync(join(run.runDir, "status.json"), "utf8"));
