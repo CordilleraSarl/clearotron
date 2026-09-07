@@ -21,8 +21,13 @@
 # company already.
 #
 # The check is only a GATE if the branch protection rule requires it. That is a repository setting, not
-# a file, so it cannot be asserted here: until "CLA" is a required status check on the default branch,
+# a file, so it cannot be asserted here: until `cla` is a required status check on the default branch,
 # this workflow reports and does not block. Whoever turns branch protection on should add it.
+#
+# THE CONTEXT IS `cla`, LOWERCASE, and this sentence is the only written record of that name. Contexts
+# are compared byte for byte, so a reader who takes a differently-cased spelling from here and puts it
+# in the protection rule gets a requirement nothing will ever answer. It is now required on `main`, and
+# `release.yml` posts it for the version commit, which carries no authored work of its own.
 #
 # ── THE SIGNATURE BRANCH IS A PREREQUISITE, AND THE ACTION DOES NOT CREATE IT ────────────────────────
 #

@@ -185,6 +185,7 @@ jobs:
       # `actions/runs`, which is the only surface that carries `action_required`.
       checks: read
       actions: write    # dispatches CI on the version branch, so its checks need no approval
+      statuses: write   # answers the signature check on the version commit — see the step below
       #
       # THERE IS NO `administration: read` HERE AND THERE CANNOT BE. The guard reads the repository's
       # current fork-pull-request approval policy so it can NAME the setting rather than quote a
@@ -369,6 +370,78 @@ jobs:
             echo "::error::A stable was asked for and this cut computed $VERSION, which is a PRE-RELEASE bound for the \`$CHANNEL\` channel. Refusing rather than publishing a beta as the stable. The tree was probably still in pre-release mode when the version was computed."
             exit 1
           fi
+
+      # ── THE VERSION COMMIT ANSWERS THE SIGNATURE CHECK ITSELF (tracker issue 264) ───────────────────
+      #
+      # `cla` is a REQUIRED check on `main` and the version pull request could never satisfy it. Two
+      # deliberate things combined to make that permanent:
+      #
+      #   · `cla.yml` runs only on pull requests from a FORK — a branch on this repository is the
+      #     organisation's own work and needs no signature. Its own file says why: commits made on the
+      #     build box are authored under an address GitHub resolves to no account, so the allowlist can
+      #     never match and the author can never sign. On an ordinary branch that job is skipped and the
+      #     check still REPORTS, and reporting is what satisfies the requirement.
+      #   · This branch is pushed with the built-in token, and a push made with that token starts no
+      #     workflow at all. So nothing reports here — not even a skip.
+      #
+      # WHY THIS WORKFLOW MAY ANSWER IT, AND THE LIMIT ON THAT. Not because the answer is predictable —
+      # that reasoning would justify self-answering any check whose result you can guess, and it is not
+      # the argument. It is that **there is nothing on this branch to answer for**. The version branch
+      # carries no authored work: only a version number and a changelog, both computed from changeset
+      # files already merged to `main`, each of which passed this same required check on its own pull
+      # request. The contribution was gated once, where a person wrote it.
+      #
+      # THE EDGE, NAMED so the next case cannot cite this one: it does not extend to posting this status
+      # for content this workflow did not derive from already-gated material. A branch carrying anything
+      # authored gets the ordinary check, not this.
+      #
+      # Measured 2026-09-07: a stable cut computed the version, armed auto-merge and then waited out its
+      # whole budget on four green checks and a fifth that could not arrive.
+      #
+      # THE FORK TEST IS THE ONE `cla.yml` MAKES, asserted rather than assumed. The comparison is head
+      # repository against base repository, because that is what "outside" means here — never the
+      # author's name, which is the thing that proved unreliable. If this pull request's head is ever
+      # somewhere else, this refuses instead of waving it through. Both fields come from ONE read: two
+      # calls could report the provenance of one commit and the sha of another if the branch moved
+      # between them, and the status would land on a commit nobody checked.
+      #
+      # THIS CONTEXT CAN BE OVERWRITTEN, and that is worth knowing rather than assuming away. `cla.yml`'s
+      # signature-comment arm has no fork test and cannot have one — an `issue_comment` carries no head
+      # repository to compare — so anyone commenting the sign sentence on this pull request runs that
+      # action against it, with `statuses: write`, and the last status on the context wins. What likely
+      # saves it is that the commit is authored by the actions bot, which the allowlist carries. Not
+      # driven; recorded as a follow-up rather than a claim.
+      #
+      # IT RUNS ON EVERY PUSH THAT LEAVES A PULL REQUEST, not only on a dispatched cut. Provenance is
+      # true the moment the commit exists, so making the status depend on which run last touched it
+      # would leave the same commit answered or unanswered according to history. It publishes nothing:
+      # the standing pull request simply shows every check green with auto-merge off.
+      - name: Say that an organisation-authored version commit needs no signature
+        if: steps.changesets.outputs.pr-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          PR="${{ steps.changesets.outputs.pr-number }}"
+          # ONE READ, so the provenance and the sha are the same commit's. Two calls could report the
+          # provenance of one commit and the sha of another if the branch moved between them.
+          # Assigned rather than piped into `read`, so `set -e` still fails the step on a failing call
+          # instead of leaving an empty string to be compared.
+          HEAD_TSV=$(gh api "repos/${{ github.repository }}/pulls/$PR" \
+            --jq '[.head.repo.full_name, .head.sha] | @tsv')
+          HEAD_REPO=$(printf '%s' "$HEAD_TSV" | cut -f1)
+          HEAD_SHA=$(printf '%s' "$HEAD_TSV" | cut -f2)
+          if [ "$HEAD_REPO" != "${{ github.repository }}" ]; then
+            echo "::error::the version pull request's head is on $HEAD_REPO, not ${{ github.repository }} —"
+            echo "::error::that is a contribution from outside, and its signature is not this workflow's to answer."
+            exit 1
+          fi
+          gh api -X POST "repos/${{ github.repository }}/statuses/$HEAD_SHA" \
+            -f state=success \
+            -f context=cla \
+            -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            -f description="Organisation-authored version commit — no signature required." >/dev/null
+          echo "signature check answered on $HEAD_SHA (pull request $PR)"
 
       # ONLY ON A DISPATCHED CUT (tracker issue 264). This step used to run on every push, which is what
       # made a beta come out of every merge. The pull request still opens and updates on every push — it
