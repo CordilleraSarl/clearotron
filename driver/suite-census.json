@@ -3310,8 +3310,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 88,
-          "asserts": 335,
+          "tests": 89,
+          "asserts": 343,
           "skips": 0,
           "todos": 0
         },
