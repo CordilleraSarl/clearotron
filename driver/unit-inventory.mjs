@@ -23,6 +23,11 @@
 //   | recipe-service              |  —   |  —   |  yes    | yes                     |
 //   | portal-service              |  —   |  —   |  yes    | NO                      |
 //
+// THAT TABLE IS THE 2026-08-11 READING AND IS NOT REFRESHED. Two of its rows name units that no longer
+// exist: `prelim-driver` and `prelim-outbox` were retired with the path-watcher drain posture and their
+// files left the tree once production was rebuilt. They stay in the table because it records what was
+// measured on that date, and a measurement edited to match today is no longer a measurement.
+//
 // TWO CORRECTIONS TO THE ISSUE ARE BAKED INTO THIS TABLE, and one of them inverts a fix. lists
 // `profile-service` and `prelim-outbox` under "tracked and never run". That reading comes from the test
 // box, where neither is installed. PRODUCTION RUNS BOTH — so deleting their tracked files as dead
@@ -97,6 +102,13 @@ export const BOXES = Object.freeze(["prod", "test", "dev"]);
 // `prelim-outbox`. Production is on pre-sweep code and is rebuilt rather than migrated (owner ruling
 // 2026-08-26), so the rebuild is the event that releases the files, and until then entry and tree
 // disagree ON PURPOSE.
+//
+// THE REBUILD HAPPENED, and the first two entries this field ever carried have gone with their files.
+// Measured on the production install 2026-09-07 (tracker issue 265): seven units, all under the current
+// names, none of the retired ones, with a clearance delivered end to end. `prelim-driver.*` and
+// `prelim-outbox.*` left the tree in the same change that removed their entries. Read the paragraph
+// above as the rule and this one as the event that discharged it — without this line a reader concludes
+// the files are still owed and that their absence is the drift.
 //
 // Two consumers, so this is not prose: `unitInventoryVerdict` reports a retired unit's absence as
 // EXPECTED rather than as drift, and a claimed-but-missing tracked file is a fault whatever the
@@ -467,6 +479,11 @@ export const ACCOUNTED_FILES = Object.freeze(
  */
 export function unitInventoryVerdict({
   live = [], files = [], collisions = [], filesError = null, box = null, probe = { ok: true },
+  // INJECTED so the retirement branch can be PLANTED. `retired:` has no members today — the two it
+  // carried left with their files — so `absentByRetirement` and the line it feeds are unreachable
+  // against the real table, and a branch nothing exercises is a branch that will not fire the next
+  // time somebody retires a unit. That is this file's own failure mode pointed at itself.
+  inventory = UNIT_INVENTORY,
 } = {}) {
   if (!probe.ok) {
     return { state: "skip", undeclared: [], orphaned: [], absent: [], misdeclared: [],
@@ -474,7 +491,7 @@ export function unitInventoryVerdict({
         + "A failure to look is not a finding about the deployment." };
   }
   const base = (u) => String(u).replace(/\.(service|timer|path|socket|target|mount|slice)$/, "");
-  const known = new Set(UNIT_INVENTORY.map((u) => u.unit));
+  const known = new Set(inventory.map((u) => u.unit));
   const liveBases = [...new Set(live.map(base))];
 
   const undeclared = liveBases.filter((u) => !known.has(u)).sort();
@@ -484,7 +501,7 @@ export function unitInventoryVerdict({
   // reason attached, and the difference is the whole point of writing the reasons down.
   const accounted = new Set(ACCOUNTED_FILES);
   const unaccountedFiles = files.filter((f) => !accounted.has(f)).sort();
-  const orphaned = UNIT_INVENTORY.filter((u) => u.runsOn.length === 0).map((u) => u.unit).sort();
+  const orphaned = inventory.filter((u) => u.runsOn.length === 0).map((u) => u.unit).sort();
 
   // RUNNING HERE, DECLARED TO RUN NOWHERE. The defect the rename to clearotron-* left behind: the new
   // units shipped WITH entries, those entries kept `runsOn: []`, and the pre-rename names kept the
@@ -505,7 +522,7 @@ export function unitInventoryVerdict({
   // is why writing one is dangerous" while the tracked file sat one directory over. A reader asking what
   // configuration the client door runs was told, with confidence, to look at nothing.
   const trackedNames = new Set(files);
-  const misdeclared = UNIT_INVENTORY
+  const misdeclared = inventory
     .filter((u) => !u.tracked)
     .filter((u) => ["service", "timer", "path"].some((s) => trackedNames.has(`${u.unit}.${s}`)))
     .map((u) => u.unit).sort();
@@ -520,7 +537,7 @@ export function unitInventoryVerdict({
   // It matters now because the retirement above deletes unit files on a schedule set by production's
   // rebuild rather than by this PR, so entry and tree are deliberately going to disagree for a while,
   // and the disagreement must be the kind that gets reported rather than the kind that is invisible.
-  const claimedAbsent = files.length === 0 || filesError ? [] : UNIT_INVENTORY
+  const claimedAbsent = files.length === 0 || filesError ? [] : inventory
     .flatMap((u) => (u.tracked ?? []).map((f) => ({ unit: u.unit, file: f })))
     .filter((c) => !trackedNames.has(c.file))
     .map((c) => `${c.file} (claimed by ${c.unit})`).sort();
@@ -535,10 +552,10 @@ export function unitInventoryVerdict({
   // distinction is which of them is a fault.
   const declaredHere = (u) => box && u.runsOn.includes(box) && !liveBases.includes(u.unit);
   const absent = box
-    ? UNIT_INVENTORY.filter((u) => declaredHere(u) && !u.retired).map((u) => u.unit).sort()
+    ? inventory.filter((u) => declaredHere(u) && !u.retired).map((u) => u.unit).sort()
     : [];
   const absentByRetirement = box
-    ? UNIT_INVENTORY.filter((u) => declaredHere(u) && u.retired).map((u) => u.unit).sort()
+    ? inventory.filter((u) => declaredHere(u) && u.retired).map((u) => u.unit).sort()
     : [];
   const boxLine = box ? "" : " The box could not be named, so 'declared here and not running' was NOT "
     + "checked — that half did not run, which is not the same as passing.";
@@ -614,8 +631,8 @@ export function unitInventoryVerdict({
   return {
     state: "pass", undeclared, orphaned, absent, misdeclared, claimedAbsent, absentByRetirement,
     message: `${liveBases.length} live unit(s), all declared; `
-      + `${UNIT_INVENTORY.filter((u) => u.tracked).length} entr(y/ies) tracked, `
-      + `${UNIT_INVENTORY.filter((u) => u.runsOn.length && !u.tracked).length} live-and-untracked BY DECLARATION `
+      + `${inventory.filter((u) => u.tracked).length} entr(y/ies) tracked, `
+      + `${inventory.filter((u) => u.runsOn.length && !u.tracked).length} live-and-untracked BY DECLARATION `
       + `with a stated reason.${retiredLine}${orphanLine}${boxLine}${filesLine}`,
   };
 }
