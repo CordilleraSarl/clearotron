@@ -15433,7 +15433,36 @@ function experimentEngineName() {
   catch { return String(process.env.CLEAROTRON_AI ?? "").trim().toLowerCase() || null; }
 }
 
+/**
+ * A DRAW IS WORK ON THIS BOX, AND THE DEPLOY GUARD HAS TO BE ABLE TO SEE IT.
+ *
+ * `pipeline()` takes a run slot, so a clearance is visible to `deployRefusal` and an hourly deploy defers
+ * over it. A draw is a direct invocation and took nothing, so the guard saw an idle box and a tick could
+ * fast-forward the checkout, reinstall and restart the units under a running experiment. Measured by the
+ * test lane: the only thing protecting a replication was somebody stopping the deploy timer by hand,
+ * which made that hold load-bearing without anyone having decided it should be.
+ *
+ * IT TAKES ITS OWN LOCK, NOT A RUN SLOT. A run slot is admission-controlled against
+ * `maxConcurrentRuns`, so acquiring one here would make a draw WAIT behind clearances and make clearances
+ * wait behind draws — changing what a draw is in order to fix what a guard can see. The `draw` prefix is
+ * a separate namespace in the same directory: the deploy guard counts it, and nothing else does.
+ *
+ * The cap is deliberately far above any real number of concurrent draws, because this lock exists to be
+ * SEEN and never to ration. A draw that blocked here would be a new failure mode in place of an old one.
+ */
 export async function runExperiment(job, opts) {
+  const lock = await acquireSlot({ dir: config.runLockDir, cap: 1024, prefix: "draw" });
+  try {
+    return await runExperimentInner(job, opts);
+  } finally {
+    // Best-effort, like the run slot's own release: the lock reaper covers a process that dies here, and
+    // a stale draw lock with a dead pid does not refuse a deploy — the guard tests liveness.
+    try { releaseSlot(lock); } catch { /* the reaper covers what this misses */ }
+  }
+}
+
+
+async function runExperimentInner(job, opts) {
   const name = opts.experiment;
   if (!STAGES[name]) throw new Error(`--experiment: unknown stage "${name}"`);
   // The axis is checked for MEMBERSHIP, not truthiness, and BEFORE reconstructCtx touches the run dir.

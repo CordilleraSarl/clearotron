@@ -66,7 +66,11 @@ export function liveRunHolds({ queueDirs = [], lockDir = null, isAlive = claimer
     const { names, error } = listDir(lockDir);
     if (error) unreadable.push({ path: lockDir, error });
     for (const n of names) {
-      if (!n.startsWith("slot-") || !n.endsWith(".lock")) continue;
+      // `draw-` alongside `slot-`: a direct --experiment invocation is work on this box and the guard's
+      // question is whether the box is busy, so a draw has to answer yes. It holds its own prefix rather
+      // than a run slot, because a run slot is admission-controlled and taking one would make a draw wait
+      // behind clearances — changing what a draw IS in order to fix what this can see.
+      if (!/^(slot|draw)-/.test(n) || !n.endsWith(".lock")) continue;
       let raw = null;
       try { raw = readFileSync(join(lockDir, n), "utf8"); } catch { continue; }   // released mid-scan
       const pid = Number(String(raw).split(":")[0]);
