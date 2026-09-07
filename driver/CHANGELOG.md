@@ -1,5 +1,17 @@
 # prelim-driver
 
+## 0.2.1
+
+### Patch Changes
+
+- 3cc154a: Fixed: A report now keeps a mark the search confirmed, instead of dropping it because it was already noted on an internal working sheet. Where a mark is still missing, the run records it by name rather than closing the question.
+- 3cc154a: Fixed: Asking a what-if question about a delivered report now returns a memo, instead of failing to find the run it was asked about.
+- 0f7b44a: New: `clearotron demo` now publishes all four example reports — one per product — instead of only the first.
+- 2138a3c: For operators: The `beta` channel now gets a release when there is something worth testing, days apart, instead of one on every merge.
+- 8b5ab91: Fixed: `doctor` no longer reports a working Cloudflare Access door as unprotected. An API-style door and a failing origin are now told apart, each with its own message. Neither is reported as a pass.
+- 77cf56d: For operators: The configuration reference now explains the two deprecated search-log variables in full, instead of stopping mid-sentence.
+- 0dcd05a: Fixed: the settings catalogue now lists `CLEAROTRON_CHECKOUT_DIR`, the path every service file points at. The installer still fills it in for you. It is written down so that anyone whose service will not start can look it up.
+
 ## 0.2.1-beta.2
 
 ### Patch Changes
