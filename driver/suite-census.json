@@ -4869,8 +4869,8 @@
       "ext": "mjs",
       "perFile": {
         "a-key-has-one-door-and-it-is-not-the-network.test.mjs": {
-          "tests": 10,
-          "asserts": 25,
+          "tests": 13,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
