@@ -39,6 +39,9 @@ const LEGIT = new Map([
   ["driver/phase0.mjs", "defines the ADJ/NOUN vocabulary the pattern is built from"],
   ["driver/test/codename-freshness.test.mjs", "generates codenames from a fixed seed as its own fixtures"],
   ["driver/test/no-run-codenames-in-tracked-files.test.mjs", "this guard: its plant carries a real-shaped one"],
+  ["driver/test/a-real-name-in-a-matter-scoped-fixture-is-caught.test.mjs",
+    "its canary plants a real-shaped matter id on each discovery route — with an empty corpus that "
+    + "plant is the only thing proving the sweep can fire at all"],
 ]);
 
 const read = (f) => { try { return readFileSync(join(ROOT, f), "utf8"); } catch { return null; } };

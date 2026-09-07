@@ -411,6 +411,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-real-name-in-a-matter-scoped-fixture-is-caught.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 2,
+          "todos": 0
+        },
         "a-reasoned-skip-is-neither-a-pass-nor-a-loss.test.mjs": {
           "tests": 8,
           "asserts": 28,
