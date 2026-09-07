@@ -225,3 +225,72 @@ test("#1503 `graded` distinguishes the two zeroes at the source, not by guessing
   assert.equal(graded.graded, true, "the two states are indistinguishable again");
   assert.equal(graded.findingsTotal, FINDINGS.findings.length);
 });
+
+// ── the could-not-read signal reaches a surface a lane reads (tracker issue 267) ──────────────────────
+//
+// This check was never broken. It reported, correctly and in writing, that the depth rules had been
+// enforced on NOTHING — and then that report sat as one row among fifty-odd in a lint receipt nothing
+// routes. Eleven graded runs in the archive delivered carrying it, including the lawyer-scored scenario
+// and two of the four orderable product demos.
+//
+// THE MECHANISM GAP was in deliveryFlagLines, not in the check: it groups by the check's BASE id, so a
+// distinction carried in the SUFFIX had no sentence of its own to reach and degraded to the generic
+// "a machine check did not pass". Measured on the real archived receipt for sable-harbor (2026-09-07,
+// 26 findings): four failing checks produced the parties line plus the SAME generic sentence twice, and
+// one of those two was this signal.
+import { deliveryFlagLines as deliveryLines, deliveryVocabViolations as vocabViolations } from "../predelivery-lint.mjs";
+
+test("267: the could-not-read failure gets its own delivery line, stating the consequence", () => {
+  const [line] = deliveryLines([{ id: "narrative-write-ups:could-not-read", family: "narrative-depth" }]);
+  assert.match(line, /applied to nothing on this run/, "the consequence, in the receipt's own terms");
+  assert.match(line, /depth rules/);
+  assert.doesNotMatch(line, /machine check/, "it is no longer the generic line");
+  assert.deepEqual(vocabViolations(line), [], "and it obeys the delivery-surface house rules");
+});
+
+// The distinction is the whole point: a rule BROKEN and a rule ENFORCED ON NOTHING are different facts,
+// and before this they were the same sentence.
+test("267: an ordinary depth violation and a could-not-read do NOT collapse into one line", () => {
+  const lines = deliveryLines([
+    { id: "narrative-write-ups:could-not-read", family: "narrative-depth" },
+    { id: "narrative-write-ups:too-long:3", family: "narrative-depth" },
+    { id: "narrative-write-ups:too-long:4", family: "narrative-depth" },
+  ]);
+  assert.equal(lines.length, 2, "two distinct facts, two lines");
+  assert.ok(lines.some((l) => /applied to nothing/.test(l)), "the unenforced-rule line");
+  assert.ok(lines.some((l) => /\(2 occurrences\)/.test(l)), "…and the violations still group as one");
+});
+
+// THE CHANGE MUST ADD NO LINE TO A RUN THAT PRODUCED NONE. Every other check still groups by base, so a
+// receipt with no could-not-read row is projected exactly as it was before.
+test("267: nothing else moves — base grouping is unchanged for every other check", () => {
+  const before = deliveryLines([
+    { id: "reference-integrity", family: "reference" },
+    { id: "reference-integrity:email", family: "reference" },
+  ]);
+  assert.equal(before.length, 1, "two failures of one check are still one line");
+  assert.match(before[0], /\(2 occurrences\)/);
+  assert.deepEqual(deliveryLines([]), [], "and a clean run still produces no lines at all");
+});
+
+// Acceptance 4: whatever else changed, the row must keep being WRITTEN and keep being distinguishable
+// from the ungraded zero. That distinction is the only reason this was ever findable.
+test("267: the row is still written, and an ungraded product still emits nothing at all", () => {
+  const graded = narrativeWriteUpChecks({
+    narrativeMd: "# Report\n\nProse with no recognisable write-up block.\n",
+    findings: { findings: [{ ordinal: 1, mark: "X", band: "High" }] },
+    depth: { narrativeKeptBandRank: 2, narrativeWriteUpWords: 120 },
+    manifest: { bands: [{ label: "High" }, { label: "Low" }] },
+  });
+  assert.equal(graded.length, 1);
+  assert.match(graded[0].id, /could-not-read/, "the graded run still reports it");
+  assert.equal(graded[0].pass, false);
+  assert.equal(graded[0].structural, true, "…and still rides the structural flag, so no warm redo is ordered");
+
+  const ungraded = narrativeWriteUpChecks({
+    narrativeMd: "# Report\n\nProse with no recognisable write-up block.\n",
+    findings: { findings: [{ ordinal: 1, mark: "X", band: "High" }] },
+    depth: {}, manifest: { bands: [{ label: "High" }] },
+  });
+  assert.deepEqual(ungraded, [], "an ungraded product examines nothing and says nothing — the zero that is NOT this");
+});

@@ -95,6 +95,13 @@ export const RESULT_NOUN_FIELDS = Object.freeze([
   { file: "driver/skills-store-provenance.mjs", noun: "outcome", sites: 6, atWriteSite: 0, verdict: "out-of-scope" },
   { file: "driver/status-snapshot.mjs", noun: "outcome", sites: 1, atWriteSite: 0, verdict: "out-of-scope" },
   { file: "mcp-server/lib/events.mjs", noun: "recovered", sites: 1, atWriteSite: 0, verdict: "out-of-scope" },
+  // Read at the writing site, as this table requires. All three sites are in `knockoutSearches`, a
+  // READ-ONLY projection that composes the rows `list_searches` answers with: it opens no artifact and
+  // writes nothing, so nothing here can reach `_driver/*.json` or `run.jsonl`. Each value is a literal
+  // chosen from the run's own stored record — "found" or "no-hit" from whether the mark has findings,
+  // and "recorded" for a register term whose stored row says it did NOT answer. None is a call's return
+  // read back as a verdict, which is the defect this table exists to find.
+  { file: "mcp-server/lib/knockout.mjs", noun: "outcome", sites: 3, atWriteSite: 0, verdict: "out-of-scope" },
   { file: "mcp-server/lib/ops.mjs", noun: "settled", sites: 1, atWriteSite: 0, verdict: "out-of-scope" },
   { file: "mcp-server/server.mjs", noun: "outcome", sites: 1, atWriteSite: 0, verdict: "out-of-scope" },
   { file: "scripts/backfill-started-at.mjs", noun: "outcome", sites: 5, atWriteSite: 0, verdict: "out-of-scope" },

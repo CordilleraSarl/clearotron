@@ -154,7 +154,11 @@ const DECLARED = Object.freeze({
   // "the lane that produced the record is a driver fact". The chip is derived from this joined list and
   // from the finding's own receipted evidence — never from a word the seat typed about itself.
   "marks.findings": ["ordinal", "name", "owner", "band", "net", "type", "evidence", "basis", "weighedFilings"],
-  "marks.registerReads": ["recordId", "read"],
+  // `band` is the rater's rating OF THAT FILING, optional, in the framework's own ladder words. It is
+  // declared here as well as in the tool schema because this allowlist — not the schema — is what the
+  // driver validates against: a key the seat sends and this list omits is refused, so the read would
+  // arrive banded and land unbanded with nothing saying why.
+  "marks.registerReads": ["recordId", "read", "band"],
   "marks.negatives": ["term", "source", "note"],
 });
 

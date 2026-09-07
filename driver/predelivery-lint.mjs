@@ -2454,6 +2454,13 @@ export function flagLines(failures) {
 // vendor vocabulary, no ids, no paths, no field names, no instructions to whoever regenerates the run,
 // never "certified"/"signed". deliveryVocabViolations() below enforces that mechanically.
 const DELIVERY_LINES = {
+  // Keyed on the FULL check id, which deliveryFlagLines resolves before the base — see the note there.
+  // The sentence states the CONSEQUENCE, in the receipt's own terms: not "a check failed" but "the rule
+  // was applied to nothing". Eleven graded runs delivered carrying this, two of them orderable product
+  // demos, and the only place it was written was one row of a fifty-odd-row receipt nobody routes.
+  "narrative-write-ups:could-not-read":
+    "The depth rules for the written-up findings were applied to nothing on this run — the narrative "
+    + "carries no block this check can read, so neither the ranking cut nor the length cap was verified.",
   // template — the summary table against the names actually searched
   "names-cell-populated": "The summary table does not name the mark that was searched.",
   "assessment-row": "A searched name has no assessment of its own in the summary table.",
@@ -2555,15 +2562,26 @@ export function deliveryVocabViolations(line) {
 export function deliveryFlagLines(failures) {
   const groups = new Map();
   for (const f of failures ?? []) {
-    const base = String(f?.id ?? "").split(":")[0];
+    const id = String(f?.id ?? "");
+    const base = id.split(":")[0];
     const family = String(f?.family ?? "");
-    const key = base || `family/${family}`;
-    const g = groups.get(key) ?? { base, family, n: 0 };
+    // A CHECK WHOSE DISTINCTION LIVES IN ITS SUFFIX COULD NOT BE SAID HERE (tracker issue 267).
+    //
+    // Grouping on `base` alone is right for the common case — a word-cap violation on nine write-ups is
+    // one delivery line, not nine. But it also collapsed `narrative-write-ups:could-not-read` into the
+    // same bucket as an ordinary depth violation, and those are different facts: one says a rule was
+    // broken, the other says the rule was ENFORCED ON NOTHING. The second had no sentence of its own to
+    // reach, so it degraded to the generic "a machine check did not pass" and became invisible.
+    //
+    // So: an entry keyed on the FULL id wins where one exists, and everything else groups by base
+    // exactly as before. This adds no line to any run that did not already produce one.
+    const key = DELIVERY_LINES[id] ? id : (base || `family/${family}`);
+    const g = groups.get(key) ?? { base, family, id: DELIVERY_LINES[id] ? id : null, n: 0 };
     g.n += 1;
     groups.set(key, g);
   }
   return [...groups.values()].map((g) => {
-    const sentence = DELIVERY_LINES[g.base] ?? DELIVERY_FAMILY_LINES[g.family] ?? DELIVERY_GENERIC;
+    const sentence = (g.id && DELIVERY_LINES[g.id]) ?? DELIVERY_LINES[g.base] ?? DELIVERY_FAMILY_LINES[g.family] ?? DELIVERY_GENERIC;
     // Belt and braces: a table entry that trips the house rules degrades to the generic instead of
     // shipping. This is what makes "no engine vocabulary reaches a reader" structural rather than a
     // matter of everyone remembering the rule when they add a check.

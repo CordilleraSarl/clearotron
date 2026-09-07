@@ -354,8 +354,8 @@ describe("scrub: #903 withdrawn_reason", () => {
 // exactly the set we removed, so it read as live.
 //
 // The ruling did not need a new product decision, because the product had already made it:
-// driver/publish/report-data.mjs:64 filters to live findings only, "a withdrawn finding renders nowhere
-// — it does not exist here either". Two client surfaces, one question, two answers. Option 1:
+// driver/publish/report-data.mjs:74 (`const live`) filters to live findings only, "a withdrawn finding
+// renders nowhere — it does not exist here either". Two client surfaces, one question, two answers. Option 1:
 // they agree by construction.
 //
 // NOTE WHAT DOES *NOT* CHANGE: the audit markdown keeps the block and keeps the stamp.

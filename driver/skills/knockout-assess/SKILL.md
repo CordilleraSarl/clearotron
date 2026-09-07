@@ -162,9 +162,14 @@ your job. These two fields are how what you concluded reaches the reader instead
 every id against that store and refuses one it does not hold — so the report can state a filing's
 source as a fact rather than as a word you typed about your own sourcing.
 
-- **`registerReads`** — on the MARK. Rows of `{recordId, read}` for a filing you weighed that did **not**
-  become a `findings[]` record. `read` is what you concluded about *that* filing: whether it bears on the
-  rating, and why. It prints on that filing's card.
+- **`registerReads`** — on the MARK. Rows of `{recordId, read, band?}` for a filing you weighed that did
+  **not** become a `findings[]` record. `read` is what you concluded about *that* filing: whether it bears
+  on the rating, and why. It prints on that filing's card. `band` is **optional** and is how you rate that
+  filing on its own — in the framework's band words, the same vocabulary as the mark's rating. Send it
+  whenever you formed a view on the filing itself: a registered right is often the one hard legal fact on
+  the page, and with no band its card is the only one carrying no rating while softer uses around it carry
+  one, which reads as though the registration mattered least. Omit it and the read still prints, claiming
+  no rating.
 - **`weighedFilings`** — on a FINDING. The `recordId`s whose evidence your reasoning for that conflict
   actually used. The report derives the finding's source labelling from this, so list one only if you
   reasoned from it.
@@ -205,7 +210,8 @@ line, which describes the card and claims nothing about the rating. So:
                "classesDriving": [8], "bullets": ["..."], "purpleNotes": ["..."],
                "registerEstimate": "...", "parodyNote": null, "crowdedField": false,
                "registerReads": [ { "recordId": "<verbatim from the filings you were given>",
-                                    "read": "<what you concluded about THAT filing>" } ],
+                                    "read": "<what you concluded about THAT filing>",
+                                    "band": "<OPTIONAL — your rating of THAT filing, in the ladder's words>" } ],
                "basis": "<ONE sentence: why this band, for this name, in these classes>",
                "factors": ["<2-4 load-bearing observations, one line each>"],
                "counterFactors": ["<1-3: what holds it at this band rather than the next>"],

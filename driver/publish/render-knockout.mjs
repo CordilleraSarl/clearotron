@@ -21,10 +21,20 @@
 // ~60 lines of duplicated document shell, and it is the right price: the alternative is exporting the
 // shell out of the frozen file, which is a bigger break than the duplication saves.
 //
-// ONE report. There is no client variant and no internal variant. What used
-// to render purple — the staff notes and the model's register estimate — is not stripped here, it is
-// simply NOT PART OF THE REPORT; it lives in the audit workbook, which is where internal working material
-// belongs. That removes the whole class of "the wrong link got sent".
+// ONE report. There is no client variant and no internal variant, and that is
+// still the rule — it is what removes the whole class of "the wrong link got sent".
+//
+// WHAT CHANGED, 2026-09-07 (owner ruling, tracker issue 274): the one report now CARRIES the reviewer's
+// notes rather than routing them to the audit workbook alone. The earlier reading of "one report" was
+// that internal working material is simply not part of it; the ruling is that there is one report and the
+// person who ran Clearotron reads it, so holding material back "just adds confusion for where data is
+// lost". Six notes written for the reviewing lawyer on a delivered run reached the spreadsheet and
+// nothing else, which is the measurement behind the ruling.
+//
+// So: the notes render, LABELLED, in report.css's existing `.internal` purple convention (see
+// reviewerNotesBlock) — never merged into the client-voiced body. The workbook keeps them as well; this
+// added a surface and moved none. The model's `registerEstimate` is NOT covered by the ruling and stays
+// off the page.
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -176,6 +186,14 @@ const KO_CSS = `
   .ko-findev{margin:0;font-size:12.5px;line-height:1.6;word-break:break-word}
   .ko-count{font-family:var(--mono);font-size:13px;color:var(--ink);margin:0}
   .ko-degraded{font-size:13px;color:var(--med-tx,#82550A);margin:8px 0 0;font-style:italic}
+  /* The reviewer-notes legend. NOT .ko-legend — that name is taken by the framework attribution row
+     above, and reusing it would restyle the caption. It names the purple convention report.css already
+     draws for .internal, so the colour is stated once and never re-specified. */
+  .ko-refnote{margin:0;padding:11px 24px 0;font-size:12px;color:#6a2b6e;font-style:italic}
+  /* The notes sit inside a mark's column, so the shared .internal block's bullets keep the column's
+     own list indent and do not fight the paragraph above them. */
+  .ko-row .internal .ko-bul{margin:0 0 4px}
+  .ko-row .internal .ko-bul:last-child{margin-bottom:0}
   .ko-counts table{width:100%;border-collapse:collapse;font-size:14px}
   .ko-counts th{text-align:left;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);
     font-weight:700;padding:14px 24px 8px;border-bottom:1px solid var(--line)}
@@ -728,9 +746,13 @@ function registerCardViews(mark, framework, registerRecords) {
  * is gone; what tells the two apart on the page is where the finding came from, which is the vocabulary
  * the clearance reports already use for exactly this.
  *
- * NO BAND CHIP AND NO `bandStop`, still, and for the reason the old note gave: a rung of the run's ladder
- * here would be a rating nobody performed. The rail takes --faint so the card reads off the risk ramp
- * rather than on it.
+ * THE BAND CHIP IS DRAWN ONLY WHEN THE RATER SENT ONE, and that condition is the whole rule. The old note
+ * here said "no band chip and no `bandStop`, ever: a rung of the run's ladder would be a rating nobody
+ * performed" — which was true for as long as nothing could carry the rater's rating of an individual
+ * filing. `registerReads[].band` now can (tracker issue 274), so the objection is answered where it was
+ * raised: with a band, the rating WAS performed, by the seat, in the framework's own words, and the chip
+ * states it. With no band the old rule stands unchanged — --faint rail, no chip, nothing claimed — and
+ * that is still what every archived run renders.
  *
  * THE LINE UNDER THE STATEMENT DESCRIBES THE CARD, NOT THE RATING. It used to deny
  * that the rating turned on this filing, which this function has no way to know and which a delivered
@@ -759,24 +781,56 @@ function sourceChips(v) {
   return `${commonLaw ? '<span class="src cl">Common law</span>' : ''}${register ? '<span class="src reg">Register</span>' : ''}`;
 }
 
-function registerFindingBlock(v, markIndex, reads = null) {
+// ── THE REVIEWER'S NOTES, ON THE REPORT ─────────────────────────────────────────────────
+//
+// OWNER RULING, 2026-09-07: there is one report and the person who ran Clearotron reads it — keeping
+// this material off the page "just adds confusion for where data is lost". This replaces the earlier
+// split under which the notes went to the audit workbook alone (the header of this file and
+// publish/knockout.mjs carried that rule; both now say what replaced it). The workbook keeps them too:
+// this adds a surface, it does not move one.
+//
+// LABELLED, NEVER MERGED. They render in the established `.internal` purple convention report.css
+// already defines — the same one the clearance report uses for this material — so a reader can see whose
+// voice a line is in. Merging them into the client-voiced body would make the reviewer's asides read as
+// findings about the mark, which is the one way this ruling could produce a worse document.
+const REVIEWER_NOTES_LEGEND = 'Information for your reference/context that likely does not need to be shared with the business is shown in purple.';
+
+function reviewerNotesBlock(m) {
+  const notes = (Array.isArray(m?.purpleNotes) ? m.purpleNotes : [])
+    .map((n) => String(n ?? '').trim()).filter(Boolean);
+  if (!notes.length) return '';
+  return `<div class="internal">
+            <span class="tag">For your reference</span>
+            ${notes.map((n) => `<p class="ko-bul">${inlineMd(n)}</p>`).join('')}
+          </div>`;
+}
+
+function registerFindingBlock(v, markIndex, reads = null, framework = null) {
   const r = v.record;
   // — THE RATER'S OWN READ OF THIS FILING, when it recorded one. `registerReads` is
   // joined to the record store by the validator, so a row that reaches here names a filing this run
   // actually holds. With no row the neutral line stands, and the neutral line is TRUE: it describes the
   // card. That is why the field can be optional without the page ever asserting something false.
-  const read = (Array.isArray(reads) ? reads : [])
-    .map((x) => ({ id: String(x?.recordId ?? '').trim(), text: String(x?.read ?? '').trim() }))
-    .find((x) => x.id && x.id === String(r?.recordId ?? '').trim())?.text;
+  const row = (Array.isArray(reads) ? reads : [])
+    .map((x) => ({ id: String(x?.recordId ?? '').trim(), text: String(x?.read ?? '').trim(), band: String(x?.band ?? '').trim() }))
+    .find((x) => x.id && x.id === String(r?.recordId ?? '').trim());
+  const read = row?.text;
+  // The band rides the SAME row as the read and is independently optional: a read with no band prints
+  // exactly as it did before this field existed. The validator has already checked the word against the
+  // frozen ladder, so `bandStop` resolves a real stop rather than falling through to a default that would
+  // colour an unknown word as though it were rated.
+  const band = row?.band || null;
+  const stop = band ? bandStop(framework, band) : null;
   const meta = [r.owner ? esc(r.owner) : 'proprietor not stated', r.territory ? esc(r.territory) : null]
     .filter(Boolean).join(' · ');
   const receipt = isHttpUrl(r.url) ? linkOrText(r.url) : esc(r.recordId ?? 'no record address supplied');
   return `<div class="card ko-find" data-ko-mark="${Number(markIndex)}" data-ko-ord="${Number(v.ordinal)}">
         <div class="top">
-          <div class="rail" style="background:var(--faint)"></div>
+          <div class="rail" style="background:var(${stop ?? '--faint'})"></div>
           <div class="body">
             <div class="cardhead">
-              <span class="fnum">${esc(v.ref)}</span><span class="who">${esc(r.mark ?? 'Unnamed filing')}</span><span class="src reg">Register</span>
+              <span class="fnum">${esc(v.ref)}</span><span class="who">${esc(r.mark ?? 'Unnamed filing')}</span>${
+    band ? `<span class="ko-findband" style="background:var(${stop})">${esc(band)}</span>` : ''}<span class="src reg">Register</span>
             </div>
             <p class="ko-findmeta">${meta}</p>
             <p class="ko-findnet">${esc(v.statement)}</p>
@@ -925,7 +979,7 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
     // under compareKnockoutBlockingPower, so appending them is the ladder's own rule applied to a row
     // that has no rung, not a new one invented for the register.
     const reg = registerCardViews(m, framework, registerRecords);
-    const regBlocks = reg.cards.map((v) => registerFindingBlock(v, markIndex, m?.registerReads)).join('');
+    const regBlocks = reg.cards.map((v) => registerFindingBlock(v, markIndex, m?.registerReads, framework)).join('');
     const overflow = reg.promoted > reg.cards.length
       ? `<p class="ko-bul">${esc(`${reg.promoted - reg.cards.length} further filing${reg.promoted - reg.cards.length === 1 ? '' : 's'} for this name met the same test — every one of them is in the filings section below.`)}</p>`
       : '';
@@ -950,11 +1004,17 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
       <div>
         ${body || '<p class="ko-bul">No adverse signals recorded for this name on this screen.</p>'}
         ${m.degraded ? `<p class="ko-degraded">${esc(DEGRADED_NOTE)}</p>` : ''}
+        ${reviewerNotesBlock(m)}
         <p class="ko-reg">${esc(registerLine(m, registerCounts, probeRan, registerRecords, reg.cards))}</p>
       </div>
     </div>`;
   }).join('');
-  return `<div class="panel ko-glance">${cards}</div>`;
+  // The legend rides the panel and only when a note is actually on it — a standing sentence explaining a
+  // colour no reader can see would be the report describing a convention it did not use.
+  const anyNotes = marks.some((m) => (Array.isArray(m?.purpleNotes) ? m.purpleNotes : [])
+    .some((n) => String(n ?? '').trim()));
+  const legend = anyNotes ? `<p class="ko-refnote">${esc(REVIEWER_NOTES_LEGEND)}</p>` : '';
+  return `<div class="panel ko-glance">${legend}${cards}</div>`;
 }
 
 // The method line names EXACTLY what ran, and its wording is doctrine — with counts on the page, "register
@@ -1324,6 +1384,39 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
         classesDriving: m.classesDriving ?? [],
         degraded: Boolean(m.degraded),
         points: m.bullets ?? [],
+        // ── THE ASSESSMENT THE RUN ALREADY WROTE (tracker issue 274) ──────────────────────────────
+        //
+        // Seven keys the assess stage writes into knockout-findings.json reached this file as nothing.
+        // They were not withheld by a rule — no code decided against them; this projection is an explicit
+        // whitelist and nobody had added them, so an assistant drafting from this file could not see the
+        // reasoning behind a rating it was drafting about.
+        //
+        // `assessment` is the sharpest case: publish substitutes it into `batch.executiveSummary` ONLY on
+        // a multi-mark batch, so on a single-mark run — the common knockout — the mark's own opening read
+        // was written, validated, and then dropped by both surfaces at once.
+        //
+        // `purpleNotes` is the reviewer's notes, and it is here by the owner's ruling of 2026-09-07: one
+        // report, read by the person who ran Clearotron, because keeping material off it "just adds
+        // confusion for where data is lost". They are LABELLED on the page rather than merged into the
+        // client-voiced body — see reviewerNotesBlock — so a reader can tell whose voice they are in.
+        assessment: (() => { const t = String(m.assessment ?? '').trim(); return t || null; })(),
+        counterFactors: m.counterFactors ?? [],
+        mitigation: (() => { const t = String(m.mitigation ?? '').trim(); return t || null; })(),
+        // `null`, not `false`, when the rater said nothing: a crowded field is a mitigant the reasoning
+        // turns on, and an unstated one must not read as a stated "no".
+        crowdedField: typeof m.crowdedField === 'boolean' ? m.crowdedField : null,
+        reviewerNotes: m.purpleNotes ?? [],
+        // The proof-of-search rows — the same defensibility record list_searches answers from.
+        negatives: (m.negatives ?? []).map((n) => ({
+          term: n?.term ?? null, source: n?.source ?? null, note: n?.note ?? null,
+        })),
+        // The rater's read of a filing it weighed, keyed by the record id the card prints, so a consumer
+        // can join a read to its filing without matching on prose.
+        registerReads: (m.registerReads ?? []).map((x) => ({
+          recordId: x?.recordId ?? null,
+          read: x?.read ?? null,
+          band: String(x?.band ?? '').trim() || null,
+        })),
         // — the typed finding, ranked, with the reference the report prints. The old key was
         // `evidence[]` and it was `(m.findings ?? []).filter((f) => f?.url)`: a typed finding has no
         // `url`, so this file — the one the assistant drafts client mail from — silently carried zero
@@ -1345,14 +1438,31 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
           //     A promoted filing the brief omitted would be the report and the brief disagreeing about
           //     what the run found.
           //
-          // `band: null` and `shape: 'register'` are the load-bearing fields: a consumer can tell a
-          // weighed conflict from a pointed-at filing without parsing prose, and `net` carries the
-          // not-weighed sentence so a consumer that reads only `net` still cannot overstate it.
-          ...registerCardViews(m, framework, registerRecords).cards.map((v) => ({
-            ref: v.ref, ordinal: v.ordinal, name: v.record.mark, owner: v.record.owner, band: null,
-            type: 'Register filing', net: `${v.statement} It was ${NOT_WEIGHED}.`, basis: NOT_WEIGHED,
-            evidence: v.evidence, shape: 'register',
-          })),
+          // `shape: 'register'` is the load-bearing field: a consumer can tell a weighed conflict from a
+          // pointed-at filing without parsing prose.
+          //
+          // `band` AND `basis` NOW CARRY THE RATER'S READ WHEN IT SENT ONE (tracker issue 274). Before
+          // this, both were constants — `band: null` and the not-weighed sentence — on every filing of
+          // every run, including runs where the seat had written a full read of that exact filing and the
+          // HTML card was already printing it. The page and this file disagreed, and this file is the one
+          // the MCP brief answers from, so the surface a reader asks "what did you make of that
+          // registration?" was the surface that had dropped the answer.
+          //
+          // The unmatched case is unchanged and must stay that way: no row for this recordId ⇒ `band:
+          // null` and the not-weighed line, which describes the card and claims nothing.
+          ...registerCardViews(m, framework, registerRecords).cards.map((v) => {
+            const row = (Array.isArray(m?.registerReads) ? m.registerReads : [])
+              .find((x) => String(x?.recordId ?? '').trim() && String(x?.recordId ?? '').trim() === String(v.record?.recordId ?? '').trim());
+            const read = String(row?.read ?? '').trim() || null;
+            const band = String(row?.band ?? '').trim() || null;
+            return {
+              ref: v.ref, ordinal: v.ordinal, name: v.record.mark, owner: v.record.owner, band,
+              type: 'Register filing',
+              net: read ? v.statement : `${v.statement} It was ${NOT_WEIGHED}.`,
+              basis: read ?? NOT_WEIGHED,
+              evidence: v.evidence, shape: 'register',
+            };
+          }),
         ],
         registerCounts: counted?.counts
           ? {

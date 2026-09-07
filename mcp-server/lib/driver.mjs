@@ -14,6 +14,12 @@ export {
   REGISTER_AXES, decideAxes, axisTier,
 } from "../../driver/stages.mjs";
 
+// The KNOCKOUT lane's own run-dir table. `paths` above is the CLEARANCE table and has no entry for any
+// file this lane writes, which is why every audit projection read a delivered knockout as a run with
+// nothing on disk (tracker issue 275). Re-exported rather than re-derived for the reason this whole file
+// exists: a second copy of a path table drifts, and the drift shows up as an artifact reported missing.
+export { koPaths } from "../../driver/stages-knockout.mjs";
+
 // stripInternal/stripEngineInternals/stripTelemetry are the driver's OWN client-safety transforms — the
 // same ones publish/render.mjs applies to the client HTML export. lib/scrub.mjs composes them so the MCP
 // client surface and the delivered report answer "what may a client see?" from ONE definition ( R1:

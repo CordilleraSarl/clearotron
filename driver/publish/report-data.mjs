@@ -4,9 +4,19 @@
 // report-data.json since the one-report collapse; the clearance lane's native-render branch existed in
 // the portal with NO producer anywhere (B3's "the aspirational path") — this is that producer.
 //
-// Two readers, one file (the knockout doctrine, verbatim): the assistant drafts client-facing mail from
-// it, and the portal's native-render path reads it instead of iframing baked HTML. It is the CLIENT CUT
-// by construction, not by serve-time stripping:
+// Two readers, one file (the knockout doctrine, as it stood): the assistant drafts client-facing mail
+// from it, and the portal's native-render path reads it instead of iframing baked HTML.
+//
+// THE TWO LANES DIVERGED ON 2026-09-07 AND THIS FILE DID NOT MOVE. The owner ruled (tracker issue 274)
+// that the KNOCKOUT report carries the reviewer's notes, on the ground that one report is read by the
+// person who ran Clearotron and holding material back confuses where data went; render-knockout.mjs
+// projects them under `reviewerNotes`. That ruling was about those notes on that lane. It did not touch
+// what this producer strips — withdrawn findings, verification receipts, `::p::` tails, `[internal]`
+// labels and engine-internal narration are all still cut here, and the guard test still polices them.
+// Do not read the knockout change as licence to relax this list; if the ruling is meant to extend, it
+// extends by being asked, not by inference.
+//
+// It remains the CLIENT CUT by construction, not by serve-time stripping:
 //   • only LIVE findings (a withdrawn finding renders nowhere — it does not exist here either);
 //   • no verification receipts (use_check / own_rights / bears_on — those are the reviewer's evidence
 //     trail and live in the audit workbook), no withdrawn_reason, no quarantine records;
