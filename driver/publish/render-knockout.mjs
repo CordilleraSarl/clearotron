@@ -672,7 +672,11 @@ const NOT_WEIGHED = NOT_WEIGHED_LINE;
  * Neither test is a judgment about the filing. Whether any of it blocks anything is lawyer work this
  * product does not do — the same line register-records.mjs rule 3 has held since the lane shipped.
  */
-function promotableRecords(entry, mark) {
+// EXPORTED so the pipeline can ask the same question the page asks (tracker issue 276). The owner
+// use-check runs on PROMOTED filings only, and "promoted" has to mean here what it means on the report —
+// a second predicate would let the engine search an owner whose filing the report never shows, or skip
+// one it does.
+export function promotableRecords(entry, mark) {
   const scope = new Set([...(mark?.classesSearched ?? []), ...(entry?.classes ?? [])]
     .map(Number).filter(Number.isInteger));
   return (entry?.records ?? []).filter((r) => {
@@ -795,6 +799,18 @@ function sourceChips(v) {
 // findings about the mark, which is the one way this ruling could produce a worse document.
 const REVIEWER_NOTES_LEGEND = 'Information for your reference/context that likely does not need to be shared with the business is shown in purple.';
 
+// The clearance lane's own label, copied rather than re-worded (tracker issue 276). One spelling across
+// both products is the point: a reader who has seen it on a clearance report knows what it means here.
+const USE_CHECK_LABEL = 'Use-check source:';
+
+/** The owner lookup covering a filing, joined by recordId. `null` when this run owed that filing none. */
+function ownerCheckFor(ownerChecks, recordId) {
+  const id = String(recordId ?? '').trim();
+  if (!id) return null;
+  return (Array.isArray(ownerChecks) ? ownerChecks : [])
+    .find((c) => (Array.isArray(c?.recordIds) ? c.recordIds : []).some((x) => String(x).trim() === id)) ?? null;
+}
+
 function reviewerNotesBlock(m) {
   const notes = (Array.isArray(m?.purpleNotes) ? m.purpleNotes : [])
     .map((n) => String(n ?? '').trim()).filter(Boolean);
@@ -805,7 +821,7 @@ function reviewerNotesBlock(m) {
           </div>`;
 }
 
-function registerFindingBlock(v, markIndex, reads = null, framework = null) {
+function registerFindingBlock(v, markIndex, reads = null, framework = null, ownerChecks = []) {
   const r = v.record;
   // — THE RATER'S OWN READ OF THIS FILING, when it recorded one. `registerReads` is
   // joined to the record store by the validator, so a row that reaches here names a filing this run
@@ -821,6 +837,16 @@ function registerFindingBlock(v, markIndex, reads = null, framework = null) {
   // colour an unknown word as though it were rated.
   const band = row?.band || null;
   const stop = band ? bandStop(framework, band) : null;
+  // ── WHERE THE OWNER'S TRADE WAS LOOKED UP (tracker issue 276) ──────────────────────────────────
+  //
+  // The source is the DRIVER'S, joined by this filing's own recordId — never a URL the seat typed. That
+  // is the whole reason a reader can trust it: the row exists because the driver made the call, so
+  // "asserting a no-result without issuing a query" is not a thing this surface can express.
+  //
+  // ABSENT ON A RUN THAT OWED NO CHECK, and that silence is correct: no line at all says nothing, while
+  // a line reading "no result" on a filing nobody was asked about would claim a search that never ran.
+  const useCheck = ownerCheckFor(ownerChecks, r?.recordId);
+  const useCheckSource = useCheck?.source ?? null;
   const meta = [r.owner ? esc(r.owner) : 'proprietor not stated', r.territory ? esc(r.territory) : null]
     .filter(Boolean).join(' · ');
   const receipt = isHttpUrl(r.url) ? linkOrText(r.url) : esc(r.recordId ?? 'no record address supplied');
@@ -835,6 +861,7 @@ function registerFindingBlock(v, markIndex, reads = null, framework = null) {
             <p class="ko-findmeta">${meta}</p>
             <p class="ko-findnet">${esc(v.statement)}</p>
             <p class="ko-findbasis">${esc(read || NOT_WEIGHED)}</p>
+            ${useCheck ? `<p class="ko-findev">${esc(USE_CHECK_LABEL)} ${isHttpUrl(useCheckSource) ? linkOrText(useCheckSource) : esc(useCheckSource)}</p>` : ''}
             <p class="ko-findev">Register record: ${receipt}</p>
           </div>
         </div>
@@ -970,7 +997,7 @@ function readBlock(m) {
   ].filter(Boolean).join('');
 }
 
-function analysisSection(marks, framework, { registerCounts = null, probeRan = false, registerRecords = null } = {}) {
+function analysisSection(marks, framework, { registerCounts = null, probeRan = false, registerRecords = null, ownerChecks = [] } = {}) {
   const cards = marks.map((m, markIndex) => {
     const stop = bandStop(framework, m.rating);
     const bullets = readBlock(m);
@@ -979,7 +1006,7 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
     // under compareKnockoutBlockingPower, so appending them is the ladder's own rule applied to a row
     // that has no rung, not a new one invented for the register.
     const reg = registerCardViews(m, framework, registerRecords);
-    const regBlocks = reg.cards.map((v) => registerFindingBlock(v, markIndex, m?.registerReads, framework)).join('');
+    const regBlocks = reg.cards.map((v) => registerFindingBlock(v, markIndex, m?.registerReads, framework, ownerChecks)).join('');
     const overflow = reg.promoted > reg.cards.length
       ? `<p class="ko-bul">${esc(`${reg.promoted - reg.cards.length} further filing${reg.promoted - reg.cards.length === 1 ? '' : 's'} for this name met the same test — every one of them is in the filings section below.`)}</p>`
       : '';
@@ -1174,6 +1201,9 @@ function methodLine(registerCounts, probeRan, { citedFindings = 0, uncitedFindin
 export function renderKnockoutHtml(findings, framework, {
   runId, overall, issued = null, auditFile = null, probeRan = false, registerCounts = null,
   registerRecords = null,
+  // The driver's own record of the owner lookups it ran (tracker issue 276). Defaults to [] so an
+  // archived run that predates the lane renders exactly as it was delivered.
+  ownerChecks = [],
   identity = null, matter = null, homeHref = null, chromeHref = null, depthNote = null,
   // — the run's FROZEN policy, so the scope section states what this run was
   // instructed to do rather than what its artifacts happen to show. Defaults to null, and an archived
@@ -1214,7 +1244,7 @@ export function renderKnockoutHtml(findings, framework, {
   const counts = hasCounts
     ? countsSection(marks, registerCounts)
     : `<div class="panel"><p class="ko-tier">${esc(tierLine)}</p></div>`;
-  const analysis = analysisSection(marks, framework, { registerCounts, probeRan, registerRecords });
+  const analysis = analysisSection(marks, framework, { registerCounts, probeRan, registerRecords, ownerChecks });
   const provider = hasCounts ? (registerCounts.providerLabel ?? registerCounts.provider ?? 'the register') : null;
   // The filings appendix renders only when the run produced a listing artifact — never on its absence,
   // and never as an empty table. A knockout with no sidecar publishes exactly the counts-only document.
@@ -1342,7 +1372,7 @@ window.addEventListener('beforeprint',o);})();</script>
  * where the working notes live, and a data file that quietly re-admitted them would reopen exactly the
  * leak this series closed.
  */
-export function knockoutReportData(findings, framework, { runId, codename, overall, issued, identity, registerCounts, registerRecords = null, url, auditFile, customerKey, matter }) {
+export function knockoutReportData(findings, framework, { runId, codename, overall, issued, identity, registerCounts, registerRecords = null, ownerChecks = [], url, auditFile, customerKey, matter }) {
   const marks = findings?.marks ?? [];
   return {
     schema: 'report-data/1',
@@ -1455,11 +1485,16 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
               .find((x) => String(x?.recordId ?? '').trim() && String(x?.recordId ?? '').trim() === String(v.record?.recordId ?? '').trim());
             const read = String(row?.read ?? '').trim() || null;
             const band = String(row?.band ?? '').trim() || null;
+            // The driver's own record of where this filing's proprietor was looked up (tracker issue
+            // 276), joined by recordId. `null` where the run owed no check — the same three states the
+            // card has, so a consumer can tell "searched and found nothing" from "never searched".
+            const oc = ownerCheckFor(ownerChecks, v.record?.recordId);
             return {
               ref: v.ref, ordinal: v.ordinal, name: v.record.mark, owner: v.record.owner, band,
               type: 'Register filing',
               net: read ? v.statement : `${v.statement} It was ${NOT_WEIGHED}.`,
               basis: read ?? NOT_WEIGHED,
+              useCheckSource: oc?.source ?? null,
               evidence: v.evidence, shape: 'register',
             };
           }),
