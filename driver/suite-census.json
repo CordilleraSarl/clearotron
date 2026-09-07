@@ -748,8 +748,8 @@
           "todos": 0
         },
         "ask-ledger.test.mjs": {
-          "tests": 21,
-          "asserts": 100,
+          "tests": 26,
+          "asserts": 119,
           "skips": 0,
           "todos": 0
         },
@@ -3184,8 +3184,8 @@
           "todos": 0
         },
         "register-digest-record.test.mjs": {
-          "tests": 30,
-          "asserts": 102,
+          "tests": 32,
+          "asserts": 114,
           "skips": 0,
           "todos": 0
         },
@@ -5073,8 +5073,8 @@
           "todos": 0
         },
         "whatif.test.mjs": {
-          "tests": 9,
-          "asserts": 29,
+          "tests": 10,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         }
