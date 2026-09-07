@@ -123,7 +123,7 @@ const FROZEN_DIRS = [
 //
 // research/ IS REQUIRED AND THE PROOF IS WHAT FOUND IT. publish/knockout.mjs
 // traces every finding citation back to the run's own research payload — `research/<mark>.md`, read from
-// the workspace (knockout.mjs:317) — and REFUSES the publish when a citation cannot be traced. The first
+// the workspace (publish/knockout.mjs:317) — and REFUSES the publish when a citation cannot be traced. The first
 // knockout freeze copied nine files, left research/ behind, and the republish proof threw:
 //
 //   knockout publish REFUSED: 2 finding citation(s) could not be traced to this run's own research
