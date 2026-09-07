@@ -1,5 +1,7 @@
 # trademark-artifacts-mcp
 
+## 0.2.1-beta.2
+
 ## 0.2.1-beta.1
 
 ## 0.2.1-beta.0

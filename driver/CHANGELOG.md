@@ -1,5 +1,11 @@
 # prelim-driver
 
+## 0.2.1-beta.2
+
+### Patch Changes
+
+- 8b5ab91: Fixed: `doctor` no longer reports a working Cloudflare Access door as unprotected. An API-style door and a failing origin are now told apart, each with its own message. Neither is reported as a pass.
+
 ## 0.2.1-beta.1
 
 ### Patch Changes
