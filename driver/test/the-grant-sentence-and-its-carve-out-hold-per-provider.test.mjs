@@ -77,7 +77,7 @@ test("the grant sentence names only what THIS provider serves, for every provide
         `${p}: the grant sentence ${sentence.includes(tool) ? "names" : "omits"} ${tool}, and the provider `
         + `${served.has(tool) ? "serves" : "does not serve"} it. A sentence that asserts a capability the `
         + "deployment lacks is what tracker issue 2034 is; one that omits a tool the seat holds is what "
-        + "tracker issue 1930's other direction is.");
+        + "the other direction is.");
     }
   }
 });

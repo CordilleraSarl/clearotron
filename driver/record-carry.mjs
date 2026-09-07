@@ -103,7 +103,7 @@ export const TRACE_SCOPE = {
   uninstrumented: [
     { path: "common-law", reason: "common-law-grid.json → findings is not joined here; a candidate lost on that path emits NO row and this trace can say nothing about it either way" },
     { path: "case-law", reason: "case-law findings are not traced to a record at all" },
-    { path: "serp/nativeread", reason: "reason: and write _driver/jx/zh-grid.json; nothing on them reaches this trace because it traces the register path only. Their carry is #402's, on the common-law tracer, because zh-grid.json carries the common-law cells[]+gaps[] shape and not a register band" },
+    { path: "serp/nativeread", reason: "reason: and write _driver/jx/zh-grid.json; nothing on them reaches this trace because it traces the register path only. Their carry is the common-law tracer's, because zh-grid.json carries the common-law cells[]+gaps[] shape and not a register band" },
     { path: "crowd remainder", reason: "count-only slices have no record bodies — enumerated per slice in untraceable_slices[], never per record" },
   ],
 };

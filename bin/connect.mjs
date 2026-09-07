@@ -372,7 +372,7 @@ export function unitIsHealthy(name, { show = showUnit, pause = settle } = {}) {
   if (error) {
     // ── A BUS THAT COULD NOT BE REACHED IS NOT A DOOR THAT IS DOWN (tracker issue 130) ────────────
     //
-    // Returning false here is what made the operator worse off than before tracker issue 121's fix.
+    // Returning false here is what made the operator worse off than before that fix.
     // The caller renders false as "the door is not open, so no key was issued" — a confident, wrong,
     // client-facing sentence about a door that is `active`, with the real cause discarded. And it is
     // reachable on the ordinary path: a box whose door is already installed and running never calls

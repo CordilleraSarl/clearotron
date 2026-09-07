@@ -1351,7 +1351,7 @@ export const CASE_LAW_TRIGGERS = /watchlist|precedent|case[- ]law|opposition|fam
 // The offering locked with the reviewing lawyer gives the case-law and opposition reading to the Full
 // country search alone, over exactly one country, where it is automatic. Multi-country focus deliberately
 // has no case-law component. `job.caseLaw` is refused at the door and `policy.caseLaw` is set from the
-// product spec, so the REQUESTED path was already confined correctly — and #92's one-territory rule is
+// product spec, so the REQUESTED path was already confined correctly — and the one-territory rule is
 // enforced at that door.
 //
 // The detector was not. It fires mid-run, after admission, on a run already scoped to however many

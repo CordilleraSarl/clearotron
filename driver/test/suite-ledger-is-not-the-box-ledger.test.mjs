@@ -66,7 +66,7 @@ test("#1269 a suite run gets NO legacy notice — it is not writing to the machi
 test("#1269 an empty or whitespace suite dir is NOT a redirect — it falls through to the ladder", () => {
   // `X=` in an EnvironmentFile means "not configured". An empty string reaching a join() would send
   // every ledger to a relative "register-calls.jsonl" in whatever the cwd happens to be, which is the
-  // tracker issue 1216 defect shape: a value that looks set and resolves to somewhere nobody chose.
+  // The defect shape: a value that looks set and resolves to somewhere nobody chose.
   for (const v of ["", "   "]) {
     const r = resolveLedger("call", { [SUITE_TELEMETRY_DIR_ENV]: v });
     assert.notEqual(r.source, "suite");

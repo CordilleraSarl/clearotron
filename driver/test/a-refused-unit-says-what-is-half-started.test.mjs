@@ -213,7 +213,7 @@ test("203 the OTHER systemd catch still lands, and now leads with what systemd s
     assert.match(said, /user manager is not reachable/,
       `this drive did not reach the daemon-reload catch:\n${said.slice(-1200)}`);
     assert.match(said, /Failed to connect to bus: No medium found/,
-      `systemd's own words are still being discarded here — the half of tracker issue 121 that was `
+      `systemd's own words are still being discarded here — the half that was `
       + `never done in this file:\n${said.slice(-1200)}`);
     assert.match(said, /loginctl enable-linger/, "the lingering cause is gone");
     assert.match(said, /export DBUS_SESSION_BUS_ADDRESS/, "the bus-unset cause is gone");

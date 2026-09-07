@@ -1245,7 +1245,7 @@ if (isMain) {
       } catch { /* no file yet — the union is the whole of it */ }
       // ONE COMPOSER for "where do I set these", used by the start-time refusal and by the order-time
       // announcement below it. Two copies of this sentence is how one of them comes to name a file the
-      // reader cannot use — which is the whole of tracker issue 202.
+      // reader cannot use.
       const orderRemedy = (homeEnv) => {
         const cliEnv = envFileRead();
         return cliEnv

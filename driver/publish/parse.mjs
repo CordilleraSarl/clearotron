@@ -229,7 +229,7 @@ export function stripTelemetry(md) {
 //
 // `disposition` is a PLACEMENT key. stages.mjs dictates it as the posture that sets only WHERE a card is
 // placed and never the band; findings-model's DISPOSITION_GROUP maps it to the section heading the report
-// already prints. tracker issue 762 D5 took it off the report's risk chip and tracker issue 833 added the `disposition` KEY to
+// already prints. D5 took it off the report's risk chip and a later change added the `disposition` KEY to
 // scrubCards' strip list — and the word still reached client principals, because audit-from-spine.mjs
 // re-encodes it into two OTHER keys that survive an allowlist keyed on names:
 //

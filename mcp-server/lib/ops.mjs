@@ -211,7 +211,7 @@ export const START_RUN_JOB_FIELDS = Object.freeze({
       + "which writes the field directly rather than asking this tool for it (tracker issue 2038).",
     promptParts: "the requester's declaration that the prose rides as SIDECAR files. This door assembles from "
       + "structured tool input and writes no sidecars, so a job it built cannot be in that shape. Carrying it "
-      + "would make the manifest claim an intake it did not use, and #1085's check would then report sidecars "
+      + "would make the manifest claim an intake it did not use, and the manifest check would then report sidecars "
       + "missing on a job that never had any.",
     name: "the pre-markName spelling of the search subject. The schema offers markName/marks[]; a second "
       + "name field would give one door two answers to 'what is being cleared'.",

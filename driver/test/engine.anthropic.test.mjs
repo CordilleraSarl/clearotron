@@ -631,7 +631,7 @@ test("#1692 the grace does NOT survive first contact — a tight ceiling still b
 }));
 
 test("#1780 STARTUP DEBT is not charged to the progress clock — the first byte STARTS it, not just releases it", timed(async () => {
-  // The cause of tracker issue 1780, and of the red on tracker issue 1810's run 32680317129 (an arm above, on a diff that cannot
+  // The cause of the startup debt, and of the red on run 32680317129 (an arm above, on a diff that cannot
   // reach this engine). tracker issue 1692 widened the pre-first-byte DEADLINE but never moved the clock's ORIGIN, so
   // the startup interval stayed on the meter: at the instant the grace stopped protecting the turn,
   // progIdle already WAS the whole boot, and any NOPROG shorter than startup was expired before the child

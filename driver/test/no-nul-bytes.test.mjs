@@ -20,7 +20,7 @@
 // THE EXEMPTION IS AN EXTENSION LIST, AND IT IS EARNED. Real binary fixtures are tracked on purpose
 // (the uspto-local zip fixtures). They are exempted by extension, and a companion test asserts the
 // exemption still pays its way in BOTH directions — an extension exempted while no tracked file of
-// that kind carries a NUL is a stale hole waiting for a real one to move into (tracker issue 1054's rule, one
+// that kind carries a NUL is a stale hole waiting for a real one to move into (the rule, one
 // guard over).
 
 import { test } from "node:test";

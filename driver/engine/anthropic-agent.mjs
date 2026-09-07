@@ -595,7 +595,7 @@ export const anthropicAgentEngine = {
       const openAsks = [];             // ask records still outstanding, oldest first
       const askById = new Map();       // tool_use_id → its ask record
       let periodStart = null;          // when the current outstanding-SET period began
-      let periodChunk = null;          // the chunk it began in — tracker issue 1828's unmeasurable flag
+      let periodChunk = null;          // the chunk it began in — the unmeasurable flag
       let anonSeq = 0;                 // ids are on the wire, but never assume: synthesize if absent
       const periodKey = () =>
         [...new Set(openAsks.flatMap((r) => r.names))].sort().join("+");

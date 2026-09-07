@@ -169,7 +169,7 @@ jobs:
     # IT IS NOT THE PUBLISH WAIT, and this comment said it was until 2026-09-07 (tracker issue 298).
     # That wait is `WAIT_MS` in `release-await-cut.mjs`, and it runs in the `awaited` job, which this
     # job never invokes — as the paragraph further down this same block already says. The arm was
-    # corrected under tracker issue 247 and the sentence beside the number was not, so one block
+    # corrected and the sentence beside it was not, so one block
     # stated two contradictory things about where the wait lives.
     #
     # The reason the number matters either way: a budget that cannot contain its own longest step
@@ -331,8 +331,7 @@ jobs:
       #
       # The version comes from the WORKING TREE here, and that is correct where reading it for the cut
       # decision is not: `changeset version` has just written it, and this commit is the one carrying it.
-      # NOTHING TO CUT IS A REFUSAL WITH A REASON, NOT A QUIET SUCCESS (tracker issue 264's third
-      # acceptance criterion). `changeset version` opens no pull request when no release notes have
+      # NOTHING TO CUT IS A REFUSAL WITH A REASON, NOT A QUIET SUCCESS. `changeset version` opens no pull request when no release notes have
       # accumulated, so an empty `pr-number` on a `beta` dispatch means the last cut already carries
       # everything on main. Saying so is the whole point: a dispatch that published nothing and exited 0
       # would read as a cut that happened.
@@ -1244,7 +1243,7 @@ jobs:
 
       # THE REFUSALS, ALL IN ONE PLACE AND BEFORE ANYTHING IS BUILT.
       #  · a real publish happens on a push, on the cron, or on a `workflow_dispatch` whose `cut` input
-      #    is `beta` — the on-demand cut tracker issue 264 ruled in. Every other dispatch is still a
+      #    is `beta` — the on-demand cut that replaced the scheduled one. Every other dispatch is still a
       #    rehearsal and still runs `npm publish --dry-run`. THE BRANCH CHECK BELOW IS WHAT HOLDS A
       #    DISPATCHED CUT TO `main`: a rehearsal may run from any branch precisely because it cannot
       #    publish, and a cut may not.

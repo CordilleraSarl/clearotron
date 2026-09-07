@@ -759,7 +759,7 @@ export function authorize(scope, toolName, args = {}) {
     }
     // The PREVIEW only, deliberately — the same line the internal branch draws below.
     //
-    // #53's defect was that the FREE call every principal makes first died on a message naming an
+    // The defect was that the FREE call every principal makes first died on a message naming an
     // internal doc, so that is the call the stamp exists to rescue. Extending it to start_run would
     // quietly remove a spend gate: an ops token's sub is often a connector name or "local", buildJob
     // fills forwarderEmail from `${forwarder}@example.com` when none is given, and the result is a real

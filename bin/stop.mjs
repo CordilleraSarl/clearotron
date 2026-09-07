@@ -90,7 +90,7 @@ for (const u of BACKGROUND_UNITS) {
   say(`  stopped and removed ${u}`);
 }
 // THE COMMENT HERE ALREADY NAMED THE CAUSE AND SHRUGGED AT IT. If there is no user bus, the disables
-// above did not happen either — which is the whole of tracker issue 270 — so this is where that is said.
+// above did not happen either — so this is where that is said.
 try {
   execFileSync("systemctl", ["--user", "daemon-reload"], CAPTURE_STDERR);
 } catch (e) {

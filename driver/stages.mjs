@@ -1420,7 +1420,7 @@ export const STAGES = {
       },
       "Prose Elements table columns — Role | Saturation (low|borderline|high|very-high) | Famous-mark | Notes": {
         class: "judgment", tokens: [],
-        why: "a FOUR-value saturation scale plus separate role, famous-mark and incumbent notes, against ONE three-value `kind` enum in the structured model (ELEMENT_KINDS declared in variant-manifest-model.mjs). The structured model cannot carry the distinction, so #850's move for this stage (\"model emits the structured model only; code renders the prose tables from it\") drops the saturation rating, the famous-mark flag and the incumbent note unless the schema grows those keys first",
+        why: "a FOUR-value saturation scale plus separate role, famous-mark and incumbent notes, against ONE three-value `kind` enum in the structured model (ELEMENT_KINDS declared in variant-manifest-model.mjs). The structured model cannot carry the distinction, so the move for this stage (\"model emits the structured model only; code renders the prose tables from it\") drops the saturation rating, the famous-mark flag and the incumbent note unless the schema grows those keys first",
       },
       "variants[].value — the search terms themselves": {
         class: "judgment", tokens: ["variantmodel_term_markup"],
@@ -1488,7 +1488,7 @@ export const STAGES = {
       },
       "Prose variant-table category token — translit-<script>, and for Chinese translit-zh-meaning vs translit-zh-phonetic": {
         class: "judgment", tokens: [],
-        why: "the meaning-vs-phonetic SENSE is a judgment the downstream class-scope gates key on, and variant-manifest.json has NO key that can carry it (one flat `transliteration` value). So this prose row is not rendered from the structured model, and #850's \"structured only\" move for this stage loses the distinction unless the schema grows a sense field first",
+        why: "the meaning-vs-phonetic SENSE is a judgment the downstream class-scope gates key on, and variant-manifest.json has NO key that can carry it (one flat `transliteration` value). So this prose row is not rendered from the structured model, and the \"structured only\" move for this stage loses the distinction unless the schema grows a sense field first",
       },
       // The search floor came back at as a TYPED designation, having been retired at as a ⭐
       // marker. The retirement was right on its own terms and this is not a reversal of it: what it
@@ -1695,7 +1695,7 @@ export const STAGES = {
       },
       "legacy branch — author the search-as-code grid program from the prompt template": {
         class: "mechanical:tool-written", tokens: ["grid_join_missing", "platforms_missing"],
-        why: "The same program is compiled by the driver into the grid spec on the deterministic branch, so code already holds it. The legacy branch is a second contract for one artifact and it is still in the shipped message — #850's audit reads only the deterministic branch and does not name it.",
+        why: "The same program is compiled by the driver into the grid spec on the deterministic branch, so code already holds it. The legacy branch is a second contract for one artifact and it is still in the shipped message — the audit reads only the deterministic branch and does not name it.",
       },
       "legacy branch — save the grid call's stdout JSON VERBATIM to common-law-grid.json (single object, or array per batch in batch order)": {
         class: "mechanical:tool-written", tokens: ["grid_ledger_missing", "grid_ledger_unparseable", "grid_join_missing", "platforms_missing"],
@@ -1946,7 +1946,7 @@ export const STAGES = {
       },
       "covering EVERY disposition row across the turn's calls": {
         class: "mechanical:pre-bound", tokens: ["connotation_token_absent", "connotation_call_never_made", "connotation_call_partial"],
-        why: "The obligation set is driver-computed before dispatch. This is #850's a1: 81 rows, 12 ruled, turn ended honestly — under the typed transport the tool's answer names the remainder after every call.",
+        why: "The obligation set is driver-computed before dispatch. This is a1: 81 rows, 12 ruled, turn ended honestly — under the typed transport the tool's answer names the remainder after every call.",
       },
       "do not hand-write the disposition table into the findings file": {
         class: "mechanical:code-rendered", tokens: [],
@@ -1974,7 +1974,7 @@ export const STAGES = {
       },
       "layer-availability declaration — whether the findings prose says the marketplace layer could not be completed": {
         class: "mechanical:code-extracted", tokens: ["declared_unavailable"],
-        why: "The half ledger's gap rows already decide it — #554's whole argument, and the R5 MERIDIAN THISTLE terminal is the case where the phrase out-ranked the machine record on a complete grid.",
+        why: "The half ledger's gap rows already decide it — the whole argument, and the R5 MERIDIAN THISTLE terminal is the case where the phrase out-ranked the machine record on a complete grid.",
       },
       "final return — the absolute output path plus a 2-3 line summary": {
         class: "mechanical:pre-bound", tokens: [],
@@ -2357,7 +2357,7 @@ export const STAGES = {
       },
       "mark / owner / records / territories / classes on a SELECTED row": {
         class: "mechanical:code-extracted", tokens: [],
-        why: "renderEntry() in placement-form.mjs machine-copies all five from the canonical row built out of _driver/register-positions.json; SELECT_ROW_CONTRACT declared in placement-form.mjs states it in its do_not field. The driver already overwrites what the model types, which is #850's own definition of mechanical.",
+        why: "renderEntry() in placement-form.mjs machine-copies all five from the canonical row built out of _driver/register-positions.json; SELECT_ROW_CONTRACT declared in placement-form.mjs states it in its do_not field. The driver already overwrites what the model types, which is the audit's own definition of mechanical.",
       },
       "retract: <row_id> — withdrawing a seat row already on the form": {
         class: "judgment", tokens: [],
@@ -2490,7 +2490,7 @@ export const STAGES = {
       },
       "## Summary counts — total queries executed (search + detail-fetch), enumerated records across N axes, crowd-descriptor count, candidates past the gate, surfaced count, open-verification-flag count": {
         class: "mechanical:tool-written", tokens: [],
-        why: "CONVERTED (conversion 11): the driver renders the whole Summary section from its own receipts and the tool takes no count field at all. band_shape computes the band totals and the crowds list; _driver/plan-execution.json records every executed plan entry; _driver/tool-calls.jsonl writes one line per call with server/tool/axis/seq (tool-calls.mjs), so call counts are the driver's arithmetic. Unlike case-law's queries[] (#850's M5 blocker) no query TEXT is needed here — only counts, which the log already supports.",
+        why: "CONVERTED (conversion 11): the driver renders the whole Summary section from its own receipts and the tool takes no count field at all. band_shape computes the band totals and the crowds list; _driver/plan-execution.json records every executed plan entry; _driver/tool-calls.jsonl writes one line per call with server/tool/axis/seq (tool-calls.mjs), so call counts are the driver's arithmetic. Unlike case-law's queries[] (the M5 blocker) no query TEXT is needed here — only counts, which the log already supports.",
       },
       "Audit trail — per-unit search/detail-fetch counts, per-jurisdiction `_query` attribution": {
         class: "mechanical:tool-written", tokens: [],
@@ -2532,7 +2532,7 @@ export const STAGES = {
       // class, and its SUBJECT is restated as what those tokens are about today.
       "the archived-era prose `## Coverage ledger` table — the pre-#476 contract these tokens still judge on a REPLAYED run (no live run reaches it)": {
         class: "mechanical:code-rendered", tokens: ["no_coverage_status_row", "coverage_status_offenum", "coverage_deferred_unaccounted", "coverage_clean_unverified_incomplete", "coverage_ledger_unparseable", "coverage_ledger_empty", "coverage_key_unknown", "coverage_axis_invalid", "coverage_status_invalid", "coverage_classes_invalid", "coverage_axis_missing", "missing"],
-        why: "RETIRED SUBJECT, LIVE TOKENS. #850's move M6 (2026-08-14) deleted the branch and made the driver always arm and always write, so NO LIVE RUN reaches the arms below: where the form exists the driver renders both the table and the JSON mirror from it. What the tokens judge now is an ARCHIVED pre-#476 run, which carries no era stamp and whose coverage verdict is decided by exactly this contract — that is why verify.mjs's prose arms are not dead code and must not be tidied away as such. ARM SCOPING (verify.mjs): coverage_deferred_unaccounted and coverage_clean_unverified_incomplete fire only inside `if (!stamp.required)`; coverage_status_offenum reads parseCoverageLedgerFull over the model's prose; the coverage_ledger_* / coverage_axis_* / coverage_key_unknown / coverage_classes_invalid family comes from parseCoverageLedgerJson over register-coverage-ledger.json, which is code-derived in BOTH eras — so on a form run those are driver faults and only on the archived branch do they speak about model output. Conversion 11 does not touch any of this: it moves the findings DOCUMENT, and the coverage form keeps its own transport (record_coverage) and its own writer.",
+        why: "RETIRED SUBJECT, LIVE TOKENS. the move M6 (2026-08-14) deleted the branch and made the driver always arm and always write, so NO LIVE RUN reaches the arms below: where the form exists the driver renders both the table and the JSON mirror from it. What the tokens judge now is an ARCHIVED pre-conversion run, which carries no era stamp and whose coverage verdict is decided by exactly this contract — that is why verify.mjs's prose arms are not dead code and must not be tidied away as such. ARM SCOPING (verify.mjs): coverage_deferred_unaccounted and coverage_clean_unverified_incomplete fire only inside `if (!stamp.required)`; coverage_status_offenum reads parseCoverageLedgerFull over the model's prose; the coverage_ledger_* / coverage_axis_* / coverage_key_unknown / coverage_classes_invalid family comes from parseCoverageLedgerJson over register-coverage-ledger.json, which is code-derived in BOTH eras — so on a form run those are driver faults and only on the archived branch do they speak about model output. Conversion 11 does not touch any of this: it moves the findings DOCUMENT, and the coverage form keeps its own transport (record_coverage) and its own writer.",
       },
       "return payload — the absolute output path plus a 2-3 line summary (counts + the path of the file written)": {
         class: "mechanical:tool-written", tokens: [],
@@ -2930,7 +2930,7 @@ export const STAGES = {
       },
       "findings[].quadrant {x,y}": {
         class: "judgment", tokens: ["finding_quadrant_invalid"],
-        why: "Owner ruling S1 (2026-08-13): the precise position is the single authored statement of severity and stays with the model; the meter words are derived from it. The draft recorded S1 as unruled — it was ruled in #850's comments.",
+        why: "Owner ruling S1 (2026-08-13): the precise position is the single authored statement of severity and stays with the model; the meter words are derived from it. The draft recorded S1 as unruled — it was ruled in the audit's comments.",
       },
       "findings[].use_check.source — the searched use-check result URL or the honest negative": {
         class: "mechanical:tool-written", tokens: ["finding_use_check_missing", "finding_use_check_source_missing", "finding_use_check_invalid"],
@@ -2978,7 +2978,7 @@ export const STAGES = {
       },
       "coverage_judgment.rows — the per-open-slice register": {
         class: "mechanical:code-extracted", tokens: ["findings_coverage_judgment_rows_invalid", "findings_coverage_judgment_row_key_unknown"],
-        why: "the driver builds it from the coverage ledger and the plan-execution receipt (register-coverage-ledger.json + _driver/plan-execution.json). The prompt forbids typing it AND the driver replaces it, yet the parser still polices the shape — #850's ruling is to delete the field from the contract",
+        why: "the driver builds it from the coverage ledger and the plan-execution receipt (register-coverage-ledger.json + _driver/plan-execution.json). The prompt forbids typing it AND the driver replaces it, yet the parser still polices the shape — the ruling is to delete the field from the contract",
       },
       "mark_assessment.distinctiveness / connotation (prose or structured form: spectrum, read, per_class[], per_market[], acquired, note)": {
         class: "judgment", tokens: ["findings_mark_assessment_invalid", "findings_mark_assessment_key_unknown"],
@@ -3034,7 +3034,7 @@ export const STAGES = {
       },
       "rated_under_framework — the framework_key of the framework this rating reasoned with": {
         class: "mechanical:pre-bound", tokens: ["findings_rated_under_missing", "findings_rated_under_mismatch"],
-        why: "THE SECOND frame_scope_missing. The driver holds the value in _driver/framework.json, writes it into the dispatch, asks the model to retype it, and fails the file when the retyping does not match its own copy. #850's table groups it under the tool-written envelope row; pre-bound is the sharper discharge and either removes it from the model",
+        why: "THE SECOND frame_scope_missing. The driver holds the value in _driver/framework.json, writes it into the dispatch, asks the model to retype it, and fails the file when the retyping does not match its own copy. The audit table groups it under the tool-written envelope row; pre-bound is the sharper discharge and either removes it from the model",
       },
     },
     message: ({ paths: P, job, customerUnknown, profile, intakeAsks, enforcerSignals, framework, jxAim, registerOnly, crowdContext, dispatchBlocks, findingsSurface, depth }) => lines(
@@ -3643,11 +3643,11 @@ export const STAGES = {
       // anchor those two use is now matching the driver's own render rather than a seat's typing.
       "actions.checks_we_ran[] candidate bullets — one per coverage row, derived from the typed coverage[] the run already holds": {
         class: "mechanical:code-rendered", tokens: ["too_short"],
-        why: "#850's audit table rules this row 'J (selection) / M (from coverage rows)' with the move 'render candidate bullets from typed coverage[]; model edits'. The bullet SET is derivable from coverage[] — one candidate per coverage area — so producing the candidates is code's. Only the editing on top is the model's, and that is the sibling row below.",
+        why: "the audit table rules this row 'J (selection) / M (from coverage rows)' with the move 'render candidate bullets from typed coverage[]; model edits'. The bullet SET is derivable from coverage[] — one candidate per coverage area — so producing the candidates is code's. Only the editing on top is the model's, and that is the sibling row below.",
       },
       "actions.checks_we_ran[] selection and edit — which candidate checks a client should read, and how each result is stated in plain English": {
         class: "judgment", tokens: ["too_short"],
-        why: "The judgment half of #850's 'J (selection) / M (from coverage rows)' split: which of the rendered candidates earn a place in a client-facing Actions section, and how a result is worded for a lawyer to read. #850 keeps the model's edit pass — 'model edits' — and only the candidate generation moves.",
+        why: "The judgment half of the 'J (selection) / M (from coverage rows)' split: which of the rendered candidates earn a place in a client-facing Actions section, and how a result is worded for a lawyer to read. The audit keeps the model's edit pass — 'model edits' — and only the candidate generation moves.",
       },
       "actions.checks_we_ran[].source_link (the `([source](<url>))` URL in each bullet)": {
         class: "mechanical:code-rendered", tokens: [],

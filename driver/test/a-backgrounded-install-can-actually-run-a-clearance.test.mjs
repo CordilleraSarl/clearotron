@@ -96,7 +96,7 @@ test("the environment F41 found refuses AT ORDER TIME, naming what a clearance c
   // EVERY BLOCKING ROW CARRIES ITS CONSEQUENCE. A refusal listing bare names sends an operator to a
   // search engine; the whole point of refusing early is that the reader can act on it where they are.
   for (const r of miss.blocking) assert.ok(r.why.trim().length > 30, `${r.name} refuses without saying what it costs`);
-  // AND THE START IS NOT REFUSED OVER ANY OF THEM. This is the half of tracker issue 216 that a
+  // AND THE START IS NOT REFUSED OVER ANY OF THEM. This is the half of the order-time refusal that a
   // soften-the-set fix would get wrong in the safe-looking direction: leaving one of these at:"start"
   // still bricks the install the owner said must come up.
   for (const n of [REGISTER_ENV, "CLEAROTRON_AI", "CLEAROTRON_CLAUDE_PATH"])

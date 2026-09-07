@@ -894,7 +894,7 @@ export async function enqueueViaMcp(job, { clientPrincipal = false, forwarder = 
   // refusing one. A door that is not configured on this deployment never saw the job, so it holds no
   // opinion about it: recording it as a refusal manufactures agreement on the refusal cases (a
   // correctly-refusing door and an absent one produce the same line) and, on the admit cases, fires
-  // #98's "the one that ACCEPTED is the defect" at the door that behaved. This is 's rule reaching
+  // the "the one that ACCEPTED is the defect" rule at the door that behaved. This is that rule reaching
   // the one transport failure that happens BEFORE any request: not-configured is could-not-ask.
   if (!MCP_URL) return { ok: false, transport: true, status: null,
     out: "no TRADEMARK_MCP_HTTP_PORT in scope — this door is not configured on this deployment, so it was never asked" };

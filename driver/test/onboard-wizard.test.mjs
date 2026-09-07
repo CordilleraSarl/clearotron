@@ -994,7 +994,7 @@ test("#1770 the wizard's closing screen leads with the PRODUCT's own start verb"
 
   const commands = nonEmpty(commandsOffered(closingScreen()), "commands advertised by the closing screen");
   assert.equal(commands[0], "clearotron start",
-    "the FIRST thing offered after a successful configuration is not the product. #1719's whole "
+    "the FIRST thing offered after a successful configuration is not the product. the whole "
     + "observation was that a reader who has just finished configuring this gets pointed at the two "
     + `commands that are not it. Advertised: ${JSON.stringify(commands.slice(0, 3))}; all lines: `
     + `${JSON.stringify(lines.slice(0, 4))}`);
