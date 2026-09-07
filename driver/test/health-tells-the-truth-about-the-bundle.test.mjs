@@ -172,14 +172,27 @@ test("160 the ROUTE says it, not just the predicate behind it", { timeout: 60_00
     return;
   }
   // THE ROUTE READS A CACHE, and that is what lets this arm keep its meaning without moving this tree's
-  // clock. The cache is keyed on `present` and time — not on which checkout produced the verdict — so a
-  // pull against the fixture with a live TTL is the verdict the route then answers from. The route, the
-  // handler and the mapping are all still the real ones; only the tree whose mtimes were read is ours.
+  // clock. `bundleCache` is ONE module-level slot keyed on `present` and time — the repository that
+  // produced the verdict is NOT in the key — so a pull against the fixture with a live TTL is the verdict
+  // the route then answers from. The route, the handler and the mapping are all still the real ones; only
+  // the tree whose mtimes were read is ours.
+  //
+  // THAT COUPLING IS ASSERTED, NOT ASSUMED, and this is the second version of this arm. The first primed
+  // the cache and went straight to the route, which passed on a machine whose real bundle happened to
+  // read stale and failed on one with a freshly built stub — the route was answering the real tree's own
+  // verdict through a cache miss, and the arm could not tell that from success. So the precondition is
+  // now a line of its own: if anything evicts or recomputes between the pull and the route, THAT fails
+  // and says so, instead of this arm passing or failing for a reason that has nothing to do with the
+  // route. Whoever adds `repo` to the cache key will red the precondition, and its message says why.
   const fx = bundleFixture();
   try {
     const future = new Date(Date.now() + 3_600_000);
     utimesSync(fx.src, future, future);
-    bundleFreshnessCached(true, { ttl: 60_000, repo: fx.root });   // the pull that fills the cache
+    bundleFreshnessCached(true, { ttl: 0, repo: fx.root });   // ttl 0 FORCES the recompute that fills it
+    assert.equal(bundleFreshnessCached(true), "stale",
+      "the cache did not carry the fixture's verdict to a default-argument caller — the route reads it "
+      + "the same way, so this arm would have been asserting the real tree's answer rather than the "
+      + "fixture's. If `repo` has been added to the cache key, this arm needs a different mechanism.");
     const body = await healthBody();
     assert.equal(body.ui, "stale", `the route answered ui:${body.ui} over a bundle older than its sources`);
     assert.equal(body.ok, false, "the route still called itself ok over a stale bundle");
@@ -187,7 +200,8 @@ test("160 the ROUTE says it, not just the predicate behind it", { timeout: 60_00
     const past = new Date(Date.now() - 3_600_000);
     utimesSync(fx.src, past, past);
     const restored = bundleFreshnessCached(true, { ttl: 0, repo: fx.root });
-    bundleFreshnessCached(true, { ttl: 60_000, repo: fx.root });
+    bundleFreshnessCached(true, { ttl: 0, repo: fx.root });
+    assert.equal(bundleFreshnessCached(true), restored, "the cache did not carry the restored verdict either");
     const back = await healthBody();
     assert.equal(back.ui, healthUi(restored).ui,
       "the route did not return to the fixture's own answer after the timestamp was put back");
