@@ -52,7 +52,7 @@ export const VERBS = {
   connect: ["bin/connect.mjs"],
   disconnect: ["bin/disconnect.mjs"],
   run:     ["driver/pipeline.mjs"],
-  drain:   ["driver/runner.mjs"],
+  "run-queue": ["driver/runner.mjs"],
   cancel:  ["bin/cancel.mjs"],
   grant:   ["bin/grant.mjs"],
   key:     ["bin/key.mjs"],
@@ -73,7 +73,7 @@ export const SUMMARY = {
   connect: "connect the assistant you already use — pick it by name and get the one thing it needs",
   disconnect: "close what connect opened and revoke the key it issued — the enrolment stays",
   run:     "run one clearance from a job file",
-  drain:   "do the queued work. THIS SPENDS: hours of model time and real register calls",
+  "run-queue": "do the queued work. THIS SPENDS: hours of model time and real register calls",
   cancel:  "stop one run by name. The rest of the product keeps running, and nothing resumes it",
   grant:   "enrol a client, or list who may see what",
   key:     "issue the key a person's own assistant presents — after you have enrolled them with `grant`",
@@ -135,7 +135,7 @@ const [verb, ...rest] = process.argv.slice(2);
 
   // — EVERY VERB ANSWERS --help, INCLUDING THE TWO WHOSE CHILDREN REFUSE IT.
   //
-  // `run` and `drain` dispatch to driver/pipeline.mjs and driver/runner.mjs, orchestrator entry points
+  // `run` and `run-queue` dispatch to driver/pipeline.mjs and driver/runner.mjs, orchestrator entry points
   // with strict argument parsers and no help path: `--help` came back as `error: unknown flag --help`,
   // exit non-zero. Their parsers are RIGHT to refuse what they do not understand -- that is what makes
   // them fail safe, and showed what the permissive alternative costs (`update --help` performed
@@ -149,7 +149,7 @@ const [verb, ...rest] = process.argv.slice(2);
     console.log(`\n  ${invocationPrefix()}clearotron ${verb} — ${SUMMARY[verb]}\n`);
     console.log(`  Options after the verb are passed through to ${VERBS[verb][0]}, which has no --help of`);
     console.log(`  its own. Run it with no arguments to see what it requires.\n`);
-    if (verb === "run" || verb === "drain") {
+    if (verb === "run" || verb === "run-queue") {
       console.log(`  THIS SPENDS: hours of model time and real register calls. See INSTALL.md §5 and §6.\n`);
     }
     process.exit(0);

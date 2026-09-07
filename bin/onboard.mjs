@@ -1166,8 +1166,8 @@ export async function runCheck() {
         + "and the MCP connection are live right now; `npm run example` needs no engine.");
       info(`To leave demo: install ${engSpec.vendor}'s CLI (\`${engSpec.fallback}\`), then ${engSpec.signIn}.`);
     } else {
-      info("MODE: engine attached, sign-in UNPROVEN — a binary resolves, and whether it can complete a turn "
-        + "is not knowable from the filesystem. --probe-engine is what settles it.");
+      info("The engine program is installed. Whether it is signed in cannot be read from disk: run "
+        + "clearotron doctor --probe-engine to find out.");
     }
 
     // item 5 — WHICH BILLING LANE, reported rather than left to be inferred from a variable's
@@ -1188,8 +1188,8 @@ export async function runCheck() {
         if (e) envForResolve[k] = e.v;
       }
       const auth = resolveAuthMode({ engineName: engineId, env: envForResolve });
-      if (auth.mode === "unknown") info(`billing lane: not policied for ${engineId} — this engine declares no auth modes`);
-      else ok(`billing lane: ${auth.mode}${auth.apiBilled ? ` — metered per token against ${engSpec.apiKeyEnv}` : " — drawn against the signed-in subscription, not metered per token"}`);
+      if (auth.mode === "unknown") info(`billing: no policy for ${engineId} — this engine declares no sign-in modes`);
+      else ok(`billing: ${auth.mode}${auth.apiBilled ? ` — charged per token against ${engSpec.apiKeyEnv}` : " — charged to the signed-in subscription, not per token"}`);
     } catch (e) {
       problem(String(e?.message ?? e));
     }
@@ -1513,7 +1513,7 @@ export async function runCheck() {
   //
   // REPORTS, NEVER JUDGES: nothing here sets `problem()`. Drift is information for the reader, not a
   // fault in their install, and a doctor that called their own overrides broken would be wrong.
-  say("\n  Doctrine overlay");
+  say("\n  Custom instructions");
   try {
     const report = overlayReport({ baseRoot: config.skillsBaseDir, overlayRoot: config.skillsOverlayDir });
     for (const line of renderOverlayReport(report, { indent: "" })) say(`  ${line}`);
@@ -1528,7 +1528,7 @@ export async function runCheck() {
     // answer for somebody running the engine by hand. This line is what the services see.
     const svcDoctrine = effectiveForService("CLEAROTRON_INSTRUCTIONS_DIR");
     if (hosted && serviceKnown && svcDoctrine?.v && svcDoctrine.v !== config.skillsOverlayDir) {
-      info(`the services read a doctrine overlay this process does not: ${svcDoctrine.v} `
+      info(`the services read custom instructions this process does not: ${svcDoctrine.v} `
         + `(${svcDoctrine.from}). The lines above are this command's own environment — a CLI is not `
         + "started by the units' EnvironmentFile, so \"none configured\" here is not a statement about "
         + "the deployment");
@@ -1541,7 +1541,7 @@ export async function runCheck() {
     // An unreadable overlay THROWS by design (config.resolveSkillPath refuses rather than falling back
     // to the product's copy). Surfaced here rather than allowed to abort the whole check: the doctor's
     // job is to report every section, and a section that kills the run tells the reader least.
-    problem(`the doctrine overlay could not be read — ${e.message}`);
+    problem(`the custom instructions could not be read — ${e.message}`);
   }
 
   say("\n  Register provider");
@@ -1585,7 +1585,7 @@ export async function runCheck() {
   say("\n  Research provider");
   const px = effective("PERPLEXITY_API_KEY");
   if (px) ok(`PERPLEXITY_API_KEY present (${px.from}) — presence only; add --probe-providers to prove it answers`);
-  else info("PERPLEXITY_API_KEY is not set — the three clearance searches carry the common-law grid and cannot switch it off, so a clearance refuses at preflight; a Knockout search still runs and discloses the half it skipped");
+  else info("PERPLEXITY_API_KEY is not set — the three clearance searches carry the common-law grid and cannot switch it off, so a clearance stops before it starts, and names the missing key; a Knockout search still runs and discloses the half it skipped");
 
   // ── — THE LANES A PRODUCT DECLARES IT NEEDS, BEFORE A REPORT NAMES THEM ──
   //
@@ -1770,7 +1770,7 @@ export async function runCheck() {
     }
   }
 
-  say("\n  Portal door");
+  say("\n  Portal sign-in");
   {
     const { authView } = await import("../driver/portal-config-view.mjs");
     const door = authView({
@@ -1785,10 +1785,11 @@ export async function runCheck() {
     // NOT A TICK, AND THAT IS THE POINT. This reads the environment THIS command is
     // typed in. `bin/start.mjs` INJECTS `PORTAL_AUTH_MODE: "local"` into the portal's own environment,
     // and a systemd unit's EnvironmentFile can name a third thing — so a green tick here was a
-    // confident claim about a door the running service may not be serving. Measured on the test box:
-    // doctor said `auth-proxy door (PORTAL_AUTH_MODE is unset)` with a tick while the box served
-    // cf-access, and said `local passphrase door` with a tick while it still served cf-access. Both
-    // green, neither the door a caller meets.
+    // confident claim about a door the running service may not be serving. Measured on the test
+    // machine, in the wording doctor used at the time: it said `auth-proxy door (PORTAL_AUTH_MODE is
+    // unset)` with a tick while the machine served cf-access, and said `local passphrase door` with a
+    // tick while it still served cf-access. Both green, neither the door a caller meets. Those two
+    // lines read differently now; what they claimed is the point, not how they were worded.
     //
     // The reading is still worth printing — it is what a hand-run process here would use, and it is
     // what `clearotron start` would launch from. It is stated as that, and the sentence below says
@@ -1808,7 +1809,7 @@ export async function runCheck() {
       say(`  · local passphrase door (${typed}) — one operator, one passphrase, no identity provider`);
       info(`a lost passphrase is recoverable: ${invocationPrefix()}clearotron passphrase --reset`);
     } else if (door.shape === "fronted") {
-      say(`  · auth-proxy door (${typed}) — identity is proved by whatever sits in front, and this process trusts it`);
+      say(`  · Sign-in: handled by a proxy in front (${typed}) — identity is proved by whatever sits in front, and this process trusts it`);
       for (const v of door.proxyValues) {
         if (v.present) ok(`  ${v.name} present`);
         else info(`  ${v.name} not set`);
@@ -1952,7 +1953,7 @@ export async function runCheck() {
     }
   }
 
-  say("\n  Data-plane paths");
+  say("\n  Where files are stored");
   // Each entry is a FUNCTION, called only on the branch that prints it, so a getter is read at access
   // time and never captured as a constant here. The reader of this command is deciding what to
   // provision; a default quoted from memory is the one thing that can send them to the wrong path and
@@ -1963,7 +1964,7 @@ export async function runCheck() {
     // whole rather than summarised: a summary is a second copy, and a second copy is what drifted.
     ["CLEAROTRON_REPORTS_DIR", (name) => {
       const d = defaultWith(name, () => config.poolRoot);
-      return d.refusal ?? `${name} is not set — the published-report pool falls back to ${d.value}`;
+      return d.refusal ?? `${name} is not set — the published-reports folder falls back to ${d.value}`;
     }],
     ["CLEAROTRON_WORK_DIR", (name) => {
       const d = defaultWith(name, () => config.workspaceRoot);
@@ -2014,7 +2015,7 @@ export async function runCheck() {
       + "failing to look, not a report that it is off.");
   }
 
-  say("\n  Submit lane");
+  say("\n  Start-button path");
   try {
     const { triggerLaneVerdict, HOSTED, SUPERVISED } = await import(pathToFileURL(join(REPO, "shared", "trigger-lane.mjs")).href);
     // POSTURE FROM THE BOX, NOT FROM A FLAG. Units installed means the units serve, and the units read
@@ -2988,7 +2989,7 @@ try {
   const baseDefault = join(homedir(), "trademark");
   prose("Reports, run workspaces, queues and locks all live under one directory.");
   if (poolDefault.refusal) {
-    prose(`Enter accepts ${baseDefault}. There is no built-in default for the pool — left unset a run`,
+    prose(`Enter accepts ${baseDefault}. There is no built-in default for the reports folder — left unset a run`,
           "refuses and names it rather than guessing — so setup gives it a real path under your home,",
           "and this install publishes only where you own the disk.");
   } else {
@@ -3034,7 +3035,7 @@ try {
   // The escape goes in the BRACKETS and the consequence in `skipped`, matching the two prompts that
   // already take this mode — the question no longer carries "(empty for none)" because the bracket now
   // says it, and a prompt that says it twice in two different wordings is how the two drift apart.
-  const reportsUrl = await askValue("Public base URL for the pool:", {
+  const reportsUrl = await askValue("Public base URL for the reports folder:", {
     skippable: true,
     skipped: "CLEAROTRON_REPORTS_URL left unset — runs will deliver, and their notifications will carry no link",
   });
@@ -3116,7 +3117,7 @@ try {
   // making a decision about where their customer data lives without being told they had made it.
   const cfgDefault = join(base, "config");
   say("\n  Where this install keeps its own configuration");
-  prose("Your customers and any doctrine you override live here, outside the checkout — which is what",
+  prose("Your customers and any instructions you override live here, outside the checkout — which is what",
         "lets you take updates with `git pull` instead of merging into files you never meant to own.");
   prose(`Enter accepts ${cfgDefault}, and your customers are written there.`);
   const cfg = await askValue("Configuration directory:", { def: cfgDefault });
@@ -3157,7 +3158,7 @@ try {
   // Note for whoever adds an overlay later: it needs this name set, which is why the line below says so
   // rather than leaving a reader to discover that files they dropped in are being ignored.
   info(`doctrine: this install overrides nothing, so CLEAROTRON_INSTRUCTIONS_DIR stays unset and the `
-    + `product's own files are used. To override a doctrine file later, put it in ${join(cfg, "skills")}, `
+    + `product's own files are used. To override an instruction file later, put it in ${join(cfg, "skills")}, `
     + `COMMIT it in ${cfg}, and set CLEAROTRON_INSTRUCTIONS_DIR to that directory — an uncommitted store `
     + "cannot be identified, and a run says so rather than guessing.");
 
@@ -3170,7 +3171,7 @@ try {
   // PRECISELY what shows through, because the last wording said "bundled customers" and the loader
   // says otherwise: the demo roster never layers into a deployment (a typo'd key must not resolve to
   // our fixtures), generic.json falls through BY NAME, and doctrine resolves file-by-file.
-  say("  Left empty. The house doctrine shows through file-by-file, and generic.json — the universal");
+  say("  Left empty. The bundled instructions show through file-by-file, and generic.json — the universal");
   say("  fallback — falls through by name, so an empty store is a working install. Your own customers");
   say("  are added here by name; the bundled demo customers never show through into your roster.");
 
@@ -3228,7 +3229,7 @@ try {
   // rather than fall back, so a permissions fault can never silently swap a customer's framework for the
   // Generic default). Nothing is written INTO them — see the note at step 7b.
   for (const k of ["CLEAROTRON_CUSTOMERS_DIR"]) mkdirSync(candidate[k], { recursive: true });
-  ok(`configuration directories created under ${cfg} (empty — doctrine and the generic fallback show through; customers are yours to add)`);
+  ok(`configuration directories created under ${cfg} (empty — the bundled instructions and the generic fallback show through; customers are yours to add)`);
 
   // 9a ── PUT THE VERB ON THIS OPERATOR'S PATH
   //
@@ -3299,7 +3300,7 @@ try {
   say("  What this box has now:");
   for (const line of [
     stateLine("register", candidate.CLEAROTRON_DATABASE, "no register, so every search refuses until one is chosen"),
-    stateLine("web research", present(candidate.PERPLEXITY_API_KEY) ? "a key" : "", "a clearance refuses at preflight; a knockout search runs and discloses the half it skipped"),
+    stateLine("web research", present(candidate.PERPLEXITY_API_KEY) ? "a key" : "", "a clearance stops before it starts, and names the missing key; a knockout search runs and discloses the half it skipped"),
     stateLine("data directory", candidate.CLEAROTRON_REPORTS_DIR, "unset"),
     stateLine("configuration store", candidate.CLEAROTRON_CUSTOMERS_DIR, "the bundled demo roster"),
     stateLine("notification links", candidate.CLEAROTRON_REPORTS_URL, "notifications carry no link into the report"),

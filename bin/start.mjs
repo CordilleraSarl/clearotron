@@ -1598,7 +1598,7 @@ if (isMain) {
       if (stopping) return;
       if (!fatal) {
         err(`\nstart: ${name} (${script}) could not be started: ${String(e?.message ?? e)} — the portal is still up,`
-          + ` but the queue will not drain.\n`);
+          + ` but the queue will not be worked.\n`);
         return;
       }
       err(`\nstart: ${name} (${script}) could not be started: ${String(e?.message ?? e)}\n`);

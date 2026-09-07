@@ -245,9 +245,9 @@ the line between them. Either way nothing is contacted and nothing is billed —
 it starts. Neither runs on a packaged install: the test files are not in the package.
 
 The engine itself has no build step. The **portal UI does** — `portal-ui/` is React + Vite — but its
-built bundle (`portal-ui/dist/`) is **committed to git** and travels in the package, so a clone and a
-tarball install are both already runnable and a deploy never builds. You only need to build after
-changing something under `portal-ui/src`:
+built bundle (`portal-ui/dist/`) is **not committed to git**: it travels in the published package and
+CI builds it, so a tarball install is already runnable while a clone needs one build first. You also
+need to build after changing something under `portal-ui/src`:
 
 ```
 npm run tokens         # regenerate the design tokens from shared/brand.mjs, if colours changed
@@ -925,6 +925,30 @@ you.
   `TRADEMARK_MCP_AUTH_MODE=cf-access` so the origin re-validates the proxy's JWT rather than trusting
   it — the mechanism is generic, whichever proxy is in front.
 
+**One process, two doors.** A deployment that serves both people arriving through a tunnel and programs
+on the same machine no longer needs to run this service twice. Set `TRADEMARK_MCP_KEY_SOCKET` to a
+socket path and the service listens for a scoped access key there, while its network port continues to
+take the proxy identity and never honours a key. A tunnel forwards to a port and cannot reach a socket,
+so the key path is not addressable from outside the machine; who may present a key is stated by the
+socket's permissions, which the startup lines print beside its path.
+
+This replaces a **second unit run for its authentication shape** — a loopback port in key mode beside
+the tunnel-fronted one — and nothing else. It is not the test-instance-beside-a-live-one arrangement
+described in §8: that separation is about data and ports, it is unaffected, and its seven variables are
+still all required. Removing the auth-shape duplicate is a deployment decision and nothing here does it
+for you.
+
+**Do not set `TRADEMARK_MCP_AUTH_MODE=token` alongside the socket.** That mode makes the network port
+take a key as well, which is what the socket exists to avoid; the service refuses to start and says so.
+
+**Put the socket somewhere only the service's own group can write.** The socket's own permissions decide
+who may *present* a key. Whether the socket can be *replaced* is decided by the directory holding it — a
+process that can remove the file can bind its own listener on the same path, and callers would then
+present their keys to it. That is a different permission from the socket's and it is the one worth
+checking. The service refuses to start if that directory is writable by everyone without the sticky bit,
+and prints the directory's mode beside the socket's on its startup line so the number is readable without
+going to look.
+
 > ⚠ **What does not work is an INTERACTIVE-only sign-in policy on a route an assistant must reach
 > without a browser.** Such a policy demands a login the vendor's servers cannot complete: they present
 > a credential and get a login page back, and the connection fails with nothing useful said on either
@@ -1088,6 +1112,10 @@ instances bind the same three defaults and the second one to start cannot listen
 that fails at boot, which reads as a broken install rather than as a port already in use.
 
 Set all seven. Nothing else separates them.
+
+A deployment that once ran the service twice for a different reason — one door needing a key and the
+other a proxy identity — no longer has to; see *One process, two doors* in §9. That is an
+authentication arrangement and has nothing to do with this one. The seven above are still all required.
 
 ## 9. What the integrator supplies
 

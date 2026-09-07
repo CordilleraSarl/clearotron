@@ -91,9 +91,9 @@ any writing pass over the documentation, applies to them.
 
 ## The three rules that fail CI
 
-**1. Rebuild `portal-ui/dist` and commit it.** The bundle is committed so a deploy never builds. CI
-rebuilds it from source and requires byte equality, so a change under `portal-ui/src` that ships
-without its rebuilt bundle fails:
+**1. Rebuild `portal-ui/dist` before you push.** The bundle is not committed — CI builds it from
+source and requires byte equality, so a change under `portal-ui/src` that does not build cleanly
+fails:
 
 ```bash
 npm run build:ui

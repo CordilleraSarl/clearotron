@@ -1605,7 +1605,7 @@
           "skips": 0,
           "todos": 0
         },
-        "doctor-reports-the-doctrine-overlay.test.mjs": {
+        "doctor-reports-the-custom-instructions.test.mjs": {
           "tests": 6,
           "asserts": 12,
           "skips": 1,
