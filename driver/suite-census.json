@@ -3304,8 +3304,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 87,
-          "asserts": 334,
+          "tests": 88,
+          "asserts": 335,
           "skips": 0,
           "todos": 0
         },
@@ -4874,6 +4874,12 @@
     "mcp-server": {
       "ext": "mjs",
       "perFile": {
+        "a-key-has-one-door-and-it-is-not-the-network.test.mjs": {
+          "tests": 13,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
         "a-memo-survives-the-door-it-arrives-through.test.mjs": {
           "tests": 5,
           "asserts": 15,
