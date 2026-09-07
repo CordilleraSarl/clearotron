@@ -65,7 +65,7 @@ const CLOSE = /^\s*(?:[`"'|,:;.)\]}]|$|\r?\n|[—–-]\s|\(\s)/;
  *
  * A PIPE needs no surrounding space, because the corpus writes both forms and the tight one is a real
  * teaching: `registrability = registrable|registrable-with-conditions|obstructed`. A tight SLASH gets no
- * such licence — `skills/clearotron-search/SKILL.md` is a path, not an alternation, and every skill
+ * such licence — `skills/prelim-search/SKILL.md` is a path, not an alternation, and every skill
  * reference in this tree is one.
  */
 const ALT_AFTER = /^(?:\s*[/|]\s|\|)/;

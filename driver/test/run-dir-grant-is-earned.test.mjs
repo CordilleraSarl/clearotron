@@ -149,9 +149,9 @@ test("#1022 the seat-write-free population is THIRTEEN, read from the frozen tab
   // validator of its own — the stage's `out` is the plan — so before this conversion a seat could skip
   // the document entirely and pass.
   assert.deepEqual([...SEAT_WRITE_FREE_STAGES], [
-    "blind-frame", "clearotron-variants", "doubt-closure", "frame-diff", "knockout-assess",
-    "knockout-frame", "matter-frame", "narrative-refutation", "register-digest", "report-card",
-    "report-overview", "skeptic", "synthesis",
+    "blind-frame", "doubt-closure", "frame-diff", "knockout-assess", "knockout-frame", "matter-frame",
+    "narrative-refutation", "prelim-variants", "register-digest", "report-card", "report-overview",
+    "skeptic", "synthesis",
   ]);
 });
 

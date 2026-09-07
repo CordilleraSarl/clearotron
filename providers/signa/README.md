@@ -56,4 +56,4 @@ past `OWNER_SCOPED_WINDOW` (400 rows). Approximate totals saturate at 10000 and 
 on which date, and what is still `null` on purpose. Then `src/core.js` for how a declared predicate
 reaches the wire — `toSignaParams` → `buildSearchRequest` — because "the vendor supports it" and "our
 executor sends it" are two different claims. The model-facing operator vocabulary lives in
-[`../../driver/skills/clearotron-register/providers/signa.md`](../../driver/skills/clearotron-register/providers/signa.md).
+[`../../driver/skills/prelim-register/providers/signa.md`](../../driver/skills/prelim-register/providers/signa.md).

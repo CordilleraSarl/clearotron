@@ -54,7 +54,7 @@ export const WHAT_IF_NOTE =
 
 // Stages that hit billed external APIs (so the cost gate is honest about more than tokens).
 const BILLED_EXTERNAL = new Set(["common-law", "register-unit", "case-law"]);
-const MAYBE_EXTERNAL = new Set(["clearotron-variants"]); // may make a few Perplexity famous-mark calls
+const MAYBE_EXTERNAL = new Set(["prelim-variants"]); // may make a few Perplexity famous-mark calls
 
 function encodeToken(op) { return Buffer.from(JSON.stringify(op)).toString("base64url"); }
 function decodeToken(token) { try { return JSON.parse(Buffer.from(String(token), "base64url").toString("utf8")); } catch { return null; } }

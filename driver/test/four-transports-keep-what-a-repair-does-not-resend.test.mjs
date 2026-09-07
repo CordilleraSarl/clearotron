@@ -36,7 +36,7 @@ import { tmpdir } from "node:os";
 import { spawn } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { recordPrelimVariants, lastAcceptedPrelimVariants, mergePrelimVariantsCall, refuseUndeclared as refuseVariants } from "../clearotron-variants-record.mjs";
+import { recordPrelimVariants, lastAcceptedPrelimVariants, mergePrelimVariantsCall, refuseUndeclared as refuseVariants } from "../prelim-variants-record.mjs";
 import { recordBlindFrame, lastAcceptedBlindFrame, mergeBlindFrameCall, refuseUndeclared as refuseBlindFrame } from "../blind-frame-record.mjs";
 import { recordMatterFrame, lastAcceptedMatterFrame, mergeMatterFrameCall, refuseUndeclared as refuseMatterFrame } from "../matter-frame-record.mjs";
 import { recordUnitNote, lastAcceptedUnitNote, mergeUnitNoteCall, refuseUndeclared as refuseUnitNote, unitPaths } from "../register-unit-record.mjs";
@@ -92,7 +92,7 @@ const UNIT_FULL = Object.freeze({
   null_result: false,
 });
 
-test("clearotron-variants: a partial keeps the search floor, the watchlist and the incumbent classes", () => {
+test("prelim-variants: a partial keeps the search floor, the watchlist and the incumbent classes", () => {
   const d = runDir();
   const first = recordPrelimVariants(d, VARIANTS_FULL);
   assert.equal(first.refused, null, `the full fixture no longer validates (${first.refused}) — this arm plants nothing`);
@@ -160,7 +160,7 @@ test("a LEGITIMATE field in the WRONG object is refused BY PATH, on all four", (
   // Each of these is a real field of its own tool, placed in a typed sub-object that does not declare
   // it. That is 's shape, and a top-level-only unknown-key check passes on every one.
   const cases = [
-    ["clearotron-variants", () => refuseVariants({ ...VARIANTS_FULL, elements: [{ value: "X", kind: "distinctive", search_floor: ["primary-sweep"] }] }), /variantmodel_undeclared_field:elements\.search_floor/],
+    ["prelim-variants", () => refuseVariants({ ...VARIANTS_FULL, elements: [{ value: "X", kind: "distinctive", search_floor: ["primary-sweep"] }] }), /variantmodel_undeclared_field:elements\.search_floor/],
     ["blind-frame", () => refuseBlindFrame({ ...BLIND_FULL, variants: [{ value: "X", direction: "drop", rationale: "r", ranking_basis: "goods-overlap" }] }), /blindframe_undeclared_field:variants\.ranking_basis/],
     ["matter-frame", () => refuseMatterFrame({ ...MATTER_FULL, intake_asks: [{ ask: "a", owner: "register", scope_basis: "instructed" }] }), /matterframe_undeclared_field:intake_asks\.scope_basis/],
   ];
@@ -181,7 +181,7 @@ test("a LEGITIMATE field in the WRONG object is refused BY PATH, on all four", (
 
 test("a refused call does not become the base a later repair builds on, on all four", () => {
   const checks = [
-    ["clearotron-variants", runDir(), (d) => recordPrelimVariants(d, VARIANTS_FULL), (d) => recordPrelimVariants(d, { ...VARIANTS_FULL, elements: [{ value: "X", kind: "distinctive", search_floor: ["x"] }] }), (d) => lastAcceptedPrelimVariants(d)],
+    ["prelim-variants", runDir(), (d) => recordPrelimVariants(d, VARIANTS_FULL), (d) => recordPrelimVariants(d, { ...VARIANTS_FULL, elements: [{ value: "X", kind: "distinctive", search_floor: ["x"] }] }), (d) => lastAcceptedPrelimVariants(d)],
     ["blind-frame", runDir(), (d) => recordBlindFrame(d, BLIND_FULL), (d) => recordBlindFrame(d, { ...BLIND_FULL, variants: [{ value: "X", direction: "drop", rationale: "r", ranking_basis: "wrong object" }] }), (d) => lastAcceptedBlindFrame(d)],
     ["matter-frame", runDir(), (d) => recordMatterFrame(d, MATTER_FULL), (d) => recordMatterFrame(d, { ...MATTER_FULL, intake_asks: [{ ask: "a", owner: "register", scope_basis: "wrong object" }] }), (d) => lastAcceptedMatterFrame(d)],
     ["unit-note", unitRun(), (d) => recordUnitNote(d, UNIT_FULL), (d) => recordUnitNote(d, { ...UNIT_FULL, note: "two blank lines\n\n\nis not one observation" }), (d) => lastAcceptedUnitNote(d, "primary-sweep")],
@@ -256,12 +256,12 @@ test("each acceptor polices the shape its server actually serves", async () => {
 });
 
 test("an unknown TOP-LEVEL key is TOLERATED on all four — the regression CI caught and these arms did not", () => {
-  // The first cut refused any undeclared key at ANY depth, and that killed the clearotron-variants stage on
+  // The first cut refused any undeclared key at ANY depth, and that killed the prelim-variants stage on
   // a long-standing mock: the fixture spreads the parsed MODEL into the CALL, so it carries
   // `schema_version`, which acceptPrelimVariants ignores because it writes its own. Inert for as long
   // as it has existed — and strict, it became fatal. 63 arms went red in CI; every arm here was green,
   // because they checked that DECLARED fields are accepted and never that an undeclared one survives.
-  assert.equal(refuseVariants({ ...VARIANTS_FULL, schema_version: 5 }), null, "clearotron-variants refused an inert envelope key");
+  assert.equal(refuseVariants({ ...VARIANTS_FULL, schema_version: 5 }), null, "prelim-variants refused an inert envelope key");
   assert.equal(refuseBlindFrame({ ...BLIND_FULL, schema_version: 5 }), null, "blind-frame refused an inert envelope key");
   assert.equal(refuseMatterFrame({ ...MATTER_FULL, schema_version: 5 }), null, "matter-frame refused an inert envelope key");
   assert.equal(refuseUnitNote({ ...UNIT_FULL, schema_version: 5 }), null, "unit-note refused an inert envelope key");

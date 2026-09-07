@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// clearotron-variants-record.mjs — the recording transport for the variant manifest.
+// prelim-variants-record.mjs — the recording transport for the variant manifest.
 //
 // Conversion 3, after blind-frame, skeptic, frame-diff and matter-frame. It is
 // the first conversion whose ruling includes CLASS 3, and the first that can DELETE a derivation rather
@@ -46,7 +46,7 @@ const SCHEMA_VERSION = 1;
 
 /** Where the call's evidence lives — the driver's own record of what the seat handed it. */
 export function prelimVariantsCallPaths(runDir) {
-  const dir = driverDir(runDir, "clearotron-variants-calls");
+  const dir = driverDir(runDir, "prelim-variants-calls");
   return { dir, payload: join(dir, "call-001.json"), accepted: join(dir, "accepted.json") };
 }
 

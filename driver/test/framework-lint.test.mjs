@@ -22,7 +22,7 @@ import {
 import { loadProfiles } from "../profiles.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const SKILL_DIR = join(ROOT, "skills", "clearotron-search");
+const SKILL_DIR = join(ROOT, "skills", "prelim-search");
 const frameworkFiles = readdirSync(SKILL_DIR).filter((f) => /^risk-framework.*\.md$/.test(f));
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -36,7 +36,7 @@ const VALID = {
 test("every shipped risk-framework*.md has a parsing manifest whose bands + entity appear in the prose", () => {
   assert.ok(frameworkFiles.length >= 3, `expected the three shipped frameworks, found: ${frameworkFiles.join(", ")}`);
   for (const f of frameworkFiles) {
-    const fwPath = `skills/clearotron-search/${f}`;
+    const fwPath = `skills/prelim-search/${f}`;
     const manifest = loadFrameworkManifest(ROOT, fwPath);   // throws framework_manifest_missing / parse errors
     const prose = readFileSync(join(SKILL_DIR, f), "utf8");
     for (const b of manifest.bands) {
@@ -64,7 +64,7 @@ test("every shipped profile's framework selection (and the house default) resolv
 
 // ── 3: the doc-50 shipped anchors ────────────────────────────────────────────────────────────────────────
 test("house default: 4 bands (Very High/High/Moderate/Manageable), no Low, entity 'the company', bands-shaped", () => {
-  const m = loadFrameworkManifest(ROOT, "skills/clearotron-search/risk-framework.md");
+  const m = loadFrameworkManifest(ROOT, "skills/prelim-search/risk-framework.md");
   assert.equal(m.framework_key, "house-default");
   assert.deepEqual(m.bands.map((b) => b.label), ["Very High", "High", "Moderate", "Manageable"]);
   assert.equal(m.entity_label, "the company");
@@ -73,8 +73,8 @@ test("house default: 4 bands (Very High/High/Moderate/Manageable), no Low, entit
 });
 
 test("zephyr: the house default with exactly the two deck deltas (band 3 'Medium'; entity Zephyr/Volt/Kaskade)", () => {
-  const house = loadFrameworkManifest(ROOT, "skills/clearotron-search/risk-framework.md");
-  const m = loadFrameworkManifest(ROOT, "skills/clearotron-search/risk-framework-zephyr.md");
+  const house = loadFrameworkManifest(ROOT, "skills/prelim-search/risk-framework.md");
+  const m = loadFrameworkManifest(ROOT, "skills/prelim-search/risk-framework-zephyr.md");
   assert.equal(m.framework_key, "zephyr");
   assert.deepEqual(m.bands.map((b) => b.label), ["Very High", "High", "Medium", "Manageable"]);
   assert.deepEqual(m.bands.map((b) => b.tone), house.bands.map((b) => b.tone), "same ladder shape/tones as the house deck");
@@ -83,7 +83,7 @@ test("zephyr: the house default with exactly the two deck deltas (band 3 'Medium
 });
 
 test("aurora: matrix-shaped, 5 bands ending in Low (its Level-A output), entity Aurora Interactive", () => {
-  const m = loadFrameworkManifest(ROOT, "skills/clearotron-search/risk-framework-aurora.md");
+  const m = loadFrameworkManifest(ROOT, "skills/prelim-search/risk-framework-aurora.md");
   assert.equal(m.framework_key, "aurora");
   assert.deepEqual(m.bands.map((b) => b.label), ["Very High", "High", "Medium", "Manageable", "Low"]);
   assert.equal(m.entity_label, "Aurora Interactive");
@@ -95,7 +95,7 @@ test("aurora: matrix-shaped, 5 bands ending in Low (its Level-A output), entity 
 // ── 4: bands-shaped decks carry no residual score machinery ─────────────────────────────────────────────
 test("bands-shaped decks (house, zephyr) carry no Composite/Level rating machinery", () => {
   for (const f of frameworkFiles) {
-    const manifest = loadFrameworkManifest(ROOT, `skills/clearotron-search/${f}`);
+    const manifest = loadFrameworkManifest(ROOT, `skills/prelim-search/${f}`);
     if (manifest.structure.kind !== "bands") continue;
     const prose = readFileSync(join(SKILL_DIR, f), "utf8");
     assert.doesNotMatch(prose, /\bComposite\b/i, `${f}: no Composite scores in a bands-shaped deck`);
@@ -122,7 +122,7 @@ test("parseFrameworkManifest: closed keys, ordered unique bands, tones, no digit
   bad({ structure: { kind: "scores" } }, /framework_structure_kind_invalid:scores/);
   bad({ structure: { kind: "matrix", axes: [""] } }, /framework_structure_axes_invalid/);
   assert.throws(() => parseFrameworkManifest("{nope"), /framework_manifest_unparseable/);
-  assert.throws(() => loadFrameworkManifest(ROOT, "skills/clearotron-search/no-such-framework.md"), /framework_manifest_missing/);
+  assert.throws(() => loadFrameworkManifest(ROOT, "skills/prelim-search/no-such-framework.md"), /framework_manifest_missing/);
 });
 
 // ── band helpers ─────────────────────────────────────────────────────────────────────────────────────────
@@ -142,5 +142,5 @@ test("band helpers: rank by manifest order, case-insensitive, lowest-band predic
   assert.equal(aboveLowestBand(m, "Nonsense"), false);
   assert.equal(worstBand(m, ["Manageable", "moderate", "junk"]), "Moderate");
   assert.equal(worstBand(m, ["junk"]), null);
-  assert.equal(manifestPathFor("skills/clearotron-search/risk-framework-zephyr.md"), "skills/clearotron-search/risk-framework-zephyr.manifest.json");
+  assert.equal(manifestPathFor("skills/prelim-search/risk-framework-zephyr.md"), "skills/prelim-search/risk-framework-zephyr.manifest.json");
 });

@@ -19,7 +19,7 @@ You read the **complete named band** the funnel handed up; the funnel decided *n
 
 ## When invoked
 
-After register-unit workers and common-law workers have returned their findings (Phase 2 Step 2B end), BEFORE the digest worker (`clearotron-register` MODE B) spawns to tier candidates. One Opus call (inline by the orchestrator), reads matter-context.md + the complete named band (through the band tools) + the common-law findings.
+After register-unit workers and common-law workers have returned their findings (Phase 2 Step 2B end), BEFORE the digest worker (`prelim-register` MODE B) spawns to tier candidates. One Opus call (inline by the orchestrator), reads matter-context.md + the complete named band (through the band tools) + the common-law findings.
 
 ## Model
 

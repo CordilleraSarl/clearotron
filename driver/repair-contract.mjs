@@ -116,7 +116,7 @@ export function failingTarget(lastFail, files = []) {
   if (!named) return null;
   const list = (Array.isArray(files) ? files : [files]).filter(Boolean).map(String);
   if (list.length <= 1) return list[0] ?? null;
-  // longest suffix match wins: "x/register-findings.md" identifies ".../clearotron-search/x/register-findings.md"
+  // longest suffix match wins: "x/register-findings.md" identifies ".../prelim-search/x/register-findings.md"
   const hit = list.find((f) => f === named || f.endsWith(`/${named}`) || named.endsWith(`/${f}`));
   return hit ?? null;
 }

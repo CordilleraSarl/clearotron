@@ -144,7 +144,7 @@ The reasoning layer dictates what it needs; a thin adapter supplies it. Concrete
    preflighted at run start. Add the id to `KNOWN_REGISTER_PROVIDERS` too, or the error message that
    tells an operator what to set will omit it. Selection is `CLEAROTRON_DATABASE` in every
    environment, production included; there is no committed default to flip.
-4. **Skill doc**: `skills/clearotron-register/providers/<provider>.md` — the provider-specific craft
+4. **Skill doc**: `skills/prelim-register/providers/<provider>.md` — the provider-specific craft
    the register stages read.
 5. **The empirical verification checklist** — the real work is not code volume: operator
    vocabulary and composition semantics, pagination behaviour to `has_more:false`, status-enum
@@ -157,8 +157,8 @@ The reasoning layer dictates what it needs; a thin adapter supplies it. Concrete
 
 The methodology lives in the driver's `skills/` tree — 12 top-level directories, nearly all of it
 Markdown carrying **prose only**, no executable code. The machine-parsed
-exceptions are the four framework manifests (`skills/clearotron-search/risk-framework*.manifest.json`); one
-further non-Markdown file rides along, `skills/clearotron-search/templates/search-request-form.html`, named
+exceptions are the four framework manifests (`skills/prelim-search/risk-framework*.manifest.json`); one
+further non-Markdown file rides along, `skills/prelim-search/templates/search-request-form.html`, named
 only in `publish/index.mjs`.
 The engine reads skills **in place from the git-deployed driver tree**: `absolutizeSkillRefs`
 rewrites `skills/…` tokens to absolute paths and grants `--add-dir`. Code comments saying skills
@@ -168,8 +168,8 @@ What to know before editing:
 
 - **Which stage reads what** is dictated solely by each stage message's `reads([...])` in
   `stages.mjs` — read it there rather than trusting this summary. Broadly: matter-frame,
-  clearotron-variants (+ `transliteration-scripts.md`), blind-frame, clearotron-common-law (every grid seat),
-  clearotron-register spine + `unit.md` *xor* `digest.md` (mode-routed — a unit must never read
+  prelim-variants (+ `transliteration-scripts.md`), blind-frame, prelim-common-law (every grid seat),
+  prelim-register spine + `unit.md` *xor* `digest.md` (mode-routed — a unit must never read
   digest doctrine and vice versa) + the active provider's `providers/<name>.md`,
   placement-inquiry, `phase2-execution.md` §skeptic (that one section only), frame-diff,
   synthesis (synthesis-rules + per-profile framework + worked examples + conditionally
@@ -186,7 +186,7 @@ What to know before editing:
 - Several skill files are **legacy and not stage-read** (email/Excel templates, the formatting
   reference). Verify a file appears in some stage's `reads([...])` before treating its claims as
   live; where a legacy file and the code disagree, the code and `stages.mjs` win.
-- The pharma module (`skills/clearotron-search/field-doctrine-pharma.md`, loaded by a code predicate on
+- The pharma module (`skills/prelim-search/field-doctrine-pharma.md`, loaded by a code predicate on
   pharma-shaped matters) ships behind a named legal reviewer's sign-off — doctrine edits in
   regulated verticals go through the practitioner, not just review.
 

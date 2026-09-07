@@ -44,9 +44,9 @@ const SCANNED = [
   "providers/corsearch/src",
   "providers/signa/src",
   "providers/_shared",
-  "driver/skills/clearotron-register/providers/clarivate.md",
-  "driver/skills/clearotron-register/providers/corsearch.md",
-  "driver/skills/clearotron-register/providers/signa.md",
+  "driver/skills/prelim-register/providers/clarivate.md",
+  "driver/skills/prelim-register/providers/corsearch.md",
+  "driver/skills/prelim-register/providers/signa.md",
   "providers/corsearch/README.md",
 ];
 

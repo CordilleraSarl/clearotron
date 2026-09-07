@@ -96,7 +96,7 @@ export const PATH_FIELDS = ["frameworkPath", "workedExamplesPath"];
 /**
  * The code-owned values, READ-ONLY, for display. The page shows them badged; it cannot send them.
  *
- * Two of them are PATHS INSIDE THE ENGINE — `skills/clearotron-search/risk-framework-zephyr.md` — and they
+ * Two of them are PATHS INSIDE THE ENGINE — `skills/prelim-search/risk-framework-zephyr.md` — and they
  * are withheld from a client here, on the server, where the role is already in hand. The React page has
  * filtered them out of its own render since the rebuild, but a filter in the browser is a display
  * convenience and not a wall: the value still crossed the wire and was one devtools tab away.

@@ -35,7 +35,7 @@ there is no other value: a band that needs sharpening is the band above it, stat
    This ordered an expectation sentence ("moderate volume of filings expected") and forbade a register
    conclusion, because this seat could not see the register lane. It can: the run's fetched records are
    passed to you when they exist. The replacement is RF-15 v3 in
-   `../clearotron-search/firm-wide-reasoning.md` — estimation becomes one of three confirmation states once
+   `../prelim-search/firm-wide-reasoning.md` — estimation becomes one of three confirmation states once
    the register actually ran. Where it did not run, the estimate is still the honest answer and RF-15
    says so.
    *The number is kept and not reused* — see calibration rule 4 for why.
@@ -50,7 +50,7 @@ there is no other value: a band that needs sharpening is the band above it, stat
 2. **Crowded field = diluted risk, not amplified.** Many small, non-enforcing players means any one
    player's enforcement power is weaker — a crowded field typically caps at the middle band. The
    gating precondition, and what a crowd may and may not do to a band, are in
-   `../clearotron-search/firm-wide-reasoning.md` → *Volume is not a risk multiplier*; read it there rather
+   `../prelim-search/firm-wide-reasoning.md` → *Volume is not a risk multiplier*; read it there rather
    than from a summary here.
    *(Its closing sentence — "the top bands are reserved for dominant, well-resourced,
    known-to-enforce rights holders" — is RETIRED. That is owner size and fame driving a band, which the
@@ -67,7 +67,7 @@ there is no other value: a band that needs sharpening is the band above it, stat
    This rule ordered the pending-register caveat on *every* summary, unconditionally. When the register
    ran and surfaced live filings, that sentence tells a client its ratings are common-law only while the
    same run holds the filings — which is what shipped. The replacement is RF-10 v3 in
-   `../clearotron-search/firm-wide-reasoning.md`: when register analysis ran AND surfaced live filings, drop
+   `../prelim-search/firm-wide-reasoning.md`: when register analysis ran AND surfaced live filings, drop
    the caveat and cite the register evidence directly; otherwise it stands.
    *The number is kept and not reused.* `verify-knockout.mjs` and two other files address these rules by
    number, so renumbering would silently repoint five live references at the wrong rule.5. **Dispute-type notation only when the customer's framework defines it** (e.g. an A–E / dispute

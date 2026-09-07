@@ -78,7 +78,7 @@ function deployment(root, { queue = {}, outbox = [], run = null } = {}) {
   for (const name of outbox) writeFileSync(join(ob, name), JSON.stringify({ kind: "fixture" }));
   let runDir = null;
   if (run) {
-    runDir = join(root, "workspace", "clearotron-search", "fixture-mark", "2026-08-05-fixture-two");
+    runDir = join(root, "workspace", "prelim-search", "fixture-mark", "2026-08-05-fixture-two");
     mkdirSync(driverDir(runDir), { recursive: true });
     writeFileSync(join(runDir, "status.json"), JSON.stringify(run, null, 2));
   }
@@ -571,7 +571,7 @@ test("#428: the harness derives the SAME runId forms the engine honours, FALLBAC
   assert.deepEqual(runIdForms(null), [], "and an unreadable status yields nothing to match, never a guess");
 
   // no runId, and a run dir: the engine names the marker `<date>-<codename>`, so the harness looks there.
-  const runDir = "/w/clearotron-search/fixture-mark/2026-08-05-fixture-two";
+  const runDir = "/w/prelim-search/fixture-mark/2026-08-05-fixture-two";
   assert.deepEqual(runIdForms({ slug: "fixture-mark", codename: "fixture-two" }, runDir),
     ["2026-08-05-fixture-two", "fixture-mark-2026-08-05-fixture-two", "fixture-mark-fixture-two"],
     "outbox-backoff's fallback, runner.mjs backstopFailureNotice's `<slug>-<basename(runDir)>`, and the legacy form");
@@ -587,13 +587,13 @@ test("#428: TEETH — a run with no runId and a packet on disk is found, and ano
     const ob = join(root, "outbox"); mkdirSync(ob);
     // outbox-backoff.mjs's rescan wrote this name because status.json carried no runId
     writeFileSync(join(ob, "2026-08-05-fixture-two.pending"), "agent\n");
-    const runDir = join(root, "workspace", "clearotron-search", "fixture-mark", "2026-08-05-fixture-two");
+    const runDir = join(root, "workspace", "prelim-search", "fixture-mark", "2026-08-05-fixture-two");
     const st = { slug: "fixture-mark", codename: "fixture-two" };
     assert.deepEqual(outboxPackets({ runIds: runIdForms(st, runDir) }, ob).packets, ["2026-08-05-fixture-two.pending"]);
     // the draft under review searched only `fixture-mark-fixture-two` and reported this as never sent
     assert.deepEqual(outboxPackets({ runIds: ["fixture-mark-fixture-two"] }, ob).packets, []);
     // and the fallback does not reach a different date's run
-    const other = join(root, "workspace", "clearotron-search", "fixture-mark", "2026-08-04-fixture-two");
+    const other = join(root, "workspace", "prelim-search", "fixture-mark", "2026-08-04-fixture-two");
     assert.deepEqual(outboxPackets({ runIds: runIdForms(st, other) }, ob).packets, []);
   });
 });

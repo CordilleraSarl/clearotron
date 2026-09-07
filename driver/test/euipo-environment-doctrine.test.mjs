@@ -76,7 +76,7 @@ test("#1393 every doc that carries the doctrine says the SAME thing — half a f
     .filter(([, body]) => PROHIBITION.test(body));
   assert.ok(carriers.length >= 3,
     `only ${carriers.length} doc(s) state the prohibition. Three carried this doctrine when it was fixed — `
-    + "clearotron-register/SKILL.md, clearotron-register/digest.md and providers/euipo.md. A drop means a doc "
+    + "prelim-register/SKILL.md, prelim-register/digest.md and providers/euipo.md. A drop means a doc "
     + "lost the doctrine rather than that the doctrine got smaller.");
   for (const [p, body] of carriers) {
     assert.ok(/receipts\.json/.test(body),

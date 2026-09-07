@@ -71,7 +71,7 @@ import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER sp
 import { ownersOwedACheck, runOwnerChecks } from "./owner-use-check.mjs";
 
 const DRIVER_DIR = dirname(fileURLToPath(import.meta.url));
-export const TRIAGE_FRAMEWORK = "skills/clearotron-search/risk-framework-triage.md";
+export const TRIAGE_FRAMEWORK = "skills/prelim-search/risk-framework-triage.md";
 
 // sentinel/archive mirror pipeline.mjs's private helpers (cross-referenced there) — byte-faithful.
 const sentinel = (runDir, name, obj) => atomicWrite(join(runDir, name), JSON.stringify({ ts: new Date().toISOString(), ...obj }, null, 2) + "\n");

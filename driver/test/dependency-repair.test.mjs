@@ -18,7 +18,7 @@ test("15c — every stage's authored surface is declared, not just the one file 
   const named = (name, opts = {}) => stageOutputs(name, P, opts).map((f) => f.split("/").pop());
   assert.deepEqual(named("synthesis"), ["narrative.md", "findings.json"],
     "findings.json is the most-consumed artifact in the run and was undeclared");
-  assert.ok(named("clearotron-variants").includes("variant-manifest.json"));
+  assert.ok(named("prelim-variants").includes("variant-manifest.json"));
   assert.ok(named("blind-frame").includes("blind-frame-model.json"));
   assert.ok(named("frame-diff").includes("frame-diff.json"));
   assert.ok(named("placement-inquiry").includes("placements.json"));

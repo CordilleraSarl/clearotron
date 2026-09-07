@@ -26,7 +26,7 @@ sufficiency, and prioritisation. See [unit.md](unit.md).
 > match-mode, never "all classes". The ONLY all-class enumerate is the exact-IDENTICAL cross-class merch check
 > (`match_mode:exact`, `nice_classes:[25]`). `fuzzy` is never an enumerate mode.
 
-**Execution note:** `clearotron-register` now runs as a worker that decomposes these axes into isolated
+**Execution note:** `prelim-register` now runs as a worker that decomposes these axes into isolated
 search **units** (saturation-probe / primary-sweep / transliteration-numeric / incumbent-class /
 merch-sweep), each executing one axis and writing its named-band array (`register-units/<axis>-band.json`).
 If you are a unit, run only your assigned axis from the recipe below; the judgment worker (Layer B) performs
@@ -190,7 +190,7 @@ For each transliteration variant in the manifest:
    → transliteration plausibility is a verification flag for the lawyer (Verify? ✅)
 ```
 
-**Important:** transliteration hits are NOT confirmed without senior-lawyer sign-off. Claude generates plausible transliterations but Korean/Arabic/etc native speakers must confirm. The `Verify? ✅` flag from `clearotron-variants` carries through to the band so judgment surfaces it. The funnel does not decide a transliteration is wrong — it enumerates and passes the record with its flag.
+**Important:** transliteration hits are NOT confirmed without senior-lawyer sign-off. Claude generates plausible transliterations but Korean/Arabic/etc native speakers must confirm. The `Verify? ✅` flag from `prelim-variants` carries through to the band so judgment surfaces it. The funnel does not decide a transliteration is wrong — it enumerates and passes the record with its flag.
 
 **Breadth note (this recipe shares a unit with the per-jurisdiction named queries).** Both the script-group enumerations here and the material-jurisdiction named queries are owned by the `transliteration-numeric` unit, and **both are enumerated** — there is no "yield one to fund the other" sufficiency trade any more. `register_enumerate` owns each query's page loop; the unit runs every variant query the manifest declares. If a query genuinely cannot run (provider error), that surfaces as an `incomplete` block, not a silently-dropped sweep.
 
@@ -331,7 +331,7 @@ by goods **words**. The everyday-word saturation is the trigger to **scope the n
 class)** — never to drop the token, re-narrow it to a more specific concept, or swap it for the phonetic form. The
 saturated meaning token is enumerated like any other named slice; the lawyer reads it. (This is the register half
 of the variant-stage everyday-word-first rule — see
-[transliteration-scripts.md](../clearotron-variants/transliteration-scripts.md): the everyday word is kept upstream,
+[transliteration-scripts.md](../prelim-variants/transliteration-scripts.md): the everyday word is kept upstream,
 class-scoped and enumerated here.) Reuse steps 1–2 above with the class-scoped meaning token as the `register_enumerate` predicate.
 
 **Expected output:** on a saturated field, the complete enumerated near-exact in-class band (live + dead with status) the ranker's top-N paging would have buried, plus the phonetic-fringe band — each as an `enumerated` block, or an `incomplete` descriptor where a slice was a genuine crowd. On a non-saturated field this recipe does not fire.

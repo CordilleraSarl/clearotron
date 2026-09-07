@@ -1,11 +1,11 @@
 ---
-name: clearotron-register
-description: Register-side execution for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearotron-search` orchestrator** — do not call directly. Runs in one of two modes the orchestrator selects via the spawn task. **Unit mode (the FUNNEL — Layer A):** execute ONE register search axis (saturation / primary-sweep / transliteration-numeric / incumbent-class) against the variant manifest — ENUMERATE each named query to completion via `register_enumerate` (the completeness primitive that owns the page loop), describe saturation crowds as count-only incomplete descriptors, and write the COMPLETE NAMED BAND (`register-units/<axis>-band.json`) carrying every record with its status; the funnel decides NOTHING about relevance / sufficiency / prioritisation and never samples or self-accepts; only the raw character-noise pile dies in this session. **Digest mode (judgment — Layer B):** read the complete merged band through the band tools (`band_shape` / `band_lookup` / `band_record` — every call on the run's reading audit; never by slicing band files), run the cross-cutting judgment (relevance, identical-match + cross-class merchandising, owner aggregation, watchlists, stealth-filer + Option-D cross-checks, opposition), decide sufficiency, and hand the register-side findings back as typed rows — the driver renders the document the orchestrator synthesises from; the seat writes no file.
+name: prelim-register
+description: Register-side execution for the v3 preliminary trademark search workflow. **Invoked exclusively by the `prelim-search` orchestrator** — do not call directly. Runs in one of two modes the orchestrator selects via the spawn task. **Unit mode (the FUNNEL — Layer A):** execute ONE register search axis (saturation / primary-sweep / transliteration-numeric / incumbent-class) against the variant manifest — ENUMERATE each named query to completion via `register_enumerate` (the completeness primitive that owns the page loop), describe saturation crowds as count-only incomplete descriptors, and write the COMPLETE NAMED BAND (`register-units/<axis>-band.json`) carrying every record with its status; the funnel decides NOTHING about relevance / sufficiency / prioritisation and never samples or self-accepts; only the raw character-noise pile dies in this session. **Digest mode (judgment — Layer B):** read the complete merged band through the band tools (`band_shape` / `band_lookup` / `band_record` — every call on the run's reading audit; never by slicing band files), run the cross-cutting judgment (relevance, identical-match + cross-class merchandising, owner aggregation, watchlists, stealth-filer + Option-D cross-checks, opposition), decide sufficiency, and hand the register-side findings back as typed rows — the driver renders the document the orchestrator synthesises from; the seat writes no file.
 ---
 
 ## Spawned session
 
-Invoked from `clearotron-search` (the orchestrator) as an **isolated depth-2 worker**, in one of two
+Invoked from `prelim-search` (the orchestrator) as an **isolated depth-2 worker**, in one of two
 modes. **This skill never spawns sub-agents** — the orchestrator owns all dispatch. (This is
 deliberate: the announce/completion chain supports one nesting level — `main → orchestrator →
 workers` — so every register worker is a flat depth-2 sibling of the common-law worker, not a nested
@@ -50,7 +50,7 @@ Companion files:
 
 ## Trigger
 
-Called by `clearotron-search` after `clearotron-variants` has produced the manifest. The orchestrator spawns
+Called by `prelim-search` after `prelim-variants` has produced the manifest. The orchestrator spawns
 the unit-mode workers and the common-law worker together, then spawns the digest-mode worker once the
 unit digests exist. Not invoked directly by operators.
 

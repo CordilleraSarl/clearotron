@@ -104,7 +104,7 @@ test("normal pipeline failure (inside the try{}) is NOT double-noticed by the ba
   // CONVERSION 2 — the knob is a SUBSTRING of the dispatch, and the dispatch no longer names a path: the
   // frame is handed back through `record_matter_frame` and the driver renders the file. Keyed on the tool
   // the converted dispatch orders, which is the thing that is actually in the message now. Left as
-  // "matter-context.md" this silently stopped matching and the test measured clearotron-variants failing
+  // "matter-context.md" this silently stopped matching and the test measured prelim-variants failing
   // instead — the assertion still passed a stage name, just not the one the test is about.
   const { code, log } = await runToExit(envFor(root, { MOCK_FAIL_STAGE: "record_matter_frame", CLEAROTRON_DELIVERY: "handoff" }));
   assert.equal(code, 0, log);

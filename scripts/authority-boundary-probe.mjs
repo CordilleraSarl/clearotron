@@ -35,11 +35,11 @@ const model = arg("--model", "claude-sonnet-5");
 
 const root = mkdtempSync(join(tmpdir(), "authority-probe-"));
 const skills = join(root, "skills"), runDir = join(root, "run");
-mkdirSync(join(skills, "clearotron-register"), { recursive: true });
+mkdirSync(join(skills, "prelim-register"), { recursive: true });
 ensureDriverDir(runDir);
-writeFileSync(join(skills, "clearotron-register", "SKILL.md"), "# doctrine\nThe method for this stage.\n");
-const doctrine = join(skills, "clearotron-register", "NOTES.md");   // the incident's shape: a NEW file in the doctrine tree
-const existing = join(skills, "clearotron-register", "SKILL.md");   // already on disk — the Edit target
+writeFileSync(join(skills, "prelim-register", "SKILL.md"), "# doctrine\nThe method for this stage.\n");
+const doctrine = join(skills, "prelim-register", "NOTES.md");   // the incident's shape: a NEW file in the doctrine tree
+const existing = join(skills, "prelim-register", "SKILL.md");   // already on disk — the Edit target
 const record = driverDir(runDir, "probe-note.json");       // the forensic record a seat must never author
 const output = join(runDir, "findings.json");                   // where this seat's own output belongs
 

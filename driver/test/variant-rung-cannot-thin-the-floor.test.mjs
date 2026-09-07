@@ -64,7 +64,7 @@ test("#1503 a graded manifest that drops a floor CATEGORY is refused too", () =>
 
 test("#1503 THE TIE — the rung changes the PROMPT and changes NOTHING about the floor", () => {
   const paths = new Proxy({}, { get: (_t, k) => (typeof k === "string" ? `<${k}>` : undefined) });
-  const msg = (product) => STAGES["clearotron-variants"].message({
+  const msg = (product) => STAGES["prelim-variants"].message({
     paths, job: { mark: "KESTREL", classes: [25], territories: ["CN"] }, profile: { key: "demo" },
     depth: depthFor({ product }),
   });

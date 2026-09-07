@@ -32,7 +32,7 @@ function rowCells(ln) {
  * The variant terms the manifest commits the grid to search: data rows of sections whose heading
  * contains "variants" (the Variants tables). "Variant applicability" sections (category
  * dispositions, not search terms) are excluded. The term column is resolved from each table's
- * HEADER row — the live clearotron-variants format is `| Category | Value | Rationale | Verify? |`
+ * HEADER row — the live prelim-variants format is `| Category | Value | Rationale | Verify? |`
  * (term in "Value"), while older/test manifests use `| Variant | ... |` (term first); default 0
  * when no recognizable header exists.
  */
@@ -775,7 +775,7 @@ export function mergeCommonLawFindings(parts) {
 // FALSE against the real ledger, and the arm failed the very run it was derived from:
 //
 //   • `candidates[]` is RAW, UNJUDGED web-search output — the grid program records up to 8 candidates
-//     per cell "without judging similarity" (skills/clearotron-common-law/perplexity-prompts.md), and the
+//     per cell "without judging similarity" (skills/prelim-common-law/perplexity-prompts.md), and the
 //     filtering is explicitly the model's. The real cell `CORAL FREEZE × vitaminshoppe.com` holds three:
 //     a BCAA how-to video, a Hawaiian shaved-ice supplement and a Dallas store-locator page. The
 //     model's "No results" means "no relevant listing", and no deterministic test can tell that page

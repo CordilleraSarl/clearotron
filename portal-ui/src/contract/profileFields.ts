@@ -23,7 +23,7 @@ export const CODE_OWNED = ['frameworkPath', 'workedExamplesPath', 'allowedRecipe
 /**
  * Code-owned fields whose VALUE is a path inside the engine.
  *
- * These render as `skills/clearotron-search/risk-framework-aurora.md` — the internal directory layout,
+ * These render as `skills/prelim-search/risk-framework-aurora.md` — the internal directory layout,
  * the naming convention, and a customer key embedded in a filename, which together let a reader guess
  * the path of another client's framework. Not catastrophic, and not a client's business either.
  *

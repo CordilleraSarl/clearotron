@@ -75,7 +75,7 @@ test("#1503 THE PROMPT a resolved ctx builds carries the rung — end to end, no
   const paths = new Proxy({}, { get: (_t, k) => (typeof k === "string" ? `<${k}>` : undefined) });
   const message = (product) => {
     const { cold } = resolve(product);
-    return STAGES["clearotron-variants"].message({
+    return STAGES["prelim-variants"].message({
       ...cold, paths, job: { mark: "TESTMARK", classes: [25], territories: ["CH"] }, profile: { key: "demo" },
     });
   };

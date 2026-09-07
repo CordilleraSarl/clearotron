@@ -219,7 +219,7 @@ const UNDECLARED = {
 // because this list is a fact about gates rather than a convenience copy of `_driver/`.
 export const VALIDATOR_SIDECARS = {
   "matter-frame": ["instructed-scope.json", "stage-contracts.json"],
-  "clearotron-variants": ["instructed-scope.json", "stage-contracts.json"],
+  "prelim-variants": ["instructed-scope.json", "stage-contracts.json"],
   "register-unit": ["instructed-scope.json", "register-plan.json"],
   "common-law": ["grid-spec.json", "profile.json"],
   // — the DRIVER'S copy of the placement form. Without it in the sandbox an experiment arm would

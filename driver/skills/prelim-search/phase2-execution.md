@@ -1,6 +1,6 @@
 # Phase 2 — methodology (the deterministic driver runs the orchestration)
 
-> **The clearotron-search pipeline is sequenced in code by the deterministic driver** (`driver/`,
+> **The prelim-search pipeline is sequenced in code by the deterministic driver** (`driver/`,
 > source of truth `stages.mjs`). The old LLM-orchestrator's `sessions_spawn`/`sessions_yield`/Wait-state/
 > `NO_REPLY` machinery has been removed — the driver runs each stage as one blocking engine turn and
 > joins the fan-out in code, so it cannot park. This file is the per-step **methodology**: the judgment each
@@ -26,7 +26,7 @@
 
 ## Step 1 — Variants
 
-`clearotron-variants` produces `variant-manifest.md` (Elements table, Variants table, Watchlists) from the marks,
+`prelim-variants` produces `variant-manifest.md` (Elements table, Variants table, Watchlists) from the marks,
 classes, jurisdiction scope, product description, industry, and manner of use. The manifest must be well-formed
 (Elements populated; Variants has rows; Watchlists present); if empty or malformed the run halts — there is no
 usable strategy. The manifest drives the gather stage.
@@ -46,10 +46,10 @@ if its axis is empty, so running a non-applicable one is harmless):
 - `transliteration-numeric` — if the manifest has `translit-*` or numeric-substitution variants and the mark is not English-only.
 - `incumbent-class` — if the manifest has an `industry_incumbent_alert`.
 
-Each unit is given: the sub-skill + axis (`clearotron-register` unit mode — see `clearotron-register/unit.md`), the
+Each unit is given: the sub-skill + axis (`prelim-register` unit mode — see `prelim-register/unit.md`), the
 variant manifest path, the request context, the **active register provider** (see
 [SKILL.md → Register sources](SKILL.md#register-sources--the-vendor-is-the-source-of-truth-euipo-is-a-free-eu-cross-check)),
-the sub-budget and its output path (`register-units/<axis>.md`). `clearotron-common-law` runs
+the sub-budget and its output path (`register-units/<axis>.md`). `prelim-common-law` runs
 alongside the units against the same manifest.
 
 ### Step 2C — Touchpoint 2: placement-inquiry
@@ -80,7 +80,7 @@ skipped step must be logged with its reason in the unit's digest audit.
 3. **Single-word coverage hunts** — for each element marked "demote to filter" in the manifest, one search with product/industry filters applied (limit=50). Minimum 1 per such element.
 4. **Wildcard reorders** — if the manifest lists word-order variants, at least one wildcard sweep per distinct ordering (e.g. `Elevate * game`, `game * Elevate`).
 5. **Numeric-substitution and transliteration sweeps** — execute every sweep marked ✅ (requires verification) in the variant manifest, UNLESS the manifest classifies the mark as English-only (single-language Recipe 1 pattern). Skipping any ✅ requires a stated reason in the unit's digest audit.
-6. **Material-jurisdiction sub-queries** — a **protected, non-yielding** line item, NOT folded into the sweep budget. Run one scoped sub-query per jurisdiction `matter-context` declares materially-matters (no top-N cap; the per-mark ceiling scales with the declared count — see `clearotron-register/SKILL.md` → *Tool call budget* and Step 3). These outrank within-axis breadth: if budget is tight, an extra script group (step 5) yields and is logged `coverage-limited` — a material jurisdiction is never dropped to fund breadth, and a jurisdiction that genuinely can't run is logged `deferred`, never silent.
+6. **Material-jurisdiction sub-queries** — a **protected, non-yielding** line item, NOT folded into the sweep budget. Run one scoped sub-query per jurisdiction `matter-context` declares materially-matters (no top-N cap; the per-mark ceiling scales with the declared count — see `prelim-register/SKILL.md` → *Tool call budget* and Step 3). These outrank within-axis breadth: if budget is tight, an extra script group (step 5) yields and is logged `coverage-limited` — a material jurisdiction is never dropped to fund breadth, and a jurisdiction that genuinely can't run is logged `deferred`, never silent.
 
 **Expected breadth for saturated common-word patterns: ~20–25 register searches per mark, plus the ring-fenced per-jurisdiction allowance** — a guideline, not a quota; coverage of the manifest's axes *and* the declared material jurisdictions is what matters, not the raw count. A run that is thin **and** left ✅ sweeps or material-jurisdiction sub-queries unexecuted with no documented skip reason is incomplete; the skeptic (Step 2.6) flags it. A run that executed every axis and validly found little is complete.
 
@@ -128,7 +128,7 @@ Escalate only genuinely closeable gaps (a `deferred` row the table lists as CLOS
 **A saturated everyday-word translation IS recoverable — narrow it to the field by class (replaces the old
 re-run-the-specific-concept-rendering move).** When a unit digest records `translit-too-generic` (the
 saturation probe read an everyday-word-scale count on a meaning-translation variant — see
-[`clearotron-register` unit.md](../clearotron-register/unit.md)), that is a **cheap ∧ material ∧ recoverable** gap on a
+[`prelim-register` unit.md](../prelim-register/unit.md)), that is a **cheap ∧ material ∧ recoverable** gap on a
 *real* element, not a documented structural limit: a warm re-run that SCOPES the saturated meaning token to the
 filed in-scope Nice classes (a structured `nice-class:` × `region:` filter — the token kept as the substring
 predicate, **never** goods-vocabulary words ANDed into the search text) and enumerates it closes the gap. (This
@@ -179,7 +179,7 @@ is not a reason to skip it, and "the rule said so" is not an answer.
   jurisdiction `matter-context` named materially-matters? Is any `deferred` / `coverage-limited` row being
   narrated (or about to be narrated) as a clean negative? A material jurisdiction with no row, or a
   deferred row treated as clean, is a recall gap — flag it.
-- **Registrability flag:** did `clearotron-variants` name the dominant element + give the proposed-mark
+- **Registrability flag:** did `prelim-variants` name the dominant element + give the proposed-mark
   distinctiveness read (spectrum + deceptive/offensive, or "plainly distinctive"), and is it carried
   into the deliverable?
 
@@ -213,8 +213,8 @@ Read both findings files. Apply four explicit rules tied to the staff lawyer's s
 | # | Trigger | Action | Owned by |
 |---|---|---|---|
 | 1 | Every common-law owner found | Check register for any trademark filings by that owner in target classes | **CODE (2026-07-10):** the driver's cross-check dispatcher mints an `xcheck-owner-*` plan entry per extracted owner from the "Similar listing(s) found" receipts and executes it deterministically (`_driver/register-xcheck.json` is the receipt); verify the receipt in synthesis |
-| 2 | Every register stealth-filer pattern (law firm as owner) | One common-law query for the underlying client's marketplace use | Dispatch to `clearotron-common-law` |
-| 3 | Every watchlist-hit owner appearing in register but NOT in common-law | One common-law query for that owner's marketplace activity | Dispatch to `clearotron-common-law` |
+| 2 | Every register stealth-filer pattern (law firm as owner) | One common-law query for the underlying client's marketplace use | Dispatch to `prelim-common-law` |
+| 3 | Every watchlist-hit owner appearing in register but NOT in common-law | One common-law query for that owner's marketplace activity | Dispatch to `prelim-common-law` |
 | 4 | Every common-law finding without a register tie | One register query for the entity name | **CODE (2026-07-10):** the same dispatcher mints an `xcheck-mark-*` contains entry per owner-less similar-listing mark; anything the receipts show over-cap or unparsed, dispatch via the register supplemental lane (`register_propose_supplemental`) |
 
 **All four triggers fire deterministically when their condition is met.** Triggers 1/4 are now code-fired
@@ -286,7 +286,7 @@ practical-likelihood question for this owner.
 
 **Reuse the register half; add the marketplace half.** The owner's portfolio under owner-name variants and
 the enforcement-appetite signals are already in hand from the register layer — owner aggregation across name
-variants and the owner-bound sweep (`clearotron-register/digest.md` Steps 3–4) plus the prosecution-history and
+variants and the owner-bound sweep (`prelim-register/digest.md` Steps 3–4) plus the prosecution-history and
 revocability reads (`synthesis-rules.md`). This step adds what the register layer cannot see: the
 **marketplace** half — the owner's *own use of the term*, site, and socials.
 
@@ -300,7 +300,7 @@ revocability reads (`synthesis-rules.md`). This step adds what the register laye
 **Output:** a practical-likelihood statement in the finding's business read ("how likely is this owner to
 actually create a problem"), feeding the net rating. **Non-attributable research practice:** view an owner's
 profiles non-attributably, and when a finding rests on the owner's public social / web profiles, set the
-deliverable's `handling_note` (see `clearotron-search/delivery-contract.md`) so the reviewer opens those links
+deliverable's `handling_note` (see `prelim-search/delivery-contract.md`) so the reviewer opens those links
 privately too.
 
 ## Step 4 — Joint synthesis

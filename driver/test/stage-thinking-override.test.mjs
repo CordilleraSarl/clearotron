@@ -52,8 +52,8 @@ test("the shipped default for register-digest is low, and the tiers that stay hi
   // 1.03x fixed-effort control, no detectable effect on which records are tiered or how).
   assert.equal(STAGES["register-digest"].thinking, "low");
   // Out of scope and staying that way: synthesis sets client-facing risk bands (1.42-1.69x against a 1.19x
-  // control — barely above its own noise), and clearotron-variants decides what is searched at all (its low arm
+  // control — barely above its own noise), and prelim-variants decides what is searched at all (its low arm
   // produced 39 variants against production's 56 — a narrower search, not a cheaper one).
   assert.equal(STAGES["synthesis"].thinking, "high");
-  assert.equal(STAGES["clearotron-variants"].thinking, "high");
+  assert.equal(STAGES["prelim-variants"].thinking, "high");
 });

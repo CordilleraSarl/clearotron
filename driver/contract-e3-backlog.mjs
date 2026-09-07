@@ -101,7 +101,7 @@ export const E3_DATA_INPUT_EXEMPTIONS = [
 ];
 
 export const E3_BACKLOG = [
-  // ── clearotron-variants: FOUR ROWS RETIRED BY CONVERSION 3 ──────────────────────────────────────────
+  // ── prelim-variants: FOUR ROWS RETIRED BY CONVERSION 3 ──────────────────────────────────────────
   //
   // Two `literal-json-skeleton` and two `exactly-these-keys`, all four stamped "NOTHING ON THE PLAN
   // REMOVES THIS". The conversion removed them:
@@ -111,7 +111,7 @@ export const E3_BACKLOG = [
   //                             enum families are unreachable from a typed call rather than caught after
   //                             the file is written.
   //   stages.mjs:774-808        the same skeleton's category enum, same fate.
-  //   clearotron-variants SKILL.md  the `### Scope ledger` markdown table and its column contract. The rows
+  //   prelim-variants SKILL.md  the `### Scope ledger` markdown table and its column contract. The rows
   //                             arrive typed; the driver renders the table AND serialises
   //                             scope-ledger.json from them through one shared function.
   //
@@ -192,7 +192,7 @@ export const E3_BACKLOG = [
     //   receipt_id — M1 LANDED. stages.mjs states it outright: "No seat-facing text displays an id shape
     //     any more", and connotation-search.mjs carries " M1, FINISHED" over the retired text. The
     //     seat now gives `receipt_index`, a POSITION, and the driver resolves position to id.
-    //   quote      — M2 LANDED. The live field is `anchor` (clearotron-common-law/SKILL.md:197).
+    //   quote      — M2 LANDED. The live field is `anchor` (prelim-common-law/SKILL.md:197).
     // Neither was reworded. Both were removed, and this row is discharged of them.
     //
     // ── (b) THE NEW, NARROWER CLAIM — RE-EVIDENCED for B (the form path is DELETED, owner ruling
@@ -209,7 +209,7 @@ export const E3_BACKLOG = [
   {
     stage: "common-law",
     kind: "literal-json-skeleton",
-    where: "driver/skills/clearotron-common-law/SKILL.md:123-170",
+    where: "driver/skills/prelim-common-law/SKILL.md:123-170",
     surface: "skill-file",
     evidence: "### Format\\n```markdown\\n# Common-law findings — Dawn: Legends of Thornmantle (2026-05-11)\\n\\n## Summary\\n\\n- Perplexity calls executed: 4 …",
     reparsedBy: "driver/publish/audit-from-spine.mjs:14 parseTables → parseSpineFindingBlocks (audit-from-spine.mjs:123) re-parses the common-law finding tables into audit.md",
@@ -218,7 +218,7 @@ export const E3_BACKLOG = [
   {
     stage: "common-law",
     kind: "dictated-line-shape",
-    where: "driver/skills/clearotron-common-law/SKILL.md:192 (restated at driver/skills/clearotron-search/synthesis-rules.md:394)",
+    where: "driver/skills/prelim-common-law/SKILL.md:192 (restated at driver/skills/prelim-search/synthesis-rules.md:394)",
     surface: "skill-file",
     evidence: "A clean PR/connotation row MUST cite its search — add a `**Connotation-search source:** <URL | \"perplexity_research — no result\">` line.",
     reparsedBy: "driver/connotation-search.mjs — validators.commonLaw rejects a clean claim with no such line (connotation_search_missing); the hint is re-dictated at driver/gateway.mjs:1824",
@@ -259,7 +259,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:2243 (the non-supplemental-lane branch)",
     surface: "stage-message",
     evidence: "BAND ARTIFACT (MANDATORY): ALSO write the COMPLETE NAMED BAND for this axis to <path> — a JSON ARRAY, one block per register_enumerate / count-probe call, in the named-band contract: {\"state\":\"enumerated\",\"query\":\"<what was searched>\",\"total_hits\":N,\"records\":[{record_id, mark_text, classes, status,",
-    reparsedBy: "driver/named-band.mjs parseNamedBand / bandRecords / bandCrowds / mergeNamedBands (named in driver/skills/clearotron-register/unit.md:60-62); validators.registerUnit",
+    reparsedBy: "driver/named-band.mjs parseNamedBand / bandRecords / bandCrowds / mergeNamedBands (named in driver/skills/prelim-register/unit.md:60-62); validators.registerUnit",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
@@ -274,7 +274,7 @@ export const E3_BACKLOG = [
   {
     stage: "register-unit",
     kind: "literal-json-skeleton",
-    where: "driver/skills/clearotron-register/unit.md:83-97",
+    where: "driver/skills/prelim-register/unit.md:83-97",
     surface: "skill-file",
     evidence: "Two block shapes (no third):\\n```json\\n[\\n { \"state\":\"enumerated\", \"query\":\"…\", \"total_hits\": 12, \"records\": [ { \"record_id\":\"/mark/eu/018…\", \"mark_text\":\"…\", … } ] },\\n { \"state\":\"incomplete\", \"query\":\"…\", \"total_hits\": 2416, \"fetched\": 1, \"sample\":[ … ], \"reason\":\"…\" }\\n]\\n```",
     reparsedBy: "driver/named-band.mjs parseNamedBand — named in the skill file itself at unit.md:60-62",
@@ -322,7 +322,7 @@ export const E3_BACKLOG = [
     where: "driver/skills/placement-inquiry/SKILL.md:42",
     surface: "skill-file",
     evidence: "Use these section headings, in this order: **Band reconciliation** …, the four placement tiers (**Headline candidates**, **Sheet 2 / register watch**, **Watchlist annex**, **Out-of-scope / filtered**), **Disagreements / flags surfaced to downstream**, **Coverage rulings & open questions** …, and **O",
-    reparsedBy: "driver/pipeline.mjs — the PLACEMENT RULINGS TAIL block handed to register-digest is lifted from these named sections (stages.mjs:2559 references it); driver/skills/clearotron-register/digest.md:342-352 re-parses the Disagreements section into its own table",
+    reparsedBy: "driver/pipeline.mjs — the PLACEMENT RULINGS TAIL block handed to register-digest is lifted from these named sections (stages.mjs:2559 references it); driver/skills/prelim-register/digest.md:342-352 re-parses the Disagreements section into its own table",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   // RETIRED 2026-08-16 — register-digest's no-form arm. M6 DELETED THE DICTATION ON 2026-08-14 AND THIS
@@ -370,7 +370,7 @@ export const E3_BACKLOG = [
   {
     stage: "register-digest",
     kind: "dictated-line-shape",
-    where: "driver/skills/clearotron-register/digest.md:164 (Dominant-element reconciliation — the crowd row's `unit` grammar)",
+    where: "driver/skills/prelim-register/digest.md:164 (Dominant-element reconciliation — the crowd row's `unit` grammar)",
     surface: "skill-file",
     evidence: "`<axis> / dominant-element crowd (<N> members): <one-line label for the residual class>`",
     reparsedBy: "driver/coverage-ledger.mjs crowdRulingCount reads `<N>` back out of the `unit` cell, and driver/recall-reconciliation.mjs parseCrowdRulings turns it into the residual denominator the delivery gate blocks on",
@@ -379,7 +379,7 @@ export const E3_BACKLOG = [
   {
     stage: "register-digest",
     kind: "exactly-these-keys",
-    where: "driver/skills/clearotron-register/digest.md:233-241",
+    where: "driver/skills/prelim-register/digest.md:233-241",
     surface: "skill-file",
     evidence: "- `axis` — EXACTLY one bare token of: `saturation-probe` / `primary-sweep` / `transliteration-numeric` / `incumbent-class`. **That vocabulary is CLOSED** and a row whose axis is outside it is refused.",
     reparsedBy: "driver/coverage-form.mjs (seat-row contract; SEAT_ROW_CONTRACT rides the accumulator) — and, since the typed-transport conversion, driver/coverage-call.mjs validateCoverageCall refuses an off-vocabulary axis AT CALL TIME (axis_invalid), so the dictation is receiver-checked in the same turn it is obeyed",
@@ -399,7 +399,7 @@ export const E3_BACKLOG = [
     // closed vocabulary sent through the `record_coverage` typed call (the transport conversion, B's
     // pattern). The seat opens no file and writes no table; the dictated shape is the call's own two
     // values, receiver-validated as they arrive.
-    where: "driver/skills/clearotron-register/digest.md:216-218",
+    where: "driver/skills/prelim-register/digest.md:216-218",
     surface: "skill-file",
     evidence: "- `status` — EXACTLY one bare token: `confirmed-clean` / `coverage-limited` / `deferred`. Qualifiers never go in the status; they go in the reason.",
     reparsedBy: "driver/coverage-call.mjs validateCoverageCall (status_invalid at call time) + driver/coverage-form.mjs rowIsSettled via validators.registerFindings; the archived-era prose-table reader (coverage-ledger.mjs parseCoverageLedgerFull) survives for replay only",
@@ -408,7 +408,7 @@ export const E3_BACKLOG = [
   {
     stage: "register-digest",
     kind: "exactly-these-keys",
-    where: "driver/skills/clearotron-register/SKILL.md:198-199",
+    where: "driver/skills/prelim-register/SKILL.md:198-199",
     surface: "skill-file",
     evidence: "**The status vocabulary is CLOSED: EXACTLY one bare token of: `confirmed-clean` / `coverage-limited` / `deferred`.** Qualifiers never go in a status cell; they go in the reason.",
     reparsedBy: "driver/coverage-form.mjs / driver/coverage-ledger.mjs. Since the typed-transport conversion the STAGE MESSAGE no longer restates the enum; the surviving copies are SKILL.md (here), digest.md:207, the dispatch brief (coverage-form.mjs coverageFormBrief), the record_coverage schema (coverage-server.mjs) and gateway.mjs's repair hints — still one enum spelled at five sites",
@@ -417,7 +417,7 @@ export const E3_BACKLOG = [
   // ── DISCHARGED 2026-08-17 by (skeptic's conversion) ───────────────────────────────────────────
   //
   // It read: stage "skeptic", kind "dictated-line-shape", where
-  // "driver/skills/clearotron-search/phase2-execution.md:96-98", evidence "`## Escalation decisions` section the
+  // "driver/skills/prelim-search/phase2-execution.md:96-98", evidence "`## Escalation decisions` section the
   // driver parses verbatim: one `ESCALATE: <axis> — <reason>` line per register axis …", reparsedBy
   // "pipeline.mjs (same regex) — **the shape is dictated twice, in the message and in the skill file**",
   // removedByMove "NOTHING ON THE PLAN REMOVES THIS".
@@ -590,7 +590,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "dictated-line-shape",
-    where: "driver/stages.mjs:3063 (restated at driver/skills/clearotron-search/synthesis-rules.md:428)",
+    where: "driver/stages.mjs:3063 (restated at driver/skills/prelim-search/synthesis-rules.md:428)",
     surface: "stage-message",
     evidence: "END that finding's actual-use line with a literal \"- **Use-check source:** <result URL | \"perplexity_research — no result\">\" line",
     reparsedBy: "driver/verify.mjs validators.narrative (spec-11 hard reject); the repair hint re-dictates the literal at driver/gateway.mjs:2153",
@@ -599,7 +599,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "dictated-line-shape",
-    where: "driver/stages.mjs:3076 (restated at driver/skills/clearotron-search/synthesis-rules.md:475)",
+    where: "driver/stages.mjs:3076 (restated at driver/skills/prelim-search/synthesis-rules.md:475)",
     surface: "stage-message",
     evidence: "END that finding's reasoning with a literal \"- **Own-rights source:** <record URI(s) | \"no applicant-owned registrations in the searched register material\">\" line",
     reparsedBy: "driver/own-rights.mjs:19-22 — \"This module only requires the 'Own-rights source:' line to exist\"; repair hint at driver/gateway.mjs:2361 (the `own_rights_missing` branch; re-verified 2026-08-29 — the old :1736 predated this branch and pointed into the A4 repeat-signature block)",
@@ -822,7 +822,7 @@ export const E3_UNPLANNED = E3_BACKLOG.filter((e) => e.removedByMove === "NOTHIN
  * ── TRIAGED 2026-08-16. NOT ONE ROW WAS STALE. ────────────────────────────────────────────
  *
  * All 15 were read against their sites. Every one described a dictation that still exists; what failed was
- * always the QUOTE. Three are re-quoted in this commit and clear: clearotron-variants (its evidence was a
+ * always the QUOTE. Three are re-quoted in this commit and clear: prelim-variants (its evidence was a
  * DESCRIPTION OF the site rather than text FROM it, so no matcher could ever have resolved it),
  * narrative-refutation (the sentence survives; its four kinds moved onto their own bullet lines), and
  * report-card (the dictation moved FILE, into the second path this row already named).

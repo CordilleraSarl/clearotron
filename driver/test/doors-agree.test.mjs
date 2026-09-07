@@ -861,7 +861,7 @@ const PROBE = Object.freeze({
   // plain passthroughs
   msgId: "<probe@enqueue.local>", conversationId: "probe-conv", forwarderEmail: "probe@example.com",
   forwarderDomain: "example.com", provider: "probe-provider", ref: "PROBE-REF", classes: [9],
-  product: "clearotron-search", recipeKey: "probe-recipe", deliveryRoute: "email", parentRunId: "probe-parent",
+  product: "prelim-search", recipeKey: "probe-recipe", deliveryRoute: "email", parentRunId: "probe-parent",
   customer: "Probe Customer", profileKey: "generic", projectKey: "probe-project",
   jurisdictions: ["US"], platforms: ["probe-platform"], goods: "probe goods",
   upfrontInstructions: "probe instructions", brief: "probe brief", rawRequest: "probe raw",

@@ -139,7 +139,7 @@ test("#517 the MEANING SEAT's four artifacts are dictated — a detector wrong f
 //
 // The run-dir sweep could never see this: it reads the run dir, and this is one directory over.
 test("#595 a file that appears in the doctrine tree during a run is a stray", () => {
-  const before = new Set(["clearotron-search/SKILL.md", "clearotron-register/digest.md"]);
+  const before = new Set(["prelim-search/SKILL.md", "prelim-register/digest.md"]);
   const after = new Set([...before, "merge.sh", "update_dispositions.py"]);
   assert.deepEqual(findStrayInTree(before, after), ["merge.sh", "update_dispositions.py"],
     "both files the production incident left behind, named");

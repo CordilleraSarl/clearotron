@@ -1,6 +1,6 @@
 # Status rules — status classification, Madrid handling, non-Latin status strings
 
-Cross-referenced from [clearotron-register/SKILL.md](SKILL.md) — the canonical entry point. The provider files and stealth-filer indicators link here for the status-classification rules; the orchestrator never reads this file directly.
+Cross-referenced from [prelim-register/SKILL.md](SKILL.md) — the canonical entry point. The provider files and stealth-filer indicators link here for the status-classification rules; the orchestrator never reads this file directly.
 
 > **Funnel vs judgment (read this first).** Under the two-layer split, the **funnel (Layer A) does NOT drop
 > records on status** — `register_enumerate` carries **every** record forward (live AND dead) **with its
@@ -226,7 +226,7 @@ For owner country:
 
 If after the full fallback chain the owner is still empty, set owner column to `(unknown — confirm)` and add to Open verification flags.
 
-**Owner-identity conflict.** If two fields in the chain (or an EUIPO cross-check vs the vendor record) yield *materially different* owner names for the same URI, do NOT silently pick the first — record both candidate names in the owner field and set `Verify? ✅` with reason "owner-identity conflict — confirm before enforcement read." Likewise, when a portfolio-size signal (many filings clustering under one normalised owner) would change the enforcement-appetite read, surface it. Owner identity drives enforcer-profiling (`clearotron-search/firm-wide-reasoning.md`, *Enforcer profiling*) — a wrong owner is a wrong risk read.
+**Owner-identity conflict.** If two fields in the chain (or an EUIPO cross-check vs the vendor record) yield *materially different* owner names for the same URI, do NOT silently pick the first — record both candidate names in the owner field and set `Verify? ✅` with reason "owner-identity conflict — confirm before enforcement read." Likewise, when a portfolio-size signal (many filings clustering under one normalised owner) would change the enforcement-appetite read, surface it. Owner identity drives enforcer-profiling (`prelim-search/firm-wide-reasoning.md`, *Enforcer profiling*) — a wrong owner is a wrong risk read.
 
 ### USPTO extended country codes
 

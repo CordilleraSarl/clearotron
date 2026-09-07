@@ -18,7 +18,7 @@ import { correctionHint } from "../gateway.mjs";
 
 const AXES = "saturation-probe, primary-sweep, transliteration-numeric, incumbent-class";
 // The real shape, with the run path generalised (the product repo carries no run identifiers).
-const LIVE_FAIL = `invalid_file:clearotron-search/tmp9001-mark/date-codename/register-findings.md:`
+const LIVE_FAIL = `invalid_file:prelim-search/tmp9001-mark/date-codename/register-findings.md:`
   + `coverage_axis_invalid:new — digest-level tiering of the 380 no (not in: ${AXES})`;
 
 test("the hint quotes the closed axis set back from the validator message", () => {

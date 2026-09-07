@@ -74,7 +74,7 @@ test("2014 the framework is its own, and its provenance note is clean", () => {
   // ROOT-relative, not the bare string "driver": the suite wrapper runs with the CWD set to driver/,
   // where a relative root resolves to driver/driver and the manifest "goes missing". Passed alone it
   // works, which is exactly how that assumption survives to CI.
-  const m = loadFrameworkManifest(join(ROOT, "driver"), "skills/clearotron-search/risk-framework-demo.md");
+  const m = loadFrameworkManifest(join(ROOT, "driver"), "skills/prelim-search/risk-framework-demo.md");
   assert.ok(m, "the manifest resolves from the account's frameworkPath");
   assert.equal(m.framework_key, "demo");
   assert.equal(m.entity_label, "Demo Brand Owner");
@@ -86,7 +86,7 @@ test("2014 the framework is its own, and its provenance note is clean", () => {
   // ones that get screenshotted in a demo — which is the whole reason the wording matters here.
   assert.doesNotMatch(m.source_deck, /synthetic|transpos|invented|copied|fictitious/i,
     `source_deck describes the framework as derived: ${JSON.stringify(m.source_deck)}`);
-  const md = readFileSync(join(ROOT, "driver", "skills", "clearotron-search", "risk-framework-demo.md"), "utf8");
+  const md = readFileSync(join(ROOT, "driver", "skills", "prelim-search", "risk-framework-demo.md"), "utf8");
   assert.doesNotMatch(md.split("\n")[0], /synthetic|demo customer/i, "and neither does its title line");
 });
 

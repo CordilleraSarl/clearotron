@@ -31,7 +31,7 @@ malformed one is refused before anything is written.
 | `--name` | the legal name. Required. |
 | `--domains` | comma-separated email domains that resolve to this owner |
 | `--platforms` | marketplaces their searches cover. Omitted, the default's platforms apply and are named in the output. |
-| `--framework` | their risk framework, as `skills/clearotron-search/<file>.md`. Omitted, the default applies and is named in the output. |
+| `--framework` | their risk framework, as `skills/prelim-search/<file>.md`. Omitted, the default applies and is named in the output. |
 | `--industry` | free text, shown on their profile |
 | `--context` | a file whose contents become this owner's context pack |
 | `--dry-run` | say exactly what would be written, and write nothing |

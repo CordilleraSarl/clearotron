@@ -68,7 +68,7 @@ const events = (runDir) => readFileSync(driverDir(runDir, "run.jsonl"), "utf8").
 // to happen in the same PR that makes it.
 const FRESHNESS_GOLDEN = {
   "matter-frame": [],
-  "clearotron-variants": ["matter-context.md"],
+  "prelim-variants": ["matter-context.md"],
   "blind-frame": ["inbound-request.txt"],
   "common-law": ["variant-manifest.md", "matter-context.md"],
   "common-law-half": ["variant-manifest.md", "matter-context.md"],

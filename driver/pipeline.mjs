@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// pipeline.mjs — the deterministic driver: sequences every clearotron-search stage as a blocking engine
+// pipeline.mjs — the deterministic driver: sequences every prelim-search stage as a blocking engine
 // turn, joins the fan-out in code (the fan-in barrier), gates on the refutation
 // verdict, and never parks (there is no LLM continuation decision anywhere). CLI: `node pipeline.mjs --job <file.json>`.
 
@@ -166,7 +166,7 @@ import { JURISDICTION_ADAPTERS, LANGUAGE_LANES, scopeJurisdictions as jxScopeJur
 // into boundDominantElementFrom, so the driver's bind and the record tool's bind are ONE body. Neither
 // parseBlindFrameModel nor dominantElementFromManifest is called from this file any more.
 import { boundDominantElementFrom } from "./frame-diff-record.mjs";
-import { recordedScopeLedgerRows } from "./clearotron-variants-record.mjs";
+import { recordedScopeLedgerRows } from "./prelim-variants-record.mjs";
 import { parseFrameDiff, applyDominantBackstop, firingDirectives, reopenKey, alreadyAttemptedReopen, partitionFiring, frameResidualGaps, jurisdictionScopeFlags, deriveDirectiveRemedy, firingDirectivesLenient } from "./frame-diff-model.mjs";
 import { verifyRegisterDirectiveClose } from "./close-verify.mjs";
 import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs";
@@ -902,7 +902,7 @@ function deriveGridSpec(ctx) {
   // 2026-08-11 codex R2 run (no grid spec authored at all), and it is the branch that emits NO event
   // today, which is why absence was the only signal and absence is not a record.
   // The three inputs are recorded, not just their verdict. Working hit exactly this wall: the
-  // 2026-08-11 run authored no spec, `clearotron-variants` had succeeded, and WHICH of the three conjuncts
+  // 2026-08-11 run authored no spec, `prelim-variants` had succeeded, and WHICH of the three conjuncts
   // was false could not be recovered from any artifact — so the round could name the path but not the
   // cause. A record that says "no spec" and not "no spec BECAUSE the profile carried no platforms" just
   // moves the same unanswerable question one step along.
@@ -2061,7 +2061,7 @@ function deriveCoverageLedgerJson(ctx, trigger) {
   }
 }
 
-// Frame-omission design — CODE-DERIVE scope-ledger.json from the validated clearotron-variants prose
+// Frame-omission design — CODE-DERIVE scope-ledger.json from the validated prelim-variants prose
 // `### Scope ledger` table (so the JSON is authored by the driver, not the model, and matches the prose
 // by construction — exactly the deriveCoverageLedgerJson pattern). NEVER-KILL: a manifest with no/unparseable
 // Scope ledger (legacy artifacts, a terse run) logs a note and skips the write; the frame-diff then reads the
@@ -2090,7 +2090,7 @@ function deriveScopeLedgerJson(ctx) {
     // are different facts about a run, and a reader of an archived ledger must be able to tell which.
     runLog(P.runDir, { event: "scope-ledger-derived", source: recordedRows ? "typed-call" : "prose-parse" });
   } catch (e) {
-    note(`clearotron-variants: scope-ledger derivation skipped (${String(e.message).slice(0, 100)}) — frame-diff reads the manifest prose`);
+    note(`prelim-variants: scope-ledger derivation skipped (${String(e.message).slice(0, 100)}) — frame-diff reads the manifest prose`);
     runLog(P.runDir, { event: "scope-ledger-skipped", reason: `derive_failed:${String(e.message).slice(0, 80)}` });
   }
 }
@@ -2156,7 +2156,7 @@ function deriveFormNeighbourhood(ctx) {
     // The fallback is not a quiet degrade: it means this run's variant floor rests on the mark alone
     // because the stage named no usable element. Loud, so the absence is a finding and not a shrug.
     if (seededFrom.startsWith("job mark"))
-      note(`clearotron-variants: variant floor seeded from the JOB MARK — the manifest named no usable distinctive element (${floor} floor terms generated; the floor is complete, its seed is not the model's)`);
+      note(`prelim-variants: variant floor seeded from the JOB MARK — the manifest named no usable distinctive element (${floor} floor terms generated; the floor is complete, its seed is not the model's)`);
   } catch (e) {
     // The reason is carried WHOLE. It used to be truncated to 80 characters into the runLog and
     // 100 into the note, which cut the part that says WHICH cause fired — and the empty floor this path
@@ -2164,7 +2164,7 @@ function deriveFormNeighbourhood(ctx) {
     // compiles and freezes with no floor entries and no error, looking healthy. This line is the only
     // record that the mechanical floor is missing from the run, so it says the whole of why.
     const why = String(e.message);
-    note(`clearotron-variants: form-neighbourhood derivation skipped (${why}) — register falls back to the manifest variants, so this run has NO mechanical form floor`);
+    note(`prelim-variants: form-neighbourhood derivation skipped (${why}) — register falls back to the manifest variants, so this run has NO mechanical form floor`);
     runLog(P.runDir, { event: "form-neighbourhood-skipped", reason: `derive_failed:${why}`, mark: markText(ctx.job.marks ?? ctx.job.markName ?? ctx.job.name ?? "") });
   }
 }
@@ -2257,7 +2257,7 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
       // sweep); fatal on a provider whose regions[] is mandatory, where every entry then errored on its
       // count probe and the whole plan joined MISSING at fan-in (review finding 11).
       job: { jobKey: ctx.run.slug, classes: inScopeClassList(ctx.job, ctx.profile), jurisdictions: registerJurisdictions(ctx.job, ctx.profile) },
-      form, skillVersion: "clearotron-register@spec48",
+      form, skillVersion: "prelim-register@spec48",
       // phase 3 — the plan is compiled AGAINST THE ACTIVE PROVIDER's declared capabilities, so the
       // frozen artifact is executable by construction: the OR-stack split uses that provider's width,
       // jurisdictions are translated into its office vocabulary (EU→EM on Compumark), and a predicate
@@ -3671,7 +3671,7 @@ export function digestDispatchExtra(ctx, { trigger = "fresh", willRun = true, ex
 // The old `findFloorBreaches` read ⭐-marked lines out of the manifest TEXT, tokenised them, dropped
 // generic words and matched the remainder against coverage-row text. That join is why it needed free text
 // at all, and it is what conversion 3 made unreachable. This one reads `search_floor` — axis names, closed
-// against REGISTER_AXES, designated by clearotron-variants in an earlier turn — and joins on `axis`, which
+// against REGISTER_AXES, designated by prelim-variants in an earlier turn — and joins on `axis`, which
 // both sides type. No tokens, no matching, nothing to go quietly wrong.
 //
 // A BREACH IS: an axis this mark's floor obliges, carrying a row labelled `coverage-limited`. That label
@@ -3697,7 +3697,7 @@ export function findFloorBreaches(ledger, floorAxes) {
  * a pass, because the whole mechanism is opt-in — a run with no designation owes no floor, and a run whose
  * manifest cannot be read has no designation to honour. The refusal for an absent or unparseable manifest
  * belongs to the stage that writes it and already exists there — verify.mjs:1335 runs the same parser
- * through `checkSiblingJson` and fails clearotron-variants with `variantmodel_missing`. Checked, because
+ * through `checkSiblingJson` and fails prelim-variants with `variantmodel_missing`. Checked, because
  * "something else refuses it" is exactly the assumption that turns a swallowed error into a silent pass.
  */
 export function readFloorAxes(paths) {
@@ -3706,7 +3706,7 @@ export function readFloorAxes(paths) {
 }
 
 // A never-active axis self-writes a harmless "not applicable" digest — the skill MANDATES the exact
-// scope wording (skills/clearotron-register/unit.md:89-90: `query:"<axis> not applicable"`,
+// scope wording (skills/prelim-register/unit.md:89-90: `query:"<axis> not applicable"`,
 // `reason:"not applicable — <why>"`), so the coverage-ledger row lands as `<axis> / axis not applicable`.
 // It is `deferred` only because a non-search must not be dressed as a clean — it is NOT floor work left
 // open. Keyed on the self-digest scope (deterministic, skill-dictated), never a genuine floor's
@@ -4017,7 +4017,7 @@ function writeSatProbeAuditNote({ ctx, out, bandPath, entries }) {
 
 // ── stage contracts (2026-07-30 review round) ──────────────────────────────────────────────────────
 // _driver/stage-contracts.json records, PER STAGE, the output contract the prompt THIS driver
-// dispatched holds the artifact to (declared on the stage def, e.g. clearotron-variants
+// dispatched holds the artifact to (declared on the stage def, e.g. prelim-variants
 // `contract:{romanization:1}`). Written at DISPATCH time only — a skipped stage never gains one — so
 // it is evidence of PROMPT VINTAGE, which is the only honest gate for a new validation rule:
 //   - crash-resume: the skip check re-validates the completed output BEFORE any dispatch, marker
@@ -5208,7 +5208,7 @@ export function recordConnotationAudit(run, P) {
     // ── — DOES A CHARGED RATING CARRY ITS GROUNDS? RECORDED, NOT ENFORCED ───────────────────────
     //
     // Doctrine already asks for this in as many words: "rule `loaded` and use the note to state plainly
-    // what you could not establish and what a human should look at" (clearotron-common-law/SKILL.md). The
+    // what you could not establish and what a human should look at" (prelim-common-law/SKILL.md). The
     // seat does not do it — e2e READ all 24 `loaded` notes in the corpus (not keyword-probed them) and
     // every one describes the material instead. `grounds-grammar.mjs` was built to measure exactly that,
     // proven against those real notes and against a planted violation, AND CALLED BY NOTHING. A check
@@ -7318,7 +7318,7 @@ export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), wit
 // blocking review goes." That REVERSES T3, which retired "delivered-with-open-questions" and
 // is itself recorded as an owner-approved decision — both are his, and this is the standing one.
 //
-// The section the reviewer's concerns land in is not new. `driver/skills/clearotron-search/SKILL.md:241`
+// The section the reviewer's concerns land in is not new. `driver/skills/prelim-search/SKILL.md:241`
 // has described it all along — "delivered … as a prominent Reviewer's open questions section at the
 // top of the body (the driver passes them in)" — and `:295` lists it as a required section with
 // "Never omit it to look more finished." deleted the driver's half and left that text
@@ -7646,7 +7646,7 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
   } catch { /* never-kill: a malformed findings.json leaves the overview untouched (its own gates own that) */ }
   // ── T3a — THE REVIEWER'S OPEN POINTS, AT THE TOP OF THE BODY ──────────────────────────────────────
   //
-  // `driver/skills/clearotron-search/SKILL.md:241` says where: "a prominent Reviewer's open questions section at the TOP of the body
+  // `driver/skills/prelim-search/SKILL.md:241` says where: "a prominent Reviewer's open questions section at the TOP of the body
   // (the driver passes them in)". That sentence has been true of the contract and false of the code
   // since deleted the driver's half; this is the half coming back.
   //
@@ -8603,7 +8603,7 @@ async function pipelineInner(job, opts = {}) {
     // Phase 0 done in code (slug/codename/run-dir/customer). Phase 1+2 stages:
     must(await stage("matter-frame", ctx), "matter-frame");
     await deriveIntakeAsks(ctx);   // A6: freeze the intake-ask register (one save-only followup if the section is missing)
-    must(await stage("clearotron-variants", ctx), "clearotron-variants");
+    must(await stage("prelim-variants", ctx), "prelim-variants");
     deriveScopeLedgerJson(ctx);   // frame-omission design: code-derive scope-ledger.json from the validated prose (never-kill)
     deriveFormNeighbourhood(ctx); // mechanical FORM band: code-derive form-neighbourhood.json from the manifest's distinctive element(s) — the model-free form floor the register funnel searches (never-kill)
     attachRegisterPlan(ctx);      // WS2 (B3): compile/freeze/reuse the deterministic register plan (flag-gated; frozen plan wins on resume; never-kill on mint)
@@ -12809,7 +12809,7 @@ async function pipelineInner(job, opts = {}) {
     // review goes." This REVERSES T3 (H3/H5), whose flip to fail-on-BLOCKING is itself recorded
     // itself an owner-approved decision. Both are his; this is the standing one, and the
     // history is kept here rather than deleted because a reader who finds only one of them will conclude
-    // the code drifted from its contract. (It did not; driver/skills/clearotron-search/SKILL.md:241/295 was the stale half, and this
+    // the code drifted from its contract. (It did not; driver/skills/prelim-search/SKILL.md:241/295 was the stale half, and this
     // change makes it true again.)
     //
     // COPPER-SPIRE IS STILL ANSWERED, AND NOT BY REFUSING. That failure was a BLOCKING verdict reaching

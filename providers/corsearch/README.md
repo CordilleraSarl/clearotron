@@ -56,4 +56,4 @@ and discloses, and never silently degrades into a weaker search wearing the righ
 `src/core.js`, beginning at `MATCH_MODE_PREFIX`: the match mode is a prefix character on a backtick-quoted
 clause, and the contract's match-mode predicates are those keys unchanged. `predicates.owner` is the
 exception — `owner:` is a real field clause, not a match mode. The model-facing operator vocabulary is in
-[`../../driver/skills/clearotron-register/providers/corsearch.md`](../../driver/skills/clearotron-register/providers/corsearch.md).
+[`../../driver/skills/prelim-register/providers/corsearch.md`](../../driver/skills/prelim-register/providers/corsearch.md).

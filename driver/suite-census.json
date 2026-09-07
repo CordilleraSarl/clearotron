@@ -1059,12 +1059,6 @@
           "skips": 0,
           "todos": 0
         },
-        "clearotron-variants-record.test.mjs": {
-          "tests": 13,
-          "asserts": 56,
-          "skips": 0,
-          "todos": 0
-        },
         "client-door.test.mjs": {
           "tests": 38,
           "asserts": 161,
@@ -2874,6 +2868,12 @@
         "preflight.test.mjs": {
           "tests": 1,
           "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "prelim-variants-record.test.mjs": {
+          "tests": 13,
+          "asserts": 56,
           "skips": 0,
           "todos": 0
         },

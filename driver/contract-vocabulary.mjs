@@ -41,13 +41,13 @@
 // ── PER-STAGE, NEVER GLOBAL ─────────────────────────────────────────────────────────────────────────
 //
 // `too_short` and `missing` come from the shared nonEmpty()/needs() helpers (verify.mjs:123-133) and are
-// legitimately owned by DIFFERENT elements in matter-frame, clearotron-variants and frame-diff. A global
+// legitimately owned by DIFFERENT elements in matter-frame, prelim-variants and frame-diff. A global
 // token→element map sees several owners for one token and "fixes" a partition that was never violated.
 // Every row therefore carries `stages`, and the partition is computed per (token, stage) pair.
 
 /** The 16 stages of STAGES in stages.mjs. Kept here so a stage added there fails this file's own test. */
 export const ALL_STAGES = [
-  "matter-frame", "clearotron-variants", "blind-frame", "common-law", "common-law-half", "register-unit",
+  "matter-frame", "prelim-variants", "blind-frame", "common-law", "common-law-half", "register-unit",
   "placement-inquiry", "register-digest", "skeptic", "frame-diff", "synthesis", "case-law",
   "narrative-refutation", "doubt-closure", "report-overview", "report-card",
 ];
@@ -65,7 +65,7 @@ const CL = ["common-law", "common-law-half"];
 export const VOCABULARY = [
   // ── the shared helpers: one token, many stages, different owners per stage ─────────────────────────
   { token: "too_short", stages: ALL_STAGES.filter((s) => !["blind-frame", "doubt-closure", "narrative-refutation"].includes(s)), site: "driver/verify.mjs:133" },
-  { token: "missing", stages: ["matter-frame", "clearotron-variants", "common-law", "common-law-half", "placement-inquiry", "register-digest", "doubt-closure", "report-overview", "report-card"], site: "driver/verify.mjs:164" },
+  { token: "missing", stages: ["matter-frame", "prelim-variants", "common-law", "common-law-half", "placement-inquiry", "register-digest", "doubt-closure", "report-overview", "report-card"], site: "driver/verify.mjs:164" },
 
   // ── common-law / common-law-half ───────────────────────────────────────────────────────────────────
   { token: "declared_unavailable", stages: CL, site: "driver/verify.mjs:231" },
@@ -120,17 +120,17 @@ export const VOCABULARY = [
   { token: "coverage_classes_invalid", stages: ["register-digest"], site: "driver/verify.mjs:1603", family: "driver/coverage-ledger.mjs", dynamic: "D4" },
   { token: "plan_execution_unreadable", stages: ["register-digest", "narrative-refutation"], site: "driver/verify.mjs:1496, 1712" },
 
-  // ── matter-frame / clearotron-variants / blind-frame / frame-diff ──────────────────────────────────────
-  { token: "stagecontracts_invalid", stages: ["matter-frame", "clearotron-variants", "placement-inquiry", "case-law"], site: "driver/verify.mjs:1539, 1170, 1366, 1677" },
+  // ── matter-frame / prelim-variants / blind-frame / frame-diff ──────────────────────────────────────
+  { token: "stagecontracts_invalid", stages: ["matter-frame", "prelim-variants", "placement-inquiry", "case-law"], site: "driver/verify.mjs:1539, 1170, 1366, 1677" },
   { token: "meaning_angles_missing", stages: ["matter-frame"], site: "driver/verify.mjs:1103" },
   { token: "frame_scope_missing", stages: ["matter-frame"], site: "driver/verify.mjs:1119" },
-  { token: "variantmodel_romanization_missing", stages: ["clearotron-variants"], site: "driver/verify.mjs:1237" },
-  { token: "variantmodel_family_incomplete", stages: ["clearotron-variants"], site: "driver/verify.mjs:1196" },
-  { token: "variantmodel_term_markup", stages: ["clearotron-variants"], site: "driver/verify.mjs:1263" },
-  { token: "variantmodel_missing", stages: ["clearotron-variants"], site: "driver/verify.mjs:1153, 1212" },
+  { token: "variantmodel_romanization_missing", stages: ["prelim-variants"], site: "driver/verify.mjs:1237" },
+  { token: "variantmodel_family_incomplete", stages: ["prelim-variants"], site: "driver/verify.mjs:1196" },
+  { token: "variantmodel_term_markup", stages: ["prelim-variants"], site: "driver/verify.mjs:1263" },
+  { token: "variantmodel_missing", stages: ["prelim-variants"], site: "driver/verify.mjs:1153, 1212" },
   // Recovered during E2 authoring, absent from the draft census: variant-manifest.json is strict-parsed
   // through checkSiblingJson (verify.mjs:1136) → checkJson (:742), so the WHOLE variantmodel_* family
-  // reaches clearotron-variants, not just the four literal tokens above.
+  // reaches prelim-variants, not just the four literal tokens above.
   // CONVERSION 3 widened this family's SOURCE without widening its prefix. `acceptPrelimVariants` raises
   // `variantmodel_scope_layer_invalid`, `_scope_status_invalid`, `_scope_item_missing` and `_scope_pipe`
   // at the ACCEPTANCE BOUNDARY — the call is refused in the turn where restating is free, and no manifest
@@ -141,7 +141,7 @@ export const VOCABULARY = [
   // `fail(` / `throw new Error(` / `=>` string literals, and every record module returns
   // `{ok: false, reason}` instead — measured, all four extract ZERO tokens. So this row is authored, not
   // extracted, and nothing re-derives it if the module grows a member. Filed as.
-  { token: "variantmodel_", stages: ["clearotron-variants"], site: "driver/verify.mjs:1153 → 742 (JSON family); driver/clearotron-variants-record.mjs acceptPrelimVariants (scope-ledger transport family)", family: "driver/variant-manifest-model.mjs (token-first throws) + driver/clearotron-variants-record.mjs", dynamic: "D3" },
+  { token: "variantmodel_", stages: ["prelim-variants"], site: "driver/verify.mjs:1153 → 742 (JSON family); driver/prelim-variants-record.mjs acceptPrelimVariants (scope-ledger transport family)", family: "driver/variant-manifest-model.mjs (token-first throws) + driver/prelim-variants-record.mjs", dynamic: "D3" },
   { token: "blindframe_", stages: ["blind-frame"], site: "driver/verify.mjs:1221 → 742", family: "driver/blind-frame-model.mjs", dynamic: "D3" },
   // — THE SKEPTIC TRANSPORT FAMILY, WHICH HAD NO ROW AT ALL. Nine tokens minted by acceptSkeptic
   // and not one of them was covered here: the conversion that moved them to the acceptance boundary moved
@@ -230,7 +230,7 @@ export function normalizeFailToken(raw) {
 export const ARM1_EXEMPTIONS = [
   {
     token: "stagecontracts_invalid",
-    stages: ["matter-frame", "clearotron-variants", "placement-inquiry", "case-law"],
+    stages: ["matter-frame", "prelim-variants", "placement-inquiry", "case-law"],
     reason: "The artifact is DRIVER-written (pipeline.mjs recordStageContract → _driver/stage-contracts.json). A corrupt one is a code or filesystem fault, and verify.mjs:1095 says so in its own comment. Pinning it on a model element would be the exact inversion #850 forbids — a mechanical failure wearing a model's name.",
   },
   // `tool_timeout` was on this list and has been REMOVED: register-unit's tool-written "execute the
@@ -519,7 +519,7 @@ export const COVERED_SOURCES = [
   // its token-first throw through unchanged, so their families are already covered where they are raised.
   // They are listed anyway, because the cost of listing a module that mints nothing is zero and the cost
   // of the alternative — noticing, one day, that a module started minting — is the whole of this issue.
-  "clearotron-variants-record.mjs", "skeptic-record.mjs", "frame-diff-record.mjs", "blind-frame-record.mjs",
+  "prelim-variants-record.mjs", "skeptic-record.mjs", "frame-diff-record.mjs", "blind-frame-record.mjs",
   // Conversion 4 — and this one MINTS, unlike the two delegating modules above it.
   "report-overview-record.mjs",
   // Conversion 5 — the fan-out transport; it mints its own family including the bound-index refusals.

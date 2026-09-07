@@ -39,7 +39,7 @@ const source = (f) => readFileSync(join(ROOT, f), "utf8");
 // tmpdir rather than typed, because a /home/<user> literal is refused by 's guard and because a
 // path this test can actually stat is the only kind that proves anything.
 function realisticRunDir() {
-  const pool = mkdtempSync(join(tmpdir(), "clearotron-search-"));
+  const pool = mkdtempSync(join(tmpdir(), "prelim-search-"));
   // Synthetic, and it has to be: an <adj>-<noun> pair from phase0.mjs's vocabulary is a real run
   // codename or indistinguishable from one, and no-client-identifiers.test.mjs refuses both.
   const dir = join(pool, "tmpXXXX-example-agent", "2026-01-01-fixture-run");

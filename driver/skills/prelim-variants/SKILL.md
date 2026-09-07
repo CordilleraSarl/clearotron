@@ -1,6 +1,6 @@
 ---
-name: clearotron-variants
-description: Shared strategy + variant generation for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearotron-search` orchestrator** as the first stage of any v3 clearotron run — do not call directly. Classifies the proposed mark into one of six analytical archetypes, derives a risk theory from that classification, then generates the variant set whose axes are shaped by the archetype. Emits a markdown variant manifest consumed by both common-law (`clearotron-common-law`) and register (`clearotron-register`) execution skills.
+name: prelim-variants
+description: Shared strategy + variant generation for the v3 preliminary trademark search workflow. **Invoked exclusively by the `prelim-search` orchestrator** as the first stage of any v3 clearotron run — do not call directly. Classifies the proposed mark into one of six analytical archetypes, derives a risk theory from that classification, then generates the variant set whose axes are shaped by the archetype. Emits a markdown variant manifest consumed by both common-law (`prelim-common-law`) and register (`prelim-register`) execution skills.
 ---
 
 ## Contents
@@ -18,7 +18,7 @@ description: Shared strategy + variant generation for the v3 preliminary tradema
 
 ## Spawned session
 
-Invoked from `clearotron-search` (orchestrator) as the first stage of any preliminary trademark review. Reads `task` containing: mark(s), class(es), jurisdiction scope, product description, optional industry context. Produces a single artifact — the **variant manifest** — written to the workspace for the downstream skills to consume.
+Invoked from `prelim-search` (orchestrator) as the first stage of any preliminary trademark review. Reads `task` containing: mark(s), class(es), jurisdiction scope, product description, optional industry context. Produces a single artifact — the **variant manifest** — written to the workspace for the downstream skills to consume.
 
 No tool calls. Pure analytical work.
 
@@ -27,7 +27,7 @@ Companion files:
 
 ## Trigger
 
-Called by `clearotron-search` at the start of any clearotron run. Not invoked directly.
+Called by `prelim-search` at the start of any clearotron run. Not invoked directly.
 
 ## Model
 
@@ -37,7 +37,7 @@ Always Opus. Variant generation is the highest-value AI step in the pipeline —
 
 Zero `perplexity_research`, zero plugin calls. Pure thinking. Output is the variant manifest only.
 
-If an element triggers Step 2's famous-mark check, the manifest TAGS it for a famous-mark Perplexity call — the call itself happens in `clearotron-common-law`.
+If an element triggers Step 2's famous-mark check, the manifest TAGS it for a famous-mark Perplexity call — the call itself happens in `prelim-common-law`.
 
 ## Core thesis — archetype-driven analysis
 
@@ -63,13 +63,13 @@ These are starting points. A mark can fit a primary archetype and pick up one or
 **Modifier semantics:**
 
 - A mark is **device-led** when the visual/logo is doing most of the brand work. If a wordmark version exists too, the verbal-element analysis runs as the primary archetype with `device-led` as a modifier.
-- A mark is **famous-element-masked** when any element matches a famous brand. The primary archetype reflects the mark's overall shape; the modifier triggers per-element famous-mark searches in `clearotron-common-law`.
+- A mark is **famous-element-masked** when any element matches a famous brand. The primary archetype reflects the mark's overall shape; the modifier triggers per-element famous-mark searches in `prelim-common-law`.
 
 If a mark genuinely doesn't fit any archetype, document the reasoning and fall back to element decomposition + saturation analysis. Don't force-fit.
 
 ## Output — the variant manifest
 
-A single file inside the active run-dir: `studio/prelim-search/<slug>/<date>/variant-manifest.md`. Slug and date are passed in by the orchestrator (see [clearotron-search/SKILL.md → Phase 1](../clearotron-search/SKILL.md#phase-1--template)). Markdown by design. Consumed by both downstream skills.
+A single file inside the active run-dir: `studio/prelim-search/<slug>/<date>/variant-manifest.md`. Slug and date are passed in by the orchestrator (see [prelim-search/SKILL.md → Phase 1](../prelim-search/SKILL.md#phase-1--template)). Markdown by design. Consumed by both downstream skills.
 
 ### Format
 
@@ -259,7 +259,7 @@ For EACH element:
 If ANY element triggers questions 2–4:
 
 - Set `famous_mark_flag: true` on that element
-- Add an entry to `famous_mark_calls_needed[]` so `clearotron-common-law` fires a dedicated Perplexity query
+- Add an entry to `famous_mark_calls_needed[]` so `prelim-common-law` fires a dedicated Perplexity query
 - Set the **famous-element-masked modifier** on the mark's archetype
 
 **Dual-meaning rule:** when a term is BOTH descriptive AND a famous mark, treat it as the famous mark for risk purposes. Worked example: "Bloodguard Sabatons" → Sabatons is real armor terminology AND a Swedish metal band with gaming collaborations. Famous-mark search required.
@@ -275,7 +275,7 @@ For each element, classify volume baseline:
 
 **Saturation narrows the search; it never drops a variant.** These ratings tell the downstream register search how to *probe* a token (class-scope the in-scope slice and enumerate it) — post-funnel the register layer enumerates the dangerous band for the **distinctive anchor** and its forms; a **common** component (a stripped common word, not the distinctive anchor) it **counts**, not enumerates, handing that count up as dilution (a hyper-common word is dilution the lawyer uses, never a coverage gap). A `high` / `very-high` rating is **never** grounds to omit the element from the manifest, to collapse or skip its meaning / transliteration set, or to pre-judge its crowd clean. (See the Step-4 generation boundary.)
 
-**Industry-incumbent alert** (per element when applicable): non-target-industry incumbent owns the element. Capture owner pattern, primary industry, primary class set. Triggers parallel-class sweep in `clearotron-register`.
+**Industry-incumbent alert** (per element when applicable): non-target-industry incumbent owns the element. Capture owner pattern, primary industry, primary class set. Triggers parallel-class sweep in `prelim-register`.
 
 **Dominant element + proposed-mark registrability read** (feeds the synthesis spine and the deliverable; the staff lawyer's "flag obvious issues"):
 
@@ -289,7 +289,7 @@ For each element, classify volume baseline:
 
 The variant categories are shaped by the archetype. Don't generate every category for every mark. Generate the categories the archetype calls for.
 
-**The generation boundary (read first — it governs every axis and every bound below).** This step's only question about any candidate form is: ***could a real conflict plausibly take this shape?*** Generate every form a real collision could take; the ONLY valid reason to drop a form is that a real conflict could **not** take it (ungrammatical, semantically broken, not market-realistic — a collision-plausibility call, which is yours to make). **Never drop a plausible form because the search would be crowded, saturated, or noisy, or because the term is common / descriptive / generic.** Noise is no longer yours to manage: the register funnel enumerates the dangerous band **class-scoped** and hands any residual crowd to judgment ([clearotron-register register-recipes.md](../clearotron-register/register-recipes.md)) — generating a noisy-but-plausible form is safe by construction. A *"would drown in noise" / "too saturated to be worth it" / "descriptive, so skip it"* reason on a **dropped** row is the boundary violation this step must never commit. Saturation is a signal to the downstream search to **narrow** (class-scope the token and enumerate); it is never a reason to drop a variant here.
+**The generation boundary (read first — it governs every axis and every bound below).** This step's only question about any candidate form is: ***could a real conflict plausibly take this shape?*** Generate every form a real collision could take; the ONLY valid reason to drop a form is that a real conflict could **not** take it (ungrammatical, semantically broken, not market-realistic — a collision-plausibility call, which is yours to make). **Never drop a plausible form because the search would be crowded, saturated, or noisy, or because the term is common / descriptive / generic.** Noise is no longer yours to manage: the register funnel enumerates the dangerous band **class-scoped** and hands any residual crowd to judgment ([prelim-register register-recipes.md](../prelim-register/register-recipes.md)) — generating a noisy-but-plausible form is safe by construction. A *"would drown in noise" / "too saturated to be worth it" / "descriptive, so skip it"* reason on a **dropped** row is the boundary violation this step must never commit. Saturation is a signal to the downstream search to **narrow** (class-scope the token and enumerate); it is never a reason to drop a variant here.
 
 **The FORM axis is now mechanically COMPLETE — you do not own form coverage.** The driver generates the *complete* form neighbourhood of the distinctive element(s) **deterministically, with no model in the loop** — every edit-1 spelling/sound/transposition, the phonetic-key vowel family (the SYRONA/SIRINA class), visual / homoglyph look-alikes, and cross-script transliterations — into `form-neighbourhood.json`, which the register funnel searches as the authoritative **form floor**. This exists because a *guessed* form set is never complete: for an anchor like `VELTRIS` a model thinks of `ZELTRIS` but not `MELTRIS` (the same single edit), and the vendor's own phonetic/fuzzy modes cannot reach a first-consonant swap either (live-verified on a production matter — the missed first-consonant-swap neighbour existed as 69 live records yet Corsearch's complete in-class phonetic band for the anchor excluded it). The machine closes that lottery. **So your FORM-axis job is JUDGMENT, not enumeration:**
 1. **Name the distinctive element + formative root precisely** (Step 3) — this is the *one* input the mechanical band seeds from; get the token right and the complete neighbourhood follows.
@@ -323,8 +323,8 @@ The `phonetic` / `visual-substitution` / `numeric-substitution` / typographic ro
 | Category | Notes |
 |---|---|
 | foreign-transliteration | Always for worldwide/multi-region scope. Coined-word archetype: prioritise. Slogan archetype: skip unless mark targets a non-English market. Scripts per [transliteration-scripts.md](transliteration-scripts.md). |
-| component-isolation | When `clearotron-common-law` needs to isolate an element for platform-specific search. |
-| competitor-intel | Driven by Watchlist, NOT by variant table — handled in `clearotron-register` Step 8.5. |
+| component-isolation | When `prelim-common-law` needs to isolate an element for platform-specific search. |
+| competitor-intel | Driven by Watchlist, NOT by variant table — handled in `prelim-register` Step 8.5. |
 
 **Phrase-substitution rules** (slogan archetype, primarily):
 
@@ -379,7 +379,7 @@ The phonetic axis catches *sound-alikes*. This axis catches *look-alikes* — an
 A mark with semantic content collides in a non-Latin market through the **word a local company would actually use to name that thing** — not only the technical dictionary term. So ask the **market-realistic question** — *"in this market, what would a real business call a `<concept>` product?"* — and generate the small deterministic **equivalence SET**, **everyday-usage first**, then technical, then adjacent, tagging each member's register (`everyday | technical | adjacent`). The everyday word is exactly what a local registrant files and what the reviewing lawyer reaches for.
 
 - **Never collapse the set to one technical guess** — one "precise/specific" rendering is the old single-guess miss. Generate the set.
-- **Never drop the everyday member because its count looks saturated or "descriptive"** — that is the Step-4 generation boundary violation. Saturation is narrowed downstream by class-scoped enumeration in the register layer ([transliteration-scripts.md](transliteration-scripts.md) · [register-recipes.md](../clearotron-register/register-recipes.md)), never by abandoning the word here.
+- **Never drop the everyday member because its count looks saturated or "descriptive"** — that is the Step-4 generation boundary violation. Saturation is narrowed downstream by class-scoped enumeration in the register layer ([transliteration-scripts.md](transliteration-scripts.md) · [register-recipes.md](../prelim-register/register-recipes.md)), never by abandoning the word here.
 - Tag CJK meaning rows `translit-zh-meaning` (the downstream class-scope gate keys on the `-meaning` sense); flag `Verify? ✅`.
 - *Illustration of the principle (NOT a fixed list — derive the set from the concept):* COLORA → CN **色彩 / 颜色** (everyday "colour") → **色度** (technical "chromaticity") → **彩度 / 色相** (adjacent). What generalises is the market-realistic question above — to any market (a German `FARBE`-type everyday form; a "descriptive" compound the model would otherwise drop), not these characters. The full script reference is [transliteration-scripts.md](transliteration-scripts.md), now read alongside this skill.
 
@@ -403,7 +403,7 @@ Make `numeric-substitution` and `foreign-transliteration` explicitly profile-awa
 - **numeric-substitution (leet):** runs for coined-word / acronym anchors; drop for saturated common-word marks (no squatter incentive) — say which and why.
 - **foreign-transliteration:** runs for worldwide / multi-region scope or a non-Latin mark; drop for single-jurisdiction Latin scopes (per the transliteration rule above) — name the jurisdiction read that decided it.
 
-These rows ARE the variants-stage coverage statement — phrase each `reason` as a coverage record, not a tick. The driver writes `scope-ledger.json` from them directly; the blind frame-diff diffs it against an independent re-derivation; synthesis (in `clearotron-search`) consumes it as the variants-stage coverage input.
+These rows ARE the variants-stage coverage statement — phrase each `reason` as a coverage record, not a tick. The driver writes `scope-ledger.json` from them directly; the blind frame-diff diffs it against an independent re-derivation; synthesis (in `prelim-search`) consumes it as the variants-stage coverage input.
 
 ### Step 5 — Watchlists (per-matter, configurable)
 
@@ -415,7 +415,7 @@ Per request, populate three lists:
 
 **Mandatory client-exclusion rule:** if the request identifies a client, DROP that company's name from ALL three lists before emitting the manifest. The client's own marks must not auto-flag as conflicts.
 
-Watchlists drive cross-pollination triggers and owner-bound register sweeps (Step 8.5 of [clearotron-register/SKILL.md](../clearotron-register/SKILL.md)).
+Watchlists drive cross-pollination triggers and owner-bound register sweeps (Step 8.5 of [prelim-register/SKILL.md](../prelim-register/SKILL.md)).
 
 **Structured sibling:** mirror the register-relevant watchlist into the structured model's
 `watchlist_owners` key — `aggressive_enforcers` ∪ `competitors` ∪ the matter frame's watchlist-owner
@@ -433,7 +433,7 @@ Multi-mark requests only. Surface shared themes:
 - Shared conceptual themes
 - Shared industry-incumbent alerts
 
-Used by `clearotron-search` to flag cross-mark risks in synthesis.
+Used by `prelim-search` to flag cross-mark risks in synthesis.
 
 ## Match-mode decision tree (guidance for downstream skills)
 
@@ -449,7 +449,7 @@ Used by `clearotron-search` to flag cross-mark risks in synthesis.
 | compound | direct search variations | `match_mode: default` |
 | family-pattern wildcard | not used | Lucene wildcards inside backticks |
 | phrase-substitution | direct search of substituted phrase | `match_mode: default` (NOT `exact`) |
-| competitor-intel / watchlist | focused web search | **Owner-bound search per Step 8.5 of [clearotron-register/SKILL.md](../clearotron-register/SKILL.md)** |
+| competitor-intel / watchlist | focused web search | **Owner-bound search per Step 8.5 of [prelim-register/SKILL.md](../prelim-register/SKILL.md)** |
 
 Downstream skills do NOT generate their own variants — the manifest is authoritative.
 

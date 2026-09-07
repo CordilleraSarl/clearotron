@@ -1,4 +1,4 @@
-# clearotron-register — MODE B (DIGEST)
+# prelim-register — MODE B (DIGEST)
 
 > Read `SKILL.md` first (the shared spine). This file is the DIGEST-mode procedure + the register-findings output format. **Do NOT read `unit.md`.**
 
@@ -470,7 +470,7 @@ for the same URI across fields or sources, OR an EUIPO cross-check disagrees wit
 owner identity, OR a portfolio-size signal (many filings clustering under a normalised owner) would
 materially change the enforcement-appetite read, do NOT silently pick one. Surface both readings in the
 findings row and set `Verify? ✅` with reason "owner-identity conflict — confirm before enforcement
-read." Owner identity drives enforcer-profiling (see `clearotron-search/firm-wide-reasoning.md`, *Enforcer profiling*
+read." Owner identity drives enforcer-profiling (see `prelim-search/firm-wide-reasoning.md`, *Enforcer profiling*
 rule) — a wrong owner is a wrong risk read.
 
 ### Step 4 — Proactive competitor + aggressive-enforcer sweep

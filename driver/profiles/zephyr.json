@@ -35,8 +35,8 @@
     "privileged": false
   },
   "riskAppetite": "Pragmatic and launch-oriented: ships fast-moving beverage SKUs, supplement lines, and apparel collaborations, and wants clear go / no-go calls with a practical path around real blockers rather than exhaustive caveats. Surface the conflicts that could realistically stop or reshape a launch and the cleanest workaround for each; keep minor register noise brief. Willing to defend its core marks, so genuine adverse rights are worth flagging even when the commercial impact looks modest.",
-  "frameworkPath": "skills/clearotron-search/risk-framework-zephyr.md",
-  "workedExamplesPath": "skills/clearotron-search/worked-examples-zephyr.md",
+  "frameworkPath": "skills/prelim-search/risk-framework-zephyr.md",
+  "workedExamplesPath": "skills/prelim-search/worked-examples-zephyr.md",
   "defaultProduct": "multi-country-focus-search",
   "allowedRecipes": [
     "knockout-search",

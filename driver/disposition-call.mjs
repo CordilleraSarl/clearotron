@@ -653,7 +653,7 @@ export function validateDispositionCall(rows, recorded, { told = null } = {}) {
     // ruling the whole time; what it could not do was copy a fragment that binds. So the missing exit was
     // never from the judgment.
     //
-    // AND THE JUDGMENT ALREADY HAS ONE. clearotron-common-law/SKILL.md dictates it: a row that is on-topic but
+    // AND THE JUDGMENT ALREADY HAS ONE. prelim-common-law/SKILL.md dictates it: a row that is on-topic but
     // cannot responsibly be called benign or loaded is ruled `loaded` with the note saying what could not
     // be established, "which is where an unresolved reputational question belongs". Adding a second way
     // to decline a ruling would compete with that, and an easier road past a hard row is the one outcome

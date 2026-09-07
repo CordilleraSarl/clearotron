@@ -5,7 +5,7 @@
 //
 // removed a hardcoded disposition list from the stages.mjs dictation and left a tripwire
 // (disposition-dictation-binding.test.mjs) so it cannot come back. Its verification then named the
-// residual: `driver/skills/clearotron-search/synthesis-rules.md` hand-lists the same vocabulary in prose —
+// residual: `driver/skills/prelim-search/synthesis-rules.md` hand-lists the same vocabulary in prose —
 // the position-required four, the `withdrawn` exemption — and NOTHING bound it. It is in
 // STAGES.synthesis.skillReads, a guaranteed read for every synthesis seat, carrying the exact property
 // removed one layer down: correct the day it was typed, silently wrong the moment the constant
@@ -32,7 +32,7 @@ import { resolveSkillReads } from "../stages.mjs";
 import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "../findings-model.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const SKILL_REL = "skills/clearotron-search/synthesis-rules.md";
+const SKILL_REL = "skills/prelim-search/synthesis-rules.md";
 const SKILL = readFileSync(join(HERE, "..", SKILL_REL), "utf8");
 
 /** Every `backticked` token inside a prose span. */

@@ -180,7 +180,7 @@ test("T3b: assembly reads corrections-applied.json off the run dir and prints fr
       + "client ever sees an open point on a delivered report");
     assert.match(md, /^###\s+Reviewer's open questions/m, "and under its own heading");
     assert.ok(md.indexOf("Reviewer's open questions") < md.indexOf("# Coverage"),
-      "at the TOP of the body — clearotron-search/SKILL.md:241 says where, and a section a reader meets "
+      "at the TOP of the body — prelim-search/SKILL.md:241 says where, and a section a reader meets "
       + "after the coverage note is not the hand-off that sentence describes");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });

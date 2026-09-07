@@ -57,4 +57,4 @@ canonical schema, and the header names the traps — `EU` vs `EM`, `CONTAINS` on
 hard 400, and `cardinalityRefusal`, the third way this provider says "that would match too much". Then
 `src/core.js` for how those declarations are built into requests. The model-facing operator vocabulary
 lives in
-[`../../driver/skills/clearotron-register/providers/clarivate.md`](../../driver/skills/clearotron-register/providers/clarivate.md).
+[`../../driver/skills/prelim-register/providers/clarivate.md`](../../driver/skills/prelim-register/providers/clarivate.md).

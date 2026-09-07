@@ -22,7 +22,7 @@ const STAGE_OF = {
   proseRungDirective: "synthesis",
   inquiryRungDirective: "placement-inquiry",
   skepticRungDirective: "skeptic",
-  variantRungDirective: "clearotron-variants",
+  variantRungDirective: "prelim-variants",
   profileRungDirective: "narrative-refutation",
 };
 // — `profileRungDirective` was CONVERTED to driver selection and is no longer called by any

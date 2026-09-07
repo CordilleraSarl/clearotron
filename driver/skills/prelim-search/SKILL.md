@@ -1,6 +1,6 @@
 ---
-name: clearotron-search
-description: Orchestrator for preliminary trademark search requests with register coverage. Invoke when a forwarded email asks for a preliminary trademark search (common-law and register layers, run in parallel). Coordinates `clearotron-variants` → `clearotron-common-law` + `clearotron-register`, then synthesises into client-ready HTML email drafts plus unified audit-trail Excel deliverables for the reviewing lawyer to evaluate. The paid register vendor is whichever sits in the runtime tool surface (the neutral `register_*` surface — one vendor at a time, selected by REGISTER_PROVIDER); free EUIPO (`euipo_*`) and the case-law citation tools (`courtlistener__*` / `legaldatahunter__*`) sit alongside it for EU cross-checks and precedent grounding.
+name: prelim-search
+description: Orchestrator for preliminary trademark search requests with register coverage. Invoke when a forwarded email asks for a preliminary trademark search (common-law and register layers, run in parallel). Coordinates `prelim-variants` → `prelim-common-law` + `prelim-register`, then synthesises into client-ready HTML email drafts plus unified audit-trail Excel deliverables for the reviewing lawyer to evaluate. The paid register vendor is whichever sits in the runtime tool surface (the neutral `register_*` surface — one vendor at a time, selected by REGISTER_PROVIDER); free EUIPO (`euipo_*`) and the case-law citation tools (`courtlistener__*` / `legaldatahunter__*`) sit alongside it for EU cross-checks and precedent grounding.
 ---
 
 ## Contents
@@ -44,11 +44,11 @@ Top-level reusable judgment skills (the three new "touchpoints" — see Phase 2 
 - `narrative-refutation` — runs as a **spawned isolated worker** at Phase 2 (between Step 4 synthesis and Phase 3): refutes the narrative against the underlying files; produces `senior-eye-review.md`. Its verdict drives the corrective pass before Phase 3. Reusable.
 
 Sub-skills used during the workflow:
-- `clearotron-variants` — runs **inline** in this orchestrator session: shared strategy + variant
+- `prelim-variants` — runs **inline** in this orchestrator session: shared strategy + variant
   generation (produces the variant manifest, consumes `matter-context.md`). Cheap, no bulk payloads — stays in context.
-- `clearotron-common-law` — runs as a **spawned isolated worker** (Phase 2 Step 2): Perplexity
+- `prelim-common-law` — runs as a **spawned isolated worker** (Phase 2 Step 2): Perplexity
   execution against the manifest (produces the common-law findings file with `developer_of_record` / `publisher_of_record` extracted per game-title finding).
-- `clearotron-register` — runs as a **spawned isolated worker** (Phase 2 Step 2): register-search
+- `prelim-register` — runs as a **spawned isolated worker** (Phase 2 Step 2): register-search
   execution against the manifest; consumes `matter-context.md` for materially-matters jurisdictions in per-jurisdiction sub-queries; consumes `placement-recommendations.md` (MODE B digest) for per-candidate placements.
 
 The two gather workers run in their **own isolated sessions** so their raw search payloads
@@ -67,7 +67,7 @@ Your tool surface binds **one paid register vendor** plus free / citation tools 
 - **Paid vendor = the register source of truth** (global coverage, phonetic). The tools are always `register_*`; the vendor behind them is whichever REGISTER_PROVIDER selects — **one vendor at a time** (gated via `agents.list[].tools.allow`, swapped by the operator). Record which one in the audit trail + the scope statement.
 - **EUIPO is one of the four register providers, not a cross-check alongside one.** When it is active
   it IS the register, covering the EU alone; every other territory is a disclosed deferred gap.
-  `clearotron-register/providers/euipo.md` carries the detail.
+  `prelim-register/providers/euipo.md` carries the detail.
 - **Case-law tools (`courtlistener__*` / `legaldatahunter__*`) are a separate layer** — precedent grounding via the `case-law-citation` skill at Step 4.5, **not** register search.
   *(Tool-naming note: the double-underscore prefix is the MCP-bridge naming convention (`<server>__<tool>`) — see `providers/oauth-mcp-bridge/bridge.mjs`. Keep the names exactly as written; bare names without the prefix would not resolve at the tool layer.)*
 
@@ -77,8 +77,8 @@ The old "exactly one register provider; you will never see both" referred to the
 
 Model tiers are set **per stage by the deterministic driver** — `driver/stages.mjs` is the
 source of truth. Current tiers: register sweep axes (`primary-sweep` / `transliteration-numeric` /
-`incumbent-class`) = `sonnet` / adaptive; `saturation-probe` = `haiku` / off; `clearotron-common-law` = `haiku` /
-low; register digest + `matter-frame` / `clearotron-variants` / `placement-inquiry` / synthesis = `opus`; Step-2.6
+`incumbent-class`) = `sonnet` / adaptive; `saturation-probe` = `haiku` / off; `prelim-common-law` = `haiku` /
+low; register digest + `matter-frame` / `prelim-variants` / `placement-inquiry` / synthesis = `opus`; Step-2.6
 skeptic = `sonnet`; `narrative-refutation` = `opus`. Every stage runs under the
 **forwarding identity** (derived from the queue location); delivery is not an agent capability — it is
 the driver's outbox contract (`../../docs/DELIVERY.md`).
@@ -124,7 +124,7 @@ Three phases, all complete before a single reply is sent to the forwarder.
 3. Derive the run slug and open the run-dir from those fields — Phase 1 authors NO client prose. The report is written in Phase 2 synthesis (per [delivery-contract.md](delivery-contract.md)) and the client email is composed in CODE at Phase 3 (`composeEmailHtml`)
 
 **Phase 2 — Research and synthesis** (run by the deterministic driver; methodology in [phase2-execution.md](phase2-execution.md)):
-1. **Variants** — `clearotron-variants` produces the variant manifest (consumes `matter-context.md` from Phase 0)
+1. **Variants** — `prelim-variants` produces the variant manifest (consumes `matter-context.md` from Phase 0)
 2. **Gather** — common-law + the applicable register units run as batched stages against the manifest
 3. **Touchpoint 2: placement-inquiry** — structured inquiry per candidate; produces `placement-recommendations.md` (each candidate placed headline / sheet-2 / watchlist / out-of-scope with reasoning)
 4. **Register digest** — combines the unit digests into `register-findings.md`; consumes `placement-recommendations.md`
@@ -147,10 +147,10 @@ Three phases, all complete before a single reply is sent to the forwarder.
 
 The orchestrator itself makes few direct tool calls. Most calls happen inside sub-skills under their own budgets:
 
-- `clearotron-common-law`: **15** `perplexity_research` per workflow
+- `prelim-common-law`: **15** `perplexity_research` per workflow
   *(rationale: cost-based overflow protection against a looping worker — the API is usage-billed; a search-as-code grid call ≈ $0.06, prose follow-ups ≈ $0.01–0.15 each (measured 2026-06-10). Typical workflow uses 2–6 calls/mark; 15 leaves headroom for thinness re-spawns)*
-- `clearotron-register`: **150** provider calls per workflow, across all marks
-  *(rationale: Corsearch billing-tier ceiling; calibrated against May runs which used 80–110 calls each. The per-mark hard constraints are tighter — see `clearotron-register/SKILL.md` "Per-mark ceilings": 20 search / 40 detail-fetch / 5 phoneme / 10 image)*
+- `prelim-register`: **150** provider calls per workflow, across all marks
+  *(rationale: Corsearch billing-tier ceiling; calibrated against May runs which used 80–110 calls each. The per-mark hard constraints are tighter — see `prelim-register/SKILL.md` "Per-mark ceilings": 20 search / 40 detail-fetch / 5 phoneme / 10 image)*
 - This skill: file read/write and memory write — bounded by workflow steps. It builds no workbook and sends no mail: the driver does both at publish, in code.
 
 Cross-pollination dispatches add at most **10** calls split across the two sub-skills (Option D cap).
@@ -158,7 +158,7 @@ Cross-pollination dispatches add at most **10** calls split across the two sub-s
 
 ## HITL exception (shared across sub-skills)
 
-Trademark research queries within this workflow are **pre-approved** for `perplexity_research` (used by `clearotron-common-law`) and the configured register provider plugin (used by `clearotron-register`) provided they are properly sanitized:
+Trademark research queries within this workflow are **pre-approved** for `perplexity_research` (used by `prelim-common-law`) and the configured register provider plugin (used by `prelim-register`) provided they are properly sanitized:
 - **Include:** mark name, product type, relevant industry context
 - **Strip:** client identity, reference numbers, internal contact names
 - Mark names are not confidential (they are proposed marks, destined for public registries). Who is asking is confidential.
@@ -171,9 +171,9 @@ Trademark research queries within this workflow are **pre-approved** for `perple
 fails** — the driver retries the stage, then surfaces a failed run. A report is never delivered
 with a main layer missing (no "flagged gap" partial delivery).
 
-- **clearotron-variants fails or returns empty manifest** → halt; cannot proceed without variants. Surface to user with diagnostic.
-- **clearotron-common-law fails** (Perplexity unavailable after plugin retries + one worker retry, zero usable results) → the worker writes **no findings file** and reports the tool failure (see `clearotron-common-law/SKILL.md` → *Failure protocol*). The driver re-runs the stage, then fails the run and surfaces it. Incomplete-but-ran coverage is NOT failure — that is honest `coverage-limited` / `deferred` ledger rows in a real findings file.
-- **clearotron-register fails** → "fails" here means the register layer made **zero** successful provider tool calls (`register_search` / `register_record_fetch`) in your session. Verify by inspecting your own tool-use history before declaring this. If even ONE provider call returned a non-error result, the register layer DID execute and you MUST write a real `register-findings-<slug>-<date>.md` containing the hits you collected — even if coverage is incomplete relative to the variant manifest. Document the coverage gap inline (e.g. "12 of 25 planned sweeps executed; remaining skipped because <reason>") rather than declaring the entire layer "not executed". In the genuine zero-calls case: write **no findings file** and report the tool failure — the driver re-runs the stage, then fails the run and surfaces it.
+- **prelim-variants fails or returns empty manifest** → halt; cannot proceed without variants. Surface to user with diagnostic.
+- **prelim-common-law fails** (Perplexity unavailable after plugin retries + one worker retry, zero usable results) → the worker writes **no findings file** and reports the tool failure (see `prelim-common-law/SKILL.md` → *Failure protocol*). The driver re-runs the stage, then fails the run and surfaces it. Incomplete-but-ran coverage is NOT failure — that is honest `coverage-limited` / `deferred` ledger rows in a real findings file.
+- **prelim-register fails** → "fails" here means the register layer made **zero** successful provider tool calls (`register_search` / `register_record_fetch`) in your session. Verify by inspecting your own tool-use history before declaring this. If even ONE provider call returned a non-error result, the register layer DID execute and you MUST write a real `register-findings-<slug>-<date>.md` containing the hits you collected — even if coverage is incomplete relative to the variant manifest. Document the coverage gap inline (e.g. "12 of 25 planned sweeps executed; remaining skipped because <reason>") rather than declaring the entire layer "not executed". In the genuine zero-calls case: write **no findings file** and report the tool failure — the driver re-runs the stage, then fails the run and surfaces it.
 - **Both fail** → same as either: failed run, surfaced — never a template-only delivery.
 - **Stage re-run** (any stage; triggered by a missing/invalid output file, a non-`ok` result, or a detected embedded-fallback) → the driver re-runs that stage under a fresh session key (bounded retries), then writes a `.failed` sentinel and surfaces it if it still cannot produce a valid output. The failure taxonomy + file-truth gating live in `driver/gateway.mjs`.
 
@@ -224,7 +224,7 @@ The report body is authored in Phase 2 synthesis against [delivery-contract.md](
 
 Phase 2 is **sequenced by the deterministic driver** (`driver/`); the step-by-step
 **methodology** lives in [phase2-execution.md](phase2-execution.md). It covers:
-- **Step 1** — variants (`clearotron-variants` writes the variant manifest)
+- **Step 1** — variants (`prelim-variants` writes the variant manifest)
 - **Step 2** — gather (common-law + the applicable register units) → Touchpoint 2 placement-inquiry → register digest
 - **Step 2.6** — skeptic review (fresh-eyes audit before trust)
 - **Step 3** — cross-pollination (Option D, cap N=10)
@@ -308,7 +308,7 @@ The **Methodology** sheet carries: matter-context summary, search approach, plac
 **Detail-fetch coverage** (register search-depth floor — kept here, not in the Excel spec, because the Step 2.6 skeptic review depends on it) — rank the union of unique URIs returned across all register searches by signal strength, then detail-fetch as follows:
 
 1. **Identical-mark hits** — fetch all, no cap.
-2. **Near-exact (dominant-token-substring) in-class-live hits — fetch all, no cap (Slice A).** The mirror, at the orchestrator floor, of the unit-side [exact-in-class-live floor](../clearotron-register/unit.md#exact-in-class-live-floor-primary-sweep-unit-owns-it). The **near-exact band** — where the **dominant element** (from the variant manifest) appears as a *substring* of `mark_text` (case-insensitive, after the `normalize()` strip in [status-rules.md](../clearotron-register/status-rules.md), see the Identical-match normalisation shape) in a **filed target class** with **live** status, but is not an identical match (e.g. NORDWAVE NOVAPULSE, NOVAPULSE.com on dominant element NOVAPULSE) — is **enumerate-and-fetch, no top-N, no score gate**. This is the F-1/F-3 hole: the near-exact band otherwise falls into the Top-K sample (item 5) and a dangerous in-class-live conflict gets paged past the cliff. *Budget tie:* if the qualifying set exceeds the detail-fetch budget, the coverage unit is **`coverage-limited`** (reason: "exact-in-class-live substring set exceeded detail-fetch budget") — **never** silent truncation, **never** `confirmed-clean` (per B-1 / the Coverage-honesty rule). Slice A is **exhaustive** — distinct from the sample-with-disclosure Slice B below.
+2. **Near-exact (dominant-token-substring) in-class-live hits — fetch all, no cap (Slice A).** The mirror, at the orchestrator floor, of the unit-side [exact-in-class-live floor](../prelim-register/unit.md#exact-in-class-live-floor-primary-sweep-unit-owns-it). The **near-exact band** — where the **dominant element** (from the variant manifest) appears as a *substring* of `mark_text` (case-insensitive, after the `normalize()` strip in [status-rules.md](../prelim-register/status-rules.md), see the Identical-match normalisation shape) in a **filed target class** with **live** status, but is not an identical match (e.g. NORDWAVE NOVAPULSE, NOVAPULSE.com on dominant element NOVAPULSE) — is **enumerate-and-fetch, no top-N, no score gate**. This is the F-1/F-3 hole: the near-exact band otherwise falls into the Top-K sample (item 5) and a dangerous in-class-live conflict gets paged past the cliff. *Budget tie:* if the qualifying set exceeds the detail-fetch budget, the coverage unit is **`coverage-limited`** (reason: "exact-in-class-live substring set exceeded detail-fetch budget") — **never** silent truncation, **never** `confirmed-clean` (per B-1 / the Coverage-honesty rule). Slice A is **exhaustive** — distinct from the sample-with-disclosure Slice B below.
 3. **Phonetic-equivalent fringe — floor, sample-with-disclosure (Slice B).** Run the provider phonetic capability on the dominant token for the matter languages (provider-agnostic: `<provider>_expand_phoneme` then `match_mode: phonetic`; Clarivate uses native `match_mode: phonetic`). It **is a floor** — it MUST run for the dominant token in the filed class — but phonetic sets are unbounded, so it is **sample-with-disclosure**: where it cannot be fully worked, the coverage unit is **`coverage-limited`** (reason: "phonetic fringe sampled, not enumerated"), never `confirmed-clean`. Keep Slice A (exhaustive) and Slice B (sampled) **structurally distinct** — they have different correctness properties.
 4. **Watchlist-owner hits** — fetch all.
 5. **Top-K by relevance** — sample from each match-mode (exact / phrase / default) and across regions to ensure representative coverage. If the worker stops detail-fetching before ~25 URIs across all match-modes, the worker MUST answer in its digest audit: did the result set genuinely run out, or is this the empirical execution-tier truncation pattern (~10 URIs, no explanation)? The 25 figure is a tripwire-with-question, not a target — the Step 2.6 skeptic reads the worker's answer and re-spawns escalated to Opus if the answer is missing or unconvincing.
@@ -345,9 +345,9 @@ be audited without touching the engine.
 ## Checklist — before sending
 
 - [ ] Phase 1 HTML template is complete and formatted per [template-formatting.md](template-formatting.md)
-- [ ] Variant manifest produced by `clearotron-variants` and validated
-- [ ] `clearotron-common-law` produced its findings file with every dictated platform covered
-- [ ] `clearotron-register` produced its findings file with funnel pattern executed
+- [ ] Variant manifest produced by `prelim-variants` and validated
+- [ ] `prelim-common-law` produced its findings file with every dictated platform covered
+- [ ] `prelim-register` produced its findings file with funnel pattern executed
 - [ ] Cross-pollination Option D triggers all evaluated; any executed cross-checks logged; cap-overflow noted if applicable
 - [ ] Scope statement paragraph is present in narrative (from variant manifest)
 - [ ] Every finding has a URL or register URI
@@ -389,7 +389,7 @@ Format — one line per phase + each major search category, marked ✅ (done), �
    Customer template: <resolved template name> (email + Excel)
 ✅ PHASE 1 — TEMPLATE: HTML generated; email marked read
 ✅ PHASE 2 — RESEARCH:
-   Variants: N variants in manifest from clearotron-variants
+   Variants: N variants in manifest from prelim-variants
    Common-law: X findings ([N]/[N] dictated platforms covered); developer_of_record on <N>/<M> game-titles
    Register: Y findings; Z detail-fetched from W total URIs
      Per-jurisdiction sub-queries: ✅ <count> on <named jurisdictions>

@@ -1,6 +1,6 @@
 ---
 name: matter-frame
-description: Pre-flight reasoning step for trademark searches. Produces a structured matter-context.md naming the client + sector + customer base + channels of trade + materially-matters jurisdictions + off-field sectors + watchlist-owner seeds — before any search runs. Invoke at Phase 0 of clearotron-search or a full clearance-search. The downstream workflow consumes this artifact at every step (variants generation, register sweep, placement inquiry, narrative refutation) so the matter's commercial context stops being implicit and starts being load-bearing.
+description: Pre-flight reasoning step for trademark searches. Produces a structured matter-context.md naming the client + sector + customer base + channels of trade + materially-matters jurisdictions + off-field sectors + watchlist-owner seeds — before any search runs. Invoke at Phase 0 of prelim-search or a full clearance-search. The downstream workflow consumes this artifact at every step (variants generation, register sweep, placement inquiry, narrative refutation) so the matter's commercial context stops being implicit and starts being load-bearing.
 ---
 
 ## Purpose
@@ -13,7 +13,7 @@ This is structured inquiry, not rule application. You are reasoning, not classif
 
 Phase 0 of any trademark search workflow, after the request has been parsed (mark, classes, manner of use, client, requester) and before variants generation. One Opus inline call, no tool budget, no spawned workers.
 
-Invoked from `clearotron-search` (orchestrator) at Phase 0, before `clearotron-variants`. Reusable by a future clearance-search at the equivalent step.
+Invoked from `prelim-search` (orchestrator) at Phase 0, before `prelim-variants`. Reusable by a future clearance-search at the equivalent step.
 
 ## Model
 
@@ -84,7 +84,7 @@ Two scopes live here, and the doctrine is **narrow at citation, never silently a
 - **Excluded.** Territories you considered and set aside — neither instructed, nor brand-signalled, nor a major on a worldwide matter — name each, the reason, and a **reopen trigger** (a right or signal pointing there surfaces). A hit effective ONLY outside the scope set is out of *citation* scope (drop it from findings); but a market the brand actually signals belongs in the SEARCH set, not here.
 - **Primary vs only.** If the instruction names territories of "primary" / "first" interest WITHOUT "only", treat the named ones as the citation core but **let the search lean wide** to the majors / brand-signalled markets (the "primary" wording signals more may matter), and **record the assumption** — a one-line `Scope assumption: <text>`. (A single clarifying question is acceptable instead; the recorded default never blocks the run.)
 - **Send the structured scope as FIELDS** (the downstream sweep + `frame-diff` consume it): `scope_jurisdictions` — the SEARCH set as short codes (EU / US / CN / CH …), including the majors / signalled markets when leaning wide and any `in-scope-by-reach` ones; `excluded_jurisdictions` when any were set aside; and `scope_basis` as `instructed | worldwide | inferred`, so synthesis knows whether a narrowing was disclosed. The driver renders the lines.
-- This set drives the per-jurisdiction sub-queries AND the major-jurisdiction floor in `clearotron-register`; `frame-diff` checks it both ways (a citation outside the scope set = over-reach; a material market in the set left unsearched = under-coverage — disclosed + clamped, never a silent clean).
+- This set drives the per-jurisdiction sub-queries AND the major-jurisdiction floor in `prelim-register`; `frame-diff` checks it both ways (a citation outside the scope set = over-reach; a material market in the set left unsearched = under-coverage — disclosed + clamped, never a silent clean).
 
 *Worked illustrations:*
 *— Instructed "Switzerland and the EU, only" → search CH + the EUTM/EU layer (+ any Madrid designation reaching them); majors beyond (CN/JP/US/UK) are out of scope — an honored narrow instruction (`Scope basis: instructed`).*

@@ -129,7 +129,7 @@ export function buildFixture() {
     { event: "start", agent: "test", job: { id: "job1", slug: "tmptest1-acme", codename: "copper-anvil" } },
     { event: "axes", axes: ["saturation-probe", "primary-sweep"] },
     stage("matter-frame", "matter-context.md", [], OPUS),
-    stage("clearotron-variants", "variant-manifest.md", ["matter-context.md"], OPUS),
+    stage("prelim-variants", "variant-manifest.md", ["matter-context.md"], OPUS),
     stage("common-law", "common-law-findings.md", ["variant-manifest.md", "matter-context.md"], HAIKU),
     stage("register-unit:primary-sweep", "register-units/primary-sweep.md", ["variant-manifest.md", "matter-context.md"], SONNET),
     stage("register-unit:saturation-probe", "register-units/saturation-probe.md", ["variant-manifest.md", "matter-context.md"], HAIKU),

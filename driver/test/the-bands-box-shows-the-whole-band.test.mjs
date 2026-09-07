@@ -25,11 +25,11 @@ import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
 const DRIVER_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const SKILLS = join(DRIVER_ROOT, "skills", "clearotron-search");
+const SKILLS = join(DRIVER_ROOT, "skills", "prelim-search");
 const GUARD = "the-bands-box-shows-the-whole-band";
 const REPO = join(DRIVER_ROOT, "..");   // trackedFiles pathspecs are repo-relative, not driver-relative
 const deckOf = (f) => readFileSync(join(SKILLS, f), "utf8");
-const manifestOf = (f) => loadFrameworkManifest(DRIVER_ROOT, `skills/clearotron-search/${f}`);
+const manifestOf = (f) => loadFrameworkManifest(DRIVER_ROOT, `skills/prelim-search/${f}`);
 const rowsFor = (f) => extractBandMeanings(deckOf(f), manifestOf(f));
 
 // The four shipped decks the issue names. Verified on one is verified on nothing: this function has a

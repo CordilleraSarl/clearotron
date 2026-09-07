@@ -39,7 +39,7 @@ import { recordSkeptic } from "../skeptic-record.mjs";   //, same rule: called, 
 import { recordSynthesis } from "../synthesis-record.mjs";
 import { recordFrameDiff } from "../frame-diff-record.mjs";   //, third conversion — same rule again
 import { recordMatterFrame } from "../matter-frame-record.mjs";   // conversion 2 — same rule again
-import { recordPrelimVariants } from "../clearotron-variants-record.mjs";   // conversion 3 — same rule again
+import { recordPrelimVariants } from "../prelim-variants-record.mjs";   // conversion 3 — same rule again
 import { recordReportOverview } from "../report-overview-record.mjs";  // conversion 4 — the client-read shell
 import { recordReportCard } from "../report-card-record.mjs";          // conversion 5 — the fan-out transport
 import { recordUnitNote } from "../register-unit-record.mjs";           // the unit note — own-key transport, called not copied
@@ -1876,7 +1876,7 @@ export function applyStageWrites(msg, argv) {
       // save, so it is parsed and SENT rather than written — the knob-translation rule again. The scope
       // ledger rows are new: the seat used to lay them out as a markdown table the driver parsed back,
       // and they are typed now, so the fixture states them as rows.
-      recordMockToolCall(runDir, "record_prelim_variants", "recording-clearotron-variants");
+      recordMockToolCall(runDir, "record_prelim_variants", "recording-prelim-variants");
       // `incumbent_classes` IS SENT, and the conversion is what made it necessary — this is the fixture's
       // two halves being reconciled, not a workaround. The retired PROSE fixture asserted
       // "industry_incumbent_alert present" in words while the STRUCTURED fixture beside it carried no
@@ -1901,8 +1901,8 @@ export function applyStageWrites(msg, argv) {
           { layer: "source", item: "developer ecosystems", status: "dropped", reason: "off-channel for this product", reopen_trigger: "a developer-channel listing surfaces" },
         ],
       });
-      if (r && (r.error || r.refused)) return `mock clearotron-variants REFUSED by record_prelim_variants: ${r.error ?? r.refused}`;
-      return "mock clearotron-variants recorded through record_prelim_variants";
+      if (r && (r.error || r.refused)) return `mock prelim-variants REFUSED by record_prelim_variants: ${r.error ?? r.refused}`;
+      return "mock prelim-variants recorded through record_prelim_variants";
     }
     if (/record_matter_frame/.test(msg)) {
       // CONVERSION 2. The knob translation rule again: `MOCK_MEANING_ANGLES` and `MOCK_INTAKE_ASKS` keep

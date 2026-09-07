@@ -102,7 +102,7 @@ test("LOCAL servers: every registered tool is granted, or its absence is a writt
 // passes happily while a module serves tools nobody may call.
 //
 // WHAT THAT COST, MEASURED: signa's grant sat at 2 of the 8 it serves from 2026-07-21 until — a
-// month — while `driver/skills/clearotron-register/providers/signa.md` instructed the model to use
+// month — while `driver/skills/prelim-register/providers/signa.md` instructed the model to use
 // `register_enumerate`, the completeness primitive, which was not in its grant. The provider the docs
 // recommend first was paging with something that can stop early, which is the shape "a zero must be a
 // real zero" exists to prevent. Nothing in this file could see it.
@@ -361,11 +361,11 @@ const RECORDING_GRANTS = Object.freeze({
   //     attempts) — which is the line the design draws between it and frame-diff above. The key is its
   //     OWN, so skeptic is never handed a writer into the frame and matter-frame is never handed one into
   //     skeptic's flags: the served-vs-granted delta is exactly what this census exists to pin.
-  //   · clearotron-variants holds its record tool and nothing else. Its Class 2 reads are ENUMERABLE — the
+  //   · prelim-variants holds its record tool and nothing else. Its Class 2 reads are ENUMERABLE — the
   //     stage derives the manifest from material the dictation names — so the seeded `Read` grant carries
   //     them and it gets no search tool, the frame-diff ruling rather than matter-frame's.
-  "clearotron-variants": Object.freeze(["mcp__recording-clearotron-variants__record_prelim_variants"]),
-  //   · report-overview holds its record tool and nothing else, on the frame-diff/clearotron-variants ruling:
+  "prelim-variants": Object.freeze(["mcp__recording-prelim-variants__record_prelim_variants"]),
+  //   · report-overview holds its record tool and nothing else, on the frame-diff/prelim-variants ruling:
   // trimmed its declared reads to exactly TWO named files (the settled narrative and
   //     findings.json), which is as enumerable as a read set gets, so the seeded `Read` grant carries them
   //     and no search tool is minted. First recording stage whose artifact a CLIENT reads, which changes

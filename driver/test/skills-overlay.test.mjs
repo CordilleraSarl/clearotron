@@ -29,7 +29,7 @@ function trees() {
   const root = mkdtempSync(join(tmpdir(), "skills-overlay-"));
   const baseDir = join(root, "repo", "skills");
   const overlayDir = join(root, "config", "skills");
-  for (const d of [join(baseDir, "clearotron-register"), join(overlayDir, "clearotron-register"), join(overlayDir, "clearotron-search")])
+  for (const d of [join(baseDir, "prelim-register"), join(overlayDir, "prelim-register"), join(overlayDir, "prelim-search")])
     mkdirSync(d, { recursive: true });
   return { root, baseDir, overlayDir };
 }
@@ -37,26 +37,26 @@ const put = (dir, rel, body) => { const p = join(dir, rel); mkdirSync(dirname(p)
 
 test("SAFETY: while the overlay holds the file, resolution is unchanged — the migration is opt-in per file", () => {
   const { root, baseDir, overlayDir } = trees();
-  put(baseDir, "clearotron-register/digest.md", "REPO COPY");
-  const live = put(overlayDir, "clearotron-register/digest.md", "LIVE COPY");
+  put(baseDir, "prelim-register/digest.md", "REPO COPY");
+  const live = put(overlayDir, "prelim-register/digest.md", "LIVE COPY");
   const resolve = makeResolver({ overlayDir, baseDir });
-  assert.equal(resolve("skills/clearotron-register/digest.md"), live, "the overlay still wins — nothing changes on deploy");
+  assert.equal(resolve("skills/prelim-register/digest.md"), live, "the overlay still wins — nothing changes on deploy");
   rmSync(root, { recursive: true, force: true });
 });
 
 test("a file deleted from the overlay falls through to the repo — one editable home, no drift", () => {
   const { root, baseDir, overlayDir } = trees();
-  const repo = put(baseDir, "clearotron-register/digest.md", "REPO COPY");
+  const repo = put(baseDir, "prelim-register/digest.md", "REPO COPY");
   const resolve = makeResolver({ overlayDir, baseDir });
-  assert.equal(resolve("skills/clearotron-register/digest.md"), repo);
+  assert.equal(resolve("skills/prelim-register/digest.md"), repo);
   rmSync(root, { recursive: true, force: true });
 });
 
 test("customer-specific material stays overlay-only and is still found (it never enters the repo)", () => {
   const { root, baseDir, overlayDir } = trees();
-  const fw = put(overlayDir, "clearotron-search/risk-framework-acme.md", "ACME framework");
+  const fw = put(overlayDir, "prelim-search/risk-framework-acme.md", "ACME framework");
   const resolve = makeResolver({ overlayDir, baseDir });
-  assert.equal(resolve("skills/clearotron-search/risk-framework-acme.md"), fw);
+  assert.equal(resolve("skills/prelim-search/risk-framework-acme.md"), fw);
   rmSync(root, { recursive: true, force: true });
 });
 
@@ -69,24 +69,24 @@ test("a skill missing from BOTH resolves to the base path — it fails loudly ag
 
 test("no overlay configured at all (a clean standalone install) → everything resolves to the repo", () => {
   const { root, baseDir } = trees();
-  const repo = put(baseDir, "clearotron-register/digest.md", "REPO COPY");
+  const repo = put(baseDir, "prelim-register/digest.md", "REPO COPY");
   const resolve = makeResolver({ overlayDir: null, baseDir });
-  assert.equal(resolve("skills/clearotron-register/digest.md"), repo);
+  assert.equal(resolve("skills/prelim-register/digest.md"), repo);
   rmSync(root, { recursive: true, force: true });
 });
 
 // ── the engine seam ────────────────────────────────────────────────────────
 test("absolutizeSkillRefs routes EACH reference independently through the resolver", () => {
   const { root, baseDir, overlayDir } = trees();
-  put(baseDir, "clearotron-register/digest.md", "REPO");
-  put(baseDir, "clearotron-search/synthesis-rules.md", "REPO");
-  put(overlayDir, "clearotron-search/risk-framework-acme.md", "OVERLAY");
+  put(baseDir, "prelim-register/digest.md", "REPO");
+  put(baseDir, "prelim-search/synthesis-rules.md", "REPO");
+  put(overlayDir, "prelim-search/risk-framework-acme.md", "OVERLAY");
   const resolve = makeResolver({ overlayDir, baseDir });
-  const msg = "Read skills/clearotron-register/digest.md and skills/clearotron-search/risk-framework-acme.md and skills/clearotron-search/synthesis-rules.md.";
+  const msg = "Read skills/prelim-register/digest.md and skills/prelim-search/risk-framework-acme.md and skills/prelim-search/synthesis-rules.md.";
   const out = absolutizeSkillRefs(msg, overlayDir, resolve);
-  assert.ok(out.includes(join(dirname(baseDir), "skills/clearotron-register/digest.md")), "generic → repo");
-  assert.ok(out.includes(join(dirname(overlayDir), "skills/clearotron-search/risk-framework-acme.md")), "customer → overlay");
-  assert.ok(out.includes(join(dirname(baseDir), "skills/clearotron-search/synthesis-rules.md")), "generic → repo");
+  assert.ok(out.includes(join(dirname(baseDir), "skills/prelim-register/digest.md")), "generic → repo");
+  assert.ok(out.includes(join(dirname(overlayDir), "skills/prelim-search/risk-framework-acme.md")), "customer → overlay");
+  assert.ok(out.includes(join(dirname(baseDir), "skills/prelim-search/synthesis-rules.md")), "generic → repo");
   rmSync(root, { recursive: true, force: true });
 });
 
@@ -121,7 +121,7 @@ test("a configured-but-unreadable overlay FAILS LOUD instead of silently using r
   const prev = process.env.CLEAROTRON_INSTRUCTIONS_DIR;
   pinEnv(process.env, "CLEAROTRON_INSTRUCTIONS_DIR", join(tmpdir(), "definitely-not-a-real-skills-dir-9f3a2"));
   try {
-    assert.throws(() => config.resolveSkillPath("skills/clearotron-register/digest.md"), /skills_overlay_unreadable/);
+    assert.throws(() => config.resolveSkillPath("skills/prelim-register/digest.md"), /skills_overlay_unreadable/);
   } finally {
     pinEnv(process.env, "CLEAROTRON_INSTRUCTIONS_DIR", prev);
   }

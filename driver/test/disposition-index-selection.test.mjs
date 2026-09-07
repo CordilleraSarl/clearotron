@@ -291,7 +291,7 @@ test("#850 M1 NO SECOND AUTHORING of the instruction survives anywhere in the tr
   if (files === null) return t.skip(skipReason("disposition-index-selection"));
 
   // BROADENED, because the first version tested ONE SENTENCE and passed while a fifth copy of the
-  // contract sat in driver/skills/clearotron-common-law/SKILL.md phrased differently — telling the seat to
+  // contract sat in driver/skills/prelim-common-law/SKILL.md phrased differently — telling the seat to
   // supply `receipt_id` while the driver had been changed to read `receipt_index`. A guard on a phrasing
   // is not a guard on a contract. This matches any text that pairs the field with "the candidate you
   // ruled on", however the sentence is built.

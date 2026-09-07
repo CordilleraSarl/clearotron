@@ -139,7 +139,7 @@ test("⭐ #1202 E2 soundness: the census READS the acceptance boundary, and this
   // stays green if the pattern starts matching something else entirely.
   // retired ACCEPTANCE_SOURCES — the pattern now runs over every covered source. The DETECTION
   // must not retire with it, so the seven record modules are named here, in this test, as its subject.
-  const ACCEPTANCE = ["matter-frame-record.mjs", "clearotron-variants-record.mjs", "skeptic-record.mjs",
+  const ACCEPTANCE = ["matter-frame-record.mjs", "prelim-variants-record.mjs", "skeptic-record.mjs",
     "frame-diff-record.mjs", "blind-frame-record.mjs", "report-overview-record.mjs", "report-card-record.mjs"];
   const seen = extractStaticTokens(DRIVER, ACCEPTANCE);
   for (const token of ["matterframe_prose_missing", "matterframe_intake_ask_quote",
@@ -606,7 +606,7 @@ test("E3: the backlog is explicit, named, and each entry says which move removes
   // not reworded — the seat hands values to `record_blind_frame` and the driver writes the artifact, so the
   // dictation the row described is gone from served text. Its own `removedByMove` read "NOTHING ON THE
   // PLAN REMOVES THIS", which was true of that plan and false of the category conversion.
-  // 69 → 64 → 60. Conversion 2 retired matter-frame's five rows; conversion 3 retired clearotron-variants'
+  // 69 → 64 → 60. Conversion 2 retired matter-frame's five rows; conversion 3 retired prelim-variants'
   // four (two literal-json-skeletons, two exactly-these-keys). The ceiling drops with them — this pin is a
   // ratchet and a shrink is the point of it. Nine of the sixty-nine gone in two conversions, and the four
   // just removed are the first whose DERIVATION went with them rather than changing hands.

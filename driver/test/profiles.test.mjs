@@ -336,19 +336,19 @@ test("F8 appetite is a LIVE consumer in delivery curation (report-overview), NEV
 // message() at the static default and silently breaking per-customer framework selection.
 test("framework selection is profile-driven in the live message (synthesis + report-overview); absent ⇒ firm-neutral default", () => {
   const P = { narrative: "/r/n.md", registerFindings: "/r/rf.md", commonLaw: "/r/cl.md", placement: "/r/p.md", seniorEyeReview: "/r/le.md", matterContext: "/r/mc.md", report: "/r/report.md", reportOverview: "/r/ro.md", findings: "/r/findings.json", variantManifest: "/r/vm.md" };
-  const msProfile = { frameworkPath: "skills/clearotron-search/risk-framework-aurora.md", workedExamplesPath: "skills/clearotron-search/worked-examples-aurora.md" };
+  const msProfile = { frameworkPath: "skills/prelim-search/risk-framework-aurora.md", workedExamplesPath: "skills/prelim-search/worked-examples-aurora.md" };
   for (const stage of ["synthesis", "report-overview"]) {
     const withMs = STAGES[stage].message({ paths: P, job: {}, profile: msProfile });
     assert.match(withMs, /risk-framework-aurora\.md/, `${stage}: a profile framework must be read in the live message`);
     const bare = STAGES[stage].message({ paths: P, job: {}, profile: {} });
-    assert.match(bare, /skills\/clearotron-search\/risk-framework\.md/, `${stage}: no profile framework ⇒ the firm-neutral default`);
+    assert.match(bare, /skills\/prelim-search\/risk-framework\.md/, `${stage}: no profile framework ⇒ the firm-neutral default`);
     assert.doesNotMatch(bare, /risk-framework-aurora\.md/, `${stage}: a profile-less run must NOT read a per-customer framework`);
   }
   // worked-examples is the synthesis depth target and is likewise profile-driven (default ⇒ worked-examples.md).
   const synMs = STAGES["synthesis"].message({ paths: P, job: {}, profile: msProfile });
   assert.match(synMs, /worked-examples-aurora\.md/);
   const synBare = STAGES["synthesis"].message({ paths: P, job: {}, profile: {} });
-  assert.match(synBare, /skills\/clearotron-search\/worked-examples\.md/);
+  assert.match(synBare, /skills\/prelim-search\/worked-examples\.md/);
   assert.doesNotMatch(synBare, /worked-examples-aurora\.md/);
 });
 
@@ -414,7 +414,7 @@ function withProjects(customers, projects = {}, contexts = {}) {
 const MSPROJ = { name: "Aurora Interactive Corporation", matchDomains: ["aurora.com"], platforms: GAMING_DOMAINS,
   marketplaceDensity: "sparse", defaultClasses: [9, 28, 41, 42, 35], defaultJurisdictions: ["Global"],
   selfExclusionOwners: ["Aurora Interactive"], delivery: { email: "summary", privileged: true }, industry: "tech",
-  riskAppetite: "conservative posture", frameworkPath: "skills/clearotron-search/risk-framework-aurora.md" };
+  riskAppetite: "conservative posture", frameworkPath: "skills/prelim-search/risk-framework-aurora.md" };
 
 test("spec 62 + search spine: the key split partitions KNOWN_PROFILE_KEYS exactly (8 project + 9 customer-only = 17)", () => {
   // `demoData` joined CUSTOMER_ONLY, and the level was the decision rather than a
@@ -440,7 +440,7 @@ test("spec 62 sparse validation: an overlay REJECTS each customer-only key (iden
       : k === "allowedRecipes" ? ["clearotron"]
       : k === "jxPolicy" ? { providerStance: "default" }
       : k === "runCaps" ? { maxQueued: 3 }
-      : "skills/clearotron-search/x.md";
+      : "skills/prelim-search/x.md";
     const v = validateProfileEdit("projects/aurora/p", { [k]: val }, "", { sparse: true });
     assert.equal(v.ok, false, `${k} must be rejected on an overlay`);
     assert.match(v.errors.join(" "), /customer-only/, `${k} error cites customer-only`);
@@ -488,7 +488,7 @@ test("spec 62 resolveEffectiveProfile: per-field merge + origins; identity + fra
   const { profile, projectKey, projectName, origins } = resolveEffectiveProfile({ profileKey: "aurora", projectKey: "console" }, { profiles, projects });
   assert.equal(profile.key, "aurora", "resolved customer key is unchanged (a project never becomes the customer)");
   assert.equal(profile.name, "Aurora Interactive Corporation", "identity / self-exclusion anchor stays whole-customer");
-  assert.equal(profile.frameworkPath, "skills/clearotron-search/risk-framework-aurora.md", "customer-only framework untouched by the overlay");
+  assert.equal(profile.frameworkPath, "skills/prelim-search/risk-framework-aurora.md", "customer-only framework untouched by the overlay");
   assert.deepEqual(profile.defaultClasses, [9, 28, 41], "project overrides classes");
   assert.deepEqual(profile.defaultJurisdictions, ["Global"], "unset-by-project field inherited from the customer");
   assert.equal(projectKey, "console");

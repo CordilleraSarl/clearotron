@@ -1,4 +1,4 @@
-# clearotron-driver — deterministic driver for the clearotron-search trademark workflow
+# clearotron-driver — deterministic driver for the prelim-search trademark workflow
 
 Orchestration in **code**; the LLM does only judgment leaves. Each pipeline stage is **one blocking
 engine turn** (default engine: `anthropic-agent`, shelling `claude -p` per stage); fan-out/fan-in/
@@ -95,8 +95,8 @@ conformance → paid run).
 
 ## Single path
 
-clearotron-search runs **only** via this driver — every intake path lands a job JSON in a queue and the
+prelim-search runs **only** via this driver — every intake path lands a job JSON in a queue and the
 driver does the rest. There is no legacy spawn path and no enable/dormant flag. (The old
 LLM-orchestrator `sessions_yield` WAIT/PROCEED/SUPPRESS machinery was stripped from
-`skills/clearotron-search/phase2-execution.md` — only the historical removal note at its head remains;
+`skills/prelim-search/phase2-execution.md` — only the historical removal note at its head remains;
 the file is live methodology the stages read.)

@@ -50,10 +50,10 @@ test("a mid-run register-sweep 429 POSTPONES the run (resumable) — never write
     CLEAROTRON_CLAUDE_PATH: CLAUDE_MOCK,
     CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "clawdi",
     MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
-    // 429 ONLY on the register-unit sweeps (they read clearotron-register/unit.md). matter-frame + clearotron-variants
+    // 429 ONLY on the register-unit sweeps (they read prelim-register/unit.md). matter-frame + prelim-variants
     // run and succeed first, so this is a genuine MID-RUN rate-limit — the incident's shape.
     MOCK_CLAUDE_RATELIMIT: String(RESET_EPOCH_SEC),
-    MOCK_CLAUDE_RATELIMIT_MATCH: "clearotron-register/unit.md",
+    MOCK_CLAUDE_RATELIMIT_MATCH: "prelim-register/unit.md",
   })) pinEnv(process.env, k, v);
 
   try {
@@ -84,7 +84,7 @@ test("a mid-run register-sweep 429 POSTPONES the run (resumable) — never write
     assert.ok(!events.some((e) => e.event === "failed"), "run.jsonl has NO failed event");
     // Earlier stages completed BEFORE the 429 — proves it's a mid-run postpone with work preserved (resume reuses it).
     const okStages = events.filter((e) => e.event === "stage" && e.ok).map((e) => e.stage);
-    assert.ok(okStages.includes("matter-frame") && okStages.includes("clearotron-variants"),
+    assert.ok(okStages.includes("matter-frame") && okStages.includes("prelim-variants"),
       `early stages completed before the 429 (got ${okStages.join(", ")})`);
     // The failure-notify one-shot must never run on a postpone (the incident fired it — and it too 429'd).
     assert.ok(!events.some((e) => e.event === "stage" && e.stage === "notify-fail-chat"), "notify-fail-chat NOT run on a postpone");

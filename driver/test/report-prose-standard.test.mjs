@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // — the REACH guard for the report prose standard.
 //
-// WHY THIS FILE EXISTS. A prompt-only change has no failure mode. If `skills/clearotron-search/report-prose.md`
+// WHY THIS FILE EXISTS. A prompt-only change has no failure mode. If `skills/prelim-search/report-prose.md`
 // never reaches a stage, nothing throws, no artifact is missing and every other test in this suite still
 // passes — the stage simply writes to model defaults and the standard is a file nobody reads. That is the
 // seventh-plus instance of the absence-reads-as-a-pass shape this codebase keeps shipping, and it is the
@@ -29,19 +29,19 @@ import { existsSync, statSync } from "node:fs";
 import { STAGES, resolveSkillReads, composeFollowup } from "../stages.mjs";
 import { config } from "../driver.config.mjs";
 
-const STANDARD = "skills/clearotron-search/report-prose.md";
+const STANDARD = "skills/prelim-search/report-prose.md";
 
 // The stages that write a line a reader sees — the same list prose-voice.test.mjs holds PROSE_VOICE to.
 const PROSE_STAGES = ["synthesis", "report-overview", "report-card"];
 // Stages that write machine artifacts. `notify` is deliberately absent from both lists: it sends the
 // email body VERBATIM from a file `composeEmailHtml` builds in code (pipeline.mjs), so no model authors
 // cover-note prose and there is nothing there to hold to a prose standard.
-const MACHINE_STAGES = ["matter-frame", "clearotron-variants", "register-digest", "placement-inquiry", "frame-diff"];
+const MACHINE_STAGES = ["matter-frame", "prelim-variants", "register-digest", "placement-inquiry", "frame-diff"];
 
 const P = new Proxy({}, { get: (_t, k) => (k === "reportCard" ? (a) => `/r/card-${String(a)}.md` : `/r/${String(k)}`) });
 const CUSTOM = {
-  frameworkPath: "skills/clearotron-search/risk-framework-aurora.md",
-  workedExamplesPath: "skills/clearotron-search/worked-examples-aurora.md",
+  frameworkPath: "skills/prelim-search/risk-framework-aurora.md",
+  workedExamplesPath: "skills/prelim-search/worked-examples-aurora.md",
 };
 // The three ctx shapes the resolvers actually branch on.
 const CTXS = [

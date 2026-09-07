@@ -91,11 +91,11 @@ test("item 21 — VALIDATES, NEVER GENERATES: nothing in the floor mints a searc
 test("item 21 — the stage that CAN satisfy the floor is told about it, at both prompt levels", async () => {
   const { STAGES, paths } = await import("../stages.mjs");
   const P = paths("/r");
-  const jx = STAGES["clearotron-variants"].message({ paths: P, job: { marks: ["NOVAPULSE"], jurisdictions: ["US", "CN", "JP"] }, profile: null });
+  const jx = STAGES["prelim-variants"].message({ paths: P, job: { marks: ["NOVAPULSE"], jurisdictions: ["US", "CN", "JP"] }, profile: null });
   assert.match(jx, /SCRIPT COVERAGE \(MANDATORY/, "the prompt states the requirement the validator enforces");
   assert.match(jx, /han \(CN\)/);
   assert.match(jx, /katakana \(JP\)/);
   assert.match(jx, /rather than inventing one/, "…and says what to do when the mark genuinely has no defensible rendering");
-  const latin = STAGES["clearotron-variants"].message({ paths: P, job: { marks: ["NOVAPULSE"], jurisdictions: ["US", "GB"] }, profile: null });
+  const latin = STAGES["prelim-variants"].message({ paths: P, job: { marks: ["NOVAPULSE"], jurisdictions: ["US", "GB"] }, profile: null });
   assert.doesNotMatch(latin, /SCRIPT COVERAGE/, "silent on a Latin-only matter — a directive that always fires is not read");
 });

@@ -31,7 +31,7 @@
 //     subtly wrong makes this loud in the one direction that trains people to override it.
 //   · Destinations containing `<` or `>`. The skills corpus writes prose templates with
 //     angle-bracket placeholders — `[<register> · <id>](<composed record URL>)` in
-//     driver/skills/clearotron-search/delivery-contract.md is an instruction to a model, not a path.
+//     driver/skills/prelim-search/delivery-contract.md is an instruction to a model, not a path.
 //     No real path contains those characters, so the exclusion costs nothing.
 //
 // ── THE ALLOWLIST IS SELF-INVALIDATING ───────────────────────────────────────────────────────────

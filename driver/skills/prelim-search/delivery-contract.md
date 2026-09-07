@@ -295,7 +295,7 @@ Same forgiving labelled-block markdown. Three sections:
 ← (no per-finding risk fields here — the audit is the factual record; the rating is the finding's band
 ←  word, per the framework in force, carried in findings.json and the curated report)
 - source: <provider record refs>
-- url: <record base host>/mark/<cc>/<number>   ← the composed record URL (Record-URL contract: the ACTIVE provider's base host from `clearotron-register/providers/<name>.md` + `uri`); emit the full URL, never a bare /mark/… path and never a host belonging to a register this run did not search
+- url: <record base host>/mark/<cc>/<number>   ← the composed record URL (Record-URL contract: the ACTIVE provider's base host from `prelim-register/providers/<name>.md` + `uri`); emit the full URL, never a bare /mark/… path and never a host belonging to a register this run did not search
 - description: <one line>
 - key_factors: ELEVATION: …  MITIGATION: …
 - cross_ref: N/A

@@ -1,11 +1,11 @@
 ---
 name: blind-frame
-description: The frame-STARVED independent re-derivation for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearotron-search` orchestrator/driver**, in parallel with the gather sweeps — do not call directly. Reads ONLY the raw instruction (mark, goods, classes, territories, manner of use) and NOT the matter frame, then re-derives the threat model cold across four layers — element + neighbours both directions, field by goods-overlap, sources by real channel, ranking by goods-overlap — and emits a structured model the frame-diff stage diffs against what the run actually scoped. Its job is to test the frame, not to reason inside it.
+description: The frame-STARVED independent re-derivation for the v3 preliminary trademark search workflow. **Invoked exclusively by the `prelim-search` orchestrator/driver**, in parallel with the gather sweeps — do not call directly. Reads ONLY the raw instruction (mark, goods, classes, territories, manner of use) and NOT the matter frame, then re-derives the threat model cold across four layers — element + neighbours both directions, field by goods-overlap, sources by real channel, ranking by goods-overlap — and emits a structured model the frame-diff stage diffs against what the run actually scoped. Its job is to test the frame, not to reason inside it.
 ---
 
 ## Purpose
 
-Every other stage in a clearotron run reasons *inside* a frame that was set early (at `matter-frame` / `clearotron-variants`): the variants to chase, the field that counts as on-field, the sources worth searching. Verification then runs *on* that frame — nothing tests the frame itself. When the frame is mis-scoped, the whole run inherits the miss and the skeptic, reasoning from the same frame, certifies it.
+Every other stage in a clearotron run reasons *inside* a frame that was set early (at `matter-frame` / `prelim-variants`): the variants to chase, the field that counts as on-field, the sources worth searching. Verification then runs *on* that frame — nothing tests the frame itself. When the frame is mis-scoped, the whole run inherits the miss and the skeptic, reasoning from the same frame, certifies it.
 
 You are the antidote. You are **deliberately starved of the frame**: you receive only the raw instruction, exactly as the requester wrote it, and you re-derive the threat model **cold**. Because you never see the run's conclusions, you cannot anchor to them. Your output is later **diffed** against what the run actually scoped — the gaps in that diff are the omissions the frame missed.
 

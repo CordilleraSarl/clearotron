@@ -104,7 +104,7 @@ function submit(dir, seat, { driverSettled = true, prior = null } = {}) {
 // The defect was that digest.md taught a shape the gate refuses; a test carrying its own copy of the
 // examples could pass forever while the skill drifted back. Parsing the skill means the two cannot
 // disagree without CI saying so — the harness's property, applied to the harness itself.
-const DIGEST_MD = readFileSync(join(HERE, "..", "skills", "clearotron-register", "digest.md"), "utf8");
+const DIGEST_MD = readFileSync(join(HERE, "..", "skills", "prelim-register", "digest.md"), "utf8");
 // ✕ THIS SLICE IS DUPLICATED — the identical two anchors live in skill-contract-enumerations.test.mjs's
 // own `skillExamples`. Conversion 11 moved the closing anchor and BOTH copies had to move; the second
 // was found only because the sweep ran the whole affected set, not because anything connects them. One
@@ -335,7 +335,7 @@ test("HALF 1 — with the axis fixed, the status token fires with its own census
 
 // ── HALF 1 — THE HINT ──────────────────────────────────────────────────────────────────────────────
 
-const AXIS_TOKEN = `invalid_file:clearotron-search/tmp9004-mark/run/register-findings.md:`
+const AXIS_TOKEN = `invalid_file:prelim-search/tmp9004-mark/run/register-findings.md:`
   + `coverage_form_axis_invalid:axis_invalid=2;CS-A1B2 [axis=<empty> per-jurisdiction reconciliation],`
   + `CS-C3D4 [axis=ch-material ch-material / merch]`;
 
@@ -382,7 +382,7 @@ test("the repair grades at the stage's own output — no coverage file is a targ
   // aim at. warmPatchMessage's coverage branch orders the record_coverage call BEFORE repairTarget is
   // ever consulted; the graded artifact falls back to the stage's own .md — and it must never be the
   // derived mirror, which is a driver-rendered file the seat is told not to write.
-  const dg = "/r/clearotron-search/tmp9004-mark/run/register-findings.md";
+  const dg = "/r/prelim-search/tmp9004-mark/run/register-findings.md";
   assert.equal(repairTarget(AXIS_TOKEN, [dg]), dg);
   assert.ok(!repairTarget(AXIS_TOKEN, [dg]).includes("register-coverage-ledger.json"));
 });
@@ -396,7 +396,7 @@ test("the token is WARM-eligible — one cell, on a file the resumed session can
 });
 
 test("the warm patch message closes on the NAMED SEAT ROWS, not on 'record every row'", () => {
-  const dg = "/r/clearotron-search/tmp9004-mark/run/register-findings.md";
+  const dg = "/r/prelim-search/tmp9004-mark/run/register-findings.md";
   const m = warmPatchMessage(AXIS_TOKEN, [dg]);
   assert.match(m, /record_coverage/, "it names the TOOL — the seat holds no pen on any coverage file");
   assert.ok(!m.includes(COVERAGE_FORM_NAME), "and never a coverage file — there is none the seat can affect");

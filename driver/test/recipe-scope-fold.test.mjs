@@ -4,7 +4,7 @@
 //
 // Before the fold (audit N3, 2026-07-27) resolveEffectiveScope's recipeScope input had exactly one
 // consumer — the plan/review previews — while the run resolved scope from job fields + profile
-// defaults only. sim-praxis/us-eu-clearotron-search carries classes [9,35,41,42] + 3 territories over a
+// defaults only. sim-praxis/us-eu-prelim-search carries classes [9,35,41,42] + 3 territories over a
 // profile whose defaults are empty: the requester approved that scope and the run ignored it.
 import { test } from "node:test";
 import assert from "node:assert/strict";

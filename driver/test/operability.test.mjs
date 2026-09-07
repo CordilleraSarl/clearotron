@@ -106,7 +106,7 @@ test("WS1b-core: resume reuses the run-dir — upstream stages SKIP, only synthe
   assert.equal(r2.ok, true, JSON.stringify(r2));
   const ev2 = sinceLastStart(events(r2.runDir));
   const skipped = ev2.filter((e) => e.event === "skip").map((e) => e.stage);
-  for (const up of ["matter-frame", "clearotron-variants", "common-law", "placement-inquiry", "register-digest", "skeptic"])
+  for (const up of ["matter-frame", "prelim-variants", "common-law", "placement-inquiry", "register-digest", "skeptic"])
     assert.ok(skipped.some((s) => s.startsWith(up)), `${up} SKIPPED on resume`);
   const ran = ev2.filter((e) => e.event === "stage" && e.ok).map((e) => e.stage);
   assert.ok(ran.includes("synthesis"), "synthesis re-ran on resume");
@@ -220,7 +220,7 @@ test("P2 crash-resume: a crash changes no input bytes, so the resume stays as ch
   assert.deepEqual(stale.map((e) => e.stage), [], "a pure crash-resume invalidates nothing");
   assert.equal(ev2.filter((e) => e.event === "delivery-stale-blocked").length, 0, "and never blocks delivery");
   const skipped = ev2.filter((e) => e.event === "skip").map((e) => e.stage);
-  for (const up of ["matter-frame", "clearotron-variants", "placement-inquiry", "register-digest"])
+  for (const up of ["matter-frame", "prelim-variants", "placement-inquiry", "register-digest"])
     assert.ok(skipped.some((x) => x.startsWith(up)), `${up} still SKIPPED — no cost regression`);
 });
 
@@ -634,7 +634,7 @@ test("#378: compare.mjs refuses an unknown flag and a flag with no value, and pr
 //     view, not a wider freshness list"). Checking stageInputs alone would now report a file that IS
 //     declared, and pressure the next reader into widening the freshness map, which  forbids;
 //   · the stage's whole AUTHORED surface (stageOutputs, not just out()) is what gets filtered out, so a
-//     stage that writes a sibling — synthesis→findings.json, clearotron-variants→scope-ledger.json — is not
+//     stage that writes a sibling — synthesis→findings.json, prelim-variants→scope-ledger.json — is not
 //     accused of failing to declare its own output as an input;
 //   · prompts that branch on a ctx FIELD rather than on paths() are swept in BOTH shapes, so fixing the
 //     split sweep lane does not leave the unsplit lane blind;

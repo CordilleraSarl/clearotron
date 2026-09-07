@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// progress.mjs — live run status for the clearotron-search driver.
+// progress.mjs — live run status for the prelim-search driver.
 //
 // Two artifacts, both written by the driver into the FORWARDING agent's own workspace
 // (so the agent's sandboxed read tool can see them — agents can't exec, so on-demand status is a
@@ -29,7 +29,7 @@ import { engineCommit, engineCommitSource } from "./engine-build.mjs";   // — 
 // driver's execution units (fan-out register axes, skeptic-escalation re-runs, corrective re-synthesis,
 // two refutation passes) onto a clean forward-only sequence, so the displayed step never jumps backward.
 export const DISPLAY_STEPS = [
-  "Framing the matter",     // 1  matter-frame, clearotron-variants
+  "Framing the matter",     // 1  matter-frame, prelim-variants
   "Register sweeps",        // 2  common-law + register-unit:* (fan-out + escalation re-runs collapse here)
   "Placement & digest",     // 3  placement-inquiry, register-digest (+ re-digest)
   "Skeptic review",         // 4  skeptic
@@ -48,7 +48,7 @@ export const DISPLAY_STEPS = [
 // UNLABELLED GAP on the stepper the client watches — the run looks stalled while it is working. Three
 // stages were sitting in that state (blind-frame, frame-diff, doubt-closure); each now says so by name.
 export const STAGE_TO_STEP = {
-  "matter-frame": 0, "clearotron-variants": 0,
+  "matter-frame": 0, "prelim-variants": 0,
   "common-law": 1, "common-law-half": 1, "register-unit": 1,
   "placement-inquiry": 2, "register-digest": 2,
   skeptic: 3,

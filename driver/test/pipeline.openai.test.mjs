@@ -80,8 +80,8 @@ test("E2(openai): full pipeline runs on the openai-agent engine (CLEAR, delivere
   const order = events.filter((e) => e.event === "stage").map((e) => e.stage);
   const idx = (s) => order.findIndex((x) => x.startsWith(s));
   // SAME ordering invariants as the anthropic happy path → the engine swap is structurally transparent.
-  assert.ok(idx("matter-frame") >= 0 && idx("matter-frame") < idx("clearotron-variants"), "matter-frame before variants");
-  assert.ok(idx("clearotron-variants") < idx("common-law"), "variants before gather");
+  assert.ok(idx("matter-frame") >= 0 && idx("matter-frame") < idx("prelim-variants"), "matter-frame before variants");
+  assert.ok(idx("prelim-variants") < idx("common-law"), "variants before gather");
   assert.ok(idx("skeptic") < idx("synthesis"), "skeptic before synthesis");
   assert.ok(idx("synthesis") < idx("narrative-refutation"), "synthesis before refutation");
   for (const ax of ["saturation-probe", "primary-sweep", "transliteration-numeric", "incumbent-class"])

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Central paths + tunables for the clearotron-search deterministic driver.
+// Central paths + tunables for the prelim-search deterministic driver.
 //
 // The driver runs as an ordinary UNIX service account (launched by systemd), NOT as an LLM agent.
 // The agent exec-deny is a gateway agent-tool restriction; it does not apply to this OS process.
@@ -240,7 +240,7 @@ export const config = {
     return roots;
   },
 
-  // The base that a profile's "skills/clearotron-search/<file>.md" path is relative to — i.e. the PARENT
+  // The base that a profile's "skills/prelim-search/<file>.md" path is relative to — i.e. the PARENT
   // of skillsDir. Everything the DRIVER reads itself (framework manifests, band-meaning extraction)
   // must join against this, exactly as the agent resolves the same relative paths against the
   // skillsDir it is handed (gateway.mjs engineSkillsDir).
@@ -896,7 +896,7 @@ export const PROVIDERS = {
     id: "corsearch",
     label: "Corsearch",
     credEnv: "CORSEARCH_SESSION_KEY",
-    skillDoc: "skills/clearotron-register/providers/corsearch.md",
+    skillDoc: "skills/prelim-register/providers/corsearch.md",
     hasPublicRecordUrl: true,
     // WP-receipts W2: the public per-record origin (publicRecordOrigin + /mark/<jur>/<id> is a working
     // link) — replaces the fragile resolved-link-origin inference at render for receipt-carrying runs.
@@ -970,7 +970,7 @@ export const PROVIDERS = {
     id: "clarivate",
     label: "Clarivate Compumark",
     credEnv: "CLARIVATE_API_KEY",
-    skillDoc: "skills/clearotron-register/providers/clarivate.md",
+    skillDoc: "skills/prelim-register/providers/clarivate.md",
     hasPublicRecordUrl: false, // Compumark Content has no public record URL — cite the office register
     //, owner ruling 2026-08-20 — WHAT A CARD SHOWS WHERE A LINK CANNOT GO. A UI exists for this
     // provider and we do not know its per-record URL, so the card says so and says it is unfinished.
@@ -1107,7 +1107,7 @@ export const PROVIDERS = {
     id: "signa",
     label: "Signa",
     credEnv: "SIGNA_API_KEY",
-    skillDoc: "skills/clearotron-register/providers/signa.md",
+    skillDoc: "skills/prelim-register/providers/signa.md",
     hasPublicRecordUrl: false, // Signa exposes no per-record public URL — cite the office register
     //, owner ruling 2026-08-20 — no register UI exists to link to at all, so the card points at
     // the artifact that DOES carry the record: the audit workbook. Naming it is the whole of this
@@ -1208,7 +1208,7 @@ export const PROVIDERS = {
     // list — without this, an instance holding the id and no secret passes preflight and dies on the
     // first token request, after model spend and reported as a provider fault.
     credEnvAlso: ["EUIPO_CLIENT_SECRET"],
-    skillDoc: "skills/clearotron-register/providers/euipo.md",
+    skillDoc: "skills/prelim-register/providers/euipo.md",
     hasPublicRecordUrl: true,
     publicRecordOrigin: "https://euipo.europa.eu",
     async recordFetch(uri, { agentId, sessionKey, recordLog = null }) {
@@ -1274,7 +1274,7 @@ export const PROVIDERS = {
     id: "uspto-local",
     label: "USPTO (local index)",
     credEnv: "USPTO_LOCAL_DB",
-    skillDoc: "skills/clearotron-register/providers/uspto-local.md",
+    skillDoc: "skills/prelim-register/providers/uspto-local.md",
     hasPublicRecordUrl: true,
     // TSDR publishes a page per serial, so a finding can cite an address the reader can open. The
     // record ref is /mark/us/<serial>, and the core builds the full statusSearch link on the record.
@@ -1378,7 +1378,7 @@ export const PROVIDERS = {
     label: "Free tier (EUIPO + USPTO local index)",
     credEnv: "EUIPO_CLIENT_ID",
     credEnvAlso: ["EUIPO_CLIENT_SECRET"],
-    skillDoc: "skills/clearotron-register/providers/free-tier.md",
+    skillDoc: "skills/prelim-register/providers/free-tier.md",
     hasPublicRecordUrl: true,
     // NULL, deliberately: the two members have DIFFERENT public origins (euipo.europa.eu and the USPTO),
     // so a single origin string here would stamp one office's host onto the other's citations. The

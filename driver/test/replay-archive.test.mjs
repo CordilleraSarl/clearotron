@@ -17,7 +17,7 @@ const MANIFEST = `# Variant manifest
 | replaymark | exact-phrase | |
 
 (padding so the manifest clears the validator's minimum length — variants table above is the
-substance; this fixture mirrors the live clearotron-variants shape closely enough for verify.mjs.)
+substance; this fixture mirrors the live prelim-variants shape closely enough for verify.mjs.)
 `;
 
 const cells = (variant, n) =>

@@ -770,7 +770,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // visible from the definition rather than inferred from an absence.
   const STRIPPED_CATEGORIES = new Set(["phonetic", "transliteration", "visual"]);
   // — THE DOCTRINE'S OWN DISPATCH TABLE, NOW BINDABLE. The universal-categories table
-  // (clearotron-variants SKILL.md) states the mode per tag: `exact-element` sweeps default, `plural-root`
+  // (prelim-variants SKILL.md) states the mode per tag: `exact-element` sweeps default, `plural-root`
   // is a root (the contains match is its whole purpose), and `formative-family` is "never exact-only".
   // Until the enum accepted these tags the mandate bound to nothing — measured: three root-shaped
   // strings dispatched exact, 4/2/4 records, the family they exist to reach retrieved zero times.

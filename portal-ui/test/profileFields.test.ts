@@ -123,8 +123,8 @@ test('A CLIENT IS NEVER SHOWN AN ENGINE PATH', () => {
   // the naming convention, and the customer key inside the filename — which together let a reader
   // guess where another client's framework lives.
   const readOnly = {
-    frameworkPath: 'skills/clearotron-search/risk-framework-aurora.md',
-    workedExamplesPath: 'skills/clearotron-search/worked-examples-aurora.md',
+    frameworkPath: 'skills/prelim-search/risk-framework-aurora.md',
+    workedExamplesPath: 'skills/prelim-search/worked-examples-aurora.md',
     allowedRecipes: ['clearotron'],
     runCaps: { perMonth: 4 },
   }
@@ -138,7 +138,7 @@ test('A CLIENT IS NEVER SHOWN AN ENGINE PATH', () => {
 })
 
 test('staff keep the paths, because they are the ones who open the file', () => {
-  const readOnly = { frameworkPath: 'skills/clearotron-search/risk-framework-aurora.md', runCaps: {} }
+  const readOnly = { frameworkPath: 'skills/prelim-search/risk-framework-aurora.md', runCaps: {} }
   assert.deepEqual(visibleReadOnlyFields(readOnly, true), ['frameworkPath', 'runCaps'])
 })
 

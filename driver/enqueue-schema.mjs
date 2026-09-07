@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Job-file shape for studio/prelim-search/queue/<id>.json (written by email-loop on a clearotron-search request).
+// Job-file shape for studio/prelim-search/queue/<id>.json (written by email-loop on a prelim-search request).
 // The job id = sanitized email message-id so a re-delivered webhook overwrites the same file (no duplicate run).
 //
 // Blocking semantics follow change-spec v3 §B2: the ONLY content reason a search may not start is the

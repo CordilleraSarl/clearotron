@@ -302,8 +302,8 @@ const ADDRESS = /([A-Za-z0-9._%+-]+)@(?:cordillera\.(?:ch|test)|clearotron\.ai)\
 const INTERNAL_MARKER = /\bINTERNAL[ -]ONLY\b/;
 const INTERNAL_PHRASE = /\bfor internal use only\b/i;
 
-// THE SECOND STAMPED FORM, and is why it exists. `driver/skills/clearotron-search/worked-examples.md`
-// opened with `INTERNAL — Gold-standard worked examples for clearotron-search SYNTHESIS.` and shipped: the
+// THE SECOND STAMPED FORM, and is why it exists. `driver/skills/prelim-search/worked-examples.md`
+// opened with `INTERNAL — Gold-standard worked examples for prelim-search SYNTHESIS.` and shipped: the
 // marker above requires the word ONLY, and a document stamped `INTERNAL —` carries the identical
 // classification without it.
 //

@@ -2,7 +2,7 @@
 
 Detect "law firm as owner" (i.e., the registered owner is a legal-services entity rather than the underlying client) via the following regex / substring patterns. Any match flags the row as a candidate stealth filing — surface this in the Findings sheet and feed it into Option D Trigger 2 (one common-law query for the underlying client's marketplace use).
 
-Canonical entry point: [clearotron-register/SKILL.md](SKILL.md) lists this file and `status-rules.md` as siblings; this file references back to `status-rules.md` only for the owner-extraction fallback chain it depends on.
+Canonical entry point: [prelim-register/SKILL.md](SKILL.md) lists this file and `status-rules.md` as siblings; this file references back to `status-rules.md` only for the owner-extraction fallback chain it depends on.
 
 ## Indicator patterns
 

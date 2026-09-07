@@ -726,8 +726,8 @@ test("#849 the token rides BOTH failureSignature returns — the coded one and t
 // Neither was reported anywhere.
 test("#849 a <kind>:<path> failure is nameable, and it was not before", () => {
   for (const reason of [
-    "invalid_file:clearotron-search/x/common-law-findings.half-a.md",
-    "missing_file:clearotron-search/x/common-law-findings.half-m.md",
+    "invalid_file:prelim-search/x/common-law-findings.half-a.md",
+    "missing_file:prelim-search/x/common-law-findings.half-m.md",
   ]) {
     const f = failureSignature("common-law-half:a", reason);
     assert.ok(f.kindToken, `${reason}: the kind is extracted`);
@@ -764,8 +764,8 @@ test("#849 naming the failure moves NO budget — the class is untouched", () =>
   // and `decideRecovery` sends any class outside transient/stale/unknown to ZERO parks — so minting a
   // class for these would be a silent terminal wearing the costume of a fix. This arm pins that naming
   // and deciding stay separate.
-  const f = failureSignature("common-law-half:a", "invalid_file:clearotron-search/x/y.md");
-  assert.equal(classifyFailureReason("invalid_file:clearotron-search/x/y.md"), "unknown",
+  const f = failureSignature("common-law-half:a", "invalid_file:prelim-search/x/y.md");
+  assert.equal(classifyFailureReason("invalid_file:prelim-search/x/y.md"), "unknown",
     "the CLASS is still unknown, which is what keeps the one park this failure recovers on");
   assert.ok(f.kindToken, "and the failure is named anyway — the two are different questions");
 });

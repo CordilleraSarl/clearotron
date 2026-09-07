@@ -488,7 +488,7 @@ test("a missing artifact fails rather than passing vacuously", () => {
 // boolean that correct self-correction reads as failure. So retries are FACTS the ledger reports, with
 // their cause and duration, and a reader judges. Shapes below are real.
 
-const RETRY_FAIL = 'invalid_file:clearotron-search/tmpe2er3-project-halcyon/2026-07-30-fixture-two/_driver/'
+const RETRY_FAIL = 'invalid_file:prelim-search/tmpe2er3-project-halcyon/2026-07-30-fixture-two/_driver/'
   + 'knockout-assess-0.json:mark "PROJECT HALCYON": banned tone "Massive" — measured tone only (the band colour carries urgency)';
 
 test("investigate SHOUTS a retry and keeps the cause, which lives at the END of a driver failure string", () => {

@@ -129,8 +129,8 @@ test("the code-owned values are still READABLE by staff — the page shows them 
 });
 
 test("a CLIENT never receives an engine path — the filter is here, not only in the browser", () => {
-  const profile = { name: "Aurora", frameworkPath: "skills/clearotron-search/risk-framework-aurora.md",
-                    workedExamplesPath: "skills/clearotron-search/worked-examples-aurora.md",
+  const profile = { name: "Aurora", frameworkPath: "skills/prelim-search/risk-framework-aurora.md",
+                    workedExamplesPath: "skills/prelim-search/worked-examples-aurora.md",
                     runCaps: { perMonth: 10 }, jxPolicy: "wide" };
   const ro = readOnlyFields(profile, { staff: false });
   assert.equal(ro.frameworkPath, undefined, "the framework path is withheld");
@@ -150,9 +150,9 @@ test("readOnlyFields fails CLOSED — a caller that forgets the role discloses n
 
 test("frameworkView: a client sees the whole rating method, minus where the file lives", () => {
   const full = {
-    path: "skills/clearotron-search/risk-framework-zephyr.md",
+    path: "skills/prelim-search/risk-framework-zephyr.md",
     custom: true,
-    workedExamples: "skills/clearotron-search/worked-examples-zephyr.md",
+    workedExamples: "skills/prelim-search/worked-examples-zephyr.md",
     manifest: { title: "Zephyr Beverages framework", source_deck: "Zephyr Beverages risk deck",
                 entity_label: "Zephyr Beverages/Alani/Rockstar",
                 bands: [{ label: "Very High", tone: "severe" }, { label: "Manageable", tone: "low" }],
@@ -197,11 +197,11 @@ test("END TO END: the getProfile ROUTE applies the role filter, not just the hel
   // would still pass every unit test above while shipping paths to every client, because the helper
   // would be doing its job correctly on an argument nobody gave it.
   const upstreamBody = {
-    profile: { name: "Aurora", frameworkPath: "skills/clearotron-search/risk-framework-aurora.md",
-               workedExamplesPath: "skills/clearotron-search/worked-examples-aurora.md" },
+    profile: { name: "Aurora", frameworkPath: "skills/prelim-search/risk-framework-aurora.md",
+               workedExamplesPath: "skills/prelim-search/worked-examples-aurora.md" },
     contextPack: "Aurora watches the handheld-console resellers.",
-    framework: { path: "skills/clearotron-search/risk-framework-aurora.md", custom: true,
-                 workedExamples: "skills/clearotron-search/worked-examples-aurora.md",
+    framework: { path: "skills/prelim-search/risk-framework-aurora.md", custom: true,
+                 workedExamples: "skills/prelim-search/worked-examples-aurora.md",
                  manifest: { title: "Aurora framework", bands: [{ label: "High", tone: "high" }],
                              source_deck: "Synthetic demo transposition (content invented)" },
                  bandMeanings: [{ band: "High", meaning: "Re-name unless counsel says otherwise." }] },
@@ -223,9 +223,9 @@ test("END TO END: the getProfile ROUTE applies the role filter, not just the hel
   assert.deepEqual(asClient.json.derived, { batchSize: 3, minCellsPerVariant: 14 }, "coverage is not secret");
 
   const asStaff = await spy(upstreamBody).up.getProfile(STAFF, "aurora");
-  assert.equal(asStaff.json.readOnly.frameworkPath, "skills/clearotron-search/risk-framework-aurora.md",
+  assert.equal(asStaff.json.readOnly.frameworkPath, "skills/prelim-search/risk-framework-aurora.md",
     "staff keep the path — they are the ones who open the file");
-  assert.equal(asStaff.json.framework.path, "skills/clearotron-search/risk-framework-aurora.md");
+  assert.equal(asStaff.json.framework.path, "skills/prelim-search/risk-framework-aurora.md");
   // REVERSED by (owner, 2026-08-31, on his own install's generic page: "cannot say
   // this - its an obvious link to client data"): the provenance note renders for NO role. This line
   // used to assert staff keep it — that one-branch strip is exactly how the leak shipped. The note is
@@ -479,7 +479,7 @@ test("2085: EVERY bundled deck's REAL manifest is clean through the view — not
   // The acceptance names the sweep: generic, aurora, zephyr, demo, triage — a uniform fix that misses
   // one member carries the defect. Driven over the real files on disk, not fixtures, because the real
   // strings ("Privileged & Confidential", "content invented", the engine source path) are what ships.
-  const dir = fileURLToPath(new URL("../skills/clearotron-search/", import.meta.url));
+  const dir = fileURLToPath(new URL("../skills/prelim-search/", import.meta.url));
   const manifests = readdirSync(dir).filter((f) => f.endsWith(".manifest.json"));
   assert.ok(manifests.length >= 5, `only ${manifests.length} manifest(s) found — the walker broke, not the tree`);
   for (const f of manifests) {

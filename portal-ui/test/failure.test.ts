@@ -4,7 +4,7 @@
 //
 // The string this replaces was rendered verbatim on the page a client or a partner lands on:
 //
-//   Stopped at common-law-half:b. invalid_file:clearotron-search/tmpe2er1-vibrante-frostplum/
+//   Stopped at common-law-half:b. invalid_file:prelim-search/tmpe2er1-vibrante-frostplum/
 //   2026-08-02-fixture/common-law-findings.half-b.md:connotation_undisposed:VIBRANTE …
 //
 // So these are written as breaches: each names something that must not be able to reach a rendered
@@ -23,7 +23,7 @@ import { readableFailure, STAGE_PHRASE } from '../src/contract/failure.ts'
 // failure certifies the mapping rather than the fix.
 const REAL_STAGE = 'common-law-half:b'
 const REAL_REASON =
-  'invalid_file:clearotron-search/tmpe2er1-vibrante-frostplum/2026-08-02-fixture/common-law-findings.half-b.md:connotation_undisposed:VIBRANTE FROSTPLUM urban dictionary,FROSTPLUM meaning slang,FR'
+  'invalid_file:prelim-search/tmpe2er1-vibrante-frostplum/2026-08-02-fixture/common-law-findings.half-b.md:connotation_undisposed:VIBRANTE FROSTPLUM urban dictionary,FROSTPLUM meaning slang,FR'
 
 test('the measured failure reads as a status a lawyer can act on', () => {
   const f = readableFailure(REAL_STAGE, REAL_REASON)
@@ -44,7 +44,7 @@ test('NO PATH, TEMP DIR, RUN SLUG, STAGE ID, FILE NAME OR ERROR ENUM reaches a r
     ['frame-diff', 'status_429'],
     ['notify', 'embedded_fallback'],
     // an unrecognised token carrying a path — the case a narrow mapping would leak
-    ['synthesis', 'coverage_ledger_unparseable:clearotron-search/tmpxx-mark/2026-08-02-fixture/grid.json'],
+    ['synthesis', 'coverage_ledger_unparseable:prelim-search/tmpxx-mark/2026-08-02-fixture/grid.json'],
     [null, 'invalid_file:a/b.md:x'],
   ]
   for (const [stage, reason] of cases) {
@@ -114,9 +114,9 @@ test('an unrecognised reason falls back to the engine\'s words ONLY when they ar
   const safe = readableFailure('synthesis', 'the register provider returned no results for three retries')
   assert.equal(safe.detail, 'the register provider returned no results for three retries')
 
-  const unsafe = readableFailure('synthesis', 'weird_new_token:clearotron-search/tmpzz/2026-08-02-x/grid.json')
+  const unsafe = readableFailure('synthesis', 'weird_new_token:prelim-search/tmpzz/2026-08-02-x/grid.json')
   assert.equal(unsafe.detail, null, 'a path-carrying unknown goes behind the disclosure, not onto the row')
-  assert.equal(unsafe.raw, 'weird_new_token:clearotron-search/tmpzz/2026-08-02-x/grid.json', 'but is not lost')
+  assert.equal(unsafe.raw, 'weird_new_token:prelim-search/tmpzz/2026-08-02-x/grid.json', 'but is not lost')
 
   const huge = readableFailure('synthesis', 'x'.repeat(200))
   assert.equal(huge.detail, null, 'and neither does something long enough to size the column')

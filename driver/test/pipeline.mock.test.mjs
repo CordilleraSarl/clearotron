@@ -153,8 +153,8 @@ test("happy path: CLEAR verdict → full sequence, delivered + archived", async 
   const order = stageOrder(events);
   // key ordering invariants
   const idx = (s) => order.findIndex((x) => x.startsWith(s));
-  assert.ok(idx("matter-frame") < idx("clearotron-variants"), "matter-frame before variants");
-  assert.ok(idx("clearotron-variants") < idx("common-law"), "variants before gather");
+  assert.ok(idx("matter-frame") < idx("prelim-variants"), "matter-frame before variants");
+  assert.ok(idx("prelim-variants") < idx("common-law"), "variants before gather");
   assert.ok(idx("register-digest") > idx("placement-inquiry"), "digest after placement");
   assert.ok(idx("placement-inquiry") > idx("register-unit:primary-sweep"), "placement after units");
   assert.ok(idx("skeptic") < idx("synthesis"), "skeptic before synthesis");
@@ -213,7 +213,7 @@ test("happy path: CLEAR verdict → full sequence, delivered + archived", async 
   // Frame-omission design: the blind pass runs parallel with the gather; the frame-diff runs on the
   // gathered evidence with a CLEAN diff (no directives) on the happy path — no reopen, no clamp, CLEAR.
   assert.ok(order.includes("blind-frame"), "blind-frame ran (sibling of the gather)");
-  assert.ok(idx("clearotron-variants") < idx("blind-frame"), "blind-frame after variants");
+  assert.ok(idx("prelim-variants") < idx("blind-frame"), "blind-frame after variants");
   // tracker issue 250 — the frame settles BEFORE placement dispatches, so placement runs once on the settled frame.
   assert.ok(idx("frame-diff") < idx("placement-inquiry"), "frame-diff settles the frame before placement");
   assert.ok(idx("placement-inquiry") < idx("register-digest") && idx("register-digest") < idx("synthesis"),
@@ -857,7 +857,7 @@ test("spec 62 sidecar: a project-bearing job freezes the PROJECT's marketplaces 
   assert.equal(sidecar.platforms.length, new Set([...seededCustomer, ...seededProject]).size, "the UNION, deduped — never one list replacing the other");
   assert.equal(sidecar.minCellsPerVariant, sidecar.platforms.length + 1, "floor derived from the RESOLVED union (+ web)");
   assert.equal(sidecar.origins.platforms, "customer+project");
-  assert.equal(sidecar.frameworkPath, "skills/clearotron-search/risk-framework-aurora.md", "the customer's framework still rates the matter");
+  assert.equal(sidecar.frameworkPath, "skills/prelim-search/risk-framework-aurora.md", "the customer's framework still rates the matter");
   assert.ok(events.some((e) => e.event === "profile" && e.key === "aurora" && e.project === "console-ecosystem"), "the project is logged on the freeze event");
 
   // END-TO-END report surface: the injectFrontMatter(run_under_project/origins_json) → parseReport →

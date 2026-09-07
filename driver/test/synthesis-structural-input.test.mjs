@@ -173,7 +173,7 @@ test("#447: the graded classes are ONE literal — the author's block, the revie
   // the audit section — the exact moment it is rewriting the section this grading governs. It restated
   // the three classes in its own words until, which made it a copy nothing kept in step.
   const { correctionHint } = await import("../gateway.mjs");
-  const hint = correctionHint("invalid_file:clearotron-search/x/y/senior-eye-review.md:plan_audit_missing");
+  const hint = correctionHint("invalid_file:prelim-search/x/y/senior-eye-review.md:plan_audit_missing");
 
   const classesOf = (t) => {
     const m = t.match(/THE THREE CLASSES, GRADED:[^\n]*?by itself\./);
@@ -239,7 +239,7 @@ test("#447: the synthesis prompt names both machine artifacts and carries assert
     "nothing on the common-law side is described as the layer's dispatch record");
 
   // THE CARVE-OUT, AND ITS DIRECTION. De-authorising the whole file also de-authorised its
-  // `## Coverage ledger`, which clearotron-common-law/SKILL.md writes FOR this seat and synthesis-rules.md
+  // `## Coverage ledger`, which prelim-common-law/SKILL.md writes FOR this seat and synthesis-rules.md
   // orders it to read before any clean statement — two opposed instructions about one file in one
   // dispatch. The section is carved back in, and the direction is the load-bearing half: it constrains
   // (a coverage-limited row forbids a clean negative) and never licenses (confirmed-clean there is the

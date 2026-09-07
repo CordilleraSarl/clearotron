@@ -349,7 +349,7 @@ function BandPill({ label, tone }: { readonly label: string; readonly tone: unkn
  * someone to try, and implies the page could write it if only it were enabled. It cannot: a framework is
  * selected in code under review, and the server strips these fields from every write.
  *
- * Role only decides the PATHS now (`skills/clearotron-search/risk-framework-zephyr.md`), and it decides them
+ * Role only decides the PATHS now (`skills/prelim-search/risk-framework-zephyr.md`), and it decides them
  * upstream in portal-upstream.frameworkView — by the time this renders, a client's payload no longer
  * carries them. visibleReadOnlyFields stays as the second wall, not the only one.
  */

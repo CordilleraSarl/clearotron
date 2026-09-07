@@ -54,7 +54,7 @@ const { failureEventsForRun, aggregateFailureRecurrence, renderFailureRecurrence
 // and no model turn is reachable — which is also the point of the refusal: it lands before either.
 async function refusedRun({ jurisdictions = ["JP"], id = "cli-refusal" } = {}) {
   const studioRoot = join(ROOT, "studio", id);
-  const runDir = join(studioRoot, "clearotron-search", "runs", "wanderer", "2026-08-13-teal-gantry");
+  const runDir = join(studioRoot, "prelim-search", "runs", "wanderer", "2026-08-13-teal-gantry");
   mkdirSync(driverDir(runDir), { recursive: true });
   const run = { runDir, studioRoot, slug: "wanderer", date: "2026-08-13", codename: "teal-gantry",
     archiveDir: join(studioRoot, "archive", "2026-08-13-teal-gantry") };
@@ -272,7 +272,7 @@ test("#848 a designed refusal parks nothing — no .postponed, no recovery histo
 // assertion that says the discriminator discriminates.
 test("#848 an ordinary knockout failure carries terminalKind null and reads exactly as it did", async () => {
   const studioRoot = join(ROOT, "studio", "cli-plain-failure");
-  const runDir = join(studioRoot, "clearotron-search", "runs", "wanderer", "2026-08-13-copper-bastion");
+  const runDir = join(studioRoot, "prelim-search", "runs", "wanderer", "2026-08-13-copper-bastion");
   mkdirSync(driverDir(runDir), { recursive: true });
   const run = { runDir, studioRoot, slug: "wanderer", date: "2026-08-13", codename: "copper-bastion",
     archiveDir: join(studioRoot, "archive", "2026-08-13-copper-bastion") };

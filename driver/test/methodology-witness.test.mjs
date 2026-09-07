@@ -22,14 +22,14 @@ import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { skillRefsIn, witnessStageMethodology, describeMethodologyDrift, WITNESS_FILE } from "../methodology-witness.mjs";
 
-const FRAMEWORK = "skills/clearotron-search/risk-framework-sim-praxis.md";
-const RULES = "skills/clearotron-search/synthesis-rules.md";
+const FRAMEWORK = "skills/prelim-search/risk-framework-sim-praxis.md";
+const RULES = "skills/prelim-search/synthesis-rules.md";
 
 function bench() {
   const root = mkdtempSync(join(tmpdir(), "methwit-"));
   const runDir = join(root, "run");
-  const overlay = join(root, "overlay", "skills", "clearotron-search");
-  const base = join(root, "base", "skills", "clearotron-search");
+  const overlay = join(root, "overlay", "skills", "prelim-search");
+  const base = join(root, "base", "skills", "prelim-search");
   mkdirSync(driverDir(runDir), { recursive: true });
   mkdirSync(overlay, { recursive: true });
   mkdirSync(base, { recursive: true });

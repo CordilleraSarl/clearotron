@@ -171,7 +171,7 @@ test("warmEligible truth table + patch message carries the reason-aware hint", (
   assert.equal(warmEligible("missing_file:x/out.md", { status: "timeout" }), false);
   assert.equal(warmEligible("timeout", okJson), false);
   assert.equal(warmEligible(undefined, okJson), false);
-  assert.match(warmPatchMessage("invalid_file:x:use_check_missing:F1", ["/r/clearotron-search/x/narrative.md"]),
+  assert.match(warmPatchMessage("invalid_file:x:use_check_missing:F1", ["/r/prelim-search/x/narrative.md"]),
     /Use-check source/);
 });
 
@@ -204,7 +204,7 @@ test("D1 warm eligibility: coverage_status_offenum warms, and its patch targets 
   assert.equal(warmEligible(fail, { status: "timeout" }), false, "an incomplete turn still never warms");
   // the defect lives in the PROSE Coverage ledger — the patch must target the findings file itself,
   // NOT a register-coverage-ledger.json re-save (that sibling matches by substring: pin the routing)
-  const m = warmPatchMessage(fail, ["/r/clearotron-search/x/register-findings.md"]);
+  const m = warmPatchMessage(fail, ["/r/prelim-search/x/register-findings.md"]);
   // ── CONVERSION 11 MOVED THE REPAIR MECHANISM, NOT THE ROUTING ──────────────────────────────────
   //
   // This arm used to pin "Your saved …/register-findings.md failed validation" and "TARGETED EDITS …
@@ -238,7 +238,7 @@ test("warm patch write-mode: invalid_file patches in place, missing_file still w
   // longer takes it, and would have gone green again only if the routing regressed. Moved to
   // `common-law-findings.md`, still seat-authored, and `register-findings.md` joins the tool-written
   // loop below. Both branches keep a live witness, which is the property this arm exists for.
-  const exists = warmPatchMessage("invalid_file:x/common-law-findings.md:use_check_missing:F1", ["/r/clearotron-search/x/common-law-findings.md"]);
+  const exists = warmPatchMessage("invalid_file:x/common-law-findings.md:use_check_missing:F1", ["/r/prelim-search/x/common-law-findings.md"]);
   assert.match(exists, /TARGETED EDITS/);
   assert.match(exists, /Edit tool/);
   assert.match(exists, /leave every other line of the file byte-identical/);
@@ -246,7 +246,7 @@ test("warm patch write-mode: invalid_file patches in place, missing_file still w
   // …and the Edit direction must not strand a genuinely absent file: the fallback is stated in the tail
   assert.match(exists, /does not exist, create it in full with the Write tool/);
 
-  const absent = warmPatchMessage("missing_file:x/out.md", ["/r/clearotron-search/x/out.md"]);
+  const absent = warmPatchMessage("missing_file:x/out.md", ["/r/prelim-search/x/out.md"]);
   assert.match(absent, /NEVER WRITTEN/);
   assert.match(absent, /Write the COMPLETE file now/, "there is nothing to patch — the work must land in full");
   assert.doesNotMatch(absent, /TARGETED EDITS/);
@@ -258,7 +258,7 @@ test("warm patch write-mode: invalid_file patches in place, missing_file still w
   // what makes that visible. Both directions, so a routing that stopped re-routing cannot read as a pass.
   for (const [f, tool] of [["narrative.md", "record_synthesis"], ["findings.json", "record_synthesis"],
                            ["register-findings.md", "record_register_digest"]]) {
-    const routed = warmPatchMessage(`invalid_file:x/${f}:use_check_missing:F1`, [`/r/clearotron-search/x/${f}`]);
+    const routed = warmPatchMessage(`invalid_file:x/${f}:use_check_missing:F1`, [`/r/prelim-search/x/${f}`]);
     assert.match(routed, new RegExp(tool), `${f} is tool-written — the warm patch orders the call`);
     assert.doesNotMatch(routed, /TARGETED EDITS/, `${f}: no Edit branch for a file the seat cannot write`);
     assert.doesNotMatch(routed, /Write the COMPLETE file now/, `${f}: and no whole-file re-emit either`);
@@ -266,10 +266,10 @@ test("warm patch write-mode: invalid_file patches in place, missing_file still w
 });
 
 test("warm patch on a multi-file stage aims the repair at the member the token names", () => {
-  const files = ["/r/clearotron-search/x/common-law-findings.half-a.md", "/r/clearotron-search/x/common-law-findings.half-b.md"];
+  const files = ["/r/prelim-search/x/common-law-findings.half-a.md", "/r/prelim-search/x/common-law-findings.half-b.md"];
   const m = warmPatchMessage("invalid_file:x/common-law-findings.half-b.md:platforms_missing:etsy", files);
-  assert.match(m, /TARGETED EDITS to \/r\/clearotron-search\/x\/common-law-findings\.half-b\.md/);
-  assert.doesNotMatch(m, /TARGETED EDITS to \/r\/clearotron-search\/x\/common-law-findings\.half-a\.md/,
+  assert.match(m, /TARGETED EDITS to \/r\/prelim-search\/x\/common-law-findings\.half-b\.md/);
+  assert.doesNotMatch(m, /TARGETED EDITS to \/r\/prelim-search\/x\/common-law-findings\.half-a\.md/,
     "aiming at the wrong member is the loop the grid_join hints already guard against");
 });
 
@@ -287,10 +287,10 @@ test("connotation defects warm, and the patch orders the TOOL — not the .md, a
   // can take — a `record_dispositions` call aimed at the FAILING MEMBER's own spec — and no file edit of
   // any kind. A patch naming a file here would be the two halves of one message disagreeing about where
   // the work lands, the exact defect class 's routing fix closed.
-  const md = "/r/clearotron-search/x/common-law-findings.half-b.md";
+  const md = "/r/prelim-search/x/common-law-findings.half-b.md";
   const m = warmPatchMessage(half, [md]);
   assert.match(m, /record_dispositions/, "the tool is the route");
-  assert.match(m, /\/r\/clearotron-search\/x\/_driver\/grid-spec\.half-b\.json/, "aimed at the half's OWN spec");
+  assert.match(m, /\/r\/prelim-search\/x\/_driver\/grid-spec\.half-b\.json/, "aimed at the half's OWN spec");
   assert.doesNotMatch(m, /EDIT that file|Re-save the COMPLETE corrected JSON/,
     "no file edit of any kind — the seat cannot affect the accumulator by writing");
   assert.match(m, /Do NOT redo the sweep and do NOT rewrite \S*common-law-findings\.half-b\.md \(its own checks passed\)/,
@@ -311,20 +311,20 @@ test("WS-A: the warm patch for a sibling-JSON defect targets the JSON, never a f
   //
   // The arm's subject is unchanged: a sibling-JSON defect must still be described against the JSON and
   // must not order a findings rewrite. Only the repair ACT moved.
-  const m = warmPatchMessage("invalid_file:x:coverage_axis_invalid:satuartion-probe", ["/r/clearotron-search/x/register-findings.md"]);
+  const m = warmPatchMessage("invalid_file:x:coverage_axis_invalid:satuartion-probe", ["/r/prelim-search/x/register-findings.md"]);
   assert.match(m, /register-coverage-ledger\.json is a JSON ARRAY/, "still described against the JSON sibling");
   assert.match(m, /record_register_digest/, "…and repaired by the call, since the findings file is the driver's");
   assert.doesNotMatch(m, /re-save|Re-save|Write the COMPLETE|TARGETED EDITS/,
     "NOT ONE write order anywhere in the message — the tail forbids writing, so a hint that orders a "
     + "save puts two opposite instructions in front of the seat");
   assert.doesNotMatch(m, /write the COMPLETE corrected file at/, "must not order a findings-file rewrite");
-  const g = warmPatchMessage("invalid_file:x:grid_join_missing:novapulse:5/7", ["/r/clearotron-search/x/common-law-findings.md"]);
+  const g = warmPatchMessage("invalid_file:x:grid_join_missing:novapulse:5/7", ["/r/prelim-search/x/common-law-findings.md"]);
   assert.match(g, /common-law-grid\.json/);
   // A sibling JSON is small and driver-derived: a clean re-save is cheaper and safer than JSON surgery,
   // so the sibling route deliberately keeps its full re-save while the prose route patches.
   assert.doesNotMatch(m, /TARGETED EDITS/, "sibling JSON keeps the full re-save");
   // non-sibling reasons keep the classic wrapper
-  assert.match(warmPatchMessage("missing_file:x/out.md", ["/r/clearotron-search/x/out.md"]), /Write the COMPLETE file now/);
+  assert.match(warmPatchMessage("missing_file:x/out.md", ["/r/prelim-search/x/out.md"]), /Write the COMPLETE file now/);
 });
 
 // ── T1: new warm-eligible tokens (J1b band vocabulary repair; J3b review section add) ──────────
@@ -374,9 +374,9 @@ test("spec-49 warm patch: a named_band defect targets the BAND sibling, never th
 
 // ── A1 split review fix (2026-07-12): the retry ladder targets the HALF member's OWN grid ledger ───────
 test("A1 split: a half member's grid_* warm patch targets common-law-grid.half-<h>.json — NEVER the canonical merged ledger", () => {
-  const files = ["/r/clearotron-search/x/common-law-findings.half-a.md"];
+  const files = ["/r/prelim-search/x/common-law-findings.half-a.md"];
   const m = warmPatchMessage("invalid_file:common-law-findings.half-a.md:grid_join_missing:novapulse:3/15", files);
-  assert.match(m, /Re-save the COMPLETE corrected JSON at \/r\/clearotron-search\/x\/common-law-grid\.half-a\.json/,
+  assert.match(m, /Re-save the COMPLETE corrected JSON at \/r\/prelim-search\/x\/common-law-grid\.half-a\.json/,
     "the repair is aimed at the file validators.commonLawHalf re-judges");
   assert.doesNotMatch(m, /common-law-grid\.json/, "the canonical (driver-derived) ledger is never dictated to a half member");
   assert.match(m, /common-law-grid\.half-a\.json must account for EVERY dictated/, "the hint prose names the half ledger too");
@@ -384,7 +384,7 @@ test("A1 split: a half member's grid_* warm patch targets common-law-grid.half-<
   assert.match(u, /common-law-grid\.half-b\.json is the grid call's stdout JSON saved VERBATIM/);
   assert.doesNotMatch(u, /common-law-grid\.json/, "no stray canonical-ledger mention");
   // the single-member path is unchanged
-  const g = warmPatchMessage("invalid_file:x:grid_join_missing:novapulse:5/7", ["/r/clearotron-search/x/common-law-findings.md"]);
+  const g = warmPatchMessage("invalid_file:x:grid_join_missing:novapulse:5/7", ["/r/prelim-search/x/common-law-findings.md"]);
   assert.match(g, /common-law-grid\.json/);
   assert.doesNotMatch(g, /half-/, "no half vocabulary on the canonical member");
 });
@@ -424,7 +424,7 @@ test("…and WITHOUT the exclusion the same failure keeps the legacy enumerate r
 // ──: the register coverage FORM warms; the never-searched class stays cold ─────────────────────
 test("#476 warm eligibility: the coverage-form tokens warm, and the never-searched class does NOT", () => {
   const okJson = { status: "ok" };
-  const F = (r) => `invalid_file:clearotron-search/x/register-findings.md:${r}`;
+  const F = (r) => `invalid_file:prelim-search/x/register-findings.md:${r}`;
   // THE ECONOMIC CASE FOR THE ISSUE. Before this the whole coverage-judgment family was cold-only: not one
   // `coverage_clean_*` token was in the allowlist, so every retry re-dispatched a fresh session that re-read
   // a 1.9 MB band and re-derived a 160 KB document. The stage's own measured profile is 105,747 out FAIL →
@@ -456,8 +456,8 @@ test("#476 warm routing, typed transport: the patch orders the record_coverage C
   // B's rule, one lane over: the seat writes no coverage file, so a warm patch that ordered any file
   // edit would aim the seat at an artifact it cannot affect — the two halves of one message
   // disagreeing about where the work lands.
-  const fail = "invalid_file:clearotron-search/x/register-findings.md:coverage_no_status:no_status=2;CB-A1B2C3D4 [primary-sweep / exact: LUMEN]";
-  const m = warmPatchMessage(fail, ["/r/clearotron-search/x/register-findings.md"]);
+  const fail = "invalid_file:prelim-search/x/register-findings.md:coverage_no_status:no_status=2;CB-A1B2C3D4 [primary-sweep / exact: LUMEN]";
+  const m = warmPatchMessage(fail, ["/r/prelim-search/x/register-findings.md"]);
   assert.match(m, /record_coverage/, "the recording route is the tool");
   assert.match(m, /never by writing or editing any file/);
   assert.doesNotMatch(m, /register-coverage-form\.json/, "the dead seat-facing copy is never named");

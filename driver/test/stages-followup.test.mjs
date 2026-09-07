@@ -24,8 +24,8 @@ const FOLLOWUP = "The coverage ledger is missing a disposition row for the DE ax
 // The three profile-aware stages resolve their framework per customer. A profile that names its own
 // framework is the case the static `skillReads` property CANNOT represent.
 const CUSTOM = {
-  frameworkPath: "skills/clearotron-search/risk-framework-acme.md",
-  workedExamplesPath: "skills/clearotron-search/worked-examples-acme.md",
+  frameworkPath: "skills/prelim-search/risk-framework-acme.md",
+  workedExamplesPath: "skills/prelim-search/worked-examples-acme.md",
 };
 
 test("A-1 — the composed followup carries the methodology pointer for every stage that declares one", () => {
@@ -121,7 +121,7 @@ test("A-1 — the profile-aware stages resolve the CUSTOMER's framework, not the
     const resolved = resolveSkillReads(name, { profile: CUSTOM, job: {} });
     assert.ok(resolved.includes(CUSTOM.frameworkPath),
       `${name}: a followup must point at the customer's own framework`);
-    assert.ok(!resolved.includes("skills/clearotron-search/risk-framework.md"),
+    assert.ok(!resolved.includes("skills/prelim-search/risk-framework.md"),
       `${name}: …and must NOT fall back to the house default the static skillReads property names`);
     // the static property stays exactly as it was — it is metadata with its own contract, and
     // "reconciling" the two by deleting it is what the note above STAGES forbids
@@ -129,7 +129,7 @@ test("A-1 — the profile-aware stages resolve the CUSTOMER's framework, not the
       `${name}: the declarative skillReads property is still there`);
   }
   assert.ok(resolveSkillReads("synthesis", { profile: null, job: { classes: ["5"] } })
-    .includes("skills/clearotron-search/field-doctrine-pharma.md"), "the pharma force-read reaches a corrective pass too");
+    .includes("skills/prelim-search/field-doctrine-pharma.md"), "the pharma force-read reaches a corrective pass too");
 });
 
 // ── the wire ─────────────────────────────────────────────────────────────────────────────────────────

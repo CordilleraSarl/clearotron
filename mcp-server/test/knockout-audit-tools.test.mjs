@@ -190,7 +190,7 @@ test("275: trace resolves this lane's stages and the run's verdict", () => {
 test("275: an unresolvable trace target names the KNOCKOUT stages, not the clearance ones", () => {
   const out = tools.trace({ runId: RUN_ID_KO, target: "no-such-thing" });
   assert.match(out.error, /knockout-frame/, "the suggestion is this lane's stage list");
-  assert.ok(!/matter-frame|clearotron-variants|blind-frame/.test(out.error),
+  assert.ok(!/matter-frame|prelim-variants|blind-frame/.test(out.error),
     "the clearance stages are not offered on a product that has none");
 });
 

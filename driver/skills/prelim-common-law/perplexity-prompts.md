@@ -1,6 +1,6 @@
 # Perplexity prompts
 
-Templates for the `perplexity_research` calls in `clearotron-common-law`. Prompts are **prescriptive, not exploratory** — they tell Perplexity exactly what to search for, where, and how to report.
+Templates for the `perplexity_research` calls in `prelim-common-law`. Prompts are **prescriptive, not exploratory** — they tell Perplexity exactly what to search for, where, and how to report.
 
 ## Depth routing (mandatory)
 

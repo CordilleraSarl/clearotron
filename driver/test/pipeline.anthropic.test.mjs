@@ -79,8 +79,8 @@ test("E2: full pipeline runs on the anthropic-agent engine (CLEAR, delivered, al
   const order = events.filter((e) => e.event === "stage").map((e) => e.stage);
   const idx = (s) => order.findIndex((x) => x.startsWith(s));
   // same ordering invariants as the gateway-bin happy path → the engine swap is transparent
-  assert.ok(idx("matter-frame") >= 0 && idx("matter-frame") < idx("clearotron-variants"), "matter-frame before variants");
-  assert.ok(idx("clearotron-variants") < idx("common-law"), "variants before gather");
+  assert.ok(idx("matter-frame") >= 0 && idx("matter-frame") < idx("prelim-variants"), "matter-frame before variants");
+  assert.ok(idx("prelim-variants") < idx("common-law"), "variants before gather");
   assert.ok(idx("skeptic") < idx("synthesis"), "skeptic before synthesis");
   assert.ok(idx("synthesis") < idx("narrative-refutation"), "synthesis before refutation");
   assert.ok(idx("narrative-refutation") < idx("report-overview"), "report-overview after refutation");
