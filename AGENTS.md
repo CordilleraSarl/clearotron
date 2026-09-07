@@ -119,7 +119,7 @@ lacks either.
 │   └── test/             two tiers, marked with `@tier full`
 ├── providers/            one adapter per data source. START HERE for registers — providers/README.md
 ├── mcp-server/           read/question a finished run from an AI chat app. stdio + HTTP faces
-├── portal-ui/            React + Vite. dist/ is committed and CI byte-compares it against a fresh build
+├── portal-ui/            React + Vite. dist/ is built by CI, which byte-compares it against a fresh build
 ├── shared/               pure helpers used by driver and publish; depends on neither
 ├── scripts/              dev and ops tools. scripts/README.md marks which are operator-only
 ├── examples/             the example run the demo replays, and example job/grants files

@@ -5,7 +5,7 @@
   synthesis-rules.md.
 -->
 
-# Prelim synthesis — gold-standard worked examples
+# Clearotron synthesis — gold-standard worked examples
 
 ## Contents
 

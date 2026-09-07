@@ -67,6 +67,34 @@ export const isProse = (path, line) => {
   return t.startsWith("//") || t.startsWith("*") || t.startsWith("/*");
 };
 
+// ── A COLOUR IS NOT A CITATION, AND THE DIGITS ALONE CANNOT SAY WHICH ───────────────────────────
+//
+// `TOKEN` matches digits only, so a six-digit hex colour is read as its leading digits and refused as a
+// reference. An earlier sweep acted on exactly that reading and rewrote sixteen colour literals as issue
+// text, two of them live mermaid `classDef` directives — so the documentation's diagrams rendered
+// broken, and thirteen comments stated a value that was no longer there. Restoring them then hit this
+// guard, whose refusal told the author to write the very text that had caused it.
+//
+// TWO RULES, and between them they settle every case without a table of exceptions:
+//
+//   1. A hex colour may contain a-f; an issue number is decimal. A token carrying a letter cannot be a
+//      reference whatever its length, and no reading of the digits is needed to know it.
+//   2. For the all-digit case — three digits is both a short colour and a plausible issue number — the
+//      SITE settles it: a value whose property is a colour is a colour. Same rule and the same property
+//      list as the guard in `driver/test/prompt-payload-names-no-tracker-issue.test.mjs`, which already
+//      plants both and requires them told apart.
+//
+// This does NOT widen to bare digits in prose. A reference in a comment is still refused, which is the
+// whole point of the check, and the arm asserts that direction too.
+const HEX_COLOUR = /#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3,4})\b/g;
+const COLOUR_PROPERTY = /(?:^|[;{\s(,])(?:color|background|background-color|border|border-color|fill|stroke|outline|box-shadow|text-shadow)\s*:\s*$/i;
+
+/** Strip hex colours, so what remains is only tokens that could be a reference. */
+export const withoutColourValues = (line) => String(line).replace(HEX_COLOUR, (m, offset, whole) => {
+  if (/[a-fA-F]/.test(m.slice(1))) return "";                              // letters ⇒ not a decimal number
+  return COLOUR_PROPERTY.test(whole.slice(0, offset)) ? "" : m;            // all digits ⇒ the property decides
+});
+
 /** Strip the spans where a `#NNN` is an address rather than a reference. */
 export const withoutLinkTargets = (line) => line
   .replace(/\]\([^)]*\)/g, "]()")                 // markdown link targets, anchors included
@@ -76,7 +104,7 @@ export const withoutLinkTargets = (line) => line
 /** Every offending token on one added line, or an empty array. */
 export const offendingTokens = (path, line) => {
   if (!isProse(path, line)) return [];
-  return [...withoutLinkTargets(line).matchAll(TOKEN)].map((m) => m[0]);
+  return [...withoutColourValues(withoutLinkTargets(line)).matchAll(TOKEN)].map((m) => m[0]);
 };
 
 const baseArg = () => {

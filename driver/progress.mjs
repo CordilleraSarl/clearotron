@@ -8,7 +8,7 @@
 //   1. <runDir>/status.json        — the machine-readable per-run truth (travels into the archive on
 //                                     success, since the run-dir is renamed there).
 //   2. <studioRoot>/STATUS.md       — a human-readable rollup of recent runs, newest-first, the ONE file
-//                                     the prelim-status skill reads to answer "where is it at?".
+//                                     the clearotron-status skill reads to answer "where is it at?".
 //
 // Both writes are atomic (temp + rename) and idempotent — status is DERIVED from the current run, never
 // blindly incremented — so the resumable pipeline can re-drive a run without corrupting either file.
@@ -440,15 +440,15 @@ export function lineFor(s) {
   // 2026-07-04 incident: STATUS.md showed marble-spire as plain "delivered" and VENZY as plain
   // "FAILED" while BOTH still had their email/WhatsApp queued (sendPending) behind a wedged outbox
   // lane — so the heartbeat completion-watch read the rollup, saw nothing pending, and stood down.
-  // The rollup now carries the send state loudly; prelim-deliver flips sendPending:false on send.
-  const pending = s.sendPending === true ? " — 📮 SEND PENDING (email/WhatsApp NOT yet out — run prelim-deliver)" : "";
+  // The rollup now carries the send state loudly; clearotron-deliver flips sendPending:false on send.
+  const pending = s.sendPending === true ? " — 📮 SEND PENDING (email/WhatsApp NOT yet out — run clearotron-deliver)" : "";
   if (s.state === "delivered") {
     const v = s.verdict ? ` (${s.verdict})` : "";
     return `- ${head} — delivered${v}${s.url ? ` — ${s.url}` : ""}${pending}`;
   }
   if (s.state === "failed") {
     const at = s.failedStage ?? s.lastStage ?? stepTxt;
-    return `- ${head} — ⚠️ FAILED at ${at}${s.reason ? ` — ${trunc(s.reason)}` : ""}${pending ? " — 📮 FAILURE NOTICE PENDING (run prelim-deliver)" : ""}`;
+    return `- ${head} — ⚠️ FAILED at ${at}${s.reason ? ` — ${trunc(s.reason)}` : ""}${pending ? " — 📮 FAILURE NOTICE PENDING (run clearotron-deliver)" : ""}`;
   }
   if (s.state === "recovering") {
     // 2026-07-04 production doctrine: a recoverable failure AUTO-RESUMES — the report is still owed.
@@ -513,8 +513,8 @@ export function rollupStatus(studioRoot) {
       .sort((a, b) => String(b.updatedAt ?? "").localeCompare(String(a.updatedAt ?? "")))
       .slice(0, MAX_RUNS);
     const agent = agentFromStudioRoot(studioRoot);
-    const body = runs.length ? runs.map(lineFor).join("\n") : "_No prelim searches running or recently finished._";
-    const md = `# Prelim-search status — ${agent}\n_updated ${nowISO()}_\n\n${body}\n`;
+    const body = runs.length ? runs.map(lineFor).join("\n") : "_No clearotron searches running or recently finished._";
+    const md = `# Clearotron-search status — ${agent}\n_updated ${nowISO()}_\n\n${body}\n`;
     atomicWrite(join(studioRoot, "STATUS.md"), md);
   } catch { /* never throw */ }
 }

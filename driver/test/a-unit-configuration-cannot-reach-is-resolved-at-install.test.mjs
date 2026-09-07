@@ -51,7 +51,13 @@ test("1876: every unit that needs rendering is declared, and everything declared
   // someone deleted a placeholder that was carrying a real value. What changed here is where the value
   // comes from, and that is checked by the two set comparisons above, which still hold in both
   // directions.
-  const RENDERED = ["courtlistener-mcp.service", "prelim-driver.path"];   // sorted, to compare against a sorted set
+  // A THIRD CASE THE PARAGRAPH ABOVE DOES NOT COVER, and it is why this list is one name shorter.
+  // The `.path` unit is not a placeholder that stopped being required and its configuration did not get
+  // simpler — the unit FILE was deleted, by ruling, along with the rest of the retired path-watcher and
+  // timer posture. A name cannot need rendering when the tree ships no file to render. The two set
+  // comparisons above still hold in both directions, so the loosening the paragraph guards against is
+  // still guarded: a name may leave this list only by leaving the tree.
+  const RENDERED = ["courtlistener-mcp.service"];   // sorted, to compare against a sorted set
   assert.deepEqual([...needing].sort(), RENDERED,
     `expected exactly ${RENDERED.join(" and ")}, saw ${[...needing].sort().join(", ")}. A NEW name here `
     + "is a unit that cannot be synced verbatim; a MISSING one is a placeholder that stopped being "

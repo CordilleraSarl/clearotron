@@ -278,7 +278,7 @@ export type Run = {
    */
   readonly projectKey: string | null
   readonly projectName: string | null
-  /** The registry key of the read's depth ("prelim"), or null on runs older than the level registry. */
+  /** The registry key of the read's depth ("clearotron"), or null on runs older than the level registry. */
   readonly product: string | null
   /**
    * The FROZEN display face stamped on the run at publish ("Depth 4" on anything sold under the retired

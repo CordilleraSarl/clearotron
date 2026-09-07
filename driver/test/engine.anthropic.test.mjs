@@ -182,7 +182,7 @@ test("runStage: rate-limit -> fail 'rate_limited' (NOT nonzero_exit), carries re
   const saved = {};
   for (const k of Object.keys(env)) { saved[k] = process.env[k]; pinEnv(process.env, k, env[k]); }
   try {
-    const r = await runStage("matter-frame", { agent: "clawdi", message: "do it", model: "opus", thinking: "high", sessionKey: "prelim-test-rl", timeoutSec: 60, maxRetries: 2 });
+    const r = await runStage("matter-frame", { agent: "clawdi", message: "do it", model: "opus", thinking: "high", sessionKey: "clearotron-test-rl", timeoutSec: 60, maxRetries: 2 });
     assert.equal(r.ok, false);
     assert.equal(r.fail, "rate_limited", "classified distinctly — not the fallback-eligible nonzero_exit_1");
     assert.equal(r.resetsAt, new Date(resetsEpoch * 1000).toISOString(), "resetsAt rides the runStage result");
@@ -801,7 +801,7 @@ test("INTEGRATION: runStage on CLEAROTRON_AI=anthropic-agent writes file + retur
   pinEnv(process.env, "CLEAROTRON_CLAUDE_PATH", MOCK);
   try {
     const r = await runStage("teststage", {
-      agent: "clawdi", sessionKey: "prelim-test-abc-matterframe",
+      agent: "clawdi", sessionKey: "clearotron-test-abc-matterframe",
       message: `Do the task. Write to the ABSOLUTE path for the stage output: ${out}`,
       model: "opus", thinking: "medium", timeoutSec: 60, expectFile: out, validate: () => ({ ok: true }),
     });

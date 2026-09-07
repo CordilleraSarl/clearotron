@@ -97,7 +97,7 @@ const arm = (s, ...contents) => {
   return { expectFile: s.out, validate: s.validate };
 };
 const stage = (over = {}) => runStage("test-stage", {
-  agent: "clawdi", message: "BASE TASK", sessionKey: "prelim-test-base",
+  agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-test-base",
   timeoutSec: 30, maxRetries: 2, runDir: dir, ...over,
 });
 const stageRows = () => readFileSync(driverDir(dir, "test-stage.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));

@@ -154,7 +154,7 @@ const stripCommentLines = (text) => text.split("\n").filter((l) => !COMMENT_LINE
 // — no `env`-prefixed regex can match a read where the name never appears beside an `env` token.
 //
 // THE BINDING IS SCREAMING_CASE AND THE LITERAL IS ENV-SHAPED, both required. `const label = "x"` is
-// not an env binding, and neither is `const PREFIX = "prelim-"`. The pair is what makes this a
+// not an env binding, and neither is `const PREFIX = "clearotron-"`. The pair is what makes this a
 // declaration of an environment name rather than a string that happens to be uppercase.
 const BINDING_RE = /(?<![.\w$])const\s+([A-Z][A-Z0-9_]*)\s*=\s*["']([A-Z][A-Z0-9_]{2,})["']/g;
 

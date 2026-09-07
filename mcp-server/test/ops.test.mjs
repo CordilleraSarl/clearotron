@@ -13,15 +13,21 @@ import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins E
 
 const ROOT = mkdtempSync(join(tmpdir(), "ops-ws-"));
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
-const QUEUE = join(ROOT, "workspace-clawdi", "studio", "prelim-search", "queue");
+// DERIVED, never a literal: these paths are the DEFAULT agent's, and the default agent id is a path
+// segment. Writing it out meant the fixture built one workspace while the code under test read
+// another, and the first symptom was an ENOENT on a queue directory nothing had created.
+const { config } = await import("../lib/driver.mjs");
+const AGENT = config.defaultAgent;
+const WS = join(ROOT, `workspace-${AGENT}`);
+const QUEUE = join(WS, "studio", "prelim-search", "queue");
 
 const { startRun, stopRun, feedContext, markSent, listOutboxEvents, getDeliveryPacket, ackEvent } = await import("../lib/ops.mjs");
 
 function makeRun({ slug = "tmpx-acme", codename = "2026-06-16-jade-x", state = "running" } = {}) {
-  const runDir = join(ROOT, "workspace-clawdi", "studio", "prelim-search", slug, codename);
+  const runDir = join(WS, "studio", "prelim-search", slug, codename);
   mkdirSync(driverDir(runDir), { recursive: true });
   const runId = `${slug}-${codename}`;
-  writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId, slug, codename, agent: "clawdi", state, markName: "ACME" }));
+  writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId, slug, codename, agent: AGENT, state, markName: "ACME" }));
   return { runDir, runId };
 }
 
@@ -96,10 +102,10 @@ test("mark_sent: writes .sent + flips sendPending + clears the marker; idempoten
     // no packet yet -> refused (nothing was pending a send)
     assert.throws(() => markSent({ runId }), /no delivery or failure packet/);
     writeFileSync(driverDir(runDir, "delivery.json"), JSON.stringify({ runId: "tmpx-sendme-jade-y" }));
-    writeFileSync(join(outbox, "tmpx-sendme-jade-y.pending"), "clawdi\n");
+    writeFileSync(join(outbox, "tmpx-sendme-jade-y.pending"), `${AGENT}\n`);
     // status with sendPending like the pipeline leaves it
     const sp = join(runDir, "status.json");
-    writeFileSync(sp, JSON.stringify({ runId, slug: "tmpx-sendme", codename: "2026-07-16-jade-y", agent: "clawdi", state: "delivered", markName: "ACME", sendPending: true }));
+    writeFileSync(sp, JSON.stringify({ runId, slug: "tmpx-sendme", codename: "2026-07-16-jade-y", agent: AGENT, state: "delivered", markName: "ACME", sendPending: true }));
 
     const r = markSent({ runId, messageId: "<sent-123@mail>" });
     assert.equal(r.ok, true);
@@ -132,7 +138,7 @@ test("mark_sent: a retry with the marker STILL present (a killed first call) rem
     // simulate the interrupted first call: .sent already written, marker NOT yet removed
     writeFileSync(join(runDir, ".sent"), JSON.stringify({ ts: "2026-07-23T23:00:00Z", messageId: "<orig@mail>", via: "mcp/mark_sent" }));
     const marker = join(outbox, "tmpx-orphan-crimson-y.pending");
-    writeFileSync(marker, "clawdi\n");
+    writeFileSync(marker, `${AGENT}\n`);
 
     const r = markSent({ runId });
     assert.equal(r.alreadySent, true, "still idempotent — the courier must not treat its own prior success as failure");
@@ -155,7 +161,7 @@ test("mark_sent: a retry with the marker STILL present (a killed first call) rem
 // ever finish the cleanup. Same dual-form defence rescanOwedRuns already applies to the queued check.
 test("mark_sent: BOTH runId forms of the marker are cleared — the packet's and the resolved run's (and on the alreadySent retry)", () => {
   const slug = "tmpcoralfreezealn-coral-freeze";
-  const runDir = join(ROOT, "workspace-clawdi", "studio", "prelim-search", slug, "2026-07-29-jade-w");
+  const runDir = join(WS, "studio", "prelim-search", slug, "2026-07-29-jade-w");
   mkdirSync(driverDir(runDir), { recursive: true });
   const dated = `${slug}-2026-07-29-jade-w`;      // status.json runId — the canonical form
   const dateless = `${slug}-jade-w`;              // delivery.json runId — the pre- packet form
@@ -164,12 +170,12 @@ test("mark_sent: BOTH runId forms of the marker are cleared — the packet's and
   pinEnv(process.env, "CLEAROTRON_OUTBOX_DIR", outbox);
   try {
     writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId: dated, slug, codename: "jade-w",
-      agent: "clawdi", state: "delivered", markName: "ACME", sendPending: true }));
+      agent: AGENT, state: "delivered", markName: "ACME", sendPending: true }));
     writeFileSync(driverDir(runDir, "delivery.json"), JSON.stringify({ runId: dateless }));
     const datedMarker = join(outbox, `${dated}.pending`);
     const datelessMarker = join(outbox, `${dateless}.pending`);
-    writeFileSync(datedMarker, "clawdi\n");
-    writeFileSync(datelessMarker, "clawdi\n");
+    writeFileSync(datedMarker, `${AGENT}\n`);
+    writeFileSync(datelessMarker, `${AGENT}\n`);
 
     const r = markSent({ runId: dated, messageId: "<settle-1@mail>" });
     assert.equal(r.ok, true);
@@ -180,17 +186,17 @@ test("mark_sent: BOTH runId forms of the marker are cleared — the packet's and
     // A marker re-dropped under EITHER form after the settle (the rescan re-arming, or one in flight
     // across a deploy) is still cleaned by the idempotent retry — the path that used to repeat the
     // single-form removal forever.
-    writeFileSync(datedMarker, "clawdi\n");
-    writeFileSync(datelessMarker, "clawdi\n");
+    writeFileSync(datedMarker, `${AGENT}\n`);
+    writeFileSync(datelessMarker, `${AGENT}\n`);
     const again = markSent({ runId: dated });
     assert.equal(again.alreadySent, true, "still idempotent — a retried courier never reads its own success as failure");
     assert.ok(!existsSync(datedMarker) && !existsSync(datelessMarker), "the alreadySent path clears both forms too");
 
     // Asked for by the LEGACY id (resolveRun's historical arm): the same two forms go, nothing else does.
-    writeFileSync(datedMarker, "clawdi\n");
-    writeFileSync(datelessMarker, "clawdi\n");
+    writeFileSync(datedMarker, `${AGENT}\n`);
+    writeFileSync(datelessMarker, `${AGENT}\n`);
     const bystander = join(outbox, "tmpx-bystander-jade-q.pending");
-    writeFileSync(bystander, "clawdi\n");
+    writeFileSync(bystander, `${AGENT}\n`);
     markSent({ runId: dateless });
     assert.ok(!existsSync(datedMarker) && !existsSync(datelessMarker));
     assert.ok(existsSync(bystander), "another run's marker is never touched");
@@ -211,7 +217,7 @@ test("start_run: with CLEAROTRON_QUEUE_DIR set and NO agent, enqueues into the h
     const job = JSON.parse(readFileSync(r.queuePath, "utf8"));
     assert.match(job.msgId, /@mcp\.tenant-a\.example>$/, "msgId domain is tenant-config, not a baked-in host");
     // an EXPLICIT agent still routes to that agent's workspace queue, not the headless dir
-    const r2 = startRun({ agent: "clawdi", markName: "WORKSPACEPROBE", forwarder: "jordan", classes: [9] });
+    const r2 = startRun({ agent: AGENT, markName: "WORKSPACEPROBE", forwarder: "jordan", classes: [9] });
     assert.equal(r2.queuePath, join(QUEUE, `${r2.id}.json`));
   } finally {
     pinEnv(process.env, "CLEAROTRON_QUEUE_DIR", undefined);
@@ -225,10 +231,10 @@ test("pure-MCP integrator loop: list_outbox_events -> get_delivery_packet -> ack
   pinEnv(process.env, "CLEAROTRON_OUTBOX_DIR", outbox);
   try {
     // one legacy delivered marker + one self-contained event packet
-    writeFileSync(join(outbox, "tmpx-loop-jade-z.pending"), "clawdi\n");
+    writeFileSync(join(outbox, "tmpx-loop-jade-z.pending"), `${AGENT}\n`);
     writeFileSync(join(outbox, "intake-badjob.failed.pending"), JSON.stringify({
       kind: "intake-rejected", classify: "clarify", base: "badjob", forwarder: "jordan",
-      errors: ["missing mark name(s)"], text: "\u26a0\ufe0f Prelim request ...",
+      errors: ["missing mark name(s)"], text: "\u26a0\ufe0f Clearotron request ...",
     }));
 
     const l = listOutboxEvents();
@@ -241,7 +247,7 @@ test("pure-MCP integrator loop: list_outbox_events -> get_delivery_packet -> ack
 
     // get_delivery_packet: full payload + send-state for a delivered run
     const { runDir, runId } = makeRun({ slug: "tmpx-loop", codename: "2026-07-16-jade-z", state: "delivered" });
-    writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId, slug: "tmpx-loop", codename: "2026-07-16-jade-z", agent: "clawdi", state: "delivered", markName: "ACME", sendPending: true }));
+    writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId, slug: "tmpx-loop", codename: "2026-07-16-jade-z", agent: AGENT, state: "delivered", markName: "ACME", sendPending: true }));
     writeFileSync(driverDir(runDir, "delivery.json"), JSON.stringify({ runId: "tmpx-loop-jade-z", subject: "Preliminary clearance \u2014 ACME", emailBodyHtml: "<p>x</p>", forwarder: "jordan" }));
     const g = getDeliveryPacket({ runId });
     assert.equal(g.sendPending, true);
@@ -507,9 +513,9 @@ const failedRunWithNotice = (slug, codename) => {
     kind: "run-failed", runId: packetRunId, failedStage: "synthesis", reason: "provider outage",
   }));
   const marker = join(outbox, `${packetRunId}.pending`);
-  writeFileSync(marker, "clawdi\n");
+  writeFileSync(marker, `${AGENT}\n`);
   const sp = join(runDir, "status.json");
-  writeFileSync(sp, JSON.stringify({ runId, slug, codename, agent: "clawdi", state: "failed", markName: "ACME", sendPending: true }));
+  writeFileSync(sp, JSON.stringify({ runId, slug, codename, agent: AGENT, state: "failed", markName: "ACME", sendPending: true }));
   return { runDir, runId, marker, sp };
 };
 
@@ -555,7 +561,7 @@ test("still idempotent on the failure path — a retried courier is not an error
   const { runId, marker } = failedRunWithNotice("tmpx-failretry", "2026-07-27-dune-z");
   try {
     markSent({ runId, messageId: "<failure-notice-3@mail>" });
-    writeFileSync(marker, "clawdi\n");            // a killed first call, or a sweep that re-armed before the flip landed
+    writeFileSync(marker, `${AGENT}\n`);            // a killed first call, or a sweep that re-armed before the flip landed
     const again = markSent({ runId });
     assert.equal(again.alreadySent, true);
     assert.ok(!existsSync(marker), "and the orphan is cleared on the retry, same as the delivery path");
@@ -581,9 +587,9 @@ test("mark_sent: refuses without evidence; records an out-of-band attestation VE
   try {
     writeFileSync(driverDir(runDir, "delivery.json"), JSON.stringify({ runId: "tmpx-evidence-ivory-y" }));
     const marker = join(outbox, "tmpx-evidence-ivory-y.pending");
-    writeFileSync(marker, "clawdi\n");
+    writeFileSync(marker, `${AGENT}\n`);
     const sp = join(runDir, "status.json");
-    writeFileSync(sp, JSON.stringify({ runId, slug: "tmpx-evidence", codename: "2026-07-31-ivory-y", agent: "clawdi", state: "delivered", markName: "ACME", sendPending: true }));
+    writeFileSync(sp, JSON.stringify({ runId, slug: "tmpx-evidence", codename: "2026-07-31-ivory-y", agent: AGENT, state: "delivered", markName: "ACME", sendPending: true }));
 
     // No messageId, no attestation → refused, and NOTHING settles: the marker stays (the send is still
     // owed), sendPending stays true, no .sent exists to suppress the retries.
@@ -617,7 +623,7 @@ test("mark_sent: a marker minted under the DERIVED <slug>-<codename> form is cle
   // name next pass) but the recovery costs a RE-SEND: the deliver skill sends BEFORE mark_sent, so the
   // reader gets the report twice.
   const slug = "tmpz-legacyform";
-  const runDir = join(ROOT, "workspace-clawdi", "studio", "prelim-search", slug, "2026-07-31-slate-heron");
+  const runDir = join(WS, "studio", "prelim-search", slug, "2026-07-31-slate-heron");
   mkdirSync(driverDir(runDir), { recursive: true });
   const dated = `${slug}-2026-07-31-slate-heron`;
   const derived = `${slug}-slate-heron`;              // what rescanOwedRuns would mint; named by NO observed id
@@ -626,12 +632,12 @@ test("mark_sent: a marker minted under the DERIVED <slug>-<codename> form is cle
   pinEnv(process.env, "CLEAROTRON_OUTBOX_DIR", outbox);
   try {
     writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId: dated, slug, codename: "slate-heron",
-      agent: "clawdi", state: "delivered", markName: "ACME", sendPending: true }));
+      agent: AGENT, state: "delivered", markName: "ACME", sendPending: true }));
     writeFileSync(driverDir(runDir, "delivery.json"), JSON.stringify({ runId: dated }));  // packet carries the DATED id
     const derivedMarker = join(outbox, `${derived}.pending`);
     const bystander = join(outbox, `${slug}-2026-07-30-other-heron.pending`);   // a DIFFERENT run
-    writeFileSync(derivedMarker, "clawdi\n");
-    writeFileSync(bystander, "clawdi\n");
+    writeFileSync(derivedMarker, `${AGENT}\n`);
+    writeFileSync(bystander, `${AGENT}\n`);
 
     const r = markSent({ runId: dated, messageId: "<settle-derived@mail>" });
     assert.equal(r.ok, true);

@@ -128,7 +128,7 @@ export function scopeJurisdictions(job, profile) {
 /**
  * The POLICY decision: which lanes fire for this run, at what depth. Pure — env kill switches are the
  * pipeline's business. Returns {} lanes when the searchPolicy doesn't carry the jxLanes component (a
- * plain prelim is byte-identical: no decision, no sidecar, nothing).
+ * plain clearotron is byte-identical: no decision, no sidecar, nothing).
  *
  *   decideJxLanes({ job, profile, searchPolicy }) →
  *     { lanes: { zh: { depth: "candidates"|"full", jurisdictions: ["CN",…], origin } }, scope: [...] }
@@ -183,7 +183,7 @@ export function decideJxLanes({ job, profile, searchPolicy } = {}) {
  *
  * ── THE GATE THAT WAS DECIDING, AND DECIDING OFF ────────────────────────────────────────────────────
  *
- * This function opened with `resolvedPolicy.level !== "prelim"`. `resolveSearchPolicy` now returns
+ * This function opened with `resolvedPolicy.level !== "clearotron"`. `resolveSearchPolicy` now returns
  * `level` = THE PRODUCT ID for all four searches, so that leg was false on every live run and the whole
  * recommendation was dead — silently, with both callers (pipeline.mjs and runner.mjs) live and 3,754
  * driver tests green, because the one test that covered it hand-fed `{ level: "prelim" }`, a value

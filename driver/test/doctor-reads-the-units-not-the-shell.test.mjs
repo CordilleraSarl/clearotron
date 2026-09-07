@@ -151,7 +151,7 @@ test("2176-F34 doctor run from a shell with NOTHING set does not report the unit
     assert.doesNotMatch(r.out, /the client door is HALF configured/,
       `doctor reported a half-configured door while ~/.env configures it:\n${r.out}`);
     // And it must not have quietly gone silent instead: the value it read has to appear somewhere.
-    assert.match(r.out, /Submit lane/, "the submit lane section should still be reported");
+    assert.match(r.out, /Start-button path/, "the start-button path section should still be reported");
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
@@ -410,13 +410,13 @@ test("223 THE CONTRADICTION — no line calls the variable unset while another r
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("223 a doctrine overlay the UNITS name is not reported as nothing configured", () => {
+test("223 custom instructions the UNITS name are not reported as nothing configured", () => {
   const home = hostedHomeWith([], ["doctrine"]);
   writeFileSync(join(home, ".env"),
     [`CLEAROTRON_INSTRUCTIONS_DIR=${join(home, "doctrine")}`, ...GOOD_ENV.trim().split("\n")].join("\n") + "\n");
   try {
     const r = doctor(home);
-    assert.match(r.out, /the services read a doctrine overlay this process does not/,
+    assert.match(r.out, /the services read custom instructions this process does not/,
       `doctor claims this install overrides nothing while the units name an overlay:\n${r.out}`);
   } finally { rmSync(home, { recursive: true, force: true }); }
 });

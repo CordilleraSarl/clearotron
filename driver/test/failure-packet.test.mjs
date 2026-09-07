@@ -122,7 +122,7 @@ test("#472 a multi-name knockout failure names all its names, in the run's own s
   assert.equal(p.subject, "Knockout search — IRONWHISK +2 more — run FAILED, nothing delivered");
   // Every sentence a human reads, not only the subject — the WhatsApp line and the email body each
   // stated one name of three.
-  assert.match(p.whatsappText, /Prelim search for IRONWHISK \+2 more FAILED/);
+  assert.match(p.whatsappText, /Clearotron search for IRONWHISK \+2 more FAILED/);
   assert.match(p.emailBodyHtml, /for <b>IRONWHISK \+2 more<\/b> FAILED/);
   // The client-facing wording carries it too — that lane is the one a requester reads.
   const client = buildFailurePacket({ ...BASE, job: { ...job, clientPrincipal: true }, terminalKind: "deterministic" });
@@ -141,7 +141,7 @@ test("#472 a single-name job still says the name the requester TYPED, never a de
   // BASE's job names no product either, so the subject leads with the mark alone, exactly as before.
   const bare = buildFailurePacket({ ...BASE, terminalKind: "deterministic" });
   assert.equal(bare.subject, "Open Country — run FAILED, nothing delivered");
-  assert.match(bare.whatsappText, /Prelim search for Open Country FAILED/);
+  assert.match(bare.whatsappText, /Clearotron search for Open Country FAILED/);
 });
 
 // ---- (enforcement check E11 in the family): the payload reaches the notice ------------------

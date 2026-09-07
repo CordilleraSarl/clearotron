@@ -113,3 +113,34 @@ test("the checker asks systemd for LoadState — without it none of the above ca
   assert.equal((src.match(/unit: u, active, load,/g) ?? []).length, 2,
     "both push paths must carry it — one carries units with no clone, which is where the stale names land");
 });
+
+// ── THE RETIREMENT BRANCH, PLANTED — because the real table has no member to exercise it ─────────────
+//
+// `retired:` carried two entries and both left with their files once production was rebuilt. So
+// `absentByRetirement` and the sentence it feeds are unreachable against the real inventory: they run,
+// find nothing, and report nothing, on every deployment, forever. A reader of the file sees a mechanism
+// that tells absent-and-expected from absent-and-should-not-be; what is actually there is a branch that
+// has not fired since its last member left and would not be noticed if it stopped working.
+//
+// That is this file's own failure mode aimed at itself — a check that silently does not fire — so the
+// mechanism is kept and PLANTED rather than trusted. The next retirement finds something that works.
+test("a RETIRED unit's absence is EXPECTED, not drift — planted, because no real entry carries the field", () => {
+  const planted = [
+    { unit: "planted-retired", runsOn: ["test"], tracked: [], retired: { ruled: "2026-01-01", filesStayUntil: "prod", why: "planted" } },
+    { unit: "planted-live", runsOn: ["test"], tracked: [] },
+  ];
+  const v = unitInventoryVerdict({ live: [], files: [], box: "test", probe: { ok: true }, inventory: planted });
+  assert.match(v.message, /absent BY RETIREMENT/, "the retired unit's absence is not reported as expected");
+  assert.match(v.message, /planted-retired/, "…and it is NAMED, so a reader can tell which unit was excused");
+  assert.ok(!v.absent.includes("planted-retired"), "a retired unit must never land in the drift list");
+  assert.ok(v.absent.includes("planted-live"), "…and the unretired one still must, or the excuse is universal");
+});
+
+test("the retirement excuse is NOT universal — it is read off the entry, never assumed", () => {
+  // The failure this pins is the excuse widening: if `retired` were ever read as truthy-by-default, every
+  // absent unit would be reported as expected and the whole absent-unit check would go quiet.
+  const planted = [{ unit: "planted-live", runsOn: ["test"], tracked: [] }];
+  const v = unitInventoryVerdict({ live: [], files: [], box: "test", probe: { ok: true }, inventory: planted });
+  assert.doesNotMatch(v.message, /absent BY RETIREMENT/, "an inventory with no retired entry must say nothing about retirement");
+  assert.deepEqual(v.absent, ["planted-live"]);
+});

@@ -583,7 +583,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //      inputs rendered through the pre-change module and through this one, whole-file bytes:
 //
 //        A  archived, no policy sidecar          103,628 → 103,505   -123   conf row DROPPED
-//        B  archived on a RETIRED row (prelim)   103,640 → 103,651    +11   "Depth 4 — Preliminary
+//        B  archived on a RETIRED row (clearotron)   103,640 → 103,651    +11   "Depth 4 — Preliminary
 //                                                                           Clearance" → "Preliminary
 //                                                                           clearance"
 //        C  live Global preliminary search       103,658 → 103,663     +5   "Global preliminary search —

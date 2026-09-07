@@ -437,7 +437,7 @@ test("spec 62 sparse validation: an overlay REJECTS each customer-only key (iden
   for (const k of CUSTOMER_ONLY_KEYS) {
     const val = k === "name" ? "X"
       : (k === "matchDomains" || k === "selfExclusionOwners") ? ["x"]
-      : k === "allowedRecipes" ? ["prelim"]
+      : k === "allowedRecipes" ? ["clearotron"]
       : k === "jxPolicy" ? { providerStance: "default" }
       : k === "runCaps" ? { maxQueued: 3 }
       : "skills/prelim-search/x.md";

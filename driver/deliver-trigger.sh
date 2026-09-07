@@ -4,7 +4,7 @@
 # v2 (pure-MCP courier, docs/DELIVERY.md): the outbox carries EVERY requester-facing event — delivered
 # markers (body = the forwarding agent id) AND self-contained JSON packets (run-failed / intake-rejected /
 # duplicate-skipped / late-bind-ack, each with an "agent" field). For each DISTINCT agent named across
-# pending events, wake it ONCE to run the prelim-deliver skill, which routes everything over the ops MCP
+# pending events, wake it ONCE to run the clearotron-deliver skill, which routes everything over the ops MCP
 # (list_outbox_events → get_delivery_packet → send → mark_sent/ack_event).
 #
 # THE TRIGGER NEVER DELETES EVENTS: consumption belongs to mark_sent (delivered) and ack_event (the rest),
@@ -35,7 +35,7 @@ DRAIN_WAIT="${CLEAROTRON_OUTBOX_DRAIN_WAIT:-180}"
 # (openclaw models); set CLEAROTRON_OUTBOX_WAKE_MODEL="" to fall back to the agent default. `-` (not `:-`) so
 # an explicit empty value disables the override, while unset keeps the Haiku default.
 WAKE_MODEL="${CLEAROTRON_OUTBOX_WAKE_MODEL-anthropic/claude-haiku-4-5}"
-MSG="The trademark engine's outbox has pending events. Run the prelim-deliver skill now: list_outbox_events, route each event (delivered → get_delivery_packet + send VERBATIM + mark_sent; every other kind → relay its text + ack_event)."
+MSG="The trademark engine's outbox has pending events. Run the clearotron-deliver skill now: list_outbox_events, route each event (delivered → get_delivery_packet + send VERBATIM + mark_sent; every other kind → relay its text + ack_event)."
 
 # THE WALL, RESOLVED ONCE AND NAMED WHEN IT IS ABSENT (tracker issue 820).
 #
@@ -112,7 +112,7 @@ for agent in "${!by_agent[@]}"; do
     continue
   fi
 
-  echo "prelim-outbox: waking $agent to run prelim-deliver"
+  echo "prelim-outbox: waking $agent to run clearotron-deliver"
   # timeout(1) is the enforced wall: the 2026-07-04 incident proved the CLI's own --timeout does not
   # guarantee process EXIT (the agent turn finished; the process idled 19h and wedged the lane).
   # SIGTERM at 840s (inside the unit's TimeoutStartSec budget so the failure is OURS and logged),

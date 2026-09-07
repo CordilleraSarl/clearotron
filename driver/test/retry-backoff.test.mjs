@@ -81,7 +81,7 @@ beforeEach(() => {
 });
 
 const stage = (over = {}) => runStage("test-stage", {
-  agent: "clawdi", message: "BASE TASK", sessionKey: "prelim-test-backoff",
+  agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-test-backoff",
   timeoutSec: 30, expectFile: process.env.MOCK_OUT_FILE, maxRetries: 2, ...over,
 });
 

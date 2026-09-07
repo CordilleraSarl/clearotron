@@ -20,7 +20,7 @@ import { rollupTokens } from "../tokens.mjs";
 import { isCodeSide } from "../run-economics.mjs";
 
 function mkRun(stages) {
-  const runDir = mkdtempSync(join(tmpdir(), "prelim-1226-"));
+  const runDir = mkdtempSync(join(tmpdir(), "clearotron-1226-"));
   mkdirSync(driverDir(runDir));
   for (const [stage, records] of Object.entries(stages)) {
     writeFileSync(driverDir(runDir, `${stage}.jsonl`), records.map((r) => JSON.stringify(r)).join("\n") + "\n");

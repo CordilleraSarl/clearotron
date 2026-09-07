@@ -20,7 +20,7 @@
 // ── WHY A COLOUR IS NOT A CITATION, AND WHY THAT MATTERS HERE ────────────────────────────────────
 //
 // MEASURED, not hypothesised. The obvious pattern for this class — `#` followed by three to five
-// digits — matches CSS. `` is three digits. `tracker issue 4472C4` contains ``. A sweep written the obvious
+// digits — matches CSS. `` is three digits. `#4472C4` contains ``. A sweep written the obvious
 // way reported twenty-five lines when twenty-two were citations: the other three were the colours in a
 // served HTML template, and stripping them would have changed what that form RENDERS while every
 // reference check still read green.

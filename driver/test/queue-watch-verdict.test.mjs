@@ -117,15 +117,10 @@ test("#1216 the check is WIRED into the surface the deploy runs and logs", () =>
     "the check stopped reading the RESOLVED queue dirs; reading the variable misses the absent case");
 });
 
-test("#1216 VOID CONTROL — drain-preflight's reader still parses a real unit", () => {
-  // The verdict is only as good as what it is handed. If watchedQueueDirs stops finding globs, every
-  // deployment resolves "watched: []" and this guard turns into an alarm nobody can silence — the
-  // false-refusal direction that gets guards removed.
-  const unit = readFileSync(join(ROOT, "driver", "systemd", "prelim-driver.path"), "utf8");
-  const watched = watchedQueueDirs(unit, HOME);
-  assert.ok(watched.length > 0, "the shipped .path unit parsed to zero watched directories");
-  for (const w of watched) assert.doesNotMatch(w, /\*/, "a glob survived into a directory comparison");
-});
+// THE VOID CONTROL THAT USED TO LIVE HERE READ A SHIPPED `.path` UNIT. The path-watcher/timer drain
+// posture is retired (ruled 2026-08-26, restated 08-31): the built-in worker is the product's drain and
+// no `.path` or `.timer` unit ships any more, so an arm demanding one asserts the retired posture back
+// into existence. The reader stays covered by the arms above, which hand it unit syntax directly.
 
 // ──: THE CONSEQUENCE, WHICH THIS ARM USED TO INVENT ────────────────────────────────────────────
 //

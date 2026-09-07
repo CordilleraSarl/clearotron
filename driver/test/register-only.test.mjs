@@ -355,7 +355,7 @@ test("one caveat, because one product shape is left to caveat", () => {
 // the first because the file it breaks has no line in it, the second because the assertion reads true.
 
 test("one stale saved search does not take the recipe store down for every tenant", async (t) => {
-  const dir = mkdtempSync(join(tmpdir(), "prelim-recipes-"));
+  const dir = mkdtempSync(join(tmpdir(), "clearotron-recipes-"));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   // Two customers. One carries a base retired by; the other is ordinary and unrelated.
   mkdirSync(join(dir, "acme"), { recursive: true });
@@ -388,7 +388,7 @@ test("one stale saved search does not take the recipe store down for every tenan
 });
 
 test("the skip list describes the current store and never accumulates", () => {
-  const dir = mkdtempSync(join(tmpdir(), "prelim-recipes-"));
+  const dir = mkdtempSync(join(tmpdir(), "clearotron-recipes-"));
   try {
     mkdirSync(join(dir, "acme"), { recursive: true });
     writeFileSync(join(dir, "acme", "legacy.json"), JSON.stringify({ label: "L", base: KEY }));

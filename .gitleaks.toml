@@ -28,7 +28,7 @@ paths = [
 # credential sitting anywhere in this repo still fails, including on these two lines.
 #
 # THE SECOND ENTRY IS THE SAME CLASS AND ARRIVED THE SAME WAY, but what it taught is worse than the
-# finding. `prelim-tmptest<n>-<mark slug>-<stage>` is the per-attempt CACHE KEY a test fixture writes
+# finding. `clearotron-tmptest<n>-<mark slug>-<stage>` is the per-attempt CACHE KEY a test fixture writes
 # into its own telemetry — mcp-server/test/_fixture.mjs, no credential, a literal a reader can see is
 # synthetic. It scores 3.704 against generic-api-key's 3.7 threshold, so it has been a finding all along.
 #
@@ -53,6 +53,6 @@ paths = [
 # on the same line still fails.
 regexes = [
   '''TMP[01289]\d{3}-[a-z0-9-]+''',
-  '''prelim-tmptest\d+-[a-z0-9-]+''',
+  '''clearotron-tmptest\d+-[a-z0-9-]+''',
   '''claude-[a-z0-9]+-[0-9]+(?:-[0-9]+)*-[0-9]{8}''',
 ]

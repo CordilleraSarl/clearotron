@@ -38,7 +38,7 @@ const JOB = {
   ref: "TMP8901", markName: "REGISTERONLY PROBE", classes: [9], provider: "corsearch",
 };
 
-const ROOT = mkdtempSync(join(tmpdir(), "prelim-mock-ro-"));
+const ROOT = mkdtempSync(join(tmpdir(), "clearotron-mock-ro-"));
 
 async function runPipeline(env, jobPatch = {}) {
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_LEDGER_LIMITED"]) delete process.env[k];
@@ -78,7 +78,7 @@ test("the same job WITHOUT the level still runs the grid — the subtraction is 
     { ref: "TMP8902", markName: "GRIDBASELINE PROBE" });
   assert.equal(res.ok, true, JSON.stringify(res));
   const sp = JSON.parse(readFileSync(driverDir(res.runDir, "search-policy.json"), "utf8"));
-  assert.equal(sp.components.commonLawGrid, true, "a plain prelim keeps its unregistered-use half");
+  assert.equal(sp.components.commonLawGrid, true, "a plain clearotron keeps its unregistered-use half");
   assert.ok(!events.some((e) => e.event === "register-only"), "and nothing logs a subtraction nobody asked for");
   assert.ok(existsSync(join(res.runDir, "common-law-findings.md")), "the grid member ran");
   const verdict = JSON.parse(readFileSync(driverDir(res.runDir, "verdict.json"), "utf8"));

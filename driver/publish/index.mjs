@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Pure-code publish step for the prelim-driver: takes a finished run's two contract markdown files
+// Pure-code publish step for the clearotron-driver: takes a finished run's two contract markdown files
 // (report.md + audit.md, written by the report-synthesis / audit-emit stages) and renders + writes the
 // delivery artifacts into the pool (`config.poolRoot`, which since has NO default — unset refuses),
 // then regenerates the index.

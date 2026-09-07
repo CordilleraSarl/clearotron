@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// lib/driver.mjs — the SINGLE coupling point to the prelim-driver.
+// lib/driver.mjs — the SINGLE coupling point to the clearotron-driver.
 //
 // Everything the MCP imports from the deterministic driver passes through here, so the dependency surface
 // is one file: if the driver renames an export, this file fails loudly (test-caught), instead of silent

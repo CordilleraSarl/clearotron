@@ -17,7 +17,7 @@ cannot reach any other stage's context, because no stage shares one — and it i
 arranges or can lose. Nothing here spawns a session; sequencing, fan-in and retries are the driver's.
 
 The identical skill is also valid **inline** in ad-hoc chat when a conflict / confusability / enforcer
-question arises outside a prelim run.
+question arises outside a clearotron run.
 
 **Reads** — from the dispatch message (plain markdown, not JSON), for each finding to ground:
 - the proposed mark and the conflicting mark / owner / entity,
@@ -46,7 +46,7 @@ Boards-of-Appeal decisions — no free API today). EUIPO *register* lookups are 
 
 Called by `prelim-search` after synthesis flags the risk-relevant findings (Step 4.5). Also triggers in
 chat when the user raises a trademark conflict, likelihood-of-confusion, or enforcement-history question.
-Gated and optional: if this skill is absent, prelim skips Step 4.5 and delivers normally.
+Gated and optional: if this skill is absent, clearotron skips Step 4.5 and delivers normally.
 
 ## Model
 

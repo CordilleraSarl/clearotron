@@ -23,7 +23,7 @@
 // modules per test and relies on the frozen value).
 //
 // SECURITY — the ids below (agentId / sessionKey / sessionId) are the GATEWAY tool-call context
-// (e.g. "clawdi", "prelim-acme-…"), the per-run attribution. They are NEVER the provider credential
+// (e.g. "clawdi", "clearotron-acme-…"), the per-run attribution. They are NEVER the provider credential
 // (Corsearch's `sessionKey` COOKIE merely shares the name; Clarivate's X-ApiKey; Signa's Bearer token).
 // The ledger is only ever handed `tctx` + response metrics — keep it so.
 //

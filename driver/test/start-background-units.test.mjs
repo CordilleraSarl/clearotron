@@ -63,7 +63,11 @@ test("2148: the client door IS in the background enable set, and its settings ar
 
 test("2083: every shipped unit file is PINNED or EXCLUDED WITH A REASON — a new unit is a decision, not a default", () => {
   const shipped = readdirSync(SYSTEMD).filter((f) => /\.(service|timer|path)$/.test(f));
-  assert.ok(shipped.length >= 10, `only ${shipped.length} unit files found — the walker broke, not the tree`);
+  // FLOOR LOWERED 10 -> 6 BECAUSE THE TREE LOST SIX FILES, not because the walker got weaker. The
+  // retired path-watcher and timer units were deleted by ruling, taking twelve shipped files to six.
+  // The floor's job is unchanged: it catches a walker that returns nothing or a handful, which is the
+  // failure that would make every assertion below vacuously true.
+  assert.ok(shipped.length >= 6, `only ${shipped.length} unit files found — the walker broke, not the tree`);
   const undecided = shipped.filter((f) => !BACKGROUND_UNITS.includes(f) && !(f in BACKGROUND_EXCLUDED));
   assert.deepEqual(undecided, [],
     "shipped unit(s) neither pinned for --background nor excluded with a reason — decide, in the pin or the exclusion table");

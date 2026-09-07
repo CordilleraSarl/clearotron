@@ -19,7 +19,7 @@
 //
 // ── WHY LANES AND NOT PRODUCTS (design ruling,) ───────────────────────────────────
 //
-// The owner names four critical products: Knockout, Global Prelim, Multi Country, Full Country Search.
+// The owner names four critical products: Knockout, Global Clearotron, Multi Country, Full Country Search.
 // An arm asking each of FOUR PRODUCTS to declare a position gets three identical declarations out of one
 // pipeline and one out of knockout — coverage-shaped emptiness, which is the same failure this arm
 // exists to prevent, reproduced inside the fix.

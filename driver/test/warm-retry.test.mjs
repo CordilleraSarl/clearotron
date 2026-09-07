@@ -41,12 +41,12 @@ const calls = () => readFileSync(process.env.MOCK_CLAUDE_CALL_LOG, "utf8").trim(
 // anthropic-agent argv is `claude -p <message> [--resume <session_id>]`. A WARM retry --resumes the winning
 // session (same claude session); a FRESH retry omits --resume (a new session). This replaces the retired gatewayw
 // `--session-key base vs base-rerunN` distinction; the engine-agnostic winning-key logic is unchanged
-// (runStage still returns sessionKey = the winning key, so r.sessionKey stays "prelim-test-base" on a warm win).
+// (runStage still returns sessionKey = the winning key, so r.sessionKey stays "clearotron-test-base" on a warm win).
 const resumed = (c) => (c.argv ?? c).includes("--resume");
 const msgOf = (c) => c.prompt ?? "";
 
 const stage = (over = {}) => runStage("test-stage", {
-  agent: "clawdi", message: "BASE TASK", sessionKey: "prelim-test-base",
+  agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-test-base",
   timeoutSec: 30, expectFile: process.env.MOCK_OUT_FILE, maxRetries: 2, ...over,
 });
 
@@ -55,7 +55,7 @@ test("missing_file with a completed turn → ONE warm retry resuming the SAME se
   const r = await stage();
   assert.equal(r.ok, true);
   assert.equal(r.attempts, 2);
-  assert.equal(r.sessionKey, "prelim-test-base");          // winning key = the resumed base session
+  assert.equal(r.sessionKey, "clearotron-test-base");          // winning key = the resumed base session
   const c = calls();
   assert.equal(c.length, 2);
   assert.equal(resumed(c[0]), false);                      // attempt 1 is fresh (no --resume)
@@ -71,7 +71,7 @@ test("warm-allowlisted invalid_file (use_check_missing) → warm patch fixes it 
   const r = await stage({ validate });
   assert.equal(r.ok, true);
   assert.equal(r.attempts, 2);
-  assert.equal(r.sessionKey, "prelim-test-base");
+  assert.equal(r.sessionKey, "clearotron-test-base");
   assert.equal(readFileSync(process.env.MOCK_OUT_FILE, "utf8").trim(), "draft PATCHED");
   assert.equal(resumed(calls()[1]), true);                 // warm patch --resumed the same session
 });

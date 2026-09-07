@@ -40,7 +40,7 @@ const JOB = {
 
 /** A run's workspace root plus the env every lane here shares. Returns { root, run } — `run` imports fresh. */
 function harness(env = {}) {
-  const root = mkdtempSync(join(tmpdir(), "prelim-door-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-door-"));
   for (const k of ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent",
@@ -70,7 +70,7 @@ const runEvents = (runDir) => readFileSync(driverDir(runDir, "run.jsonl"), "utf8
   .trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
 
 test("#819 a SIGNED-OUT engine is refused at the door — before a run directory exists", async () => {
-  const bootstrap = mkdtempSync(join(tmpdir(), "prelim-door-bin-"));
+  const bootstrap = mkdtempSync(join(tmpdir(), "clearotron-door-bin-"));
   const { root, run } = harness({
     // The Claude CLI's own signed-out line on a `-p` run. It exits 1 having spent nothing, and every
     // filesystem check preflightEngineBinary makes passes — which is the entire reason the probe exists.

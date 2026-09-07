@@ -173,7 +173,7 @@ test("arm 6 — the attempt row carries the FORM's sha, and two attempts that mo
   process.env.MOCK_FORM_SIBLING = join(dir, SIB);
   process.env.MOCK_FORM_STEPS = JSON.stringify([formWith(1), formWith(3)]);
   const r = await runStage("test-stage", {
-    agent: "clawdi", message: "BASE TASK", sessionKey: "prelim-graded-1",
+    agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-graded-1",
     timeoutSec: 30, maxRetries: 2, runDir: dir, expectFile: s.expectFile, validate: s.validate,
   });
   assert.equal(r.ok, true, "attempt 2 rules every row");
@@ -195,7 +195,7 @@ test("arm 7 — the refusal the seat is handed names the form", async () => {
   process.env.MOCK_FORM_SIBLING = join(dir, SIB);
   process.env.MOCK_FORM_STEPS = JSON.stringify([formWith(0), formWith(0), formWith(0)]);
   const r = await runStage("test-stage", {
-    agent: "clawdi", message: "BASE TASK", sessionKey: "prelim-graded-2",
+    agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-graded-2",
     timeoutSec: 30, maxRetries: 2, runDir: dir, expectFile: s.expectFile, validate: s.validate,
   });
   assert.equal(r.ok, false);
@@ -229,7 +229,7 @@ test("arm 9 — the repair anchor did NOT move: `file` is still the stage's own 
   process.env.MOCK_FORM_SIBLING = join(dir, SIB);
   process.env.MOCK_FORM_STEPS = JSON.stringify([formWith(1), formWith(2), formWith(3)]);
   await runStage("test-stage", {
-    agent: "clawdi", message: "BASE TASK", sessionKey: "prelim-graded-3",
+    agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-graded-3",
     timeoutSec: 30, maxRetries: 2, runDir: dir, expectFile: s.expectFile, validate: s.validate,
   });
   const rows = stageRows().filter((x) => x.attempt);
@@ -251,7 +251,7 @@ test("arm 11 — a stage that owns no form records none, rather than echoing its
   delete process.env.MOCK_FORM_SIBLING;
   process.env.MOCK_FORM_STEPS = JSON.stringify(["still wrong", "still wrong", "still wrong"]);
   const r = await runStage("test-stage", {
-    agent: "clawdi", message: "BASE TASK", sessionKey: "prelim-graded-4",
+    agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-graded-4",
     timeoutSec: 30, maxRetries: 1, runDir: dir, expectFile: out,
     validate: () => ({ ok: false, reason: "platforms_missing:etsy" }),
   });

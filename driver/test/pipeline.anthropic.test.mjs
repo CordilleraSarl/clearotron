@@ -35,7 +35,7 @@ const JOB = {
 };
 
 async function runAnthropicPipeline(env = {}) {
-  const root = mkdtempSync(join(tmpdir(), "prelim-anth-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-anth-"));
   const claudeLog = join(root, "claude-calls.jsonl");
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_LEDGER_LIMITED", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP"]) delete process.env[k];
   for (const [k, v] of Object.entries({
@@ -205,7 +205,7 @@ test("E2: full pipeline runs on the anthropic-agent engine (CLEAR, delivered, al
   assert.match(packet.subject, /^Global preliminary search — PROJECT NOVAPULSE$/);
   assert.doesNotMatch(packet.subject, /Preliminary clearance/, "the retired literal is gone from the wire");
   assert.ok(packet.emailBodyHtml && packet.emailBodyHtml.length > 0, "email body embedded for clawdi");
-  assert.match(packet.whatsappText, /Prelim search for PROJECT NOVAPULSE.*is done\. Report:/);
+  assert.match(packet.whatsappText, /Clearotron search for PROJECT NOVAPULSE.*is done\. Report:/);
   // THE NOTICE IS ADDRESSED TO WHOEVER ASKED (tracker issue 289). This arm asserted
   // `whatsappTo === "+10000000001"` — the AGENT's number from the demo roster — which is precisely the
   // defect: every user of a deployment shares one agent id, so the operator was paged for work somebody

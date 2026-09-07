@@ -28,7 +28,7 @@ import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const read = (rel) => readFileSync(join(ROOT, rel), "utf8");
-const note = (body, fm = '"prelim-driver": patch') => `---\n${fm}\n---\n\n${body}\n`;
+const note = (body, fm = '"clearotron-driver": patch') => `---\n${fm}\n---\n\n${body}\n`;
 const offences = (body, fm) => findings(note(body, fm)).map((f) => f.offending);
 
 test("tracker 97 every release note in the tree is written for a reader who has never opened this repository", () => {
@@ -69,7 +69,7 @@ test("tracker 97 every release note in the tree is written for a reader who has 
       const heading = /^### (.+)$/.exec(line);
       if (heading) { group = heading[1].trim(); continue; }
       assert.ok(group, `a changelog bullet sits under no group heading: ${line.slice(0, 60)}`);
-      const asNote = `---\n"prelim-driver": patch\n---\n\n${group}: ${line.replace(/^- /, "")}\n`;
+      const asNote = `---\n"clearotron-driver": patch\n---\n\n${group}: ${line.replace(/^- /, "")}\n`;
       for (const f of findings(asNote, { file: `CHANGELOG.md (${version})` })) {
         bad.push(`CHANGELOG.md ${version}: ${f.rule}\n    ${f.offending}`);
       }

@@ -7,8 +7,8 @@
 // because it is workspace-aware and this repository has four workspaces. It is, and it does not cover
 // the case that matters: `changeset version` versions the WORKSPACE packages and leaves the ROOT
 // package alone, and the root package is `clearotron` — the one thing a user installs and the only
-// version they will ever quote back to us. Measured on 3.0.1: a note against `prelim-driver` moved
-// prelim-driver 0.1.0 -> 0.1.1 and left `clearotron` at 0.1.0, with a changelog written per workspace
+// version they will ever quote back to us. Measured on 3.0.1: a note against `clearotron-driver` moved
+// clearotron-driver 0.1.0 -> 0.1.1 and left `clearotron` at 0.1.0, with a changelog written per workspace
 // and none at the root.
 //
 // So the four workspaces are a `fixed` group — one version number moves them together — and this script

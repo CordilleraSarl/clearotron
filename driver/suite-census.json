@@ -40,8 +40,8 @@
           "todos": 0
         },
         "a-bare-reference-added-in-a-diff-is-refused.test.mjs": {
-          "tests": 14,
-          "asserts": 27,
+          "tests": 15,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -1439,7 +1439,7 @@
         },
         "deployment-hostnames.test.mjs": {
           "tests": 13,
-          "asserts": 36,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
@@ -1605,7 +1605,7 @@
           "skips": 0,
           "todos": 0
         },
-        "doctor-reports-the-doctrine-overlay.test.mjs": {
+        "doctor-reports-the-custom-instructions.test.mjs": {
           "tests": 6,
           "asserts": 12,
           "skips": 1,
@@ -2590,8 +2590,8 @@
           "todos": 0
         },
         "outbox-backoff.test.mjs": {
-          "tests": 17,
-          "asserts": 65,
+          "tests": 16,
+          "asserts": 61,
           "skips": 0,
           "todos": 0
         },
@@ -3016,8 +3016,8 @@
           "todos": 0
         },
         "queue-watch-verdict.test.mjs": {
-          "tests": 20,
-          "asserts": 52,
+          "tests": 19,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },
@@ -3445,12 +3445,6 @@
           "tests": 12,
           "asserts": 17,
           "skips": 1,
-          "todos": 0
-        },
-        "retired-env-spellings.test.mjs": {
-          "tests": 6,
-          "asserts": 15,
-          "skips": 0,
           "todos": 0
         },
         "retired-envelope-is-not-an-absent-value.test.mjs": {
@@ -4318,8 +4312,8 @@
           "todos": 0
         },
         "the-inventory-names-the-units-this-box-runs.test.mjs": {
-          "tests": 9,
-          "asserts": 21,
+          "tests": 11,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },

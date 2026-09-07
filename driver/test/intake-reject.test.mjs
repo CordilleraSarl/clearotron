@@ -26,7 +26,7 @@ process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 
 test("HANDOFF (default): intake rejects park + write outbox packets with ZERO gateway; refless job runs", async () => {
-  const root = mkdtempSync(join(tmpdir(), "prelim-intake-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-intake-"));
   const outbox = join(root, "outbox");
   for (const [k, v] of Object.entries({
     // The headless-product proof: THERE IS NO GATEWAY BINARY TO POINT AT. The runner must not preflight
@@ -90,8 +90,8 @@ test("HANDOFF (default): intake rejects park + write outbox packets with ZERO ga
     assert.ok(Array.isArray(packet.errors) && packet.errors.length, "packet carries the validator errors");
     assert.match(packet.text, /Nothing has been searched or delivered/);
     // markless/unparseable jobs have no mark name → the text must name the queue file, never a boolean
-    // leaked from a fallback chain (`Prelim request "false"` — the review-confirmed && / ?? footgun).
-    assert.match(packet.text, new RegExp(`Prelim request "${base}"`));
+    // leaked from a fallback chain (`Clearotron request "false"` — the review-confirmed && / ?? footgun).
+    assert.match(packet.text, new RegExp(`Clearotron request "${base}"`));
     assert.ok(!existsSync(`${p}.tmp`), "atomic publish — no tmp residue");
   }
   assert.equal(JSON.parse(readFileSync(join(outbox, "intake-job-broken.failed.pending"), "utf8")).classify, "reject");

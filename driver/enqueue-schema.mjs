@@ -983,7 +983,7 @@ export const EXAMPLE_JOB = {
   // deliveryRoute: "portal",           // OPTIONAL: "email" (default) or "portal" — a portal-route packet
                                         // is mark_sent by the courier WITHOUT an email send.
   // parentRunId: "novapulse-cedar",    // OPTIONAL escalation lineage: the run this one escalates from
-                                        // (e.g. a knockout HIGH mark → this prelim). Recorded, not yet resolved.
+                                        // (e.g. a knockout HIGH mark → this clearotron). Recorded, not yet resolved.
   projectKey: "console-ecosystem",      // spec 62 (OPTIONAL): the PROJECT/engagement under the customer whose
                                         // overlay (its own marketplaces/classes/sector/posture) rates this
                                         // matter; omit ⇒ runs on the customer profile. Unknown key ⇒ clarify.

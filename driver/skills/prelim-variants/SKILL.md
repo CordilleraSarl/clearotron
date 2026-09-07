@@ -1,6 +1,6 @@
 ---
 name: prelim-variants
-description: Shared strategy + variant generation for the v3 preliminary trademark search workflow. **Invoked exclusively by the `prelim-search` orchestrator** as the first stage of any v3 prelim run — do not call directly. Classifies the proposed mark into one of six analytical archetypes, derives a risk theory from that classification, then generates the variant set whose axes are shaped by the archetype. Emits a markdown variant manifest consumed by both common-law (`prelim-common-law`) and register (`prelim-register`) execution skills.
+description: Shared strategy + variant generation for the v3 preliminary trademark search workflow. **Invoked exclusively by the `prelim-search` orchestrator** as the first stage of any v3 clearotron run — do not call directly. Classifies the proposed mark into one of six analytical archetypes, derives a risk theory from that classification, then generates the variant set whose axes are shaped by the archetype. Emits a markdown variant manifest consumed by both common-law (`prelim-common-law`) and register (`prelim-register`) execution skills.
 ---
 
 ## Contents
@@ -27,7 +27,7 @@ Companion files:
 
 ## Trigger
 
-Called by `prelim-search` at the start of any prelim run. Not invoked directly.
+Called by `prelim-search` at the start of any clearotron run. Not invoked directly.
 
 ## Model
 

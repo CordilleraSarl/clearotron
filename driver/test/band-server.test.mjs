@@ -65,7 +65,7 @@ function seedRun() {
   writeFileSync(join(runDir, "_records", "us-90000001.json"), JSON.stringify({ record_id: "/mark/us/90000001", status: "Valid", officialGazette: "synthetic" }, null, 2));
   return runDir;
 }
-const ENV = (runDir) => ({ CLEAROTRON_BAND_RUN_DIR: runDir, CLEAROTRON_GATHER_SESSION_KEY: "prelim-x-y-register-digest", CLEAROTRON_GATHER_AGENT: "clawdi" });
+const ENV = (runDir) => ({ CLEAROTRON_BAND_RUN_DIR: runDir, CLEAROTRON_GATHER_SESSION_KEY: "clearotron-x-y-register-digest", CLEAROTRON_GATHER_AGENT: "clawdi" });
 const readLog = (runDir) => existsSync(driverDir(runDir, "reading-log.jsonl"))
   ? readFileSync(driverDir(runDir, "reading-log.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l)) : [];
 
@@ -78,7 +78,7 @@ test("band_shape: serves the md whole (default) and the json on request; both lo
   assert.equal(shape.totals.records, 3);
   const log = readLog(runDir);
   assert.equal(log.filter((l) => l.tool === "band_shape").length, 2, "EVERY lookup lands in the reading log");
-  assert.equal(log[0].session, "prelim-x-y-register-digest", "attribution rides the log");
+  assert.equal(log[0].session, "clearotron-x-y-register-digest", "attribution rides the log");
   assert.equal(log[0].agent, "clawdi");
 });
 

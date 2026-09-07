@@ -48,7 +48,7 @@ const ago = (m) => new Date(now - m * 60_000).toISOString()
 const run = (o) => ({
   runId: o.runId, account: o.account ?? 'zephyr', title: o.mark, markName: o.mark,
   projectKey: o.projectKey ?? null, projectName: o.projectName ?? null,
-  // `product` is meta.searchLevel off the wire, and it holds a PRODUCT ID. The fixtures said `prelim`
+  // `product` is meta.searchLevel off the wire, and it holds a PRODUCT ID. The fixtures said `clearotron`
   // — a RETIRED slug — for every state, so this check could not see that depthLabel had no case for any
   // current product and the chip rendered EMPTY on every run the build creates. A fixture that speaks a
   // vocabulary the build no longer produces certifies the bug.

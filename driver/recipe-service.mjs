@@ -168,7 +168,7 @@ export function makeRecipeService({
     // the "reported outcome diverges from disk truth" class).
     if (!v.ok) return { status: 400, json: { error: "validation_failed", errors: v.errors } };
     const { files } = writeRecipe({ recipesDir, customer, slug, recipe: effective });
-    const message = `chore(prelim): ${existing ? (effective.archived && !existing.archived ? "archive" : "update") : "create"} saved search ${customer}/${slug} (via config UI, by ${by})`;
+    const message = `chore(clearotron): ${existing ? (effective.archived && !existing.archived ? "archive" : "update") : "create"} saved search ${customer}/${slug} (via config UI, by ${by})`;
     // — the row rides IN the commit, so it no longer names a sha. shared/store-in-repo.mjs says why.
     const { commit, commitError } = commitWithAuditRow({ audit, gitCommit, files, message, by,
       row: { event: existing ? "recipe-update" : "recipe-create", key: `${customer}/${slug}`, by,

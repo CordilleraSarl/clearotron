@@ -13,7 +13,7 @@ import { proposeSupplemental } from "./supplemental.mjs";
 const COOKIE = process.env.CORSEARCH_SESSION_KEY || "";
 const tctx = (kind) => ({
   kind,
-  agentId: process.env.CLEAROTRON_GATHER_AGENT || "clawdi",
+  agentId: process.env.CLEAROTRON_GATHER_AGENT || "localagent",
   sessionKey: process.env.CLEAROTRON_GATHER_SESSION_KEY || "",   // run session key — telemetry attribution
   sessionId: process.env.CLEAROTRON_GATHER_SESSION_ID || "",
 });

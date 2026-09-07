@@ -55,7 +55,7 @@ const MOCK_KNOBS = ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MO
   "MOCK_REVIEW_BLOCKS_AFTER_VERDICT", "MOCK_NARRATIVE_OVER_CAP"];
 
 async function runPipeline(env, jobPatch = {}, opts = {}) {
-  const root = tempDir("prelim-mock-adc-");
+  const root = tempDir("clearotron-mock-adc-");
   for (const k of MOCK_KNOBS) delete process.env[k];
   for (const [k, v] of Object.entries({ CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "clawdi", ...env })) pinEnv(process.env, k, v);
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);

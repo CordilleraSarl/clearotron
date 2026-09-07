@@ -12,7 +12,7 @@ import { tallyRegisterCalls, KINDS } from "../provider-usage.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
-const RUN = "prelim-acme-bluejay-";
+const RUN = "clearotron-acme-bluejay-";
 
 // Write the given ledger rows (objects, one per line) to a fresh temp file and tally THIS run.
 function tallyRows(rows, prefix = RUN) {
@@ -44,7 +44,7 @@ test("tallies per-tool counts, total, and bytes for the matching run only", () =
     row({ tool: "image", target: "/x.png", bytes: 500 }),
     row({ tool: "phoneme", target: "nike|en_US", bytes: 200 }),
     // a DIFFERENT run — must be excluded
-    row({ tool: "search", sessionKey: "prelim-other-run-primary-sweep", bytes: 99999 }),
+    row({ tool: "search", sessionKey: "clearotron-other-run-primary-sweep", bytes: 99999 }),
   ]);
   assert.equal(t.total, 5);
   assert.equal(t.search, 1);
@@ -100,7 +100,7 @@ test("matches the run on sessionId when sessionKey is absent", () => {
 test("tolerates a torn/partial concurrent-append line (skips it, keeps going)", () => {
   const t = tallyRows([
     JSON.stringify(row({ tool: "search" })),
-    '{"tool":"record_fetch","sessionKey":"prelim-acme-bluejay-x","target":"/m/1",',  // torn line — no closing brace
+    '{"tool":"record_fetch","sessionKey":"clearotron-acme-bluejay-x","target":"/m/1",',  // torn line — no closing brace
     JSON.stringify(row({ tool: "record_fetch", target: "/m/9" })),
   ]);
   assert.equal(t.total, 2);          // the two valid lines
@@ -117,14 +117,14 @@ test("rerun suffixes still attribute to the run (prefix match covers -rerunN)", 
   assert.equal(t.search, 3);
 });
 
-test("attributes gateway-namespaced sessionKeys: agent:<id>:prelim-… (the live format)", () => {
+test("attributes gateway-namespaced sessionKeys: agent:<id>:clearotron-… (the live format)", () => {
   // The gateway prepends `agent:<agentId>:` to the driver's --session-key before it reaches the plugin;
   // a bare startsWith("prelim-…") would miss all of these. This is the exact shape seen on the first live run.
   const t = tallyRows([
     { ts: "t", sessionKey: `agent:clawdi:${RUN}register-unit-primary-sweep`,            sessionId: "uuid-a", tool: "search",       ok: true, attempts: 1, bytes: 10, cache_hit: false },
     { ts: "t", sessionKey: `agent:clawdi:${RUN}register-unit-transliteration-numeric`,  sessionId: "uuid-b", tool: "record_fetch", target: "/m/1", ok: true, attempts: 1, bytes: 20, cache_hit: false },
     // a DIFFERENT run, also namespaced — must be excluded
-    { ts: "t", sessionKey: "agent:clawdi:prelim-other-run-primary-sweep",               sessionId: "uuid-c", tool: "search",       ok: true, attempts: 1, bytes: 5,  cache_hit: false },
+    { ts: "t", sessionKey: "agent:clawdi:clearotron-other-run-primary-sweep",               sessionId: "uuid-c", tool: "search",       ok: true, attempts: 1, bytes: 5,  cache_hit: false },
   ]);
   assert.equal(t.total, 2);
   assert.equal(t.search, 1);
@@ -200,7 +200,7 @@ test("AUDIT #172/4 — a MISSING ledger file is distinguishable from a run that 
   assert.doesNotMatch(JSON.stringify(missing), /\//, "no path fragment anywhere on the tally");
 
   // the same zeros, honestly earned: the ledger was READ and carried traffic, none of it this run's
-  const empty = tallyRows([row({ tool: "search", sessionKey: "prelim-other-run-primary-sweep" })]);
+  const empty = tallyRows([row({ tool: "search", sessionKey: "clearotron-other-run-primary-sweep" })]);
   assert.equal(empty.total, 0, "same total…");
   assert.equal(empty.ledger.present, true, "…utterly different provenance");
   assert.equal(empty.ledger.readable, true);
@@ -211,7 +211,7 @@ test("AUDIT #172/4 — a real tally reports how many ledger rows it actually sca
   const t = tallyRows([
     row({ tool: "execute_plan" }),
     row({ tool: "execute_plan" }),
-    row({ tool: "search", sessionKey: "prelim-other-run-x" }),   // scanned, not attributed
+    row({ tool: "search", sessionKey: "clearotron-other-run-x" }),   // scanned, not attributed
   ]);
   assert.equal(t.total, 2, "only this run's rows are tallied");
   assert.equal(t.execute_plan, 2, "the R2 shape: the whole register workload under one kind");

@@ -114,7 +114,7 @@ test("recurrence: render names the recurring class, its runs and the all-clear",
   assert.match(text, /1 run\s+synthesis\|.*— novapulse-2026-07-08-teal-keystone/);
 
   const empty = renderFailureRecurrence(aggregateFailureRecurrence({ enumerate: () => [], now: NOW, days: 7 }));
-  assert.match(empty, /No prelim failures or auto-recovery parks in the last 7 days\./);
+  assert.match(empty, /No clearotron failures or auto-recovery parks in the last 7 days\./);
 });
 
 test("recurrence: an all-quiet window over healthy runs is empty (delivered runs contribute nothing)", () => {
@@ -133,7 +133,7 @@ test("recurrence: an all-quiet window over healthy runs is empty (delivered runs
 // status therefore splits the SAME defect into separate groups — the .failed sentinel (sig
 // verbatim + untruncated reason) must be consulted first.
 const STACK_REASON = [
-  "Error: ENOENT: no such file or directory, open '/srv/agentplatform/workspace-clawdi/prelim/tmp8729/2026-07-05-open-country/_driver/register-plan.json'",
+  "Error: ENOENT: no such file or directory, open '/srv/agentplatform/workspace-clawdi/clearotron/tmp8729/2026-07-05-open-country/_driver/register-plan.json'",
   "    at Object.openSync (node:fs:596:3)",
   "    at readFileSync (node:fs:464:35)",
   "    at planRegisterSweeps (file://%h/trademark-clearance/driver/pipeline.mjs:2103:19)",

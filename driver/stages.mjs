@@ -336,7 +336,7 @@ export const AGENT_WHATSAPP = (() => {
     const m = JSON.parse(process.env.CLEAROTRON_AGENT_WHATSAPP || "");
     if (m && typeof m === "object" && !Array.isArray(m)) return m;
   } catch { /* fall through to the demo roster */ }
-  return { clawdi: "+10000000001", "clawdi-alex": "+10000000002", "clawdi-sam": "+10000000003" };
+  return { localagent: "+10000000001", clawdi: "+10000000001", "clawdi-alex": "+10000000002", "clawdi-sam": "+10000000003" };
 })();
 
 

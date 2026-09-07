@@ -21,7 +21,14 @@ import {
 } from "../../scripts/drain-preflight.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const OUTBOX_UNIT = readFileSync(join(ROOT, "driver", "systemd", "prelim-outbox.path"), "utf8");
+// THE SHIPPED `.path` UNIT THIS FILE USED TO READ IS GONE. The path-watcher/timer drain posture is
+// retired (ruled 2026-08-26, restated 08-31) — the built-in worker is the product's drain — so no
+// `.path` unit ships and an arm demanding one asserts the retired posture back into existence. What is
+// still worth pinning is the READER and the COMPARISON, so the arms below hand `watchedQueueDirs` the
+// same `PathExistsGlob=` line a watcher would carry, in the idiom the first arm already uses.
+// Verbatim the glob the retired unit carried, kept because the disagreement it produced against
+// `config.outboxDir` is the exact drift these arms exist to report.
+const OUTBOX_GLOB = "PathExistsGlob=%h/.openclaw/prelim-outbox/*.pending";
 
 test("THE GLOB STRIP IS EXTENSION-AGNOSTIC — the bug pointing the reader at a second unit found", () => {
   // The queue watcher globs `*.json`; the outbox watcher globs `*.pending`. A `/\*\.json$/` strip left
@@ -32,8 +39,8 @@ test("THE GLOB STRIP IS EXTENSION-AGNOSTIC — the bug pointing the reader at a 
   assert.deepEqual(watchedQueueDirs("PathExistsGlob=%h/y/*.json", "/srv/testhome"), ["/srv/testhome/y"]);
 });
 
-test("the shipped outbox unit resolves to one directory", () => {
-  const watched = watchedQueueDirs(OUTBOX_UNIT, "/srv/testhome");
+test("an outbox watch resolves to one directory, never a pattern", () => {
+  const watched = watchedQueueDirs(OUTBOX_GLOB, "/srv/testhome");
   assert.equal(watched.length, 1, `expected one watch, got ${JSON.stringify(watched)}`);
   assert.ok(!watched[0].includes("*"), "and it is a directory, not a pattern");
 });
@@ -41,14 +48,14 @@ test("the shipped outbox unit resolves to one directory", () => {
 test("A DISAGREEMENT IS REPORTED FROM BOTH SIDES", () => {
   // Unwatched outbox: markers land where nothing looks — delivery falls to the 55-minute heartbeat.
   // A watch on nothing: dead config, and the tell that the unit and the deployment have drifted.
-  const watched = watchedQueueDirs(OUTBOX_UNIT, "/srv/testhome");
+  const watched = watchedQueueDirs(OUTBOX_GLOB, "/srv/testhome");
   const r = compareWatches(["/srv/testhome/trademark/workspace/prelim-outbox"], watched);
   assert.deepEqual(r.unwatched, ["/srv/testhome/trademark/workspace/prelim-outbox"]);
   assert.equal(r.watchesNothing.length, 1, "and the watch that points at nothing is named too");
 });
 
 test("agreement reports nothing", () => {
-  const watched = watchedQueueDirs(OUTBOX_UNIT, "/srv/testhome");
+  const watched = watchedQueueDirs(OUTBOX_GLOB, "/srv/testhome");
   assert.deepEqual(compareWatches(watched, watched).unwatched, []);
 });
 

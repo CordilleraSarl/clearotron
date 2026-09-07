@@ -27,7 +27,7 @@ import { isDispatchRow, dispatchRows, cyclesOf, failKind, seatSummary, driverDir
 
 // A dispatch row, trimmed to the fields this instrument reads.
 const row = (attempt, extra = {}) => ({
-  ts: "2026-01-01T00:00:00.000Z", attempt, key: "prelim-matter-codename-stage",
+  ts: "2026-01-01T00:00:00.000Z", attempt, key: "clearotron-matter-codename-stage",
   agent: "test", status: "ok", code: 0, wall: 1.0, fail: null, ...extra,
 });
 
@@ -38,7 +38,7 @@ test("the four non-seat row shapes in _driver/ are NOT dispatch rows", () => {
   // one example run would contribute 2,678 phantom dispatches against 96 true ones.
   const notSeats = [
     { ts: "…", seam: "placement", stage: "placement-inquiry", trigger: null, pass: 1, uri: "/mark/xx/abc" },
-    { ts: "…", provider: "someprovider", agentId: "test", sessionKey: "prelim-x", body: "…", target: "…" },
+    { ts: "…", provider: "someprovider", agentId: "test", sessionKey: "clearotron-x", body: "…", target: "…" },
     { ts: "…", event: "started", seq: 1, server: "someserver", tool: "some_tool" },
     { ts: "…", detail: "…", pass: 1, reason: "…", reason_source: "step-stated", seam: "x", stage: "y" },
   ];

@@ -1,5 +1,5 @@
 ---
-"prelim-driver": patch
+"clearotron-driver": patch
 ---
 
 Fixed: The link in your completion email and message now opens the report. It previously pointed at a path the site does not serve, so it led to a sign-in and then a dead page. This affected every delivered report on both search products, in the email, the chat notice and the assistant's own answer. The workbook link in the same email was always correct and is unchanged.

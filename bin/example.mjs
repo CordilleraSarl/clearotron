@@ -184,7 +184,7 @@ const demoBase = resolve(flag("--base") ?? join(homedir(), "trademark-demo"));
 if (flag("--pool") && !has("--once")) die(
   "demo: --pool is for --once, which publishes and exits.",
   "",
-  "The demo serves the portal's own archive, which lives inside its base directory, so a pool chosen",
+  "The demo serves the portal's own archive, which lives inside its base directory, so a reports folder chosen",
   "somewhere else would be published to and never served. Move the whole demo instead:",
   `  ${invoke("demo")} --base <dir>`,
 );
@@ -221,7 +221,7 @@ console.log(`\n  ${BRAND.name} ${BRAND.product.toLowerCase()} — demo\n`);
 console.log(samples.length === 1
   ? `  sample:  ${samples[0].dir}`
   : `  samples: ${samples.length} — ${samples.map((x) => x.name).join(", ")}`);
-console.log(`  pool:    ${poolRoot}\n`);
+console.log(`  reports folder:  ${poolRoot}\n`);
 
 mkdirSync(poolRoot, { recursive: true });
 const { republishRun } = await import(pathToFileURL(join(REPO, "driver", "publish", "report-registry.mjs")).href);
@@ -278,7 +278,7 @@ console.log("  re-rendered from its artifacts. It is an example, not advice.\n")
 // times.
 const spineOf = (pub) =>
   Number.isFinite(pub.counts?.findings)
-    ? `${pub.counts.findings} finding(s) recorded in the run's audit spine; the report shows
+    ? `${pub.counts.findings} finding(s) recorded in the run's audit trail; the report shows
              the ones it retains`
     : Number.isFinite(pub.receipts?.findings)
       ? `${pub.receipts.findings} finding(s) with citations traced to this run's own held

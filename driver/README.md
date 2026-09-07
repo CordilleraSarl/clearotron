@@ -1,4 +1,4 @@
-# prelim-driver — deterministic driver for the prelim-search trademark workflow
+# clearotron-driver — deterministic driver for the prelim-search trademark workflow
 
 Orchestration in **code**; the LLM does only judgment leaves. Each pipeline stage is **one blocking
 engine turn** (default engine: `anthropic-agent`, shelling `claude -p` per stage); fan-out/fan-in/
@@ -26,7 +26,7 @@ integrator ──job JSON (enqueue CLI / start_run / queue file)──┐
 
 ## Per-agent execution (multi-queue)
 
-A prelim job runs **as the identity that forwarded it** — derived from the queue LOCATION it was
+A clearotron job runs **as the identity that forwarded it** — derived from the queue LOCATION it was
 claimed from (`<workspacePrefix><agentId>/…/queue`, see `driver.config.mjs`), so there is no
 forwarder→agent map to maintain. The run-dir sits in that identity's workspace and the delivery
 packet names that identity as the reply route. **Publishing stays centralized** — `publish/` writes

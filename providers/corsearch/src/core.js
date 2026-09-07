@@ -53,7 +53,7 @@ export const MATCH_MODE_PREFIX = {
 // `provider` discriminator on every row.
 //
 // SECURITY — the ids logged (agentId / sessionKey / sessionId) are the GATEWAY tool-call context
-// (e.g. "clawdi", "prelim-acme-…"), the per-run attribution. They are NOT the Corsearch `sessionKey`
+// (e.g. "clawdi", "clearotron-acme-…"), the per-run attribution. They are NOT the Corsearch `sessionKey`
 // COOKIE (the live credential, which merely shares the name). logCall is only ever handed `tctx`
 // (kind + gateway ids + target) and response metrics — the cookie is never passed in. Keep it so.
 export const { logCall, logRecordBody, tctxOf } = makeLedger("corsearch");

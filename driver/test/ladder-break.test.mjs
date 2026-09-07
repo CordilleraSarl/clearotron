@@ -60,7 +60,7 @@ const preventedRows = () => readFileSync(driverDir(dir, "run.jsonl"), "utf8").tr
   .map((l) => JSON.parse(l)).filter((e) => e.event === "attempt-prevented");
 
 const stage = (over = {}) => runStage("ladder-stage", {
-  agent: "clawdi", message: "BASE TASK", sessionKey: "prelim-ladder-base",
+  agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-ladder-base",
   timeoutSec: 30, expectFile: join(dir, "out.md"), maxRetries: 3, runDir: dir, ...over,
 });
 

@@ -24,7 +24,7 @@
 // Add it here and nowhere else, and only if this product genuinely owns it. A prefix added to let one
 // awkward name through re-opens the gap for every future gather — the cost is not local.
 export const PRODUCT_NAME_PREFIXES = Object.freeze([
-  "PRELIM", "CLEAROTRON", "PORTAL", "TRADEMARK_MCP", "CLIENT_MCP", "CLIENT_ACCESS",
+  "CLEAROTRON", "CLEAROTRON", "PORTAL", "TRADEMARK_MCP", "CLIENT_MCP", "CLIENT_ACCESS",
   "CLIENT_CF", "PROFILE", "RECIPE", "MCP_A",
 ]);
 

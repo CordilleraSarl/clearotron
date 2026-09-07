@@ -13,7 +13,7 @@
 // only systems we are confident of are listed; an UNKNOWN code returns null and every consumer
 // leaves it UNLABELED — the system never guesses a legal system. ("Hybrid" realities — e.g. the
 // UK's registration system alongside passing-off rights — are classified by where unregistered
-// USE can defeat/coexist with a later registration, the property the prelim actually acts on.)
+// USE can defeat/coexist with a later registration, the property the clearotron actually acts on.)
 //
 // PURE (no node imports) → tests offline.
 

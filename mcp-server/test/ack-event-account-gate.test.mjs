@@ -111,7 +111,7 @@ test("fail closed: an UNTAGGED run, an unresolvable runId, and an unreadable pac
   const intake = "intake-badjob.failed.pending";
   writeFileSync(join(OUTBOX, intake), JSON.stringify({
     kind: "intake-rejected", classify: "clarify", base: "badjob", forwarder: "jordan",
-    errors: ["missing mark name(s)"], text: "⚠️ Prelim request ...",
+    errors: ["missing mark name(s)"], text: "⚠️ Clearotron request ...",
   }));
   assert.deepEqual(ackEvent({ file: intake }, { scope: SCOPED }), ABSENT(intake));
   assert.equal(existsSync(join(OUTBOX, intake)), true, "an account-less event is full-grant-only, not free-for-all");

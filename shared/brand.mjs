@@ -154,7 +154,7 @@ export const PALETTE = {
 
 // — THE DARK COUNTERPART. Until this landed, every dark value in the product was a literal typed
 // into whichever block needed it, and the two server-rendered door pages (sign-in, refusal) had guessed
-// their own set — a THIRD ground, tracker issue 17150f, against the brand pack's #0f0e0c.
+// their own set — a THIRD ground, #17150f, against the brand pack's #0f0e0c.
 //
 // The two entries the brand pack fixes are marked; the rest have no pack entry and are the values the
 // warm surfaces already shipped, kept as-is. `cream` has no dark twin by name because a dark ground is
@@ -164,7 +164,7 @@ export const PALETTE_DARK = {
   ground:     '#0f0e0c',              // brand pack §01 "Dark BG" — near-black. Supersedes the doors' #17150f
   ink:        '#f0e8d8',              // brand pack §01 "Parchment" — dark text / mark. Supersedes #ece5d8
   // The three locked crimsons, lifted for the dark ground. `crimson` itself is NOT here: it is a FILL
-  // (badges, the accent) and keeps tracker issue 860F09 in both schemes. Crimson as TEXT is what needs lifting, and
+  // (badges, the accent) and keeps #860F09 in both schemes. Crimson as TEXT is what needs lifting, and
   // that is `crimsonText` — the value the warm and report dark blocks already applied to links.
   crimsonDeep: '#6a0a13',
   crimsonMid:  '#c47f7a',
@@ -350,7 +350,7 @@ export const REPORT_ROOT =
 
   // Risk ramp — the designer's ramp from the portal redesign. It is a BAND family
   // of its own: --high is deliberately NOT --accent any more (the shipped --high was byte-identical to
-  // tracker issue 860F09, so a High risk dot read as a Start button and needed a ring workaround). --accent /
+  // #860F09, so a High risk dot read as a Start button and needed a ring workaround). --accent /
   // --crimson / --maroon above are untouched. The gauge's stop order is clear→low→med→high→severe.
   `--clear:#5F8A64; --low:#8A9440; --med:#C8871B; --high:#B23A2E; --severe:#7C1E15;` +
   // Soft/text pairs: re-derived from the five bases by the rule in shared/tools/derive-band-pairs.mjs (same
@@ -374,12 +374,12 @@ export const REPORT_ROOT =
 //   • *_EXPLICIT variants                         — the `[data-theme="dark"]` block ONLY, no `@media` —
 //     CUSTOMER-facing surfaces (the per-customer index): first view is ALWAYS light; dark only by
 //     the visitor's explicit toggle. The @media string must never appear in client output (tests pin this).
-// Crimson discipline: `--crimson`/`--h-red` KEEP tracker issue 860F09 in dark — they are FILLS (badges, the accent)
-// where white-on-crimson stays high-contrast. `--high` used to be in that list because it WAS tracker issue 860F09;
+// Crimson discipline: `--crimson`/`--h-red` KEEP #860F09 in dark — they are FILLS (badges, the accent)
+// where white-on-crimson stays high-contrast. `--high` used to be in that list because it WAS #860F09;
 // since the 2026-07-19 ramp recolor it is a band token (#B23A2E) and lightens with the rest of the band
 // family. Crimson TEXT uses (links, summaries, the wordmark)
 // are recolored to a lightened #e0736b by SCOPED rules inside the dark block only — zero light-side edits.
-// Every dark hex avoids the BLUE_SKIN regex /#3b4fd6|tracker issue 11132a|#f5f6f9|#1a1a2e/i (note #1b1714 ≠ #1a1a2e).
+// Every dark hex avoids the BLUE_SKIN regex /#3b4fd6|#11132a|#f5f6f9|#1a1a2e/i (note #1b1714 ≠ #1a1a2e).
 //
 // Inside the @media branch, override RULES are prefixed `html:not([data-theme="light"])` (not `:root:not`)
 // on purpose: `:root` would add a full class-level of specificity and out-rank sibling base rules like
@@ -427,7 +427,7 @@ const WARM_DARK_RULES = [
 ];
 
 // Report dark tokens (token-for-token against REPORT_ROOT; --font/--mono unchanged). --crimson keeps
-// tracker issue 860F09 (it is the accent FILL). The risk BANDS are their own family since the 2026-07-19 recolor and
+// #860F09 (it is the accent FILL). The risk BANDS are their own family since the 2026-07-19 recolor and
 // are free to lighten: each is its light base at +11 lightness (severe +10), saturation ×.92 — the same
 // relationship the previous dark ramp used. That relationship is what makes the last stop visible on the
 // dark ramp, and it does so better than before: dark --severe reads 2.70:1 on the page (was 1.74) and
@@ -478,7 +478,7 @@ export const REPORT_ROOT_DARK_EXPLICIT = darkBlock(REPORT_DARK_TOKENS, REPORT_DA
 //
 // WHY IT IS A FAMILY AND NOT A PAGE'S BUSINESS. Both doors are server-rendered by driver/portal-service
 // and each carried its own copy of this block — including a hand-picked dark set that had drifted from
-// the pack (tracker issue 17150f ground, #ece5d8 text) and error colours with no home at all. Two copies of a palette
+// the pack (#17150f ground, #ece5d8 text) and error colours with no home at all. Two copies of a palette
 // is how the light palettes drifted before PALETTE existed.
 //
 // THE GATING IS `[data-theme]` ONLY (, correcting what shipped). The portal's doctrine is

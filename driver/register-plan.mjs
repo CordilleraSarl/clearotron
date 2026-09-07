@@ -2066,7 +2066,7 @@ function undisclosedDeferredQids(skeletonAxis, text) {
  * WHY THIS AND NOT A LOUDER HINT. The doctrine already reached the stage as advice on the first dispatch
  * (deferredSlicesRequiredRows, formerly the A8 "hint") and the stage claimed clean anyway, then complied
  * the moment the identical fact came back as a validator failure — R1 681s→202s, R2 515s→77s, every
- * prelim run that reaches the digest. A fact that is obeyed as a failure and ignored as an input is not
+ * clearotron run that reaches the digest. A fact that is obeyed as a failure and ignored as an input is not
  * being said too quietly; it is being offered rather than required. So it is required here.
  *
  * DELIBERATELY A SUPERSET of the deferred branch below, and the older gate is kept rather than folded

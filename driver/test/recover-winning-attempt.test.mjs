@@ -18,7 +18,7 @@ import { recoverWinningAttempt } from "../pipeline.mjs";
 const LABEL = "register-unit:saturation-probe";
 
 function runDirWith(rows) {
-  const dir = mkdtempSync(join(tmpdir(), "prelim-rwa-"));
+  const dir = mkdtempSync(join(tmpdir(), "clearotron-rwa-"));
   mkdirSync(driverDir(dir), { recursive: true });
   writeFileSync(driverDir(dir, `${LABEL}.jsonl`), rows.map((r) => JSON.stringify(r)).join("\n") + "\n");
   return dir;
@@ -26,15 +26,15 @@ function runDirWith(rows) {
 
 test("a model-side winner recovers its key + served model (the warm-resume contract)", () => {
   const dir = runDirWith([
-    { attempt: 1, key: "prelim-x-unit", model: "anthropic/claude-opus-5", modelUsed: "anthropic/claude-opus-5", fail: "timeout" },
-    { attempt: 2, key: "prelim-x-unit-fb1", model: "anthropic/claude-opus-5", modelUsed: "anthropic/claude-sonnet-5", fail: null },
+    { attempt: 1, key: "clearotron-x-unit", model: "anthropic/claude-opus-5", modelUsed: "anthropic/claude-opus-5", fail: "timeout" },
+    { attempt: 2, key: "clearotron-x-unit-fb1", model: "anthropic/claude-opus-5", modelUsed: "anthropic/claude-sonnet-5", fail: null },
   ]);
-  assert.deepEqual(recoverWinningAttempt(dir, LABEL), { key: "prelim-x-unit-fb1", model: "anthropic/claude-sonnet-5" });
+  assert.deepEqual(recoverWinningAttempt(dir, LABEL), { key: "clearotron-x-unit-fb1", model: "anthropic/claude-sonnet-5" });
 });
 
 test("a code-side winner recovers key:null — its minted string was never a model session", () => {
   const dir = runDirWith([
-    { attempt: 1, key: "prelim-x-register-unit-saturation-probe", model: "code", modelUsed: "code:execute-plan", fail: null },
+    { attempt: 1, key: "clearotron-x-register-unit-saturation-probe", model: "code", modelUsed: "code:execute-plan", fail: null },
   ]);
   const won = recoverWinningAttempt(dir, LABEL);
   assert.equal(won.key, null, "the phantom key must not reach the warm escalation lane");
@@ -42,14 +42,14 @@ test("a code-side winner recovers key:null — its minted string was never a mod
 });
 
 test("no telemetry at all → null (caller defaults)", () => {
-  const dir = mkdtempSync(join(tmpdir(), "prelim-rwa-"));
+  const dir = mkdtempSync(join(tmpdir(), "clearotron-rwa-"));
   assert.equal(recoverWinningAttempt(dir, LABEL), null);
 });
 
 test("failed rows after the win are skipped — the last SUCCESS is the winner", () => {
   const dir = runDirWith([
-    { attempt: 1, key: "prelim-x-unit", modelUsed: "anthropic/claude-opus-5", fail: null },
-    { attempt: 2, key: "prelim-x-unit-retry", modelUsed: "anthropic/claude-opus-5", fail: "cut off" },
+    { attempt: 1, key: "clearotron-x-unit", modelUsed: "anthropic/claude-opus-5", fail: null },
+    { attempt: 2, key: "clearotron-x-unit-retry", modelUsed: "anthropic/claude-opus-5", fail: "cut off" },
   ]);
-  assert.deepEqual(recoverWinningAttempt(dir, LABEL), { key: "prelim-x-unit", model: "anthropic/claude-opus-5" });
+  assert.deepEqual(recoverWinningAttempt(dir, LABEL), { key: "clearotron-x-unit", model: "anthropic/claude-opus-5" });
 });

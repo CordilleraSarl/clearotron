@@ -5,7 +5,7 @@
 //
 // The question came from the codex round (18 Aug): an engine override is carried by the DRIVER
 // ACTIVATION's environment, and an activation that never happens carries no environment. On the box this
-// was first asked about, no runner process was running for any user and no prelim unit existed at system
+// was first asked about, no runner process was running for any user and no clearotron unit existed at system
 // level — so every job enqueued would have sat there, and the round would have been fiction.
 //
 // Nothing here builds a drainer. ONE ALREADY SHIPS: `driver/systemd/prelim-driver.path` (inotify),

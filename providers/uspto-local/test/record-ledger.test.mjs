@@ -50,14 +50,14 @@ const ledgerRows = () => (existsSync(RECORD_LOG) ? readFileSync(RECORD_LOG, "utf
 
 test("a fetched record's body is persisted, keyed by the uri the fidelity gate indexes on", async () => {
   const auth = build();
-  const tctx = { agentId: "clawdi", sessionKey: "prelim-test-run", sessionId: null };
+  const tctx = { agentId: "clawdi", sessionKey: "clearotron-test-run", sessionId: null };
   await core.doRecordFetch(auth, { uri: "/mark/us/86264144" }, tctx);
 
   const rows = ledgerRows().filter((r) => r.target === "/mark/us/86264144");
   assert.equal(rows.length, 1, "record_fetch must persist the body — the gate has no other source for it");
   const [row] = rows;
   assert.equal(row.provider, "uspto-local", "the body is attributed to this provider, not a shared default");
-  assert.equal(row.sessionKey, "prelim-test-run", "the run's session key rides along or the body belongs to no run");
+  assert.equal(row.sessionKey, "clearotron-test-run", "the run's session key rides along or the body belongs to no run");
   // collectRecordBodies keys the map on `target`; the gate then field-compares the BODY. A body with no
   // identifiers is a body the gate can read and verify nothing against.
   assert.equal(row.body.applicationNumber, "86264144");
@@ -68,7 +68,7 @@ test("a fetched record's body is persisted, keyed by the uri the fidelity gate i
 test("a record that is not in the index persists nothing — an honest miss, not an empty body", async () => {
   const auth = build();
   const before = ledgerRows().length;
-  const miss = await core.doRecordFetch(auth, { id: "99999999" }, { sessionKey: "prelim-test-run" });
+  const miss = await core.doRecordFetch(auth, { id: "99999999" }, { sessionKey: "clearotron-test-run" });
   assert.ok(miss.isError);
   assert.equal(ledgerRows().length, before,
     "an absent record must not write a body — a persisted empty record would verify a finding against nothing");
@@ -79,7 +79,7 @@ test("batch screen persists every row it read, so a banded record needs no secon
   const before = new Set(ledgerRows().map((r) => `${r.target}|${r.kind ?? ""}`));
   await core.doBatchScreen(auth, {
     uris: ["/mark/us/86264144", "/mark/us/86264145"], in_scope_classes: [9],
-  }, { sessionKey: "prelim-test-run", kind: "batch_screen" });
+  }, { sessionKey: "clearotron-test-run", kind: "batch_screen" });
 
   const targets = new Set(ledgerRows().map((r) => r.target));
   assert.ok(targets.has("/mark/us/86264144") && targets.has("/mark/us/86264145"),
@@ -92,8 +92,8 @@ test("the driver's own collector finds these bodies at the path the driver reads
   // body written in a shape collectRecordBodies skips is the same silent unverified caveat, one layer in.
   const { collectRecordBodies } = await import("../../../driver/registry-fidelity.mjs");
   const auth = build();
-  await core.doRecordFetch(auth, { uri: "/mark/us/86264144" }, { sessionKey: "prelim-test-run" });
-  const map = collectRecordBodies(RECORD_LOG, "prelim-test-run");
+  await core.doRecordFetch(auth, { uri: "/mark/us/86264144" }, { sessionKey: "clearotron-test-run" });
+  const map = collectRecordBodies(RECORD_LOG, "clearotron-test-run");
   const body = map.get("/mark/us/86264144");
   assert.ok(body, "the driver's collector must find the record this provider fetched");
   assert.equal(body.applicationNumber, "86264144");

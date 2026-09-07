@@ -39,7 +39,7 @@ const CLAUDE = join(HERE, "mock-claude.mjs");
 chmodSync(CLAUDE, 0o755);
 process.env.CORSEARCH_SESSION_KEY ||= "test-offline";
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
-const ROOT = mkdtempSync(join(tmpdir(), "prelim-447-mock-"));
+const ROOT = mkdtempSync(join(tmpdir(), "clearotron-447-mock-"));
 process.env.CLEAROTRON_AI = "anthropic-agent";
 pinEnv(process.env, "CLEAROTRON_CLAUDE_PATH", CLAUDE);
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
@@ -83,7 +83,7 @@ const LEDGER = [
 ];
 
 function fixtureRun() {
-  const runDir = mkdtempSync(join(tmpdir(), "prelim-447-"));
+  const runDir = mkdtempSync(join(tmpdir(), "clearotron-447-"));
   mkdirSync(driverDir(runDir), { recursive: true });
   const joinRes = joinPlanToBands(PLAN, BANDS);
   const receipt = { plan_version: PLAN.plan_version, ...joinRes, skeleton: deriveCoverageSkeleton(PLAN, joinRes) };

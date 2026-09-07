@@ -72,11 +72,11 @@ test('THE MARK ROW SHOWS THE LATEST READ, NOT THE WORST', () => {
   // paid for is really the answer it replaced.
   const marks = marksOf([
     run({ runId: 'knockout', date: '2026-06-30', band: 'High', tone: 'high' }),
-    run({ runId: 'prelim', date: '2026-07-19', band: 'Medium', tone: 'medium' }),
+    run({ runId: 'clearotron', date: '2026-07-19', band: 'Medium', tone: 'medium' }),
   ])
   assert.equal(marks[0]!.band, 'Medium', 'the current standing is the latest read')
   assert.equal(marks[0]!.tone, 'medium')
-  assert.equal(marks[0]!.current.runId, 'prelim')
+  assert.equal(marks[0]!.current.runId, 'clearotron')
   assert.equal(marks[0]!.date, '2026-07-19')
 })
 

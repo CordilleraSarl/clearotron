@@ -31,7 +31,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 chmodSync(join(HERE, "mock-claude.mjs"), 0o755);
 process.env.CORSEARCH_SESSION_KEY ||= "test-offline";
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
-const ROOT = mkdtempSync(join(tmpdir(), "prelim-447cj-mock-"));
+const ROOT = mkdtempSync(join(tmpdir(), "clearotron-447cj-mock-"));
 process.env.CLEAROTRON_AI = "anthropic-agent";
 pinEnv(process.env, "CLEAROTRON_CLAUDE_PATH", join(HERE, "mock-claude.mjs"));
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
@@ -82,7 +82,7 @@ const baseDoc = (cj) => {
 };
 
 function runDirWith(doc, { ledger = LEDGER, receipt = RECEIPT } = {}) {
-  const runDir = mkdtempSync(join(tmpdir(), "prelim-447cj-"));
+  const runDir = mkdtempSync(join(tmpdir(), "clearotron-447cj-"));
   mkdirSync(driverDir(runDir), { recursive: true });
   if (ledger) writeFileSync(join(runDir, "register-coverage-ledger.json"), JSON.stringify(ledger, null, 2) + "\n");
   if (receipt) writeFileSync(driverDir(runDir, "plan-execution.json"), JSON.stringify(receipt, null, 2) + "\n");

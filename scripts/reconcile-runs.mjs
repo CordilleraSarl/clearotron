@@ -50,7 +50,7 @@ const WORKSPACE_ROOT = argValue("--workspace-root") ?? envFrom(process.env, "CLE
 // The default is the CANONICAL agent alone. It used to name two of this firm's people, which shipped
 // their identities to every clone and told an installer nothing. Per-agent rosters are a
 // property of a deployment, so they are passed: --agents a,b,c
-const AGENTS = (argValue("--agents") ?? "clawdi").split(",").map((s) => s.trim()).filter(Boolean);
+const AGENTS = (argValue("--agents") ?? "localagent").split(",").map((s) => s.trim()).filter(Boolean);
 const APPLY = process.argv.includes("--apply");
 const QUIET_MS = (() => {
   const raw = argValue("--quiet-hours");

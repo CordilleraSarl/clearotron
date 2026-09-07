@@ -37,7 +37,7 @@ function queueFor(root, agentId) {
 }
 
 test("runner drains every agent queue and runs each job as its own agent", async () => {
-  const root = mkdtempSync(join(tmpdir(), "prelim-runner-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-runner-"));
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
     CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",

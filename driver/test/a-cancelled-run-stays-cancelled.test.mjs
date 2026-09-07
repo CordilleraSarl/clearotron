@@ -28,7 +28,7 @@ import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins E
 
 // Set the workspace root BEFORE driver.config.mjs loads (via the dynamic imports below), so
 // config.workspaceRoot and config.queueDirs freeze to our temp tree and never see the real box.
-const ROOT = mkdtempSync(join(tmpdir(), "prelim-2155-"));
+const ROOT = mkdtempSync(join(tmpdir(), "clearotron-2155-"));
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 

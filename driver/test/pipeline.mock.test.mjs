@@ -52,7 +52,7 @@ process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 // overlay so the project path runs end-to-end. Set BEFORE the first pipeline import — profiles.mjs freezes
 // its PROFILE_DIR when the module first loads (the same first-import freeze the workspaceRoot notes below
 // describe), and this file only imports the pipeline lazily inside runPipeline.
-const PROFILES_SEED = mkdtempSync(join(tmpdir(), "prelim-profiles-"));
+const PROFILES_SEED = mkdtempSync(join(tmpdir(), "clearotron-profiles-"));
 cpSync(join(HERE, "..", "profiles"), PROFILES_SEED, { recursive: true });
 mkdirSync(join(PROFILES_SEED, "projects", "aurora"), { recursive: true });
 writeFileSync(join(PROFILES_SEED, "projects", "aurora", "console-ecosystem.json"), JSON.stringify({
@@ -69,7 +69,7 @@ const JOB = {
 
 // Fresh module graph + env per run (driver.config reads env at import time).
 async function runPipeline(env, jobPatch = {}, opts = {}) {
-  const root = mkdtempSync(join(tmpdir(), "prelim-mock-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-mock-"));
   // hermetic: clear the mock knobs so one test's MOCK_* never bleeds into the next (env is process-global).
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
   for (const [k, v] of Object.entries({ CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "clawdi", ...env })) pinEnv(process.env, k, v);
@@ -536,7 +536,7 @@ test("#1273 THE CONTROL — the SAME ledger with no designation still skips, so 
 // conversion 3 no typed field can designate a ⭐, and the owner ruled the capability removed rather than
 // regrown. Git history holds them if mandatory-sweep compliance is ever refiled.
 
-// ── WS-A machine coverage ledger e2e (design of record PRELIM-VNEXT-THREE-WORKSTREAM-DESIGN) ─────────
+// ── WS-A machine coverage ledger e2e (design of record CLEAROTRON-VNEXT-THREE-WORKSTREAM-DESIGN) ─────────
 
 test("WS-A happy path: driver DERIVES the JSON from prose; gates read it; no delivery flag", async () => {
   const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" });
@@ -637,7 +637,7 @@ test("Map A e2e: a finding citing a fetched record renders its registry IDs FROM
   // the RUN's own `_driver/register-record-bodies.jsonl`, not a box-global file, so `MOCK_WRITE_RECORD`
   // alone is the whole setup. The driver's lint-pass assembleRunRecords materializes
   // _records/us-90000001.json from it, and the publish render must source the registry IDs from that body.
-  const root = mkdtempSync(join(tmpdir(), "prelim-mock-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-mock-"));
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
@@ -1406,7 +1406,7 @@ test("applicant-unknown e2e: identity-band hit delivered as an ORDINARY finding 
 });
 
 test("B5b e2e: pre-seeded customer-bind.json folds at pre-matter-frame (normal path) + event logged", async () => {
-  const root = mkdtempSync(join(tmpdir(), "prelim-mock-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-mock-"));
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
@@ -1435,7 +1435,7 @@ test("B5b e2e: pre-seeded customer-bind.json folds at pre-matter-frame (normal p
 
 test("B5b ack: every consumed bind writes the plain-language confirmation packet (event logged)", async () => {
   // piggybacks the bind-fold flow: the ack is a best-effort outbox packet, written by code.
-  const root = mkdtempSync(join(tmpdir(), "prelim-mock-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-mock-"));
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
@@ -1909,7 +1909,7 @@ test("park lanes: a park from the run's OWN output still charges the defect budg
 
 test("resumed-after-terminal-failure: a stale .sent (from the failure notice) never skip-guards the report send", async () => {
   // The VENZY 2026-07-04 shape: run went TERMINAL (notice sent → deliver skill wrote .sent), a human
-  // re-triggers after addressing the cause, the resume converges. prelim-deliver skips any run with a
+  // re-triggers after addressing the cause, the resume converges. clearotron-deliver skips any run with a
   // .sent marker — so the delivery handoff MUST clear the previous send's markers or the report is
   // silently lost. Same invariant on the failure arm: a resumed run that fails again must re-notify.
   const { res } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "matter-frame", CLEAROTRON_DELIVERY: "handoff" });
@@ -2083,7 +2083,7 @@ test("A2 report-cards: batched render assembles a report.md byte-identical to th
 });
 
 test("A2 report-cards: more than one card in flight; the first card warms the cache alone", async () => {
-  const trace = join(mkdtempSync(join(tmpdir(), "prelim-cardtrace-")), "cards.jsonl");
+  const trace = join(mkdtempSync(join(tmpdir(), "clearotron-cardtrace-")), "cards.jsonl");
   const { res } = await runPipeline({
     MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FINDINGS_N: "4",
     MOCK_STAGE_TRACE: trace, MOCK_STAGE_DELAY_MS: "500", CLEAROTRON_TURN_CAP: "3",   // pin: the cap is env-read per acquire

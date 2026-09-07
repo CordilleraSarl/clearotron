@@ -155,7 +155,7 @@ function reportRefusal(risky) {
   say("      mv <the-path-above> <somewhere-outside>/");
   say("");
   say(`  then point the variable at the new location in your .env, and run \`${invoke("doctor")}\` to`);
-  say("  confirm it. This command will not move your files for you: where your own doctrine and");
+  say("  confirm it. This command will not move your files for you: where your own instructions and");
   say("  customer records live is your decision, not a side effect of an upgrade.\n");
 }
 
@@ -276,7 +276,7 @@ export async function update(argv = process.argv.slice(2)) {
     for (const c of holds.claimed) console.error(`    claimed  ${c.id}  pid ${c.pid ?? "unknown"}`);
     for (const sl of holds.slots) console.error(`    slot     ${sl.file}  pid ${sl.pid}`);
     console.error("\n  `npm ci` rebuilds node_modules under whatever is running. Nothing was touched.");
-    console.error("  Wait for the queue to drain, or clear it, and run this again.\n");
+    console.error("  Wait for the queue to empty, or clear it, and run this again.\n");
     return 4;
   }
   if (holds.unreadable.length) {
@@ -292,7 +292,7 @@ export async function update(argv = process.argv.slice(2)) {
   say("\n  Configuration store is outside the checkout. Updating the product.");
   for (const e of entries) say(`    ${e.name}=${e.value} (${e.from})`);
   if (!entries.length) {
-    say("    Nothing set — this install runs the bundled demo customers and our doctrine. That is a");
+    say("    Nothing set — this install runs the bundled demo customers and our instructions. That is a");
     say("    fine way to start, and it means an upgrade has nothing of yours to land on.");
   }
 
@@ -326,7 +326,7 @@ export async function update(argv = process.argv.slice(2)) {
   //
   // The point of running it HERE is that a pull is exactly the moment our files move under a user's
   // overrides. Reported, never judged — an override is a choice, not a fault, and drift is information.
-  say("\n  Doctrine overlay");
+  say("\n  Custom instructions");
   try {
     const report = overlayReport({ baseRoot: config.skillsBaseDir, overlayRoot: config.skillsOverlayDir });
     for (const line of renderOverlayReport(report, { indent: "" })) say(`  ${line}`);
@@ -334,7 +334,7 @@ export async function update(argv = process.argv.slice(2)) {
   } catch (e) {
     // An unreadable overlay throws by design. It must not abort the verb after a successful update: the
     // update DID happen, and exiting nonzero here would tell a script it did not.
-    console.error(`  the doctrine overlay could not be read — ${e.message}`);
+    console.error(`  the custom instructions could not be read — ${e.message}`);
   }
 
   say("\n  Up to date.\n");

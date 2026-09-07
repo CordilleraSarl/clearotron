@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Rate-limit POSTPONE regression (2026-06-22 incident). Two prelim runs (NOVAPULSE, BIOVELTRIN) hard-FAILED on a
+// Rate-limit POSTPONE regression (2026-06-22 incident). Two clearotron runs (NOVAPULSE, BIOVELTRIN) hard-FAILED on a
 // register-stage 429 (Claude subscription 5h cap), stranding ~1.5h of completed stages — even though the driver
 // ships a designed postpone+auto-resume path. ROOT CAUSE: pipelineInner's terminal catch wrapped the ENTIRE
 // stage sequence and swallowed the rate-limited StageFailure (writing .failed + firing notify-fail) before it
@@ -43,7 +43,7 @@ const RESET_EPOCH_SEC = 2000000000;                       // 2033-05-18T03:33:20
 const RESET_ISO = new Date(RESET_EPOCH_SEC * 1000).toISOString();
 
 test("a mid-run register-sweep 429 POSTPONES the run (resumable) — never writes .failed / notify-fail", async () => {
-  const root = mkdtempSync(join(tmpdir(), "prelim-rl-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-rl-"));
   for (const k of ["MOCK_FAIL_STAGE", "MOCK_LEDGER_LIMITED", "MOCK_CANDSELF"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent",

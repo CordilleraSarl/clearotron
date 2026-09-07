@@ -46,7 +46,7 @@ rule — the page groups notes New / Fixed / For operators and only the person w
 it is, so the note carries it and the changelog reads it off. A note without one is refused.
 
     ---
-    "prelim-driver": patch
+    "clearotron-driver": patch
     ---
 
     Fixed: The demo now offers only the two example accounts it ships with.

@@ -101,7 +101,7 @@ product doc.
 
 The variables a **customer or installer** ever types carry the product’s own prefix. They are listed
 by name in §5 below and in the upgrade table in INSTALL.md.
-`PRELIM` is the internal codename of the first product this engine shipped and means nothing to a reader
+`CLEAROTRON` is the internal codename of the first product this engine shipped and means nothing to a reader
 who has not read the code. Vendor credentials keep the vendor’s name (`SIGNA_API_KEY`,
 `PERPLEXITY_API_KEY`, `ANTHROPIC_API_KEY`) — that already says who you bought them from.
 

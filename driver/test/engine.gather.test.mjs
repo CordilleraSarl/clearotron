@@ -194,11 +194,11 @@ test("band server: handshake + 3 read-only tools + missing-run-dir guard returns
 });
 
 test("buildGatherMcpConfig: maps groups → the right MCP servers + threads the run session key", () => {
-  const p = buildGatherMcpConfig(["perplexity"], { sessionKey: "prelim-x-y-stage", agent: "clawdi" });
+  const p = buildGatherMcpConfig(["perplexity"], { sessionKey: "clearotron-x-y-stage", agent: "clawdi" });
   assert.ok(p.mcpServers.perplexity, "perplexity server present");
   assert.equal(p.mcpServers.perplexity.command, process.execPath);
   assert.match(p.mcpServers.perplexity.args[0], /perplexity-server\.mjs$/);
-  assert.equal(p.mcpServers.perplexity.env.CLEAROTRON_GATHER_SESSION_KEY, "prelim-x-y-stage");
+  assert.equal(p.mcpServers.perplexity.env.CLEAROTRON_GATHER_SESSION_KEY, "clearotron-x-y-stage");
   assert.equal(p.mcpServers.perplexity.env.CLEAROTRON_GATHER_AGENT, "clawdi");
 
   // The register provider mounts under the NEUTRAL key `register` — never the vendor's name. That key is

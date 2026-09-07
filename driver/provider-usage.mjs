@@ -48,7 +48,7 @@ export const KINDS = ["search", "record_fetch", "image", "phoneme", "batch_scree
 // The gateway namespaces the driver's --session-key as `agent:<agentId>:<key>` before it reaches the
 // plugin (confirmed on the first live run: sessionKey = `agent:clawdi:prelim-<slug>-<codename>-…`). Strip
 // that leading `agent:<id>:` namespace so the run prefix anchors at the real start of the caller's key —
-// otherwise a bare startsWith("prelim-…") matches nothing.
+// otherwise a bare startsWith("clearotron-…") matches nothing.
 function stripGatewayNs(s) {
   return typeof s === "string" ? s.replace(/^agent:[^:]+:/, "") : "";
 }

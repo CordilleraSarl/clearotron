@@ -1,5 +1,5 @@
 ---
-"prelim-driver": patch
+"clearotron-driver": patch
 ---
 
 New: A Knockout search now looks up what the owner of a registered right actually sells, and the report says where that answer came from. Before, the assessment inferred the owner's trade from the company name alone, then told you to go and obtain the registration's own goods list. The name is not evidence of the trade. It happened to read correctly on one search and would have read confidently wrong on the next.

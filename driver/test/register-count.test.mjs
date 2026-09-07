@@ -428,13 +428,13 @@ test("the adapter path passes the neutral shape through to the provider", async 
     // — `recordLog` rides every adapter call, including this one. No core writes a record BODY from
     // a count today; one that started to would otherwise write it to the box-global fallback, where the
     // run-dir reader never looks and nothing throws.
-    agentId: "clawdi", sessionKey: "prelim-x", recordLog: "/run/_driver/register-record-bodies.jsonl",
+    agentId: "clawdi", sessionKey: "clearotron-x", recordLog: "/run/_driver/register-record-bodies.jsonl",
   });
   assert.equal(source, "provider");
   await count("IRONWHISK", COUNT_PREDICATES[0], { classes: [8], regions: ["US"] });
   assert.deepEqual(seen[0].q, { name: "IRONWHISK", matchMode: "exact", classes: [8], regions: ["US"] });
   assert.deepEqual(seen[0].ctx,
-    { agentId: "clawdi", sessionKey: "prelim-x", recordLog: "/run/_driver/register-record-bodies.jsonl" });
+    { agentId: "clawdi", sessionKey: "clearotron-x", recordLog: "/run/_driver/register-record-bodies.jsonl" });
 });
 
 // ── what reaches the client ─────────────────────────────────────────────────────────────────────────

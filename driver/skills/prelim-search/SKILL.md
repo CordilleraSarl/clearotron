@@ -26,7 +26,7 @@ description: Orchestrator for preliminary trademark search requests with registe
 
 ## Spawned session
 
-This file is the **driver's compute orchestration spec** — it lives in `driver/skills/` (co-located with the driver) and is read by the pipeline stages, NOT by the integrator agent. The integrator's prelim role is only **intake** (recognise the request, resolve the client, submit the job — `../../docs/INTAKE.md`) and **delivery** (courier the outbox packets — `../../docs/DELIVERY.md`); everything between is the driver's.
+This file is the **driver's compute orchestration spec** — it lives in `driver/skills/` (co-located with the driver) and is read by the pipeline stages, NOT by the integrator agent. The integrator's clearotron role is only **intake** (recognise the request, resolve the client, submit the job — `../../docs/INTAKE.md`) and **delivery** (courier the outbox packets — `../../docs/DELIVERY.md`); everything between is the driver's.
 
 This workflow is run by the **deterministic driver** (`driver/`): an intake path (the `enqueue` CLI or the ops-MCP `start_run` tool) enqueues a job and the driver invokes each stage as a standalone compute turn (the `anthropic-agent` engine — a headless `claude -p` process off the gateway; sequencing, fan-in, gating, retries all in code). The judgment content + companion files below are what the stages read; the driver passes each stage its run-dir paths + the job context (email message id, forwarder, instructions, mark names).
 
@@ -58,7 +58,7 @@ reads only their compact findings files. This is the workflow's primary cost con
 
 ## Trigger
 
-The requesting or reviewing lawyer forwards an email containing a **Trademark Search Request Form** to the intake mailbox. The forwarded email is typically structured as a request form ("Worldwide preliminary trademark search — TMP<n>", "Please run this through a preliminary search", or similar). When the request is recognisable as a prelim search ask, this skill invokes.
+The requesting or reviewing lawyer forwards an email containing a **Trademark Search Request Form** to the intake mailbox. The forwarded email is typically structured as a request form ("Worldwide preliminary trademark search — TMP<n>", "Please run this through a preliminary search", or similar). When the request is recognisable as a clearotron search ask, this skill invokes.
 
 ## Register sources — the vendor is the source of truth; EUIPO is a free EU cross-check
 

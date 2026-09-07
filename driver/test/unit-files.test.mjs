@@ -29,7 +29,7 @@ test("#685 the walk finds unit files outside driver/systemd/, which is the whole
   assert.equal(w.error, null);
   // Named, not counted: a count assertion passes on the wrong four files.
   for (const [file, dir] of [
-    ["prelim-driver.service", "driver/systemd"],
+    ["clearotron-worker.service", "driver/systemd"],
     ["client-mcp.service", "mcp-server/remote"],
     ["client-mcp-apikey.service", "mcp-server/remote"],
     ["trademark-artifacts-http.service", "mcp-server/remote"],

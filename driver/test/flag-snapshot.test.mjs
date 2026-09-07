@@ -23,7 +23,7 @@ import { buildFlagSnapshot, builtFor, isStale, snapshotPath, postureDelta, PRODU
 import { gateResolvedPolicy, productAvailability, gateCause, BUILT, PRODUCT_POLICIES, ORDERABLE_PRODUCTS } from "../search-policy.mjs";
 
 const KNOCKOUT = { level: "knockout", stageLabel: "Depth 1", pipeline: "knockout", components: {} };
-const PRELIM = { level: "prelim", stageLabel: "Depth 4", pipeline: "prelim", components: {} };
+const CLEAROTRON = { level: "prelim", stageLabel: "Depth 4", pipeline: "clearotron", components: {} };
 const AT = "2026-07-19T12:00:00Z";
 
 // The engine's environment once carried three switches; nothing reads them now. Kept as a realistic
@@ -40,10 +40,10 @@ test("THE REGRESSION: an EMPTY environment must refuse nothing — no caller can
   }
   try {
     assert.equal(gateResolvedPolicy(KNOCKOUT), null, "knockout runs with no environment");
-    assert.equal(gateResolvedPolicy(PRELIM), null);
+    assert.equal(gateResolvedPolicy(CLEAROTRON), null);
     const jx = { level: "prelim-jx", stageLabel: "Depth 5", pipeline: "clearance", components: { jxLanes: true } };
     assert.equal(gateResolvedPolicy(jx), null, "and so does the native-script deepening");
-    const recipe = { ...PRELIM, recipe: { slug: "screen" } };
+    const recipe = { ...CLEAROTRON, recipe: { slug: "screen" } };
     assert.equal(gateResolvedPolicy(recipe), null, "and a saved search");
 
     // The same, through the two client-facing readers. EVERY built level must be pickable.
@@ -67,7 +67,7 @@ test("setting a retired switch to 0 changes NOTHING — a stale .env cannot disa
   try {
     assert.equal(gateResolvedPolicy(KNOCKOUT), null);
     assert.equal(productAvailability(PRODUCT_POLICIES["full-country-search"]), null);
-    const recipe = { ...PRELIM, recipe: { slug: "screen" } };
+    const recipe = { ...CLEAROTRON, recipe: { slug: "screen" } };
     assert.equal(gateResolvedPolicy(recipe), null);
   } finally {
     for (const [n, v] of Object.entries(saved)) {
@@ -82,7 +82,7 @@ test("a missing snapshot degrades to AVAILABLE — it must never take the produc
   // unreadable file stops anybody starting any search.
   assert.deepEqual(builtFor(null), { ...BUILT });
   assert.equal(gateResolvedPolicy(KNOCKOUT, { built: builtFor(null) }), null);
-  assert.equal(gateResolvedPolicy(PRELIM, { built: builtFor(null) }), null);
+  assert.equal(gateResolvedPolicy(CLEAROTRON, { built: builtFor(null) }), null);
 });
 
 test("BUILT is what decides, and it is the ONLY thing that decides", () => {
@@ -155,7 +155,7 @@ test("the snapshot is an ALLOWLIST — it is a file a web service reads", () => 
   assert.equal(snap.flagsDeclared, 0,
     "a flag is exposed again — give the name rule below a real case rather than leaving it iterating nothing");
   const ungoverned = Object.keys(snap.flags)
-    .filter((n) => !(/^(?:PRELIM|CLEAROTRON)_/.test(n) || n !== n));
+    .filter((n) => !(/^(?:CLEAROTRON|CLEAROTRON)_/.test(n) || n !== n));
   assert.deepEqual(ungoverned, [],
     `these are in the snapshot and are not switches this product governs: ${ungoverned.join(", ")}`);
 });

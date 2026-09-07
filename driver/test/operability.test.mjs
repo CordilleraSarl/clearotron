@@ -25,7 +25,7 @@ process.env.CORSEARCH_SESSION_KEY ||= "test-offline";
 // production call ledger can never evidence their bands; the dedicated band-truth-gate tests turn it ON.
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 
-const ROOT = mkdtempSync(join(tmpdir(), "prelim-op-"));
+const ROOT = mkdtempSync(join(tmpdir(), "clearotron-op-"));
 process.env.CLEAROTRON_AI = "anthropic-agent";   // stage compute on claude -p (mocked)
 pinEnv(process.env, "CLEAROTRON_CLAUDE_PATH", CLAUDE);
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);

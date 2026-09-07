@@ -45,7 +45,7 @@ const until = async (pred, { timeoutMs = 8000, stepMs = 50 } = {}) => {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 test("admission budget: past the budget the drain stops claiming NEW jobs, finishes in-flight work, and leaves the queue for the next activation", async () => {
-  const root = mkdtempSync(join(tmpdir(), "prelim-budget-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-budget-"));
   const barrier = join(root, "release-barrier");
   const BUDGET_MS = 3000; // generous enough that A is claimed while admission is still open, tiny enough to elapse in-test
   for (const [k, v] of Object.entries({

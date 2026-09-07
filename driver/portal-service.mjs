@@ -1158,7 +1158,7 @@ export function makePortalService({
         // ── — COVERAGE RIDES BESIDE AVAILABILITY, NOT INSIDE IT ───────────
         //
         // The owner, on his own install with a partial register: "i cannot press the button for Global
-        // prelim search. Why. it doesnt appear disabled, no message etc — but i cant select it." The
+        // clearotron search. Why. it doesnt appear disabled, no message etc — but i cant select it." The
         // product is orderable now (owner ruling on that issue), and what the register does not reach
         // is a SENTENCE on a live row rather than the reason a dead one cannot be pressed.
         //
@@ -1474,7 +1474,7 @@ export function makePortalService({
         // The recipeKey arm that used to sit here (a 422 when saved searches were "not switched on") went
         // with CLEAROTRON_RECIPES_MODE on 2026-07-27: a saved search is now honoured wherever it resolves.
         // Asked of the RESOLVED product, not of the body: a request that names none resolves through
-        // the account's default and its own territories, and the old read (`body.searchLevel || "prelim"`)
+        // the account's default and its own territories, and the old read (`body.searchLevel || "clearotron"`)
         // answered about a product nobody had chosen. `resolveFor` fails open to a null resolution, and a
         // null one is not judged here — validateJob and the scope rules below still run, and the runner
         // is the wall.
@@ -3212,7 +3212,7 @@ const escHtml = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<"
 // mentioned. A colour literal reappearing in this function is what
 // `driver/test/door-pages-take-their-colours-from-brand.test.mjs` fails on.
 //
-// The dark ground moved with that change: the block this page used to carry had guessed tracker issue 17150f/#ece5d8,
+// The dark ground moved with that change: the block this page used to carry had guessed #17150f/#ece5d8,
 // and brand pack §01 fixes dark at #0f0e0c near-black + #f0e8d8 parchment. The pack wins.
 export function loginPage({ email, error = null, signedIn = false }) {
   const title = signedIn ? "Signed in" : "Sign in";

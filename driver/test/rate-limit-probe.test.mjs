@@ -24,7 +24,7 @@ const RESET_2033 = new Date(2000000000 * 1000).toISOString();
 const MIN = 60 * 1000;
 
 const parkedQueue = (postponedAt, extra = {}) => {
-  const root = mkdtempSync(join(tmpdir(), "prelim-443-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-443-"));
   const q = join(root, "q");
   const runDir = join(root, "run");
   mkdirSync(q, { recursive: true }); mkdirSync(runDir, { recursive: true });
@@ -76,7 +76,7 @@ test("#443 the park record says what it is waiting on and how it will find out",
   // "Parked until T" is not that, and the whole cost of this defect was that a stranded run and a
   // working one read identically. parkPostponed writes both fields; this pins the contract they carry.
   const { parkPostponed } = await import(`../runner.mjs?bust=${process.hrtime.bigint()}`);
-  const root = mkdtempSync(join(tmpdir(), "prelim-443m-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-443m-"));
   writeFileSync(join(root, "j.processing"), "{}");
   parkPostponed(join(root, "j.processing"), root, "j", {
     resetsAt: RESET_2033, postponedAt: new Date().toISOString(), probeAttempt: 1,

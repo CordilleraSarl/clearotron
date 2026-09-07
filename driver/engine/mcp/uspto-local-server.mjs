@@ -43,7 +43,7 @@ const DB_PATH = process.env[DEFAULT_DB_ENV] || "";
 const AUTH = { dbPath: DB_PATH };
 const tctx = (kind) => ({
   kind,
-  agentId: process.env.CLEAROTRON_GATHER_AGENT || "clawdi",
+  agentId: process.env.CLEAROTRON_GATHER_AGENT || "localagent",
   sessionKey: process.env.CLEAROTRON_GATHER_SESSION_KEY || "",   // run session key — telemetry attribution
   sessionId: process.env.CLEAROTRON_GATHER_SESSION_ID || "",
 });

@@ -39,7 +39,7 @@ function runDir() {
     "the omega channel was NOT searched",
   ].join("\n") + "\n");
   mkdirSync(driverDir(d), { recursive: true });
-  writeFileSync(driverDir(d, "skeptic.jsonl"), "{\"key\":\"prelim-x\"}\n");
+  writeFileSync(driverDir(d, "skeptic.jsonl"), "{\"key\":\"clearotron-x\"}\n");
   return d;
 }
 

@@ -20,7 +20,7 @@ import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins E
 
 // freeze config.workspaceRoot to an empty temp dir BEFORE the import below, so nothing here can see a
 // real queue even if a tick were to run for real.
-pinEnv(process.env, "CLEAROTRON_WORK_DIR", mkdtempSync(join(tmpdir(), "prelim-watch-")));
+pinEnv(process.env, "CLEAROTRON_WORK_DIR", mkdtempSync(join(tmpdir(), "clearotron-watch-")));
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 
 const { watch } = await import("../runner.mjs");

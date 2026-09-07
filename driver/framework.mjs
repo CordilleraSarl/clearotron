@@ -97,7 +97,7 @@ export function parseFrameworkManifest(raw) {
   return m;
 }
 
-/** Load + parse the manifest sitting beside a framework .md. rootDir is the prelim-driver dir (the dir
+/** Load + parse the manifest sitting beside a framework .md. rootDir is the clearotron-driver dir (the dir
  *  skills/ paths are relative to — the same base reads() uses). */
 // `rootDir` may be a string (legacy: join against it) OR a resolver function taking the manifest's
 // skills-relative path and returning an absolute one — the layered overlay-over-base lookup

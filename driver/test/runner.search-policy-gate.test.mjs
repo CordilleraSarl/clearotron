@@ -6,8 +6,8 @@
 // What must hold forever:
 //   - a job selecting a level this build/deployment cannot run PARKS AS CLARIFY at intake (requester
 //     notified, nothing searched) — never silently runs as a different-priced product, never drops;
-//   - a job with NO selector runs exactly today's prelim end to end, and the run freezes its product
-//     identity (_driver/search-policy.json → level "prelim") + publish stamps it (meta.json kind/product)
+//   - a job with NO selector runs exactly today's clearotron end to end, and the run freezes its product
+//     identity (_driver/search-policy.json → level "clearotron") + publish stamps it (meta.json kind/product)
 //     — the Stage-1 byte-identity guarantee, proven on a $0 mock run;
 //   - matterSignature: single-mark non-knockout jobs produce the EXACT pre-spine string (every existing
 //     ledger entry keeps deduping); batches key on the full sorted mark set; a level change never collides.
@@ -30,10 +30,10 @@ chmodSync(CLAUDE, 0o755);
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";   // legacy-harness posture (see runner.dedup.test.mjs)
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";     // mock runs never dial the provider
 
-const root = mkdtempSync(join(tmpdir(), "prelim-spine-"));
+const root = mkdtempSync(join(tmpdir(), "clearotron-spine-"));
 const RECIPES = join(root, "recipes");
 mkdirSync(join(RECIPES, "generic"), { recursive: true });
-writeFileSync(join(RECIPES, "generic", "plain.json"), JSON.stringify({ label: "Plain prelim", base: "global-preliminary-search" }));
+writeFileSync(join(RECIPES, "generic", "plain.json"), JSON.stringify({ label: "Plain clearotron", base: "global-preliminary-search" }));
 for (const [k, v] of Object.entries({
   CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE,
   CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_RECIPES_DIR: RECIPES,
@@ -70,17 +70,17 @@ const enqueue = (base, extra = {}) => writeFileSync(join(Q, `${base}.json`), JSO
 }));
 
 // ── matterSignature (pure) ──────────────────────────────────────────────────────────────────────────
-test("matterSignature: single-mark prelim stays BYTE-IDENTICAL to the pre-spine formula", () => {
+test("matterSignature: single-mark clearotron stays BYTE-IDENTICAL to the pre-spine formula", () => {
   const job = { forwarder: "Sam", markName: "  Nova  Pulse ", classes: [41, 9], customer: "Acme Ltd", ref: "TMP-1" };
   assert.equal(matterSignature(job), "sam|nova pulse|9,41|acme ltd|tmp-1", "the exact legacy string — every ledger entry must keep colliding");
   assert.equal(matterSignature({ ...job, product: "global-preliminary-search" }), matterSignature(job),
-    "an EXPLICIT prelim adds nothing — it is the same product as an implicit one");
+    "an EXPLICIT clearotron adds nothing — it is the same product as an implicit one");
 });
 
 test("matterSignature: a level is a dedup dimension (escalation never parks); KNOCKOUT batches key on the FULL sorted set", () => {
   const job = { forwarder: "sam", markName: "NOVA", classes: [9], customer: "acme", ref: "t1" };
   assert.notEqual(matterSignature(job, { product: "knockout" }), matterSignature(job),
-    "knockout ≠ prelim for the same matter — the $2 screen must never dedup-block the $40 clearance");
+    "knockout ≠ clearotron for the same matter — the $2 screen must never dedup-block the $40 clearance");
   assert.equal(matterSignature(job, { product: "knockout" }), `${matterSignature(job)}|level:knockout`);
   const ko = { product: "knockout" };
   const batchA = { forwarder: "sam", markName: "ALPHA", marks: [{ name: "ALPHA" }, { name: "BETA" }, { name: "GAMMA" }] };
@@ -102,10 +102,10 @@ test("findDuplicateMatter: the THREAD dimension is level-aware — a same-thread
   recordMatter(qdir, { sig: koSig, conversationId: "conv1", msgId: "<m1@x>", id: "m1", ts: now });
   // the headline flow: same thread, same mark, DIFFERENT level ⇒ not a duplicate on either dimension
   assert.equal(findDuplicateMatter(qdir, { sig: prelimSig, conversationId: "conv1", msgId: "<m2@x>" }, now), null,
-    "knockout→prelim escalation in the SAME email thread must run, not park");
+    "knockout→clearotron escalation in the SAME email thread must run, not park");
   // same level, same thread ⇒ still a duplicate (the gate keeps protecting double-spend)
   assert.ok(findDuplicateMatter(qdir, { sig: koSig, conversationId: "conv1", msgId: "<m3@x>" }, now));
-  // legacy entries (no suffix) read as prelim: a prelim re-send still dedups against them by thread
+  // legacy entries (no suffix) read as clearotron: a clearotron re-send still dedups against them by thread
   recordMatter(qdir, { sig: prelimSig, conversationId: "conv2", msgId: "<m4@x>", id: "m4", ts: now });
   assert.ok(findDuplicateMatter(qdir, { sig: prelimSig, conversationId: "conv2", msgId: "<m5@x>" }, now));
 });
@@ -125,7 +125,7 @@ test("the retired switches refuse NOTHING at the gate — with the engine's own 
   for (const n of ["CLEAROTRON_KNOCKOUT_MODE", "CLEAROTRON_JX_LANES", "CLEAROTRON_RECIPES_MODE"]) {
     assert.equal(process.env[n], undefined, `${n} is unset in this process, as it is in production services`);
   }
-  const recipes = new Map([["generic/plain", { label: "Plain prelim", base: "global-preliminary-search" }]]);
+  const recipes = new Map([["generic/plain", { label: "Plain clearotron", base: "global-preliminary-search" }]]);
   for (const [label, resolved] of [
     ["knockout", resolveSearchPolicy({ product: "knockout-search" }, {})],
     ["knockout-register", resolveSearchPolicy({ product: "knockout-search" }, {})],
@@ -188,7 +188,7 @@ test("a NO-selector job runs the product its SCOPE names, end to end, and the ru
   const runDirs = findSidecarRuns(join(root, "workspace-clawdi", "studio", "prelim-search"));
   assert.equal(runDirs.length, 1, "exactly one run froze a search-policy sidecar");
   const sp = JSON.parse(readFileSync(driverDir(runDirs[0], "search-policy.json"), "utf8"));
-  // NOT a house default any more: `prelim` named three different searches depending on where it pointed,
+  // NOT a house default any more: `clearotron` named three different searches depending on where it pointed,
   // so the default was a guess wearing a level key. This account names no territories, which is a
   // worldwide search, which is the Global preliminary search — derived, and the origin says so.
   assert.equal(sp.level, "global-preliminary-search");

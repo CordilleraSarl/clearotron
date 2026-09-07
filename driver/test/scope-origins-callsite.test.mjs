@@ -47,7 +47,7 @@ function world() {
 }
 
 const JOB = { profileKey: "aurora", projectKey: "console" };
-const POLICY = { pipeline: "prelim", components: {} };
+const POLICY = { pipeline: "clearotron", components: {} };
 
 test("#734 a project-supplied value says 'this project' when the profile comes from the real resolver", () => {
   const { profiles, projects } = world();

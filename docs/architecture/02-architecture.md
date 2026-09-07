@@ -48,7 +48,7 @@ flowchart TB
         PL["Register-provider plugins<br/>(gateway-hosted tools)"]
     end
 
-    subgraph DRV["The product: prelim driver — plain Node, systemd, no agent sandbox"]
+    subgraph DRV["The product: clearotron driver — plain Node, systemd, no agent sandbox"]
         direction TB
         RUN["runner.mjs<br/>queue drain · claims · dedup · parks"]
         PIPE["pipeline.mjs<br/>stage sequence · gates · clamps · recovery"]
@@ -81,7 +81,7 @@ flowchart TB
     OB -. "wake" .-> AG
     POOL -.-> MCPQ
 
-    classDef product fill:tracker issue 12324f,stroke:#4a90d9,color:#fff
+    classDef product fill:#12324f,stroke:#4a90d9,color:#fff
     class DRV,RUN,PIPE,STG,GWM,ENG,SKL,PROF,PUB product
 ```
 

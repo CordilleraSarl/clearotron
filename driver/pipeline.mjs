@@ -156,9 +156,9 @@ import { foldCaption, foldCardRead } from "./card-budget.mjs";
 import { carriesOwnFrame, composeCard } from "./card-frame.mjs";
 import { parseFrameworkManifest, loadFrameworkManifest, frameworkFor, manifestPathFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
 import { renderScopeLedgerJson, scopeLedgerJsonFromRows, channelsDiagnosis, parseScopeLedgerJson, scopeJurisdictions, droppedVariantFamilies } from "./scope-ledger.mjs";
-// qw/cn-scope-honesty — the zh-lane capability tables + the requested-scope resolver, for the plain-prelim
+// qw/cn-scope-honesty — the zh-lane capability tables + the requested-scope resolver, for the plain-clearotron
 // honesty row/note. jx-lanes.mjs is a PURE zero-import leaf (data + decisions, no env/fs), so a static
-// import here costs a plain prelim nothing — the "lazy import" rule below (jx.mjs / jx-units.mjs) guards
+// import here costs a plain clearotron nothing — the "lazy import" rule below (jx.mjs / jx-units.mjs) guards
 // the lane MACHINERY, not this table. Aliased: scope-ledger.mjs already exports a scopeJurisdictions
 // (rows → markets); this one is (job, profile) → requested territories, the decideJxLanes precedence.
 import { JURISDICTION_ADAPTERS, LANGUAGE_LANES, scopeJurisdictions as jxScopeJurisdictions, zhScopeDepthNotes } from "./jx-lanes.mjs";
@@ -1671,13 +1671,13 @@ export function attachSearchPolicy(ctx, job, { write = true } = {}) {
     try { ctx.searchPolicy = JSON.parse(raw); }
     catch (e) { throw new Error(`_driver/search-policy.json is corrupt (${e.message}) — investigate; the frozen policy is never silently re-derived`); }
   } else if (!write) {
-    // pre-spine run read-only (reconstructCtx / legacy resume): implicitly a prelim — the only shape that
+    // pre-spine run read-only (reconstructCtx / legacy resume): implicitly a clearotron — the only shape that
     // existed. It names a RETIRED row on purpose: this branch describes a run that already happened, and
     // RETIRED_POLICIES exists so an archived run re-renders under the name it was sold under. But ONLY
     // for a selector-less job: a selector-carrying job with no frozen sidecar must never be assumed into
     // a clearance (review 2026-07-17 — the crash-reclaim/reconstruct window).
     if (!noSelector)
-      throw new Error(`run dir has no frozen search policy but the job names a selector (product=${JSON.stringify(job?.product ?? null)}, recipeKey=${JSON.stringify(job?.recipeKey ?? null)}) — refusing the legacy-implicit prelim assumption; re-dispatch cold so the policy is minted`);
+      throw new Error(`run dir has no frozen search policy but the job names a selector (product=${JSON.stringify(job?.product ?? null)}, recipeKey=${JSON.stringify(job?.recipeKey ?? null)}) — refusing the legacy-implicit clearotron assumption; re-dispatch cold so the policy is minted`);
     ctx.searchPolicy = { schema: 1, level: "prelim", pipeline: "clearance", stageLabel: "Depth 4", components: {}, recipe: null, origins: { level: "legacy-implicit" } };
   } else {
     let resolved;
@@ -1705,7 +1705,7 @@ export function attachSearchPolicy(ctx, job, { write = true } = {}) {
     } catch (e) { resolved = { clarify: `search-policy resolution errored: ${String(e?.message ?? e).slice(0, 160)}` }; }
     // A CLARIFY THROWS. THERE IS NO FAIL-OPEN LEFT, and its deletion is the point.
     //
-    // It used to fall open to the literal level `prelim` — stageLabel "Depth 4" — whenever the job named
+    // It used to fall open to the literal level `clearotron` — stageLabel "Depth 4" — whenever the job named
     // no selector and the profile carried no default. Both halves of that condition had rotted: the
     // selector test read the deleted `searchLevel` (so it was true for every job) and the profile test
     // read the deleted `defaultSearchLevel` (so it was undefined for every profile). The branch was
@@ -1771,7 +1771,7 @@ export function attachSearchPolicy(ctx, job, { write = true } = {}) {
       runLog(ctx.paths.runDir, { event: "level-scope-note", note: n });
   }
   // The fold runs on EVERY path through this door — fresh mint, frozen-sidecar resume, legacy
-  // implicit prelim (recipeScope null there = no-op) — so every downstream consumer of
+  // implicit clearotron (recipeScope null there = no-op) — so every downstream consumer of
   // job.jurisdictions/classes/platforms sees the scope the preview promised.
   foldRecipeScope(job, ctx.searchPolicy);
   // Phase 2a: "knockout" is now a dispatchable pipeline — the refusal covers only shapes THIS build
@@ -4738,8 +4738,8 @@ export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortR
         : `<p>${esc(orderedIs)} for <b>${esc(mark)}</b> FAILED at stage <b>${esc(failedStage)}</b>${priorAttempts ? ` after <b>${priorAttempts} automatic recovery attempt${priorAttempts === 1 ? "" : "s"}</b>` : ""} and NOTHING was delivered.</p><p>${esc(kindLine)}</p><p>The driver reported, verbatim:</p><pre style="white-space:pre-wrap">${esc(reasonVerbatim)}</pre>${detailBlock}${attempted}<p>The run directory is preserved for diagnosis; re-trigger the run when the cause is addressed.</p>`,
     whatsappTo,
     whatsappText: refused
-      ? `⛔ Prelim search for ${mark} REFUSED at ${failedStage} [${terminalKind}]: ${shortReason} — nothing was delivered and nothing broke; ${retryHint}.`
-      : `❌ Prelim search for ${mark} FAILED at ${failedStage}${priorAttempts ? ` after ${priorAttempts} automatic recovery attempt${priorAttempts === 1 ? "" : "s"}` : ""}${terminalKind ? ` [${terminalKind}]` : ""}: ${shortReason} — nothing was delivered; ${retryHint}.`,
+      ? `⛔ Clearotron search for ${mark} REFUSED at ${failedStage} [${terminalKind}]: ${shortReason} — nothing was delivered and nothing broke; ${retryHint}.`
+      : `❌ Clearotron search for ${mark} FAILED at ${failedStage}${priorAttempts ? ` after ${priorAttempts} automatic recovery attempt${priorAttempts === 1 ? "" : "s"}` : ""}${terminalKind ? ` [${terminalKind}]` : ""}: ${shortReason} — nothing was delivered; ${retryHint}.`,
     markName: job.markName ?? job.name ?? null, failedStage, reason: shortReason,
     reasonVerbatim, failureSignature: sig, failClass, terminalKind, repairs, recoveryAttempts: priorAttempts,
     reasonDetail: detail, reasonQuantity: quantity,
@@ -6744,7 +6744,7 @@ function injectDeferralCoverage(P, runDir, note) {
 // (findings.json coverage vocabulary calls the field `state`; the register ledger calls the same
 // closed token `status` — one vocabulary, two key names.)
 // — LANE-GENERAL, not zh-hardcoded. LANGUAGE_LANES defines zh, ja and ko; the disclosure was
-// written for zh alone, so a Japan- or Korea-scoped run at plain prelim said NOTHING about the
+// written for zh alone, so a Japan- or Korea-scoped run at plain clearotron said NOTHING about the
 // Japanese/Korean-script equivalents it had not searched. Silence there is indistinguishable from
 // "there was nothing to search" — the same absence-reads-as-a-pass class as the remedy-term half of
 //, one layer over.
@@ -8318,7 +8318,7 @@ async function pipelineInner(job, opts = {}) {
   // Search-depth spine — freeze WHICH product shape this run is BEFORE the framework freeze (Phase 2a:
   // the knockout lane selects a different fallback framework, so the dispatch must happen first; the
   // policy freeze reads only ctx.profile). Cold-start mint only, like the profile freeze: a resumed
-  // pre-spine run reads as legacy-implicit prelim, never retro-minted.
+  // pre-spine run reads as legacy-implicit clearotron, never retro-minted.
   attachSearchPolicy(ctx, job, { write: !isResume });
   // acceptance 5 — recorded on EVERY run, ungraded included: "which ladder applied" must be a
   // read, never an inference from which product the job asked for.
@@ -8597,7 +8597,7 @@ async function pipelineInner(job, opts = {}) {
   // is measured against. Best-effort: a run must never fail because it could not be sized.
   ctx.quote = quoteForJob({ job, profile: ctx.profile, searchPolicy: ctx.searchPolicy });
   if (ctx.quote) runLog(run.runDir, { event: "quote", ...ctx.quote });
-  note(`\n=== prelim-driver: ${run.slug} / ${run.date}-${run.codename} (agent=${agent}) ===`);
+  note(`\n=== clearotron-driver: ${run.slug} / ${run.date}-${run.codename} (agent=${agent}) ===`);
 
   try {
     // Phase 0 done in code (slug/codename/run-dir/customer). Phase 1+2 stages:
@@ -8764,7 +8764,7 @@ async function pipelineInner(job, opts = {}) {
     // register candidates for the
     // frozen policy's jxLanes component, folded run-local onto the transliteration-numeric axis so the
     // unit spawn (axis-from-plan below), coverage skeleton, taint chain and clean gates inherit with
-    // zero new wiring. Lazy import (a plain prelim never loads jx machinery — byte-identical off);
+    // zero new wiring. Lazy import (a plain clearotron never loads jx machinery — byte-identical off);
     // never-kill inside runJxCandidateFold (a degraded lane logs + receipts, the Latin plan stands).
     if (ctx.searchPolicy?.components?.jxLanes && ctx.registerPlan) {
       const { runJxCandidateFold } = await import("./jx.mjs");
@@ -12931,7 +12931,7 @@ async function pipelineInner(job, opts = {}) {
     // round carry no _driver/jx-lanes.json at all. On those the writer would reach its absent arm and
     // print "NOT writing one", which reads as a withheld action on a run where absence is simply normal.
     // That is the absent-vs-failed conflation this tranche exists to remove; a lazy import also keeps a
-    // plain prelim byte-identical, which is why the sibling sites are shaped this way.
+    // plain clearotron byte-identical, which is why the sibling sites are shaped this way.
     if (ctx.searchPolicy?.components?.jxLanes) {
       try {
         const { stateJxSlices } = await import("./jx.mjs");
@@ -13748,7 +13748,7 @@ async function pipelineInner(job, opts = {}) {
           note(`registry-record closure: ${missing.length} cited record(s) absent from the run's set — targeted fetch`);
           const fetcher = opts.recordFetcher ?? defaultRecordFetcher;
           for (const uri of missing) {
-            const r = await fetcher(uri, { agentId: "prelim-driver", sessionKey: `${lintPrefix}record-closure`, recordLog: runRecordLogPath(run.runDir) });
+            const r = await fetcher(uri, { agentId: "clearotron-driver", sessionKey: `${lintPrefix}record-closure`, recordLog: runRecordLogPath(run.runDir) });
             if (!r.ok) recordFetchFailures.set(uri, r.cause);
           }
           assembled = assembleRunRecords(run.runDir, lintPrefix);   // pick up the closure fetches
@@ -14676,15 +14676,15 @@ async function pipelineInner(job, opts = {}) {
         // stated reason when no number is held. It used to go to AGENT_WHATSAPP[agent], which is the
         // operator on every run because every user shares one agent id.
         ...whatsappRouting(job, agent),
-        whatsappText: `✅ Prelim search for ${mark}${ref}${vtag} is done. Report: ${published.url}`,
+        whatsappText: `✅ Clearotron search for ${mark}${ref}${vtag} is done. Report: ${published.url}`,
         url: published.url, verdict, markName: job.markName ?? job.name ?? null,
       };
       // A NEW send supersedes any previous one: .sent is PER-SEND idempotence, not per-run-lifetime.
       // A run that terminally failed (notice sent → .sent written) and was then resumed to success
-      // would otherwise be SKIPPED by prelim-deliver's .sent guard — the report would never send.
+      // would otherwise be SKIPPED by clearotron-deliver's .sent guard — the report would never send.
       // The stale failure packet goes too, so the run dir tells exactly one delivery story. B4: the
       // per-channel send receipts are per-SEND state exactly like .sent — a stale email receipt from
-      // the superseded send would make prelim-deliver skip THIS packet's email, so they reset together.
+      // the superseded send would make clearotron-deliver skip THIS packet's email, so they reset together.
       try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
       try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
       try { rmSync(driverDir(run.runDir, "failure.json")); } catch { /* none */ }
@@ -14764,7 +14764,7 @@ async function pipelineInner(job, opts = {}) {
     //      lands on "unknown", which buys one recovery park — the run would write `.postponed` and the
     //      runner would auto-resume it two minutes later and keep billing.
     //   2. The failure packet would tell them their search BROKE. buildFailurePacket's copy is
-    //      "❌ Prelim search for X FAILED at Y", pushed to the customer over the outbox. Someone who
+    //      "❌ Clearotron search for X FAILED at Y", pushed to the customer over the outbox. Someone who
     //      pressed Stop must never be told something went wrong; they already know what happened.
     //
     // Partial work is not deliverable, so nothing is published — but the spend up to this point is
@@ -15128,7 +15128,7 @@ async function pipelineInner(job, opts = {}) {
     }
     // T5 (J5) — the failure NOTICE rides the SAME guaranteed lane as success delivery: a
     // CODE-authored packet (_driver/failure.json) + sendPending + the outbox wake marker, consumed by
-    // the completion-watch → prelim-deliver skill exactly like a delivery packet. This makes the
+    // the completion-watch → clearotron-deliver skill exactly like a delivery packet. This makes the
     // notice failure-independent: no WhatsApp binding, a handoff-mode engine, or a dead ping stage can
     // no longer silence it ( F9: teal-keystone died silently on exactly that). Best-effort —
     // packet-write trouble must never mask the original failure; the .failed sentinel + status.json

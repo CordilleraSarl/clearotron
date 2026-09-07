@@ -13,7 +13,7 @@ import { join } from "node:path";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 
 // set the workspace root BEFORE driver.config.mjs loads (via the dynamic runner import below), so config.workspaceRoot freezes to our temp dir
-const ROOT = mkdtempSync(join(tmpdir(), "prelim-resume-"));
+const ROOT = mkdtempSync(join(tmpdir(), "clearotron-resume-"));
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 // band-truth gate (2026-07-14): OFF in hermetic harnesses — mock runs never dial the provider.
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";

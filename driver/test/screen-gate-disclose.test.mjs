@@ -16,8 +16,8 @@ import { envFrom, pinEnv } from "../../shared/env-aliases.mjs";   // — a fixtu
 import { tmpdir as __tmpdir } from "node:os";
 import { join as __join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
-pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK_DIR") || __mkdtemp(__join(__tmpdir(), "prelim-testroot-")));
-const LEDGER = __join(__mkdtemp(__join(__tmpdir(), "prelim-sgd-ledger-")), "corsearch-calls.jsonl");
+pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK_DIR") || __mkdtemp(__join(__tmpdir(), "clearotron-testroot-")));
+const LEDGER = __join(__mkdtemp(__join(__tmpdir(), "clearotron-sgd-ledger-")), "corsearch-calls.jsonl");
 process.env.CLEAROTRON_REGISTER_CALL_LOG = LEDGER;
 __write(LEDGER, "");
 import { test } from "node:test";
@@ -118,7 +118,7 @@ const JOB = {
 
 // Fresh module graph + env per run; `reuse` re-enters an existing run (the resume shape).
 async function runMockPipeline(env, opts = {}, reuse = null) {
-  const root = reuse?.root ?? mkdtempSync(join(tmpdir(), "prelim-sgd-"));
+  const root = reuse?.root ?? mkdtempSync(join(tmpdir(), "clearotron-sgd-"));
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF",
     "CLEAROTRON_SCREEN_GATE_UNNAMED"]) delete process.env[k];
   for (const [k, v] of Object.entries({

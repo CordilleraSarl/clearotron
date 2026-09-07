@@ -424,9 +424,12 @@ const unitTypeOf = (u) => {
 // cost is the admission cap: counts are serial per queue while queues drain concurrently, so two
 // claimers can overshoot a per-account cap by a bounded one per queue. A bounded overshoot is not a
 // reason to leave a retired unit running when disarming it is one call.
-export const BACKGROUND_RETIRED = Object.freeze([
-  "prelim-driver.service", "prelim-driver.timer", "prelim-driver.path",
-]);
+// EMPTY, AND KEPT RATHER THAN DELETED. The retired path-watcher/timer units it named are gone from the
+// tree, so naming them here would describe files this repo does not ship — which is exactly what the
+// "every retired unit is a unit this repo actually ships" check refuses. The export stays because the
+// next retirement wants somewhere to go, and an empty list is a statement that nothing is currently
+// retired-but-shipped.
+export const BACKGROUND_RETIRED = Object.freeze([]);
 
 export const BACKGROUND_EXCLUDED = Object.freeze({
   // ── `clearotron-client-mcp.service` LEFT THIS TABLE ON 2026-09-03, AND SAYING SO IS THE POINT ────
@@ -447,12 +450,6 @@ export const BACKGROUND_EXCLUDED = Object.freeze({
   // because production runs them today and deleting them would remove the only tracked description of a
   // live service. An exclusion reason is required to be a sentence, and the true sentence is that the
   // unit is going — not that a workstation should not start it.
-  "prelim-driver.service": "RETIRED with the path-watcher/timer drain posture (owner ruling 2026-08-26, restated 2026-08-31) — clearotron-worker.service is the drain, and this file survives only until production's rebuild",
-  "prelim-driver.timer": "RETIRED with prelim-driver.service — the 90s pull the worker's --watch replaces",
-  "prelim-driver.path": "RETIRED with prelim-driver.service — the queue watcher whose glob a documented install never writes",
-  "prelim-outbox.service": "the delivery outbox drains toward real clients — a production lane, not something a workstation should start by default",
-  "prelim-outbox.path": "the outbox watcher — excluded with its service",
-  "prelim-outbox.timer": "the outbox sweep — excluded with its service",
   "profile-service.service": "the portal constructs the profile service IN-PROCESS (driver/portal-service.mjs); the standalone unit is the separate-editor deployment shape and running both double-serves the store",
 });
 
@@ -1508,7 +1505,7 @@ if (isMain) {
     // The comment here used to justify the gap: "the oneshot worker and its timer/path are judged by
     // being enabled". That is stale — clearotron-worker.service is `runner.mjs --watch`, Type=simple,
     // Restart=on-failure, and there is no timer or path unit in the install set at all. It described the
-    // retired prelim-* units. A stale justification is worse than none: it reads as a decision.
+    // retired clearotron-* units. A stale justification is worse than none: it reads as a decision.
     //
     // Judged by the unit's OWN declared Type rather than by a list kept here, so a oneshot added to the
     // set later is judged correctly instead of being reported as broken for exiting.
@@ -1601,7 +1598,7 @@ if (isMain) {
       if (stopping) return;
       if (!fatal) {
         err(`\nstart: ${name} (${script}) could not be started: ${String(e?.message ?? e)} — the portal is still up,`
-          + ` but the queue will not drain.\n`);
+          + ` but the queue will not be worked.\n`);
         return;
       }
       err(`\nstart: ${name} (${script}) could not be started: ${String(e?.message ?? e)}\n`);

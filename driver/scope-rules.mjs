@@ -113,7 +113,7 @@ export function checkClearanceScopeRules({ job = null, profile = null, resolved 
   // request resolves to no territory" would be a claim about a scope nobody saw. But when the request —
   // or the saved search it names — DOES name territories, the profile is irrelevant to the count and the
   // rules still bite. Skipping them there is how a roster-blind deployment (profile_key_unknown → the
-  // fail-open to prelim) would admit a three-country deep dive at the wall itself (review 2026-07-27).
+  // fail-open to clearotron) would admit a three-country deep dive at the wall itself (review 2026-07-27).
   if (!profileReadable && !scope.length) return { errors, warnings };
   // Quoted AS WRITTEN, worldwide tokens dropped (a mode is not a place — territory-tiers.mjs answers
   // which entries those are, so this module and the door cannot disagree about the spelling of

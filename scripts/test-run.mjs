@@ -25,7 +25,7 @@
 //
 // The second obvious fix is a posttest sweeper matching fixture prefixes with an mtime floor. But agents
 // run these suites CONCURRENTLY — that is how the box filled in the first place — so "delete everything
-// matching prelim-mock-* older than N" can delete another run's live fixtures. Prefix matching cannot
+// matching clearotron-mock-* older than N" can delete another run's live fixtures. Prefix matching cannot
 // distinguish my fixtures from yours.
 //
 // A third option needs neither. os.tmpdir() honours TMPDIR, and every leaking call site is already

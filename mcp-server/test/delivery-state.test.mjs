@@ -80,7 +80,7 @@ test("list_runs: sendPending:true filter returns only owed runs, false returns o
 
 // ── B4: per-channel dual-read (channels.email / channels.whatsapp) ────────────────────────────────
 // A channel counts as sent when the run has that channel's receipt in _driver/send-receipts.json
-// (written by prelim-deliver right after EACH send lands) OR the legacy all-channels .sent marker.
+// (written by clearotron-deliver right after EACH send lands) OR the legacy all-channels .sent marker.
 // This is what SKILL.md step 2b consults on a retry to skip already-receipted channels.
 
 test("channels: legacy .sent only (pre-receipts run) → both channels read as sent, ids null", () => {

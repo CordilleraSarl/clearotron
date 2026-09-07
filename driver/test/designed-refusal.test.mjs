@@ -186,7 +186,7 @@ test("#848 the failure packet's copy says REFUSED, not FAILED, and never calls i
   const failed = buildFailurePacket({ ...base, terminalKind: "deterministic" });
   assert.equal(failed.refused, false, "written false, never omitted (#755's rule: absence must not be the signal)");
   assert.match(failed.subject, /run FAILED, nothing delivered/);
-  assert.match(failed.whatsappText, /❌ Prelim search for WANDERER FAILED at knockout-register-count/);
+  assert.match(failed.whatsappText, /❌ Clearotron search for WANDERER FAILED at knockout-register-count/);
   assert.match(failed.emailBodyHtml, /FAILED at stage/);
 
   // and a client-started refusal still gets the redacted copy — no machine reason to a client

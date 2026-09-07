@@ -147,7 +147,7 @@ test("#1216 a no-default path accessor REFUSES on unset and on blank, and names 
             // original defect survived: the failure was silent about WHAT was unconfigured.
             // step 4.0 — EITHER spelling. This demanded the refusal name a RETIRED one, so
             // re-aiming the message at the name in force made the arm reject the right answer.
-            assert.match(e.message, /(?:PRELIM|CLEAROTRON)_[A-Z_]+/,
+            assert.match(e.message, /(?:CLEAROTRON|CLEAROTRON)_[A-Z_]+/,
               `${name} refused without naming an environment variable`);
             return true;
           },

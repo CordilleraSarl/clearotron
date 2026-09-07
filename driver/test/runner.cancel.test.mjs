@@ -73,7 +73,7 @@ const statusOf = (runDir) => { try { return JSON.parse(readFileSync(join(runDir,
 const queueMarkers = (q) => readdirSync(q).filter((f) => !f.includes(".result") && !f.endsWith(".md") && !f.endsWith(".txt")).sort();
 
 test("stopping a RUNNING run ends it as cancelled — and a second admission pass does not bring it back", async () => {
-  const root = mkdtempSync(join(tmpdir(), "prelim-stop-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-stop-"));
   const barrier = join(root, "release-barrier");
   for (const [k, v] of Object.entries(envFor(root, { MOCK_BARRIER_FILE: barrier }))) pinEnv(process.env, k, v);
 
@@ -133,9 +133,9 @@ test("stopping a RUNNING run ends it as cancelled — and a second admission pas
 });
 
 test("a stopped run tells nobody it failed — no outbox run-failed packet", async () => {
-  // buildFailurePacket's copy is "❌ Prelim search for X FAILED at Y", pushed to the customer. Someone
+  // buildFailurePacket's copy is "❌ Clearotron search for X FAILED at Y", pushed to the customer. Someone
   // who pressed Stop must never receive that.
-  const root = mkdtempSync(join(tmpdir(), "prelim-stop-quiet-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-stop-quiet-"));
   const barrier = join(root, "release-barrier");
   for (const [k, v] of Object.entries(envFor(root, { MOCK_BARRIER_FILE: barrier }))) pinEnv(process.env, k, v);
 
@@ -175,7 +175,7 @@ test("a run STOPPED WHILE PARKED never wakes up — the resume path reads the ma
   // The park is where a stop is most likely: a rate-limit window can be hours long. And it is the case
   // the engine's own check CANNOT catch, because a parked run has no turn in flight — so if the queue's
   // resume path did not read the marker, the run would wake on its own clock and carry on spending.
-  const root = mkdtempSync(join(tmpdir(), "prelim-stop-parked-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-stop-parked-"));
   for (const [k, v] of Object.entries(envFor(root))) pinEnv(process.env, k, v);
 
   const Q = queueFor(root);
@@ -243,7 +243,7 @@ test("a run STOPPED WHILE PARKED never wakes up — the resume path reads the ma
 test("the run-dir self-resume watcher also refuses a cancelled run", async () => {
   // The second of the three ways back to life: a run-dir `.postponed` sentinel self-resumes even with no
   // queue sidecars at all (a manually-resumed run). It has to read the marker independently.
-  const root = mkdtempSync(join(tmpdir(), "prelim-stop-selfresume-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-stop-selfresume-"));
   for (const [k, v] of Object.entries(envFor(root))) pinEnv(process.env, k, v);
   mkdirSync(queueFor(root), { recursive: true });
 
@@ -285,7 +285,7 @@ test("the run-dir self-resume watcher also refuses a cancelled run", async () =>
 // this asserts the SET of run-dir surfaces rather than any one of them, and it is deliberately written
 // against the retire function directly so it stays cheap enough to keep.
 test("#1379 the park-cancel retire writes the same run-dir surfaces the running-path cancel does", async () => {
-  const root = mkdtempSync(join(tmpdir(), "prelim-1379-parity-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-1379-parity-"));
   try {
     const Q = join(root, "queue");
     const runDir = join(root, "run");
@@ -320,7 +320,7 @@ test("#1379 the park-cancel retire writes the same run-dir surfaces the running-
 test("#1379 a park with no recorded run dir still retires the queue side, and says so", async () => {
   // Fail-open, and the reason it must not throw: this runs inside the drain loop, and an exception here
   // would abandon every other due park in the same pass.
-  const root = mkdtempSync(join(tmpdir(), "prelim-1379-norundir-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-1379-norundir-"));
   try {
     const Q = join(root, "queue");
     mkdirSync(Q, { recursive: true });

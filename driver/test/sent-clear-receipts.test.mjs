@@ -3,7 +3,7 @@
 // B4 structural guard — every `.sent`-clear site also clears the per-channel send receipts.
 // The invariant: `.sent` and `_driver/send-receipts.json` are BOTH per-SEND state. Whenever the driver
 // resets `.sent` to initiate a fresh send (delivery handoff, failure-notice path, runner pre-run
-// backstop, capped self-resume), stale receipts from the superseded send would make prelim-deliver's
+// backstop, capped self-resume), stale receipts from the superseded send would make clearotron-deliver's
 // step 2b skip channels of the NEW packet — a lost email, the mirror image of the duplicate-email bug.
 // Grep-driven so a FUTURE `.sent`-clear site added without the paired receipts clear fails here, not in
 // production: we scan the sources for every rmSync of ".sent" and require the receipts rm adjacent.

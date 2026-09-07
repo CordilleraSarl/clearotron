@@ -36,7 +36,7 @@ const POLICY_JX = { components: { jxLanes: true } };
 // ── lane routing (pure) ─────────────────────────────────────────────────────────────────────────────
 test("decideJxLanes: component gates everything; CN-family jurisdictions route to zh; jxPolicy depth wins; off excludes", () => {
   assert.deepEqual(decideJxLanes({ job: { jurisdictions: ["CN"] }, profile: {}, searchPolicy: { components: {} } }).lanes, {},
-    "no jxLanes component ⇒ no lanes, ever (a plain prelim is untouched)");
+    "no jxLanes component ⇒ no lanes, ever (a plain clearotron is untouched)");
   const cn = decideJxLanes({ job: { jurisdictions: ["US", "CN", "HK"] }, profile: {}, searchPolicy: POLICY_JX });
   assert.deepEqual(Object.keys(cn.lanes), ["zh"]);
   assert.deepEqual(cn.lanes.zh.jurisdictions, ["CN", "HK"]);

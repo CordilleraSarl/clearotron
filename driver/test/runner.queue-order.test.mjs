@@ -77,7 +77,7 @@ const envFor = (root, extra = {}) => ({
 });
 
 test("the order file decides which queued job runs next — asserted on COMPLETION order, against one slot", async () => {
-  const root = mkdtempSync(join(tmpdir(), "prelim-qorder-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-qorder-"));
   for (const [k, v] of Object.entries(envFor(root))) pinEnv(process.env, k, v);
 
   const Q = queueFor(root, "clawdi");
@@ -110,7 +110,7 @@ test("the order file decides which queued job runs next — asserted on COMPLETI
 });
 
 test("with no order file, the queue runs oldest-first by enqueuedAt — the field nothing used to read", async () => {
-  const root = mkdtempSync(join(tmpdir(), "prelim-qorder-fallback-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-qorder-fallback-"));
   for (const [k, v] of Object.entries(envFor(root))) pinEnv(process.env, k, v);
 
   const Q = queueFor(root, "clawdi");
@@ -140,7 +140,7 @@ test("with no order file, the queue runs oldest-first by enqueuedAt — the fiel
 test("a job the order file no longer knows about still runs — the file is advisory, never a gate", async () => {
   // `stop_run` removes a queued job with a bare rmSync and leaves the order entry behind, and the email
   // door enqueues jobs the portal never listed. Both must be harmless, or the queue would strand work.
-  const root = mkdtempSync(join(tmpdir(), "prelim-qorder-advisory-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-qorder-advisory-"));
   for (const [k, v] of Object.entries(envFor(root))) pinEnv(process.env, k, v);
 
   const Q = queueFor(root, "clawdi");
@@ -174,7 +174,7 @@ test("no run slot free: the drain HOLDS the job queued and admits it when a slot
   // claimed everything it saw. Now a pass that gets no slot launches nothing, so that test alone would
   // return with the job still queued and leave it to the next .path/timer activation — a silent stall
   // under exactly the load this change is for.
-  const root = mkdtempSync(join(tmpdir(), "prelim-qorder-starved-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-qorder-starved-"));
   for (const [k, v] of Object.entries(envFor(root))) pinEnv(process.env, k, v);
 
   const Q = queueFor(root, "clawdi");

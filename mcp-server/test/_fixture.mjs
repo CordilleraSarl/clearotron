@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Test fixture: a self-contained prelim run-dir under a temp CLEAROTRON_WORK_DIR, so the read libs can be
+// Test fixture: a self-contained clearotron run-dir under a temp CLEAROTRON_WORK_DIR, so the read libs can be
 // exercised from an ordinary developer account — no gateway, and no access to a deployment's run-dirs.
 // IMPORTANT: this module sets the env vars at import time;
 // test files must import ONLY this module statically and import ../lib/* DYNAMICALLY inside before() — else
@@ -161,7 +161,7 @@ export function buildFixture() {
     lrow("search", "prelim-tmptest1-acme-copper-anvil-register-unit-primary-sweep"),
     lrow("search", "prelim-tmptest1-acme-copper-anvil-register-digest"),
     lrow("record_fetch", "prelim-tmptest1-acme-copper-anvil-register-unit-primary-sweep"),
-    JSON.stringify({ ts: "x", sessionKey: "agent:other:prelim-someoneelse-xyz-register-digest", tool: "search", ok: true }), // must NOT match
+    JSON.stringify({ ts: "x", sessionKey: "agent:other:clearotron-someoneelse-xyz-register-digest", tool: "search", ok: true }), // must NOT match
   ].join("\n") + "\n");
 
   return { WS, runId: RUN_ID, runDir: RUN_DIR };
@@ -222,7 +222,7 @@ export function buildRichRun() {
     schema: 1, id: "job2", runId: RUN_ID2, slug: "tmpmyrk1-myrkur", codename: "iron-heron", date: "2026-05-20",
     agent: "test", forwarder: "jordan", ref: "TMPMYRK1", markName: "MYRKUR", classes: [9],
     state: "delivered", stepN: 9, stepLabel: "Sending to you", stepTotal: 9, verdict: "CONDITIONAL",
-    url: "https://prelim.example/myrkur",
+    url: "https://clearotron.example/myrkur",
     startedAt: "2026-05-20T09:00:00Z", updatedAt: "2026-05-20T10:10:00Z", deliveredAt: "2026-05-20T10:10:00Z",
   }, null, 2) + "\n");
 
@@ -237,7 +237,7 @@ export function buildRichRun() {
   w(join(POOL, RUN_ID2, "report-data.json"), JSON.stringify({
     schema: "report-data/1", kind: "clearance", runId: RUN_ID2, codename: "iron-heron",
     matter: "TMPMYRK1", markName: "MYRKUR", title: "MYRKUR", customerKey: "generic",
-    issued: "2026-05-20 · 12:10", url: "https://prelim.example/portal/report/tmpmyrk1-myrkur-2026-05-20-iron-heron",
+    issued: "2026-05-20 · 12:10", url: "https://clearotron.example/portal/report/tmpmyrk1-myrkur-2026-05-20-iron-heron",
     auditFile: `${RUN_ID2}-audit.xlsx`, engineCommit: null,
     level: { searchLevel: "global-preliminary-search", stageLabel: "Global preliminary search" },
     verdict: {
@@ -361,14 +361,14 @@ export function buildKnockoutRun() {
     markName: "PROJECT HALCYON +1 more", marks: [{ name: "PROJECT HALCYON" }, { name: "HALCYONA" }],
     classes: [9, 41],
     lane: "knockout", state: "delivered", stepN: 5, stepLabel: "Sending to you", stepTotal: 5, verdict: "HIGH",
-    url: "https://prelim.example/halcyon",
+    url: "https://clearotron.example/halcyon",
     startedAt: "2026-08-04T09:00:00Z", updatedAt: "2026-08-04T09:40:00Z", deliveredAt: "2026-08-04T09:40:00Z",
   }, null, 2) + "\n");
 
   const koDoc = (name, slug, band, qualifier, findings, summary) => ({
     schema: "report-data/1", runId: RUN_ID_KO, codename: "brass-lantern", matter: RUN_ID_KO,
     customerKey: "generic", issued: "2026-08-04 · 11:40",
-    url: `https://prelim.example/portal/report/${RUN_ID_KO}/${slug}`,
+    url: `https://clearotron.example/portal/report/${RUN_ID_KO}/${slug}`,
     auditFile: `${RUN_ID_KO}-audit.xlsx`,
     // The knockout shape carries a RENDERED `identity` string beside the level id. The MCP reads
     // `searchLevel` and re-resolves — a stored name is the bug removed. The string here is

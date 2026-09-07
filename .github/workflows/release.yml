@@ -978,6 +978,34 @@ jobs:
       # directory, and npm's failure for a missing one reads like a packing failure rather than a missing
       # folder. The seal below is inside the "once": it rewrites the manifest in place, before anything
       # scans or measures the artefact, so every step after it reads the bytes that go to the registry.
+      # ── THE BROWSER BUILD OF THE SPREADSHEET LIBRARY IS NOT SHIPPED ─────────────────────────────────
+      #
+      # `exceljs/dist` is a copy of the library built to run inside a web browser, plus its source maps:
+      # 19.87 MB across 340 files, roughly a quarter of the whole package. Clearotron runs the Node build
+      # in `lib/`, 0.51 MB packed, imported lazily where a workbook is written — nothing reaches `dist/`.
+      # `README_zh.md` goes with it: 0.19 MB of a translation of a dependency's own readme.
+      #
+      # Measured with the portal bundle built, because this job builds it before packing and a tree
+      # without it understates what ships: 84.49 MB unpacked over 4,972 files. Removing both leaves
+      # 64.40 MB over 4,620, and the margin against the 67 MB asked for is 2.60 MB — small enough that
+      # anything else added to the shipped tree can spend it. If a size check fails later, look for what
+      # was added; this is the only thing ruled removable.
+      #
+      # One measured side effect, so that a later reader diffing the package is not left guessing.
+      # Removing `README_zh.md` also drops eleven CHANGELOG files belonging to bundled dependencies —
+      # 0.03 MB, reproducible, and nothing loads them. No licence is lost: exceljs's own LICENSE ships
+      # beside the `lib/` build that is used, and only the duplicate copy inside `dist/` goes with it.
+      #
+      # BEFORE THE PACK AND AFTER THE BUNDLE BUILD, so the bytes packed are the bytes measured. It is in
+      # BOTH publishing jobs deliberately: they pack independently, and pruning one would leave the
+      # other shipping the copy nobody loads.
+      - name: Leave the browser build of the spreadsheet library out of the package
+        run: |
+          set -euo pipefail
+          rm -rf node_modules/exceljs/dist node_modules/exceljs/README_zh.md
+          test ! -e node_modules/exceljs/dist
+          test -d node_modules/exceljs/lib
+
       - name: Pack the exact bytes that will be published
         run: |
           set -euo pipefail
@@ -1316,6 +1344,34 @@ jobs:
       # directory, and npm's failure for a missing one reads like a packing failure rather than a missing
       # folder. The seal below is inside the "once": it rewrites the manifest in place, before anything
       # scans or measures the artefact, so every step after it reads the bytes that go to the registry.
+      # ── THE BROWSER BUILD OF THE SPREADSHEET LIBRARY IS NOT SHIPPED ─────────────────────────────────
+      #
+      # `exceljs/dist` is a copy of the library built to run inside a web browser, plus its source maps:
+      # 19.87 MB across 340 files, roughly a quarter of the whole package. Clearotron runs the Node build
+      # in `lib/`, 0.51 MB packed, imported lazily where a workbook is written — nothing reaches `dist/`.
+      # `README_zh.md` goes with it: 0.19 MB of a translation of a dependency's own readme.
+      #
+      # Measured with the portal bundle built, because this job builds it before packing and a tree
+      # without it understates what ships: 84.49 MB unpacked over 4,972 files. Removing both leaves
+      # 64.40 MB over 4,620, and the margin against the 67 MB asked for is 2.60 MB — small enough that
+      # anything else added to the shipped tree can spend it. If a size check fails later, look for what
+      # was added; this is the only thing ruled removable.
+      #
+      # One measured side effect, so that a later reader diffing the package is not left guessing.
+      # Removing `README_zh.md` also drops eleven CHANGELOG files belonging to bundled dependencies —
+      # 0.03 MB, reproducible, and nothing loads them. No licence is lost: exceljs's own LICENSE ships
+      # beside the `lib/` build that is used, and only the duplicate copy inside `dist/` goes with it.
+      #
+      # BEFORE THE PACK AND AFTER THE BUNDLE BUILD, so the bytes packed are the bytes measured. It is in
+      # BOTH publishing jobs deliberately: they pack independently, and pruning one would leave the
+      # other shipping the copy nobody loads.
+      - name: Leave the browser build of the spreadsheet library out of the package
+        run: |
+          set -euo pipefail
+          rm -rf node_modules/exceljs/dist node_modules/exceljs/README_zh.md
+          test ! -e node_modules/exceljs/dist
+          test -d node_modules/exceljs/lib
+
       - name: Pack the exact bytes that will be published
         run: |
           set -euo pipefail

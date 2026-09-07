@@ -26,7 +26,7 @@ import { normalizeTerritory } from "../../providers/_shared/territory-codes.mjs"
 // shape we chose for them.
 const JX = { product: "multi-country-focus-search", stageLabel: "Multi-country focus search", pipeline: "clearance",
   components: { registerProbe: false, jxLanes: true, commonLawGrid: true }, nativeRequested: true };
-const PRELIM = { product: "multi-country-focus-search", stageLabel: "Multi-country focus search", pipeline: "clearance",
+const CLEAROTRON = { product: "multi-country-focus-search", stageLabel: "Multi-country focus search", pipeline: "clearance",
   components: { registerProbe: false, jxLanes: false, commonLawGrid: true } };
 const GLOBAL = { product: "global-preliminary-search", stageLabel: "Global preliminary search", pipeline: "clearance",
   components: { registerProbe: false, jxLanes: false, commonLawGrid: true } };
@@ -65,7 +65,7 @@ test("native-language routing: an investigation somebody ASKED for refuses a sco
   // nothing, and nobody asked for it — a refusal there is one we inflicted on ourselves.
   assert.deepEqual(errs({ job: { jurisdictions: ["Brazil"] }, profile: null, resolved: FULL_COUNTRY }), []);
   // no jxLanes component ⇒ nothing to route
-  assert.deepEqual(errs({ job: { jurisdictions: ["France", "Germany"] }, profile: null, resolved: PRELIM }), []);
+  assert.deepEqual(errs({ job: { jurisdictions: ["France", "Germany"] }, profile: null, resolved: CLEAROTRON }), []);
   assert.deepEqual(errs({ job: {}, profile: null, resolved: KNOCKOUT }), []);
   assert.deepEqual(errs({ job: {}, profile: null, resolved: null }), [], "nothing resolved ⇒ nothing to judge");
   assert.deepEqual(checkClearanceScopeRules(), { errors: [], warnings: [] }, "callable with nothing at all");
@@ -170,9 +170,9 @@ test("every product is judged, and a KNOCKOUT is no longer exempt from anything"
   assert.match(narrowed[0], /order a Full country search over them/);
   assert.deepEqual(errs({ job: {}, profile: null, resolved: GLOBAL }), []);
   // A Multi-country focus search accepts neither worldwide nor exactly one.
-  assert.match(errs({ job: {}, profile: null, resolved: PRELIM })[0], /resolves to no territory \(worldwide\)/);
-  assert.match(errs({ job: { jurisdictions: ["France"] }, profile: null, resolved: PRELIM })[0], /names one country/);
-  assert.deepEqual(errs({ job: { jurisdictions: ["France", "Germany"] }, profile: null, resolved: PRELIM }), []);
+  assert.match(errs({ job: {}, profile: null, resolved: CLEAROTRON })[0], /resolves to no territory \(worldwide\)/);
+  assert.match(errs({ job: { jurisdictions: ["France"] }, profile: null, resolved: CLEAROTRON })[0], /names one country/);
+  assert.deepEqual(errs({ job: { jurisdictions: ["France", "Germany"] }, profile: null, resolved: CLEAROTRON }), []);
 });
 
 test("both rules can fire on one request, and each says its own thing", () => {
@@ -238,7 +238,7 @@ test("a REGION is not one country — the hole that admitted a 27-state deep div
   // and one real country is still the runnable shape
   assert.deepEqual(errs({ job: { jurisdictions: ["Germany"] }, profile: null, resolved: FULL_COUNTRY }), []);
   // A REGION IS A LEGAL SCOPE for the product that takes one — the tier is a fact, not a verdict.
-  assert.deepEqual(errs({ job: { jurisdictions: ["European Union"] }, profile: null, resolved: PRELIM }), []);
+  assert.deepEqual(errs({ job: { jurisdictions: ["European Union"] }, profile: null, resolved: CLEAROTRON }), []);
 });
 
 test("an unrecognized territory is not a country either — a typo names nowhere", () => {
@@ -303,7 +303,7 @@ test("no message names a switch, a variable or an internal level key", () => {
   for (const m of all) {
     assert.doesNotMatch(m, /[A-Z][A-Z0-9]*_[A-Z0-9_]+/, `a variable-shaped name reached a requester: ${m}`);
     assert.doesNotMatch(m, /jxLanes|registerProbe|commonLawGrid|laneDepth|jxPolicy/, `an internal component name reached a requester: ${m}`);
-    // bare `prelim` belongs in this list as much as its siblings do: it is a ORDERABLE_PRODUCTS key, and the
+    // bare `clearotron` belongs in this list as much as its siblings do: it is a ORDERABLE_PRODUCTS key, and the
     // portal renders these lines verbatim to a client who has only ever been shown the STAGE label. The
     // sibling assertion in portal-service.test.mjs omitted it too, so both claimed a property neither
     // checked (review 2026-07-27). \bprelim\b does not match "preliminary", which is the words we use.

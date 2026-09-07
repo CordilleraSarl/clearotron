@@ -5,7 +5,7 @@
 //
 // The round's engine override rides the DRIVER ACTIVATION's environment, and an activation that never
 // happens carries no environment. On the box this was asked about, no runner was running for any user
-// and no prelim unit existed in either scope: every enqueued job would have sat there, no unit would
+// and no clearotron unit existed in either scope: every enqueued job would have sat there, no unit would
 // have failed, and the round would have been fiction with a green harness.
 //
 // The pure half is tested here. The impure half (systemctl, ps) is not mocked: what it reports is a fact

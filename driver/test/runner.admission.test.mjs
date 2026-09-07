@@ -41,7 +41,7 @@ const until = async (pred, { timeoutMs = 8000, stepMs = 50 } = {}) => {
 };
 
 test("continuous admission: a job dropped mid-flight is claimed while an earlier run is still in flight", async () => {
-  const root = mkdtempSync(join(tmpdir(), "prelim-admission-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-admission-"));
   const barrier = join(root, "release-barrier");
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),

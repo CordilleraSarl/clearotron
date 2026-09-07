@@ -51,7 +51,7 @@ test('the mark uses the brand token rather than a hex literal', () => {
   //     ["--accent", L("--crimson"), L("--crimson"), "brand --crimson; a FILL, so it does not lighten in dark"]
   // So the lockup's centre bar was rendering with NO FILL, and this test was green the whole time,
   // because it asserted the presence of a string rather than that the string resolves. index.html's
-  // own favicon hard-codes tracker issue 860F09 for that same bar, which is what --accent holds.
+  // own favicon hard-codes #860F09 for that same bar, which is what --accent holds.
   assert.match(logo, /var\(--accent\)/, 'so a brand colour change reaches the lockup like every other surface')
   assert.ok(!/var\(--crimson\)/.test(logo), 'the portal has no --crimson; that name is the report stylesheets\' vocabulary')
   assert.ok(!/#860F09/i.test(logo), 'still a token, not the hex literal it stands for')

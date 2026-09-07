@@ -11,7 +11,7 @@ import { mkdtempSync as __mkdtemp } from "node:fs";
 import { tmpdir as __tmpdir } from "node:os";
 import { join as __join } from "node:path";
 import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";   // — the default is taken only when NO spelling holds a value
-pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK_DIR") || __mkdtemp(__join(__tmpdir(), "prelim-testroot-")));
+pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK_DIR") || __mkdtemp(__join(__tmpdir(), "clearotron-testroot-")));
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, writeFileSync } from "node:fs";
@@ -19,7 +19,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { countLaneCalls } from "../provider-usage.mjs";
 
-const LANE = "prelim-noref123-test-mark-copper-keystone-register-unit-saturation-probe";
+const LANE = "clearotron-noref123-test-mark-copper-keystone-register-unit-saturation-probe";
 
 function mkLedger(lines) {
   const p = join(mkdtempSync(join(tmpdir(), "btg-")), "calls.jsonl");
@@ -33,12 +33,12 @@ test("countLaneCalls: counts gateway-namespaced rows, -fbN / -taint-rerun varian
     JSON.stringify({ ts: "t", agentId: "clawdi", sessionKey: `agent:clawdi:${LANE}-fb1`, tool: "search" }),
     JSON.stringify({ ts: "t", agentId: "clawdi", sessionKey: `agent:clawdi:${LANE}-taint-rerun-1`, tool: "search" }),
     JSON.stringify({ ts: "t", agentId: "clawdi", sessionKey: "", sessionId: LANE, tool: "search" }),
-    JSON.stringify({ ts: "t", agentId: "clawdi", sessionKey: "agent:clawdi:prelim-noref123-test-mark-copper-keystone-register-unit-primary-sweep", tool: "search" }),
+    JSON.stringify({ ts: "t", agentId: "clawdi", sessionKey: "agent:clawdi:clearotron-noref123-test-mark-copper-keystone-register-unit-primary-sweep", tool: "search" }),
     `{"ts":"t","sessionKey":"agent:clawdi:${LANE}","tool":`,   // torn concurrent append
   ]);
   assert.equal(countLaneCalls(LANE, p), 4, "base + fb + taint-rerun + sessionId fallback; other lane and torn line ignored");
-  assert.equal(countLaneCalls("prelim-noref123-test-mark-copper-keystone-register-unit-primary-sweep", p), 1);
-  assert.equal(countLaneCalls("prelim-noref999-other-run-register-unit-saturation-probe", p), 0, "unknown lane counts zero");
+  assert.equal(countLaneCalls("clearotron-noref123-test-mark-copper-keystone-register-unit-primary-sweep", p), 1);
+  assert.equal(countLaneCalls("clearotron-noref999-other-run-register-unit-saturation-probe", p), 0, "unknown lane counts zero");
 });
 
 test("countLaneCalls: absent/unreadable ledger returns null (the gate cannot judge and must skip)", () => {

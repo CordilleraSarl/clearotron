@@ -38,7 +38,7 @@ const API_KEY = process.env.CLARIVATE_API_KEY || "";
 const BASE = process.env.CLARIVATE_API_BASE || DEFAULT_BASE;
 const tctx = (kind) => ({
   kind,
-  agentId: process.env.CLEAROTRON_GATHER_AGENT || "clawdi",
+  agentId: process.env.CLEAROTRON_GATHER_AGENT || "localagent",
   sessionKey: process.env.CLEAROTRON_GATHER_SESSION_KEY || "",   // run session key — telemetry attribution
   sessionId: process.env.CLEAROTRON_GATHER_SESSION_ID || "",
 });

@@ -219,7 +219,7 @@ export function renderFailureRecurrence(agg) {
     ].filter(Boolean).join("\n")
     : null;
   if (!agg.groups.length) {
-    return `No prelim failures or auto-recovery parks in the last ${agg.days} days.${refusalLine ? `\n${refusalLine}` : ""}${gapLine ? `\n${gapLine}` : ""}`;
+    return `No clearotron failures or auto-recovery parks in the last ${agg.days} days.${refusalLine ? `\n${refusalLine}` : ""}${gapLine ? `\n${gapLine}` : ""}`;
   }
   const head = (g) =>
     `${n(g.runIds.length, "run")}  ${g.sig}  [${g.failClass ?? "?"}]  ` +
@@ -247,7 +247,7 @@ export function renderFailureRecurrence(agg) {
 }
 
 // CLI: `node repair-digest.mjs [--days N]` — the ops-digest generator (scripts/ops-digest-daily.sh)
-// invokes this and pastes the output into its "Prelim Failure Recurrence" section.
+// invokes this and pastes the output into its "Clearotron Failure Recurrence" section.
 if (isEntrypoint(import.meta.url)) {
   const ix = process.argv.indexOf("--days");
   const days = ix >= 0 ? Math.max(1, Number(process.argv[ix + 1]) || 7) : 7;

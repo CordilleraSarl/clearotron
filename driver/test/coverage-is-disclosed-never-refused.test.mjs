@@ -4,7 +4,7 @@
 //
 // The owner, ordering from the portal on his own fresh install with a partial register wired:
 //
-//   "i cannot press the button for Global prelim search. Why. it doesnt appear disabled, no message
+//   "i cannot press the button for Global clearotron search. Why. it doesnt appear disabled, no message
 //    etc - but i cant select it. The others i can."
 //
 // And the ruling: "we either need to enable it (with a caveat because of coverage — because a user

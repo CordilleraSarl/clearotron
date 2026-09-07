@@ -62,7 +62,7 @@ const HEADLINE = {
 };
 
 // THE BUNDLES ARE GONE, and their deletion is the change rather than a tidy-up. They were three
-// hand-written shortcuts — `knockout` / `global-prelim` / `deep-dive` — each carrying a `searchLevel`
+// hand-written shortcuts — `knockout` / `global-clearotron` / `deep-dive` — each carrying a `searchLevel`
 // plus a `caseLaw` flag, and each naming a product ("Full deep dive") that appeared in no registry, on
 // no report and on no wire. That is what a bundle IS when the wire does not carry the product: a second
 // menu, invented to say the thing the first menu could not. The wire carries the product now, so the

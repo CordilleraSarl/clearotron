@@ -34,7 +34,7 @@ const JOB = {
 };
 
 // config.workspaceRoot freezes at FIRST import — every run in this file lands under ROOT.
-const ROOT = mkdtempSync(join(tmpdir(), "prelim-mock-gap-"));
+const ROOT = mkdtempSync(join(tmpdir(), "clearotron-mock-gap-"));
 const SLUG_DIR = join(ROOT, "workspace-clawdi", "studio", "prelim-search", "tmp8439-project-novapulse");
 
 async function runPipeline(env, jobPatch = {}, opts = {}) {

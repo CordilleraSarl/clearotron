@@ -56,8 +56,8 @@ test("plan_run previews the EXACT job start_run would build, not a lookalike", (
 test("plan_run reports WHERE the depth came from, using the resolver's own origin", () => {
   // "Running at your account's default" and "running what you asked for" look identical in a result and
   // mean very different things to whoever approves the spend.
-  // THERE IS NO HOUSE DEFAULT ANY MORE, and its removal is the answer this test now pins. `prelim` was
-  // it, and `prelim` named three different searches depending on where it pointed — so a request that
+  // THERE IS NO HOUSE DEFAULT ANY MORE, and its removal is the answer this test now pins. `clearotron` was
+  // it, and `clearotron` named three different searches depending on where it pointed — so a request that
   // named nothing got a guess wearing a level key. The SCOPE names it, and `chosenBy` says so.
   assert.match(planRun({ ...BASE }).search.chosenBy, /the territories this search resolves to/);
   assert.equal(planRun({ ...BASE, product: "global-preliminary-search" }).search.chosenBy, "this request");

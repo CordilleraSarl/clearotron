@@ -97,7 +97,7 @@ export function gateResolvedRequest({ job = null, profile = null, resolved = nul
   // A resolution that could not be taken is not a refusal — see the fail-open note in the header.
   if (!resolved) return out;
   // A CLARIFY IS RELAYED VERBATIM. It is already an actionable sentence naming the selector that could
-  // not be honoured ("product \"prelim\" names no search we offer — one of: … (or omit it for the
+  // not be honoured ("product \"clearotron\" names no search we offer — one of: … (or omit it for the
   // account's default)"), and flattening it into a cause would lose the remedy clause.
   if (resolved.clarify) { out.errors.push(resolved.clarify); return out; }
   // deliveryRoute "portal" — DECLARED but not BUILT. It validates shape-wise, has no consumer (the

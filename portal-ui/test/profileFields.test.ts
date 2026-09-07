@@ -125,7 +125,7 @@ test('A CLIENT IS NEVER SHOWN AN ENGINE PATH', () => {
   const readOnly = {
     frameworkPath: 'skills/prelim-search/risk-framework-aurora.md',
     workedExamplesPath: 'skills/prelim-search/worked-examples-aurora.md',
-    allowedRecipes: ['prelim'],
+    allowedRecipes: ['clearotron'],
     runCaps: { perMonth: 4 },
   }
   const shown = visibleReadOnlyFields(readOnly, false)
@@ -156,13 +156,13 @@ test('defaultProduct CLEARS to "" rather than deleting its key', () => {
   // and invisible: the page would show an empty box over a depth that was still in force.
   const f = spec('defaultProduct')
 
-  const untouched = applyField({ name: 'Aurora', defaultProduct: 'prelim' }, spec('name'), 'A')
-  assert.equal(untouched.defaultProduct, 'prelim', 'preserve: an unrelated edit does not disturb it')
+  const untouched = applyField({ name: 'Aurora', defaultProduct: 'clearotron' }, spec('name'), 'A')
+  assert.equal(untouched.defaultProduct, 'clearotron', 'preserve: an unrelated edit does not disturb it')
 
   const set = applyField({ name: 'Aurora' }, f, 'prelim-jx')
   assert.equal(set.defaultProduct, 'prelim-jx')
 
-  const cleared = applyField({ name: 'Aurora', defaultProduct: 'prelim' }, f, '')
+  const cleared = applyField({ name: 'Aurora', defaultProduct: 'clearotron' }, f, '')
   assert.ok('defaultProduct' in cleared, 'the key must SURVIVE the clear, carrying the sentinel')
   assert.equal(cleared.defaultProduct, '')
 })

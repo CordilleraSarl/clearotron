@@ -52,7 +52,7 @@ function doctorWithSkillsOverlay(value) {
 
 test("#1724 `clearotron doctor` REPORTS THE OVERLAY — the arm that fails on the unwired parent", () => {
   const out = doctorWithSkillsOverlay("");
-  assert.match(out, /Doctrine overlay/,
+  assert.match(out, /Custom instructions/,
     "the doctor must carry a doctrine section at all — on the parent commit it carried none, and the report "
     + "was reachable only through an npm script name nobody is told to type");
   assert.match(out, /doctrine overlay:/, "and it must be the report's own output, not a heading over nothing");
@@ -91,7 +91,7 @@ test("#1724 the doctrine section REPORTS and never judges — drift is not a fau
     // The section reports UNKNOWN drift (no recorded provenance point). That must not be a ✗: the user
     // overriding a doctrine file is a supported thing to do, and 's own rule is that the harness
     // records and does not judge.
-    const section = out.split("Doctrine overlay")[1]?.split("Register provider")[0] ?? "";
+    const section = out.split("Custom instructions")[1]?.split("Register provider")[0] ?? "";
     assert.ok(section.length > 0, "the section must exist to be judged");
     assert.ok(!section.includes("✗"),
       `drift must be reported, never flagged as a defect in the user's install. Section was:\n${section}`);

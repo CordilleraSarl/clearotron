@@ -57,7 +57,7 @@ function runWrapper(vars, { child = `console.log(${JSON.stringify(SENTINEL)})` }
 // ── the refusal ─────────────────────────────────────────────────────────────────────────────────────
 
 test("#1243 a live data-plane path REFUSES, and the child never executes", () => {
-  const r = runWrapper({ CLEAROTRON_QUEUE_DIR: "/srv/prelim/queue" });
+  const r = runWrapper({ CLEAROTRON_QUEUE_DIR: "/srv/clearotron/queue" });
   assert.equal(r.code, 1, "a refusal that exits 0 is not a refusal");
   assert.match(r.err, /REFUSING TO RUN/);
   // The property is pre-test, not post-hoc: a nonzero exit alone is exactly what the tripwire already
@@ -66,9 +66,9 @@ test("#1243 a live data-plane path REFUSES, and the child never executes", () =>
 });
 
 test("#1243 the refusal names the offending variable AND its value's root", () => {
-  const r = runWrapper({ CLEAROTRON_QUEUE_DIR: "/srv/prelim/queue" });
+  const r = runWrapper({ CLEAROTRON_QUEUE_DIR: "/srv/clearotron/queue" });
   assert.match(r.err, /CLEAROTRON_QUEUE_DIR/, "a refusal that does not name the variable teaches nothing");
-  assert.match(r.err, /\/srv\/prelim\/queue/, "the value the operator actually set");
+  assert.match(r.err, /\/srv\/clearotron\/queue/, "the value the operator actually set");
   assert.match(r.err, /root:\s*\/srv/, "the root is what says 'this is a live estate' at a glance");
 });
 
@@ -157,15 +157,15 @@ test("#1243 CLEAROTRON_REPORTS_DIR is deliberately NOT given a temp default", ()
 // ── the way through, and why it cannot be quiet ─────────────────────────────────────────────────────
 
 test("#1243 the override lets a live path through and SAYS SO", () => {
-  const r = runWrapper({ CLEAROTRON_QUEUE_DIR: "/srv/prelim/queue", CT_ALLOW_LIVE_DATA_PLANE: "1" });
+  const r = runWrapper({ CLEAROTRON_QUEUE_DIR: "/srv/clearotron/queue", CT_ALLOW_LIVE_DATA_PLANE: "1" });
   assert.equal(r.code, 0, r.err.slice(-800));
   assert.ok(r.all.includes(SENTINEL), "the named override did not let the run through");
   assert.match(r.err, /CT_ALLOW_LIVE_DATA_PLANE IS SET/, "a bypass nobody can see is the incident again");
-  assert.match(r.err, /CLEAROTRON_QUEUE_DIR=\/srv\/prelim\/queue/, "the warning must name what it let through");
+  assert.match(r.err, /CLEAROTRON_QUEUE_DIR=\/srv\/clearotron\/queue/, "the warning must name what it let through");
 });
 
 test("#1243 the override must be set to something — an empty value is not consent", () => {
-  const r = runWrapper({ CLEAROTRON_QUEUE_DIR: "/srv/prelim/queue", CT_ALLOW_LIVE_DATA_PLANE: "" });
+  const r = runWrapper({ CLEAROTRON_QUEUE_DIR: "/srv/clearotron/queue", CT_ALLOW_LIVE_DATA_PLANE: "" });
   assert.equal(r.code, 1, "an empty override waved a live data plane through");
   assert.ok(!r.all.includes(SENTINEL));
 });
