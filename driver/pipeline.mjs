@@ -107,7 +107,8 @@ import { mintCrossCheckDoubts, mintContradictionDoubts, stitchDoubts, applyClosu
 import { readAcceptedClosures } from "./doubt-closure-tool.mjs";
 import { CLOSURE_EVIDENCE_FILES } from "./doubt-closure-call.mjs";
 import { doubtsForClosure, doubtSelectionNote } from "./doubt-selection.mjs";   // doubt-closure selection
-import { deriveAsks, applyAskClosure, finalizeOpenHandoffs, summarizeAsks } from "./ask-ledger.mjs";   // PR-6 — every ask ends (2026-07-29)
+import { deriveAsks, applyAskClosure, finalizeOpenHandoffs, summarizeAsks } from "./ask-ledger.mjs";
+import { pendingWhatIf, claimWhatIf, finishWhatIf, whatIfRefusal } from "./whatif-queue.mjs";   // tracker issue 240 — a queued job is settled before its run archives   // PR-6 — every ask ends (2026-07-29)
 import { mintPresenceDoubts } from "./presence-reconciliation.mjs";   // presence-or-reason (2026-07-22 — the unjoined-Sheet-2 leak)
 import { escalatedAxes } from "./skeptic-record.mjs";   // THE escalation parse — shared with the record_skeptic transport so the rendered shape and this read cannot drift
 // — every placed candidate ends somewhere a reader can see; the ones that do not are counted by name
@@ -1532,6 +1533,13 @@ function attachProfile(ctx, job, { write = true } = {}) {
       const current = resolveProfile(job);
       if (current && current.key !== sidecar.profileKey)
         runLog(ctx.paths.runDir, { event: "profile-mismatch", sidecar: sidecar.profileKey, resolved: current.key });
+      // THE MATCH IS RECORDED TOO, and that is the point rather than symmetry for its own sake.
+      // `profile-mismatch` existed and its counterpart did not, so "the profile was right" was carried
+      // by the ABSENCE of a row — and an absence cannot tell "it matched" from "the probe never ran"
+      // (it throws below on a broken profiles/ state) or from "this run predates the probe". Three
+      // different facts, one empty grep. The positive row says which.
+      else if (current)
+        runLog(ctx.paths.runDir, { event: "profile-resolved", sidecar: sidecar.profileKey, resolved: current.key });
     } catch (e) {
       runLog(ctx.paths.runDir, { event: "profile-mismatch-probe-failed", error: String(e.message).slice(0, 120) });
     }
@@ -6135,8 +6143,70 @@ function sentinel(runDir, name, obj) {
   atomicWrite(join(runDir, name), JSON.stringify({ ts: new Date().toISOString(), ...obj }, null, 2) + "\n");
 }
 
+/**
+ * Settle every queued what-if BEFORE the run dir moves into the archive — tracker issue 240.
+ *
+ * A queued job lives under the run directory, and the worker enumerates candidates with `liveRunDirs`,
+ * which skips `archive` outright. So archiving carried a pending job out of the worker's reach: not
+ * claimed, not settled, not refused. The client who asked for it got no answer and no explanation, and
+ * no row anywhere said why. That is an absence reported as nothing at all — the one shape
+ * `whatIfRefusal` exists to prevent.
+ *
+ * BEFORE the rename, deliberately: the settlement is written into the run dir and travels with it, so
+ * the answer is on disk in the archive where the read tool will look for it.
+ *
+ * ✕ THE SENTENCE IS PER KIND, and a memo does not get the stage one. `whatIfRefusal`'s standing
+ * refusal — "this run is delivered or archived, what-if runs on live runs only" — is TRUE of a stage
+ * and FALSE of a memo, which runs on archived evidence by design. Telling a client their memo was
+ * refused because the run is archived would be a false sentence in the one place they go to find out
+ * what happened. A memo is closed on the true reason instead: it was queued before the run archived,
+ * and the drain does not reach an archived run.
+ *
+ * ✕ A JOB ANOTHER WORKER IS ACTIVELY RUNNING IS LEFT ALONE. `pendingWhatIf` returns queued jobs and
+ * claims older than an hour, never a fresh claim, so a live worker's job is not settled underneath it.
+ * A fresh claim at the moment of archiving is a race this does not close, and it is written down
+ * rather than papered over.
+ *
+ * Best-effort throughout: a failure to settle must never stop the archive, because a run that cannot
+ * archive is a much larger problem than a job with no row.
+ */
+export function settlePendingWhatIfsBeforeArchive(run) {
+  let pending = [];
+  // NOT a silent catch. This function exists because a job went unanswered with no row anywhere; a
+  // failure to enumerate that returned quietly would reproduce exactly that, one level up, and the
+  // archive would still succeed so nothing downstream would look wrong.
+  try { pending = pendingWhatIf(run.runDir); }
+  catch (e) { note(`what-if settle before archive could not enumerate the queue (${String(e?.message ?? e).slice(0, 120)}) — pending jobs may be unanswered`); return; }
+  for (const entry of pending) {
+    try {
+      // CLAIM FIRST, exactly as the worker does. `finishWhatIf` writes the terminal file and does not
+      // remove the `.json`; the claim is what renames it out of the queue. Settling without claiming
+      // writes a `.failed` beside a `.json` that still reads as QUEUED to every reader — the job would
+      // look pending and answered at the same time, which is worse than the silence being fixed here.
+      const job = claimWhatIf(entry);
+      if (!job) continue;                     // another worker won it, or it vanished — not ours to settle
+      const kind = job?.op?.kind === "memo" ? "memo" : "stage";
+      // ✕ THE SENTENCE IS PER KIND. The standing refusal — "what-if runs on live runs only" — is TRUE
+      // of a stage and FALSE of a memo, which reasons over archived evidence by design. A memo is
+      // closed on the true reason instead.
+      const error = kind === "memo"
+        ? "this what-if was queued before its run was archived, and the drain does not reach an archived run — ask it again against the archived run, which a memo may read"
+        : (whatIfRefusal({ location: "archive", state: run.state ?? null, kind }) ?? "this run is delivered or archived — what-if runs on live runs only");
+      finishWhatIf(run.runDir, entry.id, { ok: false, op: job.op ?? null, error });
+      try { runLog(run.runDir, { event: "whatif-settled-on-archive", id: entry.id, kind, stale: entry.stale }); }
+      catch { /* the row is written; the log line is a convenience and must not undo it */ }
+    } catch (e) {
+      // One job's settlement must not cost the others, or the archive — but it must not be SILENT
+      // either. A swallowed failure here leaves exactly the unanswered job this function exists to
+      // prevent, and the archive still succeeds, so nothing downstream looks wrong.
+      note(`what-if ${entry.id} could not be settled before archive (${String(e?.message ?? e).slice(0, 120)}) — it may be unanswered`);
+    }
+  }
+}
+
 function archive(run) {
   try {
+    settlePendingWhatIfsBeforeArchive(run);
     mkdirSync(dirname(run.archiveDir), { recursive: true });
     renameSync(run.runDir, run.archiveDir);
     return run.archiveDir;
@@ -15520,6 +15590,17 @@ export async function runExperiment(job, opts) {
     // what RAN.
     engine: experimentEngineName(),
     modelTier: model ?? null,
+    // — THE RATING AUTHORITY THIS ARM RAN UNDER, on the arm's own record.
+    //
+    // `whatIfRun` resolves this correctly and returned it in memory only: nothing in the experiment
+    // directory named the profile it rated under, so a reader coming to the arm tomorrow could not
+    // confirm which framework produced it, and a future regression would be as silent as the one this
+    // was opened on. The frozen sidecar is the authority — never a fresh resolve, which is the mid-run
+    // drift the freeze exists to forbid.
+    //
+    // `null` means the run carries no frozen profile (a legacy run), and it is written rather than
+    // omitted: absent and "there was none" are different facts and only one of them is a defect.
+    ratedUnder: ctx.profile?.profileKey ?? null,
     dispatchTrigger: opts.dispatchTrigger ?? "fresh",
     // — WHICH PASS THIS ARM REPRODUCED, in a word. null on a non-corrective arm;
     // never "dispatched-warm", which is production's alone.

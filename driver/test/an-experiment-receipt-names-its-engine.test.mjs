@@ -97,3 +97,41 @@ test("1967 a non-default-engine arm is distinguishable from a default one by the
     "two arms on different engines serialise identically — the receipt cannot tell them apart");
   assert.notEqual(telemetryDelta(def, alt).includes("anthropic-agent"), false);
 });
+
+// ── THE RATING AUTHORITY THE ARM RAN UNDER (tracker issue 268) ───────────────────────────────────────
+//
+// `whatIfRun` resolves the profile correctly and returned it IN MEMORY ONLY: a walk of a real
+// experiment directory for either `ratedUnder` or the resolved key found nothing, and `matter-frame`
+// writes no `framework.json` into the experiment either. So the answer was right and unauditable, and a
+// future regression would be as silent as the one this was opened on.
+//
+// ✕ THESE ARE SOURCE-LEVEL GUARDS, like the two above and for the same reason: the receipt is built
+// inside a pipeline function with no seam a unit test can reach, and splitting one open to test it
+// would remove the seam's only consumer. What they can prove is that the field is written and from the
+// FROZEN sidecar. What they cannot prove is the value on a real arm's disk — that needs a drive, and it
+// is the acceptance criterion on the issue.
+
+test("268 the receipt records the rating authority the arm ran under, from the FROZEN sidecar", () => {
+  const src = readFileSync(join(DRIVER, "pipeline.mjs"), "utf8");
+  const receipt = src.slice(src.indexOf("// ── 5. THE CONTEXT RECEIPT"), src.indexOf("experiment-context.json"));
+  assert.ok(receipt.length > 0, "the context receipt block moved — this guard is reading nothing");
+  assert.match(receipt, /ratedUnder: ctx\.profile\?\.profileKey \?\? null/,
+    "the receipt does not record which rating authority produced the arm");
+  // FROM THE SIDECAR, never a fresh resolve. Re-resolving mid-run is the drift the profile freeze
+  // exists to forbid, and a receipt that did it would record a key the run never rated under.
+  assert.doesNotMatch(receipt, /ratedUnder:\s*resolveProfile\(/,
+    "the receipt must read the frozen sidecar, not re-resolve the profile");
+});
+
+test("268 the MATCHING profile is recorded, so no-mismatch stops standing in for a positive fact", () => {
+  // `profile-mismatch` existed and its counterpart did not, so "the profile was right" was carried by
+  // the ABSENCE of a row — and an absence cannot tell "it matched" from "the probe never ran" from
+  // "this run predates the probe". Three facts, one empty grep.
+  const src = readFileSync(join(DRIVER, "pipeline.mjs"), "utf8");
+  assert.match(src, /event: "profile-resolved", sidecar: sidecar\.profileKey, resolved: current\.key/,
+    "the matching case writes no row, so it is still an absence standing in for a fact");
+  // The anti-vacuity control: the row this one is the counterpart of must still be there, or the pair
+  // has been refactored and this guard is asserting half a mechanism.
+  assert.match(src, /event: "profile-mismatch", sidecar: sidecar\.profileKey, resolved: current\.key/,
+    "the mismatch row is gone — this guard's counterpart no longer exists");
+});
