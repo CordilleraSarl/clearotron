@@ -106,17 +106,49 @@ test("#450 axis B can see the finding axis A matched — one record, one answer"
 test("#450 a surfaced record sharing an owner with an unfound entry is REPORTED, never silently split", () => {
   // The pre-fix state, reconstructed: same owner, and a mark pairing the matcher cannot join. This is
   // the shape that must never again reach a reader as two independent facts.
+  //
+  // ── THE FIXTURE HAD DRIFTED FROM THE INCIDENT IT CITES (tracker issue 249) ──────────────────────
+  //
+  // The incident was `DELPHI GENETICS` in LOST beside `DG DELPHI GENETICS` in NOISE — one record split,
+  // and the second CONTAINS the first. This fixture substituted names and broke that relation while
+  // keeping the label: `ZORVIL GENETICS` and `DG VELTRIN GENETICS` share an owner and nothing else, so
+  // it had stopped testing one-record-split and started testing same-proprietor.
+  //
+  // Both now have a home, and the arm covers both rather than conflating them: a shared owner with
+  // unrelated marks is REPORTED as an advisory (this arm's own requirement — never silently split), and
+  // a contained pair is still the loud collision. What changed is only the verdict on the first, and it
+  // changed because "do not read the recall numbers above" over a large filer suppressed a whole run's
+  // measurement.
   const reference = [{ ...GOLD, mark: "ZORVIL GENETICS" }];
   const b = scoreRecall({ reference, findings: [SURFACED],
     scopeClasses: ["5", "42", "44"], scopeTerritories: ["CH", "EU", "US"] });
 
   assert.equal(b.lost.length, 1, "the mark genuinely does not join");
   assert.equal(b.noise.length, 1);
-  assert.equal(b.collisions.length, 1, "and the contradiction is stated");
-  assert.equal(b.collisions[0].bucket, "lost");
-  assert.equal(b.collisions[0].entry, "ZORVIL GENETICS");
-  assert.equal(b.collisions[0].noise, "DG VELTRIN GENETICS");
-  assert.match(b.collisions[0].why, /cannot be both/);
+  assert.deepEqual(b.collisions, [],
+    "unrelated marks under one proprietor are not a contradiction — a filer may hold both");
+  assert.equal(b.ownerEchoes.length, 1, "and it is still REPORTED, which is this arm's actual requirement");
+  assert.equal(b.ownerEchoes[0].bucket, "lost");
+  assert.equal(b.ownerEchoes[0].entry, "ZORVIL GENETICS");
+  assert.equal(b.ownerEchoes[0].noise, "DG VELTRIN GENETICS");
+  assert.match(b.ownerEchoes[0].why, /not a contradiction/);
+});
+
+test("#450 a collision now requires the MATCHER to have failed, and that is worth stating", () => {
+  // Measured, not assumed: `matchesReference("VELTRIN GENETICS", "DG VELTRIN GENETICS", {sameOwner:true})`
+  // returns "contained", so the finding is scored `found` and never reaches the noise bucket. The
+  // contained pair — the incident's own shape — CANNOT be built through scoreRecall any more.
+  //
+  // That is the matcher having improved, and it means the collision branch fires only where the matcher
+  // disagrees with itself. Asserted here so the next reader does not spend an hour building a fixture
+  // for a state the scorer cannot reach, and so that a future matcher REGRESSION shows up as this arm
+  // going red rather than as a collision nobody expected.
+  const reference = [{ ...GOLD, mark: "VELTRIN GENETICS" }];
+  const b = scoreRecall({ reference, findings: [SURFACED],
+    scopeClasses: ["5", "42", "44"], scopeTerritories: ["CH", "EU", "US"] });
+  assert.equal(b.found.length, 1, "the matcher relates the contained pair, so this is a find");
+  assert.deepEqual(b.collisions, [], "and there is no contradiction left to report");
+  assert.deepEqual(b.ownerEchoes, [], "nor an advisory — the record was claimed, not split");
 });
 
 test("#450 the collision report is a RECORD, not a verdict — it never promotes anything itself", () => {

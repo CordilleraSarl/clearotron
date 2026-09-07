@@ -207,6 +207,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-drop-with-a-stated-reason-is-checked.test.mjs": {
+          "tests": 12,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
         "a-fact-about-a-named-party.test.mjs": {
           "tests": 30,
           "asserts": 80,
@@ -510,6 +516,12 @@
         "a-section-the-skill-spells-two-ways-is-not-a-missing-section.test.mjs": {
           "tests": 4,
           "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-shared-proprietor-is-not-a-bucket-collision.test.mjs": {
+          "tests": 6,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -3088,8 +3100,8 @@
           "todos": 0
         },
         "reference-score-owner-identity.test.mjs": {
-          "tests": 9,
-          "asserts": 30,
+          "tests": 10,
+          "asserts": 34,
           "skips": 0,
           "todos": 0
         },

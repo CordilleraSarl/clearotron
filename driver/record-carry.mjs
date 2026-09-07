@@ -825,3 +825,105 @@ export function silentlyLostFindings({ reconciliation = null, carryRows = null, 
     population_empty: false, cross_checked: crossChecked,
     checked: ended.length, matched: seen.length, lost };
 }
+
+/**
+ * Positions the DIGEST ended as findings that did not reach the findings, dropped WITH a stated reason.
+ *
+ * ── THE SIBLING'S BLIND SPOT, AND IT IS THE ONE THAT REACHED A CLIENT (tracker issue 248) ──────────
+ *
+ * `silentlyLostFindings` above is correct and must not be widened to cover this. Its population is
+ * `step-silent` — a finding-ending followed by silence — and its own header records why that boundary
+ * exists: silent drops are the norm (690 of 741 records on the evidence run), so a rule flagging them
+ * broadly would flag almost everything, and the defect it targets is the CONJUNCTION of silence after a
+ * finding-ending.
+ *
+ * It also anticipated this gap in writing: "nine divergences from a digest finding-ending, every one of
+ * them `step-stated`". Nine of the shape nothing checked.
+ *
+ * MEASURED ON R2 `russet-kestrel`, delivered 2026-09-06. The sibling ran and reported
+ * `{checked:5, matched:5, lost:0}` — correctly. On that same delivery two marks from the lawyer's final
+ * list, `OSLER DELPHI` and `DELFITY`, one rated HIGH, are absent from `findings.json`. They were dropped
+ * WITH a reason, so they sat outside the sibling's population by design:
+ *
+ *   IMMATERIAL ask:recall:recall-osler-delphi: … — OSLER DELPHI / Osler Diagnostics Limited is
+ *   already reasoned on the incumbent sheet in register-findings.md.
+ *
+ * WHY THE STATED CASE IS THE MORE DANGEROUS ONE. A silent drop leaves a hole. A stated drop leaves a
+ * SENTENCE, and the sentence reads as diligence. On that one delivery `doubt-closure.md` carries 92
+ * recall asks and 66 rulings of IMMATERIAL. A drop with a reason nobody verifies is not accounted for;
+ * it is unexamined with a paper trail.
+ *
+ * `step-structural` is deliberately NOT in this population: it is a mechanical screen verdict
+ * (`the in-line record screen returned "…"`), not a judgment sentence a reader would take on trust.
+ * `absent` belongs to the sibling's family, not this one.
+ *
+ * WHAT THIS DOES NOT DECIDE. Whether any given stated reason is RIGHT. That is a change to what the
+ * client receives and is the owner's call; this makes the class visible, which is worth having whichever
+ * way that lands, because today nobody would know the closures happened.
+ *
+ * Same contract as the sibling, deliberately: `computable:false` with a named reason rather than a clean
+ * `[]`; `population_empty` as its own state; `cross_checked` so a caller can tell "could not look" from
+ * "looked and found nothing"; and `matched` returned so a caller can insist the join actually joined —
+ * that field exists because a case-sensitive URI join once matched zero rows on every run and read as
+ * zero divergences. PURE.
+ */
+export function statedDivergenceFindings({ reconciliation = null, carryRows = null, digestFindingUris = null } = {}) {
+  const no = (reason, crossChecked = false) => ({ computable: false, reason, population_empty: false,
+    cross_checked: crossChecked, checked: 0, matched: 0, diverged: [] });
+  if (!reconciliation || reconciliation.computable !== true) {
+    return no("no computable recall-reconciliation — the digest's own endings are the population and there is none");
+  }
+  if (!Array.isArray(carryRows)) {
+    return no("no record-carry rows — the knockout lane writes none, so this join cannot look at that product");
+  }
+  const ended = [];
+  for (const bucket of ["top_slice", "residual"]) {
+    for (const row of reconciliation[bucket] ?? []) {
+      if (row?.ending !== "finding") continue;
+      for (const uri of row.position_records ?? []) ended.push({ uri: lc(uri), mark: row.mark_text ?? null });
+    }
+  }
+  const byUri = new Map();
+  for (const r of carryRows) if (r?.uri) byUri.set(lc(r.uri), r);
+
+  // The disjoint-population guard, for the sibling's reason: overlap is the signal, a shortfall is not.
+  if (Array.isArray(digestFindingUris) && digestFindingUris.length && ended.length) {
+    const digest = new Set(digestFindingUris.map(lc));
+    if (!ended.some((e) => digest.has(e.uri))) {
+      return no(`the reconciliation's ${ended.length} finding-ended position(s) share NOTHING with the `
+        + `${digest.size} finding row(s) the digest's own typed calls recorded — the two populations are `
+        + "disjoint, so this join is examining a different set and its answer cannot be trusted", true);
+    }
+  }
+  if (!ended.length) {
+    return { computable: true, reason: "the reconciliation carries no finding-ended position — there is "
+      + "no population here, and the digest's typed calls may still name findings on this run",
+      population_empty: true, cross_checked: false, checked: 0, matched: 0, diverged: [] };
+  }
+
+  const seen = ended.filter((e) => byUri.has(e.uri));
+  const diverged = [];
+  for (const e of seen) {
+    const row = byUri.get(e.uri);
+    if (row.reach === "finding" || row.reach === "findings-surface") continue;   // arrived, or arrived elsewhere visible
+    if (row.reason_source !== "step-stated") continue;                            // the sibling owns the silent case
+    // NAME THE ARTIFACT THE REASON POINTS AT. The defect this check exists for is an absence discharged
+    // by the WRONG artifact — "already reasoned in register-findings.md" answers a question nobody asked,
+    // because the ask was about the findings. Surfacing the cited artifact is what lets a reader see the
+    // substitution rather than read the sentence as diligence.
+    const reason = row.reason ?? null;
+    const cites = typeof reason === "string" ? (reason.match(/[a-z0-9._-]+\.(?:md|json)\b/gi) ?? []) : [];
+    diverged.push({ uri: e.uri, mark: e.mark ?? row.mark ?? null, reach: row.reach ?? null,
+      stopped_at: row.stopped_at ?? null, reason,
+      cites_artifact: cites.length ? [...new Set(cites.map(String))] : null,
+      why: "the digest ended this position as a finding, it is absent from the findings, and the reason "
+        + "given points at a different artifact than the one the absence is about" });
+  }
+  const crossChecked = Array.isArray(digestFindingUris) && digestFindingUris.length > 0;
+  return { computable: true,
+    reason: crossChecked ? null
+      : "no cross-check was possible — this run recorded no typed digest finding rows, so the "
+        + "reconciliation's population was not verified against an independent one",
+    population_empty: false, cross_checked: crossChecked,
+    checked: ended.length, matched: seen.length, diverged };
+}

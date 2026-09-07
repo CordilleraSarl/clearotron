@@ -114,7 +114,7 @@ import { escalatedAxes } from "./skeptic-record.mjs";   // THE escalation parse 
 import { PLACEMENT_CARRY_SCHEMA_VERSION, reconcilePlacementCarry, placementCarryEvent, mintPlacementCarryDoubts, entryUris } from "./placement-carry.mjs";
 import { FLOOR_DUTY_SCHEMA_VERSION, reconcileFloorDuty, floorDutyEvent, armFloorDuty, floorDutyArmed, floorDutyBlock, floorDutyBlocksSkip } from "./floor-duty.mjs";   // — the era stamp that turns disclosure into a delivery floor
 import { synthesisDutyForRun } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document
-import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, bandRecordUri, placementIndex, findingUris , silentlyLostFindings } from "./record-carry.mjs";
+import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
 import { DISCARD_LEDGER_NAME, seamRows, appendDiscardRows, foldDiscardLedger } from "./record-discard.mjs";
 import { readDeclinations } from "./declination-tool.mjs";   // — synthesis's own stated declines
@@ -13214,6 +13214,30 @@ async function pipelineInner(job, opts = {}) {
         if (silent.lost.length) {
           note(`recall: ${silent.lost.length} position(s) the digest ended as FINDINGS reached no client `
             + `surface and no step said why — ${silent.lost.map((l) => `${l.mark ?? l.uri} (${l.reason})`).join("; ")}`);
+        }
+        // ── AND THE STATED CASE, WHICH IS THE ONE THAT REACHED A CLIENT (tracker issue 248) ────────
+        //
+        // Same inputs, same seam, same best-effort contract — a second call rather than a widened first
+        // one, because the sibling's population boundary is deliberate and correct. It covers a
+        // finding-ending followed by SILENCE; this covers one followed by a SENTENCE.
+        //
+        // On R2 `russet-kestrel` the sibling logged `checked:5 matched:5 lost:0` — correctly — on a
+        // delivery missing two marks from the lawyer's final list, one rated HIGH. They were dropped with
+        // a reason, so they were outside its population by design. A drop with a reason nobody verifies
+        // is not accounted for; it is unexamined with a paper trail, and that delivery carried 66 of them.
+        const stated = statedDivergenceFindings({
+          reconciliation: safeReadJson(P.recallReconciliation),
+          carryRows: safeReadJson(P.recordCarry)?.rows ?? null,
+          digestFindingUris: recordedFindingUris(P.runDir),
+        });
+        runLog(P.runDir, { event: "stated-divergence-findings", computable: stated.computable,
+          reason: stated.reason, population_empty: stated.population_empty === true,
+          checked: stated.checked, matched: stated.matched, diverged: stated.diverged.length,
+          marks: stated.diverged.map((d) => d.mark).filter(Boolean).slice(0, 10) });
+        if (stated.diverged.length) {
+          note(`recall: ${stated.diverged.length} position(s) the digest ended as FINDINGS are absent from `
+            + "the findings and were dropped with a STATED reason pointing at another artifact — "
+            + stated.diverged.map((d) => `${d.mark ?? d.uri} (${d.reason}${d.cites_artifact ? ` → ${d.cites_artifact.join(", ")}` : ""})`).join("; "));
         }
       } catch (e) { /* never mask a delivery */ }
       // — the common-law path, and the jx zh slice on the same tracer. `consumed` used to read
