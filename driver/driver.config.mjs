@@ -612,6 +612,26 @@ const MODEL_FAMILY_RE = /(?:^|\/)(?:claude-)?(opus|sonnet|haiku)(?:[-.]|$)/i;
 // mini one would then read as agreement, which is exactly the corruption this gauge exists to catch.
 const OPENAI_ID_RE = /^(?:openai\/)?(gpt-[\w.-]+|o\d[\w.-]*)$/i;
 const DATE_SUFFIX_RE = /-(?:\d{8}|\d{4}-\d{2}-\d{2})$/;
+
+/**
+ * Is this model id a DATED SNAPSHOT, or an undated alias that a provider may repoint?
+ *
+ * `modelBasis: "actual"` says the provider answered rather than that we guessed — it does not say the
+ * answer names a fixed build. Measured across three archived runs: haiku came back
+ * `claude-haiku-4-5-20251001`, opus and sonnet came back `claude-opus-5` and `claude-sonnet-5`. All
+ * three were recorded identically as observed, and two of them name something the provider can move
+ * underneath us. A snapshot rotation behind either alias between two runs leaves EXACTLY that record and
+ * is invisible, which is how an A/B across time ends up eliminating the seat on evidence that could not
+ * have shown it either way.
+ *
+ * Returns "snapshot", "alias", or null when there is no id to judge — null is a could-not-look and is
+ * never collapsed into "alias". PURE.
+ */
+export function modelSnapshotKind(model) {
+  const id = String(model ?? "").trim();
+  if (!id) return null;
+  return DATE_SUFFIX_RE.test(id) ? "snapshot" : "alias";
+}
 export function modelFamily(model) {
   if (!model) return null;
   const resolved = resolveModel(String(model));

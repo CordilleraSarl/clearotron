@@ -191,3 +191,61 @@ test("2166 the live token contract is untouched — a stage op still validates e
   assert.equal(ok.stage, "synthesis");
   assert.equal(ok.kind, undefined, "a stage op grew a kind it never had");
 });
+
+// ── A MEMO MAY WRITE ONLY WHERE IT WAS INVITED ───────────────────────────────────────────────────────
+//
+// The immutability check above fired on every successful memo, not only on a misbehaving one, because a
+// memo's DISPATCH leaves driver telemetry on the parent — `_driver/whatif-memo.*` and an appended line
+// in `_driver/run.jsonl`. That is the parent gaining a RECORD of the memo, which is correct and is the
+// same rule the experiment path lives by. Recorded as a violation, it made the byte-identical criterion
+// unsatisfiable on the real path and buried the one write that WAS a violation.
+//
+// Driven on the footprint an archived client run actually carries. `memo-osler-coexistence.json` at that
+// run's root is the seat's reply written to a path of its own choosing instead of to the `expectFile` it
+// was handed — which is also why the attempt before it failed looking for a reply that was not there.
+import { splitMemoFootprint } from "../whatif-memo-run.mjs";
+
+test("the memo's own record is not a violation; a write anywhere else is", () => {
+  const { own, foreign } = splitMemoFootprint([
+    { path: "_driver/whatif-memo.attempt1.dispatch.txt", before: null, after: "a:10" },
+    { path: "_driver/whatif-memo.attempt2.dispatch.txt", before: null, after: "b:10" },
+    { path: "_driver/whatif-memo.jsonl", before: null, after: "c:20" },
+    { path: "_driver/run.jsonl", before: "d:100", after: "e:180" },      // appended to — a dispatch does this
+    { path: "memo-osler-coexistence.json", before: null, after: "f:900" }, // the seat, off its path
+  ]);
+  assert.deepEqual(own.map((m) => m.path),
+    ["_driver/whatif-memo.attempt1.dispatch.txt", "_driver/whatif-memo.attempt2.dispatch.txt",
+      "_driver/whatif-memo.jsonl", "_driver/run.jsonl"]);
+  assert.deepEqual(foreign.map((m) => m.path), ["memo-osler-coexistence.json"]);
+});
+
+test("a scored artifact is foreign however it moved — the record is what this protects", () => {
+  // The direction that matters for a client. A memo that rewrote findings.json would be the archive
+  // being altered, and no naming convention may excuse it.
+  const { foreign } = splitMemoFootprint([
+    { path: "findings.json", before: "x:10", after: "y:12" },
+    { path: "report.md", before: "p:1", after: null },
+  ]);
+  assert.deepEqual(foreign.map((m) => m.path), ["findings.json", "report.md"]);
+});
+
+test("run.jsonl may only GROW — a shrink or a rewrite is not an append", () => {
+  const shrank = splitMemoFootprint([{ path: "_driver/run.jsonl", before: "a:500", after: "b:100" }]);
+  assert.deepEqual(shrank.foreign.map((m) => m.path), ["_driver/run.jsonl"], "a truncation must not pass as a dispatch's append");
+  const same = splitMemoFootprint([{ path: "_driver/run.jsonl", before: "a:500", after: "b:500" }]);
+  assert.deepEqual(same.foreign.map((m) => m.path), ["_driver/run.jsonl"], "same length with different bytes is a rewrite");
+  // …and the size check is only as good as the sizes being readable. An unreadable digest is foreign,
+  // because a check that cannot look must not answer "fine".
+  const unreadable = splitMemoFootprint([{ path: "_driver/run.jsonl", before: "UNREADABLE", after: "UNREADABLE" }]);
+  assert.deepEqual(unreadable.foreign.map((m) => m.path), ["_driver/run.jsonl"]);
+});
+
+test("a name that merely starts like the memo's telemetry is not excused", () => {
+  // The exclusion is a prefix on the memo's own dispatch files inside `_driver/`. A file at the run root
+  // whose name begins the same way is not that, and reading it as the memo's own would be the hole.
+  const { foreign } = splitMemoFootprint([
+    { path: "whatif-memo.jsonl", before: null, after: "a:1" },
+    { path: "_memos-decoy/whatif-memo.jsonl", before: null, after: "a:1" },
+  ]);
+  assert.equal(foreign.length, 2, "only `_driver/whatif-memo.*` is the memo's own record");
+});
