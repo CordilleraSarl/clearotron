@@ -44,13 +44,19 @@ test("201 the help names EVERY product this tree ships, read off the container",
     `demo --help ships these products and does not name them: ${missing.join(", ")}\n${out}`);
 });
 
-test("201 the help says which one a bare `demo` replays, because it picks one silently", () => {
+// THIS ARM ASSERTED THE OPPOSITE UNTIL TODAY, and its premise is what changed. It required the help to
+// name which single product a bare `demo` replayed, "because it picks one silently". A bare `demo` now
+// publishes every product the package ships, so a help text naming a default would teach the belief the
+// change removed — and it did: the line survived the behaviour change and told a reader on the shipped
+// release that one product was what they got with no flag.
+test("201 the help says a bare `demo` publishes every product, because that is what it does", () => {
   const shipped = demoChildren(DEMO_ROOT);
   const out = help();
-  const line = out.split("\n").find((l) => l.includes(shipped[0]));
-  assert.ok(line, `the default product ${shipped[0]} is not in the help at all:\n${out}`);
-  assert.match(line, /default/,
-    `the help lists the products but never says which one runs without the flag:\n${line}`);
+  assert.ok(!/\(the default, when --product is not given\)/.test(out),
+    `the help still names one product as the default. A bare \`demo\` publishes all ${shipped.length} of `
+    + `them, so this sends a reader away believing they got one:\n${out}`);
+  assert.match(out, /With no --product, every one of them is published\./,
+    `the help lists the products and never says what happens without the flag:\n${out}`);
 });
 
 // THE PLANT THAT MATTERS, run every time rather than by hand: a product that arrives tomorrow must

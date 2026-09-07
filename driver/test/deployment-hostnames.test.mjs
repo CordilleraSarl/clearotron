@@ -291,22 +291,27 @@ test("#1381 the #644 walker reaches shell scripts, which it did not until a shel
   assert.ok(files.some((f) => f.endsWith(".sh")),
     "the walker returned no shell script at all — either the repo tracks none (then this arm needs "
     + "re-deriving) or .sh has fallen out of the walker and the #644 arms silently stopped covering it");
-  assert.ok(files.includes("scripts/deploy-test.sh"),
-    "the tracked deploy script is not in the guarded set — it is the file with the most operator-home "
-    + "pressure on it in the repo");
 });
 
-test("#1381 the tracked deploy script names no account's home on any executable line", () => {
-  // The specific claim rests on. The four literals the live copy carries became env lookups
-  // defaulting off $HOME, which is generic — under the service account that runs the timer it resolves
-  // to precisely what the literals said, and under any other account it is still right.
-  const src = readFileSync(join(REPO, "scripts", "deploy-test.sh"), "utf8");
-  const offenders = src.split("\n")
-    .map((ln, i) => ({ ln, n: i + 1 }))
-    .filter(({ ln }) => !/^\s*#/.test(ln))
-    .filter(({ ln }) => /(?:^|[\s=:"'])\/home\/[a-z][a-z0-9_-]*\//.test(ln));
-  assert.deepEqual(offenders.map((o) => `${o.n}: ${o.ln.trim().slice(0, 80)}`), []);
-  // and it still reads its three locations from somewhere, rather than having lost them in the edit
-  for (const v of ["DEPLOY_TEST_REPO", "DEPLOY_TEST_QUEUE", "DEPLOY_TEST_ENV"])
-    assert.match(src, new RegExp(v), `${v} is gone — the script cannot be pointed anywhere`);
+test("#1381 no tracked shell script names an account's home on an executable line", () => {
+  // WALKS EVERY TRACKED `.sh` RATHER THAN NAMING ONE. This named `scripts/deploy-test.sh`, which was
+  // retired — so the arm pinned a file nothing executed while the property it guards applies to whatever
+  // shell scripts the tree actually carries. A named file is a subject that can be deleted out from under
+  // an arm; a derived set cannot.
+  const shells = guardedFiles().map((f) => rel(f)).filter((f) => f.endsWith(".sh"));
+  assert.ok(shells.length,
+    "no tracked shell script reached this arm — either the tree carries none, or .sh has fallen out of "
+    + "the walker and this stopped covering anything");
+  const offenders = [];
+  for (const f of shells) {
+    const src = readFileSync(join(REPO, f), "utf8");
+    src.split("\n")
+      .map((ln, i) => ({ ln, n: i + 1 }))
+      .filter(({ ln }) => !/^\s*#/.test(ln))
+      .filter(({ ln }) => /(?:^|[\s=:"'])\/home\/[a-z][a-z0-9_-]*\//.test(ln))
+      .forEach(({ ln, n }) => offenders.push(`${f}:${n}: ${ln.trim().slice(0, 80)}`));
+  }
+  assert.deepEqual(offenders, []);
+  // The three `DEPLOY_TEST_*` assertions that stood here went with the script that read them. They
+  // asserted a retired file could still be pointed somewhere, and no other file on this tree names them.
 });

@@ -840,7 +840,7 @@ export function silentlyLostFindings({ reconciliation = null, carryRows = null, 
  * It also anticipated this gap in writing: "nine divergences from a digest finding-ending, every one of
  * them `step-stated`". Nine of the shape nothing checked.
  *
- * MEASURED ON R2 `russet-kestrel`, delivered 2026-09-06. The sibling ran and reported
+ * MEASURED ON A DELIVERED R2 RUN, 2026-09-06. The sibling ran and reported
  * `{checked:5, matched:5, lost:0}` — correctly. On that same delivery two marks from the lawyer's final
  * list, `OSLER DELPHI` and `DELFITY`, one rated HIGH, are absent from `findings.json`. They were dropped
  * WITH a reason, so they sat outside the sibling's population by design:
@@ -880,7 +880,7 @@ export function statedDivergenceFindings({ reconciliation = null, carryRows = nu
   //
   // The first cut of this function gated on the reconciliation's finding-ended positions, mirroring the
   // sibling. That inherited the sibling's BLIND SPOT along with its shape, and the check was inert on
-  // the very delivery it was written for. Replayed against R2 `russet-kestrel`:
+  // the very delivery it was written for. Replayed against that delivery:
   //
   //   silentlyLostFindings       checked=5 matched=5 lost=0
   //   statedDivergenceFindings   checked=5 matched=5 diverged=0   ← should have named two marks

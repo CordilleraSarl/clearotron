@@ -68,7 +68,11 @@ if (has("--help") || has("-h")) {
   const shipped = demoChildren(join(REPO, "demo"));
   if (shipped.length) {
     console.log(`\n  --product takes one of:`);
-    for (const id of shipped) console.log(`    ${id}${id === shipped[0] ? "   (the default, when --product is not given)" : ""}`);
+    // NO "DEFAULT" MARKER (tracker issue 277). This printed "(the default, when --product is not given)"
+    // beside the first id, and kept printing it after the default became ALL of them — so `--help` taught
+    // a reader the exact belief the change removed, in the command it was reported against.
+    for (const id of shipped) console.log(`    ${id}`);
+    console.log(`\n  With no --product, every one of them is published.`);
     console.log("");
   } else {
     // An absence is a finding: a tree with no demo says so rather than printing an empty list.
@@ -96,8 +100,8 @@ const DEMO_ROOT = join(REPO, "demo");
 // disagreed. That file records what a knockout demo carries instead of a report.md, and why this line
 // once let `demo/knockout-search` ship and stay unopenable..
 
-// --run-dir takes a directory outright. --product names a child. Neither given: the first child, and the
-// name is PRINTED below rather than assumed, because "the demo" is about to mean one of several.
+// --run-dir takes a directory outright. --product names a child. Neither given: EVERY child, and the
+// names are PRINTED below rather than assumed, because "the demo" means several.
 const wanted = flag("--product");
 const children = demoChildren(DEMO_ROOT);
 

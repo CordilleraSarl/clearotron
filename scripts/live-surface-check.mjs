@@ -441,7 +441,12 @@ try {
   //
   // The arm above already travels the route the harness uses (`mcpToolCall` on `MCP_URL`, the same
   // client `scripts/e2e.mjs` enqueues through), so a door that 401s every caller ALREADY fails this
-  // check and already fails the deploy — `scripts/deploy-test.sh` gates on this script's exit code.
+  // check and already fails the deploy — WHEN a deploy runs this script, which at the time of writing
+  // nothing does. `scripts/deploy-test.sh` gated on this script's exit code; that script is retired, and
+  // what replaced it was measured on the operations side and does NOT invoke this one. Nothing here is
+  // wrong: the check is a real instrument and its reasoning holds. It is simply not reached, and a caller
+  // is being wired back in. Until it is, read this as what the check is FOR, not as evidence that
+  // something enforces it.
   // That is the issue's first criterion, by its sanctioned second branch, and its third and fourth.
   //
   // What neither arm could say is WHY the door has the posture it has. This face reaches the auth-proxy
@@ -592,8 +597,10 @@ const { clones, probe: unitProbe } = serviceClones();
 const running = clones.filter((c) => c.head);
 const heads = [...new Set(running.map((c) => c.head))];
 // — THREE OUTCOMES, NOT TWO. This arm is the one whose entire purpose is to catch a service still
-// running an old bundle after a deploy, and deploy-test.sh runs it as the final gate on an instance that
-// deploys itself every hour. It had been degrading to `skip` with a reason that ASSERTED the deployment
+// running an old bundle after a deploy. `deploy-test.sh` ran it as the final gate on an instance that
+// deploys itself every hour; that script is retired and its replacement does not invoke this one, so at
+// the time of writing nothing reaches this arm on a deploy — see the note above. It had been degrading to
+// `skip` with a reason that ASSERTED the deployment
 // was not systemd --user — on a box where it is, and where the units are running.
 //   · could not look       → skip, naming the error. Not probed is not passed.
 //   · looked, found none   → skip, saying so. A genuinely non-systemd deployment lands here honestly.

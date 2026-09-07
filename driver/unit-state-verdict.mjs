@@ -14,9 +14,9 @@
 //
 // Anything that is neither `active` nor `inactive` is a fault. `prelim-driver` is a `Type=oneshot` fired
 // by a 90-second timer, so EVERY drain passes through `activating` — and `activating` landed in that
-// list. The filter tolerated the oneshot at rest and failed it for working. deploy-test.sh gates the
-// hourly test-instance deploy on this script's exit code, so a deploy that happened to land inside a
-// drain window reported the instance unhealthy and exited 1 on a deployment that was fine.
+// list. The filter tolerated the oneshot at rest and failed it for working. The hourly test-instance
+// deploy gates on this script's exit code, so a deploy that happened to land inside a drain window
+// reported the instance unhealthy and exited 1 on a deployment that was fine.
 //
 // The bug is not the enumeration — was right to give this three outcomes instead of two. The bug is
 // INVERSE ENUMERATION over an incomplete vocabulary: listing the two states you have seen and calling
@@ -39,7 +39,7 @@
 // The ruling on says "starting and stopping are both tolerated for a one-shot". That is descriptive
 // of the case that was observed, not a restriction: the issue's own Scope section carries no unit-type
 // qualifier, the arm has never been unit-type-aware, and it already tolerates `inactive` for everything.
-// It is also the wrong place to draw the line — deploy-test.sh RESTARTS the long-running services
+// It is also the wrong place to draw the line — the hourly deploy RESTARTS the long-running services
 // immediately before running this check, so `trademark-portal=activating` is the same race with a
 // different unit, and a oneshot-only fix would leave it standing. The unit's Type is still carried into
 // the message so a reader can tell a oneshot mid-fire from a service mid-restart.
@@ -63,9 +63,9 @@
 // This is not caution for its own sake. An earlier draft of this fix also widened the count to treat
 // transitional units as up, on the reasoning that a oneshot mid-fire is "not nothing". The consequence:
 // {5 services activating, 3 inactive} returned `pass` with a message that began "0 active" — a green
-// tick on the deploy's final gate having confirmed that ZERO services were running. deploy-test.sh
+// tick on the deploy's final gate having confirmed that ZERO services were running. The hourly deploy
 // restarts the long-running services immediately before running this check, so that is the ordinary
-// shape of the box, not a corner. Widening a count to make a message read better is how a guard dies.
+// shape of the instance, not a corner. Widening a count to make a message read better is how a guard dies.
 
 /** The six documented ActiveState values of systemd 255, mapped to what the check must do about them. */
 export const ACTIVE_STATE_MEANING = Object.freeze({
@@ -134,8 +134,8 @@ export function unitsActiveVerdict({ units, probe }) {
   // CHANGES NOTHING HERE. The count below is origin/main's, predicate and message unchanged:
   // `active`, literally, and nothing else. An earlier draft of this fix widened it to count
   // transitional units as up, which defeated this guard outright — {5 activating, 3 inactive} then
-  // returned `pass` with a message that began "0 active", on the deploy's FINAL gate, on a box where
-  // deploy-test.sh has just restarted every long-running service. 's Scope names one thing, the
+  // returned `pass` with a message that began "0 active", on the deploy's FINAL gate, on an instance
+  // where the hourly deploy has just restarted every long-running service. Scope names one thing, the
   // state vocabulary of the FAULT branch above. Transitional units are named in the messages here so
   // they are never swallowed; they are counted as up nowhere.
   const activeCount = (units ?? []).filter((u) => u.active === "active").length;

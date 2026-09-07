@@ -141,3 +141,64 @@ test("1863 the disarm runs BEFORE the enable, so the box never holds both draine
     "the retired units are disarmed AFTER the replacement is enabled, so there is a window with both "
     + "the old timer and the new worker draining one queue");
 });
+
+// ── tracker issue 270: a stop that could not stop must not report that it did ─────────────────────────
+//
+// `clearotron stop` exited 0, printed "stopped and removed" for three units and "The background product
+// is stopped and the box runs nothing again", and left all four services active on unchanged pids holding
+// all three ports. The only thing it changed was deleting three unit files — leaving running services
+// with no unit file to stop them by, which is strictly worse than leaving both alone.
+//
+// The mechanism was a comment standing in for a check: `catch { /* already down */ }` guessed why the
+// call failed, the next line deleted the file regardless, and the line after announced success.
+import { mkdtempSync as mkdtemp270, mkdirSync as mkdir270, writeFileSync as write270 } from "node:fs";
+import { readdirSync as readdir270 } from "node:fs";
+import { execFileSync as exec270 } from "node:child_process";
+import { tmpdir as tmp270 } from "node:os";
+
+// The file had no repo root of its own — it reads modules by relative import rather than by path.
+const REPO270 = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+const STOP = join(REPO270, "bin", "stop.mjs");
+
+/** A HOME carrying unit files, with the session bus stripped so systemd cannot be reached. */
+function stopWithNoBus(units) {
+  const home = mkdtemp270(join(tmp270(), "stop-nobus-"));
+  const dir = join(home, ".config", "systemd", "user");
+  mkdir270(dir, { recursive: true });
+  for (const u of units) write270(join(dir, u), "[Unit]\n");
+  const env = { HOME: home, PATH: "/usr/bin:/bin" };
+  try {
+    const out = exec270(process.execPath, [STOP], { encoding: "utf8", env, stdio: ["ignore", "pipe", "pipe"] });
+    return { code: 0, out, dir };
+  } catch (e) {
+    return { code: e.status ?? -1, out: `${e.stdout ?? ""}${e.stderr ?? ""}`, dir };
+  }
+}
+
+test("270 a stop that could not reach systemd leaves the unit files in place", () => {
+  const units = ["clearotron-portal.service", "clearotron-worker.service"];
+  const r = stopWithNoBus(units);
+  const left = readdir270(r.dir);
+  assert.equal(left.length, units.length,
+    `${units.length - left.length} unit file(s) were deleted by a stop that could not stop anything. A `
+    + `running service with no unit file cannot be stopped by any ordinary means.\n${r.out}`);
+});
+
+test("270 it says it could not, rather than that it did", () => {
+  const r = stopWithNoBus(["clearotron-portal.service"]);
+  assert.ok(!/stopped and removed/.test(r.out),
+    `it reported "stopped and removed" for a unit it did not stop\n${r.out}`);
+  assert.ok(!/runs nothing again/.test(r.out),
+    `it reported the box idle after failing to stop a service\n${r.out}`);
+  assert.match(r.out, /COULD NOT STOP/, `nothing named the unit it failed on\n${r.out}`);
+  // AND THE REMEDY, because "could not reach systemd" without it sends a reader nowhere.
+  assert.match(r.out, /XDG_RUNTIME_DIR/, `the refusal does not say how to reach systemd\n${r.out}`);
+});
+
+test("270 and it exits non-zero — the printed refusal is not enough on its own", () => {
+  // The refusal was printed AND the command exited 0 in the first cut of this fix, because a bare
+  // `process.exit(0)` on the last line discarded the code set above it. A script calling this would have
+  // read success while the text said otherwise.
+  const r = stopWithNoBus(["clearotron-portal.service"]);
+  assert.notEqual(r.code, 0, `it printed a refusal and exited 0\n${r.out}`);
+});

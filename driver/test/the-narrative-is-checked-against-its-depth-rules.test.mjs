@@ -235,7 +235,7 @@ test("#1503 `graded` distinguishes the two zeroes at the source, not by guessing
 //
 // THE MECHANISM GAP was in deliveryFlagLines, not in the check: it groups by the check's BASE id, so a
 // distinction carried in the SUFFIX had no sentence of its own to reach and degraded to the generic
-// "a machine check did not pass". Measured on the real archived receipt for sable-harbor (2026-09-07,
+// "a machine check did not pass". Measured on a real archived receipt (2026-09-07,
 // 26 findings): four failing checks produced the parties line plus the SAME generic sentence twice, and
 // one of those two was this signal.
 import { deliveryFlagLines as deliveryLines, deliveryVocabViolations as vocabViolations } from "../predelivery-lint.mjs";
