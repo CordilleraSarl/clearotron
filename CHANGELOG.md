@@ -4,6 +4,24 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.2.1
+
+### New
+
+- `clearotron demo` now publishes all four example reports — one per product — instead of only the first.
+
+### Fixed
+
+- A report now keeps a mark the search confirmed, instead of dropping it because it was already noted on an internal working sheet. Where a mark is still missing, the run records it by name rather than closing the question.
+- Asking a what-if question about a delivered report now returns a memo, instead of failing to find the run it was asked about.
+- `doctor` no longer reports a working Cloudflare Access door as unprotected. An API-style door and a failing origin are now told apart, each with its own message. Neither is reported as a pass.
+- the settings catalogue now lists `CLEAROTRON_CHECKOUT_DIR`, the path every service file points at. The installer still fills it in for you. It is written down so that anyone whose service will not start can look it up.
+
+### For operators
+
+- The `beta` channel now gets a release when there is something worth testing, days apart, instead of one on every merge.
+- The configuration reference now explains the two deprecated search-log variables in full, instead of stopping mid-sentence.
+
 ## 0.2.1-beta.2
 
 ### Fixed
