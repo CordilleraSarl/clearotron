@@ -1810,3 +1810,54 @@ test("238 planted: a refusal that only checks for emptiness is caught", () => {
       + "arm above cannot see the defect it exists for");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+
+// ── THE REHEARSAL RUNS THE CODE UNDER REVIEW (tracker issue 245) ───────────────────────────────────
+//
+// Three jobs checked out `ref: main` and then ran scripts from that checkout. The workflow YAML comes
+// from the ref the run started on, so a `workflow_dispatch` from a branch ran the BRANCH's workflow file
+// against MAIN's copy of the scripts — and `workflow_dispatch` is this pipeline's rehearsal, the one
+// mechanism whose whole purpose is to exercise a change before it lands.
+//
+// Measured while building the awaited-publish fix: a dispatch from that branch would have run main's
+// `release-await-cut.mjs`, which emits no `sha`, and the branch's new refusal would have exited 2 — a red
+// that says nothing about the change under review.
+//
+// THE DISTINCTION THESE ARMS PIN is the one the issue draws: the tree a job QUESTIONS and the code it
+// RUNS are two statements, not one accident.
+test("245 no job checks out a moving branch name and then runs scripts from it", () => {
+  const yml = RELEASE_YML;
+  const lines = yml.split("\n").filter((l) => !/^\s*#/.test(l));
+  const moving = lines.filter((l) => /^\s+ref:\s*main\s*$/.test(l));
+  assert.deepEqual(moving, [],
+    "`ref: main` re-resolves at checkout time and, on a dispatch, is not the ref under review. Pin to "
+    + "`github.sha` and name main as the subject instead.");
+});
+
+test("245 every checkout that runs release scripts pins to the ref the run started on", () => {
+  const yml = RELEASE_YML;
+  // Count the pinned checkouts rather than asserting a total: a new job that runs these scripts must
+  // make the same statement, and a job added with a moving ref is caught by the arm above.
+  const pinned = (yml.match(/^\s+ref:\s*\$\{\{\s*github\.sha\s*\}\}\s*$/gm) ?? []).length;
+  assert.ok(pinned >= 3,
+    `expected the three deciding jobs to pin to github.sha; found ${pinned}`);
+});
+
+test("245 a pinned checkout FETCHES origin/main, because the scripts refuse without it", () => {
+  const yml = RELEASE_YML;
+  const fetches = (yml.match(/refs\/remotes\/origin\/main/g) ?? []).length;
+  assert.ok(fetches >= 3,
+    "`origin/main` does not exist in a checkout pinned to a sha, and readMain refuses by name when it is "
+    + `absent — so each pinned job must fetch it. Found ${fetches} fetch(es).`);
+});
+
+test("245 the jobs that ASK about main name main as the subject, so the pin did not move the question", () => {
+  const yml = RELEASE_YML;
+  // `cutRef()` defaults to HEAD. With the checkout pinned, HEAD is the run's own ref — so a job that is
+  // supposed to decide about main must say so, or the pin silently changes what it decides.
+  const named = (yml.match(/CLEAROTRON_CUT_REF:\s*origin\/main/g) ?? []).length;
+  assert.equal(named, 2,
+    "`stranded` and `pending` ask about main as it is now; both must name it. The `version` job is "
+    + "deliberately different — it decides about the commit that was pushed.");
+  assert.match(yml, /CLEAROTRON_CUT_REF:\s*\$\{\{\s*github\.sha\s*\}\}/,
+    "and the version job still decides about the pushed commit, which is its own correct subject");
+});

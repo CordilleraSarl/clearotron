@@ -346,10 +346,35 @@ jobs:
     permissions:
       contents: read
     steps:
+      # ── THE INSTRUMENT IS THIS REF; THE SUBJECT IS `main` (tracker issue 245) ──────────────────
+      #
+      # This checked out `ref: main` and then ran scripts from it. The workflow YAML comes from the ref
+      # the run started on, so on a `workflow_dispatch` from a branch the file was the branch's and the
+      # SCRIPTS were main's — and `workflow_dispatch` is this pipeline's rehearsal, the one mechanism
+      # whose whole purpose is to exercise a change before it lands. A change to the release scripts was
+      # therefore never executed by the run meant to exercise it, and the rehearsal's verdict was about
+      # code that is not the code under review.
+      #
+      # `github.sha` is the ref the run started on: the branch head on a dispatch, the pushed commit on a
+      # push. That is the code under review, and it is what should run.
+      #
+      # THE QUESTION IS STILL ABOUT `main`, and that has not changed — it is now asked explicitly rather
+      # than implied by whatever happened to be checked out. `origin/main` is fetched below and named as
+      # the subject, so the tree this job QUESTIONS and the code it RUNS are two separate statements
+      # instead of one accident.
+      #
+      # It also closes the narrower half: `ref: main` re-resolved at checkout time, so a commit landing
+      # between the run starting and this step decided from a tree that did not trigger it.
       - uses: actions/checkout@v7
         with:
-          ref: main
+          ref: ${{ github.sha }}
           fetch-depth: 0      # tags included: the cut decision reads them, and refuses without them
+
+      # `origin/main` does not exist in a checkout pinned to a sha, and the scripts refuse by name rather
+      # than guessing when it is absent — so it is fetched deliberately here. Refusing loudly is the
+      # behaviour that makes this safe to change.
+      - name: Make `origin/main` resolvable — it is the subject, not the instrument
+        run: git fetch --no-tags --prune origin +refs/heads/main:refs/remotes/origin/main
       - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -361,6 +386,12 @@ jobs:
 
       - name: Ask main whether a cut is sitting there unpublished
         id: ask
+        # NAMED, not implied. `cutRef()` defaults to HEAD, and HEAD is now this run's own ref rather than
+        # main — so the subject is stated through the seam that already exists for it. Without this the
+        # pin above would have quietly changed WHAT this job decides about, which is the opposite of the
+        # separation it is making.
+        env:
+          CLEAROTRON_CUT_REF: origin/main
         run: node scripts/release-cut-decision.mjs
 
       # ── AND SAY IT WHERE SOMEBODY WILL SEE IT ────────────────────────────────────────────────────
@@ -410,10 +441,35 @@ jobs:
       cut: ${{ steps.cut.outputs.cut }}
       version: ${{ steps.cut.outputs.version }}
     steps:
+      # ── THE INSTRUMENT IS THIS REF; THE SUBJECT IS `main` (tracker issue 245) ──────────────────
+      #
+      # This checked out `ref: main` and then ran scripts from it. The workflow YAML comes from the ref
+      # the run started on, so on a `workflow_dispatch` from a branch the file was the branch's and the
+      # SCRIPTS were main's — and `workflow_dispatch` is this pipeline's rehearsal, the one mechanism
+      # whose whole purpose is to exercise a change before it lands. A change to the release scripts was
+      # therefore never executed by the run meant to exercise it, and the rehearsal's verdict was about
+      # code that is not the code under review.
+      #
+      # `github.sha` is the ref the run started on: the branch head on a dispatch, the pushed commit on a
+      # push. That is the code under review, and it is what should run.
+      #
+      # THE QUESTION IS STILL ABOUT `main`, and that has not changed — it is now asked explicitly rather
+      # than implied by whatever happened to be checked out. `origin/main` is fetched below and named as
+      # the subject, so the tree this job QUESTIONS and the code it RUNS are two separate statements
+      # instead of one accident.
+      #
+      # It also closes the narrower half: `ref: main` re-resolved at checkout time, so a commit landing
+      # between the run starting and this step decided from a tree that did not trigger it.
       - uses: actions/checkout@v7
         with:
-          ref: main
+          ref: ${{ github.sha }}
           fetch-depth: 0      # tags included: the cut decision reads them, and refuses without them
+
+      # `origin/main` does not exist in a checkout pinned to a sha, and the scripts refuse by name rather
+      # than guessing when it is absent — so it is fetched deliberately here. Refusing loudly is the
+      # behaviour that makes this safe to change.
+      - name: Make `origin/main` resolvable — it is the subject, not the instrument
+        run: git fetch --no-tags --prune origin +refs/heads/main:refs/remotes/origin/main
 
       - uses: actions/setup-node@v7
         with:
@@ -426,6 +482,10 @@ jobs:
       # to wait for — the waiting belongs to the run that set the merge in motion, and lives there.
       - name: Did a merge leave a version on main with no tag
         id: cut
+        # Same reason as `stranded`: the pin makes HEAD this run's ref, so main is named as the subject
+        # explicitly. A cron asks about main as it is now, and it still does.
+        env:
+          CLEAROTRON_CUT_REF: origin/main
         run: node scripts/release-cut-decision.mjs
 
   # ── THE WAIT, AS ITS OWN JOB SO IT CAN ACTUALLY ARM (tracker issue 208) ────────────────────────────
@@ -475,10 +535,35 @@ jobs:
       # has become since — see tracker issue 238 and the guard in that job.
       sha: ${{ steps.awaited.outputs.sha }}
     steps:
+      # ── THE INSTRUMENT IS THIS REF; THE SUBJECT IS `main` (tracker issue 245) ──────────────────
+      #
+      # This checked out `ref: main` and then ran scripts from it. The workflow YAML comes from the ref
+      # the run started on, so on a `workflow_dispatch` from a branch the file was the branch's and the
+      # SCRIPTS were main's — and `workflow_dispatch` is this pipeline's rehearsal, the one mechanism
+      # whose whole purpose is to exercise a change before it lands. A change to the release scripts was
+      # therefore never executed by the run meant to exercise it, and the rehearsal's verdict was about
+      # code that is not the code under review.
+      #
+      # `github.sha` is the ref the run started on: the branch head on a dispatch, the pushed commit on a
+      # push. That is the code under review, and it is what should run.
+      #
+      # THE QUESTION IS STILL ABOUT `main`, and that has not changed — it is now asked explicitly rather
+      # than implied by whatever happened to be checked out. `origin/main` is fetched below and named as
+      # the subject, so the tree this job QUESTIONS and the code it RUNS are two separate statements
+      # instead of one accident.
+      #
+      # It also closes the narrower half: `ref: main` re-resolved at checkout time, so a commit landing
+      # between the run starting and this step decided from a tree that did not trigger it.
       - uses: actions/checkout@v7
         with:
-          ref: main
+          ref: ${{ github.sha }}
           fetch-depth: 0      # tags included: the cut decision reads them, and refuses without them
+
+      # `origin/main` does not exist in a checkout pinned to a sha, and the scripts refuse by name rather
+      # than guessing when it is absent — so it is fetched deliberately here. Refusing loudly is the
+      # behaviour that makes this safe to change.
+      - name: Make `origin/main` resolvable — it is the subject, not the instrument
+        run: git fetch --no-tags --prune origin +refs/heads/main:refs/remotes/origin/main
 
       - uses: actions/setup-node@v7
         with:
