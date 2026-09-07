@@ -30,7 +30,7 @@ import { makePortalService } from "../portal-service.mjs";
 import { reportRouteFor, auditRouteFor, auditUrlFor, markReportRouteFor } from "../publish/index.mjs";
 
 const ORIGIN = "https://reports.example.test";
-const RUN = "tmp1-ironwhisk-2026-09-07-amber-summit";
+const RUN = "tmp1-ironwhisk-2026-09-07-fixture-run";
 const OWNER = { email: "requester@tenant.example" };
 const FOREIGN = { email: "other@rival.example" };   // granted, but to a DIFFERENT account
 

@@ -35,7 +35,8 @@
 //   · coverage-form.mjs:149     the driver's axis is the driver's; the seat contract governs only rows
 //                               the seat adds.
 //   · coverage-form.mjs:313     determinism, with its mechanism (a fixed axis ordering) beside it.
-//   · stages.mjs:1504, :1780    OUT OF CLASS, and enumerated rather than quietly dropped: E12 contract
+//   · stages.mjs:1450 ("Per-script coverage"), :1729 ("Negative-results matrix")
+//                               OUT OF CLASS, and enumerated rather than quietly dropped: E12 contract
 //                               classifications explaining why a dictation is code-rendered. No
 //                               flag/data pair exists at either site.
 //
