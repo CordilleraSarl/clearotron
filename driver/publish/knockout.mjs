@@ -10,7 +10,7 @@
 import { readFileSync, writeFileSync, mkdirSync, chmodSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { driverDir, ensureDriverDir } from '../../shared/driver-dir.mjs';   //
-import { riskTier, TONE_TIER, regenIndex, regenSurfaces, auditRouteFor, markReportRouteFor } from './index.mjs';
+import { riskTier, TONE_TIER, regenIndex, regenSurfaces, auditRouteFor, markReportRouteFor, reportRouteFor } from './index.mjs';
 import { runKnockoutLint, deliveryFlagLines } from '../predelivery-lint.mjs';
 import { note } from '../log.mjs';
 import { addSheet } from './xlsx.mjs';
@@ -485,12 +485,22 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // "every audit link we have ever emailed died at the front door, silently". It came back here twice:
   // once as string surgery on the report URL, once as this function, and both spelled a pool path.
   //
-  // A SINGLE MARK KEEPS THE LEGACY SHAPE. `<runId>/report.html` is what the rewrite exists for, it is
-  // the address in every knockout email already sent, and it resolves. Changing a link that works to
-  // match one that did not is how the next one of these gets written.
+  // A SINGLE MARK USED TO KEEP THE LEGACY SHAPE, on the reasoning that `<runId>/report.html` is what the
+  // rewrite exists for and that it resolves. THAT IS FALSE ON PRODUCTION (tracker issue 289) and the
+  // paragraph is kept, corrected, because its warning is still the right instinct and only its premise
+  // was wrong.
+  //
+  // Settled by the account owner against the live deployment, signed in as a delivered run's own owner:
+  // the emailed link returned the portal application's own `{"error":"not_found"}` — the app answered, so
+  // no rewrite touched the path — while the portal's own link for that run opened. The edge block this
+  // reasoning rests on is not in this repository, and the transcription of it in the test tree describes
+  // a host at the moment somebody wrote it down, not production today.
+  //
+  // The warning it ends with — changing a link that works to match one that did not — is why this was
+  // checked against the live thing before being changed rather than after.
   const origin = poolUrl ? String(poolUrl).replace(/\/$/, '') : null;
   const reportUrlFor = (slug) => !origin ? null
-    : single ? `${origin}/${runId}/report.html`
+    : single ? reportRouteFor(origin, runId)
     : markReportRouteFor(origin, runId, slug);
   // — resolved once for the whole publish, off the same two sources the clearance
   // publisher uses (frozen sidecar, then roster; either marks, neither un-marks).
