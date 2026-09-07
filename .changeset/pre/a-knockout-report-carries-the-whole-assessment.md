@@ -1,5 +1,5 @@
 ---
-"prelim-driver": minor
+"prelim-driver": patch
 ---
 
 New: A Knockout report now carries the whole assessment behind its ratings. You get the reviewer's notes and the reviewer's own opening read of each name. You also get the reasoning that holds a name at its rating, and what would move it. This was written during every search and reached only the audit workbook, so the report showed a rating without the thinking under it. The notes are marked as reference material rather than mixed into the findings.
