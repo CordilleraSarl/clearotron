@@ -54,6 +54,13 @@ import { accountRun, accountTrace, accountTimeline, accountFinding, accountFindi
   accountWhatIfPlan, accountWhatIfQueued, accountWhatIfResult, CLIENT_FAILURE_NOTE as clientFailureNote } from "./lib/audit-view.mjs";
 import { scrubMarkdown, scrubBody, scrubFrontMatter, scrubCards } from "./lib/scrub.mjs";
 import { evidenceRecords, searchLog, coverageStatement } from "./lib/evidence.mjs";
+// The knockout lane's projections. Every audit tool below branches on `isKnockoutRun` because the
+// clearance projections read artifacts this product does not write, and returned empty rather than saying
+// so (tracker issue 275).
+import {
+  isKnockoutRun, knockoutDoc, knockoutArtifacts, knockoutArtifactPath, knockoutFindings,
+  knockoutEvidence, knockoutSearches, knockoutCoverage, traceKnockout, notProducedOnThisProduct,
+} from "./lib/knockout.mjs";
 import { instructionsFor } from "./lib/instructions.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { BRAND } from "../shared/brand.mjs";   // — the operator name a client is told to expect, from the tenant seam
@@ -82,6 +89,18 @@ function mustRun(runId) {
 function artifactPath(run, name) {
   const { P, runDir } = run;
   if (name === "status.json") return join(runDir, "status.json");
+  // THE KNOCKOUT TABLE IS TERMINAL ON A KNOCKOUT, and both halves of that matter (tracker issue 275).
+  //
+  // Resolving FIRST is what fixes `report`: a knockout's report.md is written to the POOL and never into
+  // the run dir, so the clearance table returned the run dir's own `report` slot — a path that does not
+  // exist — and the tool answered `exists: false` about a file sitting on disk.
+  //
+  // Not FALLING THROUGH is the other half, and it was caught by an arm rather than by design. With a
+  // fall-through, `read_artifact narrative` on a knockout resolves against the clearance table, finds the
+  // slot, and returns `exists: false` — reporting a document this product never writes as a missing one.
+  // That is the defect this issue is about, reappearing one layer down. Returning null instead makes the
+  // tool refuse the name and name the artifacts this run actually has.
+  if (isKnockoutRun(run)) return knockoutArtifactPath(run, name);
   if (name === "run.jsonl" || name === "telemetry/run.jsonl") return driverDir(runDir, "run.jsonl");
   if (REGISTER_AXES.includes(name)) return P.registerUnit(name);
   // validate the axis against the known set — never let a "registerUnit:../../x" escape the run-dir
@@ -93,6 +112,10 @@ function artifactPath(run, name) {
 }
 
 function listArtifacts(run) {
+  // The error message a caller sees when a name does not resolve is built from this list, so on a knockout
+  // it has to name the knockout's own artifacts — otherwise the tool refuses a name and then suggests
+  // eleven documents this product does not write.
+  if (isKnockoutRun(run)) return knockoutArtifacts(run).filter((a) => a.exists).map(({ name, file }) => ({ name, file }));
   const { P } = run; const out = [];
   for (const [k, v] of Object.entries(P)) { if (k === "runDir" || typeof v === "function") continue; if (existsSync(v)) out.push({ name: k, file: basename(v) }); }
   for (const ax of REGISTER_AXES) { const p = P.registerUnit(ax); if (existsSync(p)) out.push({ name: `registerUnit:${ax}`, file: basename(p) }); }
@@ -227,6 +250,28 @@ const tools = {
   get_run({ runId }) {
     const run = mustRun(runId);
     const { stages, failover } = getStages(run.runDir);
+    // THE LANE DECIDES THE ARTIFACT LIST. Appending REGISTER_AXES unconditionally is what manufactured
+    // eleven `exists: false` rows on a product that writes none of those documents — a wall of false
+    // negatives, which a reader is entitled to read as a run with nothing on disk.
+    if (isKnockoutRun(run)) {
+      const doc = knockoutDoc(run);
+      const negatives = knockoutFindings(run, { kind: "negatives" }).items;
+      return {
+        run: runSummary(run),
+        product: "knockout",
+        stages, failover,
+        artifacts: knockoutArtifacts(run),
+        coverageSummary: {
+          // No ledger EXISTS on this lane, and saying so as a fact beats reporting it as a missing file.
+          coverageLedgerPresent: false,
+          coverageLedgerNote: "A Knockout search keeps no coverage ledger; get_search_coverage answers "
+            + "from the run's own per-mark record instead.",
+          complete: Boolean(doc),
+          findings: knockoutFindings(run).items.length,
+          negativeResults: negatives.length,
+        },
+      };
+    }
     return {
       run: runSummary(run),
       stages, failover,
@@ -249,6 +294,18 @@ const tools = {
   },
   list_findings({ runId, kind, sourceLayer, group }) {
     const run = mustRun(runId);
+    if (isKnockoutRun(run)) {
+      // `group` is the clearance report's on-field/off-field/out-of-scope curation. A knockout report has
+      // no such sectioning, so the honest answer names that rather than filtering to nothing.
+      if (group) {
+        return {
+          _note: BRIEFING_NOTE, kind: "cards", group, items: [],
+          ...notProducedOnThisProduct("on-field/off-field/out-of-scope card groups",
+            "Call list_findings without `group` for this run's findings, each with its band."),
+        };
+      }
+      return { _note: BRIEFING_NOTE, ...knockoutFindings(run, { kind, sourceLayer }) };
+    }
     if (group) { const cards = loadCards(run.P); return { _note: BRIEFING_NOTE, kind: "cards", group, items: cards.cards.filter((c) => c.group === group), note: cards.note }; }
     return { _note: BRIEFING_NOTE, ...filterFindings(run.P, { kind, sourceLayer }) };
   },
@@ -256,17 +313,20 @@ const tools = {
   // Data, not narrative: no BRIEFING_NOTE rides on these. The projections — and the reasoning about what
   // is evidence and what is method — live in lib/evidence.mjs; nothing is decided here.
   list_evidence({ runId, layer }) {
-    const out = evidenceRecords(mustRun(runId));
+    const run = mustRun(runId);
+    const out = isKnockoutRun(run) ? knockoutEvidence(run) : evidenceRecords(run);
     return layer ? { ...out, records: out.records.filter((r) => r.layer === layer) } : out;
   },
   list_searches({ runId, outcome }) {
-    const out = searchLog(mustRun(runId));
+    const run = mustRun(runId);
+    const out = isKnockoutRun(run) ? knockoutSearches(run) : searchLog(run);
     if (!outcome) return out;
     const searches = out.searches.filter((s) => s.outcome === outcome);
     return { ...out, count: searches.length, searches, totalCount: out.count };
   },
   get_search_coverage({ runId }) {
-    return coverageStatement(mustRun(runId));
+    const run = mustRun(runId);
+    return isKnockoutRun(run) ? knockoutCoverage(run) : coverageStatement(run);
   },
   get_finding({ runId, id }) {
     const run = mustRun(runId);
@@ -275,7 +335,12 @@ const tools = {
     return f;
   },
   trace({ runId, target, depth, shallow }) {
-    return trace(mustRun(runId), target, { depth: depth ?? 2, shallow: shallow === true });
+    const run = mustRun(runId);
+    // The clearance trace's target table is built from STAGE_ORDER, the register axes and the clearance
+    // findings spine, so on a knockout it resolved nothing at all — including "verdict" — and its error
+    // enumerated fifteen stages, none of them from this lane.
+    if (isKnockoutRun(run)) return traceKnockout(run, target, readEvents(run.runDir));
+    return trace(run, target, { depth: depth ?? 2, shallow: shallow === true });
   },
   get_telemetry({ runId, stage, axis }) {
     const run = mustRun(runId);
