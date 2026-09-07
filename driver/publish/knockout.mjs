@@ -68,9 +68,13 @@ export const knockoutStatement = (framework, marks) =>
 // 11pt, no <!DOCTYPE>, no <head>, no <meta charset> — and they rendered a Depth 2 report as a grey
 // spreadsheet with the register hit-counts the customer paid for buried in a table cell. The report now
 // renders through publish/render-knockout.mjs in the product's own design language, off the same shared
-// stylesheet and brand tokens as the clearance report. Internal working material (the purple staff notes,
-// the model's registerEstimate) is not stripped from the report — it is not IN the report; it lives in
-// the audit workbook, which is what an internal artifact is for.
+// stylesheet and brand tokens as the clearance report.
+//
+// THE REVIEWER'S NOTES ARE ON THE REPORT SINCE 2026-09-07 (owner ruling, tracker issue 274). This
+// paragraph used to end "internal working material (the purple staff notes, the model's registerEstimate)
+// is not IN the report; it lives in the audit workbook". That is now true of `registerEstimate` only: the
+// notes render on the page, labelled, and the workbook keeps its copy. See render-knockout.mjs's header
+// for the ruling and reviewerNotesBlock for the shape.
 
 // ── The workbook: the skill's three sheet names + columns, plus the conditional sheets below ────────
 // ── ONE DRILL-THROUGH KEY: `<MARK> #<ordinal>`, per mark ──────────────────────────────────────
@@ -250,9 +254,11 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
 // ── The email: a COVER NOTE. Headline band, one line per mark, the report link. Nothing else. ────────
 // The report is the deliverable and the email points at it — the same doctrine the clearance lane
 // follows. The old `delivery.email === 'table'` overlay inlined the full review table into the mail
-// body, and it inlined the INTERNAL variant: purple staff notes and the model's register estimate went
-// out over the wire to whoever the mail reached. A second rendering of the findings in a second dialect
-// is also a second thing to keep true. Per-lawyer client formatting is drafted by the assistant from the
+// body, which put the findings in front of whoever the mail reached rather than whoever opened the
+// report, and made a second rendering of them in a second dialect — a second thing to keep true.
+// (That overlay's other charge, that it shipped an INTERNAL variant, no longer describes anything: the
+// 2026-09-07 ruling put the reviewer's notes on the one report. The reason above is the load-bearing one
+// and it is unaffected — the mail stays a cover note.) Per-lawyer client formatting is drafted by the assistant from the
 // run's report-data.json, not by a template knob in here.
 // `reports` is publishKnockout's own list — `[{mark, url}]`, one per published document — and
 // `auditUrl` is composed by the publisher from the pool URL it already holds. Neither is derived here.

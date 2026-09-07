@@ -158,7 +158,7 @@ export function scrubMarkdown(text) {
 // at least announced itself as internal.
 //
 // The ruling needed no new product decision, because the product had already made it:
-// `publish/report-data.mjs:64` filters to live findings, "a withdrawn finding renders nowhere — it does
+// `publish/report-data.mjs:74` (`const live`) filters to live findings, "a withdrawn finding renders nowhere — it does
 // not exist here either". Two client surfaces, one question, two answers. So the block is DROPPED, and
 // the two agree by construction rather than key by key — which is the thing asked not to repeat.
 //

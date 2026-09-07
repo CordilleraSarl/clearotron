@@ -472,7 +472,23 @@ test("the report prints the figures as their own section, and the model's guess 
   // The model's ESTIMATE of what the registers hold is not printed beside the measurement of it — and
   // now it is not printed at all: it is an internal working note, and it lives in the audit workbook.
   assert.doesNotMatch(html, /moderate filings expected/, "the guess never sits beside the fact");
-  assert.doesNotMatch(html, /Register search pending/, "nor does the staff note");
+
+  // THE STAFF NOTE IS ON THE PAGE SINCE 2026-09-07, and this arm used to assert the opposite
+  // (`doesNotMatch(/Register search pending/)`). The owner ruled that there is one report and the person
+  // who ran Clearotron reads it, so notes written for the reviewer belong on it (tracker issue 274). The
+  // two halves of the old rule came apart: the ESTIMATE is still off the page — it is a guess sitting
+  // beside a measurement of the same thing — and the NOTE is on it.
+  //
+  // Asserting the note is PRESENT AND LABELLED, rather than deleting the old line, is the point: the way
+  // this ruling could produce a worse report is by merging the reviewer's asides into the client-voiced
+  // body, where they would read as findings about the mark. The label is what stops that, so the label is
+  // what the arm checks.
+  assert.match(html, /Register search pending/, "the reviewer's note reaches the report");
+  assert.match(html, /class="internal"/, "…in the purple internal convention, not merged into the body");
+  assert.match(html, /class="ko-refnote"/, "…under the legend that names the convention");
+  const noteBlock = html.slice(html.indexOf('class="internal"'));
+  assert.ok(noteBlock.indexOf("Register search pending") < noteBlock.indexOf("</div>") + 400,
+    "the note sits INSIDE the labelled block rather than anywhere on the page");
 
   // An all-classes run SAYS the count was not narrowed — the bigger, scarier number never passes as
   // the narrow one counsel asked for.

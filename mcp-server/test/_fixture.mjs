@@ -278,14 +278,69 @@ export function buildKnockoutRun() {
 
   w(p("knockout-frame.md"), "# Frame\nTwo instructed names screened against the register and the open web.\n");
   w(p("knockout-plan.json"), JSON.stringify({ schema: 1, marks: [{ name: "PROJECT HALCYON" }, { name: "HALCYONA" }] }));
+  // THE MARKS CARRY WHAT A DELIVERED RUN'S MARKS CARRY (tracker issue 275). They used to hold a name, a
+  // band and a class list and nothing else, which is enough for the brief — it reads report-data from the
+  // pool — but not for the audit tools, whose whole subject is the material underneath the band. A fixture
+  // with no findings and no negatives cannot tell "list_searches projects the proof of search" from
+  // "list_searches returns an empty array", and those two were the defect and the fix.
   w(p("knockout-findings.json"), JSON.stringify({
     schema: 1,
     batch: { executiveSummary: "One name is clear to proceed on; the other meets a live in-class registration." },
     marks: [
-      { name: "PROJECT HALCYON", rating: "HIGH", ratingQualifier: "in-class", classesSearched: [9, 41] },
-      { name: "HALCYONA", rating: "LOW", classesSearched: [9, 41] },
+      {
+        name: "PROJECT HALCYON", rating: "HIGH", ratingQualifier: "in-class", classesSearched: [9, 41],
+        basis: "A live in-class registration stands in the name's own field.",
+        findings: [{
+          ordinal: 1, name: "HALCYON", owner: "Halcyon Systems GmbH", band: "HIGH", type: "Register",
+          net: "Live EU registration in class 9.", basis: "Identical name, overlapping goods.",
+          evidence: ["https://register.example/eu/halcyon"], weighedFilings: ["R-HALCYON-EU"],
+        }],
+        negatives: [
+          { term: "project halcyon app store", source: "marketplace sweep", note: "no listing under this name" },
+          { term: "project halcyon games", source: "open web", note: "nothing trading under the name" },
+        ],
+        registerReads: [{
+          recordId: "R-HALCYON-DORMANT", band: "LOW",
+          read: "A dormant filing in unrelated goods; it does not bear on the rating.",
+        }],
+      },
+      {
+        name: "HALCYONA", rating: "LOW", classesSearched: [9, 41],
+        basis: "A coined variant with no located use.",
+        findings: [],
+        negatives: [{ term: "halcyona", source: "open web", note: "no trading use located" }],
+      },
     ],
   }));
+  // The register lane's own store — the driver's measurement, and the second evidence layer list_evidence
+  // answers from. `terms[].ok:false` is a search that did NOT answer, which must never be projected as a
+  // clean no-hit.
+  w(driverDir(RUN_DIR_KO, "register-records.json"), JSON.stringify({
+    provider: "fixture", providerLabel: "the fixture register",
+    marks: [{
+      name: "PROJECT HALCYON", classes: [9, 41],
+      records: [
+        { recordId: "R-HALCYON-EU", mark: "HALCYON", owner: "Halcyon Systems GmbH", status: "Valid", classes: [9], territory: "EU", matchedForm: "HALCYON", matchedBasis: "identical", url: "https://register.example/eu/halcyon" },
+        { recordId: "R-HALCYON-DORMANT", mark: "HALCYON", owner: "Halcyon Holdings", status: "Expired", classes: [3], territory: "DE", matchedForm: "HALCYON", matchedBasis: "identical", url: null },
+      ],
+      terms: [{ term: "HALCYONA", basis: "identical", ok: false, reason: "provider timed out" }],
+    }],
+  }));
+  w(driverDir(RUN_DIR_KO, "register-counts.json"), JSON.stringify({
+    provider: "fixture", providerLabel: "the fixture register",
+    marks: [{ name: "PROJECT HALCYON", classScope: "classes 9, 41", classes: [9, 41], counts: { identical: { total: 2 }, containing: { total: 7 } } }],
+  }));
+  w(driverDir(RUN_DIR_KO, "knockout-sweep.jsonl"),
+    JSON.stringify({ mark: "PROJECT HALCYON", ok: true }) + "\n"
+    + JSON.stringify({ mark: "HALCYONA", ok: true }) + "\n");
+  // The run's own event log — what `trace` walks.
+  w(driverDir(RUN_DIR_KO, "run.jsonl"), [
+    JSON.stringify({ event: "stage", stage: "knockout-frame", outcome: "ok" }),
+    JSON.stringify({ event: "knockout-sweep-start", marks: 2 }),
+    JSON.stringify({ event: "knockout-register-records", provider: "fixture" }),
+    JSON.stringify({ event: "stage", stage: "knockout-assess#0", outcome: "ok" }),
+    JSON.stringify({ event: "verdict", verdict: "HIGH" }),
+  ].join("\n") + "\n");
   w(p("knockout-assessment.md"), "# Assessment\nPROJECT HALCYON meets a live registration; HALCYONA does not.\n");
   w(p("research/project-halcyon.md"), "Sweep payload for PROJECT HALCYON.\n");
   w(p("research/halcyona.md"), "Sweep payload for HALCYONA.\n");
@@ -328,12 +383,35 @@ export function buildKnockoutRun() {
   });
   w(join(POOL, RUN_ID_KO, "report-data-project-halcyon.json"), JSON.stringify(koDoc(
     "PROJECT HALCYON", "project-halcyon", "HIGH", "in-class",
-    [{ ref: "F1", ordinal: 1, name: "HALCYON", owner: "Halcyon Systems GmbH", band: "HIGH", type: "register", net: "Live EU registration in class 9.", basis: null, evidence: [], shape: "typed" }],
+    [
+      { ref: "F1", ordinal: 1, name: "HALCYON", owner: "Halcyon Systems GmbH", band: "HIGH", type: "register", net: "Live EU registration in class 9.", basis: null, evidence: [], shape: "typed" },
+      // A PROMOTED REGISTER FILING THE SEARCH READ AND RATED (tracker issue 274). `shape: "register"` is
+      // what tells it from the typed conflict above, and the pair is the point: the briefing must show
+      // this one's rating and read while leaving the typed line byte-identical.
+      { ref: "REG #1", ordinal: 2, name: "HALCYON", owner: "Halcyon Holdings", band: "LOW", type: "Register filing", net: "A filing for this name stands on the register.", basis: "A dormant filing in unrelated goods; it does not bear on the rating.", evidence: [], shape: "register" },
+    ],
     "",
   ), null, 2));
   w(join(POOL, RUN_ID_KO, "report-data-halcyona.json"), JSON.stringify(koDoc(
     "HALCYONA", "halcyona", "LOW", null, [], "",
   ), null, 2));
+
+  // THE DELIVERED REPORT, IN THE POOL AND NOWHERE ELSE — which is the whole of `read_artifact report`
+  // answering `exists: false` about a file on disk. A knockout writes no report into the run dir, so a
+  // fixture that omits this cannot reproduce the defect and cannot prove the fix.
+  w(join(POOL, RUN_ID_KO, "report.md"), [
+    "---",
+    `title: "KNOCKOUT TRADEMARK REVIEW REPORT — ${RUN_ID_KO}"`,
+    `matter: "${RUN_ID_KO}"`,
+    'overall_label: "HIGH"',
+    "---",
+    "",
+    "# Summary",
+    "",
+    "One name is clear to proceed on; the other meets a live in-class registration.",
+    "",
+  ].join("\n"));
+  w(join(POOL, RUN_ID_KO, `knockout-audit-brass-lantern.xlsx`), "PK (fixture workbook bytes)");
 
   return { WS, runId: RUN_ID_KO, runDir: RUN_DIR_KO, poolDir: join(POOL, RUN_ID_KO) };
 }
