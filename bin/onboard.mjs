@@ -693,8 +693,8 @@ export async function preflightCandidate(candidate) {
 /** Ask EUIPO for a token. This is the check that makes "refuses to persist a bad secret" true. */
 export async function validateEuipo({ clientId, clientSecret, environment }) {
   try {
-    const { resolveConfig } = await import(join(REPO, "providers", "euipo", "src", "core.js"));
-    const { getAccessToken } = await import(join(REPO, "providers", "euipo", "src", "euipo-client.js"));
+    const { resolveConfig } = await import(pathToFileURL(join(REPO, "providers", "euipo", "src", "core.js")).href);
+    const { getAccessToken } = await import(pathToFileURL(join(REPO, "providers", "euipo", "src", "euipo-client.js")).href);
     await getAccessToken(resolveConfig({ clientId, clientSecret, environment }), { force: true });
     return { ok: true };
   } catch (e) {
@@ -705,7 +705,7 @@ export async function validateEuipo({ clientId, clientSecret, environment }) {
 /** One minimal Perplexity call. Costs a request, so it is never made without being asked for. */
 export async function validatePerplexity(apiKey) {
   try {
-    const { buildRequestBody, callAgentAPI } = await import(join(REPO, "providers", "perplexity", "src", "core.js"));
+    const { buildRequestBody, callAgentAPI } = await import(pathToFileURL(join(REPO, "providers", "perplexity", "src", "core.js")).href);
     await callAgentAPI(apiKey, buildRequestBody({ task: "Reply with the single word: ok.", preset: "fast-search" }), { retries: 0 });
     return { ok: true };
   } catch (e) {
@@ -1053,7 +1053,7 @@ export async function runCheck() {
   // deliberate — a second reader would drift from this one exactly as the composer and the checker did
   // in F41, and the drift is invisible because both sides keep passing their own arms.
   const unitDir = join(homedir(), ".config", "systemd", "user");
-  const { BACKGROUND_UNITS } = await import(join(REPO, "bin", "start.mjs"));
+  const { BACKGROUND_UNITS } = await import(pathToFileURL(join(REPO, "bin", "start.mjs")).href);
   const hosted = BACKGROUND_UNITS.some((u) => existsSync(join(unitDir, u)));
   const unitEnv = hosted
     ? unitEnvironment({
@@ -1908,8 +1908,8 @@ export async function runCheck() {
     say("\n  Register lane — proven, not inferred");
     try {
       const [{ activeProvider }, { makeLaneProbe, probeSpend, DEFAULT_CONTROLS, loadProviderCapabilities }] = await Promise.all([
-        import(join(REPO, "driver", "driver.config.mjs")),
-        import(join(REPO, "providers", "_shared", "lane-probe.mjs")),
+        import(pathToFileURL(join(REPO, "driver", "driver.config.mjs")).href),
+        import(pathToFileURL(join(REPO, "providers", "_shared", "lane-probe.mjs")).href),
       ]);
       const adapter = activeProvider();
       // NOT `adapter.capabilities` — that is null on every adapter, and reading it announced a LOCAL
@@ -1995,7 +1995,7 @@ export async function runCheck() {
   // green over that state would bless the owner's fresh-install 500.
   say("\n  Profile store");
   try {
-    const { loadProfiles } = await import(join(REPO, "driver", "profiles.mjs"));
+    const { loadProfiles } = await import(pathToFileURL(join(REPO, "driver", "profiles.mjs")).href);
     const resolved = loadProfiles({ force: true });
     const named = [...resolved.keys()];
     ok(`resolves: ${named.length} profile(s) (${named.slice(0, 6).join(", ")}${named.length > 6 ? ", …" : ""}) — the universal fallback is present`);
@@ -2024,7 +2024,7 @@ export async function runCheck() {
   // an absence of evidence is not evidence of absence, and this whole check exists because something
   // invisible was being read as fine.
   {
-    const { retiredSpellingsIn, retiredSpellingLine } = await import(join(REPO, "shared", "env-aliases.mjs"));
+    const { retiredSpellingsIn, retiredSpellingLine } = await import(pathToFileURL(join(REPO, "shared", "env-aliases.mjs")).href);
     const sources = [
       { label: "your environment file", env: fileEnv, known: true },
       { label: "this shell's environment", env: process.env, known: true },
@@ -2077,7 +2077,7 @@ export async function runCheck() {
 
   say("\n  Submit lane");
   try {
-    const { triggerLaneVerdict, HOSTED, SUPERVISED } = await import(join(REPO, "shared", "trigger-lane.mjs"));
+    const { triggerLaneVerdict, HOSTED, SUPERVISED } = await import(pathToFileURL(join(REPO, "shared", "trigger-lane.mjs")).href);
     // POSTURE FROM THE BOX, NOT FROM A FLAG. Units installed means the units serve, and the units read
     // %h/.env — so an absent value there is the incident. No units means `start` supervises and derives
     // the value at runtime, where reading this process's environment says nothing either way.
@@ -2117,7 +2117,7 @@ export async function runCheck() {
     // Stop control's availability on — one reader, two surfaces.
     let verbs = null;
     try {
-      const { opsTokenPosture } = await import(join(REPO, "driver", "portal-service.mjs"));
+      const { opsTokenPosture } = await import(pathToFileURL(join(REPO, "driver", "portal-service.mjs")).href);
       verbs = opsTokenPosture(opsToken).verbs;
     } catch { /* unreadable posture leaves verbs null, which reads as full ops — see the verdict */ }
     let probe = null;
@@ -2158,7 +2158,7 @@ export async function runCheck() {
   // measured on a default install, a revoked key completed a full handshake with nothing logged. Nothing
   // surfaced that state anywhere, which is why it survived to be found by hand.
   {
-    const { defaultDenylistPath } = await import(join(REPO, "shared", "client-door.mjs"));
+    const { defaultDenylistPath } = await import(pathToFileURL(join(REPO, "shared", "client-door.mjs")).href);
     const dl = effective("TRADEMARK_MCP_TOKEN_DENYLIST")?.v || defaultDenylistPath(homedir());
     try {
       const n = readFileSync(dl, "utf8").split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#")).length;
@@ -2172,8 +2172,8 @@ export async function runCheck() {
     }
   }
   try {
-    const { clientDoorState: doorState, describeDoorState, connectKeyReport, CLIENT_DOOR_UNIT: doorUnit } = await import(join(REPO, "shared", "client-door.mjs"));
-    const { loadGrants: readGrantsFile, isRevoked: revokedCheck } = await import(join(REPO, "shared", "scope.mjs"));
+    const { clientDoorState: doorState, describeDoorState, connectKeyReport, CLIENT_DOOR_UNIT: doorUnit } = await import(pathToFileURL(join(REPO, "shared", "client-door.mjs")).href);
+    const { loadGrants: readGrantsFile, isRevoked: revokedCheck } = await import(pathToFileURL(join(REPO, "shared", "scope.mjs")).href);
     // ── CONFIGURED IS NOT RUNNING, AND THIS IS THE SURFACE IT WAS MEASURED ON ──
     //
     // `describeDoorState` was written for exactly this block and then never called from it: the split
@@ -2249,7 +2249,7 @@ export async function runCheck() {
     // names the old one. A door that is up, listening, and refuses everything is the worst of the three
     // states to debug, and nothing surfaced the mismatch.
     {
-      const { clientDoorPort: portOf, allowedHosts: hostsFor } = await import(join(REPO, "shared", "client-door.mjs"));
+      const { clientDoorPort: portOf, allowedHosts: hostsFor } = await import(pathToFileURL(join(REPO, "shared", "client-door.mjs")).href);
       const declared = String(effective("CLIENT_MCP_ALLOWED_HOSTS")?.v ?? "").trim();
       if (declared) {
         const port = portOf(doorEnv);
@@ -2272,7 +2272,7 @@ export async function runCheck() {
     // null — a probe that could not be made is not a door that is absent.
     let doorListening = null;
     try {
-      const { clientDoorPort: portOf } = await import(join(REPO, "shared", "client-door.mjs"));
+      const { clientDoorPort: portOf } = await import(pathToFileURL(join(REPO, "shared", "client-door.mjs")).href);
       const { createConnection } = await import("node:net");
       doorListening = await new Promise((resolve) => {
         const sock = createConnection({ host: "127.0.0.1", port: portOf(doorEnv), timeout: 700 });
@@ -2310,7 +2310,7 @@ export async function runCheck() {
     // THE PUBLISHED ADDRESS, AND WHETHER IT ANSWERS (, acceptance 2). Reported here
     // rather than beside the unit, because the unit running and the address being reachable are
     // different facts and the second is the one a client depends on.
-    const { clientDoorReachability } = await import(join(REPO, "shared", "client-door.mjs"));
+    const { clientDoorReachability } = await import(pathToFileURL(join(REPO, "shared", "client-door.mjs")).href);
     // FROM THE FILE THE UNITS LOAD, NOT THE SHELL THIS COMMAND WAS TYPED IN (the tracker issue 226
     // family, met again here). On a hosted box the published address lives in the units' environment,
     // and reading `process.env` reported "no client connector address is published — that is correct
@@ -2357,7 +2357,7 @@ export async function runCheck() {
     // No new credential and no provider API: the audience is in the redirect handed to a caller with
     // no session at all, which is the request just made.
     {
-      const { readAudience, audienceVerdict } = await import(join(REPO, "shared", "access-audience.mjs"));
+      const { readAudience, audienceVerdict } = await import(pathToFileURL(join(REPO, "shared", "access-audience.mjs")).href);
       const configuredAud = effectiveForService("CLEAROTRON_OIDC_AUDIENCE")?.v ?? "";
       const read = readAudience(probe ?? { error: "the published address was never asked" });
       // NOTHING IS CLAIMED ABOUT A BOX THAT USES NO EDGE. With no audience configured AND no Access
@@ -2383,7 +2383,7 @@ export async function runCheck() {
     // announces the side effect first, and its control runs before any vendor.
     if (PROBE_CONNECTOR && String(published ?? "").trim()) {
       const { registrationEndpointFrom, probeRegistration, describeRegistration } =
-        await import(join(REPO, "shared", "connector-signin-probe.mjs"));
+        await import(pathToFileURL(join(REPO, "shared", "connector-signin-probe.mjs")).href);
       say("");
       say("  --probe-connector: asking this door's sign-in whether each assistant vendor could register.");
       say("  Each attempt that SUCCEEDS creates a throwaway OAuth client on your account, which you may");
@@ -3134,7 +3134,7 @@ try {
   prose("No default — it is your hostname. Skip it and this stays a local install: everything works",
         "here, and the Use-your-AI page says so rather than handing out an address that fails.");
   prose("The usual shape, and why: mcp-server/CONNECT.md.");
-  const { clientDoorReachability } = await import(join(REPO, "shared", "client-door.mjs"));
+  const { clientDoorReachability } = await import(pathToFileURL(join(REPO, "shared", "client-door.mjs")).href);
   for (;;) {
     const clientUrl = await askValue("Public connector address:", {
       skippable: true,

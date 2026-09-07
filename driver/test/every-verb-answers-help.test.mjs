@@ -28,13 +28,13 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { usageBlock } from "../../shared/usage-block.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const CLI = join(REPO, "bin", "clearotron.mjs");
 
-const { SUMMARY } = await import(join(REPO, "bin", "clearotron.mjs"));
+const { SUMMARY } = await import(pathToFileURL(join(REPO, "bin", "clearotron.mjs")).href);
 const VERB_NAMES = Object.keys(SUMMARY ?? {});
 
 // BOTH STREAMS, kept apart. What an operator SEES is stdout+stderr, and which stream carried it is
