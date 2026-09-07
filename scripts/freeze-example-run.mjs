@@ -47,7 +47,7 @@ import { join, dirname, relative, basename } from "node:path";
 import { createHash } from "node:crypto";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -506,7 +506,7 @@ const poolFull = join(scratch, "full");
 const poolFrozen = join(scratch, "frozen");
 const meta = { runId, codename, customerKey, template };
 
-const { republishRun } = await import(join(REPO, "driver", "publish", "report-registry.mjs"));
+const { republishRun } = await import(pathToFileURL(join(REPO, "driver", "publish", "report-registry.mjs")).href);
 const publishInto = async (pool, dir) => {
   mkdirSync(pool, { recursive: true });
   return republishRun({ runId, meta, pool, poolUrl: "", runDir: dir, skipRegen: true });

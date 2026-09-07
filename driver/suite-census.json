@@ -213,6 +213,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-dynamic-import-of-a-path-is-a-file-url.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
+          "skips": 1,
+          "todos": 0
+        },
         "a-fact-about-a-named-party.test.mjs": {
           "tests": 30,
           "asserts": 80,
@@ -384,6 +390,12 @@
         "a-queued-job-is-visible-before-a-worker-claims-it.test.mjs": {
           "tests": 6,
           "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-queued-what-if-is-answered-before-its-run-archives.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -700,8 +712,8 @@
           "todos": 0
         },
         "an-experiment-receipt-names-its-engine.test.mjs": {
-          "tests": 6,
-          "asserts": 22,
+          "tests": 8,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },

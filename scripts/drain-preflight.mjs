@@ -29,7 +29,7 @@
 
 import { spawnSync } from "node:child_process";
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { join, dirname } from "node:path";
 import { homedir, userInfo } from "node:os";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
@@ -244,7 +244,7 @@ export async function preflight({ home = homedir(), root = ROOT } = {}) {
   const unitPath = join(root, "driver", "systemd", "prelim-driver.path");
   const unitText = existsSync(unitPath) ? readFileSync(unitPath, "utf8") : null;
 
-  const { config } = await import(join(root, "driver", "driver.config.mjs"));
+  const { config } = await import(pathToFileURL(join(root, "driver", "driver.config.mjs")).href);
   const queueDirs = config.queueDirs ?? [];
   const watched = unitText == null ? null : watchedQueueDirs(unitText, home);
 
