@@ -885,7 +885,7 @@ export function statedDivergenceFindings({ reconciliation = null, carryRows = nu
   //   silentlyLostFindings       checked=5 matched=5 lost=0
   //   statedDivergenceFindings   checked=5 matched=5 diverged=0   ← should have named two marks
   //
-  // The reconciliation names five finding-ended positions and they are five OTHER marks — DELPHIS
+  // The reconciliation names five finding-ended positions and they are five OTHER marks — VELTRIN
   // bioenergetische Kosmetik, DELPHIC HSE, DELPHI, DELPHIN & EMERENCE, DELPHI DIAGNOSTICS. The two that
   // were lost sit in the CARRY rows and the reconciliation never mentions them:
   //

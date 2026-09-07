@@ -226,6 +226,9 @@ environment including production**; unset resolves to `null` and throws at first
 
 `CLEAROTRON_WORK_DIR` (~/trademark/workspace since; the two`.path` units
 hardcode the old glob — see 04), `CLEAROTRON_WORKSPACE_PREFIX` (workspace-), `CLEAROTRON_QUEUE_DIR`,
+`CLEAROTRON_CHECKOUT_DIR` (the installed package root every unit's `ExecStart` names; npm-owned and
+replaced wholesale on upgrade, which is why the settings file lives OUTSIDE it — and why a service not
+restarted after an upgrade keeps serving the deleted tree),
 `CLEAROTRON_INSTRUCTIONS_DIR` (config store), `CLEAROTRON_CUSTOMERS_DIR` (config store), `CLEAROTRON_RECIPES_DIR`,
 `CLEAROTRON_REPORTS_DIR` (**no default since — unset refuses**),`CLEAROTRON_RUN_LOCK_DIR`, `CLEAROTRON_OUTBOX_DIR`,
 `CLEAROTRON_STAFF_POOL_ROOT`, `CLEAROTRON_REGISTER_CALL_LOG` (~/trademark/telemetry/…, homedir-derived at
@@ -440,6 +443,23 @@ it in CI and nowhere else — on a deployed box it silences the one check that n
 
 `portal-ui/` has **zero** env config (no `VITE_*`, no `import.meta.env`) — the SPA talks to its
 origin; all portal config lives server-side in portal-service.
+
+### 5.11 Release pipeline — CI only (never set on a deployment)
+
+These are read by the release workflow and by nothing a deployment runs. They are listed here because a
+name absent from this register is a name nobody can look up, not because an operator has any reason to set
+one — and setting either on a box does nothing at all.
+
+`CLEAROTRON_CUT_REF` (default `HEAD`) — which ref the cut decision reads the version from. The jobs that
+ask about `main` set it to `origin/main` explicitly, because their checkout is pinned to the run's own ref
+and `HEAD` there is that ref rather than the branch being decided about. A job that asks about the wrong
+subject gets a confident wrong answer.
+
+`CLEAROTRON_RELEASE_WAIT_MS` (default 25 minutes) — how long a requested cut waits for the version pull
+request to merge itself. A rehearsal sets `0`, so the wiring is exercised without holding a runner. Giving
+up is a quiet success by design and the scheduled run underneath catches what it misses, so a budget that
+is wrong shows up as a slow job rather than a red one — which is why it is written down rather than left
+to be inferred from a timeout.
 
 ## 6. Drift patterns — values that are mirrored by design
 
