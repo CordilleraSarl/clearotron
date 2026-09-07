@@ -1378,8 +1378,8 @@
           "todos": 0
         },
         "declination-is-stated-not-inferred.test.mjs": {
-          "tests": 20,
-          "asserts": 60,
+          "tests": 24,
+          "asserts": 69,
           "skips": 0,
           "todos": 0
         },
