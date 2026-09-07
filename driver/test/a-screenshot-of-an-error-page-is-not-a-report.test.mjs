@@ -21,7 +21,7 @@ import { mkdtempSync, writeFileSync, chmodSync, rmSync, existsSync, readFileSync
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { pageVerdict, navigateOrRefuse, chromeErrorPage, CHROME_ERROR_SCHEME,
+import { pageVerdict, navigateOrRefuse, chromeErrorPage, CHROME_ERROR_SCHEME, START_PAGE, assertPageLoaded,
   cjkCharsIn, cjkVerdict, fontsCovering } from "../../scripts/headless-page.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -46,8 +46,26 @@ test("227 a page that reports no address certifies nothing", () => {
 test("227 a different document is caught even when it is a real one", () => {
   const v = pageVerdict({ href: "file:///other.html", expected: "file:///r.html", marker: true });
   assert.equal(v.kind, "wrong-document");
-  // `about:blank` is the shape a failed Page.navigate leaves behind, and no error text describes it.
-  assert.equal(pageVerdict({ href: "about:blank", expected: "file:///r.html", marker: true }).kind, "wrong-document");
+});
+
+// THIS ASSERTION USED TO SIT IN THE ARM ABOVE AND EXPECTED `wrong-document` (tracker issue 273). It was
+// wrong in the way that matters: the start page is not a document this run opened, so calling it "a
+// redirect, a stale tab or a second page target" sent a reader looking for a page that never existed.
+// Under a loaded box that is the message the arms produced, which is how a slow browser and a real defect
+// became indistinguishable.
+test("273 the browser's start page is a could-not-look, not a wrong document", () => {
+  const v = pageVerdict({ href: START_PAGE, expected: "file:///r.html", marker: true });
+  assert.equal(v.kind, "not-navigated",
+    "the start page is still classified as a document, so a browser that never moved reads as a page that "
+    + "was wrong");
+  assert.ok(!v.ok, "a page that was never reached must not read as a pass");
+  // AND THE MESSAGE MUST NOT PICK A CAUSE. A navigation that failed silently and one that has not
+  // happened yet both land here, and the address cannot separate them. Claiming either is the same
+  // over-reach one level down.
+  assert.match(v.why, /had not happened yet/, "the message does not say the browser may simply not be ready");
+  assert.match(v.why, /failed without saying so/, "the message does not admit a silent navigation failure");
+  assert.ok(!/redirect|stale tab/.test(v.why),
+    "the message still offers the wrong-document explanations, which is what sent readers hunting");
 });
 
 test("227 the right address with the wrong content is its own answer", () => {
@@ -213,4 +231,54 @@ test("227 THE DRIVE — a CJK report on a box with no CJK font refuses and write
       "an image was written anyway — that file is what a human copies into the README, and it would carry "
       + "empty boxes where the mark's native-script rendering should be");
   } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+// ── tracker issue 273: the wait that makes the verdict above reachable ────────────────────────────────
+//
+// Driven with `sleep` and `now` injected, so both paths run in microseconds and neither needs a browser.
+// The exhausted path is the one worth having: it is what a loaded box produces, and it was previously
+// reported as a wrong document.
+
+/** An `evaluate` that reports the start page for the first `blankReads` asks, then the real address. */
+function evaluateAfter(blankReads, href) {
+  let asks = 0;
+  return async (expr) => {
+    if (expr !== "location.href") return true;
+    asks++;
+    return asks <= blankReads ? START_PAGE : href;
+  };
+}
+
+test("273 a browser that arrives late is waited for, not failed", async () => {
+  let slept = 0;
+  const v = await assertPageLoaded(evaluateAfter(3, "file:///r.html"), {
+    expected: "file:///r.html", marker: "true", markerName: "a run id",
+    sleep: async (ms) => { slept += ms; }, now: () => slept,
+  });
+  assert.equal(v.kind, "loaded", `a browser that navigated on the fourth ask was failed: ${v.why}`);
+  assert.ok(slept > 0, "nothing waited, so this arm proves nothing about the wait");
+});
+
+test("273 the wait is bounded, and running out is a could-not-look", async () => {
+  let slept = 0;
+  const v = await assertPageLoaded(async (expr) => (expr === "location.href" ? START_PAGE : true), {
+    expected: "file:///r.html", marker: "true", graceMs: 1000, pollMs: 100,
+    sleep: async (ms) => { slept += ms; }, now: () => slept,
+  });
+  assert.equal(v.kind, "not-navigated", "a browser that never moved was reported as something else");
+  assert.ok(!v.ok, "an exhausted wait must not read as a pass");
+  assert.ok(slept >= 1000 && slept <= 1200,
+    `the wait did not respect its own bound — it slept ${slept}ms against a 1000ms grace`);
+});
+
+test("273 a page that IS wrong still fails at once, without spending the grace", async () => {
+  // The wait is for the browser to become ready, never for the page to become correct. A wrong document
+  // that waited would turn every real defect into a slow one.
+  let slept = 0;
+  const v = await assertPageLoaded(async (expr) => (expr === "location.href" ? "file:///other.html" : true), {
+    expected: "file:///r.html", marker: "true",
+    sleep: async (ms) => { slept += ms; }, now: () => slept,
+  });
+  assert.equal(v.kind, "wrong-document", "a genuinely wrong document is no longer caught");
+  assert.equal(slept, 0, "a wrong document was waited on, so every real defect now costs the full grace");
 });

@@ -36,6 +36,12 @@ import { execFileSync } from "node:child_process";
 
 /** Chrome's own error pages live under this scheme. Nothing a real document is served from does. */
 export const CHROME_ERROR_SCHEME = "chrome-error:";
+/** What Chrome shows before it has navigated. Not a document, and not a wrong one. */
+export const START_PAGE = "about:blank";
+/** How long `assertPageLoaded` will wait for the browser to leave its start page. */
+export const NAVIGATION_GRACE_MS = 5000;
+/** How often it asks, inside that grace. */
+export const NAVIGATION_POLL_MS = 100;
 
 /**
  * PURE. Given what the page says about itself, is it the document we asked for?
@@ -74,6 +80,25 @@ export function pageVerdict({ href = "", expected = "", marker = null, markerNam
         + "captured is Chrome's interstitial, not the artefact — and that page carries an `<h1>`, a "
         + "`<title>` and a body, so a content check alone reads it as a success." };
   }
+  // ── THE BROWSER'S START PAGE IS NOT A WRONG DOCUMENT (tracker issue 273) ────────────────────────
+  //
+  // `about:blank` is what Chrome shows before it has navigated anywhere. Reaching the check below, it
+  // compares unequal to the expected URL and was reported as `wrong-document` — "a redirect, a stale tab
+  // or a second page target" — which is a finding about a page. It is not one. Nothing was ever loaded,
+  // so nothing about the target document has been measured either way.
+  //
+  // This mattered because it is what a LOADED BOX produces: three of these scripts launch Chrome with the
+  // URL as a command-line argument and cannot wait for a navigation event, so under load the address is
+  // read before the browser has moved. A real defect and a slow browser then arrived as the same message,
+  // and the arms that exist to catch a wrong page were the ones that fired.
+  if (said === START_PAGE || said.startsWith(`${START_PAGE}?`) || said.startsWith(`${START_PAGE}#`)) {
+    return { ok: false, kind: "not-navigated",
+      why: `chrome is on its start page (${said}) and never reached ${expected}. Nothing about that `
+        + "document has been measured, so this is not a finding about the page. TWO THINGS LOOK LIKE "
+        + "THIS and the address cannot tell them apart: a navigation that failed without saying so, and "
+        + "one that had not happened yet. That is why the caller waits before asking — a verdict of this "
+        + "kind means it waited and the browser never left the start page." };
+  }
   // NORMALISED ON BOTH SIDES. Chrome resolves and percent-encodes a `file://` argument, so a raw string
   // comparison fails on a path with a space and reports "the wrong document" about the right one.
   const norm = (u) => { try { return new URL(u).href; } catch { return String(u); } };
@@ -103,8 +128,32 @@ export function pageVerdict({ href = "", expected = "", marker = null, markerNam
  * handshake before this file existed and rewriting seven of them to share one is a bigger change than the
  * defect warrants. What they must share is the QUESTION.
  */
-export async function assertPageLoaded(evaluate, { expected, marker = null, markerName = "the page's own content", what = "this page", errorText = null } = {}) {
-  const href = await evaluate("location.href");
+export async function assertPageLoaded(evaluate, { expected, marker = null, markerName = "the page's own content", what = "this page", errorText = null,
+  graceMs = NAVIGATION_GRACE_MS, pollMs = NAVIGATION_POLL_MS,
+  sleep = (ms) => new Promise((r) => setTimeout(r, ms)), now = () => Date.now() } = {}) {
+  // ── WAIT FOR THE BROWSER TO LEAVE ITS START PAGE, THEN JUDGE (tracker issue 273) ─────────────────
+  //
+  // Three of these scripts launch Chrome with the URL as an argument and get no response to wait on, so
+  // the first read of `location.href` can land before the browser has moved. On an idle box it never
+  // does; under a full parallel suite it did, repeatedly, and the arms reported the start page as a
+  // wrong document.
+  //
+  // BOUNDED, AND THE BOUND IS THE POINT. This waits for the browser to become ready — it does not wait
+  // for the page to become correct. If the address is anything other than the start page it is judged
+  // immediately, so a genuinely wrong document still fails on the first read and fails as fast as it did
+  // before. Only the "nothing has happened yet" case costs time, and only up to the grace.
+  //
+  // When the grace runs out the verdict is `not-navigated`, which is a could-not-look and says so.
+  // Deadline arithmetic is the caller's to drive: `sleep` and `now` are injected so the exhausted path
+  // can be exercised without a browser and without waiting.
+  let href = await evaluate("location.href");
+  if (String(href ?? "") === START_PAGE) {
+    const until = now() + graceMs;
+    while (String(href ?? "") === START_PAGE && now() < until) {
+      await sleep(pollMs);
+      href = await evaluate("location.href");
+    }
+  }
   const found = marker == null ? null : Boolean(await evaluate(`Boolean(${marker})`));
   const verdict = pageVerdict({ href, expected, marker: found, markerName, errorText });
   if (!verdict.ok) {
