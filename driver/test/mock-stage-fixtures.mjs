@@ -1231,7 +1231,7 @@ function recordAxisFromWiring(argv) {
  * this never ran — and the failure surfaced three hundred lines away, as a missing `_records` file on a
  * test about report rendering. An early return that skips a side-write is invisible at the return.
  *
- * The record row must prefix-match assembleRunRecords' `clearotron-<slug>-<codename>-` filter
+ * The record row must prefix-match assembleRunRecords' `prelim-<slug>-<codename>-` filter
  * (registry-fidelity rowMatchesRun). The retired gateway carried the stage key in --session-key; the
  * anthropic-agent (claude) argv has none, so the run prefix is derived from the run dir — in production
  * the register MCP server stamps this key from its gather config.
@@ -1244,7 +1244,7 @@ function mockRegisterRecordWrite(runDir, argv = []) {
   if (!process.env.MOCK_WRITE_RECORD) return;
   const skArg = argv.indexOf("--session-key");
   const sk = skArg >= 0
-    ? (argv[skArg + 1] ?? "clearotron-record")
+    ? (argv[skArg + 1] ?? "prelim-record")
     : `prelim-${basename(dirname(runDir))}-${basename(runDir).replace(/^\d{4}-\d\d-\d\d-/, "")}-mockrecord`;
   const recordLog = process.env.CLEAROTRON_REGISTER_RECORD_LOG
     || driverDir(runDir, "register-record-bodies.jsonl");

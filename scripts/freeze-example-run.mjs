@@ -174,7 +174,7 @@ const VOLATILE = [
 //
 // 1. THE BIRTH CODENAME, IN CONTENT. `--codename` rebuilds the run's IDENTITY — the leaf, the runId, the
 //    directory — and the content keeps the old pair: `_receipt.context` in every record artifact reads
-//    "clearotron-<matter>-<codename>-register-unit-primary-sweep", and audit.md and status.json carry it in
+//    "prelim-<matter>-<codename>-register-unit-primary-sweep", and audit.md and status.json carry it in
 //    prose. driver/test/no-client-identifiers.test.mjs check 2 sweeps CONTENT as well as paths, so a
 //    tree renamed but not rewritten can never be committed — which is exactly what the old echo check
 //    reported, correctly, and could do nothing about.

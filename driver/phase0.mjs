@@ -108,7 +108,7 @@ export function archiveDirFor({ slug, date, codename, archiveRoot = config.archi
 
 // ── — THE RUN KEY MUST BE UNIQUE IN THE SCOPE IT IS READ IN, NOT ONLY IN ITS OWN ROOT ────────
 //
-// `clearotron-<slug>-<codename>-` is not just a directory name. It is the ONLY thing separating one run's
+// `prelim-<slug>-<codename>-` is not just a directory name. It is the ONLY thing separating one run's
 // rows from another's in the shared call ledger, and `pipeline.mjs`'s screen gate reads that ledger to
 // build the fetched universe it judges goods-drops against:
 //
@@ -148,7 +148,7 @@ export function archiveDirFor({ slug, date, codename, archiveRoot = config.archi
 export const codenameRegistryPath = () => join(dirname(ledgerPath("call")), "run-codenames.jsonl");
 
 /**
- * Claim `clearotron-<slug>-<codename>-` for this run, and report whether we got it.
+ * Claim `prelim-<slug>-<codename>-` for this run, and report whether we got it.
  *
  * FIRST WRITER WINS, decided by re-reading rather than by locking: append the claim, read every claim
  * back, and the earliest line for this slug+date+codename is the owner. Two runs that append in the same

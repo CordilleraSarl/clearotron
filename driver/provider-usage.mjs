@@ -14,7 +14,7 @@
 //
 // This module is read-only and defensive: a missing/unreadable ledger or a torn last line (two gateway
 // turns appending concurrently) returns zeros / skips that line — it never throws. The driver calls it at
-// publish time to attribute THIS run's calls by the session-key prefix `clearotron-<slug>-<codename>-`.
+// publish time to attribute THIS run's calls by the session-key prefix `prelim-<slug>-<codename>-`.
 
 import { readFileSync, existsSync } from "node:fs";
 // Aliased: three functions below take a parameter literally named `ledgerPath`, and an unaliased
@@ -54,7 +54,7 @@ function stripGatewayNs(s) {
 }
 
 // Does this ledger row belong to the run identified by `runPrefix`? The driver's --session-key is
-// `clearotron-<slug>-<codename>-<stage><axis>` (+ optional `-rerunN`), so a prefix match catches every stage +
+// `prelim-<slug>-<codename>-<stage><axis>` (+ optional `-rerunN`), so a prefix match catches every stage +
 // axis + retry of the run. We check sessionKey (carries the key) and, defensively, sessionId.
 function rowMatchesRun(row, runPrefix) {
   return stripGatewayNs(row.sessionKey).startsWith(runPrefix)
@@ -146,7 +146,7 @@ function emptyTally() {
 /**
  * Tally every ledger line whose gateway id starts with `runPrefix`.
  * @param {string} ledgerPath  path to the JSONL ledger
- * @param {string} runPrefix   e.g. `clearotron-acme-bluejay-` (note the trailing hyphen)
+ * @param {string} runPrefix   e.g. `prelim-acme-bluejay-` (note the trailing hyphen)
  * @returns {object} the tally (see emptyTally) — never throws
  */
 export function tallyRegisterCalls(ledgerPath = DEFAULT_LEDGER_PATH, runPrefix) {
@@ -208,7 +208,7 @@ export function tallyRegisterCalls(ledgerPath = DEFAULT_LEDGER_PATH, runPrefix) 
  * (missing/unreadable ledger or a torn last line ⇒ skips that line, never throws). A cache_hit record_fetch
  * still counts — the URI WAS fetched this run, which is exactly what the gate asks.
  * @param {string} ledgerPath  path to the JSONL ledger
- * @param {string} runPrefix   e.g. `clearotron-acme-bluejay-` (note the trailing hyphen)
+ * @param {string} runPrefix   e.g. `prelim-acme-bluejay-` (note the trailing hyphen)
  * @returns {Set<string>} the set of fetched record URIs
  */
 export function fetchedRecordUris(ledgerPath = DEFAULT_LEDGER_PATH, runPrefix) {

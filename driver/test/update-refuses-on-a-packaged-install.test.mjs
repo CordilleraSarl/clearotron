@@ -108,7 +108,12 @@ test("#1929 the install ASKS about the report URL by name, and says what empty c
   // absent. An operator who was never asked cannot know they answered wrong, and the first person to
   // find out is a client opening a notification with nothing to click.
   const src = readFileSync(join(ROOT, "bin", "onboard.mjs"), "utf8");
-  assert.match(src, /askValue\("Public base URL for the pool/,
+  // Anchored on the question as it is actually asked. The wording moved when the install's first ten
+  // minutes were rewritten for the reader — "the pool" became "the reports folder" — and this line was
+  // left behind, so it failed while the wizard was doing exactly what the criterion requires. Keep the
+  // literal rather than loosening it: what is pinned is that THIS question is put to the operator, and
+  // a pattern vague enough to survive any rewording would also survive the question disappearing.
+  assert.match(src, /askValue\("Public base URL for the reports folder/,
     "the wizard must ASK — the criterion's other half, a doc that mentions it, leaves the operator "
     + "reading rather than answering");
   assert.match(src, /CLEAROTRON_REPORTS_URL/, "and by name, so the answer is findable afterwards");

@@ -70,7 +70,7 @@ identity ran it. Headless deployments with no per-agent workspaces use one expli
 - The `anthropic-agent` engine shells `claude -p` per stage (stream-json, blocking to the final
   result); warm retries `--resume` the same session, fresh retries start clean — see
   `engine/CONTRACT.md §3` for the model-tier map and `§8` for runtime caveats.
-- Stage identity keys are `clearotron-<slug>-<codename>-<stage>`; telemetry ledgers record every attempt.
+- Stage identity keys are `prelim-<slug>-<codename>-<stage>`; telemetry ledgers record every attempt.
 - A stage's output is judged by **file truth** (the validator on the written artifact), never by the
   engine's own success claim.
 - Retries never re-dispatch the same second an attempt failed: every retry waits

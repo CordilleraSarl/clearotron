@@ -3,7 +3,7 @@
 //
 // — TWO RUNS THAT DRAW ONE CODENAME SHARE A FETCHED SET.
 //
-// `clearotron-<slug>-<codename>-` is the only thing separating one run's rows from another's in the shared
+// `prelim-<slug>-<codename>-` is the only thing separating one run's rows from another's in the shared
 // call ledger, and the screen gate reads that ledger to decide which records a run fetched. Two runs
 // with the same key therefore judge goods-drops against each other's fetches — which is `all-fetched`
 // on a run whose fetcher failed every call, this issue's signature.

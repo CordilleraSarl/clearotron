@@ -77,7 +77,7 @@ export const NEUTRAL_TOOL_RESULT_SHAPE = Object.freeze({
   // Audited alongside batch screen ('s "worth checking at the same time"): NO split. Every
   // provider that implements search answers `results[]` — corsearch and clarivate through
   // `normalizeSearchResponse`, euipo/uspto-local/free-tier directly — and the driver reads exactly
-  // that name (driver/driver.config.mjs:779, :949).
+  // that name (driver/driver.config.mjs `recordsFromSearch`, and the `clarivate` entry).
   register_search: Object.freeze({
     list: "results",
     listAliases: Object.freeze([]),

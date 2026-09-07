@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // env-aliases.mjs — ONE SPELLING, and the settings that no longer exist at all.
 //
-// A variable name must mean something to someone who has never read this code. `CLEAROTRON` names nothing
+// A variable name must mean something to someone who has never read this code. `PRELIM` names nothing
 // to anyone — it is the internal codename of the first product this engine shipped — so the names an
 // installer types are `CLEAROTRON_*`. Vendor keys are deliberately untouched: `SIGNA_API_KEY` already
 // says who you bought it from.
