@@ -63,8 +63,13 @@ on:
   # underneath catches a cut whose wait gave up. Both are in the same file, below.
   push:
     branches: [main]
-  # WHY A CRON IS HERE, AND WHY DELETING IT STOPS EVERY RELEASE. The version pull request merges itself,
-  # and GitHub performs that merge with the built-in `GITHUB_TOKEN` — a push made with that token starts
+  # WHY A CRON IS HERE, AND WHY DELETING IT STOPS EVERY RELEASE. A dispatched cut turns on auto-merge on
+  # the version pull request and it then merges itself — ONLY THEN. A push to main updates that pull
+  # request and stops, which is what the `version` job's condition below says and what this sentence
+  # omitted until 2026-09-07 (tracker issue 298): read alone it says main publishes on every merge, and
+  # the repair it invites — leaving pre mode to stop the publishing — breaks the beta line instead.
+  #
+  # GitHub performs that self-merge with the built-in `GITHUB_TOKEN` — a push made with that token starts
   # NO workflow run. So the merge that cuts the version fires nothing at all: no CI, no release, no
   # error. Measured here 2026-09-05 on commit `65e634a6`, with five Dependabot runs arriving on the same
   # commit within seconds as the control — the suppression is on the token, not on the repository.
@@ -155,9 +160,21 @@ jobs:
           || (github.event_name == 'workflow_dispatch' && inputs.cut != 'rehearse'
               && github.ref == 'refs/heads/main'))
     runs-on: ubuntu-latest
-    # 15 OF THESE MINUTES CAN BE THE WAIT BELOW (tracker issue 208), so this is not the 20 it was: a
-    # budget that cannot contain its own longest step cancels the job at the moment it was about to
-    # publish, and a cancelled job reads as neither a success nor a failure to anybody scanning runs.
+    # EIGHT OF THESE MINUTES CAN BE THIS JOB'S OWN LONGEST STEP: the wait for the version pull
+    # request's checks to START, `CHECK_ATTEMPTS` 32 at `CHECK_EVERY_MS` 15s. `CHECKS_JOB_MARGIN_MS`
+    # adds four more for the work around it, so the floor on this budget is twelve. All three
+    # constants live in `release-version-pr-checks.mjs`, which this job runs below, and an arm holds
+    # the budget above their sum.
+    #
+    # IT IS NOT THE PUBLISH WAIT, and this comment said it was until 2026-09-07 (tracker issue 298).
+    # That wait is `WAIT_MS` in `release-await-cut.mjs`, it is twenty-five minutes not fifteen, and it
+    # runs in the `awaited` job, which this job never invokes — as the paragraph further down this
+    # same block already says. The arm was corrected under tracker issue 247 and the sentence beside
+    # the number was not, so one block stated two contradictory things about where the wait lives.
+    #
+    # The reason the number matters either way: a budget that cannot contain its own longest step
+    # cancels the job at the moment it was about to publish, and a cancelled job reads as neither a
+    # success nor a failure to anybody scanning runs.
     timeout-minutes: 30
     permissions:
       contents: write         # the version commit
