@@ -256,6 +256,19 @@ test("174: a world-writable directory without the sticky bit is refused", async 
     /world-writable without the sticky bit/,
     "any local account could remove the socket and bind its own listener in its place");
 
+  // THE ORDINARY SHAPE OPENS, and nothing pinned it before — pointed out in review. A service directory
+  // at 0770 owned by the service group is the correct deployment, and it is group-writable. Without this
+  // arm, somebody tightening the check to refuse group-writable would break every real installation and
+  // no test would say so; the two refusal arms above would both still pass.
+  //
+  // It is allowed by DECISION, not by derivation: it is correct only where every member of that group is
+  // already trusted with every key presented at this path. See key-socket.mjs for why the socket's own
+  // mode does not establish that.
+  chmodSync(open, 0o770);
+  const ordinary = await openKeyDoor({ handler: (_q, s) => s.end(), path: join(open, "ordinary.sock"), log: () => {} });
+  try { assert.equal(ordinary.mode, KEY_SOCKET_MODE, "a group-writable service directory is the ordinary shape and must open"); }
+  finally { try { ordinary.server.close(); } catch { /* closing */ } }
+
   // The sticky bit is exactly the thing that makes a shared directory safe for this, so it is honoured.
   chmodSync(open, 0o1777);
   const d = await openKeyDoor({ handler: (_q, s) => s.end(), path: join(open, "engine.sock"), log: () => {} });

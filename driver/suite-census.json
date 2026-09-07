@@ -4870,7 +4870,7 @@
       "perFile": {
         "a-key-has-one-door-and-it-is-not-the-network.test.mjs": {
           "tests": 13,
-          "asserts": 32,
+          "asserts": 33,
           "skips": 0,
           "todos": 0
         },
