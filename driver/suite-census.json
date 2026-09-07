@@ -471,6 +471,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-register-card-does-not-argue-with-its-own-chip.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-release-note-is-written-for-its-reader.test.mjs": {
           "tests": 9,
           "asserts": 63,
@@ -4356,7 +4362,7 @@
         "the-notice-goes-to-whoever-asked.test.mjs": {
           "tests": 8,
           "asserts": 23,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "the-owner-of-a-promoted-filing-is-searched.test.mjs": {
