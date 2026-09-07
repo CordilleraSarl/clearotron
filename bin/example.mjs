@@ -371,9 +371,21 @@ child.on("error", (e) => die(`demo: could not start the portal: ${String(e?.mess
 // Its exit code is the demo's. A supervisor that swallowed a child's refusal would report a demo that
 // is up when nothing is listening.
 child.on("exit", (code, signal) => process.exit(signal ? 1 : (code ?? 0)));
-// Ctrl-C reaches the child through the shared terminal; this process waits for it to finish tearing
-// down rather than exiting first and orphaning it.
-process.on("SIGINT", () => {});
+// ── SIGINT IS FORWARDED, FOR THE SAME REASON SIGTERM IS ─────────────────────────────────────────
+//
+// This was a no-op, on the reasoning that a terminal delivers SIGINT to the whole foreground process
+// group so `start.mjs` gets its own copy. That is true of a terminal and it is the only case it is true
+// of. MEASURED on this tree: with the demo running on three ports, a SIGINT delivered to THIS PID ALONE
+// left all three still bound and both processes alive, because the no-op tore nothing down and the
+// services sit in their own process group where a group signal aimed at the terminal never reaches
+// them. A SIGINT sent to the group tears everything down correctly; only the pid-alone case leaked.
+//
+// That is the same defect, and the same shape, as the SIGTERM case recorded below — which was found by
+// somebody killing the one pid a reader can see. This half was left as a no-op then.
+//
+// Forwarding is safe when the terminal ALSO delivered its own copy: `start.mjs`'s shutdown is
+// re-entrant (`if (stopping) return`), so the second signal is ignored rather than racing the first.
+process.on("SIGINT", () => { try { child.kill("SIGINT"); } catch { /* already gone */ } });
 // ── AND SIGTERM, WHICH DOES NOT REACH THE CHILD ─────────────────────────────────────────────────
 //
 // SIGINT is delivered to the whole foreground process group by the terminal, so the no-op above is

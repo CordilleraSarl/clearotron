@@ -258,6 +258,19 @@ drops BACKOFF from the prefix, which the elided spelling this row used to carry 
 `CLEAROTRON_OUTBOX_NOPROGRESS_MAX`, `TRADEMARK_MSGID_DOMAIN` (enqueue.local).
 Code-set per stage (not operator-set): `CLEAROTRON_GATHER_AGENT` / `CLEAROTRON_GATHER_SESSION_KEY` / `CLEAROTRON_GATHER_SESSION_ID`.
 
+**Who the completion notice reaches** — `CLEAROTRON_REQUESTER_WHATSAPP` (empty; effect: deployment) is a
+JSON map of requester email or handle → number, and `CLEAROTRON_WHATSAPP_OPERATOR_COPY` (on unless `0`,
+`false` or `no`; effect: deployment) keeps or drops the operator's own copy of the same notice. The two are
+independent: an operator can stop receiving copies of other people's runs without changing who the
+requester notice reaches.
+
+`CLEAROTRON_AGENT_WHATSAPP` above is keyed by AGENT id, and every user of a deployment shares one agent —
+which is why the notice used to reach the operator and never the person who ordered the search. Unset is
+an EMPTY roster and never a demo one: a deployment that configures nothing routes no notice, and the
+delivery record names whose number is missing rather than quietly substituting the operator's.
+`CLEAROTRON_REQUESTER_WHATSAPP` holds contact data; treat it as a mirror-aware value under §6 wherever an
+integrator holds a copy.
+
 ### 5.8 Credentials — T4 (secrets; EnvironmentFile only; mirror-aware — see §6)
 
 `ANTHROPIC_API_KEY`, `CORSEARCH_SESSION_KEY` (fail-closed preflight),

@@ -246,11 +246,31 @@ export function defaultAtReadSite(name, root = ROOT) {
 /** The whole classification, pure over its inputs so a test drives it without a box. */
 export function classify({ catalogue, sources, setup = setupNames(), readSites = defaultAtReadSite,
   deploymentNames = DEPLOYMENT_NAMES } = {}) {
-  // ONE NAMED OVERRIDE, and it is listed rather than folded into a pattern so that it can be argued
-  // with. `CLEAROTRON_AGENT_WHATSAPP` matches no deployment shape and is not a knob: production sets it to
-  // a contact map, so it is a notification DESTINATION. Established from the SHAPE of the value, never
-  // its content. A pattern wide enough to catch it would have swept in real knobs.
-  const OVERRIDES = { CLEAROTRON_AGENT_WHATSAPP: "deployment" };
+  // NAMED OVERRIDES, listed rather than folded into a pattern so that each can be argued with.
+  //
+  // `CLEAROTRON_AGENT_WHATSAPP` matches no deployment shape and is not a knob: production sets it to a
+  // contact map, so it is a notification DESTINATION. Established from the SHAPE of the value, never its
+  // content. A pattern wide enough to catch it would have swept in real knobs.
+  //
+  // The other two are the same fact about the same thing, and they are here because the register already
+  // declares them `deployment` while this classifier — which keys on the NAME — filed them as `tuning`.
+  // That disagreement is not cosmetic: tuning names with no recorded set-site are the population this
+  // script walks for deletion candidates, and both are destinations a deployment may legitimately leave
+  // unset. A one-word mismatch would have put a notification address on a list of names to remove.
+  //
+  //   · CLEAROTRON_REQUESTER_WHATSAPP     — the map of requester → number. A destination, like the agent
+  //                                          map above, and the reason that one is here applies verbatim.
+  //   · CLEAROTRON_WHATSAPP_OPERATOR_COPY — whether the operator keeps a copy. It reads as a knob and is
+  //                                          not one: it decides WHETHER a second destination is used, so
+  //                                          changing it changes who is told, never what a run concludes.
+  //
+  // Found in review, not by the classifier: nothing reconciles the register against this table, so the
+  // two can disagree indefinitely and only a reader notices.
+  const OVERRIDES = {
+    CLEAROTRON_AGENT_WHATSAPP: "deployment",
+    CLEAROTRON_REQUESTER_WHATSAPP: "deployment",
+    CLEAROTRON_WHATSAPP_OPERATOR_COPY: "deployment",
+  };
 
   const cls = (name) => OVERRIDES[name] ?? (setup.has(name) ? "setup"
     : VENDOR_RE.test(name) ? "vendor-credential"

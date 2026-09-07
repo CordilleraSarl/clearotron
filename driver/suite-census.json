@@ -201,6 +201,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-draw-is-visible-to-the-deploy-guard.test.mjs": {
+          "tests": 7,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "a-drive-of-a-real-command-says-what-environment-it-drives-it-in.test.mjs": {
           "tests": 8,
           "asserts": 29,
@@ -403,6 +409,12 @@
           "tests": 6,
           "asserts": 16,
           "skips": 0,
+          "todos": 0
+        },
+        "a-real-name-in-a-matter-scoped-fixture-is-caught.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 2,
           "todos": 0
         },
         "a-reasoned-skip-is-neither-a-pass-nor-a-loss.test.mjs": {
@@ -2165,7 +2177,7 @@
         },
         "health-tells-the-truth-about-the-bundle.test.mjs": {
           "tests": 4,
-          "asserts": 13,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -3298,8 +3310,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 88,
-          "asserts": 335,
+          "tests": 89,
+          "asserts": 347,
           "skips": 0,
           "todos": 0
         },
@@ -4143,6 +4155,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-connector-offers-a-memo-on-a-delivered-report.test.mjs": {
+          "tests": 7,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "the-corrections-section-is-an-allowlist.test.mjs": {
           "tests": 6,
           "asserts": 18,
@@ -4330,8 +4348,8 @@
           "todos": 0
         },
         "the-notice-goes-to-whoever-asked.test.mjs": {
-          "tests": 6,
-          "asserts": 18,
+          "tests": 8,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -4862,6 +4880,18 @@
     "mcp-server": {
       "ext": "mjs",
       "perFile": {
+        "a-key-has-one-door-and-it-is-not-the-network.test.mjs": {
+          "tests": 13,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-trace-survives-the-client-door.test.mjs": {
+          "tests": 8,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "a-memo-survives-the-door-it-arrives-through.test.mjs": {
           "tests": 5,
           "asserts": 15,

@@ -1991,6 +1991,66 @@ test("264 a merge to main publishes nothing, because auto-merge is turned on onl
     `the merge step does not require a dispatch, so a push could still reach it\n${condition}`);
 });
 
+test("264 the version commit answers the signature check, on every push and never for a fork", () => {
+  // WHY THIS EXISTS. `cla` is a required check on `main`. `cla.yml` runs only on fork pull requests, and
+  // this branch is pushed with the built-in token, which starts no workflow — so nothing reported on the
+  // version pull request, not even a skip, and it could never merge. Measured 2026-09-07: a stable cut
+  // computed its version, armed auto-merge, and waited out its whole budget on four green checks and a
+  // fifth that could not arrive. The run finished GREEN having published nothing.
+  const version = jobBlock("version");
+  const step = version.slice(version.indexOf("- name: Say that an organisation-authored version commit"));
+  assert.ok(step.length > 200, "the step that answers the signature check is gone — the version pull request cannot merge");
+
+  // The context has to be the one protection requires. A status under any other name satisfies nothing.
+  assert.match(step, /-f context=cla\b/, "the status is posted under a context that is not `cla`");
+  assert.match(step, /-f state=success\b/, "the status is not a passing one");
+
+  // THE SHA COMES FROM THE REF, NOT FROM THE PULL REQUEST OBJECT. Measured 2026-09-07: the version
+  // commit landed at 17:04:00Z, this step read the pull request at 17:04:03Z, and the API handed back
+  // the PREVIOUS head — so the status went onto a commit that was no longer the head and the pull
+  // request stayed blocked. `head.sha` is a cached view of the branch; `git/ref/heads/<branch>` is the
+  // branch. Reading provenance and the branch NAME from the pull request is safe because neither moves.
+  assert.match(step, /git\/ref\/heads\//,
+    "the sha is not read from the branch ref — a cached `head.sha` lags the push this job just made, "
+    + "and the status then lands on a commit that is no longer the head");
+  // SCOPED TO THE COMMAND, not the step text. A bare negative over the whole step reds on prose: a
+  // sentence writing "the pull request's .head.sha field" would trip it, and today it passes only
+  // because the surrounding comment happens to spell it with a backtick. What must not come back is the
+  // FIELD being read, so the assertion is about the read.
+  assert.ok(!/--jq[^\n]*\.head\.sha/.test(step),
+    "the step still reads `head.sha` from the pull request object, which is the stale read this replaced");
+
+  // AND IT CHECKS THE BRANCH DID NOT MOVE UNDER IT. Which surface is authoritative is a mechanism I
+  // cannot prove from here, so the step does not depend on it: it re-reads after posting and refuses if
+  // the tip changed. Without this the failure mode is silent — exit zero with a sha in the log — which
+  // is how the first version survived a green run.
+  const post = step.slice(step.indexOf("-X POST"));
+  assert.match(post, /git\/ref\/heads\//,
+    "the step does not re-read the ref after posting, so a branch that moved mid-step is not noticed");
+  assert.match(post, /exit 1/,
+    "the step notices a moved branch and does not fail on it — the status is then on the wrong commit, silently");
+
+  // ON EVERY PUSH, not only a dispatched cut. Provenance is true the moment the commit exists; gating
+  // this on the dispatch would leave the same commit answered or unanswered according to history, and
+  // the standing pull request would show four of five until somebody asked for a cut.
+  const condition = step.slice(step.indexOf("if:"), step.indexOf("\n        env:"));
+  assert.ok(!/workflow_dispatch/.test(condition),
+    `the signature status is gated on a dispatch, so the standing pull request sits incomplete between cuts\n${condition}`);
+  assert.match(condition, /steps\.changesets\.outputs\.pr-number != ''/,
+    `the step runs with no pull request to answer for\n${condition}`);
+
+  // THE FORK TEST IS THE ONE `cla.yml` MAKES: head repository against base repository, never the author's
+  // name. Without it this workflow would wave through a signature it has no standing to answer for.
+  assert.match(step, /head\.repo\.full_name/,
+    "the step does not check that the pull request's head is on this repository, so it could answer for a fork");
+  assert.match(step, /exit 1/, "the fork case does not refuse — it would post the status anyway");
+
+  // And the permission, which is not decoration: naming any permission sets every unnamed one to `none`.
+  const perms = version.slice(version.indexOf("permissions:"), version.indexOf("steps:"));
+  assert.match(perms, /statuses: write/,
+    "the version job cannot post a status — the step 403s and the pull request stays blocked");
+});
+
 test("264 mutated: a merge step that lost its dispatch condition is caught", () => {
   // The mutation is the exact regression this replaced: the condition the file carried before.
   const before = "if: steps.changesets.outputs.pr-number != ''";
