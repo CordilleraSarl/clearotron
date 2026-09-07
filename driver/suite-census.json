@@ -4299,6 +4299,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-link-we-send-opens.test.mjs": {
+          "tests": 6,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "the-lockfile-agrees-about-install-scripts.test.mjs": {
           "tests": 4,
           "asserts": 10,
@@ -4320,6 +4326,12 @@
         "the-narrative-seat-does-not-describe-the-fetch-lane.test.mjs": {
           "tests": 8,
           "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-notice-goes-to-whoever-asked.test.mjs": {
+          "tests": 6,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
