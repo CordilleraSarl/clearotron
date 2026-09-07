@@ -646,6 +646,20 @@ function print(id, ref, run, s, delta, refPath) {
     for (const c of B.collisions)
       console.log(`    · ${c.owner}: reference "${c.entry}" is ${c.bucket}, surfaced "${c.noise}" is noise`);
   }
+  // ── SAME PROPRIETOR, DIFFERENT MARKS — REPORTED, NEVER SUPPRESSING (tracker issue 249) ───────────
+  //
+  // These used to print under the line above, which tells the reader not to read the recall numbers.
+  // One large filer anywhere in a matter therefore suppressed a whole run's measurement, and did: R2's
+  // real 88% → 63% recall movement went unquoted on the regression issue because `Novartis AG` held one
+  // withheld reference mark and one surfaced non-reference mark. Those two rows are both true.
+  //
+  // Kept visible because a reader may still want the pairing, and deliberately WITHOUT a verdict: this
+  // is an observation about the matter, not a fault in the scorer.
+  if (B.ownerEchoes?.length) {
+    console.log(`\n  same-proprietor rows (${B.ownerEchoes.length}) — NOT a collision, and the recall numbers above stand:`);
+    for (const c of B.ownerEchoes)
+      console.log(`    · ${c.owner}: reference "${c.entry}" is ${c.bucket}, surfaced "${c.noise}" is noise (different marks)`);
+  }
 
   for (const [name, label] of [["withheld", "WITHHELD — in this run's own records, absent from its findings"],
                                ["lost", "LOST — never retrieved"],

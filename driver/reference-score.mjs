@@ -667,14 +667,64 @@ export function scoreRecall({ reference, findings = [], retrieved = [], scopeCla
   // what it saw. Auto-promoting a collision to `found` would be the scorer manufacturing recall from
   // its own confusion, which is the defect one layer up from the one being fixed. score.mjs prints
   // these; a reader adjudicates.
+  // ── THE PREDICATE WAS THE OWNER, AND THE HEADING ABOVE SAYS RECORD (tracker issue 249) ──────────
+  //
+  // The only condition used to be `ownersMatch`. That implements a different class from the one the
+  // paragraph above states, and the justification — "they cannot both be true" — does not hold for any
+  // proprietor with more than one mark. A large filer can perfectly well have one mark the run withheld
+  // and a DIFFERENT mark, not in the reference, that it surfaced. Both rows are true.
+  //
+  // It fired on R2 russet-kestrel: `Novartis AG: reference "DELFITY" is withheld, surfaced "DELPHINA"
+  // is noise`. Different marks, different records, one proprietor that files a great many. And because
+  // score.mjs prints a collision as "do not read the recall numbers above", ONE such proprietor
+  // suppressed the whole run's recall measurement — a real 88% → 63% movement went unquoted on the
+  // regression issue because of a warning that was spurious.
+  //
+  // WHY NOT A RECORD JOIN, WHICH IS WHAT THE ISSUE ASKED FOR. Measured on the delivered artifact: a
+  // finding carries `{band, disposition, mark, meters, net, ordinal, owner, quadrant, source, …}` and
+  // NO record identity — `source.resolved_link` is empty on every row. Noise rows are built from
+  // findings, so there is nothing on that side to join a record URI to. Stating it here so the next
+  // reader does not re-derive it: the acceptance criterion is unmeetable on this side until a finding
+  // carries its record, and that is a change to the findings contract, not to the scorer.
+  //
+  // WHY NOT `matchesReference`, WHICH IS THE FILE'S OWN MARK MATCHER. It would make this check VACUOUS.
+  // The noise loop above already skips any finding that matches a reference entry, so by construction
+  // no noise row matches one — the collision would always be empty. This check exists precisely to
+  // catch the case where THE MATCHER DISAGREED WITH ITSELF, so it cannot be built out of the matcher.
+  //
+  // So the predicate is deliberately weaker than the matcher and stronger than the owner: same owner
+  // AND one mark contained in the other once normalised. That is the shape of the case this check was
+  // built for — `DELPHI GENETICS` in LOST beside `DG DELPHI GENETICS` in NOISE — and it is not the
+  // shape of `DELFITY` beside `DELPHINA`.
+  const collisionKey = (s) => String(s ?? "").normalize("NFKC").toUpperCase().replace(/[^A-Z0-9]/g, "");
+  // A FLOOR, because containment on a short string matches everything. `DEL` inside `DELPHINA` is not
+  // evidence of a shared record; four characters is the shortest reference mark shape worth trusting
+  // here, and a pair below it drops to the advisory rather than being dropped entirely.
+  const CONTAIN_FLOOR = 4;
   buckets.collisions = [];
+  buckets.ownerEchoes = [];
   for (const bucket of ["lost", "withheld"]) {
     for (const e of buckets[bucket]) {
       for (const n of buckets.noise) {
         if (!ownersMatch(e.owner, n.owner)) continue;
-        buckets.collisions.push({ bucket, entry: e.mark ?? e.name ?? null, noise: n.mark,
-          owner: ownerName(n.owner) ?? ownerName(e.owner),
-          why: `the reference entry is reported ${bucket} while a surfaced record of the SAME owner is reported noise — one record cannot be both` });
+        const a = collisionKey(e.mark ?? e.name);
+        const b = collisionKey(n.mark);
+        const row = { bucket, entry: e.mark ?? e.name ?? null, noise: n.mark,
+          owner: ownerName(n.owner) ?? ownerName(e.owner) };
+        const sameRecord = a && b
+          && Math.min(a.length, b.length) >= CONTAIN_FLOOR
+          && (a === b || a.includes(b) || b.includes(a));
+        if (sameRecord) {
+          buckets.collisions.push({ ...row,
+            why: `the reference entry is reported ${bucket} while a surfaced record of the SAME owner whose `
+              + "mark contains or is contained by it is reported noise — these are one record in two buckets" });
+        } else {
+          // REPORTABLE, NEVER SUPPRESSING. A reader may still want to see that a proprietor appears on
+          // both sides; what they must not be told is that the recall numbers are unreadable.
+          buckets.ownerEchoes.push({ ...row,
+            why: `same proprietor on both sides with different marks — not a contradiction: a filer may hold `
+              + `a reference mark this run ${bucket} and another, outside the reference, that it surfaced` });
+        }
       }
     }
   }
