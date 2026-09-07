@@ -214,3 +214,23 @@ test("275: a clearance run is unaffected by any of it", () => {
   assert.ok(tools.list_searches({ runId: RUN_ID }).searches !== undefined);
   assert.ok(tools.get_search_coverage({ runId: RUN_ID }).areas !== undefined);
 });
+
+// ── 274 acceptance 5: the briefing shows the register card's rating and read ──────────────────────────
+//
+// This card used to be described here as carrying no rating of its own, on runs where the search had
+// written a full read of that exact filing and the report was already printing it. The report and the
+// briefing disagreed about what the search found, and the briefing is what a person is read.
+test("274: brief shows a read register filing's rating and read, not the no-rating line", () => {
+  const text = JSON.stringify(tools.brief({ runId: RUN_ID_KO }));
+  assert.match(text, /Halcyon Holdings/, "the promoted filing is named");
+  assert.match(text, /Low risk/, "with the rating the search gave THAT filing");
+  assert.match(text, /dormant filing in unrelated goods/, "and the read behind it");
+  assert.doesNotMatch(text, /carries no rating of its own/, "the disclaimer is gone where a read exists");
+});
+
+// The scoping is the safety property: everything that is not a register card is left exactly as it was.
+test("274: a typed conflict's briefing line is untouched", () => {
+  const text = JSON.stringify(tools.brief({ runId: RUN_ID_KO }));
+  assert.match(text, /HALCYON — Halcyon Systems GmbH: Live EU registration in class 9\./,
+    "the typed line keeps its original 'name — owner: net' shape");
+});

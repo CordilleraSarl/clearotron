@@ -383,7 +383,13 @@ export function buildKnockoutRun() {
   });
   w(join(POOL, RUN_ID_KO, "report-data-project-halcyon.json"), JSON.stringify(koDoc(
     "PROJECT HALCYON", "project-halcyon", "HIGH", "in-class",
-    [{ ref: "F1", ordinal: 1, name: "HALCYON", owner: "Halcyon Systems GmbH", band: "HIGH", type: "register", net: "Live EU registration in class 9.", basis: null, evidence: [], shape: "typed" }],
+    [
+      { ref: "F1", ordinal: 1, name: "HALCYON", owner: "Halcyon Systems GmbH", band: "HIGH", type: "register", net: "Live EU registration in class 9.", basis: null, evidence: [], shape: "typed" },
+      // A PROMOTED REGISTER FILING THE SEARCH READ AND RATED (tracker issue 274). `shape: "register"` is
+      // what tells it from the typed conflict above, and the pair is the point: the briefing must show
+      // this one's rating and read while leaving the typed line byte-identical.
+      { ref: "REG #1", ordinal: 2, name: "HALCYON", owner: "Halcyon Holdings", band: "LOW", type: "Register filing", net: "A filing for this name stands on the register.", basis: "A dormant filing in unrelated goods; it does not bear on the rating.", evidence: [], shape: "register" },
+    ],
     "",
   ), null, 2));
   w(join(POOL, RUN_ID_KO, "report-data-halcyona.json"), JSON.stringify(koDoc(

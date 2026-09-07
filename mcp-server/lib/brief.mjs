@@ -135,6 +135,21 @@ export function buildBrief(run) {
         lines.push(`- **${m.name}** — ${band}.${d.url ? ` Report: ${d.url}` : ""}`);
         for (const f of (m.findings ?? [])) {
           const who = [f.name, f.owner].filter(Boolean).join(" — ");
+          // A PROMOTED REGISTER FILING SHOWS THE RATING AND THE READ THE SEARCH ACTUALLY MADE (tracker
+          // issue 274). This line used to print `net` alone, and for a register card `net` carried the
+          // stated "no rating of its own" — so the one hard legal right on a page was described here as
+          // unrated even on runs where the assessment had written a full read of that exact filing and
+          // the report was already printing it. The page and this briefing disagreed.
+          //
+          // SCOPED TO `shape === 'register'` DELIBERATELY. Every other finding line is left exactly as it
+          // was: a typed conflict already leads with its own band on the report, and widening this to all
+          // findings would change what this briefing says about runs that have no register layer at all.
+          if (f.shape === "register") {
+            const rating = f.band ? ` — ${titleCase(String(f.band))} risk.` : "";
+            const read = f.basis && f.basis !== f.net ? ` ${f.basis}` : "";
+            lines.push(`  - ${who}${rating}${f.net ? ` ${f.net}` : ""}${read}`.trimEnd());
+            continue;
+          }
           lines.push(`  - ${who}${f.net ? `: ${f.net}` : ""}`.trimEnd());
         }
       }
