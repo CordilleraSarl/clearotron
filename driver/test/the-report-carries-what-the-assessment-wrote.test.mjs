@@ -32,6 +32,16 @@ const FRAMEWORK = {
     { label: "Manageable", tone: "low" }, { label: "Low", tone: "minimal" }],
 };
 
+// EVERY PARTY IN THIS FILE IS INVENTED, AND THAT IS A RULE RATHER THAN A HABIT.
+//
+// The first version of this fixture used the real proprietor from the delivered search the issue was
+// filed against. It reads as fidelity to the report and it is the opposite: an issue lives on a private
+// tracker, a fixture is published and indexed forever, and the association a conflict fixture publishes
+// is "this company was screened as a conflict" — about a real business that never asked to be in it.
+//
+// A fixture is the one place a real party has no reason to appear at all. Nothing here is keyed on a
+// real name: the arms below assert structure, so any invented name serves. If you are copying a case
+// out of an issue, copy the SHAPE and leave the parties behind.
 const rec = (owner, over = {}) => ({
   recordId: `R-${owner}`, mark: MARK, owner, status: "Valid", classes: [9], territory: "DE",
   matchedForm: MARK, matchedBasis: "identical", url: null, provider: "fixture", ...over,
@@ -68,7 +78,7 @@ const findingsDoc = (over = {}) => ({
   marks: [markRow(over)],
 });
 
-const data = (over = {}, records = [rec("LINSENFINDER")]) =>
+const data = (over = {}, records = [rec("LUMENREED")]) =>
   knockoutReportData(findingsDoc(over), FRAMEWORK, {
     runId: "tmp0001-fixture", codename: "fixture-run", overall: "Manageable",
     issued: "2026-09-07", identity: {}, registerCounts: null,
@@ -76,7 +86,7 @@ const data = (over = {}, records = [rec("LINSENFINDER")]) =>
     matter: "tmp0001-fixture",
   });
 
-const html = (over = {}, records = [rec("LINSENFINDER")]) =>
+const html = (over = {}, records = [rec("LUMENREED")]) =>
   renderKnockoutHtml(findingsDoc(over), FRAMEWORK, {
     runId: "tmp0001-fixture", overall: "Manageable", registerRecords: sidecar(records),
   });
@@ -115,7 +125,7 @@ test("274: an unstated crowdedField is null, not false", () => {
 // ── the register card: the join, driven BOTH ways ────────────────────────────────────────────────────
 
 test("274: a filing the rater read and banded carries both onto the card", () => {
-  const d = data({ registerReads: [{ recordId: "R-LINSENFINDER", band: "Manageable",
+  const d = data({ registerReads: [{ recordId: "R-LUMENREED", band: "Manageable",
     read: "The owner's filings sit in optical goods; the two uses do not meet in the market." }] });
   const card = d.marks[0].findings.find((f) => f.shape === "register");
   assert.ok(card, "the promoted filing is on the card list");
@@ -139,10 +149,10 @@ test("274 acceptance 4: a filing with NO read keeps the neutral line and claims 
 test("274: the join is by recordId — a read for another filing does not colour this card", () => {
   const d = data(
     { registerReads: [{ recordId: "R-SOMEONE-ELSE", band: "Blocking", read: "A different filing entirely." }] },
-    [rec("LINSENFINDER"), rec("SOMEONE-ELSE")],
+    [rec("LUMENREED"), rec("SOMEONE-ELSE")],
   );
   const cards = d.marks[0].findings.filter((f) => f.shape === "register");
-  const mine = cards.find((c) => c.owner === "LINSENFINDER");
+  const mine = cards.find((c) => c.owner === "LUMENREED");
   const theirs = cards.find((c) => c.owner === "SOMEONE-ELSE");
   assert.equal(mine.band, null, "the unread filing is untouched by another filing's read");
   assert.equal(mine.basis, NOT_WEIGHED_LINE);
@@ -152,11 +162,11 @@ test("274: the join is by recordId — a read for another filing does not colour
 // ── the page ─────────────────────────────────────────────────────────────────────────────────────────
 
 test("274: the band chip is drawn on a banded filing and on no other", () => {
-  const banded = html({ registerReads: [{ recordId: "R-LINSENFINDER", band: "Medium", read: "It bears on the rating." }] });
+  const banded = html({ registerReads: [{ recordId: "R-LUMENREED", band: "Medium", read: "It bears on the rating." }] });
   assert.match(banded, /class="ko-findband"[^>]*>Medium</, "the chip states the rater's band for the filing");
   assert.match(banded, /It bears on the rating\./, "and the read prints beside it");
 
-  const unbanded = html({ registerReads: [{ recordId: "R-LINSENFINDER", read: "It bears on the rating." }] });
+  const unbanded = html({ registerReads: [{ recordId: "R-LUMENREED", read: "It bears on the rating." }] });
   assert.match(unbanded, /It bears on the rating\./, "a read with no band still prints");
   assert.doesNotMatch(unbanded, /class="ko-findband"[^>]*>(Blocking|Medium|Manageable|Low)</,
     "…and draws no chip, because no rating was performed on that filing");

@@ -67,14 +67,14 @@ test("RF-15 v3 — the register estimate is required only where the run fetched 
 // rater sends no band must publish exactly as it always did.
 test("274 — registerReads[].band: optional, and refused when it is not a ladder word", () => {
   const FW = { framework_key: "triage", bands: [{ label: "High" }, { label: "Medium" }, { label: "Low" }] };
-  const RECORD_ID = "R-LINSENFINDER";
+  const RECORD_ID = "R-LUMENREED";
   const d = mkdtempSync(join(tmpdir(), "ko-readband-"));
   mkdirSync(join(d, "_driver"), { recursive: true });
   mkdirSync(join(d, "research"), { recursive: true });
   writeFileSync(join(d, "research", "frozen.md"), "# research payload for FROZEN\n\nSome findings.\n");
   writeFileSync(join(d, "_driver", "framework.json"), JSON.stringify(FW));
   writeFileSync(join(d, "_driver", "register-records.json"), JSON.stringify({
-    marks: [{ name: "FROZEN", records: [{ recordId: RECORD_ID, mark: "FROZEN", owner: "Linsenfinder GmbH" }] }],
+    marks: [{ name: "FROZEN", records: [{ recordId: RECORD_ID, mark: "FROZEN", owner: "Lumenreed GmbH" }] }],
   }));
   const file = join(d, "knockout-assess-0.json");
   const mark = {
