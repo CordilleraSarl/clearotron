@@ -19,7 +19,7 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { unitEnvironment, unitValue, couldNotDetermine } from "../unit-environment.mjs";
 import { handRunEnv } from "./drive-env.mjs";   // — the drive names the two variables that would make it read no file at all
 
@@ -131,7 +131,7 @@ function doctor(home) {
 }
 
 const UNITS = await (async () => {
-  const { BACKGROUND_UNITS } = await import(join(REPO, "bin", "start.mjs"));
+  const { BACKGROUND_UNITS } = await import(pathToFileURL(join(REPO, "bin", "start.mjs")).href);
   return BACKGROUND_UNITS;
 })();
 

@@ -64,7 +64,7 @@ import { execFileSync, spawn } from "node:child_process";
 import { createServer } from "node:http";
 import { basename, extname } from "node:path";
 import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { tmpdir } from "node:os";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { envFrom } from "../shared/env-aliases.mjs";   // — the name a reader is told to set is the one in force
@@ -452,7 +452,7 @@ async function main() {
   const runId = pickRun(POOL);
   mkdirSync(WORK, { recursive: true });
 
-  const { readReport } = await import(join(REPO, "driver", "portal-report.mjs"));
+  const { readReport } = await import(pathToFileURL(join(REPO, "driver", "portal-report.mjs")).href);
   const html = readReport(join(POOL, runId), { staff: true, poolRoot: POOL });
   // chrome.css carries 35KB of typography; without it the layout is not the one users see. What must be
   // true is that NO external stylesheet link survives into the measured document — either it was inlined,

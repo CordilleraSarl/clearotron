@@ -41,10 +41,11 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
 - **Node.js >= 22**, and npm. A hard floor: `package.json` declares it, `.nvmrc` pins it, and the free
   US register runs on `node:sqlite`, which ships with FTS5 from Node 22. Node 20 installs and then fails
   at the first US search. `nvm use` picks the pin up.
-- **macOS, Linux, or Windows via WSL2.** Native Windows is not supported: the engine resolves the
-  reasoning CLI the POSIX way, so a native-Windows run refuses at preflight even with the CLI on `PATH`.
-  On Windows, `wsl --install`, then install Node 22 **inside** the Linux distribution and work through
-  this page from there. `npx clearotron demo` is the exception and runs anywhere Node does. A *hosted*
+- **macOS, Linux, or native Windows for the demo; WSL2 with Node 22 for a clearance.** `npx clearotron
+  demo` runs anywhere Node does, native Windows included. A real clearance does not: the engine resolves
+  the reasoning CLI the POSIX way, so a native-Windows clearance refuses at preflight even with the CLI
+  on `PATH`. On Windows, `wsl --install`, then install Node 22 **inside** the Linux distribution and work
+  through this page from there. A *hosted*
   deployment needs Linux for one further thing, the systemd outbox trigger —
   [driver/systemd/README.md](driver/systemd/README.md).
 - **A reasoning CLI on your `PATH`, signed in.** This is the prerequisite people miss. Every stage runs
