@@ -59,7 +59,7 @@ import { publishKnockout, composeKnockoutEmail } from "./publish/knockout.mjs";
 import { writeRunStatus, rollupStatus, atomicWrite, identitySeed } from "./progress.mjs";   // — the identity seed is shared; the stepper is not
 import { batchMarkName } from "./mark-name.mjs";
 import { runLog, note, outputMeta } from "./log.mjs";
-import { AGENT_WHATSAPP } from "./stages.mjs";
+import { AGENT_WHATSAPP, whatsappRouting } from "./stages.mjs";
 import { writeOutboxPacket } from "./outbox.mjs";
 import { rollupTokens, stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
@@ -934,7 +934,16 @@ export async function knockoutInner(ctx, job, opts = {}) {
       conversationId: job.conversationId ?? null,
       subject: `Knockout trademark review — ${job.ref ?? markNames[0] ?? "batch"} (${nMarks} mark${nMarks === 1 ? "" : "s"})`,
       emailBodyHtml: emailHtml,
-      whatsappTo: AGENT_WHATSAPP[agent] ?? null,
+      // THE SAME ROUTING AS THE CLEARANCE PACKET (tracker issue 289 part b). This read
+      // `AGENT_WHATSAPP[agent]`, and every user of a deployment shares one agent id, so every knockout
+      // completion paged the operator and told the person who ordered it nothing. The clearance packet
+      // was moved off that and this one was not, which is the half that shipped: one call site fixed,
+      // two existing. Where no number is held the packet now SAYS so in `whatsappToReason` rather than
+      // substituting the operator silently.
+      //
+      // The failure notice below deliberately keeps `AGENT_WHATSAPP[agent]`: 289 ruled on the COMPLETION
+      // notice, and a stage failure is an operational page rather than an answer the requester ordered.
+      ...whatsappRouting(job, agent),
       // ONE LINE, N LINKS. This said "Report: <one url>" and on a batch that url is now null, which would
       // have read "Report: null" — the fail-visible shape doing its job, and still not a line to send. A
       // batch names every report it produced, in the order the names were ordered.
