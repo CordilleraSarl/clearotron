@@ -42,7 +42,7 @@ const census = (form) => findConnotationViolations(DOC, 1, { recorded: RECORDED,
 const half = (submitted, opts = {}) =>
   unionDispositionForm({ rows: [] }, { rows: submitted }, OB, { half: "b", ...opts });
 
-/** The seat declaring it cannot evidence the row: 's honest exit. */
+/** The seat declaring it cannot evidence the row: the honest exit. */
 const declaredRow = () => validateDispositionCall([{ row_index: AT, ruling: "loaded", note: "n",
   receipt_index: 1, obstacle: "every passage is an elision marker" }], RECORDED).accepted;
 

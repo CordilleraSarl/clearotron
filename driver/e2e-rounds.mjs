@@ -305,7 +305,7 @@ function runStart(hit) {
 /**
  * The rounds visible ON DISK, grouped by round token.
  *
- * `untokened` counts runs whose ref carries no round token — a pre- round, or one submitted by
+ * `untokened` counts runs whose ref carries no round token — a pre-change round, or one submitted by
  * hand. They belong to no nameable round, and saying how many there are is the difference between
  * "these are all the rounds" and "these are the rounds I could name".
  */

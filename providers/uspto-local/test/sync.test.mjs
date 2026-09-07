@@ -26,7 +26,7 @@ import { openIndex, getMeta, setMeta, search, countHits } from "../src/index-sto
 const FIX = join(dirname(fileURLToPath(import.meta.url)), "fixtures");
 
 // The provider cores append to the SHARED register ledger, whose path is read at module load. Point it
-// at a scratch file before anything imports them: unset, these tests write into the pre- telemetry directory,
+// at a scratch file before anything imports them: unset, these tests write into the pre-change telemetry directory,
 // which on the test box is a file other users' runs are reading.
 const LEDGER = mkdtempSync(join(tmpdir(), "uspto-ledger-"));
 process.env.CLEAROTRON_REGISTER_CALL_LOG = join(LEDGER, "calls.jsonl");

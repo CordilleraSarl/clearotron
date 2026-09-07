@@ -156,7 +156,7 @@ test("#893 readJxLanes carries the run's own verdict, and an artifact that never
   assert.equal(zh.depthVerdict.ran, "candidates");
   assert.equal(zh.depthVerdict.shortfall, true);
 
-  // A pre- artifact. Three-valued on the record itself, the same discipline as `statement`: this is
+  // A pre-change artifact. Three-valued on the record itself, the same discipline as `statement`: this is
   // an absence and it is stated as one. `shortfall: null`, never `false` — reporting "no shortfall" from
   // a run that never answered the question is precisely the zero-means-pass shape.
   const legacy = readJxLanes({ lanes: { zh: laneAsking("full") }, fold: { lanes: { zh: { degraded: false } } } });

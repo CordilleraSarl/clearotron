@@ -21,13 +21,13 @@ const PRODUCER_URL = new URL("../../providers/_shared/execute-plan.mjs", import.
 const PRODUCER = readFileSync(PRODUCER_URL, "utf8");
 
 // THE PRODUCER'S SENTENCE, however the producer currently spells it. Imported when the builder exists;
-// otherwise reconstructed from the inline template the pre- producer used. Deliberately NOT a
+// otherwise reconstructed from the inline template the pre-change producer used. Deliberately NOT a
 // static import of the new export: this file must LOAD against the old tree, or the revert check
 // reports one dead file instead of which arms discriminate — and the whole point of this test is that
 // it reads the product rather than something the test made up.
 const mod = await import(PRODUCER_URL.href);
 const build = mod.ownerPortfolioDescriptorReason ?? ((coveredBy) => {
-  // Mirrors the pre- ternary exactly, INCLUDING its bare branch — otherwise the control arm below
+  // Mirrors the pre-change ternary exactly, INCLUDING its bare branch — otherwise the control arm below
   // reds against the old tree for a defect in this fallback rather than a difference in the product.
   if (!coveredBy?.length) return "count-only crowd descriptor (plan-dictated)";
   const m = PRODUCER.match(/`count-only owner-portfolio descriptor[^`]*`/);

@@ -474,7 +474,7 @@ export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null
       // the receipt should be able to tell which of the two a run carried.
       deferred_offices: (Array.isArray(plan?.deferred_coverage) ? plan.deferred_coverage : []).length,
       // AN ABSENCE IS A FINDING, RECORDED IN THE ARTIFACT. An axis whose band would not parse
-      // contributes NO open-block rows, exactly as the pre- gate's per-axis catch did — a band
+      // contributes NO open-block rows, exactly as the pre-change gate's per-axis catch did — a band
       // parse defect is refused one stage earlier by validators.registerUnit. Naming the axes here
       // means the gap is visible on the form a reader opens instead of being a silent zero.
       bands_unreadable: [...(bandsUnreadable ?? [])],

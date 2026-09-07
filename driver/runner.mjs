@@ -381,7 +381,7 @@ function cleanupClaimSidecars(procPath) {
  * Returns true when this call moved the marker, false when it was already gone. Any other error still
  * throws: a permissions failure or a full disk is not a sibling.
  */
-export function retireMarker(procPath, destPath, what = "") {   // exported for 's honesty test
+export function retireMarker(procPath, destPath, what = "") {   // exported for the honesty test
   try { renameSync(procPath, destPath); return true; }
   catch (e) {
     if (e?.code !== "ENOENT") throw e;
@@ -439,7 +439,7 @@ export function retireMarker(procPath, destPath, what = "") {   // exported for 
  * Returns true when this call moved the marker to `destPath`. False means the claim was not ours to
  * retire — and that nothing on disk was touched.
  */
-export function retireClaimAndSweep(procPath, destPath, what = "", { token = claimToken() } = {}) {   // exported for 's race test
+export function retireClaimAndSweep(procPath, destPath, what = "", { token = claimToken() } = {}) {   // exported for the race test
   const lockPath = `${procPath}.claimed-${token}`;
   try { renameSync(procPath, lockPath); }
   catch (e) {

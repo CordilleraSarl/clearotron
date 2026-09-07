@@ -289,7 +289,7 @@ const COMMONLAW_UNAVAILABLE_RE = /(perplexity|marketplace research|common.?law (
 // Deliberately NOT done: loosening the honesty vocabulary. The prose is correct and stays.
 //
 // Driver-bug tokens are never masked. `half_path_unrecognized` says the DRIVER called this validator
-// with a path it does not own; "write NO findings file" is the wrong remedy for that, and pre- the
+// with a path it does not own; "write NO findings file" is the wrong remedy for that, and pre-change the
 // path guard returned before the regex was ever reached. Keep it that way.
 const VETO_NEVER_MASKS = new Set(["half_path_unrecognized"]);
 
@@ -683,7 +683,7 @@ export function verdictHardenedTo(carried, reviewMd) {
 // The two guards must not share a POLICY and they still do not: what separates them is which sections
 // they read, and whether a bullet under a flag is that flag's body. Whether a line is a list item at
 // all is NOT policy — and while each walk carried its own copy of that answer, the copies drifted.
-// taught one of them to see `**1.` and left the other on the pre- pattern, so the walk whose
+// taught one of them to see `**1.` and left the other on the pre-change pattern, so the walk whose
 // job is to decide whether to DISCARD a review quietly became the stricter of the two.
 //
 // Restating the marker in a second place is what made that possible, so it is stated once here. Both
@@ -1023,7 +1023,7 @@ export function findReviewerCoherenceFlags(md) {
 // divergent arms of one requirement. They are three different contracts:
 //   · commonLawStructural (LIVE) — the common-law findings' prose Coverage ledger still carries these
 //     tokens, and this floor still polices it.
-//   · registerFindings' UNSTAMPED arm (ARCHIVE-ONLY since  M6) — judges pre- archived replays
+//   · registerFindings' UNSTAMPED arm (ARCHIVE-ONLY since  M6) — judges pre-change archived replays
 //     whose seats hand-wrote the prose table. No live run reaches it; replay verdicts get quoted, so
 //     it stays.
 //   · register-digest's LIVE path carries the same three tokens as VALUES through the
@@ -1957,7 +1957,7 @@ export const validators = {
     // So the old floor and the new gate are armed by the SAME condition, and it is this one:
     //   stamped   ⇒ the driver wrote a form, the seat was told not to write a table, and the form is the
     //               whole coverage judgement (below).
-    //   unstamped ⇒ every pre- check applies unchanged, and stages.mjs — reading THIS SAME STAMP —
+    //   unstamped ⇒ every pre-change check applies unchanged, and stages.mjs — reading THIS SAME STAMP —
     //               tells the seat to write the prose table. The two cannot disagree about which
     //               document the run owes.
     //
@@ -1967,7 +1967,7 @@ export const validators = {
     // digest and before it — so NO LIVE RUN reaches here unstamped, and stages.mjs no longer has a
     // second arm to tell a seat to write the prose table. The prose floor below, and the prose-era
     // joins it feeds (findUnaccountedDeferredSlices, findUnverifiedIncompleteCleanClaims), are
-    // therefore DEAD FOR LIVE RUNS and LOAD-BEARING FOR REPLAY: an archived pre- run carries no
+    // therefore DEAD FOR LIVE RUNS and LOAD-BEARING FOR REPLAY: an archived pre-change run carries no
     // stamp at all, and its coverage verdict is judged by exactly this arm.
     //
     // DO NOT DELETE THEM AS DEAD CODE. Removing them does not change any live run's answer; it changes

@@ -284,7 +284,7 @@ export function agreementFindings({ stage, granted, artifacts, union, toolUniver
   const excused = new Set(backlog.filter((b) => b.stage === stage).map((b) => b.tool));
   for (const tool of [...toolUniverse].sort()) {
     if (held.has(tool)) continue;
-    if (excused.has(tool)) continue;                 // named on 's backlog; the list can only shrink
+    if (excused.has(tool)) continue;                 // named on the backlog; the list can only shrink
     for (const m of union) {
       if (!namesTool(m.text, tool)) continue;
       // ── — A PROVIDER CANNOT SERVE IT, AND THIS ORDER SAYS SO ──────────────────

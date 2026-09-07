@@ -48,7 +48,7 @@
 //                   `outcome` for existing readers beside `dispatch` and `verdict`).
 //   "out-of-scope" — never reaches `_driver/*.json` or `run.jsonl`; `atWriteSite` is 0.
 
-/** The result nouns this sweep is about — 's list, verbatim. */
+/** The result nouns this sweep is about — the list, verbatim. */
 export const RESULT_NOUNS = Object.freeze(["outcome", "executed", "permanent", "settled", "closed", "recovered", "verified"]);
 
 export const RESULT_NOUN_FIELDS = Object.freeze([

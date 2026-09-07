@@ -473,7 +473,7 @@ export async function runJxCandidateFold(ctx, job, opts = {}, { runLog = () => {
     // function has run, and rebuilding the block from three literal keys silently dropped them on any
     // resume that still had a pending lane. The three keys this function owns are overwritten below it,
     // so carrying the rest forward changes nothing else. Carry-forward beats drop-and-re-mint: the drop
-    // leaves a window in which the sidecar carries no statement at all, which reads as the pre- defect.
+    // leaves a window in which the sidecar carries no statement at all, which reads as the pre-change defect.
     const fold = { ...(repairedFold ?? {}), executor: source, lanes: { ...(repairedFold?.lanes ?? {}) }, foldedAt: repairedFold?.foldedAt ?? null };
     // criterion 4 — THE RECEIPT NAMES THE MODEL, NOT ONLY THE EXECUTOR.
     //

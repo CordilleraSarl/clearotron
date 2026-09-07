@@ -853,7 +853,7 @@ export type ProviderState = {
  * Never carries the audience, a secret, the token header's contents, or local mode's single address.
  */
 export type AuthState = {
-  /** The effective mode. Reported verbatim — never a pinned string, so 's rename needs no edit. */
+  /** The effective mode. Reported verbatim — never a pinned string, so the rename needs no edit. */
   readonly mode: string
   /** What was explicitly configured. Null ⇒ nobody set it and the service's default applies. */
   readonly declared: string | null

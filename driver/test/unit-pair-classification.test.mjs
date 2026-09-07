@@ -151,7 +151,7 @@ import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const src = (f) => readFileSync(join(DRIVER, f), "utf8");
 
-/** The adjudication set, re-derived. Never a list — the population moved twice on 's own thread. */
+/** The adjudication set, re-derived. Never a list — the population moved twice on its own thread. */
 const structureSites = () => nonEmpty(sweep(), "travelling-predicates sweep()")
   .filter((r) => r.holds === "structure");
 

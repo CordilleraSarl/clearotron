@@ -133,7 +133,7 @@ test("#1194 the flag does NOT touch a configured port", () => {
 });
 
 test("#1194 a caller that has not been taught the question behaves exactly as before", () => {
-  // `portSource` absent = the pre- contract. providers/oauth-mcp-bridge/warm-server.mjs takes its
+  // `portSource` absent = the pre-change contract. providers/oauth-mcp-bridge/warm-server.mjs takes its
   // port as `--port` and reads no environment variable, so it can never take a silent default and is
   // deliberately not changed.
   let exited = null;

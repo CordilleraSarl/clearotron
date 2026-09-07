@@ -253,7 +253,7 @@ function mockCoverageSlices(msg) {
  * is out of reach — the gate is inactive there and the mock must not invent one).
  *
  * MOCK_NO_COVERAGE_FORM     the seat makes no record_coverage call  ⇒ coverage_no_status
- * MOCK_UNPARSEABLE_LEDGER   ditto — the pre- spelling of "this digest produced no readable coverage"
+ * MOCK_UNPARSEABLE_LEDGER   ditto — the pre-change spelling of "this digest produced no readable coverage"
  * MOCK_BAD_COVERAGE_FORM    the DRIVER's accumulator is damaged     ⇒ coverage_form_damaged
  *                           (written to the sidecar: the seat holds no writer onto it any more, so this
  *                           knob now simulates the driver-side fault the token names on live runs)

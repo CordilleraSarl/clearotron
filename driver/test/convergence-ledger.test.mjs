@@ -10,7 +10,7 @@
 //   2. an attempt whose failure is BYTE-IDENTICAL to its predecessor, recorded as `noChange`.
 //
 // RECORDING ONLY. Every assertion here that touches a decision asserts it is UNCHANGED — the sigs are
-// pinned to their pre- literals and decideRecovery's verdict is asserted identical whatever the
+// pinned to their pre-change literals and decideRecovery's verdict is asserted identical whatever the
 // quantity says. What the machinery should DO with a converging ladder is, and is not here.
 //
 // The fixture shape is the shipped one — verify.mjs connotationDispositionFail's own token, as it
@@ -110,7 +110,7 @@ test("#246 ZERO SEMANTICS: a failure with no quantity records ABSENT (null), nev
 });
 
 test("#246 the signature is UNCHANGED — the quantity is the sole new discriminator", () => {
-  // Pinned to the pre- literals. These are what the machinery signs; a diff that moves them moves
+  // Pinned to the pre-change literals. These are what the machinery signs; a diff that moves them moves
   // which runs go repeat-signature terminal, which is the decision and not this issue's.
   const sigs = [6, 9, 11, 25, 29].map((n) => failureSignature("common-law-half:b", REASON(n)).sig);
   for (const s of sigs) assert.equal(s, "common-law-half:b|022c140ae114", "the sig still collapses the digit — unchanged");

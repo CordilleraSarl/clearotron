@@ -43,7 +43,7 @@ export function hoursSince(thenISO, nowISO) {
   return Math.floor((now - then) / 3_600_000);
 }
 
-/** The job's name, whichever shape the caller had. A bare string is the pre- form. */
+/** The job's name, whichever shape the caller had. A bare string is the pre-change form. */
 export function jobName(job) { return typeof job === "string" ? job : String(job?.name ?? "?"); }
 
 /**

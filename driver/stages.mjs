@@ -404,7 +404,7 @@ export const AGENT_WHATSAPP = (() => {
 // bought against the wrong baseline. Reading `_driver/common-law-half:m.jsonl`, which is the file that
 // entry names:
 //
-//   R2, 08-09, pre-         haiku    7 attempts (6 failed)   1972.1s
+//   R2, 08-09, pre-change haiku    7 attempts (6 failed)   1972.1s
 //   quoted in-file, undated      haiku    8 attempts               1721s
 //   quoted in-file, 08-11        sonnet   1 attempt                1674.2s
 //   R2, 08-12, on 857db4a        haiku    2 attempts (1 failed)     422.9s
@@ -412,7 +412,7 @@ export const AGENT_WHATSAPP = (() => {
 // **haiku on current code converges in 2 attempts at 423s — 4.7x faster than haiku on the old code.**
 // The haiku→haiku pair is the solid row and it is attributable to the CODE, not the tier: changed
 // what the seat is told on a refusal, and that is what bought the convergence. The sonnet flip was
-// measured against pre- haiku, so it was credited with an improvement it did not cause. Against
+// measured against pre-change haiku, so it was credited with an improvement it did not cause. Against
 // current code sonnet's 1674.2s is ~4x the wall of haiku's 423s for the same delivered outcome.
 //
 // THE MARGIN, RECORDED RATHER THAN BURIED. Adequacy is load-dependent: R2 two attempts, R1 two attempts,

@@ -33,7 +33,7 @@ import { CAPABILITY_GAP_MARKER, isCapabilityGap, planPredicateParams, defaultBui
 const parse = (r) => JSON.parse(r.text);
 
 // The provider cores append to the SHARED register ledger, whose path is read at module load. Point it
-// at a scratch file: unset, these tests write into the pre- telemetry directory, which on the test box is a
+// at a scratch file: unset, these tests write into the pre-change telemetry directory, which on the test box is a
 // file other users' runs are reading.
 const LEDGER = mkdtempSync(join(tmpdir(), "uspto-ledger-"));
 process.env.CLEAROTRON_REGISTER_CALL_LOG = join(LEDGER, "calls.jsonl");

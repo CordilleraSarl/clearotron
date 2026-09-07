@@ -297,7 +297,7 @@ test("#1674 correctionFlagContent, on the lettered shapes it now has to tell apa
 //
 // `countCitedDefects` is the evidence for the check that REFUSES a BLOCKING verdict as degenerate, and
 // verify.mjs states the rule beside it: being wrong there discards a real review, so its evidence must be
-// permissive. It was not. It kept the pre- selector — no `\*{0,2}` prefix — which itself
+// permissive. It was not. It kept the pre-change selector — no `\*{0,2}` prefix — which itself
 // recorded as unable to see `**1.`, the form every typed flag is written in. A BLOCKING review whose
 // only list lines are its bold flags counted ZERO cited defects and was refused.
 //

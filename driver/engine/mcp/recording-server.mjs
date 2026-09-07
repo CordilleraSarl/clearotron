@@ -24,7 +24,7 @@
 //
 // `CLEAROTRON_BAND_RUN_DIR`, read at CALL TIME. `serverEnv()` (gather-config.mjs:162) sets it for every local
 // server, not only band. There is no `run_dir` parameter and there must not be one — the lesson is
-// 's, where an invented `CLEAROTRON_RUN_DIR` fallback sat two lines under a sentence promising the tool
+// the earlier one, where an invented `CLEAROTRON_RUN_DIR` fallback sat two lines under a sentence promising the tool
 // never guesses a run. Call time rather than module load: stdio-server.mjs:29-33 states why for this
 // exact variable.
 // ── THE SECOND CAPABILITY CLASS: A SCOPED READ, and why it does not break the sentence above ────────

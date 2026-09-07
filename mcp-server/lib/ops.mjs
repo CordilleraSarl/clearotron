@@ -596,7 +596,7 @@ export function markSent(args = {}) {
   // forever — the alreadySent early-return then suppressed every retry of this cleanup. Making the
   // removal idempotent lets a retried mark_sent finish the cleanup a killed first call left undone.
   //
-  // EVERY FORM THE RUN WAS EVER KNOWN BY, not just one (post-merge audit 2). A pre- packet carries the
+  // EVERY FORM THE RUN WAS EVER KNOWN BY, not just one (post-merge audit 2). A pre-change packet carries the
   // legacy dateless `<slug>-<codename>` runId while the resolved run's own id is the dated canonical
   // `<slug>-<date>-<codename>` — a run delivered on 2026-07-29 still has exactly that pair on disk, its
   // _driver/delivery.json naming the dateless form and its status.json the dated one. That is also why

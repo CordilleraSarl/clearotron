@@ -371,7 +371,7 @@ test("cross-checks: a refused probe surfaces as an OPEN ask with no qid — a si
   assert.match(x.ask.text, /\*\*Core \(BIOVELTRIN/, "the row is named, or a reader cannot act on it");
   assert.ok(byId["ask:recall-refused:1"], "the recall lane gets the same treatment");
   assert.equal(byId["ask:recall-refused:1"].ending, null);
-  // and a receipt with no refused adds nothing — the key is absent on every pre- run
+  // and a receipt with no refused adds nothing — the key is absent on every pre-change run
   assert.equal(deriveAsks({ xcheck: { directives: [], overflow: [] }, planExecution: PLAN_EXEC }, { ts: "t" })
     .filter((a) => /refused/.test(a.ask_id)).length, 0);
 });

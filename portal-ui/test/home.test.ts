@@ -536,7 +536,7 @@ test('#1919 a FAMILY carries the precise time of its newest mark', () => {
 })
 
 test('#1919 a run with no issuedAt sorts LAST, never first', () => {
-  // The fallback direction. An unknown time treated as newest would put every pre- run at the top of
+  // The fallback direction. An unknown time treated as newest would put every pre-change run at the top of
   // the card permanently — a worse failure than the one being fixed, and the one a naive `??` produces.
   const rows = recentlyFinished([
     run({ runId: 'ancient', markName: 'OLDMARK', state: 'delivered', date: '2026-08-26', issuedAt: null }),

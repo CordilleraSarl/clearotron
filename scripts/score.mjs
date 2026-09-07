@@ -805,11 +805,11 @@ function print(id, ref, run, s, delta, refPath) {
     // Now: `asked=` and `ran=` side by side, and — per the owner's ruling, flag rather than gate — a
     // LOUD marker when the ask was not met, carrying the cause on the same line so the reader is not
     // sent to the artifact to find out which switch was off (the rule for degradedCause, applied
-    // to the field beside it). An unrecorded verdict prints as unrecorded: a pre- artifact cannot
+    // to the field beside it). An unrecorded verdict prints as unrecorded: a pre-change artifact cannot
     // answer this and must not look like a lane that met its ask.
     // `(not stated)` and `(not established)` are DIFFERENT cells and the row keeps them apart, in the
     // vocabulary it already uses one column over: `not stated` = this artifact never answered the
-    // question (a pre- run), `not established` = it answered and the answer is that its own record
+    // question (a pre-change run), `not established` = it answered and the answer is that its own record
     // cannot settle what ran. Neither is `candidates`, and neither may read as a met ask.
     //
     // THE REASON DOES NOT GO IN THE CELL. A row is a row: the first cut interpolated the verdict's whole

@@ -2156,7 +2156,7 @@ test("#470: a blank or whitespace-only net falls through the fallback chain exac
 });
 
 // — the completeness half of the ruling: below the fold, nothing is ever cut. A reader who opens a
-// card gets every word the pre- layout showed above it, plus the structured facts that were always
+// card gets every word the pre-change layout showed above it, plus the structured facts that were always
 // down here, in that order — the argument first, the evidence under it.
 test("#470: the positions render below the fold, complete, and lead the drawer", () => {
   const html = renderHtml(parsedOf(REPORT), P5_BANDED, COVERAGE, { runId: "noref-demo" });

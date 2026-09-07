@@ -6,23 +6,23 @@
 // 179 when it was filed. 181 two days later, with nobody having decided to add any: the strip's shape is
 // what a later edit copies when it edits near one. The floor below is what stopped it growing.
 //
-// 75 NOW, AND THE DROP IS WHY THE ORIGINAL REASONING WAS WRONG. This was recorded as 181 judgements
-// about surrounding code rather than a sweep, because the repair was thought to need the removed
-// reference back. It did not. Measured against the frozen pre-strip tree, 610 of the recoverable lines
-// had exactly ONE bare citation removed and nothing else — so the noun after the apostrophe was still
-// there, still saying what the thing was, and the sentence had lost only its determiner. The reference
-// is not coming back either way: it is ruled out of the tree. So the repair was a determiner, chosen by
-// what stands in front of the gap, and it closed 106 of them at once.
+// 4 NOW, ALL IN ONE FILE, AND THE DROP IS WHY THE ORIGINAL REASONING WAS WRONG. This was recorded as
+// 181 judgements about surrounding code rather than a sweep, because the repair was thought to need the
+// removed reference back. It did not. Measured against the frozen pre-strip tree, 610 of the recoverable
+// lines had exactly ONE bare citation removed and nothing else — so the noun after the apostrophe was
+// still there, still saying what the thing was, and the sentence had lost only its determiner. The
+// reference is not coming back either way: it is ruled out of the tree. So the repair was a determiner,
+// chosen by what stands in front of the gap, and "pre- " became "pre-change".
 //
-// Three more are in `driver/publish/render.mjs`, which is frozen at a content hash. They are left
-// alone deliberately: changing that file needs an entry in the break ledger next door, which is a
-// larger decision than a punctuation sweep gets to make.
+// WHAT IS LEFT IS FOUR LINES IN `driver/publish/render.mjs`, WHICH IS FROZEN AT A CONTENT HASH. Repairing
+// them reddens the break ledger next door, which is the correct behaviour and not a thing to route
+// around: changing that file costs a ledger entry, and a punctuation sweep does not get to spend one.
+// They are the whole remaining backlog, so the floor is now a statement about one frozen file rather
+// than about a class nobody has got to.
 //
-// WHY THE FLOOR STAYS. What is left is the residue that reasoning does not reach: lines where the strip
-// took more than a citation, lines with no match in the frozen tree, and lines whose sentence needs a
-// person to say what the thing was. Those are per-sentence and they are the ones the floor now guards.
-// An arm asserting zero would be red from the day it landed, and a permanently red arm teaches people to
-// stop reading the suite — which is how this class got to 181 in the first place.
+// WHY THE FLOOR STAYS AT ALL. An arm asserting zero would go red the day somebody edits near a surviving
+// one, and a permanently red arm teaches people to stop reading the suite — which is how this class got
+// to 181 in the first place.
 //
 // NOT THE SAME RESIDUE AS THE CITATION SWEEP, AND THE NUMBERS COLLIDE. `tracker issue NNN — ` in a
 // comment is INTACT text a ruling removes; the residue here is DAMAGE — a sentence that lost its

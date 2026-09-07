@@ -309,7 +309,7 @@ const overflowOf = (tail) => { const m = OVERFLOW_RE.exec(tail.trim()); return m
 // The leading CAUSE CENSUS is the exact count stamped at the throw site, so the total is the sum of its
 // numbers — no comma-splitting, and therefore immune to the over-count a query containing a comma used to
 // cause. LEGACY SHAPES still parse and must: this text path exists for the run-level catch, which sees
-// prose only, and a resumed or archived run can still carry a pre- token
+// prose only, and a resumed or archived run can still carry a pre-change token
 // (`connotation_undisposed:<census>;…`, `<q1,q2,…>[ (+N more)]`). A stale token that stopped counting
 // would read as a MISSING quantity, which is what a converged run looks like.
 // The validator's exact count still rides as `quantity` at the throw site and always wins.
@@ -329,7 +329,7 @@ function undisposedCount(tail) {
   // was cut short of its payload — ABSENT, not converged.
   return named ? named + overflow : null;
 }
-// A pre- archived token: `connotation_recurrent_uncited:<one result, ≤80 chars>[ (+N more)]` — ONE
+// A pre-change archived token: `connotation_recurrent_uncited:<one result, ≤80 chars>[ (+N more)]` — ONE
 // named result plus the overflow. Never split on commas: that payload is a copied result title, not a
 // joined list. Nothing emits this shape any more; it is kept so a resumed run's own history still counts.
 function recurrentCount(tail) {

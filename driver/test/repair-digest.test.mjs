@@ -157,7 +157,7 @@ test("recurrence: long-reason terminals group via the .failed sentinel, not the 
       runDir: runDirWith({ packet: { failureSignature: STACK_SIG.sig, failedStage: "register-plan", failClass: "unknown", terminalKind: "no-park", reason: STACK_STATUS_REASON } }),
       status: statusOf("2026-07-08T10:00:00Z"),
     },
-    // NO packet (an ARCHIVED pre- run whose send stage succeeded and suppressed it) — the.failed
+    // NO packet (an ARCHIVED pre-change run whose send stage succeeded and suppressed it) — the.failed
     // sentinel carries the sig verbatim plus the untruncated reason (pipeline terminal shape)
     {
       runId: "venzy-2026-07-09-b", state: "failed",

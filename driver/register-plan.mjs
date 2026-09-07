@@ -74,7 +74,7 @@ export const PLAN_PREDICATES = ["exact", "default", "wildcard", "phonetic", "own
 // ratified mark or its dominant element, i.e. run input. Until now the only marking was a `+form` suffix
 // inside a qid string, and the wildcard fringe carried none at all — so nothing downstream could tell a
 // generated term from an imagined one without re-deriving the band. OPTIONAL on the entry: a frozen
-// pre- plan carries none and resumes byte-identical, and replay verdicts over archived runs never flip.
+// pre-change plan carries none and resumes byte-identical, and replay verdicts over archived runs never flip.
 /**
  * THE ROMANISATION THE PLAN ALREADY HOLDS FOR A TERM — (cause 2).
  *
@@ -1498,7 +1498,7 @@ export function parseRegisterPlan(raw) {
     // owner is a defect, never a silent no-op filter.
     if (e.owner != null && (typeof e.owner !== "string" || !e.owner.trim()))
       throw new Error(`register_plan_owner_invalid:${short(e.qid)} (owner must be a non-empty string when present)`);
-    //: optional (a frozen pre- plan has none), closed when present — an off-enum value would
+    //: optional (a frozen pre-change plan has none), closed when present — an off-enum value would
     // make the floor/model marking unreadable exactly where it is load-bearing.
     //: optional (a frozen pre-2050 plan has none), and closed to the single value `true` when
     // present — a falsy or string-shaped stamp would make the depth fold's designation unreadable
@@ -1532,7 +1532,7 @@ export function parseRegisterPlan(raw) {
  *   { executed: [{qid, state, records, total_hits}], missing: [qid], skipped: [{qid, guard}],
  *     unplanned: [{qid|query}] }
  * `records` and `total_hits` are each a number or null, and BOTH KEYS ARE ALWAYS WRITTEN.
- * That is load-bearing, not tidiness: `planJoinFrom` tells a pre- receipt from a count the
+ * That is load-bearing, not tidiness: `planJoinFrom` tells a pre-change receipt from a count the
  * provider could not take by whether the keys are PRESENT, because `null` and absent are the same
  * value once read. Omit a key here and every new receipt silently reads as legacy — the arm named
  * "the discriminator's PREMISE" fails if this stops holding.

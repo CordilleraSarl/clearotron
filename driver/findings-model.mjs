@@ -81,7 +81,7 @@ export const DISPOSITIONS = ["adversarial", "coexistence-partner", "distinguishe
 // FLOOR 6 and was written as this MOVING constant, which was the same number on the day it was written.
 // Bumping here alone would have made every archived v6 run — v6 shipped 2026-08-03, so real delivered
 // matters carry it — republish through pool-admin doRepublish with the ground-grouped reasoned
-// negatives silently replaced by the pre- region-grouped section. Not a crash: a substance change to
+// negatives silently replaced by the pre-change region-grouped section. Not a crash: a substance change to
 // a report already sent to a client, which is what the render freeze exists to catch. MEASURED at the
 // break: 34,722 → 36,466 body bytes on a three-negative v6 fixture. That line now reads `>= 6`.
 //

@@ -1710,7 +1710,7 @@ export function readJxLanes(doc) {
       // — DERIVED from fold.slices, with the declaration as a LEGACY fallback only. Two artifact
       // generations reach this line and they are read in this order deliberately:
       //   fold.slices present     → derive. The record of what ran wins, always.
-      //   pre- artifact       → its frozen `lanes.<lane>.executes` string, the only thing that run
+      //   pre-change artifact       → its frozen `lanes.<lane>.executes` string, the only thing that run
       //                             ever recorded (a run minted between  and  carries BOTH, and
       //                             the derived value is the accurate one — hence the order).
       //   neither                 → null ⇒ the scorer prints "(not stated)". Not "none": no statement
@@ -1755,7 +1755,7 @@ export function readJxLanes(doc) {
     why: lanes.length ? null : "_driver/jx-lanes.json is present and declares no lane — the file was written and no jurisdiction lane was built, which is not the same as the file being absent",
     lanes,
     // — the RUN-level statement, three-valued on itself in the same discipline as the rest of this
-    // function: present, or absent with a reason. A pre- artifact and a fold that never ran are both
+    // function: present, or absent with a reason. A pre-change artifact and a fold that never ran are both
     // "the run did not state it", and neither is a pass.
     statement: typeof doc.fold?.executes === "string" ? doc.fold.executes : null,
     slices: doc.fold?.slices ?? null,
@@ -1778,7 +1778,7 @@ export function readJxLanes(doc) {
  *   present, no units    `present:true, units:[]` — its own fact, its own sentence.
  *   present, with units  each unit's own `degraded` / cause / attempts, nothing inferred.
  *
- * `degraded` is TYPEOF-tested, never coerced. A pre- units.json carries the cause STRING in that
+ * `degraded` is TYPEOF-tested, never coerced. A pre-change units.json carries the cause STRING in that
  * field; `Boolean(r.degraded)` would report an old artifact as having stated something it never stated.
  *
  * PURE.

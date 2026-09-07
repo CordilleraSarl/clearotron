@@ -614,7 +614,7 @@ export function splitGridSpec(spec, { outputPaths = {}, dispositionsPaths = {} }
       // — `dispositions_path` is DICTATED here, never inferred downstream. The grid tool renders it
       // into the obligations block it hands the seat, and the validator reads the same file; deriving the
       // name in two places is the drift this codebase has paid for twice. Absent ⇒ the tool names
-      // no file and the seat is judged on prose alone, which is exactly the pre- behaviour.
+      // no file and the seat is judged on prose alone, which is exactly the pre-change behaviour.
       // — the half's OWN form path, ALWAYS set explicitly. The spread above carries the canonical
       // spec's connotation object verbatim, and since the canonical spec started carrying its own
       // dispositions_path a conditional override would let a half INHERIT the canonical path whenever the

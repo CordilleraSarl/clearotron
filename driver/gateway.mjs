@@ -618,14 +618,14 @@ export function syncDispositionForm(files) {
       let spec = null;
       try { spec = JSON.parse(readFileSync(specPath, "utf8")); }
       catch {
-        // No spec sidecar ⇒ a pre- archived resume: nothing dictated, nothing owed, nothing to count.
+        // No spec sidecar ⇒ a pre-change archived resume: nothing dictated, nothing owed, nothing to count.
         // A spec that EXISTS and does not parse is a different fact: the stage owes a sweep whose state
         // cannot be counted, and reading that as "owes nothing" would resume a session the veto exists to
         // refuse. The validator fails such a run on grid_spec_unreadable in its own lane.
         return existsSync(specPath) ? { countable: false } : null;
       }
       const formPath = spec?.connotation?.dispositions_path;
-      // No dictated path ⇒ a pre- spec (an archived run being resumed). Nothing to count, and the
+      // No dictated path ⇒ a pre-change spec (an archived run being resumed). Nothing to count, and the
       // gate has nothing to judge either — the two agree by construction.
       if (!formPath || spec?.connotation?.disposition_required !== true) return null;
       let recorded = null;

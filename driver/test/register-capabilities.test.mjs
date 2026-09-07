@@ -577,7 +577,7 @@ test("a jurisdiction outside the provider's coverage becomes a deferred row, nev
   assert.ok(cla.entries.every((e) => e.unsupported === undefined),
     "clarivate maps every plan predicate — nothing defers on capability grounds");
   // Every entry carries the plan's own region list — the executor's scope comes from here, so an entry
-  // that kept the pre- three would search fewer registers than the plan claims to have covered.
+  // that kept the pre-change three would search fewer registers than the plan claims to have covered.
   assert.ok(cla.entries.every((e) => JSON.stringify(e.regions) === JSON.stringify(["US", "EM", "CH", "WO"])));
 });
 

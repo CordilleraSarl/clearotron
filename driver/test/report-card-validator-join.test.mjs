@@ -42,7 +42,7 @@ has used it continuously since 2014 on overlapping goods, which is what makes th
 rather than a housekeeping note for the client to consider at leisure.
 `;
 
-// The pre- shape, and the one every replayed or archived card still has.
+// The pre-change shape, and the one every replayed or archived card still has.
 const FRAMED_CARD = `## Qori Holdings — QORI
 
 - ord: 1

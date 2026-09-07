@@ -8,7 +8,7 @@ import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS 
 import "./engine/mcp/http-dispatcher.mjs";   // side effect: raise undici headersTimeout (code-side fetches)
 import { readFileSync, existsSync, mkdirSync, writeFileSync, renameSync, copyFileSync, readdirSync, rmSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { join, dirname, basename, resolve } from "node:path";   // resolve: 's resume line must work from any cwd
+import { join, dirname, basename, resolve } from "node:path";   // resolve: the resume line must work from any cwd
 import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
 import { terminalClampDecision, orderClausesForLede } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
 import { recordSpan } from "./attributed-span.mjs";   // — driver work the decomposition can attribute
@@ -7573,7 +7573,7 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
     if (fc.fold) folds.push({ ...fc.fold, surface: "overview:caption" });
   }
   // spec 64 — merge the code-built only-you section into the overview's # Actions block. A model-
-  // authored "### Only you can close these" (pre- prompt, or drift) is REPLACED wholesale —
+  // authored "### Only you can close these" (pre-change prompt, or drift) is REPLACED wholesale —
   // code wins, so the section can never contradict the register the verdict derives from.
   // PR-9 — same pattern for "### Answers to your instructions": code-built from the findings.json
   // ask_answers register joined to the frozen intake asks; an authored section is replaced wholesale.
@@ -11794,7 +11794,7 @@ async function pipelineInner(job, opts = {}) {
     // deliver-conditional floor) keys on actions[]; a v4 emission that omits the field entirely would
     // silently disengage it — the exact CLEAR-despite-conditions bug this ships to fix. Same posture as
     // the schema-downlevel demand above: ONE warm re-demand, only when synthesis actually RAN this turn
-    // (a resumed pre- artifact keeps its shape — logged loudly, gates degrade); still-absent
+    // (a resumed pre-change artifact keeps its shape — logged loudly, gates degrade); still-absent
     // after the demand is logged and rides on (deliver-always, the reviewer's actions-unregistered flag
     // and the predelivery coherence lint remain the nets).
     const readActionsPresence = () => {
@@ -14993,7 +14993,7 @@ async function pipelineInner(job, opts = {}) {
         //: the row carries the park's progress QUANTITY, so the next failure's comparison can see
         // 9 → 6 (converging) where the signature alone shows only "the same defect again". Written
         // unconditionally as number|null — a row that says null means "this failure had no count", which
-        // is a different fact from a pre- row that has no such key at all.
+        // is a different fact from a pre-change row that has no such key at all.
         //
         //: `quantityToken` and `classSource` ride beside it, written unconditionally as value|null
         // for the same reason. This row is the ONLY one of the three records here that repair-digest.mjs

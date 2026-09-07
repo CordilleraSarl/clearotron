@@ -232,7 +232,7 @@ restarted after an upgrade keeps serving the deleted tree),
 `CLEAROTRON_INSTRUCTIONS_DIR` (config store), `CLEAROTRON_CUSTOMERS_DIR` (config store), `CLEAROTRON_RECIPES_DIR`,
 `CLEAROTRON_REPORTS_DIR` (**no default since — unset refuses**),`CLEAROTRON_RUN_LOCK_DIR`, `CLEAROTRON_OUTBOX_DIR`,
 `CLEAROTRON_STAFF_POOL_ROOT`, `CLEAROTRON_REGISTER_CALL_LOG` (~/trademark/telemetry/…, homedir-derived at
-call time, resolved by existence over the pre- telemetry directory too; the pre-
+call time, resolved by existence over the pre-change telemetry directory too; the pre-
 `CORSEARCH_*_LOG` names remain accepted for one release),
 `CLEAROTRON_REGISTER_RECORD_LOG` (**no longer a box path since ** — the driver injects
 `<runDir>/_driver/register-record-bodies.jsonl` per run; setting it by hand pins every run's record

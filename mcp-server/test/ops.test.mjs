@@ -150,7 +150,7 @@ test("mark_sent: a retry with the marker STILL present (a killed first call) rem
 });
 
 // ── post-merge audit 2: a settle clears EVERY runId form the marker could carry ─────────────────────
-// clearMarker removed one name only (`packet.runId ?? args.runId`). A pre- delivery packet carries the
+// clearMarker removed one name only (`packet.runId ?? args.runId`). A pre-change delivery packet carries the
 // legacy DATELESS `<slug>-<codename>` runId while the resolved run's own id is the dated canonical
 // `<slug>-<date>-<codename>`. The pair below is the divergence read off a run delivered 2026-07-29: its
 // _driver/delivery.json names the dateless form, its status.json the dated one. Slug and date verbatim
@@ -164,7 +164,7 @@ test("mark_sent: BOTH runId forms of the marker are cleared — the packet's and
   const runDir = join(WS, "studio", "prelim-search", slug, "2026-07-29-jade-w");
   mkdirSync(driverDir(runDir), { recursive: true });
   const dated = `${slug}-2026-07-29-jade-w`;      // status.json runId — the canonical form
-  const dateless = `${slug}-jade-w`;              // delivery.json runId — the pre- packet form
+  const dateless = `${slug}-jade-w`;              // delivery.json runId — the pre-change packet form
   const outbox = join(ROOT, "prelim-outbox-forms");   // its OWN outbox: a leaked marker must never
   mkdirSync(outbox, { recursive: true });             // change what the shared-dir listing tests count
   pinEnv(process.env, "CLEAROTRON_OUTBOX_DIR", outbox);

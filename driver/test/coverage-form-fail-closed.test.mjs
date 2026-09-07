@@ -84,7 +84,7 @@ test("NOT ARMED: no era stamp ⇒ the PRE-#476 floor applies, unchanged and unde
     const v = judge(dir);
     assert.equal(v.ok, false, "no form AND no prose table is an ABSENCE of coverage, never a pass");
     assert.match(v.reason, /findings\+ledger/);
-    // …and a pre- sentinel (the D1 off-enum arm alone) is still not a form stamp, so the floor holds.
+    // …and a pre-change sentinel (the D1 off-enum arm alone) is still not a form stamp, so the floor holds.
     armCoverageEnumOnly(dir);
     assert.equal(coverageFormStamp(dir).required, false);
     assert.equal(judge(dir).ok, false);
@@ -103,7 +103,7 @@ test("#850 M6 — THE DISPATCH HAS NO SECOND ARM, and the driver arms before it 
   // model-authored markdown table was the source of truth every coverage gate read.
   //
   // M6 deleted the dispatch's second arm, not the validator's. The validator still demands the prose
-  // table on an unstamped run, and that is deliberate and load-bearing: an ARCHIVED pre- run
+  // table on an unstamped run, and that is deliberate and load-bearing: an ARCHIVED pre-change run
   // carries no stamp at all, and changing what it judges to would mutate replay verdicts that people
   // quote. So the asymmetry this test used to pin is real — and UNREACHABLE on a live run, because
   // arming and dispatching are gated on the same `willRun` and the arm runs first. That is what is

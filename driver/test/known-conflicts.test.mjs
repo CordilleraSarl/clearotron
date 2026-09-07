@@ -222,7 +222,7 @@ test("round 3: a DELIVERED run upgrades the terminal a failed attempt wrote — 
   assert.equal(store().marks.venzy[0].terminal, "delivered");
   assert.equal(store().marks.venzy[0].source, "auto:delivery synthetic-one",
     "ONLY `terminal` moves — every other field of the existing row is left exactly as written");
-  // C) …which is the pre- behaviour: a delivered leg is remembered and can raise the tripwire.
+  // C) …which is the pre-change behaviour: a delivered leg is remembered and can raise the tripwire.
   assert.equal(violations(acceptedConflicts(store())).length, 1,
     "C — a leg a DELIVERED run confirmed is visible to the recall tripwire again");
 
