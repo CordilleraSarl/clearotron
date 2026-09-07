@@ -641,6 +641,53 @@ export function unitInventoryVerdict({
  * @param {string|null} raw  the value `systemctl show -p WorkingDirectory` printed
  * @returns {{path: string|null, prefixes: string, why: string|null}}
  */
+/**
+ * Which checkout is a unit actually serving — and which piece of evidence said so.
+ *
+ * A unit can be attributed two ways and they are not equally good.
+ *
+ * `WorkingDirectory` is a DECLARATION. It is what the unit file asks for, and it is frequently not a
+ * checkout at all: a unit written as `WorkingDirectory=~` reports `!/home/<user>`, which resolves to a
+ * home directory that is not a git tree, and the unit then drops out of the comparison entirely. That is
+ * not a rare shape — it is what a unit looks like when its author put the checkout in `ExecStart=`
+ * instead, which is the normal thing to do, because systemd cannot expand a variable in
+ * `WorkingDirectory=` and can in `ExecStart=`.
+ *
+ * The RUNNING COMMAND LINE is an OBSERVATION: the absolute path the live process was actually started
+ * with. So it wins, and that order is the point rather than a preference. The incident this comparison
+ * exists for is a deployment that served its portal from one clone while running its runner from
+ * another — and in that state the declaration and the process disagree, with the process telling the
+ * truth. Preferring the declaration would take the wrong side of exactly the case the check is for.
+ *
+ * WHEN BOTH RESOLVE AND DISAGREE, that IS the finding, and it is returned rather than quietly resolved:
+ * a unit whose declared tree and running tree differ has been repointed since it started, and it is
+ * serving the older one until something restarts it.
+ *
+ * PURE — the caller does the reading (systemd, the unit file, the process table) and this decides.
+ *
+ * @param {object} a
+ * @param {string|null} a.declaredTree  a git tree resolved from `WorkingDirectory`, or null
+ * @param {string|null} a.runningTree   a git tree resolved from the live process's argv, or null
+ * @param {string|null} a.declaredWhy   why the declaration gave nothing, if it gave nothing
+ * @param {string|null} a.runningWhy    why the process gave nothing, if it gave nothing
+ * @returns {{clone: string|null, source: string|null, disagreement: string|null, why: string|null}}
+ */
+export function unitClone({ declaredTree = null, runningTree = null, declaredWhy = null, runningWhy = null } = {}) {
+  const norm = (p) => String(p ?? "").replace(/\/+$/, "") || null;
+  const declared = norm(declaredTree);
+  const running = norm(runningTree);
+  const disagreement = declared && running && declared !== running
+    ? `the unit declares ${declared} and its running process was started from ${running} — it is serving the second until something restarts it`
+    : null;
+  if (running) return { clone: running, source: "the running command line", disagreement, why: null };
+  if (declared) return { clone: declared, source: "WorkingDirectory", disagreement, why: null };
+  // BOTH REASONS, never the first one that came to hand. A caller that reports only "no WorkingDirectory"
+  // sends the next reader to fix a unit file when the process table was the half that could not be read.
+  const parts = [declaredWhy, runningWhy].filter(Boolean);
+  return { clone: null, source: null, disagreement: null,
+    why: parts.length ? parts.join("; and ") : "neither the unit's WorkingDirectory nor its running command line named a checkout" };
+}
+
 export function unitWorkingDirectory(raw) {
   const s = String(raw ?? "").trim();
   if (!s) return { path: null, prefixes: "", why: "the unit reported no WorkingDirectory" };
