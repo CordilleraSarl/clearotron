@@ -425,6 +425,13 @@ export const UNIT_INVENTORY = Object.freeze([
   {
     unit: "trademark-test-deploy", runsOn: [],
       measured: "2026-09-07, test box: LoadState=not-found. The hourly deploy runs as clearotron-deploy.timer, which has its own entry; this name is what that one used to be called.", tracked: null,
+    // AN EMPTY runsOn OWES A REASON, and this one is a supersession rather than an orphan: the hourly
+    // deploy still runs on the test box, under the name `clearotron-deploy`, which has its own entry and
+    // its own measurement. This name is what that unit used to be called. It is kept rather than deleted
+    // because the unit FILE is still tracked and an inventory of what ships should account for every
+    // tracked file — deleting the entry would make the file unaccounted for, which is the ratchet this
+    // file exists to keep shut.
+    orphanReason: "SUPERSEDED, NOT RETIRED — the hourly deploy of the test instance runs as `clearotron-deploy`, measured active there on 2026-09-07. This entry is the pre-rename name for the same job, so it runs on no box under THIS name and the boxes moved to the entry that replaced it. The tracked file stays until production is rebuilt, which is the same disposition the other retired units carry.",
     untrackedReason: "the hourly --ff-only deploy of the TEST instance. It exists on the test box only "
       + "and by design: production never auto-deploys, so a tracked file shipped to both would be a unit "
       + "production must be trusted never to enable.",
