@@ -13510,6 +13510,21 @@ async function pipelineInner(job, opts = {}) {
                 const askApplied = applyAskClosure(runAsks, acc.ask, fileTexts, { ts: askTs });
                 runAsks = askApplied.asks;
                 for (const u of askApplied.unverified) runLog(run.runDir, { event: "ask-closure-unverified", ...u });
+                // Option A (tracker issue 246): a recall ask whose mark is not in the delivered findings
+                // did NOT close. Each one is a mark the run found and the client was not shown, so it is
+                // recorded by name rather than left to be inferred from an ask that merely stayed open.
+                // ✕ NOT written into findings.json here. See the sidecar's own note: a row appended after
+                // the drafting stage would carry no band and no reasoning.
+                for (const c of askApplied.carryIntoFindings ?? [])
+                  runLog(run.runDir, { event: "ask-closure-mark-owed", ...c });
+                if (askApplied.carryIntoFindings?.length)
+                  writeFileSync(driverDir(run.runDir, "marks-owed-a-finding.json"),
+                    JSON.stringify({
+                      _provenance: "recall asks that could not close because the mark they found is absent from findings.json — owner ruling 2026-09-07, tracker issue 246 Option A, worded about the MARK",
+                      _notWritten: "these are NOT appended to findings.json: a finding carries a band, a net line and a legal position, and a row minted here would carry none of them. The repair belongs where the findings are authored.",
+                      count: askApplied.carryIntoFindings.length,
+                      marks: askApplied.carryIntoFindings,
+                    }, null, 2) + "\n");
               }
             } else {
               note(`doubt-closure failed (non-fatal — the open doubts/asks ship OPEN, as without the stage): ${dc.fail}`);

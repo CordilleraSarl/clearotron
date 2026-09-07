@@ -168,6 +168,36 @@ const FINDING_COLUMNS = Object.freeze(
 // finding it there together with screen_verdict / class / status.
 const NEGATIVE_COLUMNS = Object.freeze(["Mark", "Search Term / Variant", "Result", "Notes"]);
 
+/**
+ * The "Mark" cell for one Negative-results row.
+ *
+ * A `duplicate-of-surfaced` row is not a statement about the MARK. It is a statement about one
+ * registration of a mark whose position is already reported above it — the digest's own rule is "one
+ * row per POSITION, never one per registration of the same right". Printing the bare mark under a
+ * column headed "Mark" says the opposite of what the row means, and the document then reads as both
+ * "keep this mark, here is the reasoning" in the incumbent table and "no separate row for this mark"
+ * here. Nine readers scan this file, and one of them is the drafting seat that decides what the client
+ * is shown.
+ *
+ * Naming the record removes the contradiction and changes no judgment the digest made: the row is
+ * still a drop, still on the same ground, still carrying the seat's own reason.
+ *
+ * ✕ EVERY OTHER GROUND IS LEFT ALONE, deliberately. `off-field`, `dead-status` and `out-of-class` are
+ * about the record on its own terms, where the bare mark is what a reader wants and is not ambiguous.
+ * A blanket change to this column would touch every negative row in every report for a defect that
+ * only exists on the duplicate class.
+ *
+ * The office comes from the record uri (`/mark/wo/…` -> `WO`); every uri in the archived corpus carries
+ * a two-letter office in that position. When it cannot be read the BARE MARK is printed rather than a
+ * broken qualifier — a missing qualifier is a smaller defect than "OSLER DELPHI — UNDEFINED record".
+ */
+export function negativeMarkCell(row) {
+  const mark = String(row?.cells?.mark ?? "").trim();
+  if (row?.ground !== "duplicate-of-surfaced" || !mark) return mark;
+  const office = String(row?.cells?.uri ?? "").split("/")[2] ?? "";
+  return /^[a-z]{2}$/i.test(office) ? `${mark} \u2014 ${office.toUpperCase()} record` : mark;
+}
+
 // ── THE FLOOR, AND WHAT ITS ZERO MEANS ────────────────────────────────────────────────────────────
 //
 // `validators.registerFindings` carried `nonEmpty(c)` with no character number, so there is no
@@ -353,7 +383,7 @@ export function renderRegisterFindings(model, facts = emptyFacts()) {
   out.push(DIGEST_SECTIONS.negative, "");
   out.push(model.negative_rows.length
     ? table(NEGATIVE_COLUMNS, model.negative_rows.map((r) => [
-      r.cells.mark, r.variant || r.cells.mark, r.drop_reason,
+      negativeMarkCell(r), r.variant || r.cells.mark, r.drop_reason,
       [`URI ${r.cells.uri}`, r.screen_verdict ? `screen_verdict=${r.screen_verdict}` : "",
         r.cells.classes ? `class=${r.cells.classes}` : "", r.cells.status ? `status=${r.cells.status}` : ""]
         .filter(Boolean).join("; "),

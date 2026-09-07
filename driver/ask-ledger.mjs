@@ -575,6 +575,64 @@ export function parseAskClosureLines(text) {
 }
 
 /**
+ * The marks the CLIENT was actually shown — `findings[].mark` from findings.json, normalized.
+ *
+ * Returns null when the file is absent or unparseable, and null is NOT an empty set: an absence is a
+ * could-not-look, and the caller below fails toward leaving the ask OPEN rather than closing it on a
+ * file it could not read.
+ *
+ * ✕ NEVER a substring search of the serialized document. `"DELFIN" in JSON.stringify(findings)` is true
+ * when the findings name DELFIN TECHNOLOGIES OY and nothing else — a membership test that matches every
+ * longer name inflates whatever it is counting and reads as a clean result. The field, or nothing.
+ * PURE.
+ */
+export function deliveredMarks(findingsJsonText) {
+  let doc;
+  try { doc = JSON.parse(String(findingsJsonText ?? "")); } catch { return null; }
+  const rows = Array.isArray(doc?.findings) ? doc.findings : null;
+  if (!rows) return null;
+  return new Set(rows.map((f) => normMark(f?.mark)).filter(Boolean));
+}
+
+const normMark = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
+
+/**
+ * Owner ruling 2026-09-07 (tracker issue 246), Option A, worded ABOUT THE MARK: a recall ask may close
+ * as immaterial only when the mark it went looking for is in the client's findings. Otherwise the mark
+ * is owed a finding and the ask stays open.
+ *
+ * The defect this answers: a recall probe found OSLER DELPHI, the closure stage pointed at
+ * `register-findings.md` — the run's own working sheet, where the mark genuinely IS reasoned — and the
+ * ask closed. The sheet is a citable file and the citation was true. It is simply not the document the
+ * client reads, and nothing checked that.
+ *
+ * ✕ SCOPED TO `ask:recall:` ASKS CARRYING A `mark_text`, deliberately, and this is the whole difference
+ * between the two readings of the ruling. `ask:recall-overflow:` rows carry a `term` — an owner name, a
+ * law firm, a probe never dispatched (Lewis Silkin LLP, NORDWEST Handel AG). Measured across three runs
+ * they are 28-29 per run and constant whether the run was healthy or not; reopening them would put
+ * names no lawyer asked for into the findings. A `mark_text` is the test because a mark is what a
+ * finding is about.
+ *
+ * Returns the owed row, or null when the ask is out of scope or the mark was delivered. PURE.
+ */
+export function recallMarkOwed(ask, delivered) {
+  if (!String(ask?.ask_id ?? "").startsWith("ask:recall:")) return null;
+  const st = ask?.ask?.structured ?? {};
+  const mark = String(st.mark_text ?? "").trim();
+  if (!mark) return null;                                       // an owner/term probe is not a mark ask
+  if (delivered instanceof Set && delivered.has(normMark(mark))) return null;
+  return {
+    ask_id: ask.ask_id,
+    mark,
+    owner: String(st.owner ?? "").trim() || null,
+    uri: String(st.uri ?? "").trim() || null,
+    // null delivered = findings.json unreadable. Recorded so a reader can tell "the client was not shown
+    // this mark" from "nobody could tell what the client was shown" — they need different repairs.
+    basis: delivered instanceof Set ? "absent-from-findings" : "findings-unreadable",
+  };
+}
+
+/**
  * The anti-confabulation guard, ask side (doubt-ledger applyClosure reused shape-for-shape): an
  * IMMATERIAL line ends its ask IFF the ask is still open AND the quote appears VERBATIM
  * (whitespace-normalized, nothing else) in the named citable file; anything short of that leaves
@@ -586,7 +644,9 @@ export function applyAskClosure(asks, closureLines, fileTexts = {}, { ts = null 
   const byId = new Map();
   for (const l of closureLines ?? []) if (l?.id && !byId.has(l.id)) byId.set(l.id, l);
   const unverified = [];
+  const carryIntoFindings = [];
   let immaterialByStage = 0;
+  const delivered = deliveredMarks(fileTexts?.["findings.json"]);
   const out = (asks ?? []).map((a) => {
     if (a?.ending) return a;                                    // the stage may never touch an ended ask
     const l = byId.get(a.ask_id);
@@ -595,13 +655,21 @@ export function applyAskClosure(asks, closureLines, fileTexts = {}, { ts = null 
     const hay = squash(fileTexts?.[l.file]);
     const q = squash(l.quote);
     if (q && hay && hay.includes(q)) {
+      // THE CITATION IS VERIFIED AND THAT IS NO LONGER ENOUGH FOR A RECALL ASK ABOUT A MARK.
+      const owed = recallMarkOwed(a, delivered);
+      if (owed) {
+        carryIntoFindings.push(owed);
+        return { ...a, handoff: clip(`the recall probe found ${owed.mark} and the delivered findings do not name it — `
+          + `the closure cited ${l.file}, which is the run's own working sheet, not what the client was shown. `
+          + `This mark is owed a finding.`, 300) };
+      }
       immaterialByStage++;
       return { ...a, ending: mkEnding("judged-immaterial", "doubt-closure-stage", { evidence: `${l.file}: "${clip(l.quote)}"`, reasons: [l.reason], ts }) };
     }
     unverified.push({ ask_id: a.ask_id, file: l.file, quote: l.quote });
     return a;
   });
-  return { asks: out, immaterialByStage, unverified };
+  return { asks: out, immaterialByStage, unverified, carryIntoFindings };
 }
 
 /** Stamp the default handoff on every still-open ask (after closure) — an OPEN ask always names

@@ -431,3 +431,92 @@ test("⭐ both ledgers answer 'does this quote appear verbatim' IDENTICALLY — 
     }
   }
 });
+
+// ── OPTION A: A RECALL ASK CLOSES ONLY WHEN THE MARK REACHED THE CLIENT ──────────────────────────────
+//
+// Owner ruling 2026-09-07 (tracker issue 246), worded ABOUT THE MARK. The defect: a recall probe found
+// OSLER DELPHI, the closure stage cited `register-findings.md` — where the mark genuinely IS reasoned,
+// at length — and the ask closed as immaterial. The citation was true. `register-findings.md` is the
+// run's own working sheet and not the document the client reads, and nothing checked the difference.
+import { deliveredMarks, recallMarkOwed } from "../ask-ledger.mjs";
+
+const findingsWith = (...marks) => JSON.stringify({ findings: marks.map((m, i) => ({ ordinal: i + 1, mark: m })) });
+const recallAsk = (id, mark, extra = {}) => ({
+  ask_id: `ask:recall:${id}`,
+  ask: { text: `prior-confirmed conflict recall probe: ${mark}`, owner: "register",
+    structured: { qid: id, mark_text: mark, owner: "Novartis AG", uri: "/mark/ch/SWIT1", ...extra } },
+});
+const IMMATERIAL = (id) => [{ verdict: "IMMATERIAL", id, file: "register-findings.md", reason: "already reasoned on the sheet" }]
+  .map((l) => ({ ...l, quote: "already reasoned on the incumbent sheet" }));
+
+test("a recall ask whose mark never reached the findings does NOT close, and is named as owed", () => {
+  const ask = recallAsk("recall-delfity", "DELFITY");
+  const files = {
+    "register-findings.md": "Watchlist entry: already reasoned on the incumbent sheet in this document.",
+    "findings.json": findingsWith("DELPHYS", "DELPHIC HSE"),      // the client was NOT shown DELFITY
+  };
+  const r = applyAskClosure([ask], IMMATERIAL("ask:recall:recall-delfity"), files, { ts: "T" });
+  assert.equal(r.asks[0].ending, undefined, "the ask must stay open — its mark never reached the client");
+  assert.equal(r.immaterialByStage, 0);
+  assert.equal(r.unverified.length, 0, "the citation VERIFIED; this is not a confabulation refusal and must not read as one");
+  assert.deepEqual(r.carryIntoFindings.map((c) => [c.mark, c.basis]), [["DELFITY", "absent-from-findings"]]);
+  assert.match(r.asks[0].handoff, /owed a finding/);
+});
+
+test("the same ask closes normally once the mark IS in the findings — a join, not a ban", () => {
+  const ask = recallAsk("recall-delfity", "DELFITY");
+  const files = {
+    "register-findings.md": "Watchlist entry: already reasoned on the incumbent sheet in this document.",
+    "findings.json": findingsWith("DELPHYS", "DELFITY"),
+  };
+  const r = applyAskClosure([ask], IMMATERIAL("ask:recall:recall-delfity"), files, { ts: "T" });
+  assert.equal(r.asks[0].ending.kind, "judged-immaterial");
+  assert.equal(r.immaterialByStage, 1);
+  assert.deepEqual(r.carryIntoFindings, []);
+});
+
+test("the ruling is about the MARK — an owner/term probe is not reopened", () => {
+  // The wording the owner did NOT take. Measured across three runs, the overflow rows are 28-29 per run
+  // whether the run was healthy or not, and they are law firms and owner names (Lewis Silkin LLP,
+  // NORDWEST Handel AG) — reopening them would put names no lawyer asked for into the findings.
+  const overflow = { ask_id: "ask:recall-overflow:5",
+    ask: { structured: { qid: "recall-owner-lewis-silkin", term: "Lewis Silkin LLP" } } };
+  const noMark = recallAsk("recall-bare", "");
+  const files = { "register-findings.md": "already reasoned on the incumbent sheet", "findings.json": findingsWith("DELPHYS") };
+  const lines = [...IMMATERIAL("ask:recall-overflow:5"), ...IMMATERIAL("ask:recall:recall-bare")];
+  const r = applyAskClosure([overflow, noMark], lines, files, { ts: "T" });
+  assert.deepEqual(r.carryIntoFindings, [], "an ask carrying no mark_text is out of scope");
+  assert.equal(r.immaterialByStage, 2, "both must still close on their citation");
+});
+
+test("an unreadable findings.json is a could-not-look, not an empty findings set", () => {
+  // The direction matters: treating an unreadable file as "no marks delivered" would close nothing and
+  // flood the report; treating it as "everything delivered" would close everything and hide the defect.
+  // It fails toward the mark staying VISIBLE, and says which case it is so the two get different repairs.
+  assert.equal(deliveredMarks("not json"), null);
+  assert.equal(deliveredMarks(JSON.stringify({ findings: "not an array" })), null);
+  assert.equal(deliveredMarks(undefined), null);
+  const owed = recallMarkOwed(recallAsk("recall-delfity", "DELFITY"), null);
+  assert.equal(owed.basis, "findings-unreadable");
+  const r = applyAskClosure([recallAsk("recall-delfity", "DELFITY")], IMMATERIAL("ask:recall:recall-delfity"),
+    { "register-findings.md": "already reasoned on the incumbent sheet", "findings.json": "{ truncated" }, { ts: "T" });
+  assert.equal(r.asks[0].ending, undefined);
+  assert.equal(r.carryIntoFindings[0].basis, "findings-unreadable");
+});
+
+test("the mark is matched on the findings' own field, never as a substring of the document", () => {
+  // The measurement error this guards against, met while diagnosing 246: `"DELFIN" in JSON.stringify(doc)`
+  // is true when the findings name DELFIN TECHNOLOGIES OY and nothing else. A membership test that matches
+  // every longer name closes asks whose mark never reached the client — the exact defect, wearing a pass.
+  const files = {
+    "register-findings.md": "already reasoned on the incumbent sheet",
+    "findings.json": findingsWith("DELFIN TECHNOLOGIES OY"),
+  };
+  const r = applyAskClosure([recallAsk("recall-delfin", "DELFIN")], IMMATERIAL("ask:recall:recall-delfin"), files, { ts: "T" });
+  assert.equal(r.asks[0].ending, undefined, "DELFIN is a substring of a delivered name, not a delivered mark");
+  assert.deepEqual(r.carryIntoFindings.map((c) => c.mark), ["DELFIN"]);
+  // …and punctuation/case differences still JOIN, or the guard would reopen marks that did reach the client.
+  const r2 = applyAskClosure([recallAsk("recall-delphi-md", "DELPHI·MD")], IMMATERIAL("ask:recall:recall-delphi-md"),
+    { ...files, "findings.json": findingsWith("delphi md") }, { ts: "T" });
+  assert.equal(r2.asks[0].ending.kind, "judged-immaterial");
+});
