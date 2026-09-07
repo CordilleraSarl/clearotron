@@ -106,7 +106,43 @@ jobs:
       # spent. The provider suites drive their adapters over a stubbed fetch, and every fixture host is
       # under a reserved `.test` domain, so a run that somehow escaped its stub would fail to resolve
       # rather than reach a real service.
-      - run: npm run test:full
+      # ── THE GUARDS MUST HAVE LOOKED, AND THIS IS WHERE THAT STOPS BEING AN ASSUMPTION ──────────
+      #
+      # The comment on the checkout above states the failure exactly: a large part of this suite reads
+      # what it checks with `git ls-files`, and off a checkout those guards do not fail, they SKIP, and
+      # the run goes green having checked nothing. Until now the only thing standing between this
+      # workflow and that outcome was `actions/checkout` having worked. That is a mitigation, not a
+      # check, and `shared/tracked-files.mjs` prints these two markers precisely so something can read
+      # them.
+      #
+      # BOTH DIRECTIONS, AND THE SECOND IS THE ONE THAT GETS FORGOTTEN. Grepping only for the absence of
+      # SKIPPED passes just as well on an empty log — a suite that never ran prints no SKIPPED lines
+      # either. The affirmative `[repo-guard] ok` is what separates "the guards looked and were
+      # satisfied" from "nothing looked at all".
+      #
+      # `shell: bash` IS LOAD-BEARING, NOT STYLE. GitHub's default shell is bash WITHOUT `pipefail`, so
+      # a pipe into `tee` returns tee's exit status and a red suite would report green — a worse defect
+      # than the one being fixed here, and the reason the pipefail line is explicit rather than assumed.
+      # THE LOG GOES OUTSIDE THE WORKSPACE, and that was measured rather than reasoned. Written as
+      # `tee suite.log` in the checkout, the file exists WHILE the suite runs, and this suite has guards
+      # that watch the tree for exactly that: ten arms failed with `~ suite.log — changed by the run`.
+      # A check that makes the thing it is checking fail is not a check.
+      - name: The offline suite, and the corpus guards must have looked
+        shell: bash
+        run: |
+          set -o pipefail
+          log="${RUNNER_TEMP:-/tmp}/suite.log"
+          npm run test:full 2>&1 | tee "$log"
+          if grep -qF '[repo-guard] SKIPPED' "$log"; then
+            echo '::error::a repository-scoped guard SKIPPED on a runner that has a checkout — it read no corpus, so its green means nothing. The offending lines follow.'
+            grep -F '[repo-guard] SKIPPED' "$log"
+            exit 1
+          fi
+          grep -qF '[repo-guard] ok' "$log" || {
+            echo '::error::no guard reported that it read the corpus — an absent SKIPPED line is not a pass on its own, because a suite that never ran prints neither marker.'
+            exit 1
+          }
+
       - run: npm run test:providers
 
   checks:
