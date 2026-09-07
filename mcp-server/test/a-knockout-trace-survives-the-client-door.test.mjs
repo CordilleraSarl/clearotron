@@ -78,7 +78,15 @@ test("275 client path: the note is never the only thing left — a promise the p
   // gone, which is worse than an empty answer: the client is told the band is here and it is not.
   for (const [name, make] of [["verdict", verdictTrace], ["mark", markTrace], ["stage", stageTrace]]) {
     const out = accountTrace(make());
-    const carried = Object.keys(out).filter((k) => !["runId", "target", "kind", "note"].includes(k));
+    // A KEY IS NOT CONTENT. The first version of this arm counted keys, and the broken projection
+    // emitted `findingsSource: null` — a clearance field, null on a knockout trace — which made the arm
+    // pass on the exact defect it was written for. Empty values are filtered, so the arm asks whether
+    // anything was ANSWERED rather than whether a key was present.
+    const isEmpty = (v) => v == null || (Array.isArray(v) && v.length === 0)
+      || (typeof v === "object" && Object.keys(v).length === 0);
+    const carried = Object.entries(out)
+      .filter(([k, v]) => !["runId", "target", "kind", "note"].includes(k) && !isEmpty(v))
+      .map(([k]) => k);
     assert.ok(carried.length > 0,
       `the ${name} trace came back as runId + target + note and nothing else — the note is describing `
       + "content that was dropped on the way out");
