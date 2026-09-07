@@ -173,9 +173,76 @@ function accountNode(node) {
   return out;
 }
 
+// ── THE KNOCKOUT TRACE IS A DIFFERENT SHAPE, AND THE CLEARANCE ALLOWLIST DROPS ALL OF IT ────────────
+//
+// `accountTrace` below is an allowlist built field by field around the clearance trace. A Knockout trace
+// shares only `runId` and `target` with it: the fields that carry the answer are `mark`, `band`, `basis`,
+// `factors`, `counterFactors`, `findings` and `registerReads`, and none of them is in that list. So a
+// client session asking about a Knockout mark received 142 bytes of shell — and, worse, kept the `note`,
+// which reads "The band, the one-sentence ground for it, and the observations it rests on." The one field
+// that survived was a promise about the fields that did not. Measured on all four shapes: verdict
+// 303→200, mark 427→142, stage 210→95 bytes. The ops path and get_run were never affected.
+//
+// WHY THIS IS A SEPARATE PROJECTION AND NOT A WIDENED PICK LIST. Adding these names to the clearance list
+// would make a clearance trace start forwarding any same-named field it later grew, unreviewed. Each
+// shape states its own fields, so a new field on either side is invisible until somebody adds it here.
+//
+// TWO THINGS ARE PROJECTED RATHER THAN FORWARDED, both for the reason the clearance side already gives:
+//   · `events` is raw `run.jsonl` — model names, token counts and timings. It goes through `accountNode`,
+//     the same node fields the clearance walk already rules client-safe, rather than passing whole.
+//   · `basis`, `factors`, `counterFactors` and a finding's `name` are MODEL OUTPUT, so they take `clean`
+//     exactly as `summary` and `note` do on the clearance side. The knockout notes are our own literals
+//     and are cleaned anyway: a rule with an exception is a rule somebody edits the wrong way later.
+const KNOCKOUT_TRACE_KINDS = new Set(["verdict", "mark", "stage"]);
+
+/** A knockout trace, projected per shape. Only reached for a result the clearance branch cannot read. */
+function accountKnockoutTrace(result) {
+  const base = pick(result, ["runId", "target", "kind"]);
+  const cleanList = (v) => (Array.isArray(v) ? v.map(clean) : []);
+  if (result.kind === "verdict") {
+    return {
+      ...base,
+      verdict: result.verdict ?? null,
+      marks: (Array.isArray(result.marks) ? result.marks : [])
+        .map((m) => ({ ...pick(m, ["mark", "band"]), basis: clean(m?.basis ?? null) })),
+      note: clean(result.note),
+    };
+  }
+  if (result.kind === "mark") {
+    return {
+      ...base,
+      mark: result.mark ?? null,
+      band: result.band ?? null,
+      basis: clean(result.basis ?? null),
+      factors: cleanList(result.factors),
+      counterFactors: cleanList(result.counterFactors),
+      findings: (Array.isArray(result.findings) ? result.findings : []).map((f) => ({
+        ...pick(f, ["ordinal", "band"]),
+        name: clean(f?.name ?? null),
+        evidence: cleanList(f?.evidence),
+      })),
+      registerReads: (Array.isArray(result.registerReads) ? result.registerReads : [])
+        .map((r) => ({ ...pick(r, ["recordId", "band"]), read: clean(r?.read ?? null) })),
+      note: clean(result.note),
+    };
+  }
+  // stage
+  return {
+    ...base,
+    stage: result.stage ?? null,
+    events: (Array.isArray(result.events) ? result.events : []).map(accountNode),
+    produced: (Array.isArray(result.produced) ? result.produced : []).map((a) => pick(a, ["name", "file"])),
+    note: clean(result.note),
+  };
+}
+
 export function accountTrace(result) {
   if (!result || typeof result !== "object") return result;
   if (result.error) return pick(result, ["runId", "target", "error"]);   // the resolver's own guidance, no run content
+  // A clearance trace always carries `resolvedAs`; a knockout trace never does and carries a top-level
+  // `kind` instead. Requiring BOTH is what stops a clearance trace that later grows a top-level `kind`
+  // from being routed into the knockout projection and silently losing its own fields.
+  if (!result.resolvedAs && KNOCKOUT_TRACE_KINDS.has(result.kind)) return accountKnockoutTrace(result);
   const out = {
     ...pick(result, ["runId", "target", "mode"]),
     resolvedAs: pick(result.resolvedAs, ["kind", "stage", "fuzzy", "codeBuilt"]),

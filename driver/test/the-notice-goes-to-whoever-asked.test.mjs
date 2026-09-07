@@ -91,3 +91,76 @@ test("289b: an unconfigured requester roster is EMPTY, never a demo one", async 
   assert.match(r.whatsappToReason, /no chat number is held/, "and it says why rather than going quiet");
   process.env.CLEAROTRON_REQUESTER_WHATSAPP = saved;
 });
+
+// ── EVERY COMPLETION PACKET, NOT THE ONE I HAPPENED TO EDIT (tracker issue 321) ──────────────────────
+//
+// The fix above landed on ONE of the two call sites. `driver/pipeline.mjs` routed through
+// `whatsappRouting` and `driver/pipeline-knockout.mjs` kept `AGENT_WHATSAPP[agent]`, so every knockout
+// completion still paged the operator and could not say "no number is held" — proved on a delivered
+// knockout round, where the recipient came back as the operator fixture with no `whatsappToReason`.
+//
+// THE ARM ABOVE COULD NOT HAVE CAUGHT IT, and that is the lesson worth writing down rather than the
+// defect. Those arms drive `whatsappRouting` itself: they prove the function routes correctly, which was
+// never in doubt. What was wrong was who CALLS it. A test set derived from the files a change touches is
+// keyed on the change; a property about every delivery packet in the tree has to be keyed on the tree.
+//
+// So this enumerates every `emailBodyHtml` site — the field that makes an object a send packet — and
+// rules on all of them. A new one fails here until somebody classifies it.
+import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+
+// file:line → why it is or is not routed. The COMPLETION notices must route; the rest must not.
+const RULED = {
+  "driver/pipeline.mjs": "the clearance completion packet — routed; and buildFailurePacket, which is a "
+    + "failure notice and deliberately keeps the operator: a stage failure is an operational page, not "
+    + "an answer the requester ordered",
+  "driver/pipeline-knockout.mjs": "the knockout completion packet — routed; its failure packet keeps the "
+    + "operator for the same reason",
+  "driver/publish/knockout.mjs": "prose about the courier contract, not a packet",
+  "mcp-server/server.mjs": "a tool description naming the field, not a packet",
+};
+
+function packetFiles() {
+  // ENUMERATED, NOT GLOBBED. The first draft passed git pathspecs (`mcp-server/**/*.mjs`) and silently
+  // missed `mcp-server/server.mjs`, because that glob wants an intermediate directory. A scan that
+  // quietly covers less is exactly what this arm exists to catch, so the filtering happens here where it
+  // can be read.
+  const files = execFileSync("git", ["-C", ROOT, "ls-files"], { encoding: "utf8", maxBuffer: 1 << 28 })
+    .split("\n").filter(Boolean)
+    .filter((f) => f.endsWith(".mjs") && !f.includes("/test/")
+      && (f.startsWith("driver/") || f.startsWith("mcp-server/")));
+  return files.filter((f) => /emailBodyHtml/.test(readFileSync(join(ROOT, f), "utf8")));
+}
+
+test("321: every file that builds a send packet has been ruled on", () => {
+  const found = packetFiles().sort();
+  assert.ok(found.length >= 4,
+    `only ${found.length} files carry emailBodyHtml — the scan is measuring less than when this was `
+    + "classified, so it is now blind to packets it used to see");
+  const unruled = found.filter((f) => !(f in RULED));
+  assert.deepEqual(unruled, [],
+    `these files build a send packet and nobody ruled whether it routes to the requester: ${unruled.join(", ")}. `
+    + "If it is a COMPLETION notice it must spread whatsappRouting(job, agent); if it is a failure or "
+    + "operational notice it keeps the operator. Say which, here.");
+});
+
+test("321: both completion packets route through whatsappRouting, and neither picks the agent directly", () => {
+  for (const f of ["driver/pipeline.mjs", "driver/pipeline-knockout.mjs"]) {
+    const src = readFileSync(join(ROOT, f), "utf8");
+    assert.match(src, /\.\.\.whatsappRouting\(job, agent\)/,
+      `${f} no longer spreads whatsappRouting into its completion packet — the notice goes to whoever `
+      + "runs the agent again, which is the operator on every run because every user shares one agent id");
+    // The failure packet in each file may still read AGENT_WHATSAPP; a completion packet may not. The
+    // discriminator is the send-packet object itself, so this reads the line rather than the file.
+    const lines = src.split("\n");
+    const emailAt = lines.findIndex((l) => /^\s*emailBodyHtml:/.test(l) && !/clientRun/.test(l));
+    assert.ok(emailAt > 0, `${f}: no completion packet found to check`);
+    const window = lines.slice(emailAt, emailAt + 14).filter((l) => !/^\s*\/\//.test(l)).join("\n");
+    assert.ok(!/AGENT_WHATSAPP\[/.test(window),
+      `${f}'s completion packet picks AGENT_WHATSAPP directly — that is the defect, one call site over`);
+  }
+});

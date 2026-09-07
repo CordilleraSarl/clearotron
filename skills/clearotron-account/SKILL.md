@@ -165,21 +165,50 @@ question to the issuing firm rather than reconstructing an answer.
 
 ## Asking what-if
 
-A what-if re-runs **one step** of a finished search under a changed assumption, in a sandbox. It is the
-right tool when the user asks *what if this were different* — and the wrong one when they want a fresh
-answer about a different mark, which is a new search.
+A what-if answers *what if this were different* about a search that has already run. There are two, and
+the search's own state decides which one you can have:
 
-- **Plan, read the honesty note aloud, then commit.** `what_if_plan` says in plain words how complete
-  the answer will be. Re-running an early step does **not** re-run the risk read or the report on top of
-  it, and a user who is not told that will read a partial output as a new verdict. Say it before you
-  spend, not after.
-- **It costs money and it is not instant.** The experiment queues on the server and runs there. Tell the
-  user it is running and collect it with `what_if_result` rather than promising an immediate answer.
+- a **step re-run**, while the search is still live — one step runs again under a changed assumption, in
+  a sandbox;
+- a **memo**, once the search is delivered or archived — the evidence already gathered is read again
+  under the assumption, and a short document comes back naming the report it belongs to.
+
+Either is the wrong tool when the user wants a fresh answer about a different mark. That is a new search.
+
+**On a delivered report, offer the memo.** A step re-run is refused there, and that refusal is the one
+that used to end the conversation with *commission a fresh search*. It should not. A user holding a
+report who asks *what if the Korean application were abandoned* is asking the most ordinary question
+there is, and the memo is the answer to it — so check the search's state before you tell anyone the
+question cannot be answered.
+
+- **Name the step when you ask for a re-run; do not when you ask for a memo.** `what_if_plan` has to be
+  told which step, and asking without one is an error rather than a refusal you can relay. A memo re-runs
+  no step: pass the user's assumption as `instructions` and nothing else.
+- **Plan, read the honesty note aloud, then commit.** `what_if_plan` says in plain words how complete the
+  answer will be. Re-running an early step does **not** re-run the risk read or the report on top of it,
+  and a user who is not told that will read a partial output as a new verdict. Say it before you spend,
+  not after.
+- **It is not instant.** Both kinds queue on the server and run there. Tell the user it is running and
+  collect it with `what_if_result` rather than promising an immediate answer.
 - **You do not choose how it runs.** There is no model or tier for you to pick, and asking for one is
   refused. Express the change in `instructions`, in the user's own terms.
-- **The original is untouched, and say so.** A what-if never edits the delivered search or its report.
-  Present the result as *what this step would have said under that assumption*, never as a correction to
-  the report the user already holds.
+- **The original is untouched, and say so.** Neither kind edits the delivered search or its report.
+  Present the result as *what this would have said under that assumption*, never as a correction to the
+  report the user already holds.
+
+### What a memo is, and what it is not
+
+Say all three when you offer one, not when you deliver it. A user who learns the bounds afterwards has
+already read it as something it is not.
+
+- **It searches nothing.** No register is queried and no new evidence is gathered. It reasons over what
+  the search already found, and costs nothing beyond model time.
+- **It cannot confirm the assumption.** It says what would follow *if* the assumption held, and states
+  what the smallest piece of work would be that could settle whether it does. It is not a finding that
+  the Korean application was abandoned; it is what that would mean if it were.
+- **A stopped search takes neither kind.** A search its owner cancelled has evidence that was never
+  finished, and reasoning over a half-gathered record is how a memo comes to say more than the search
+  ever knew.
 
 ## Before you start a search
 
