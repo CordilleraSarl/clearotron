@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 185 — THE REFERENCE STRIP LEFT SENTENCES WITH THEIR SUBJECT REMOVED, AND THE COUNT IS
+// THE REFERENCE STRIP LEFT SENTENCES WITH THEIR SUBJECT REMOVED, AND THE COUNT IS
 // STILL GOING UP.
 //
 // 179 when it was filed. 181 when this arm was written, two days later, with nobody having decided to

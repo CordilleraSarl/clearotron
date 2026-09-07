@@ -46,7 +46,7 @@
 // precisely so they cannot come to different conclusions about the same box; they were still reaching
 // two different conclusions about the same *consequence*. This closes that.
 
-import { drainPosture, CONTINUOUS } from "./drain-posture.mjs";   // tracker issue 206 — one rule about the box
+import { drainPosture, CONTINUOUS } from "./drain-posture.mjs";   // one rule about the box
 
 /**
  * @param {object}   a

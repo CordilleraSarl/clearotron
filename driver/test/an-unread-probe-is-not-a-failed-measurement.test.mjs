@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 239 — the browser render check reported "I could not measure" as three failed measurements.
+// the browser render check reported "I could not measure" as three failed measurements.
 //
 // When the in-frame probe never posted, three assertions failed with the ABSENCE as their observed value:
 //

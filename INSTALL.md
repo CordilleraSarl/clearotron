@@ -644,7 +644,7 @@ A run stopped by a **provider rate limit** or parked for **automatic recovery** 
 that is the systemd units in `driver/systemd/`. Everywhere else, run the watcher yourself:
 
 ```
-npx clearotron drain --watch
+npx clearotron run-queue --watch
 ```
 
 That polls every 90 seconds for queued jobs and for parked runs whose window has elapsed, and it resumes
@@ -753,11 +753,11 @@ Before the worker ran, that promise was untrue in your favour: confirming queued
 spent until you gave a second command in another terminal.
 
 If you want the old separation — order here, drain deliberately over there — start with `--no-worker` and
-run the drain yourself:
+run the queue yourself:
 
 ```
 npx clearotron start --no-worker
-npx clearotron drain --watch
+npx clearotron run-queue --watch
 ```
 
 A queued job whose worker is not running says so on the portal rather than sitting at "Waiting to start".

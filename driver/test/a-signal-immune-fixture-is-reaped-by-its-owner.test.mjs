@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 1847 — TWO NODE PROCESSES SAT ON THE SHARED TEST BOX FOR 2.7 DAYS.
+// TWO NODE PROCESSES SAT ON THE SHARED TEST BOX FOR 2.7 DAYS.
 //
 // `mock-claude-spew-immune.mjs` and a `node -e process.on('SIGTERM',()=>{})…` — `mock-hang-tree.mjs`'s
 // grandchild. Both orphaned to init, both immune to SIGTERM, both needing a human with SIGKILL.
@@ -21,7 +21,7 @@ import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { reapPidfile, reapNow } from "./reap-fixture.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
-import { processTable } from "../../shared/process-table.mjs";   // Refs tracker issue 2099 — /proc is not the only box
+import { processTable } from "../../shared/process-table.mjs";   // /proc is not the only box
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const alive = (pid) => { try { process.kill(pid, 0); return true; } catch (e) { return e.code === "EPERM"; } };
@@ -382,7 +382,7 @@ test("#1900 a RED arm strands nothing — driven as a child run, because the wir
     // scan and a scan that never happened are the same bytes. This process is itself in that listing,
     // so an empty one is a broken instrument, never a quiet all-clear.
     //
-    // Refs tracker issue 2099: this read `readdirSync("/proc")` and died `ENOENT` on the first macOS
+    // this read `readdirSync("/proc")` and died `ENOENT` on the first macOS
     // run this repository ever had. `processTable()` keeps the distinction the assertion depends on —
     // `null` is could-not-look, never an empty box.
     for (const proc of nonEmpty(processTable(),

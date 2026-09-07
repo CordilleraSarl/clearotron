@@ -32,7 +32,7 @@ function stub(answers, seen = []) {
   };
 }
 
-test("tracker issue 149 — a dead endpoint reports could-not-look, and asks no vendor at all", async () => {
+test("a dead endpoint reports could-not-look, and asks no vendor at all", async () => {
   const seen = [];
   const r = await probeRegistration({ post: stub({ default: 503 }, seen), endpoint: "https://x/reg" });
   assert.equal(r.looked, false, "an endpoint that refuses everything was read as a verdict about the vendors");
@@ -46,7 +46,7 @@ test("tracker issue 149 — a dead endpoint reports could-not-look, and asks no 
   assert.match(said[0].text, /would not mean what it looks like/);
 });
 
-test("tracker issue 149 — the control is asked FIRST, before any vendor", async () => {
+test("the control is asked FIRST, before any vendor", async () => {
   // Order is the whole design and it is invisible in the result, so it is driven rather than assumed.
   // A probe that asked the vendors first and the control afterwards would produce the same object on a
   // healthy endpoint and would already have sent three uninterpretable requests on a broken one.
@@ -56,7 +56,7 @@ test("tracker issue 149 — the control is asked FIRST, before any vendor", asyn
   assert.deepEqual(seen.slice(1), VENDOR_REDIRECTS.map((v) => v.uri));
 });
 
-test("tracker issue 149 — with the control passing, a refusal is a finding that names the address to add", async () => {
+test("with the control passing, a refusal is a finding that names the address to add", async () => {
   const answers = { [CONTROL_REDIRECT]: 201, default: 201,
     "https://chatgpt.com/connector_platform_oauth_redirect": 400 };
   const r = await probeRegistration({ post: stub(answers), endpoint: "https://x/reg" });
@@ -76,7 +76,7 @@ test("tracker issue 149 — with the control passing, a refusal is a finding tha
     "the remedy leads with the vendor instead of the rule, which re-narrows an interface widened on purpose");
 });
 
-test("tracker issue 149 — a vendor address is a dated, sourced fact and not a remembered one", () => {
+test("a vendor address is a dated, sourced fact and not a remembered one", () => {
   // These are not ours and they change without telling us. A reader acts on one by typing it into their
   // own console, so an entry nobody can re-check is worse than an absent one.
   assert.ok(VENDOR_REDIRECTS.length >= 3, "the vendor table shrank — say so deliberately if that is right");
@@ -88,7 +88,7 @@ test("tracker issue 149 — a vendor address is a dated, sourced fact and not a 
   }
 });
 
-test("tracker issue 149 — the endpoint is READ from discovery, and a missing document is not a refusal", () => {
+test("the endpoint is READ from discovery, and a missing document is not a refusal", () => {
   const unread = registrationEndpointFrom({ error: "ECONNREFUSED" });
   assert.equal(unread.looked, false);
   assert.equal(unread.endpoint, null);
@@ -108,7 +108,7 @@ test("tracker issue 149 — the endpoint is READ from discovery, and a missing d
   assert.equal(ok.endpoint, "https://x/reg", "the endpoint was not read, or not trimmed");
 });
 
-test("tracker issue 149 — only a created client counts as a yes", () => {
+test("only a created client counts as a yes", () => {
   assert.equal(registrationAccepted(201), true);
   assert.equal(registrationAccepted(200), true, "providers have been seen to answer 200 with the client document");
   for (const s of [400, 401, 403, 404, 429, 500, 502, null, undefined]) {
@@ -116,7 +116,7 @@ test("tracker issue 149 — only a created client counts as a yes", () => {
   }
 });
 
-test("tracker issue 149 — the registration body carries no credential", () => {
+test("the registration body carries no credential", () => {
   // This probe must work without provider credentials — 149 says so in as many words — and a body that
   // grew a secret would make `doctor` a command that needs one.
   const body = registrationBody("https://example/cb");
@@ -136,7 +136,7 @@ test("tracker issue 149 — the registration body carries no credential", () => 
     "the registration body grew a credential field, so this probe now needs one to run");
 });
 
-test("tracker issue 149 — the probe is opt-in, and the document that promises so names the flag", () => {
+test("the probe is opt-in, and the document that promises so names the flag", () => {
   // `doctor` promises in INSTALL.md that it writes nothing, and that sentence is why a reader runs it on
   // a production box without thinking about it. This probe creates OAuth clients, so it can only ever
   // run when asked for by name — and the flag has to be discoverable, or an opt-in nobody can find is

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 206 — TWO ARMS OF ONE REPORT DISAGREEING ABOUT ONE BOX.
+// TWO ARMS OF ONE REPORT DISAGREEING ABOUT ONE BOX.
 //
 // Measured on `c6e183d` while closing tracker issue 109: `live-surface-check` printed, in the same run,
 // that `clearotron-worker.service` is enabled and drains continuously so the .path/timer posture is
@@ -98,14 +98,14 @@ test("only a SCHEDULED box calls an absent drainer normal — an unknown one nev
 
 // ── WHAT THE DRAINER ARM DOES WITH IT ───────────────────────────────────────────────────────────────
 
-test("tracker issue 206 — a gone drainer on a CONTINUOUS box is the fault it is today, and says so", () => {
+test("a gone drainer on a CONTINUOUS box is the fault it is today, and says so", () => {
   const v = goneDrainer({ worker: on(WORKER), timer: null });
   assert.equal(v.state, "fail");
   assert.match(v.message, /IS GONE: nothing is executing runs on this box/);
   assert.match(v.message, /Drain posture continuous: .*clearotron-worker\.service is enabled/);
 });
 
-test("tracker issue 206 — a gone drainer on a SCHEDULED box is the resting state, not a fault", () => {
+test("a gone drainer on a SCHEDULED box is the resting state, not a fault", () => {
   const v = goneDrainer({ worker: absent(WORKER), timer: on(TIMER) });
   assert.equal(v.state, "pass", `a box that drains on ${TIMER} has no drainer between ticks: ${v.message}`);
   assert.match(v.message, /the resting state, not a fault/);
@@ -114,13 +114,13 @@ test("tracker issue 206 — a gone drainer on a SCHEDULED box is the resting sta
   assert.doesNotMatch(v.message, /IS GONE/);
 });
 
-test("tracker issue 206 — a gone drainer where NOTHING drains is a fault, and names that", () => {
+test("a gone drainer where NOTHING drains is a fault, and names that", () => {
   const v = goneDrainer({ worker: off(WORKER), timer: off(TIMER) });
   assert.equal(v.state, "fail");
   assert.match(v.message, /Drain posture none: .*nothing drains this box at all/);
 });
 
-test("tracker issue 206 — an UNPROBED posture keeps the failure, and says the posture was not probed", () => {
+test("an UNPROBED posture keeps the failure, and says the posture was not probed", () => {
   for (const posture of [null, {}, { worker: unreadable(WORKER) }]) {
     const v = goneDrainer(posture);
     assert.equal(v.state, "fail", `an unreadable posture must not be talked into a pass: ${v.message}`);
@@ -165,7 +165,7 @@ test("the posture cannot rescue any OTHER finding — a live drainer on the wron
 
 // ── ONE RULE, NOT TWO ───────────────────────────────────────────────────────────────────────────────
 
-test("tracker issue 206 — the queue arm and the drainer arm read ONE rule about the same box", () => {
+test("the queue arm and the drainer arm read ONE rule about the same box", () => {
   // The same worker answer, handed to both. This is the arm the issue is actually about: before it, the
   // queue arm called this box's timer posture retired in the same report that called an absent drainer a
   // timer-era fault. If a later edit re-spells either predicate, they part company here.
@@ -185,7 +185,7 @@ test("tracker issue 206 — the queue arm and the drainer arm read ONE rule abou
   assert.equal(drainPosture({ worker: off1, timer: on(TIMER) }).kind, SCHEDULED);
 });
 
-test("tracker issue 206 — the rule exists in ONE copy, and neither consumer keeps a private one", () => {
+test("the rule exists in ONE copy, and neither consumer keeps a private one", () => {
   // The arm above proves the two agree TODAY on the input it hands them. It cannot prove there is only
   // one predicate, and "one rule, printed, not two arms disagreeing about the same box" is a property of
   // the source, not of a pair of return values — so it is read from the source, which is where a second
@@ -247,7 +247,7 @@ function drainerLineFor({ workerEnabled = false, timerEnabled = false } = {}) {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 }
 
-test("tracker issue 206 — DRIVEN: the real deploy check reads the posture and prints which one it read", () => {
+test("DRIVEN: the real deploy check reads the posture and prints which one it read", () => {
   const continuous = drainerLineFor({ workerEnabled: true });
   assert.match(continuous.line, /FAIL/, `a box whose worker drains continuously has no drainer, and that is the outage:\n${continuous.line}`);
   assert.match(continuous.line, /IS GONE: nothing is executing runs on this box/);

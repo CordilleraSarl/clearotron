@@ -43,7 +43,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { runRequirements, runRequiredNames, missingRequirements, orderTimeRefusal,
   REGISTER_ENV, RESEARCH_ENV, POOL_ENV, START, ORDER } from "../run-requirements.mjs";
-// tracker issue 216 — from the module that OWNS the table now, not through the wizard's re-export. The
+// from the module that OWNS the table now, not through the wizard's re-export. The
 // arm should break if the data moves again, and reading it through `bin/` would hide that.
 import { PROVIDERS as REGISTER_TABLE } from "../../shared/register-selection.mjs";
 import { ENGINE_BINARIES, DEFAULT_ENGINE_ID } from "../driver.config.mjs";
@@ -195,7 +195,7 @@ test("start.mjs wires both halves — composition and guard — at the --backgro
     "--background no longer composes the unit environment from the run requirements");
   assert.match(src, /missingRequirements\(willRead, RUN_TABLES\)/,
     "--background no longer guards the environment it just composed");
-  // tracker issue 216 — and it guards on the START half alone. `miss.blocking` here would refuse over a
+  // and it guards on the START half alone. `miss.blocking` here would refuse over a
   // register the owner ruled an install may come up without.
   assert.match(src, /if \(miss\.atStart\.length\)/,
     "--background refuses over more than what start itself writes");

@@ -225,7 +225,7 @@ export function stripTelemetry(md) {
     .join('\n');
 }
 
-// ── tracker issue 831 — THE CLIENT CUT OF THE AUDIT BLOCK'S CROSS-REFERENCE LINES ────────────────────────────────
+// ── THE CLIENT CUT OF THE AUDIT BLOCK'S CROSS-REFERENCE LINES ────────────────────────────────
 //
 // `disposition` is a PLACEMENT key. stages.mjs dictates it as the posture that sets only WHERE a card is
 // placed and never the band; findings-model's DISPOSITION_GROUP maps it to the section heading the report
@@ -290,7 +290,7 @@ export function contradictionResolutionForClient(v) {
   return String(v).replace(CONTRADICTION_DISPOSITION_RE, '$1)');
 }
 
-// ── tracker issue 669 — ENGINE_PLAIN AND plainify ARE DELETED ────────────────────────────────────────────────────
+// ── ENGINE_PLAIN AND plainify ARE DELETED ────────────────────────────────────────────────────
 //
 // doc-52 put nineteen find-and-replace rules on the rendered client surface. tracker issue 656 is what that cost:
 // `axis` -> `group` turned "AXIS Bank filed in class 36" into "group Bank filed in class 36" — a report

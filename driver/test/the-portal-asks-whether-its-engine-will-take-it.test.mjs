@@ -48,7 +48,7 @@ function bootBlock(src) {
 const verdictFor = (probe, verbs = null) =>
   triggerLaneVerdict({ url: "http://127.0.0.1:18790", hasToken: true, verbs, posture: HOSTED, probe, invoke: "npx " });
 
-test("tracker issue 174 — the shared verdict calls the outage's own door shape a PASS", () => {
+test("the shared verdict calls the outage's own door shape a PASS", () => {
   // The measurement the wiring is built around, pinned so it cannot drift underneath it. If this ever
   // stops being a pass, the portal's extra branch is dead weight and should go — and somebody should
   // find out from this arm rather than from a boot line that quietly stopped appearing.
@@ -69,7 +69,7 @@ test("tracker issue 174 — the shared verdict calls the outage's own door shape
   assert.equal(verdictFor({ status: 401, ok: true, challenge: null, error: null }).state, "pass");
 });
 
-test("tracker issue 174 — asking about the door is not answered with a fact about the token", () => {
+test("asking about the door is not answered with a fact about the token", () => {
   // `verbs` short-circuits ahead of the probe, so passing it in answers a different question from the
   // one asked — and the boot block one screen below already reports the verbs, with the re-mint
   // command. Driven, because the short-circuit is invisible in the call.
@@ -82,7 +82,7 @@ test("tracker issue 174 — asking about the door is not answered with a fact ab
     "with verbs left out, the answer is still not about the door");
 });
 
-test("tracker issue 174 — the portal asks the door at boot, through the one authority", () => {
+test("the portal asks the door at boot, through the one authority", () => {
   const src = readFileSync(PORTAL, "utf8");
   assert.match(src, /triggerLaneVerdict/,
     "the portal starts without ever asking whether its engine door will accept it — which is the state "
@@ -98,7 +98,7 @@ test("tracker issue 174 — the portal asks the door at boot, through the one au
     + "working lane — a confident tick on the exact configuration the incident was made of");
 });
 
-test("tracker issue 174 — a boot diagnostic never stops the portal coming up", () => {
+test("a boot diagnostic never stops the portal coming up", () => {
   // A probe that can take the service down has made the product worse to tell it something. The catch
   // is what makes that true, and it says so rather than swallowing quietly.
   const src = readFileSync(PORTAL, "utf8");

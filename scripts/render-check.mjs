@@ -160,7 +160,7 @@ const PROBE = `<script>
 // Reports from INSIDE the frame, which is the only place the truth lives: the parent cannot read a
 // cross-origin document.
 //
-// tracker issue 1155 — MEASURED ON A LAYOUT EVENT, NEVER ON A CLOCK, and the reason is not style.
+// MEASURED ON A LAYOUT EVENT, NEVER ON A CLOCK, and the reason is not style.
 //
 // This used to be \`setInterval(…, 400)\`, and it never fired once: the three assertions that depend on
 // this script reported "no-probe" for the whole life of the check.
@@ -198,7 +198,7 @@ const PROBE = `<script>
         winInnerH:window.innerHeight,
         trueContent:Math.ceil(b.getBoundingClientRect().bottom),
         SCROLLABLE:d.scrollHeight>window.innerHeight,
-        // tracker issue 485: every assertion in this file was about HEIGHT, and the report was 26px too WIDE.
+        // every assertion in this file was about HEIGHT, and the report was 26px too WIDE.
         hOverflowPx:d.scrollWidth-d.clientWidth,
         slackPx:window.innerHeight-Math.ceil(b.getBoundingClientRect().bottom)},'*');
     } catch (e) {
@@ -255,7 +255,7 @@ const SHELL = `<!doctype html><html><head><meta charset="utf-8"><title>render-ch
 <script>
 var f=document.getElementById('f'),st={heightMsgs:0},lastHeightAt=Date.now();
 window.addEventListener('message',function(e){var d=e.data;
-  // tracker issue 1155 — COUNT EVERY MESSAGE BEFORE THE SOURCE FILTER, and keep the count.
+  // COUNT EVERY MESSAGE BEFORE THE SOURCE FILTER, and keep the count.
   //
   // msgsAll minus probeMsgs minus heightMsgs is an accounting: it separates "nothing arrived from
   // inside the frame" from "something arrived and this handler discarded it", which a post-filter

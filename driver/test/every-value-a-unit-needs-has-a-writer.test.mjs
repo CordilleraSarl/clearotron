@@ -132,7 +132,7 @@ const SUPPLIED_ELSEWHERE = Object.freeze({
   PORTAL_LOCAL_CREDENTIAL: "a passphrase file the portal creates itself on first local start, never an install-time value",
 });
 
-test("tracker issue 122 — the census can look inside every unit the documented install places", () => {
+test("the census can look inside every unit the documented install places", () => {
   const census = startupCensus();
   const blind = census.filter((r) => r.unreadable);
   assert.deepEqual(blind, [],
@@ -143,7 +143,7 @@ test("tracker issue 122 — the census can look inside every unit the documented
     `the install set shrank to ${census.length} units — if that is intended, this arm should say so`);
 });
 
-test("tracker issue 122 — the census still sees the values this issue was filed about", () => {
+test("the census still sees the values this issue was filed about", () => {
   // THE INSTRUMENT'S OWN ARM. Every other arm here compares a derived list against a derived list, and
   // both derivations read the same tree — so a parse that quietly stops matching makes the join trivially
   // true and every arm green. These three are the names 122's own table carries, and they were found the
@@ -162,7 +162,7 @@ test("tracker issue 122 — the census still sees the values this issue was file
     + "rather than as a property, and it is the exact name a tighter filter lost");
 });
 
-test("tracker issue 122 — every value a placed unit refuses over is written by the install, or declared", () => {
+test("every value a placed unit refuses over is written by the install, or declared", () => {
   const written = whatTheInstallWrites();
   const undeclared = everyStartupValue(startupCensus())
     .filter((n) => !written.has(n) && !(n in SUPPLIED_ELSEWHERE));
@@ -173,7 +173,7 @@ test("tracker issue 122 — every value a placed unit refuses over is written by
     + `write it, or declare who supplies it and why the installer cannot: ${undeclared.join(", ")}`);
 });
 
-test("tracker issue 122 — a declaration cannot outlive the refusal it explains", () => {
+test("a declaration cannot outlive the refusal it explains", () => {
   // The other direction, and the one that keeps the list from becoming a graveyard. A name that no unit
   // refuses over any more needs deleting, not keeping "just in case" — a stale line reads as a live
   // constraint to the next person, and it is how a list stops describing the tree.
@@ -188,7 +188,7 @@ test("tracker issue 122 — a declaration cannot outlive the refusal it explains
     + `declaration, because it says the reader must act and the reader does not: ${nowWritten.join(", ")}`);
 });
 
-test("tracker issue 122 — the worker's empty answer is a measured zero, not a could-not-look", () => {
+test("the worker's empty answer is a measured zero, not a could-not-look", () => {
   // An absence is a finding, so it has to be possible to tell these apart. The worker's row is the one
   // place the census legitimately returns nothing, and this pins WHY: `driver/runner.mjs` has no
   // start-up refusal at all. The day somebody gives it one, that name lands in the join above.
@@ -202,7 +202,7 @@ test("tracker issue 122 — the worker's empty answer is a measured zero, not a 
     "the worker has grown a refusal the census did not report — the two disagree and the census is wrong");
 });
 
-test("tracker issue 122 — a unit whose entrypoint cannot be resolved is a finding, never an empty list", () => {
+test("a unit whose entrypoint cannot be resolved is a finding, never an empty list", () => {
   // Driving the three-valued answer, because the whole census rests on it. A caller that collapsed
   // could-not-look into requires-nothing would report a clean bill of health for a unit it never opened.
   assert.equal(entrypointOf("[Service]\nType=simple\n").rel, null);
@@ -212,7 +212,7 @@ test("tracker issue 122 — a unit whose entrypoint cannot be resolved is a find
     "driver/runner.mjs", "the shape every shipped unit uses stopped resolving");
 });
 
-test("tracker issue 122 — the census reads refusals and not the prose above them", () => {
+test("the census reads refusals and not the prose above them", () => {
   // A file's own comments explain its gate, in the gate's vocabulary. Reading those would make the
   // answer depend on how well a module is documented — and this repo documents heavily.
   assert.deepEqual(valuesRefusedOver("// FATAL: MADE_UP_NAME is required — refusing to start.\n"), [],
@@ -223,7 +223,7 @@ test("tracker issue 122 — the census reads refusals and not the prose above th
     "a module constant was reported as an environment value the install must write");
 });
 
-test("tracker issue 191 — no shipped unit pins a value a box can legitimately differ on", () => {
+test("no shipped unit pins a value a box can legitimately differ on", () => {
   // ── THE OTHER HALF OF THIS FILE'S QUESTION ───────────────────────────────────────────────────────
   //
   // Every arm above asks whether a value the units need has a WRITER. This one asks the opposite and it
@@ -264,7 +264,7 @@ test("tracker issue 191 — no shipped unit pins a value a box can legitimately 
     + `one port with an allow-list naming another:\n${offenders.join("\n")}`);
 });
 
-test("tracker issue 191 — the values it stopped pinning are still written, and still defaulted", () => {
+test("the values it stopped pinning are still written, and still defaulted", () => {
   // Deleting a pin is only safe if something else answers. Both halves are checked because they cover
   // different boxes: the install writes these, AND the code defaults to the same values the unit used
   // to carry — so a box that was never configured behaves exactly as before.

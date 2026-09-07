@@ -369,7 +369,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //   (2) It could not live in report.css/brand.mjs — see above.
 //   (3) Hash updated here, in the same commit as the edit.
 //
-// Break of 2026-08-04 (tracker issue 265 — the quality subsystem is retired, so its capture UI leaves the renderer).
+// Break of 2026-08-04 (the quality subsystem is retired, so its capture UI leaves the renderer).
 //
 // The previous report-review system is superseded. (It had two product names; tracker issue 853 retired both, from this
 // log with everything else — the identifiers below are quoted as the shapes that were deleted, renamed here
@@ -415,7 +415,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // names it enumerated was a retired subsystem's. The archived reports it defends are unchanged and still
 // matched — the pages they link to are pool-root siblings, which is what the shape describes.
 //
-// Break of 2026-08-06 (tracker issue 470 — the reasoning moves below the fold, the character cap is deleted, and the
+// Break of 2026-08-06 (the reasoning moves below the fold, the character cap is deleted, and the
 // grouped-negative gate is pinned to a literal floor). THREE changes in ONE break, deliberately: each
 // one alone would re-render every archived client report, and three breaks is three rewrites of the same
 // documents. What moved:
@@ -516,7 +516,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //      the print block gained a comment, because `details>*:not(summary){display:block!important}` just
 //      became load-bearing for the document's CONTENT rather than its completeness — without it the
 //      exported PDF would carry the one-line verdicts and none of the reasoning. PRINT IS DELIBERATELY
-//      UNCHANGED (tracker issue 470: the export keeps the "open everything" behaviour it has today). That stylesheet
+//      UNCHANGED (the export keeps the "open everything" behaviour it has today). That stylesheet
 //      is inlined by render.mjs, so those 1,000 bytes reach every republished report; "not frozen"
 //      means "editable without a hash bump", never "outside the delivered document".
 //
@@ -1349,7 +1349,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //     sibling in parse.mjs (stripTelemetry) splits per LINE first and does not have the defect; closing
 //     that divergence is a second frozen-renderer change with its own republish cost and its own
 //     decision, and it is reported with tracker issue 762 rather than folded into it.
-// Break of 2026-08-13 (tracker issue 853 — a retired subsystem's name leaves the tree, including this comment).
+// Break of 2026-08-13 (a retired subsystem's name leaves the tree, including this comment).
 //
 // THE SMALLEST BREAK THIS FREEZE HAS TAKEN, and it is recorded at full length anyway, because a freeze
 // that logs only the interesting breaks is a freeze people learn to skip. One word is deleted from one
@@ -1372,7 +1372,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Why the name could not simply be left in a comment: the repository is being prepared for publication,
 // and flipping a repository public publishes its whole history. A dead product name surviving in a
 // comment is a dead product name published. See tracker issue 853 for the history half, which this commit cannot fix.
-// Break of 2026-08-13 (tracker issue 832 — plainScopeNote stops crossing newlines, and stops being a second copy).
+// Break of 2026-08-13 (plainScopeNote stops crossing newlines, and stops being a second copy).
 //
 // WHAT MOVED. `plainScopeNote` split the WHOLE Methodology block on /(?<=[.;])\s+/ and rejoined the
 // survivors with a space. `\s` matches a newline, so the split crossed LINES: every multi-line note came
@@ -2009,7 +2009,7 @@ test("#854 stripping the two licence lines leaves the file the last break left �
 // next bump and silently rebuild the spec-61 R1 drift — the served report and the MCP client surface
 // answering "what may a client see?" separately. Since the ninth break (one report) the renderer's own
 // client fork is gone, so it still USES only the telemetry rule — plainify and ENGINE_PLAIN are DELETED
-// (tracker issue 669: find-and-replace over a client string ate a trademark) — but none of these may ever be
+// (find-and-replace over a client string ate a trademark) — but none of these may ever be
 // redefined here: a local copy is how the fork grows back.
 //
 // tracker issue 832 SHARPENED WHAT "ONE DEFINITION" MEANS HERE. The renderer imported the PATTERN (TELEMETRY_RE) and
@@ -2026,7 +2026,7 @@ test("the moved client-safety transforms are imported from parse.mjs, never rede
   }
   assert.doesNotMatch(imported, /\bTELEMETRY_RE\b/,
     "#832 — the renderer takes the telemetry RULE (stripTelemetry), never the pattern to re-apply itself");
-  // tracker issue 669 — and the sanitizer is not imported at all, because it no longer exists. A renderer that
+  // and the sanitizer is not imported at all, because it no longer exists. A renderer that
   // reached for it again would be reaching for the mechanism that ate the mark AXIS.
   assert.doesNotMatch(src, /\bplainify\b/, "plainify is deleted (#669) — the driver emits areaLabel instead");
   for (const name of ["stripEngineInternals", "stripTelemetry", "TELEMETRY_RE", "plainify"]) {
@@ -2042,7 +2042,7 @@ test("the moved client-safety transforms are imported from parse.mjs, never rede
   assert.doesNotMatch(src, /opts\.client/, "renderHtml takes no client option any more — one render path");
 });
 
-// tracker issue 1100 — THE SAME ONE-DEFINITION RULE, FOR THE MODE SWITCH. findings-model exports `inDispositionMode`
+// THE SAME ONE-DEFINITION RULE, FOR THE MODE SWITCH. findings-model exports `inDispositionMode`
 // and its own comment calls it "the mode switch both sort sites use". It was not: this file imported it,
 // never called it, and re-typed its body to set `DISPOSITION_MODE` — the flag isOnField, bandOf, quadrant
 // and keyPanel all read. pipeline.mjs sorted with the shared predicate; the surface that PRINTS the

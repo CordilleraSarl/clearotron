@@ -19,7 +19,7 @@
 // carries the E2E scenario's OWN mark, never a production matter.
 
 import { test } from "node:test";
-import { pinEnv } from "../../shared/env-aliases.mjs";   // Refs tracker issue 1838 — a fixture pins EVERY spelling
+import { pinEnv } from "../../shared/env-aliases.mjs";   // a fixture pins EVERY spelling
 import assert from "node:assert/strict";
 import { mkdtempSync, writeFileSync, mkdirSync, rmSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
@@ -176,7 +176,7 @@ test("delivery-settled: handoff with NO packet written FAILS — strictly more t
   });
 });
 
-// tracker issue 1014 — THIS ARM ASSERTED THE OTHER MODE AND IS INVERTED, not deleted. It used to set
+// THIS ARM ASSERTED THE OTHER MODE AND IS INVERTED, not deleted. It used to set
 // `CLEAROTRON_DELIVERY=email` and require `sendPending === false`, because under a mode that sent directly
 // a run still marked pending had genuinely not been delivered. There is no such mode: the variable is
 // retired and the assertion no longer reads it, so a stale value in a harness environment must not be
@@ -227,7 +227,7 @@ test("no-wildcard-exact-pair catches the F1 shape and passes a correctly compile
   });
 });
 
-// ── tracker issue 324: the same op, made lane-aware ────────────────────────────────────────────────────────────────
+// ── the same op, made lane-aware ────────────────────────────────────────────────────────────────
 //
 // The knockout lane freezes no register plan, so the check above reported `[FAIL] register-plan.json
 // absent` on EVERY knockout run — a tripwire that is red every day is one nobody reads. It now declines
@@ -331,7 +331,7 @@ test("#324: names-configured-depth passes a surface naming the configured depth 
   });
 });
 
-// tracker issue 463 — THE OP READS THE FIELD THE DOCUMENT PRINTS.
+// THE OP READS THE FIELD THE DOCUMENT PRINTS.
 //
 // Both halves of this op derived from `.stageLabel` while every renderer moved to `.identity`
 // (render.mjs, render-knockout.mjs). For the four orderable products the two are equal, so the op
@@ -641,7 +641,7 @@ test("queueOutcomes matches by PREFIX and returns EVERY door — an exact match 
   // `run` appends the door to the ref for a multi-door case. Matching E2E-R0a exactly would miss both of
   // these, and returning only the first would hide the other door, which is the entire point of R0.
   //
-  // tracker issue 428 — THE FIXTURE IS UNCHANGED, and the second door's answer moved instead. `opsmcp-ms1.failed` has
+  // THE FIXTURE IS UNCHANGED, and the second door's answer moved instead. `opsmcp-ms1.failed` has
   // no sidecar beside it, and `.failed` means "refused at intake" when no run started and "the run broke"
   // when one did. The harness now says UNDETERMINED for that rather than picking the intake reading, so
   // this row reads `undetermined`. Inventing an `opsmcp-ms1.failed.reason` to keep the old word would be
@@ -841,7 +841,7 @@ test("settled-before-placement: passes only when the decision precedes placement
   assert.equal(never.ok, false);
   assert.match(never.saw, /never decided/);
 
-  // tracker issue 428 — a scenario that never reaches placement is NOT PROBED, not FAIL. It must still not pass
+  // a scenario that never reaches placement is NOT PROBED, not FAIL. It must still not pass
   // silently, and the third state is what makes that possible: the check declines out loud, is counted
   // and printed under NOT PROBED, and never enters INVESTIGATE. It used to return `ok: false` with a
   // message that said in its own words that the assert did not belong there, which scored an ordering
@@ -948,7 +948,7 @@ test("#354: an unusable URL says so rather than throwing mid-report", async () =
   assert.equal(r.status, undefined);
 });
 
-// ── tracker issue 356 — R0's probes must not leave fake product on the staff surface ──────────────────────────
+// ── R0's probes must not leave fake product on the staff surface ──────────────────────────
 //
 // R0d's first submission MUST admit so the second can be caught as a duplicate, and R0e's expected
 // terminal is `delivered`. Admitting means publishing, so every round adds two reports titled
@@ -991,7 +991,7 @@ test("#356: a preservation that cannot run REPORTS why and never claims success 
   } finally { rmSync(tmp, { recursive: true, force: true }); }
 });
 
-// ── tracker issue 508: A DOOR REFUSAL LEAVES NOTHING ON DISK, AND IS NOT NOTHING KNOWN ────────────────────────────
+// ── A DOOR REFUSAL LEAVES NOTHING ON DISK, AND IS NOT NOTHING KNOWN ────────────────────────────
 //
 // `enqueue` refuses before a queue file is written — earlier than the claimAndPrep refusal, which at
 // least leaves `.failed` + `.reason`. So `findRunsByRef` and the marker sweep both come back empty for a
@@ -1074,7 +1074,7 @@ test("absent: field ops on a missing file still FAIL — the op does not leak ab
   });
 });
 
-// ── tracker issue 516: the op that watched two label rows and reported "none mispaired" ─────────────────────────
+// ── the op that watched two label rows and reported "none mispaired" ─────────────────────────
 //
 // R2b's plan carried 145 rows, two of them the common-law sweep's own section headings under
 // `predicate=default`. This assertion ran over it and reported `144 entries, none mispaired` — true of
@@ -1117,7 +1117,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
   });
 });
 
-// ── tracker issue 757: THE 429 THAT INDICTED THE DOOR THAT BEHAVED ───────────────────────────────────────────────
+// ── THE 429 THAT INDICTED THE DOOR THAT BEHAVED ───────────────────────────────────────────────
 //
 // Round finding F1, 2026-08-12, R0e anthropic arm. The `cli` door accepted; the `ops-mcp` door answered
 // `MCP initialize refused (429): ops principal rate limit exceeded`. The #98 asymmetry rule fired and
@@ -1179,7 +1179,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
     assert.equal(v.reducedCoverage, false, "nothing was lost here — both doors judged the case");
   });
 
-  // ── tracker issue 1865: A DOOR THAT IS NOT CONFIGURED WAS NEVER ASKED ────────────────────────────────────────
+  // ── A DOOR THAT IS NOT CONFIGURED WAS NEVER ASKED ────────────────────────────────────────
   //
   // R0, 2026-08-25, rebuilt box. The MCP face is not installed, so every ops-MCP submission answered
   // `no TRADEMARK_MCP_HTTP_PORT in scope`. That is the harness saying it could not reach the door, and
@@ -1358,7 +1358,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
   });
 }
 
-// ── tracker issue 1561 — A DELIVERY CONTRACT A RUN NEVER ENTERED ──────────────────────────────────────────────────
+// ── A DELIVERY CONTRACT A RUN NEVER ENTERED ──────────────────────────────────────────────────
 //
 // `sendPending` is written on the delivery paths only — measured 25 of 25 delivered runs, 0 of 29 failed,
 // parked or cancelled. So this assertion, run against a failed round, compared behaviour to a contract

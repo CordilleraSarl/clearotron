@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 146 — A FALSE RED INDISTINGUISHABLE FROM A TRUE ONE.
+// A FALSE RED INDISTINGUISHABLE FROM A TRUE ONE.
 //
 // Adding a `git worktree` and symlinking `node_modules` from another one reds six licence arms on
 // whatever branch happens to be checked out. `npm ls` resolves through the symlink, finds a tree that
@@ -45,7 +45,7 @@ const threw = (fn) => {
   assert.fail("the refusal did not fire at all, so there was no message to read — that is the finding");
 };
 
-test("tracker issue 146 — a SYMLINKED node_modules is named, with the tree it was borrowed from", () => {
+test("a SYMLINKED node_modules is named, with the tree it was borrowed from", () => {
   const note = foreignTreeNote("/w", BORROWED_SHAPE, { linkTarget: linked });
   assert.match(note, new RegExp(`SYMLINK to ${BORROWED}`));
   assert.match(note, /2485 missing, 306 extraneous, 5 invalid/, "the shape is counted, so a reader can recognise it again");
@@ -53,7 +53,7 @@ test("tracker issue 146 — a SYMLINKED node_modules is named, with the tree it 
   assert.match(note, /npm install` from this repo root/, "and told the one command that fixes it");
 });
 
-test("tracker issue 146 — a borrowed tree is named WHATEVER the rows are, because none of them can be trusted", () => {
+test("a borrowed tree is named WHATEVER the rows are, because none of them can be trusted", () => {
   // Not a softening, and the distinction is the whole care here. A symlinked node_modules means npm
   // compared another tree against this lockfile, so every row is about the wrong tree — including a row
   // that would be a real finding on a real install. The refusal above is unchanged; this says where to
@@ -63,7 +63,7 @@ test("tracker issue 146 — a borrowed tree is named WHATEVER the rows are, beca
   }
 });
 
-test("tracker issue 146 — WITHOUT a symlink the claim is an inference, and is made only where it is overwhelming", () => {
+test("WITHOUT a symlink the claim is an inference, and is made only where it is overwhelming", () => {
   // A real dependency problem is a handful of rows. Below the floor this says nothing rather than
   // talking a reader out of a finding, which would be a worse defect than the one it repairs.
   assert.equal(foreignTreeNote("/w", [REAL], { linkTarget: notLinked }), null);
@@ -76,21 +76,21 @@ test("tracker issue 146 — WITHOUT a symlink the claim is an inference, and is 
   assert.match(note, /DIFFERENT lockfile/);
 });
 
-test("tracker issue 146 — A REAL PROBLEM AMONG THOUSANDS still stops the inference on an unlinked tree", () => {
+test("A REAL PROBLEM AMONG THOUSANDS still stops the inference on an unlinked tree", () => {
   // One row that is NOT a mismatch shape means this is not simply a foreign install, so the weaker
   // claim is not available and nothing is said.
   const rows = [...missing(2000), "ERESOLVE: something else entirely"];
   assert.equal(foreignTreeNote("/w", rows, { linkTarget: notLinked }), null);
 });
 
-test("tracker issue 146 — nothing to report is never a note", () => {
+test("nothing to report is never a note", () => {
   for (const linkTarget of [linked, notLinked]) {
     assert.equal(foreignTreeNote("/w", [], { linkTarget }), null, "a clean tree cannot produce this note");
     assert.equal(foreignTreeNote("/w", null, { linkTarget }), null);
   }
 });
 
-test("tracker issue 146 — DRIVEN through the real refusal: appended, never substituted", () => {
+test("DRIVEN through the real refusal: appended, never substituted", () => {
   // Through `collect`, which is what the six licence arms call, so this is the message they print.
   const tree = { problems: BORROWED_SHAPE, name: "root", version: "0.0.0", dependencies: {} };
   const e = threw(() => collect(process.cwd(), tree, { linkTarget: linked }));
@@ -107,7 +107,7 @@ test("tracker issue 146 — DRIVEN through the real refusal: appended, never sub
   assert.match(e.message, /2796 problem/, "and the total is still stated, so nothing is hidden by the truncation");
 });
 
-test("tracker issue 146 — a genuine undeclared problem throws with NO note, driven the same way", () => {
+test("a genuine undeclared problem throws with NO note, driven the same way", () => {
   const tree = { problems: [REAL], name: "root", version: "0.0.0", dependencies: {} };
   const e = threw(() => collect(process.cwd(), tree, { linkTarget: notLinked }));
   assert.match(e.message, /npm ls reports 1 problem\(s\) nothing declares/);

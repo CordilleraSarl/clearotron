@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 97 — the release pipeline, held at the four places it can fail silently:
+// the release pipeline, held at the four places it can fail silently:
 //   · it acquires a way to publish that is not the one the owner authorised
 //   · a pre-release lands on `latest` and becomes what every new user installs
 //   · a package ships with a demo or the portal bundle missing, and npm accepts it
@@ -942,7 +942,7 @@ test("tracker 97 the manifest names the repository provenance will be attested f
   assert.match(pkg.bugs?.url ?? "", new RegExp(REPOSITORY), "the package page offers nowhere to report a bug");
 });
 
-// ── tracker issue 208 — A CUT THAT MERGED ITSELF WAITS ON A CLOCK THAT IS NOT ONE ────────────────────
+// ── A CUT THAT MERGED ITSELF WAITS ON A CLOCK THAT IS NOT ONE ────────────────────
 //
 // The version pull request merges itself, GitHub takes that merge with the built-in `GITHUB_TOKEN`, and
 // a push made with that token starts no workflow run. The `*/5` cron is the standing net and the
@@ -1942,7 +1942,7 @@ test("245 the jobs that ASK about main name main as the subject, so the pin did 
     "and the version job still decides about the pushed commit, which is its own correct subject");
 });
 
-// ── tracker issue 264: a beta is cut on demand, and a merge publishes nothing ─────────────────────
+// ── a beta is cut on demand, and a merge publishes nothing ─────────────────────
 //
 // The cadence is the whole subject here. Before this, turning on auto-merge for the version pull
 // request happened on every push, so every merge cut and published a beta. These tests hold the three
@@ -2147,7 +2147,7 @@ test("271 a merge to main starts no wait job — the wait belongs to a requested
     "the rehearsal no longer gets its zero budget, so it would hold a runner for the full wait");
 });
 
-// ── tracker issue 279: the input decides the channel, and the artefact confirms it ────────────────────
+// ── the input decides the channel, and the artefact confirms it ────────────────────
 //
 // After the 0.2.1 stable, `changeset version` DELETED `.changeset/pre.json` rather than leaving it saying
 // "exit". In that state a `cut: beta` dispatch would have computed a stable version and published it to

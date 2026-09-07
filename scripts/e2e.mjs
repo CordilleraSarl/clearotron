@@ -57,7 +57,7 @@ import { isLiveQueueMarker, isQueueSidecar, liveQueueState, LIVE_QUEUE_STATES, T
 // leave the real one to park tomorrow's re-run as a duplicate. usage-ledger.mjs is a pure leaf too
 // (node:fs + node:path + queue-markers.mjs), so it drags no driver machinery in either.
 import { matterLedgerPath } from "../driver/usage-ledger.mjs";
-import { probeWorker } from "../driver/queue-watch-probe.mjs";   // tracker issue 181 — the drain this deployment actually has
+import { probeWorker } from "../driver/queue-watch-probe.mjs";   // the drain this deployment actually has
 // Teardown asks whether a process is actually producing a run before it rewrites the record that says so.
 import { claimLivenessForCodename, claimForbidsDestruction } from "../driver/claim-liveness.mjs";
 // The store admission sweep (, moved here from a bundled-store CI test when the bundled scenarios

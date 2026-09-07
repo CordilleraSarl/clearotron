@@ -146,7 +146,7 @@ test("1863 the disarm runs BEFORE the enable, so the box never holds both draine
     + "the old timer and the new worker draining one queue");
 });
 
-// ── tracker issue 270: a stop that could not stop must not report that it did ─────────────────────────
+// ── a stop that could not stop must not report that it did ─────────────────────────
 //
 // `clearotron stop` exited 0, printed "stopped and removed" for three units and "The background product
 // is stopped and the box runs nothing again", and left all four services active on unchanged pids holding

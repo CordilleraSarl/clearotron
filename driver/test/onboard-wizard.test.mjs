@@ -352,7 +352,7 @@ test("readEnvFile reports what the ENGINE'S loader would apply, not what a secon
   rmSync(home, { recursive: true, force: true });
 });
 
-test("tracker issue 179 — readEnvFile reads THE FILE IT IS GIVEN, on any machine", () => {
+test("readEnvFile reads THE FILE IT IS GIVEN, on any machine", () => {
   // ── WHY THIS SPAWNS, WHEN EVERY OTHER GUARD TODAY INJECTED ────────────────────────────────────────
   //
   // Injection cannot catch this one, and finding that out took two wrong guards.
@@ -388,7 +388,7 @@ test("tracker issue 179 — readEnvFile reads THE FILE IT IS GIVEN, on any machi
   }
 });
 
-test("tracker issue 179 — the loader honours a file it is handed, whatever the home says", () => {
+test("the loader honours a file it is handed, whatever the home says", () => {
   // The loader's own contract, held separately: two promises, and either can break without the other.
   const home = mkdtempSync(join(tmpdir(), "onboard-loaderhome-"));
   const asked = mkdtempSync(join(tmpdir(), "onboard-loaderasked-"));
@@ -403,7 +403,7 @@ test("tracker issue 179 — the loader honours a file it is handed, whatever the
   rmSync(asked, { recursive: true, force: true });
 });
 
-test("tracker issue 179 — an arm cannot reach the real home, and a failure names no value", () => {
+test("an arm cannot reach the real home, and a failure names no value", () => {
   // TWO PLANTS, because the fix has two halves that fail in different ways.
   //
   // ONE — the pin. A file is planted in a home that is not this machine's. A reader still resolving

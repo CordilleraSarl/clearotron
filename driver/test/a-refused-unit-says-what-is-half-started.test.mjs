@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 203 — a refusal that arrived as a stack trace, after the run had written everything.
+// a refusal that arrived as a stack trace, after the run had written everything.
 //
 // `start --background` enabled its units in an uncaught loop, so a systemd refusal reached the operator
 // as `node:internal/errors:983`, a status code and `stderr: null`. Two separate failures in one line:

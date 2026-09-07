@@ -19,7 +19,7 @@
 // receives, so it loads the brand webfonts the client's browser loads. Two scripts, two intents; do not
 // "fix" either to match the other.
 import { spawn } from "node:child_process";
-import { assertPageLoaded, cjkCharsIn, cjkVerdict, fontsCovering } from "./headless-page.mjs";   // tracker issue 227 — did chrome open the report, or its own error page?
+import { assertPageLoaded, cjkCharsIn, cjkVerdict, fontsCovering } from "./headless-page.mjs";   // did chrome open the report, or its own error page?
 import { mkdtempSync, writeFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname, resolve } from "node:path";

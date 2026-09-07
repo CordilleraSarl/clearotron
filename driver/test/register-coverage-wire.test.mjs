@@ -103,7 +103,7 @@ test("2075 D6 — NEITHER gate refuses on coverage now, staff prose included", (
 
 // ── the arm ORDER, which is the part that decides what a client is told ─────────────────────────────
 
-test("Refs tracker issue 2075 — coverage no longer COMPETES to be reported, because it no longer refuses", () => {
+test("coverage no longer COMPETES to be reported, because it no longer refuses", () => {
   // THIS ARM USED TO ASSERT THE ORDERING, and the ordering existed because coverage was a refusal that
   // could be shadowed by "not part of the current release" — a sentence telling a client to wait for a
   // version that will never help. The owner's ruling of 2026-08-31 removes the worldwide cause from the

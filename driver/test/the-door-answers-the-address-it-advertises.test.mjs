@@ -114,7 +114,7 @@ test("2163 the PLAN writes what the derivation produces — driven, not assumed"
     "a local install's allow-list changed shape");
 });
 
-// ── tracker issue 192 — TWO DOORS, ONE SHAPE, AND ONLY ONE OF THEM WAS WRITTEN ──────────────────────
+// ── TWO DOORS, ONE SHAPE, AND ONLY ONE OF THEM WAS WRITTEN ──────────────────────
 //
 // `CLIENT_MCP_ALLOWED_HOSTS` and `TRADEMARK_MCP_ALLOWED_HOSTS` are the same value one door apart: the
 // `host:port` list that arms DNS-rebinding protection. Both doors refuse to start without theirs, in the

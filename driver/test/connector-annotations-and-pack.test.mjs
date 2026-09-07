@@ -20,7 +20,7 @@ import { instructionsFor } from "../../mcp-server/lib/instructions.mjs";
 import { CONNECT_CLIENTS } from "../../shared/connect-clients.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
-test("tracker issue 148 — a read does not prompt and a write still does", () => {
+test("a read does not prompt and a write still does", () => {
   // THE ISSUE'S OWN ACCEPTANCE, in its own words: "brief and list_runs complete without an approval
   // prompt; start_run still asks. That is the test, not the presence of a field."
   for (const name of ["brief", "list_runs"]) {
@@ -30,7 +30,7 @@ test("tracker issue 148 — a read does not prompt and a write still does", () =
     "start_run stopped asking — it spends real money");
 });
 
-test("tracker issue 148 — the hint is derived from the scope table, not a second list", () => {
+test("the hint is derived from the scope table, not a second list", () => {
   // A second name for one fact desynchronises the moment one is edited, and this fact also decides who
   // may call the tool. Every tool's hint must be reproducible from the table alone.
   const names = Object.keys(TOOL_SCOPES);
@@ -42,7 +42,7 @@ test("tracker issue 148 — the hint is derived from the scope table, not a seco
   }
 });
 
-test("tracker issue 148 — what_if_plan is settled explicitly, and it is the only exception", () => {
+test("what_if_plan is settled explicitly, and it is the only exception", () => {
   // The issue is explicit: settle it rather than letting the derivation decide silently. `write: true`
   // sits on it for the OPS ALLOWLIST's sake — the tool itself spends nothing — so deriving the hint
   // straight from `write` would prompt before a dry run.
@@ -55,12 +55,12 @@ test("tracker issue 148 — what_if_plan is settled explicitly, and it is the on
     + "so it needs its reason at the entry and a line here");
 });
 
-test("tracker issue 148 — an unknown tool is not claimed to be safe", () => {
+test("an unknown tool is not claimed to be safe", () => {
   // Refusing to claim a tool is read-only is the right way to be wrong.
   assert.equal(readOnlyFor("a_tool_that_does_not_exist"), false);
 });
 
-test("tracker issue 148 — the ops briefing carries the document it tells the assistant to read", () => {
+test("the ops briefing carries the document it tells the assistant to read", () => {
   const ops = instructionsFor({ kind: "ops" }) ?? "";
   nonEmpty([ops], "the ops pack is empty, so this arm proves nothing");
   // It refers to COURIER.md twice; both references must now resolve to text the assistant HAS.
@@ -68,7 +68,7 @@ test("tracker issue 148 — the ops briefing carries the document it tells the a
   assert.match(ops, /alreadySent/, "the pack names the delivery loop but not its idempotency guard");
 });
 
-test("tracker issue 148 — the courier loop does not leak into a client briefing", () => {
+test("the courier loop does not leak into a client briefing", () => {
   // The control. Shipping an extra file to one audience must not widen any other.
   for (const kind of ["user", "account"]) {
     const pack = instructionsFor({ kind }) ?? "";
@@ -76,7 +76,7 @@ test("tracker issue 148 — the courier loop does not leak into a client briefin
   }
 });
 
-test("tracker issue 148 — no connector row names a control the dialog does not have", () => {
+test("no connector row names a control the dialog does not have", () => {
   // The cowork row said "Choose API key". There is no such control; the flow is a request header.
   // Asserted over EVERY row rather than the one that was wrong — the issue names the class as "the
   // connector table asserts vendor behaviour from no observation", and cowork was its second instance.

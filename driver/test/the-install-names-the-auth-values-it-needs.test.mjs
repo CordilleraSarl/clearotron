@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 133 — a documented install left two of four units dead and said nothing about why.
+// a documented install left two of four units dead and said nothing about why.
 //
 // With auth enabled the portal refuses without `CLEAROTRON_OIDC_AUDIENCE` plus `CF_ACCESS_TEAM` or
 // `PORTAL_OIDC_ISSUER`, and the ops face refuses without `CLEAROTRON_OIDC_AUDIENCE` plus

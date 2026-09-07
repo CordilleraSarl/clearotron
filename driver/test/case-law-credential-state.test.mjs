@@ -22,7 +22,7 @@ import { caseLawSourceLines, caseLawSourceRows } from "../case-law-sources.mjs";
 
 const scratch = () => mkdtempSync(join(tmpdir(), "caselaw-cred-"));
 
-test("tracker issue 173 — the four states are separable", () => {
+test("the four states are separable", () => {
   const dir = scratch();
   try {
     // THE CONTROL FIRST, so the instrument is known good. An empty directory must read as absent; if
@@ -49,7 +49,7 @@ test("tracker issue 173 — the four states are separable", () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("tracker issue 173 — an expired access token is NOT unusable", () => {
+test("an expired access token is NOT unusable", () => {
   // The resting state of a healthy credential. The bridge refreshes on the next call, so treating an
   // expired access token as broken would report every working enrolment as failed — a louder version
   // of the same wrong answer.
@@ -63,7 +63,7 @@ test("tracker issue 173 — an expired access token is NOT unusable", () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("tracker issue 173 — a credential that cannot be read is a could-not-look, not an answer", () => {
+test("a credential that cannot be read is a could-not-look, not an answer", () => {
   const dir = scratch();
   try {
     // A directory where a file belongs: present to `existsSync`, unreadable as a file. The point is
@@ -76,7 +76,7 @@ test("tracker issue 173 — a credential that cannot be read is a could-not-look
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("tracker issue 173 — no byte of a token value leaves the check", () => {
+test("no byte of a token value leaves the check", () => {
   const dir = scratch();
   try {
     const secret = "SUPER-SECRET-REFRESH-VALUE-0123456789";
@@ -91,7 +91,7 @@ test("tracker issue 173 — no byte of a token value leaves the check", () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("tracker issue 173 — an unusable credential reaches the STAGE as a source we do not have", () => {
+test("an unusable credential reaches the STAGE as a source we do not have", () => {
   // THE HOP THAT MATTERS. The defect was never the doctor row on its own: it was that this sentence
   // said "enrolled … that IS an outage and you report it as one" for a deployment with a garbage file,
   // which is how the wrong disclosure reached a client's report.
@@ -115,7 +115,7 @@ test("tracker issue 173 — an unusable credential reaches the STAGE as a source
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("tracker issue 173 — a usable credential is still reported as enrolled", () => {
+test("a usable credential is still reported as enrolled", () => {
   // The direction that keeps the fix from being a refusal machine. Nothing above is worth anything if
   // a real enrolment stopped reading as one.
   const dir = scratch();
@@ -128,7 +128,7 @@ test("tracker issue 173 — a usable credential is still reported as enrolled", 
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("tracker issue 173 — a credential that CANNOT BE READ reaches the stage as a could-not-look", () => {
+test("a credential that CANNOT BE READ reaches the stage as a could-not-look", () => {
   // THE OWNER'S RULING, 2026-09-05, driven at the surface it was made about. The four states landed in
   // this issue and `doctor` honoured them; the sentence handed to the stage did not, because the caller
   // flattened them into one boolean first. An unreadable credential was described to the stage as one
@@ -163,7 +163,7 @@ test("tracker issue 173 — a credential that CANNOT BE READ reaches the stage a
   } finally { try { chmodSync(file, 0o600); } catch { /* already gone */ } rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("tracker issue 173 — the composer's three states stay three, and none borrows another's sentence", () => {
+test("the composer's three states stay three, and none borrows another's sentence", () => {
   // THE CLASS, not the one state. Driven on rows built by hand so every branch is exercised on this box
   // regardless of what its filesystem permits, and asserted as three DISTINCT sentences: a shared
   // sentence is exactly how the defect arrived, and a future edit that collapses two would pass an arm

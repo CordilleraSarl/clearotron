@@ -4143,6 +4143,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-citation-strip-removes-openers-and-nothing-else.test.mjs": {
+          "tests": 6,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
         "the-classifier-names-what-the-validator-named.test.mjs": {
           "tests": 13,
           "asserts": 40,

@@ -133,7 +133,7 @@ const PROBE_ENGINE = has("--probe-engine");
 // issue 1871 — the same opt-in shape, for the credentials that had no proof at all. Never implied by
 // a plain --check: this SPENDS, and on two of the register adapters the count IS a billable search.
 const PROBE_PROVIDERS = has("--probe-providers");
-// tracker issue 149 — the same opt-in shape again, and this one WRITES: every registration it gets
+// the same opt-in shape again, and this one WRITES: every registration it gets
 // accepted CREATES an OAuth client on the operator's account. `doctor` promises in INSTALL.md that it
 // writes nothing, and that promise is why a reader runs it on a production box without thinking. So
 // this is never implied, it says what it is about to create before it creates it, and it reports what

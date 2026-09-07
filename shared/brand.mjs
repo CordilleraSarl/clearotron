@@ -639,7 +639,7 @@ export const CHROME_CSS = `
 .lockup .lk-tag{margin-top:5px;font-size:7.5px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
 .has-glow{position:relative;isolation:isolate}
 .has-glow::before{content:"";position:absolute;top:0;left:0;width:min(92vw,1100px);aspect-ratio:1.5;background:radial-gradient(farthest-side at 0% 0%,var(--web-glow),transparent 72%);pointer-events:none;z-index:-1}
-/* tracker issue 1431 — the .watermark rule and its ::after are GONE. They masked the parent company's ridge behind
+/* the .watermark rule and its ::after are GONE. They masked the parent company's ridge behind
    every report and the pool index; the owner's call is removal, not a bracket version of the same
    thing. The three body elements that carried the class drop it too, and --wm-alpha goes with them:
    a token nothing reads is a knob somebody re-wires.

@@ -821,7 +821,7 @@ test("#1893 the tool-written rows carry a refusal reader, and it reads a real jo
 // that this check's answer DIFFERS UNDER EACH OF SIX PROVIDERS and the suite drives one.
 const EVERY_STAGE = Object.keys(STAGES);
 
-test("tracker issue 1924: directions (a) and (c) hold for EVERY stage, not only the recording category", () => {
+test("directions (a) and (c) hold for EVERY stage, not only the recording category", () => {
   assert.ok(EVERY_STAGE.length >= 16,
     `only ${EVERY_STAGE.length} stage(s) — the table is not being read, and a walk over a short list is `
     + "how this arm would report clean without covering anything");
@@ -873,7 +873,7 @@ test("tracker issue 1924: directions (a) and (c) hold for EVERY stage, not only 
     + "expectation lowered in the same commit, so the fix is recorded rather than absorbed.");
 });
 
-test("tracker issue 1924: the widened walk is real — it reaches a doc only the dispatch names", () => {
+test("the widened walk is real — it reaches a doc only the dispatch names", () => {
   // THE ANTI-VACUOUS ARM. Everything above passes just as well over a union that never loaded the
   // provider deck — it would simply report two more findings, and a reader lowering the expectation to
   // match would bake the blindness in. This asserts the pointer-following actually happened.
@@ -907,7 +907,7 @@ test("tracker issue 1924: the widened walk is real — it reaches a doc only the
 //
 // This arm asks the question at the DOC rather than at the stage, so the failure names the file and the
 // token — which is where the edit has to happen — and fires once rather than once per innocent reader.
-test("tracker issue 1924: a tool named in a multi-reader doc is granted to every reader of it", () => {
+test("a tool named in a multi-reader doc is granted to every reader of it", () => {
   const readers = new Map();                       // rel -> stages that are told to read it
   for (const stage of EVERY_STAGE) {
     for (const rel of skillReadsFor(stage)) {
@@ -1032,7 +1032,7 @@ const CODE_BUILT_MENTIONS_DECLARED = [
   },
 ];
 
-test("tracker issue 1893 — no dispatch names a section the driver code-builds, except where declared", () => {
+test("no dispatch names a section the driver code-builds, except where declared", () => {
   const headings = Object.values(CODE_BUILT_SECTIONS);
   assert.ok(headings.length >= 4,
     `only ${headings.length} code-built heading(s) — CODE_BUILT_SECTIONS is not being read, and a walk `
@@ -1070,7 +1070,7 @@ test("tracker issue 1893 — no dispatch names a section the driver code-builds,
     + `  ${offenders.join("\n  ")}`);
 });
 
-test("tracker issue 1893 — …and the arm can fail: a planted order naming a code-built section is caught", () => {
+test("…and the arm can fail: a planted order naming a code-built section is caught", () => {
   // A GUARD WHOSE POPULATION IS CURRENTLY CLEAN PROVES NOTHING UNTIL IT IS DRIVEN. The plant is the exact
   // shape that was live for months: an instruction to VERIFY the section, in a message that carries no
   // prohibition, so the declared exception cannot rescue it.

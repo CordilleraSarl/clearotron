@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 204 — a test that drives a real command silently gets built-in defaults.
+// a test that drives a real command silently gets built-in defaults.
 //
 // The failure is not that such a test fails. It is that it PASSES ON THE WRONG SUBJECT, and the number
 // it lands on is a real address: an arm holding a free high port wrote it to its drive's `.env`, the

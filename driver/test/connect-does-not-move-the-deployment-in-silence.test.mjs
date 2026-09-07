@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 193 — `clearotron connect` repointed the whole install at whatever checkout it ran from.
+// `clearotron connect` repointed the whole install at whatever checkout it ran from.
 //
 // `CLEAROTRON_CHECKOUT_DIR` decides which tree every unit's ExecStart executes and which tree the
 // deploy timer fast-forwards. `connect` wrote it from its own location, silently. Driven on testuser:

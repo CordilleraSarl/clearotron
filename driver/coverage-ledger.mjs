@@ -500,7 +500,7 @@ export function parseCoverageLedgerJson(raw, { allowedAxes = REGISTER_AXES, acti
   return rows;
 }
 
-// ── tracker issue 476 — `renderCoverageLedgerJson` IS DELETED, AND THE DIRECTION WITH IT ─────────────────────────
+// ── `renderCoverageLedgerJson` IS DELETED, AND THE DIRECTION WITH IT ─────────────────────────
 //
 // Map #3 code-derived this JSON FROM the model's `## Coverage ledger` prose, which was an improvement
 // (the model stopped authoring the JSON) that left the real source of truth where it was: a markdown

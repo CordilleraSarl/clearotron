@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 1039 — THE tracker issue 703/tracker issue 914 RATCHET, TESTED AT ITS CALL SITE.
+// THE tracker issue 703/tracker issue 914 RATCHET, TESTED AT ITS CALL SITE.
 //
 // `commonlaw-carry-ratchet.test.mjs` is 133 lines, green since tracker issue 914, and tests `reconciliationVerdict`
 // in isolation. The ratchet still never recorded once: `deriveRecordCarry`'s verdict block in pipeline.mjs named a bare `slice` with no

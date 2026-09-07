@@ -34,7 +34,7 @@ const workerEnabled = { unit: "/h/.config/systemd/user/clearotron-worker.service
 const workerOff = { ...workerEnabled, enabled: false };
 const workerUnreadable = { unit: workerEnabled.unit, present: null, enabled: null, error: "EACCES" };
 
-test("tracker issue 181 — an enabled worker IS the drain, and nothing is armed", () => {
+test("an enabled worker IS the drain, and nothing is armed", () => {
   // THE DEFECT ITSELF. Both retired units inactive plus an enabled worker used to be reported as
   // "nothing will drain this queue".
   const r = queueDrainState({ worker: workerEnabled, sc: noRetiredUnits, queueDir: "/q" });
@@ -42,7 +42,7 @@ test("tracker issue 181 — an enabled worker IS the drain, and nothing is armed
   assert.match(r.how, /clearotron-worker\.service/, "the answer does not name the unit that is doing the draining");
 });
 
-test("tracker issue 181 — with no drainer at all, the claim NAMES the queue it checked", () => {
+test("with no drainer at all, the claim NAMES the queue it checked", () => {
   // The issue asks for a genuine "nothing will drain" to be falsifiable. It named no queue, so a reader
   // had nothing to check it against — and this is the strongest sentence the command prints.
   const r = queueDrainState({ worker: workerOff, sc: noRetiredUnits, queueDir: "/var/spool/clearotron" });
@@ -52,7 +52,7 @@ test("tracker issue 181 — with no drainer at all, the claim NAMES the queue it
     "the answer does not say the CURRENT drainer was looked for — only the retired ones");
 });
 
-test("tracker issue 181 — a worker that could not be READ is unknown, never 'nothing drains'", () => {
+test("a worker that could not be READ is unknown, never 'nothing drains'", () => {
   // The could-not-look, which must not become the sentence that carries an instruction. A permission
   // error on the unit file is not evidence that no drainer is running.
   const r = queueDrainState({ worker: workerUnreadable, sc: noRetiredUnits, queueDir: "/q" });
@@ -60,7 +60,7 @@ test("tracker issue 181 — a worker that could not be READ is unknown, never 'n
   assert.match(r.how, /unknown/);
 });
 
-test("tracker issue 181 — a retired unit still counts when it is genuinely the drain", () => {
+test("a retired unit still counts when it is genuinely the drain", () => {
   // The old posture is retired, not forbidden. A box that really is running the timer must still be
   // reported as drained — otherwise this change would have swapped one wrong answer for another.
   const timerActive = (...a) => (a[0] === "is-active" && a[1] === "prelim-driver.timer" ? "active" : "inactive");
@@ -68,7 +68,7 @@ test("tracker issue 181 — a retired unit still counts when it is genuinely the
   assert.equal(r.armed, true, "a box actually running the retired timer is now reported as undrained");
 });
 
-test("tracker issue 181 — no state that could be a live drainer prints an arm-a-drainer command", () => {
+test("no state that could be a live drainer prints an arm-a-drainer command", () => {
   // THE CLASS, driven at the surface the operator reads rather than at the predicate. Suggesting a
   // second drainer is the failure; only a state that has EXCLUDED every drainer may print the command.
   const src = readSource();

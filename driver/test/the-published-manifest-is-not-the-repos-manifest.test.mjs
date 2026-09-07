@@ -87,7 +87,7 @@ function offline(fn) {
 
 const scratch = () => mkdtempSync(join(tmpdir(), "manifest-arms-"));
 
-test("tracker issue 180 — the strip is one policy, and the repo manifest still carries what it strips", () => {
+test("the strip is one policy, and the repo manifest still carries what it strips", () => {
   const before = { name: "x", version: "1.0.0", overrides: { buffers: "$buffers" }, private: true, files: ["a"] };
   const after = publishableManifest(before);
   for (const k of STRIP_KEYS) {
@@ -108,7 +108,7 @@ test("tracker issue 180 — the strip is one policy, and the repo manifest still
     + "somebody repaired the published manifest by breaking the repository's own resolution");
 });
 
-test("tracker issue 180 — the seal rewrites the manifest inside real packed bytes", () => {
+test("the seal rewrites the manifest inside real packed bytes", () => {
   const dir = scratch();
   try {
     const tgz = packTarball(dir, { name: "sealed-probe", version: "1.2.3",
@@ -128,7 +128,7 @@ test("tracker issue 180 — the seal rewrites the manifest inside real packed by
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("tracker issue 180 — a tarball that is not an npm tarball is refused, not quietly sealed", () => {
+test("a tarball that is not an npm tarball is refused, not quietly sealed", () => {
   const dir = scratch();
   try {
     mkdirSync(join(dir, "src", "notpackage"), { recursive: true });
@@ -140,7 +140,7 @@ test("tracker issue 180 — a tarball that is not an npm tarball is refused, not
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("tracker issue 180 — the install check refuses in npm's own words when npm refuses", () => {
+test("the install check refuses in npm's own words when npm refuses", () => {
   const dir = scratch();
   try {
     // A manifest npm rejects without a registry, so this arm is a real npm refusal rather than a
@@ -156,7 +156,7 @@ test("tracker issue 180 — the install check refuses in npm's own words when np
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("tracker issue 180 — an install that exits 0 with the command missing is not a pass", () => {
+test("an install that exits 0 with the command missing is not a pass", () => {
   // MEASURED, and it is why this branch exists: npm exits 0 and creates no `.bin` at all when a
   // declared command's file did not travel. `npx clearotron demo` resolves through `.bin`, so that is
   // the front door still shut behind a green install — the same shape as the release this repairs.
@@ -170,7 +170,7 @@ test("tracker issue 180 — an install that exits 0 with the command missing is 
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("tracker issue 180 — and it passes an artefact that really installs, with its command in place", () => {
+test("and it passes an artefact that really installs, with its command in place", () => {
   const dir = scratch();
   try {
     const tgz = packTarball(dir,
@@ -183,7 +183,7 @@ test("tracker issue 180 — and it passes an artefact that really installs, with
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("tracker issue 180 — `bin` is read in both of its shapes, because one of them has no names in it", () => {
+test("`bin` is read in both of its shapes, because one of them has no names in it", () => {
   assert.deepEqual(binNames({ name: "x", bin: { a: "a.js", b: "b.js" } }), ["a", "b"]);
   assert.deepEqual(binNames({ name: "clearotron", bin: "bin/clearotron.mjs" }), ["clearotron"],
     "the string form of `bin` takes its command name from the package name, and that name is what a "
@@ -192,7 +192,7 @@ test("tracker issue 180 — `bin` is read in both of its shapes, because one of 
   assert.deepEqual(binNames({ name: "x" }), []);
 });
 
-test("tracker issue 180 — every publishing job seals BEFORE anything measures the artefact", () => {
+test("every publishing job seals BEFORE anything measures the artefact", () => {
   // Order is the design and it is invisible in the file unless somebody asks. A seal after the scans
   // would publish bytes that nothing scanned, which is the invariant the pack step's own comment states
   // — and it is the kind of comment that stays true only because an arm holds it.
@@ -236,7 +236,7 @@ test("tracker issue 180 — every publishing job seals BEFORE anything measures 
   }
 });
 
-test("tracker issue 180 — every step handles the one artefact, and the check never runs a rehearsal", () => {
+test("every step handles the one artefact, and the check never runs a rehearsal", () => {
   // ONE TARBALL. A step that packs or names its own would certify bytes nobody publishes, which is
   // exactly how a correct strip came to be applied to nothing.
   const publishJob = RELEASE_YML.slice(RELEASE_YML.indexOf("  publish:"));
@@ -258,7 +258,7 @@ test("tracker issue 180 — every step handles the one artefact, and the check n
     "the install check passes --dry-run to npm, which does not perform the resolution that aborts");
 });
 
-test("tracker issue 180 — the gate is asked on the pull request too, not only at the release", () => {
+test("the gate is asked on the pull request too, not only at the release", () => {
   // A CHECK ABSENT FROM EXACTLY THE RUN THAT NEEDED IT (tracker issue 189). Wired into the release
   // workflow alone, this gate would first speak on the release that carries the fault — after the
   // author has moved on, and where the only remedy is another release. CI already packs a tarball for
@@ -287,7 +287,7 @@ test("tracker issue 180 — the gate is asked on the pull request too, not only 
   }
 });
 
-test("tracker issue 180 — a relative tarball path is the caller's, not the install's", () => {
+test("a relative tarball path is the caller's, not the install's", () => {
   // THE MEMBER EVERY ARM ABOVE MISSED, and CI caught it on the first run. Each of them handed the
   // check an absolute temp path; ci.yml hands it `./packed/clearotron-<version>.tgz`. npm resolves a
   // file path against ITS OWN cwd, which is the throwaway consumer project, so it looked for `packed/`
@@ -318,7 +318,7 @@ test("tracker issue 180 — a relative tarball path is the caller's, not the ins
 // stays as the one-line closure of a class that IS live one file over; it is defensive and unarmed, and
 // that is said here rather than implied by a test that cannot fail.
 
-test("tracker issue 180 — a registry it could not reach is not a broken package", () => {
+test("a registry it could not reach is not a broken package", () => {
   // THREE-VALUED, BECAUSE THIS RUNS ON EVERY PULL REQUEST. npm exits non-zero for a DNS failure, a
   // registry timeout, a 503, a full disk — none of them a fact about these bytes. Reported as "this is
   // what a visitor gets", each one accuses the artefact of a fault it does not have, and a gate that
@@ -343,7 +343,7 @@ test("tracker issue 180 — a registry it could not reach is not a broken packag
   }
 });
 
-test("tracker issue 180 — and it answers could-not-look on a real npm that cannot reach anything", () => {
+test("and it answers could-not-look on a real npm that cannot reach anything", () => {
   // DRIVEN, not asserted from the predicate above: the branch has to be reachable from the install
   // path, and a classifier nothing routes to is the same as no classifier. `npm_config_offline` with a
   // dependency that is not in the cache is npm genuinely unable to look.
@@ -359,7 +359,7 @@ test("tracker issue 180 — and it answers could-not-look on a real npm that can
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("tracker issue 180 — and npm's own refusal is still a refusal, not an excuse", () => {
+test("and npm's own refusal is still a refusal, not an excuse", () => {
   // The pair to the arm above, on the same code path: the EINVALIDTAGNAME case must come back as a
   // verdict about the bytes. Without this, widening the could-not-look predicate would go unnoticed —
   // and a package that refuses to install would publish with the gate green.
@@ -374,7 +374,7 @@ test("tracker issue 180 — and npm's own refusal is still a refusal, not an exc
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("tracker issue 180 — the exit codes CI reads carry the house meanings", () => {
+test("the exit codes CI reads carry the house meanings", () => {
   // THE THREE ANSWERS AS A CALLER SEES THEM. Everything above tests the function; the workflow reads
   // the process's status, and a branch that returns the right object under an exit code nobody set is
   // the same silence one layer down. Driven through the command line, which is how CI invokes it.
@@ -403,7 +403,7 @@ test("tracker issue 180 — the exit codes CI reads carry the house meanings", (
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("tracker issue 180 — an install this gave up waiting for is a could-not-look too", () => {
+test("an install this gave up waiting for is a could-not-look too", () => {
   // THE MEMBER THE CLASSIFIER WAS NOT WRITTEN FOR, and does carry. A check that only read npm's message
   // would blame the artefact for a slow network or a loaded machine, so this was first repaired with a
   // second branch reading `e.signal` — which planted GREEN, because Node hands back `spawnSync npm
@@ -420,7 +420,7 @@ test("tracker issue 180 — an install this gave up waiting for is a could-not-l
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-// ── tracker issue 196 — TWO INSTRUMENTS THAT COULD NOT SPEAK ────────────────────────────────────────
+// ── TWO INSTRUMENTS THAT COULD NOT SPEAK ────────────────────────────────────────
 //
 // `scripts/verify-publishable.mjs` is the most thorough instrument this repository has for the packaged
 // artefact: it installs the tarball into a tree that has never seen this checkout, types every verb, and

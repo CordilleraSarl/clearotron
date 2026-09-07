@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 202 — a remedy whose only route is a command its reader cannot run.
+// a remedy whose only route is a command its reader cannot run.
 //
 // `clearotron start --background`, engine values unset, ended: "Set these where this command can see
 // them — `clearotron install` writes them". Both halves fail the one reader who gets here. This product
@@ -91,7 +91,7 @@ function reachedTheRefusal(d) {
   assert.ok(!/cannot start — 127\.0\.0\.1:\d+ is already in use/.test(d.said),
     `this drive met a PORT collision and never reached the missing-values refusal these arms are about — `
     + `nothing below could be measured:\n${d.said.slice(0, 900)}`);
-  // tracker issue 216 — THE SUBJECT MOVED FROM A REFUSAL TO AN ANNOUNCEMENT, on the same screen. An
+  // THE SUBJECT MOVED FROM A REFUSAL TO AN ANNOUNCEMENT, on the same screen. An
   // install now comes up without these values (owner ruling 2026-09-06) and every run is refused at order
   // time instead, so what proves this drive reached its subject is the announcement naming them.
   //

@@ -58,7 +58,7 @@ import { checkoutMove, movePosture, describeMove, describeConflict } from "../sh
 import { unitEnvironment, unitValue, couldNotDetermine } from "../driver/unit-environment.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 import { looksLikeBusFailure, systemdSaid, userBusEnv, CAPTURE_STDERR,
-  systemdFailure as sharedSystemdFailure } from "../shared/systemd-failure.mjs";   // tracker issue 203 — `start` needed the same three answers
+  systemdFailure as sharedSystemdFailure } from "../shared/systemd-failure.mjs";   // `start` needed the same three answers
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 // `userBusEnv` and `busRemedy` MOVED TO shared/systemd-failure.mjs, unchanged, because

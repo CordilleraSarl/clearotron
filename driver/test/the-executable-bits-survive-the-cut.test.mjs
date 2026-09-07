@@ -57,6 +57,7 @@ const EXECUTABLE = [
   "scripts/added-reference-check.mjs",
   "scripts/home-render-check.mjs",
   "scripts/queue-inflight.mjs",
+  "scripts/strip-tracker-citations.mjs",
 ];
 
 // Modes from the INDEX, not from disk. A working tree on a filesystem that does not carry the bit —

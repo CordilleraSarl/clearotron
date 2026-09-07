@@ -58,7 +58,7 @@ import { liveRunHolds } from "../driver/deploy-live-run-guard.mjs";   // — one
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { readEnvFile } from "./onboard.mjs";
 import { invoke, invocationPrefix } from "../shared/invocation.mjs";   // — name a command the reader can actually type
-import { rebuildIfStale } from "../shared/bundle-rebuild.mjs";   // tracker issue 160 — a pull cannot update an untracked bundle
+import { rebuildIfStale } from "../shared/bundle-rebuild.mjs";   // a pull cannot update an untracked bundle
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line

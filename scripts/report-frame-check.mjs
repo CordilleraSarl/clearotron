@@ -22,7 +22,7 @@
 // Needs `google-chrome` (on the VM). Same mechanism as render-check.mjs: a page computes its verdict
 // and writes it into <title>, which --dump-dom hands back.
 
-import { chromeErrorPage } from "./headless-page.mjs";   // tracker issue 227 — a dumped DOM can be chrome's own error document
+import { chromeErrorPage } from "./headless-page.mjs";   // a dumped DOM can be chrome's own error document
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";

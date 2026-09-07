@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// tracker issue 1269 — A SUITE RUN'S FIXTURE TRAFFIC MUST NOT LAND IN THE BOX'S REAL CALL LEDGER.
+// A SUITE RUN'S FIXTURE TRAFFIC MUST NOT LAND IN THE BOX'S REAL CALL LEDGER.
 //
 // The call ledger is box-global by design (tracker issue 743): the billing tally reads it across runs, and it is the
 // independent witness that a run made record fetches at all. The cost nobody had costed is that a

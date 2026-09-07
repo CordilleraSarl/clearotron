@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 157 — running the demo from a clone edited the clone.
+// running the demo from a clone edited the clone.
 //
 // Publishing writes a receipt into the run directory, on purpose: it records that the publish happened,
 // and where the store is read-only it does not land. `demo/` is not a store — it is a TRACKED directory

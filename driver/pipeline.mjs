@@ -108,7 +108,7 @@ import { readAcceptedClosures } from "./doubt-closure-tool.mjs";
 import { CLOSURE_EVIDENCE_FILES } from "./doubt-closure-call.mjs";
 import { doubtsForClosure, doubtSelectionNote } from "./doubt-selection.mjs";   // doubt-closure selection
 import { deriveAsks, applyAskClosure, finalizeOpenHandoffs, summarizeAsks } from "./ask-ledger.mjs";
-import { pendingWhatIf, claimWhatIf, finishWhatIf, whatIfRefusal } from "./whatif-queue.mjs";   // tracker issue 240 — a queued job is settled before its run archives   // PR-6 — every ask ends (2026-07-29)
+import { pendingWhatIf, claimWhatIf, finishWhatIf, whatIfRefusal } from "./whatif-queue.mjs";   // a queued job is settled before its run archives   // PR-6 — every ask ends (2026-07-29)
 import { mintPresenceDoubts } from "./presence-reconciliation.mjs";   // presence-or-reason (2026-07-22 — the unjoined-Sheet-2 leak)
 import { escalatedAxes } from "./skeptic-record.mjs";   // THE escalation parse — shared with the record_skeptic transport so the rendered shape and this read cannot drift
 // — every placed candidate ends somewhere a reader can see; the ones that do not are counted by name
@@ -13845,7 +13845,7 @@ async function pipelineInner(job, opts = {}) {
           askAnswers: lintAskAnswers,   // PR-9 — present ⇒ the intake-ask check judges the deterministic join, not fuzzy containment
           cardFolds: (() => { try { return JSON.parse(readFileSync(driverDir(run.runDir, "card-folds.json"), "utf8")).folds; } catch { return null; } })(),   // PR-9 — fold observability (flag-only)
           extraPlatformNames: ctx.profile?.platforms ?? [],   // WS-B: profile marketplaces are run vocabulary
-          // tracker issue 134 — the SAME structure the masthead's coverage_line is stamped from
+          // the SAME structure the masthead's coverage_line is stamped from
           // (scope-facts.json, written by writeScopeFacts). Passing the sidecar rather than re-deriving
           // is the point of the issue: the stamped line and the prose check now answer to one searched
           // set, so they cannot state two different answers about what was searched. Absent sidecar ⇒
@@ -14946,7 +14946,7 @@ async function pipelineInner(job, opts = {}) {
       // is precisely what `recoveryResumesAt` means. So a weather park writes `recoveryResumesAt` like
       // any other recovery park, still leaves `resetsAt` null, and the record says WHICH lane bought
       // the wait in `recoveryLane` instead of implying a provider clock that does not exist.
-      // tracker issue 103 — A CAP PARK IS NOT A STAGE FAILING, and the 2/15/60 ladder cannot survive one.
+      // A CAP PARK IS NOT A STAGE FAILING, and the 2/15/60 ladder cannot survive one.
       // A cap that classifies `rate_limited` already takes the postpone path and waits for its stated
       // reset. One that does NOT lands here, where two things used to go wrong: the provider's own reset
       // hint was dropped even though StageFailure carries it all the way to this site, and the ladder
@@ -15004,7 +15004,7 @@ async function pipelineInner(job, opts = {}) {
         // half the inputs. It also makes the epoch legible: a row with no `classSource` KEY predates
         // this field and was never measured, which is a different fact from a row that says "no gap".
         recoveryHistory: [...recoveryHistory, { sig: failSig.sig, stage: failedStage, class: failClass, lane, attempt, quantity, quantityToken: failSig.quantityToken ?? null, kindToken: failSig.kindToken ?? null, classSource, ts: new Date().toISOString(),
-        // tracker issue 103 — THE SAME FACTS THE RUN LOG ALREADY GETS, in the record that SURVIVES.
+        // THE SAME FACTS THE RUN LOG ALREADY GETS, in the record that SURVIVES.
         // The auto-recovery-parked event below carries capPark/basis/waitMin and says in its own note
         // that a cap has to be legible or nobody can tell a stated reset from our ladder's guess. But
         // run.jsonl is not what the terminal reads: status.json's recoveryHistory is the only record
@@ -15015,7 +15015,7 @@ async function pipelineInner(job, opts = {}) {
         ...(capSchedule ? { capPark: true, recoveryWaitBasis, recoveryWaitMin } : {}) }] });
       rollupStatus(run.studioRoot);
       runLog(run.runDir, { event: "auto-recovery-parked", stage: failedStage, attempt, of: recoveryMax, lane, laneAttempt, laneOf: decision.laneCeiling, recoveryResumesAt, reason: String(reason).slice(0, 200), sig: failSig.sig, class: failClass,
-        // tracker issue 103 — a cap park has to be legible in the record, or the next reader diagnosing
+        // a cap park has to be legible in the record, or the next reader diagnosing
         // "why did this wait 21 hours" cannot tell a provider's stated reset from our own ladder guess.
         // Absent on a non-cap park rather than false: a row that says nothing is honest about not having
         // looked, while `capPark: false` would read as "we checked and it was not one".

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 159 — a fresh install could not start, because the write and the move went in separately.
+// a fresh install could not start, because the write and the move went in separately.
 //
 // `.env` moved to `~/.config/clearotron/.env`, and three places in this product wrote that file: the
 // wizard and the launcher twice, each with its own copy of the same tmp-write, chmod, rename dance. The

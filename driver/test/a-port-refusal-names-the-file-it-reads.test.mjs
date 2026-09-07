@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 200 — a remedy that names a variable and not the file, on a product with two env files.
+// a remedy that names a variable and not the file, on a product with two env files.
 //
 // Driven as a stranger against published 0.1.4: `clearotron start --background` refused a port collision
 // with "set PORTAL_SERVICE_PORT=<free port>" and stopped there. This product has two env files with

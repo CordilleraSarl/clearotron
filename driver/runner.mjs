@@ -28,8 +28,8 @@ import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — 
 // other nine. Behaviour here is unchanged: the same object and the same three suffixes, sourced.
 import { isLiveQueueMarker, PROSE_PARTS, CLAIM_SIDECAR_SUFFIXES, TERMINAL_QUEUE_SUFFIXES } from "./queue-markers.mjs";
 import { matterLedgerPath } from "./usage-ledger.mjs";   // ONE ledger-path calculation, shared with the portal pre-check
-import { orderTimeRefusal } from "./run-requirements.mjs";   // tracker issue 216 — one authority for what a run needs, and when it is asked for
-import { unitEnvPath } from "../shared/env-local.mjs";   // tracker issue 216 — the file the units read, named by its one author
+import { orderTimeRefusal } from "./run-requirements.mjs";   // one authority for what a run needs, and when it is asked for
+import { unitEnvPath } from "../shared/env-local.mjs";   // the file the units read, named by its one author
 import { fileURLToPath } from "node:url";
 import { config, preflightDeploymentUrls } from "./driver.config.mjs";
 import { deriveSlug, todayISO, mintFreshCodename } from "./phase0.mjs";
@@ -578,7 +578,7 @@ async function failAtIntake(procPath, qdir, base, agentId, job, v, reasons) {
 // outcome string for the .reason file.
 async function duplicateNotify(agentId, base, job, prior = null, sig = null) {
   const mark = job?.markName ?? job?.name ?? job?.marks?.[0]?.name ?? base;
-  // ── tracker issue 136 — A REFUSAL DELIVERED AS SILENCE IS INDISTINGUISHABLE FROM A LOST JOB ────────
+  // ── A REFUSAL DELIVERED AS SILENCE IS INDISTINGUISHABLE FROM A LOST JOB ────────
   //
   // The observable outcome of a dedup park was an empty queue and no run, which is exactly what an
   // enqueue that vanished looks like — and the two want completely different next actions. That got
@@ -740,7 +740,7 @@ async function backstopFailureNotice({ res, job, agentId, base, codename, studio
 // one-at-a-time so the dedup check+record stays race-free even while prior jobs' pipelines run concurrently
 // (Phase-4). Returns the prepared {procPath, base, job} to execute, or null when the job was terminally
 // parked/failed-at-intake, or the claim was lost.
-// ── tracker issue 216 — THE ORDER-TIME REFUSAL, AND WHY IT IS HERE ──────────────────────────────────
+// ── THE ORDER-TIME REFUSAL, AND WHY IT IS HERE ──────────────────────────────────
 //
 // A hosted install now STARTS with no register configured (owner ruling 2026-09-06: "someone can install
 // and select key later so it should still start"). The protection that used to live in
@@ -849,7 +849,7 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
     await failAtIntake(procPath, qdir, base, agentId, job, v, v.errors);
     return null;
   }
-  // ── tracker issue 216 — IS THIS BOX CONFIGURED TO SEARCH AT ALL? See the header above claimAndPrep.
+  // ── IS THIS BOX CONFIGURED TO SEARCH AT ALL? See the header above claimAndPrep.
   {
     const refusal = orderTimeRefusal(process.env, await runTables(), { envFile: unitEnvPath() });
     if (refusal) {

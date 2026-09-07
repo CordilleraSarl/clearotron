@@ -128,7 +128,7 @@ function bandStop(framework, band) {
 
 const DEGRADED_NOTE = 'Automated research for this name was unavailable — manual verification is recommended before relying on this rating.';
 
-// tracker issue 760 — THE QUALIFIER, IN WORDS. It rendered as a bare grey token under the band chip — `low`, no
+// THE QUALIFIER, IN WORDS. It rendered as a bare grey token under the band chip — `low`, no
 // label, no border, nothing on the page saying what it qualified. A reader met one word of a private
 // vocabulary and had to guess whether it described the risk, the confidence or the search.
 //
@@ -266,7 +266,7 @@ function glanceSection(marks, framework, registerCounts) {
       </div>
     </div>`;
   }).join('');
-  // tracker issue 761 — THE FRAMEWORK IS NAMED BESIDE THE CHIPS IT EXPLAINS. Every `.ko-band` chip below speaks one
+  // THE FRAMEWORK IS NAMED BESIDE THE CHIPS IT EXPLAINS. Every `.ko-band` chip below speaks one
   // word out of a framework's vocabulary, and that framework was named exactly once on this page: in the
   // footer, under everything it governs. This is ATTRIBUTION AND NOTHING ELSE — the same "Rated under
   // <name>" the footer prints, moved to where the words it licenses are actually read.

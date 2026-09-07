@@ -66,7 +66,7 @@ test("a real start SAYS the archive is empty, and names what to run instead", ()
     "the reader is told the archive is empty and not what shows them an example instead");
 });
 
-// ── tracker issue 277: a stale demo pool is topped up to the package's set ────────────────────────────
+// ── a stale demo pool is topped up to the package's set ────────────────────────────
 //
 // `seedPool` returned early on any non-empty pool. That was invisible while `demo/` shipped one child —
 // seeding one and seeding all were the same act — and became a defect the day the other three landed:

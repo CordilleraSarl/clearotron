@@ -237,7 +237,7 @@ export function lossBetween(prevPerFile, nextPerFile) {
 }
 
 /**
- * tracker issue 205 — WHICH BUCKET EACH DIFFERENCE LANDS IN, and which of them refuses a re-stamp.
+ * WHICH BUCKET EACH DIFFERENCE LANDS IN, and which of them refuses a re-stamp.
  *
  * `lossBetween` above answers what MOVED. This answers what that MEANS, and it is a separate question
  * with a separate history. A rising skip count is a real difference and it used to refuse: it landed

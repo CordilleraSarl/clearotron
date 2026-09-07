@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// tracker issue 1479 — the early-return half of tracker issue 1010's vacuous-pass member.
+// the early-return half of tracker issue 1010's vacuous-pass member.
 //
 // THE SHAPE. `if (corpus == null) return;` at the top level of a test arm. node:test counts a bare
 // return as a PASS, so the arm reports its subject clean having measured none of it. The eleven

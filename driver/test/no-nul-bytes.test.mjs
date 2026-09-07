@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 1053 — NO TRACKED SOURCE FILE CONTAINS A NUL BYTE, and the class is asserted, not the instance.
+// NO TRACKED SOURCE FILE CONTAINS A NUL BYTE, and the class is asserted, not the instance.
 //
 // One 0x00 byte in a shipped TypeScript file made git classify it as binary: `git diff` showed
 // `Bin N -> M bytes` instead of content, `grep` printed nothing and exited 1, and `git grep` skipped

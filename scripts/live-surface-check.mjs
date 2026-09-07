@@ -737,7 +737,7 @@ else {
       // second criterion — an orphaned drainer in a closed login session is a
       // state health must say out loud, whatever the ruling on the posture.
       ppidOf: defaultPpidOf,
-      // tracker issue 206 — THE SAME TWO PROBES THE QUEUE ARM READS, so this arm and that one cannot
+      // THE SAME TWO PROBES THE QUEUE ARM READS, so this arm and that one cannot
       // reach opposite conclusions about one box. They did: the queue arm read the worker unit and said
       // the timer posture is retired here, while this one read nothing and called an absent drainer a
       // fault in the same report. A probe that throws answers `enabled: null`, which the rule resolves

@@ -103,7 +103,7 @@ test("item 9a / #469 — the stage that writes it is told what it is, and told N
   });
   assert.match(msg, /THE FINDING SENTENCE/);
   assert.match(msg, /NEVER AN ACTION PRESCRIPTION/);
-  // tracker issue 469 — the dictation used to restate the retired chain shape here IN FULL ("semicolon-chained …
+  // the dictation used to restate the retired chain shape here IN FULL ("semicolon-chained …
   // the consequence after '→'"), so rewriting synthesis-rules.md alone would have left the prompt
   // teaching the shape the parser now refuses. These pin the join, not the wording of the section.
   assert.match(msg, /IT IS A CONCLUSION, NOT A CHAIN/);
@@ -115,7 +115,7 @@ test("item 9a / #469 — the stage that writes it is told what it is, and told N
     "the budget was never the validator's and is no longer the renderer's — nothing asks the model to be brief");
 });
 
-// ── tracker issue 469 — the finding sentence is a CONCLUSION, and the gate that says so ────────────────────────────
+// ── the finding sentence is a CONCLUSION, and the gate that says so ────────────────────────────
 //
 // The contract these pin was a CHAIN by mandate until 2026-08-06: synthesis-rules.md required a
 // semicolon-chained rights → facts → consequence sentence and render.mjs folded the result at 240

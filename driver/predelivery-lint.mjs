@@ -23,8 +23,8 @@
 // report-derived cover text alone, because a gate that simply stops running is not a gate that passes.
 
 import { REGION_NAMES } from "./publish/regions.mjs";
-import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";   // tracker issue 134 — one spelling of a territory code
-import { searchedCovers } from "./frame-diff-model.mjs";                // tracker issue 134 — one copy of the EU-reach rule
+import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";   // one spelling of a territory code
+import { searchedCovers } from "./frame-diff-model.mjs";                // one copy of the EU-reach rule
 import { partyFactSources, partyFactViolations, partyFactMessage, canJudgePartyFacts } from "./party-facts.mjs";   //
 import { writeUpViolations, writeUpMessage } from "./narrative-write-ups.mjs";   //
 
@@ -2237,7 +2237,7 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
       checks.push(...ownerScreenNegativeChecks({ text: clientSummaryMd, ownerScreen, markVocab, surface: "client-summary" }));
     }
   }
-  // tracker issue 134 — the delivered prose's coverage claims against what the run actually searched.
+  // the delivered prose's coverage claims against what the run actually searched.
   // Top-level, NOT inside the owner-screen guard above: a coverage claim has nothing to do with whether
   // this run has an owner screen, and nesting it there would have silently switched the check off for
   // every run without one. Both prose surfaces: the narrative is where the issue measured the

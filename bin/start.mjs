@@ -75,7 +75,7 @@
 // long-lived engine credential is written to disk by a command whose job is to show you the product.
 
 import { envLocalPath, envFileRead } from "../shared/env-local.mjs";   // side effect: apply this install's .env when THIS file is the CLI entry (never on library import)
-import { systemdFailure, systemdSaid, CAPTURE_STDERR } from "../shared/systemd-failure.mjs";   // tracker issue 203 — a refusal, not a stack trace
+import { systemdFailure, systemdSaid, CAPTURE_STDERR } from "../shared/systemd-failure.mjs";   // a refusal, not a stack trace
 import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic write for every file holding credentials, and it creates the directory
 // — ONE AUTHORITY for what a clearance needs from its environment, used twice
 // below: to COMPOSE the units' environment and to GUARD it before this command reports success. The
@@ -129,7 +129,7 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-p
 import { productIdentity } from "../shared/product-identity.mjs";   // AGPL §13 — one answer, three surfaces
 import { pinEnvAll } from "../shared/env-aliases.mjs";   // — a pin that names one spelling has set nothing that wins
 import { BRAND } from "../shared/brand.mjs";   // — the installer's own name, from the tenant seam
-import { rebuildIfStale } from "../shared/bundle-rebuild.mjs";   // tracker issue 160 — never serve a bundle older than its sources
+import { rebuildIfStale } from "../shared/bundle-rebuild.mjs";   // never serve a bundle older than its sources
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
@@ -1408,7 +1408,7 @@ if (isMain) {
     // deriving the bus at two of them is worse than at none: `enable --now` would succeed against the
     // derived bus while the health read three screens down still asks the bus-less one, so every unit
     // would start and then be reported as not running. Driven into by accident while building
-    // tracker issue 203 — "4 of 4 unit(s) did not come up" over four units that had just been enabled.
+    // "4 of 4 unit(s) did not come up" over four units that had just been enabled.
     // Making all five derive it is a real improvement to the install path and is its own change with its
     // own drive, not a side effect of repairing a refusal.
     try { execFileSync("systemctl", ["--user", "daemon-reload"], CAPTURE_STDERR); }

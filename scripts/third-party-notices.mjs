@@ -171,7 +171,7 @@ function resolveInstalled(root, name, path) {
 }
 
 /**
- * tracker issue 146 — WHY `npm ls` IS COMPLAINING, WHEN THE ANSWER IS NOT IN THE CODE AT ALL.
+ * WHY `npm ls` IS COMPLAINING, WHEN THE ANSWER IS NOT IN THE CODE AT ALL.
  *
  * Adding a `git worktree` and symlinking `node_modules` from another one — the obvious way to skip a
  * five-minute install — makes six licence arms fail in a way that reads exactly like a code defect, on
@@ -257,7 +257,7 @@ export function collect(root = ROOT, tree = npmTree(root), { linkTarget = defaul
       + "this file has not been looked at:\n  " + undeclared.slice(0, 12).join("\n  ")
       + (undeclared.length > 12 ? `\n  …and ${undeclared.length - 12} more` : "")
       + "\n\nFix the tree, or declare it in DECLARED_LS_PROBLEMS with the reason it is allowed."
-      // tracker issue 146 — appended, never substituted: a real problem keeps the sentence above.
+      // appended, never substituted: a real problem keeps the sentence above.
       + (foreignTreeNote(root, undeclared, { linkTarget }) ?? ""));
   }
   // ── ONE PACKAGE, SEVERAL NODES, AND ONLY ONE OF THEM CARRIES THE CHILDREN ──────────────────────
@@ -382,7 +382,7 @@ if (isEntrypoint(import.meta.url)) {
   if (!check) { writeFileSync(OUTPUT, next); console.log(`third-party-notices: wrote ${OUTPUT}`); process.exit(0); }
   const now = existsSync(OUTPUT) ? readFileSync(OUTPUT, "utf8") : null;
   if (now === next) { console.log("third-party-notices: THIRD-PARTY-NOTICES.md matches the installed production tree."); process.exit(0); }
-  // ── Refs tracker issue 2073 — THE REFUSAL SAYS HOW TO FIX IT, INCLUDING THE HALF THAT IS FORGOTTEN ──
+  // ── THE REFUSAL SAYS HOW TO FIX IT, INCLUDING THE HALF THAT IS FORGOTTEN ──
   //
   // "regenerate with: <script>" was true and insufficient. What reds CI is a PRODUCTION-DEPENDENCY BUMP
   // whose regenerated notices file was not COMMITTED WITH IT, and the committing half is the half that

@@ -19,7 +19,7 @@ import { existsSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { homedir } from "node:os";
 import { execFileSync } from "node:child_process";
-import { systemdSaid, looksLikeBusFailure, busRemedy, CAPTURE_STDERR } from "../shared/systemd-failure.mjs";   // tracker issue 270 — a stop that could not look must not report that it stopped
+import { systemdSaid, looksLikeBusFailure, busRemedy, CAPTURE_STDERR } from "../shared/systemd-failure.mjs";   // a stop that could not look must not report that it stopped
 import { BACKGROUND_UNITS } from "./start.mjs";
 import { CLIENT_DOOR_UNIT } from "../shared/client-door.mjs";
 import { invoke } from "../shared/invocation.mjs";

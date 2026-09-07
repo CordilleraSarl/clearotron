@@ -194,7 +194,7 @@ test("integration: signature + same-mark-thread dedup park .duplicate; distinct-
   // handoff default: the duplicate-skip notice is a self-contained outbox event packet, not a gateway ping.
   const dupPacket = JSON.parse(readFileSync(join(root, "prelim-outbox", `intake-${velDup[0]}.duplicate.pending`), "utf8"));
   assert.equal(dupPacket.kind, "duplicate-skipped");
-  // ── tracker issue 136 — THE PARK NAMES ITSELF, AND NAMES WHICH PRIOR RUN ──────────────────────────
+  // ── THE PARK NAMES ITSELF, AND NAMES WHICH PRIOR RUN ──────────────────────────
   //
   // A dedup park was delivered as silence: an empty queue and no run, which is exactly what an enqueue
   // that vanished looks like. The two want completely different next actions, and the submitter had no

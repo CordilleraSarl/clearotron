@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 198 — a test that writes into the checkout is read by every other test in the run.
+// a test that writes into the checkout is read by every other test in the run.
 //
 // The finding: `health-tells-the-truth-about-the-bundle` planted a future mtime on a REAL file in
 // `portal-ui/src`, restored it, and went green. `node --test` runs test FILES concurrently against one

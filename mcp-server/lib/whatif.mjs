@@ -23,7 +23,7 @@
 import { STAGES, STAGE_ORDER, stageOrdinal, REGISTER_AXES, axisTier, resolveModel, config, deriveSlug } from "./driver.mjs";
 import { readCapped } from "./util.mjs";
 import { join, basename } from "node:path";
-import { readFileSync } from "node:fs";   // tracker issue 135 — the canonical run's frozen profile
+import { readFileSync } from "node:fs";   // the canonical run's frozen profile
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 // — the SHARED eligibility composer. A leaf module (fs/path/crypto only), so a
 // static import here costs the read-only surface nothing and buys the one thing three copies of this
@@ -324,7 +324,7 @@ export async function whatIfRun({ confirmationToken } = {}, deps = {}) {
     shadowDir: basename(r.shadowDir), output: r.output ? basename(r.output) : null,
     completeness: comp.level, honestyNote: comp.note,
     diff, telemetryDelta,
-    // tracker issue 135 — the rating authority this diff was produced under, on the client-facing
+    // the rating authority this diff was produced under, on the client-facing
     // result. The engine KNEW (it wrote a profile-mismatch row) and the surface said nothing, which is
     // the one case where the evidence exists on disk and the reader cannot reach it. Null means the
     // canonical run froze no profile — a pre-profile run, where `generic` is the right answer rather

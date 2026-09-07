@@ -45,7 +45,7 @@ export function writeRunStatusCalls(src) {
 /** A seed is a `writeRunStatus` call that stamps the schema — the mark of a FIRST write, not a patch. */
 const isSeed = (argText) => /\bschema:\s*1\b/.test(argText);
 
-test("Refs tracker issue 1995 — every run-status seed in the tree spreads identitySeed()", (t) => {
+test("every run-status seed in the tree spreads identitySeed()", (t) => {
   // THE WHOLE TREE, not `driver/` — a lane that seeds a run status from `scripts/` or `mcp-server/`
   // would be outside a driver-scoped walk by construction, which is the shape of narrowing this file is
   // written against. Test files are excluded because they BUILD seed literals as fixtures and are not
@@ -83,7 +83,7 @@ test("Refs tracker issue 1995 — every run-status seed in the tree spreads iden
     + "a commit and that reconcile-runs can only judge by the weaker quiet-window test");
 });
 
-test("Refs tracker issue 1995 — the identity seed carries the three fields, and names its evidence", () => {
+test("the identity seed carries the three fields, and names its evidence", () => {
   const seed = identitySeed();
   assert.equal(typeof seed.pid, "number");
   assert.ok(seed.pid > 0, "a seed with no pid leaves the run ineligible for the exact liveness test");
@@ -96,7 +96,7 @@ test("Refs tracker issue 1995 — the identity seed carries the three fields, an
     `engineCommitSource must name the evidence or be null, got ${JSON.stringify(seed.engineCommitSource)}`);
 });
 
-test("Refs tracker issue 1995 — a knockout-shaped status reaches the EXACT liveness branch, not the weaker one", () => {
+test("a knockout-shaped status reaches the EXACT liveness branch, not the weaker one", () => {
   // Built from the real seed rather than from hand-written literals, so this cannot keep passing after
   // the seed's shape moves. `state: "running"` is what both lanes write; `updatedAt` is deliberately
   // FRESH, so the quiet-window fallback would answer "unknown" and the exact branch is the only route
