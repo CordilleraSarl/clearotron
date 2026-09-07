@@ -442,7 +442,7 @@ export const validators = {
       // — the register reads and the per-finding weighed lists, both joined to the store.
       if (m.registerReads !== undefined && m.registerReads !== null) {
         if (!Array.isArray(m.registerReads))
-          return { ok: false, reason: `mark "${m.name}": registerReads must be an ARRAY of { recordId, read } rows, or omitted entirely` };
+          return { ok: false, reason: `mark "${m.name}": registerReads must be an ARRAY of { recordId, read, band? } rows, or omitted entirely` };
         const held = registerRecordIdsFor(runDir, m.name);
         for (const row of m.registerReads) {
           const id = String(row?.recordId ?? "").trim();
@@ -451,6 +451,14 @@ export const validators = {
           if (!read) return { ok: false, reason: `mark "${m.name}": registerReads row "${id}" has an empty read. Omit the row rather than sending an empty one: a filing with no read keeps the card's neutral line, which is true` };
           if (!held.has(id))
             return { ok: false, reason: `mark "${m.name}": registerReads cites "${id}", which is not a record this run holds for that mark. The id must be copied from the filings you were handed — the driver joins it against the store and never takes your word for it` };
+          // The band is OPTIONAL and, when present, is the same closed vocabulary the mark's own rating
+          // uses — the card prints it as this filing's rating, so a word outside the frozen ladder would
+          // put a chip on the page in a dialect the framework does not define. Absence stays free: a read
+          // with no band prints the read and no chip, which is what every run before this one produced.
+          if (row?.band != null && String(row.band).trim()) {
+            if (ladder.length && bandIdx(ladder, row.band) < 0)
+              return { ok: false, reason: `knockout_band_unknown:${m.name}: registerReads row "${id}" carries band "${row.band}", which is not in the frozen ladder (${ladder.join(" / ")}) — rate the filing in the framework's own vocabulary, or omit the band and let the read stand alone` };
+          }
         }
       }
       for (const f of (Array.isArray(m.findings) ? m.findings : [])) {

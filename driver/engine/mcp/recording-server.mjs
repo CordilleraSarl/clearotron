@@ -1120,6 +1120,10 @@ serve({
                   properties: {
                     recordId: { type: "string", description: "Copied VERBATIM from the filings you were given." },
                     read: { type: "string", description: "What you concluded about THIS filing." },
+                    // Declared here for the reason the comment above gives: `additionalProperties: false`
+                    // means an undeclared key is a contradiction between the prose and the schema, and the
+                    // seat resolves it whichever way it happens to trust.
+                    band: { type: "string", description: "OPTIONAL — how you rate THIS filing, in the framework's own band words. Send it when you formed a view on the filing itself; the card prints it as that filing's rating. Omit it and your read still prints, with no rating claimed." },
                   },
                 },
               },
