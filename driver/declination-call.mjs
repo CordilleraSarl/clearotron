@@ -210,6 +210,38 @@ export function contradictionFor(reason, row, scope) {
       + `own-right or duplicate-of-delivered.`;
   }
 
+  // ── ECONOMY IS NOT A REASON ABOUT A LIVE IN-CLASS MARK (owner ruling 2026-09-07) ─────────────────
+  //
+  // `not-worth-the-line` means "it fits none of the four manageable categories and is not relevant
+  // enough to drive the read". That is a statement about the REPORT'S BUDGET, not about the record. On a
+  // live registration inside one of the matter's own instructed classes it is the one thing the seat may
+  // not say: the reader is paying for a judgment about that mark, and "there was no room" is not one.
+  //
+  // Measured on the run that prompted the ruling: 26 of 49 declinations at this seam were this token,
+  // and two of the lawyer's own reference marks were among them — one carried on every earlier run.
+  //
+  // ✕ WHY THIS IS NOT THE REFUSAL THAT WAS REMOVED BELOW, and the difference is the whole reason it can
+  // stand. That one refused `unrelated-goods` and `off-field-not-major` on class overlap, fired on 170
+  // of 170 records, and made the ENGINE decide relatedness — the lawyer's call. This one refuses ONE
+  // token and leaves every substantive reason available. The seat may still decline this record: it may
+  // say the goods are unrelated, that it is off-field and not a major brand, that it is the applicant's
+  // own right, or that it is already delivered. What it may no longer do is decline it for taking up
+  // space. The refusal is about the SHAPE of the reason, not about whether the record is relevant, so
+  // the relatedness judgment stays exactly where it was.
+  //
+  // It does effectively retire this token for live in-class records, because the sweep is already scoped
+  // to the instructed classes. That was put to the owner as the consequence and ruled anyway.
+  if (reason === "not-worth-the-line" && isLive(row?.status) && shared.length) {
+    return `this record is ${String(row?.status ?? "").trim() || "live"} and sits in class `
+      + `${shared.join(", ")} — one of the matter's own instructed classes. "not worth the line" is a `
+      + `statement about the report's budget, not about this mark, and a live registration in an `
+      + `instructed class is never omitted for want of room. Either carry it, or decline it on something `
+      + `true of THIS MARK: unrelated-goods if its goods do not meet the matter's, off-field-not-major `
+      + `if it is off-field and not a major brand, an active dispute or a well-known enforcer, `
+      + `own-right if it belongs to the applicant, duplicate-of-delivered if the same right is already `
+      + `reported. Say what makes this mark distant, or give it its line.`;
+  }
+
   // THERE IS NO CLASS-OVERLAP REFUSAL, AND THE FIRST DRAFT HAD ONE. It refused `unrelated-goods` and
   // `off-field-not-major` over any record sharing one of the matter's filed classes, on the reasoning
   // that the driver holds both class lists and they disagree with the stated reason.
