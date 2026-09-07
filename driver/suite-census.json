@@ -201,6 +201,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-draw-is-visible-to-the-deploy-guard.test.mjs": {
+          "tests": 7,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "a-drive-of-a-real-command-says-what-environment-it-drives-it-in.test.mjs": {
           "tests": 8,
           "asserts": 29,
