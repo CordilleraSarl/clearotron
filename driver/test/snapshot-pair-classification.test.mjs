@@ -35,7 +35,11 @@
 //   · coverage-form.mjs:149     the driver's axis is the driver's; the seat contract governs only rows
 //                               the seat adds.
 //   · coverage-form.mjs:313     determinism, with its mechanism (a fixed axis ordering) beside it.
-//   · stages.mjs:1450 ("Per-script coverage"), :1729 ("Negative-results matrix")
+//   · stages.mjs "Per-script coverage", "Negative-results matrix"
+//                               — NAMED, NOT NUMBERED. These carried line numbers and went stale twice in
+//                               one day as unrelated edits moved the file under them, landing on real
+//                               lines both times, which the citation gate cannot see. A row title is what
+//                               the reader is looking for anyway and no edit above it can stale it.
 //                               OUT OF CLASS, and enumerated rather than quietly dropped: E12 contract
 //                               classifications explaining why a dictation is code-rendered. No
 //                               flag/data pair exists at either site.
