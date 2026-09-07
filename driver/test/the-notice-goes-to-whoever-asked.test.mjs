@@ -107,11 +107,12 @@ test("289b: an unconfigured requester roster is EMPTY, never a demo one", async 
 // So this enumerates every `emailBodyHtml` site — the field that makes an object a send packet — and
 // rules on all of them. A new one fails here until somebody classifies it.
 import { readFileSync } from "node:fs";
-import { execFileSync } from "node:child_process";
+import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+const GUARD = "321-send-packets-are-classified";
 
 // file:line → why it is or is not routed. The COMPLETION notices must route; the rest must not.
 const RULED = {
@@ -129,15 +130,21 @@ function packetFiles() {
   // missed `mcp-server/server.mjs`, because that glob wants an intermediate directory. A scan that
   // quietly covers less is exactly what this arm exists to catch, so the filtering happens here where it
   // can be read.
-  const files = execFileSync("git", ["-C", ROOT, "ls-files"], { encoding: "utf8", maxBuffer: 1 << 28 })
-    .split("\n").filter(Boolean)
-    .filter((f) => f.endsWith(".mjs") && !f.includes("/test/")
-      && (f.startsWith("driver/") || f.startsWith("mcp-server/")));
+  // THROUGH THE HELPER, NOT `git ls-files` DIRECTLY. A tree outside a checkout answers an empty list to
+  // a bare `ls-files`, and an empty corpus here reads as "no file builds a send packet, so none is
+  // unruled" — a guard that passes loudest exactly where it can see nothing. `trackedFiles` returns
+  // null for that case and says so, which is a stated skip rather than a silent pass.
+  const tracked = trackedFiles(GUARD, { root: ROOT });
+  if (tracked === null) return null;
+  const files = tracked.filter((f) => f.endsWith(".mjs") && !f.includes("/test/")
+    && (f.startsWith("driver/") || f.startsWith("mcp-server/")));
   return files.filter((f) => /emailBodyHtml/.test(readFileSync(join(ROOT, f), "utf8")));
 }
 
-test("321: every file that builds a send packet has been ruled on", () => {
-  const found = packetFiles().sort();
+test("321: every file that builds a send packet has been ruled on", (ctx) => {
+  const listed = packetFiles();
+  if (listed === null) return ctx.skip(skipReason(GUARD));
+  const found = listed.sort();
   assert.ok(found.length >= 4,
     `only ${found.length} files carry emailBodyHtml — the scan is measuring less than when this was `
     + "classified, so it is now blind to packets it used to see");
