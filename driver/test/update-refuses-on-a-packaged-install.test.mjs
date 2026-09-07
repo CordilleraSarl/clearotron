@@ -110,9 +110,17 @@ test("#1929 the install ASKS about the report URL by name, and says what empty c
   const src = readFileSync(join(ROOT, "bin", "onboard.mjs"), "utf8");
   // Anchored on the question as it is actually asked. The wording moved when the install's first ten
   // minutes were rewritten for the reader — "the pool" became "the reports folder" — and this line was
-  // left behind, so it failed while the wizard was doing exactly what the criterion requires. Keep the
-  // literal rather than loosening it: what is pinned is that THIS question is put to the operator, and
-  // a pattern vague enough to survive any rewording would also survive the question disappearing.
+  // left behind, so it failed while the wizard was doing exactly what the criterion requires.
+  //
+  // THE REASON TO KEEP THE LITERAL IS NOT THAT A LOOSER PATTERN WOULD SURVIVE THE QUESTION GOING. It
+  // would not: match on the call and the call's absence reds it. The reason is underneath all four
+  // assertions here, and it is that they search the WHOLE FILE, so a comment satisfies them as well as
+  // code does — and one of them already is satisfied that way. `empty for none` occurs twice in
+  // `onboard.mjs` and both are comments recording that the phrase was taken OUT of the prompt, so the
+  // assertion that empty is a legitimate answer rests entirely on prose explaining the wording it
+  // greps for is gone. Delete those two comments and this reds with behaviour unchanged; drop the flag
+  // that actually makes empty legitimate and it stays green. The repair is to scope these four to the
+  // call and pin the flag rather than the wording — filed, and not this branch's to make.
   assert.match(src, /askValue\("Public base URL for the reports folder/,
     "the wizard must ASK — the criterion's other half, a doc that mentions it, leaves the operator "
     + "reading rather than answering");
