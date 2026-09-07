@@ -27,7 +27,7 @@ import {
   acceptPrelimVariants, renderPrelimVariants, renderScopeLedgerTable, recordPrelimVariants,
   recordedScopeLedgerRows, prelimVariantsWasRecorded, prelimVariantsCallPaths,
   MODEL_FILE, PROSE_FILE, SCOPE_LAYERS, SCOPE_STATUS,
-} from "../prelim-variants-record.mjs";
+} from "../clearotron-variants-record.mjs";
 import {
   renderScopeLedgerJson, scopeLedgerJsonFromRows, parseScopeLedgerJson, scopeJurisdictions,
   droppedVariantFamilies,
@@ -273,7 +273,7 @@ test("conversion 3 — the prose reader and the model reader agree about an incu
 
 // ── — THE SEARCH FLOOR, DESIGNATED HERE AND JUDGED DOWNSTREAM ──────────────────────────────────
 //
-// prelim-variants designates; prelim-register writes the coverage row that honours it or does not.
+// clearotron-variants designates; clearotron-register writes the coverage row that honours it or does not.
 // Different stage, earlier turn, before any outcome is known — which is the entire mechanism. These arms
 // cover the designation half: what the transport accepts, and that the artifact keeps "no floor" and
 // "a floor" apart. The breach arithmetic is in envelope.test.mjs.

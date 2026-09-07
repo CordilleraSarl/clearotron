@@ -3,7 +3,7 @@
 > Part of the architecture pack (`docs/architecture/`). The driver's module tree and the headless
 > integrator contract are in [`driver/README.md`](../../driver/README.md).
 
-The prelim driver turns a plain-language clearance request into a delivered, lawyer-vetted
+The clearotron driver turns a plain-language clearance request into a delivered, lawyer-vetted
 preliminary trademark clearance report. One matter in, one decision out — with the investigation,
 the reasoning, the challenge, and the paper trail in between run by deterministic code that treats
 the model as a reasoning step, never as the orchestrator.

@@ -165,7 +165,7 @@ Only invoke for marks where `markFeature: "Figurative"` or `markFeature: "Stylis
 Be aware these capabilities are missing, so the skill doesn't promise them:
 
 - **POCA scoring** — not available through this adapter. Skill returns `null`
-- **Cross-language search within one query** — Corsearch doesn't support "search this mark in Japanese AND English in one query." Skill handles this by generating transliteration variants in `prelim-variants` and querying each separately.
+- **Cross-language search within one query** — Corsearch doesn't support "search this mark in Japanese AND English in one query." Skill handles this by generating transliteration variants in `clearotron-variants` and querying each separately.
 - **Server-side stem-folding** — present but not configurable (the default match-mode tokenizer catches LEGEND ↔ LEGENDS). The variant manifest's `plural-root` category encodes this — search the root form to catch inflected forms.
 
 ## Provider-specific behaviour

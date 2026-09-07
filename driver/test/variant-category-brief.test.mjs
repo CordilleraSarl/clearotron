@@ -107,8 +107,8 @@ test("#445 phonetic reaches an elided or shortened middle — read narrowly it i
 });
 
 test("#445 the brief is DISPATCHED, not merely exported — an unwired constant briefs nobody", () => {
-  const msg = STAGES["prelim-variants"].message({ paths: P, job: JOB, profile: {} });
-  assert.ok(msg.includes(VARIANT_CATEGORY_BRIEF), "prelim-variants does not carry the category brief");
+  const msg = STAGES["clearotron-variants"].message({ paths: P, job: JOB, profile: {} });
+  assert.ok(msg.includes(VARIANT_CATEGORY_BRIEF), "clearotron-variants does not carry the category brief");
   // It must land AFTER the enum it defines: a definition the model reads before the field it applies to
   // is a definition it has to hold in mind, and this stage is already long.
   assert.ok(msg.indexOf(`"category":`) < msg.indexOf(VARIANT_CATEGORY_BRIEF),
@@ -119,7 +119,7 @@ test("#445 the funnel got a brief, not a filter — no term list, no stem rule, 
   // The ruling rejects "a decomposition pass, a prefix list, a stem-expansion rule" by name. The check
   // that this stays a BRIEF is that code still mints no search term: every example is parenthesised and
   // attached to a coined illustration mark, and none of them is derived from the job.
-  const msg = STAGES["prelim-variants"].message({ paths: P, job: JOB, profile: {} });
+  const msg = STAGES["clearotron-variants"].message({ paths: P, job: JOB, profile: {} });
   assert.ok(!/VELTRA PHARMA["']?\s*\)/.test(msg.replace(VARIANT_CATEGORY_BRIEF, "")),
     "an example escaped the brief into the dispatch body");
   // The job's own mark must not appear inside the brief — that would be code minting this matter's terms.

@@ -85,7 +85,7 @@ test("item 10 — bandBorderlineDeclarations reports count and marks for the rou
 
 // ── the line this must not cross ────────────────────────────────────────────────────────────────────
 test("item 10 — the doctrine is a DECLARATION, never a criterion, at both prompt levels", () => {
-  const level2 = readFileSync(new URL("../skills/prelim-search/synthesis-rules.md", import.meta.url), "utf8");
+  const level2 = readFileSync(new URL("../skills/clearotron-search/synthesis-rules.md", import.meta.url), "utf8");
   for (const [where, text] of [["BAND_BORDERLINE_NOTE", BAND_BORDERLINE_NOTE], ["synthesis-rules.md", level2]]) {
     assert.match(text, /still give[\s\S]{0,40}band|still.{0,20}give.{0,20}`band`/i, `${where}: band stays mandatory`);
     assert.match(text, /correct professional outcome/i, `${where}: declaring is not a failure`);

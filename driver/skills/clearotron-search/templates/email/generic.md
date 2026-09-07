@@ -20,7 +20,7 @@ The email body has these blocks, in this order:
 
 > "Hi [first name from request],
 >
-> Prelim for [mark name] complete — findings below; full audit Excel attached."
+> Clearotron for [mark name] complete — findings below; full audit Excel attached."
 
 (For internal test runs, use "Hi [forwarder first name]" and add a one-line context note: "v[N] test run — replied to you only, not forwarded to [client].")
 

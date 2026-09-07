@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // framework.mjs — the risk-framework MANIFEST layer (doc 50: the framework in force rates the matter).
 //
-// The framework itself is a PROSE deck (skills/prelim-search/risk-framework*.md) — the customer's own legal
+// The framework itself is a PROSE deck (skills/clearotron-search/risk-framework*.md) — the customer's own legal
 // judgment written down, which synthesis reads and reasons WITH. This module carries the small
 // machine-readable sidecar (<framework>.manifest.json) that lets validators, the renderer, the archive index
 // and the profile UI consume the framework's VOCABULARY — band words, severity order, entity label, source —
@@ -18,12 +18,12 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 // ── selection (the ?? fallback IS the "Generic default rates the matter" rule) ────────────────────────────
-export const DEFAULT_FRAMEWORK = "skills/prelim-search/risk-framework.md";
-export const DEFAULT_WORKED_EXAMPLES = "skills/prelim-search/worked-examples.md";
+export const DEFAULT_FRAMEWORK = "skills/clearotron-search/risk-framework.md";
+export const DEFAULT_WORKED_EXAMPLES = "skills/clearotron-search/worked-examples.md";
 export const frameworkFor = (profile) => profile?.frameworkPath ?? DEFAULT_FRAMEWORK;
 export const workedExamplesFor = (profile) => profile?.workedExamplesPath ?? DEFAULT_WORKED_EXAMPLES;
 
-/** skills/prelim-search/risk-framework-x.md → skills/prelim-search/risk-framework-x.manifest.json.
+/** skills/clearotron-search/risk-framework-x.md → skills/clearotron-search/risk-framework-x.manifest.json.
  *  The manifest path is DERIVED, never a profile knob — the profile names only the .md. */
 export const manifestPathFor = (fwPath) => String(fwPath).replace(/\.md$/, ".manifest.json");
 
@@ -97,7 +97,7 @@ export function parseFrameworkManifest(raw) {
   return m;
 }
 
-/** Load + parse the manifest sitting beside a framework .md. rootDir is the prelim-driver dir (the dir
+/** Load + parse the manifest sitting beside a framework .md. rootDir is the clearotron-driver dir (the dir
  *  skills/ paths are relative to — the same base reads() uses). */
 // `rootDir` may be a string (legacy: join against it) OR a resolver function taking the manifest's
 // skills-relative path and returning an absolute one — the layered overlay-over-base lookup

@@ -1985,67 +1985,6 @@ export async function runCheck() {
   // The status surface the ruling names: "status should say whether a key is still valid". Stopping
   // the door revokes nothing — a key outlives every teardown until it expires or its id is denylisted —
   // so a doctor that reported the unit and stayed silent about the keys would bless exactly the state
-  // the issue was filed about. Judged by the verifier's own pieces (`connectKeyReport` takes the real
-  // `isRevoked`), never by a second opinion written here.
-  // ── THE PROFILE STORE RESOLVES, OR THE PORTAL 500s ────────────────────────
-  //
-  // Asked by RUNNING the engine's own resolution, not by re-deriving it: loadProfiles() layers the
-  // configured store over the bundled base with generic falling through by name, and its refusal text
-  // is the exact line the portal prints on every screen when this is broken. A doctor that stayed
-  // green over that state would bless the owner's fresh-install 500.
-  say("\n  Profile store");
-  try {
-    const { loadProfiles } = await import(pathToFileURL(join(REPO, "driver", "profiles.mjs")).href);
-    const resolved = loadProfiles({ force: true });
-    const named = [...resolved.keys()];
-    ok(`resolves: ${named.length} profile(s) (${named.slice(0, 6).join(", ")}${named.length > 6 ? ", …" : ""}) — the universal fallback is present`);
-  } catch (e) {
-    problem(`the profile store does NOT resolve — every portal profile screen and every run refuses on this: ${e.message}`);
-  }
-
-  // ── THE SUBMIT LANE, WALKED (the owner's 502, 2026-09-02) ────────────────────────────────────────
-  //
-  // Every surface on that box was green while the portal's Start button had no engine to call. This is
-  // the only check that asks the question the client's own path asks, so it goes before the connector
-  // section: a dead submit lane matters more than a connector nobody has configured yet.
-  // ── SETTINGS THIS BUILD DOES NOT READ ( tracker issue 168) ────────────────────────────────────────
-  //
-  // THE SURFACE AN OPERATOR CHECKS AFTER AN UPGRADE, and until now the surface that told them
-  // everything was fine. Upgrading the production install across the `PRELIM_*` rename left thirteen
-  // configured settings with no reader in the new build; doctor exited 0 and mentioned none of them.
-  //
-  // EVERY ENVIRONMENT THE DEPLOYMENT ACTUALLY READS, not this shell's alone — the F34 lesson one step
-  // on. A hosted box's values live in the file the units load, so checking `process.env` here would
-  // pass a box whose units carry thirteen dead lines. Each source is named in its own row: "it is in
-  // your env file" and "it is in the units' environment" are different fixes.
-  //
-  // A source that could not be read is NOT reported as clean. `unitEnvironment` already distinguishes
-  // that, and an unreadable unit environment is said out loud rather than counted as zero dead names —
-  // an absence of evidence is not evidence of absence, and this whole check exists because something
-  // invisible was being read as fine.
-  {
-    const { retiredSpellingsIn, retiredSpellingLine } = await import(pathToFileURL(join(REPO, "shared", "env-aliases.mjs")).href);
-    const sources = [
-      { label: "your environment file", env: fileEnv, known: true },
-      { label: "this shell's environment", env: process.env, known: true },
-    ];
-    if (hosted) sources.push({ label: "the units' environment", env: unitEnv?.env, known: unitEnv?.known === true });
-
-    const seen = new Set();
-    let anyUnknown = false;
-    for (const src of sources) {
-      if (!src.known || !src.env) { if (src.label === "the units' environment") anyUnknown = true; continue; }
-      for (const row of retiredSpellingsIn(src.env)) {
-        // One row per NAME, not per source: a name set in both the file and the units is one thing to
-        // fix, and two rows would read as two faults.
-        if (seen.has(row.name)) continue;
-        seen.add(row.name);
-        inertSetting(`${retiredSpellingLine(row)} (found in ${src.label})`);
-      }
-    }
-    if (anyUnknown) warn(couldNotDetermine("retired setting names", unitEnv));
-    if (!seen.size && !anyUnknown) ok("no retired setting names — every configured name is one this build reads");
-  }
 
   // LINGERING, WHICH NOTHING ELSE CHECKS ( — F9). `--background` installs USER units,
   // and a user manager without lingering is torn down at logout: the units stop with the session and

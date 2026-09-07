@@ -31,7 +31,7 @@ const lvl = (key: string, over: Partial<Product> = {}): Product => ({
 const saved = (over: Partial<SavedSearch> = {}): SavedSearch => ({
   slug: 'launch-check',
   label: 'Launch check',
-  base: 'prelim',
+  base: 'clearotron',
   version: 3,
   ...over,
 })
@@ -39,8 +39,8 @@ const saved = (over: Partial<SavedSearch> = {}): SavedSearch => ({
 test('a saved search reports the base level’s STAGE label, never the stored base key', () => {
   // The report-identity rule: the stage label is the only name for this thing a client has ever been
   // shown. `base` is an internal selector that happens to read like a word.
-  const levels = [lvl('prelim', { stageLabel: 'Depth 4 — preliminary clearance' })]
-  const s = statusFor(saved({ base: 'prelim' }), levels)
+  const levels = [lvl('clearotron', { stageLabel: 'Depth 4 — preliminary clearance' })]
+  const s = statusFor(saved({ base: 'clearotron' }), levels)
   assert.equal(s.kind, 'ready')
   assert.equal(s.kind === 'ready' ? s.stageLabel : null, 'Depth 4 — preliminary clearance')
 })
@@ -66,7 +66,7 @@ test('a base that has drifted past the registry is its OWN state — the key nev
   // Stored recipe config can outlive a level. The one-line fallback (`level?.stageLabel ?? recipe.base`)
   // fires only in this branch, which means the only time it would ever print the raw key is the one time
   // nothing has vetted that key as fit to show a client.
-  const s = statusFor(saved({ base: 'prelim-jx-legacy' }), [lvl('prelim')])
+  const s = statusFor(saved({ base: 'prelim-jx-legacy' }), [lvl('clearotron')])
   assert.equal(s.kind, 'unknownBase')
   assert.equal(JSON.stringify(s).includes('prelim-jx-legacy'), false, 'the stored base key is not carried into the display state')
 })
@@ -130,23 +130,23 @@ test('sorting copies rather than reordering the caller’s array in place', () =
 test('a status leads with the level NAME and carries its stage beside it', () => {
   // Owner ruling 2026-07-20: the interface leads with the NAME of a search and carries the stage
   // beside it. This row is a comparison of the products a client has configured, so it keeps both.
-  const ready = statusFor(saved({ base: 'prelim' }), [lvl('prelim')])
+  const ready = statusFor(saved({ base: 'clearotron' }), [lvl('clearotron')])
   assert.equal(ready.kind, 'ready')
-  assert.equal(ready.kind === 'ready' && ready.name, 'Name of prelim')
+  assert.equal(ready.kind === 'ready' && ready.name, 'Name of clearotron')
   // stageLabel survives as the degradation fallback, never as the thing rendered first.
-  assert.equal(ready.kind === 'ready' && ready.stageLabel, 'prelim')
+  assert.equal(ready.kind === 'ready' && ready.stageLabel, 'clearotron')
 })
 
 test('an unavailable status is named too — a client cannot act on a number', () => {
-  const s = statusFor(saved({ base: 'prelim' }), [lvl('prelim', { available: false, unavailableNote: 'Not part of the current release.' })])
+  const s = statusFor(saved({ base: 'clearotron' }), [lvl('clearotron', { available: false, unavailableNote: 'Not part of the current release.' })])
   assert.equal(s.kind, 'unavailable')
-  assert.equal(s.kind === 'unavailable' && s.name, 'Name of prelim')
+  assert.equal(s.kind === 'unavailable' && s.name, 'Name of clearotron')
   assert.equal(s.kind === 'unavailable' && s.note, 'Not part of the current release.')
 })
 
 test('an older server that sends no name degrades to the label, never to a blank', () => {
   // The wire rule everywhere: `name || stageLabel`. A blank product name on a screen that spends money
   // is worse than an out-of-date one.
-  const s = statusFor(saved({ base: 'prelim' }), [lvl('prelim', { name: '', stage: '' })])
-  assert.equal(s.kind === 'ready' && s.name, 'prelim')
+  const s = statusFor(saved({ base: 'clearotron' }), [lvl('clearotron', { name: '', stage: '' })])
+  assert.equal(s.kind === 'ready' && s.name, 'clearotron')
 })

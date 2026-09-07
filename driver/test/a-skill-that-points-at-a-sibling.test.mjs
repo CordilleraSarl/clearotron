@@ -16,8 +16,8 @@
 //
 // ── THE TWO EXCLUSIONS, AND WHY THEY ARE NOT A LOOPHOLE ─────────────────────────────────────────────
 //
-// CROSS-SKILL — a link into ANOTHER skill's document. prelim-variants cites a step of
-// prelim-register/SKILL.md; prelim-register's own two dispatches already measure that file. Counting it
+// CROSS-SKILL — a link into ANOTHER skill's document. clearotron-variants cites a step of
+// clearotron-register/SKILL.md; clearotron-register's own two dispatches already measure that file. Counting it
 // here as well would inflate the ratchet by 28,535 B nobody dispatched twice, and a ratchet that moves
 // for reasons no dispatch can be traced to is worse than one that under-counts.
 //

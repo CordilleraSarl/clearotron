@@ -19,8 +19,8 @@ const frozenSyn = (profiles, key) =>
 test("freezeProfile carries the per-customer framework, so it is ACTUALLY applied (not silently defaulted)", () => {
   const profiles = loadProfiles({ force: true });
   const fz = freezeProfile(resolveProfile({ profileKey: "aurora" }, { profiles }));
-  assert.equal(fz.frameworkPath, "skills/prelim-search/risk-framework-aurora.md", "the frozen sidecar MUST carry frameworkPath (dropping it is the bug)");
-  assert.equal(fz.workedExamplesPath, "skills/prelim-search/worked-examples-aurora.md");
+  assert.equal(fz.frameworkPath, "skills/clearotron-search/risk-framework-aurora.md", "the frozen sidecar MUST carry frameworkPath (dropping it is the bug)");
+  assert.equal(fz.workedExamplesPath, "skills/clearotron-search/worked-examples-aurora.md");
   // and the synthesis stage, fed the FROZEN profile (as production does), reads the customer's framework
   assert.match(frozenSyn(profiles, "aurora"), /risk-framework-aurora\.md/);
   assert.match(frozenSyn(profiles, "aurora"), /worked-examples-aurora\.md/);
@@ -31,7 +31,7 @@ test("a profile with no per-customer framework still defaults to the firm-neutra
   const profiles = loadProfiles({ force: true });
   for (const key of [null, "petcary"]) {     // generic + petcary ship no framework
     const syn = frozenSyn(profiles, key);
-    assert.match(syn, /skills\/prelim-search\/risk-framework\.md/, `${key ?? "generic"} ⇒ firm-neutral default`);
+    assert.match(syn, /skills\/clearotron-search\/risk-framework\.md/, `${key ?? "generic"} ⇒ firm-neutral default`);
     assert.doesNotMatch(syn, /risk-framework-(aurora|zephyr)\.md/, `${key ?? "generic"} must NOT read a per-customer framework`);
   }
 });
@@ -74,7 +74,7 @@ test("spec 62: a project-bearing freeze carries projectKey/projectName/origins; 
   assert.equal(fzProj.projectKey, "console-ecosystem");
   assert.equal(fzProj.projectName, "Console ecosystem");
   assert.equal(fzProj.origins.platforms, "customer+project");
-  assert.equal(fzProj.frameworkPath, "skills/prelim-search/risk-framework-aurora.md", "the customer's framework still rates the matter");
+  assert.equal(fzProj.frameworkPath, "skills/clearotron-search/risk-framework-aurora.md", "the customer's framework still rates the matter");
   // the frozen floor is DERIVED from the resolved (project) platforms — a field dropped from freezeProfile would
   // be the exact silent-fallback bug that bit frameworkPath in June.
   assert.equal(fzProj.minCellsPerVariant, eff.profile.platforms.length + 1, "the project's marketplace floor is frozen");
@@ -99,11 +99,11 @@ const HERE_DRIVER = joinPath(dirOf(toURLPath(import.meta.url)), "..");
 
 test("config.skillsRoot follows CLEAROTRON_INSTRUCTIONS_DIR — the driver reads frameworks where the AGENT reads them", async () => {
   const store = mkdtempSync(joinPath(tmpdir(), "skills-store-"));
-  mkdirp(joinPath(store, "skills", "prelim-search"), { recursive: true });
-  const fwPath = "skills/prelim-search/risk-framework-tenant.md";
+  mkdirp(joinPath(store, "skills", "clearotron-search"), { recursive: true });
+  const fwPath = "skills/clearotron-search/risk-framework-tenant.md";
   writeF(joinPath(store, fwPath), "# Tenant framework\n");
   // shape mirrors the shipped risk-framework.manifest.json (parseFrameworkManifest is strict)
-  const houseManifest = JSON.parse(readFileSync(joinPath(HERE_DRIVER, "skills/prelim-search/risk-framework.manifest.json"), "utf8"));
+  const houseManifest = JSON.parse(readFileSync(joinPath(HERE_DRIVER, "skills/clearotron-search/risk-framework.manifest.json"), "utf8"));
   writeF(joinPath(store, fwPath.replace(/\.md$/, ".manifest.json")),
     JSON.stringify({ ...houseManifest, framework_key: "tenant-only", title: "Tenant framework" }));
 

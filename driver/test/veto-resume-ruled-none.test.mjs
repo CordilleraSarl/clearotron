@@ -53,7 +53,7 @@ const JOB = {
 };
 
 // config.workspaceRoot freezes at FIRST import — every run in this file lands under ROOT.
-const ROOT = mkdtempSync(join(tmpdir(), "prelim-veto-"));
+const ROOT = mkdtempSync(join(tmpdir(), "clearotron-veto-"));
 
 async function runPipeline(env, jobPatch = {}, opts = {}) {
   for (const k of ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "CLEAROTRON_MAX_RETRIES"]) delete process.env[k];

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Rate-limit POSTPONE regression (2026-06-22 incident). Two prelim runs (NOVAPULSE, BIOVELTRIN) hard-FAILED on a
+// Rate-limit POSTPONE regression (2026-06-22 incident). Two clearotron runs (NOVAPULSE, BIOVELTRIN) hard-FAILED on a
 // register-stage 429 (Claude subscription 5h cap), stranding ~1.5h of completed stages — even though the driver
 // ships a designed postpone+auto-resume path. ROOT CAUSE: pipelineInner's terminal catch wrapped the ENTIRE
 // stage sequence and swallowed the rate-limited StageFailure (writing .failed + firing notify-fail) before it
@@ -43,17 +43,17 @@ const RESET_EPOCH_SEC = 2000000000;                       // 2033-05-18T03:33:20
 const RESET_ISO = new Date(RESET_EPOCH_SEC * 1000).toISOString();
 
 test("a mid-run register-sweep 429 POSTPONES the run (resumable) — never writes .failed / notify-fail", async () => {
-  const root = mkdtempSync(join(tmpdir(), "prelim-rl-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-rl-"));
   for (const k of ["MOCK_FAIL_STAGE", "MOCK_LEDGER_LIMITED", "MOCK_CANDSELF"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent",
     CLEAROTRON_CLAUDE_PATH: CLAUDE_MOCK,
     CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "clawdi",
     MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
-    // 429 ONLY on the register-unit sweeps (they read prelim-register/unit.md). matter-frame + prelim-variants
+    // 429 ONLY on the register-unit sweeps (they read clearotron-register/unit.md). matter-frame + clearotron-variants
     // run and succeed first, so this is a genuine MID-RUN rate-limit — the incident's shape.
     MOCK_CLAUDE_RATELIMIT: String(RESET_EPOCH_SEC),
-    MOCK_CLAUDE_RATELIMIT_MATCH: "prelim-register/unit.md",
+    MOCK_CLAUDE_RATELIMIT_MATCH: "clearotron-register/unit.md",
   })) pinEnv(process.env, k, v);
 
   try {
@@ -84,7 +84,7 @@ test("a mid-run register-sweep 429 POSTPONES the run (resumable) — never write
     assert.ok(!events.some((e) => e.event === "failed"), "run.jsonl has NO failed event");
     // Earlier stages completed BEFORE the 429 — proves it's a mid-run postpone with work preserved (resume reuses it).
     const okStages = events.filter((e) => e.event === "stage" && e.ok).map((e) => e.stage);
-    assert.ok(okStages.includes("matter-frame") && okStages.includes("prelim-variants"),
+    assert.ok(okStages.includes("matter-frame") && okStages.includes("clearotron-variants"),
       `early stages completed before the 429 (got ${okStages.join(", ")})`);
     // The failure-notify one-shot must never run on a postpone (the incident fired it — and it too 429'd).
     assert.ok(!events.some((e) => e.event === "stage" && e.stage === "notify-fail-chat"), "notify-fail-chat NOT run on a postpone");

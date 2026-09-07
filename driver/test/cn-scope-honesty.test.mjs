@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// CN scope honesty at plain prelim. The zh candidate
-// lane is a Depth 5 (prelim-jx) PAID feature that must NOT run at plain prelim; this branch adds
+// CN scope honesty at plain clearotron. The zh candidate
+// lane is a Depth 5 (prelim-jx) PAID feature that must NOT run at plain clearotron; this branch adds
 // HONESTY, not searching: (a) one deterministic reader-visible coverage row when the scope touches the
 // zh-lane family and the lane did not run (the injectDeferralCoverage posture), and (b) a note-only
 // recommendation at level resolution. CRITICAL doctrine pinned here: the row is `coverage-limited`,
@@ -98,7 +98,7 @@ test("zhLaneRanOnRun: true only when component + a unit flag + lane flag + froze
   // report "did not run" on a run that did and the report libels its own coverage.
   const ranGrid = mkRun({ laneSidecar: ZH_SIDECAR, units: RAN_GRID });
   assert.equal(zhLaneRanOnRun(ranGrid, { searchPolicy: POLICY_JX, env: JX_ON }), true);
-  assert.equal(zhLaneRanOnRun(ranGrid, { searchPolicy: POLICY_PRELIM, env: JX_ON }), false, "plain prelim never ran the lane, whatever is on disk");
+  assert.equal(zhLaneRanOnRun(ranGrid, { searchPolicy: POLICY_PRELIM, env: JX_ON }), false, "plain clearotron never ran the lane, whatever is on disk");
   assert.equal(zhLaneRanOnRun(ranGrid, { searchPolicy: POLICY_JX, env: { CLEAROTRON_NATIVE_LANGUAGE_ZH: "0" } }), false, "lane killed ⇒ did not run");
   const noSidecar = mkRun({ units: RAN_GRID });
   assert.equal(zhLaneRanOnRun(noSidecar, { searchPolicy: POLICY_JX, env: JX_ON }), false, "no frozen lane decision ⇒ did not run");
@@ -138,7 +138,7 @@ test("zhLaneRanOnRun: true only when component + a unit flag + lane flag + froze
 const FINDINGS_DOC = { schema_version: 2, findings: [], coverage: [{ area: "register / US", state: "confirmed-clean", note: "" }] };
 const quiet = () => {};
 
-test("injectZhScopeCoverage: injects ONE row for a worldwide/CN-scope plain-prelim run state, idempotently", () => {
+test("injectZhScopeCoverage: injects ONE row for a worldwide/CN-scope plain-clearotron run state, idempotently", () => {
   const dir = mkRun();
   const P = { findings: join(dir, "findings.json") };
   writeFileSync(P.findings, JSON.stringify(FINDINGS_DOC, null, 2));
@@ -165,7 +165,7 @@ test("injectZhScopeCoverage: NOT injected when the lane ran, and NOT injected wh
   injectZhScopeCoverage(ranP, ran, quiet, { searchPolicy: POLICY_JX, job: { jurisdictions: ["CN"] }, profile: {}, env: JX_ON });
   assert.equal(JSON.parse(readFileSync(ranP.findings, "utf8")).coverage.some((c) => c.area === ZH_SCOPE_COVERAGE_AREA), false,
     "the lane ran — nothing to disclose");
-  // no zh scope: a bounded US/EU prelim
+  // no zh scope: a bounded US/EU clearotron
   const us = mkRun();
   const usP = { findings: join(us, "findings.json") };
   writeFileSync(usP.findings, JSON.stringify(FINDINGS_DOC, null, 2));
@@ -186,7 +186,7 @@ test("injectZhScopeCoverage: never-kill — a corrupt findings.json is left byte
 //
 // THESE TESTS WERE GREEN OVER A DEAD BRANCH FOR THE WHOLE, and how they managed it is the point.
 //
-// `zhScopeDepthNotes` opened with `resolvedPolicy.level !== "prelim"`. `resolveSearchPolicy` returns
+// `zhScopeDepthNotes` opened with `resolvedPolicy.level !== "clearotron"`. `resolveSearchPolicy` returns
 // `level` = THE PRODUCT ID for all four searches, so that leg was false on every live run and the
 // recommendation returned [] for every one of them — with both callers live (pipeline.mjs, runner.mjs)
 // and 3,754 driver tests passing. The tests passed because they built the policy BY HAND, as
@@ -241,7 +241,7 @@ test("zhScopeDepthNotes: driven from the REAL resolver, every product in the off
 });
 
 test("zhScopeDepthNotes: the note names NO retired product key and NO rung of the depth ladder", () => {
-  // It named both — "a plain prelim (Depth 4) … the \"prelim-jx\" level (Depth 5)" — for a run log a
+  // It named both — "a plain clearotron (Depth 4) … the \"prelim-jx\" level (Depth 5)" — for a run log a
   // person reads. The same vocabulary reached a CLIENT report through the coverage row above, which is
   // why this is asserted on both and not only there.
   const { job, resolved } = policyFor_("knockout-search", ["CN", "FR"]);
@@ -280,7 +280,7 @@ test("zhScopeDepthNotes: absent with no zh scope, on a worldwide run, or where t
 // ── — the writer is LANE-GENERAL, not zh-hardcoded ─────────────────────────────────────────────
 //
 // LANGUAGE_LANES defines zh, ja and ko. The disclosure above was written for zh alone, so a Japan- or
-// Korea-scoped run at plain prelim said NOTHING about the Japanese/Korean-script equivalents it had
+// Korea-scoped run at plain clearotron said NOTHING about the Japanese/Korean-script equivalents it had
 // not searched — and silence there is indistinguishable from "there was nothing to search". Same
 // absence-reads-as-a-pass class as the remedy-term half.
 //
@@ -341,7 +341,7 @@ test("#248 scriptLaneRanOnRun: zh keeps its unit legs; ja/ko run when the FOLD a
     "a lane decision with an empty fold searched nothing — an absence is a finding");
   // the per-lane env kill applies to every lane, by name
   assert.equal(scriptLaneRanOnRun(dir, "ja", { searchPolicy: POLICY_JX, env: { CLEAROTRON_NATIVE_LANGUAGE_JA: "0" } }), false);
-  // plain prelim never ran any lane, whatever is on disk
+  // plain clearotron never ran any lane, whatever is on disk
   assert.equal(scriptLaneRanOnRun(dir, "ja", { searchPolicy: POLICY_PRELIM, env: {} }), false);
   // zh keeps its own rule, and item 8 changed what that rule READS rather than what it means: one
   // of the two units having executed. The evidence is now the unit record instead of the arm that used
@@ -355,7 +355,7 @@ test("#248 scriptLaneRanOnRun: zh keeps its unit legs; ja/ko run when the FOLD a
   assert.equal(zhLaneRanOnRun(zhRan, { searchPolicy: POLICY_JX, env: {} }), true, "the zh-bound alias still answers identically");
 });
 
-test("#248 injectScriptScopeCoverage: a JP+KR plain-prelim run gets the ja AND ko rows — and neither eats the other", () => {
+test("#248 injectScriptScopeCoverage: a JP+KR plain-clearotron run gets the ja AND ko rows — and neither eats the other", () => {
   const dir = mkRun();
   const P = { findings: join(dir, "findings.json") };
   writeFileSync(P.findings, JSON.stringify(FINDINGS_DOC, null, 2));

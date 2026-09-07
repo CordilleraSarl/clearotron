@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Pure-code publish step for the prelim-driver: takes a finished run's two contract markdown files
+// Pure-code publish step for the clearotron-driver: takes a finished run's two contract markdown files
 // (report.md + audit.md, written by the report-synthesis / audit-emit stages) and renders + writes the
 // delivery artifacts into the pool (`config.poolRoot`, which since has NO default — unset refuses),
 // then regenerates the index.
@@ -1415,7 +1415,7 @@ export function composeEmailBody(reportMdPath, url, auditFile, productName = nul
 const FONT = "font-family:Calibri,'Segoe UI',Arial,sans-serif";
 
 // 5-tier reporting-template risk scheme — the whole left "NAME / RISK RATING" cell takes the bg colour.
-// Matches skills/prelim-search/templates/search-request-form.html + knockout-searches/template-formatting.md.
+// Matches skills/clearotron-search/templates/search-request-form.html + knockout-searches/template-formatting.md.
 // `txt` = a readable text-colour version of the tier (for the EXECUTIVE SUMMARY risk phrase, where a bright
 // fill like yellow/red is unreadable as text). Order matters: VERY HIGH before HIGH.
 export const RISK_TIERS = [

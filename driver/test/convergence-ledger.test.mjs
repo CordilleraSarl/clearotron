@@ -203,7 +203,7 @@ test("#246 ladder 7 → 6 → 5, park, 6 → 3 → pass: the count crosses the p
 
 test("#246 a quantity-less ladder records ABSENT on every row — an absence is not a converged zero", async () => {
   process.env.MOCK_FAIL_STAGE = "BASE TASK";              // every turn: exit(1) → nonzero_exit_1
-  const r = await runStage("transport", { agent: "clawdi", message: "BASE TASK", sessionKey: "prelim-transport",
+  const r = await runStage("transport", { agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-transport",
     timeoutSec: 30, expectFile: join(dir, "t.md"), maxRetries: 2, runDir: dir });
   assert.equal(r.ok, false);
   assert.deepEqual(counts("transport"), [null, null, null]);

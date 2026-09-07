@@ -1,9 +1,9 @@
 # trademark-artifacts-mcp
 
-An MCP server to **interrogate prelim trademark-clearance runs** — for an integrator's agent platform and for
+An MCP server to **interrogate clearotron trademark-clearance runs** — for an integrator's agent platform and for
 your **own Claude** (Claude Code / Desktop) alike. One stdio binary, two consumers.
 
-It answers three kinds of question against any run the `prelim-driver` produced:
+It answers three kinds of question against any run the `clearotron-driver` produced:
 1. **"How did you reach Y?"** — `trace` walks the full logic flow from any point (a stage, an artifact, a
    finding, the verdict) back through the stage that emitted it, its model + any failover, its inputs (with the
    sha each input had *when consumed* vs now), the per-search audit-trail rationale, the search terms + record
@@ -15,7 +15,7 @@ It answers three kinds of question against any run the `prelim-driver` produced:
 
 ## Design
 
-- **Imports the `prelim-driver` read-only** via `lib/driver.mjs` (the single coupling point). It hardcodes **no**
+- **Imports the `clearotron-driver` read-only** via `lib/driver.mjs` (the single coupling point). It hardcodes **no**
   artifact filename or stage name, so the driver can rename artifacts freely — the server tracks
   `paths()` / `STAGE_ORDER` automatically. It edits **no** driver, template, or deploy file.
 - **Provenance from the self-describing `_driver/run.jsonl`** (each `stage` event records its own
@@ -73,7 +73,7 @@ whether the stage makes **billed** external calls, **what downstream is NOT reco
   report downstream are **not** recomputed (a finished-report answer would need a full cascade, which is out of
   scope for v1 — see Future).
 
-`what_if_run` takes the `confirmationToken` and re-runs the one stage in `_experiments/…` under a `prelim-exp-…`
+`what_if_run` takes the `confirmationToken` and re-runs the one stage in `_experiments/…` under a `clearotron-exp-…`
 session key (canonical bytes untouched, its billed calls keyed off-run), then diffs it against canonical.
 **Live (undelivered) runs only.** Express the change with `instructions` (e.g. *"treat ACME's mark as
 expired"*) and/or `model`.

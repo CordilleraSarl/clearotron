@@ -123,9 +123,9 @@ test("within one invocation: R0e's doors stay SEPARATE matters and both admit", 
 });
 
 test("the token lands BEFORE the |level: suffix, which is where sigLevel's end-anchor needs it", () => {
-  // runner.mjs: `sigLevel(sig) { return String(sig).match(/\|level:([^|]*)$/)?.[1] || "prelim"; }` — anchored
+  // runner.mjs: `sigLevel(sig) { return String(sig).match(/\|level:([^|]*)$/)?.[1] || "clearotron"; }` — anchored
   // at the END, and BOTH dedup dimensions read it. Anything appended AFTER the level suffix would make
-  // every non-prelim signature read back as "prelim" with nothing thrown and nothing logged: R2 (prelim)
+  // every non-clearotron signature read back as "clearotron" with nothing thrown and nothing logged: R2 (clearotron)
   // would look fine while R1 (prelim-jx) and the knockout scenarios all mis-read. The token rides the REF,
   // the field before the suffix, so the suffix stays last. Pinned as a literal AND behaviourally, because
   // a regex assertion alone cannot show that the dimension still works.
@@ -138,7 +138,7 @@ test("the token lands BEFORE the |level: suffix, which is where sigLevel's end-a
 
   // The THREAD dimension is level-aware, and can only be level-aware if sigLevel parses. Same thread, same
   // mark, DIFFERENT level is the headline escalation (a knockout coming back HIGH), and it must never park
-  // as a duplicate. Had the token broken the anchor, both sides would read "prelim", the levels would
+  // as a duplicate. Had the token broken the anchor, both sides would read "clearotron", the levels would
   // "agree", and the escalation would be refused in silence.
   const q = freshQueue("siglevel");
   recordMatter(q, { sig, conversationId: "CONV-ESCALATE", msgId: "<knockout@e2e>", ts: NOW });

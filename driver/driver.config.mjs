@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Central paths + tunables for the prelim-search deterministic driver.
+// Central paths + tunables for the clearotron-search deterministic driver.
 //
 // The driver runs as an ordinary UNIX service account (launched by systemd), NOT as an LLM agent.
 // The agent exec-deny is a gateway agent-tool restriction; it does not apply to this OS process.
@@ -240,7 +240,7 @@ export const config = {
     return roots;
   },
 
-  // The base that a profile's "skills/prelim-search/<file>.md" path is relative to — i.e. the PARENT
+  // The base that a profile's "skills/clearotron-search/<file>.md" path is relative to — i.e. the PARENT
   // of skillsDir. Everything the DRIVER reads itself (framework manifests, band-meaning extraction)
   // must join against this, exactly as the agent resolves the same relative paths against the
   // skillsDir it is handed (gateway.mjs engineSkillsDir).
@@ -252,7 +252,7 @@ export const config = {
   get skillsRoot() { return dirname(this.skillsDir); },
 
   // ── Per-agent paths ───────────────────────────────────────────────────────
-  // A prelim job is enqueued into the FORWARDING agent's OWN workspace queue (that agent's `write` tool
+  // A clearotron job is enqueued into the FORWARDING agent's OWN workspace queue (that agent's `write` tool
   // is sandboxed there), and we run the whole pipeline as that same agent so the reply tool
   // (`clawdi_send_<user>`), the run-dir, and the agent's memory all line up. The queue LOCATION therefore
   // encodes the agent identity — the driver derives {agentId, studioRoot} from where it claimed the job,
@@ -269,6 +269,13 @@ export const config = {
   },
   // Escaped prefix for the reverse regexes below (a custom prefix may carry regex metachars).
   get workspacePrefixRe() { return this.workspacePrefix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); },
+  // `prelim-search` IS NOT A PRODUCT NAME HERE and does not follow the product rename. It is a
+  // directory segment on disk, and every archived run — its slug dirs, its `archive/`, its matter
+  // ledger — was written under it. Renaming the segment does not move those runs; it points the
+  // reader somewhere empty, and an empty directory reads as "no runs" rather than as an error.
+  // The rule the tree already enforces elsewhere: a token that is read back out of an archive keeps
+  // its old spelling, or the code refuses its own archive. Thirteen sites compute this segment and
+  // all thirteen stay.
   studioRootForAgent(agentId) {
     return join(this.workspaceRoot, this.workspaceDirName(agentId), "studio", "prelim-search");
   },
@@ -283,7 +290,7 @@ export const config = {
     const m = new RegExp(`(?:^|/)${this.workspacePrefixRe}([^/]+)/studio/prelim-search/queue/?$`).exec(qdir);
     return m ? m[1] : null;
   },
-  // Every agent workspace's prelim queue. The systemd `.path` watches these and the runner drains ALL of
+  // Every agent workspace's clearotron queue. The systemd `.path` watches these and the runner drains ALL of
   // them on each trigger (+ a timer fallback), so a request from ANY forwarder runs. (Pre-fix the watcher
   // and runner only looked at workspace-clawdi, silently orphaning every Alex/Sam job — the bug this fixes.)
   //
@@ -485,7 +492,7 @@ export const config = {
   // jobs AND manual pipeline.mjs invocations alike. WS-C raised the V4-7 stopgap's 1 → 3 (one per agent).
   // Phase-4: 3 → 6 + per-agent admission LIFTED (pipeline.acquireRunSlot no longer tags by agent). The
   // 2026-06-12 starvation that forced one-run-at-a-time (parallel runs → every gateway lane busy → 75s
-  // heartbeat timeouts → a lost mid-run reply) was a GATEWAY phenomenon; prelim COMPUTE now runs off the
+  // heartbeat timeouts → a lost mid-run reply) was a GATEWAY phenomenon; clearotron COMPUTE now runs off the
   // gateway on the standalone claude -p engine, so concurrent runs no longer starve the heartbeat. The TURN
   // cap below still bounds the (now light) intake/delivery gateway demand. The runner serializes only the
   // cheap claim+dedup per queue and runs pipelines concurrently up to this cap (same-matter dedup stays
@@ -493,14 +500,22 @@ export const config = {
   // if the env is unset — keep the two in sync). Set to 2 on 2026-06-18 (was 6): 2 parallel is enough for now,
   // and bounds Max-5x rate-limit thrash. To change the live cap, set the env on the VM (no code deploy needed).
   get maxConcurrentRuns() { return Math.max(1, numericSetting("CLEAROTRON_MAX_CONCURRENT_RUNS")); },
+  // ON-DISK NAME, NOT A PRODUCT NAME: an install that never set the variable is already using this
+  // directory, so renaming the default moves the install to an empty one and nothing migrates. Here
+  // the orphaned files are run-slot locks, so a live run's slot goes unseen and the global cap is
+  // silently exceeded rather than enforced. Owner ruling, tracker issue 308.
   get runLockDir() { return this.envValue("CLEAROTRON_RUN_LOCK_DIR") || join(this.workspaceRoot, "prelim-run-locks"); },
 
   // Delivery outbox (Workstream B). On a handoff-mode finish the driver drops <runId>.pending here (naming
-  // the forwarder agent); the systemd-user prelim-outbox.path unit fires an INSTANT prelim-deliver wake off
+  // the forwarder agent); the systemd-user prelim-outbox.path unit fires an INSTANT clearotron-deliver wake off
   // it, so a finished run sends in seconds instead of waiting ≤55m for the HEARTBEAT completion-watch (which
   // stays as the backstop). Mirrors runLockDir's derivation; env-overridable for dev/prod parity.
   // Phase 2: the outbox is ALSO the event seam for every other requester-facing event (run-failed,
   // intake-rejected, duplicate-skipped, late-bind-ack) — self-contained JSON packets via outbox.mjs.
+  // ON-DISK NAME, NOT A PRODUCT NAME: an install that never set the variable is already using this
+  // directory, so renaming the default moves the install to an empty one and nothing migrates. Here
+  // the orphaned files are requester-facing events — delivered, run-failed, intake-rejected — so the
+  // visible failure is a requester never told their run finished. Owner ruling, tracker issue 308.
   get outboxDir() { return this.envValue("CLEAROTRON_OUTBOX_DIR") || join(this.workspaceRoot, "prelim-outbox"); },
 
   // ── Delivery/comms (Phase 2, standalone product) ─────────────────────────────────────────────────
@@ -516,8 +531,25 @@ export const config = {
 
   // Fallback execution agent when a job's origin agent can't be derived from its queue dir (shouldn't
   // happen in normal operation). The real per-run agent is the forwarding agent, derived from the queue
-  // LOCATION (see studioRootForAgent / agentIdFromQueueDir above). `clawdi` carries all the prelim tools.
-  get defaultAgent() { return process.env.CLEAROTRON_DEFAULT_AGENT || "clawdi"; },
+  // LOCATION (see studioRootForAgent / agentIdFromQueueDir above).
+  //
+  // THE DEFAULT IS PART OF A PATH, so changing it moves where an install looks for its own runs:
+  // every run dir is `<workspaceRoot>/workspace-<agent>/studio/prelim-search/…`. An install created
+  // before this default changed keeps its runs under the old id and must pin it — both spellings,
+  // because the gather servers read their own variable:
+  //
+  //     CLEAROTRON_DEFAULT_AGENT=clawdi
+  //     CLEAROTRON_GATHER_AGENT=clawdi
+  //
+  // Unpinned, such an install starts a fresh empty workspace and its existing runs read as absent
+  // rather than as an error. Said again where upgrades are described (INSTALL.md, ops runbook).
+  //
+  // THE ID IS ALSO A KEY, not only a path segment. `AGENT_WHATSAPP` in stages.mjs is keyed by agent
+  // id, so the demo roster has to carry this value or the reference deployment resolves no operator
+  // number and the hole reads as "no copy configured" rather than as a miss. Both ids are in that
+  // roster for the same reason the pin above exists. (The roster stays one line: 32 backlog rows
+  // cite line numbers in stages.mjs, so a comment added there repoints all of them.)
+  get defaultAgent() { return process.env.CLEAROTRON_DEFAULT_AGENT || "localagent"; },
 
   // Per-stage retry budget (fresh session key per retry).
   get maxRetries() { return numericSetting("CLEAROTRON_MAX_RETRIES"); },
@@ -864,7 +896,7 @@ export const PROVIDERS = {
     id: "corsearch",
     label: "Corsearch",
     credEnv: "CORSEARCH_SESSION_KEY",
-    skillDoc: "skills/prelim-register/providers/corsearch.md",
+    skillDoc: "skills/clearotron-register/providers/corsearch.md",
     hasPublicRecordUrl: true,
     // WP-receipts W2: the public per-record origin (publicRecordOrigin + /mark/<jur>/<id> is a working
     // link) — replaces the fragile resolved-link-origin inference at render for receipt-carrying runs.
@@ -938,7 +970,7 @@ export const PROVIDERS = {
     id: "clarivate",
     label: "Clarivate Compumark",
     credEnv: "CLARIVATE_API_KEY",
-    skillDoc: "skills/prelim-register/providers/clarivate.md",
+    skillDoc: "skills/clearotron-register/providers/clarivate.md",
     hasPublicRecordUrl: false, // Compumark Content has no public record URL — cite the office register
     //, owner ruling 2026-08-20 — WHAT A CARD SHOWS WHERE A LINK CANNOT GO. A UI exists for this
     // provider and we do not know its per-record URL, so the card says so and says it is unfinished.
@@ -1075,7 +1107,7 @@ export const PROVIDERS = {
     id: "signa",
     label: "Signa",
     credEnv: "SIGNA_API_KEY",
-    skillDoc: "skills/prelim-register/providers/signa.md",
+    skillDoc: "skills/clearotron-register/providers/signa.md",
     hasPublicRecordUrl: false, // Signa exposes no per-record public URL — cite the office register
     //, owner ruling 2026-08-20 — no register UI exists to link to at all, so the card points at
     // the artifact that DOES carry the record: the audit workbook. Naming it is the whole of this
@@ -1176,7 +1208,7 @@ export const PROVIDERS = {
     // list — without this, an instance holding the id and no secret passes preflight and dies on the
     // first token request, after model spend and reported as a provider fault.
     credEnvAlso: ["EUIPO_CLIENT_SECRET"],
-    skillDoc: "skills/prelim-register/providers/euipo.md",
+    skillDoc: "skills/clearotron-register/providers/euipo.md",
     hasPublicRecordUrl: true,
     publicRecordOrigin: "https://euipo.europa.eu",
     async recordFetch(uri, { agentId, sessionKey, recordLog = null }) {
@@ -1242,7 +1274,7 @@ export const PROVIDERS = {
     id: "uspto-local",
     label: "USPTO (local index)",
     credEnv: "USPTO_LOCAL_DB",
-    skillDoc: "skills/prelim-register/providers/uspto-local.md",
+    skillDoc: "skills/clearotron-register/providers/uspto-local.md",
     hasPublicRecordUrl: true,
     // TSDR publishes a page per serial, so a finding can cite an address the reader can open. The
     // record ref is /mark/us/<serial>, and the core builds the full statusSearch link on the record.
@@ -1346,7 +1378,7 @@ export const PROVIDERS = {
     label: "Free tier (EUIPO + USPTO local index)",
     credEnv: "EUIPO_CLIENT_ID",
     credEnvAlso: ["EUIPO_CLIENT_SECRET"],
-    skillDoc: "skills/prelim-register/providers/free-tier.md",
+    skillDoc: "skills/clearotron-register/providers/free-tier.md",
     hasPublicRecordUrl: true,
     // NULL, deliberately: the two members have DIFFERENT public origins (euipo.europa.eu and the USPTO),
     // so a single origin string here would stamp one office's host onto the other's citations. The

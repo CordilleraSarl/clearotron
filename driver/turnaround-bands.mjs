@@ -21,7 +21,7 @@
 // products — `knockout` and `clearance`. That is the axis, and it is the axis the store already named.
 //
 // A THIRD AND FOURTH BAND ARE TABULATED ELSEWHERE AND ARE NOT RIVALS. The E2E role skill lists its
-// benchmarks against "depths" — `knockout | 1-2 | 30 min`, `prelim | 3-4 | 120 min`,
+// benchmarks against "depths" — `knockout | 1-2 | 30 min`, `clearotron | 3-4 | 120 min`,
 // `full depth | 5 | 180 min`. Every one of those depth rows is a RETIRED_PRODUCTS entry: the Depth 1-5
 // ladder was DELETED by owner ruling 2026-08-06, stated at search-policy.mjs:13-22 and enforced
 // by the orderability wall. Nothing can be ordered at Depth 5, so `full depth` is not a live band.

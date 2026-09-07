@@ -69,5 +69,5 @@ export function grantVocabularySentence(provider = null) {
     + `whole, and the frozen plan's entries are fetched by the executor, not by you. So reaching for one `
     + `of these means the query is wrong, not that a capability is missing: go back to the sweep and fix `
     + `its scope. This list is the tools THIS provider serves; another deployment's differs, and `
-    + `\`skills/prelim-register/providers/<name>.md\` is where the provider-specific vocabulary lives.`;
+    + `\`skills/clearotron-register/providers/<name>.md\` is where the provider-specific vocabulary lives.`;
 }

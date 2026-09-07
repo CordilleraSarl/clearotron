@@ -140,7 +140,7 @@ test("a project overlay may not set a customer-only key", () => {
     const pdir = join(d, "projects", "aurora");
     mkdirSync(pdir, { recursive: true });
     // `frameworkPath` is rating authority — whole-customer only. An overlay states deltas.
-    writeFileSync(join(pdir, "probe.json"), JSON.stringify({ frameworkPath: "skills/prelim-search/risk-framework.md" }));
+    writeFileSync(join(pdir, "probe.json"), JSON.stringify({ frameworkPath: "skills/clearotron-search/risk-framework.md" }));
     const { code, out } = run(["--dir", d]);
     assert.equal(code, 1);
     assert.match(out, /projects\/aurora\/probe\.json/);

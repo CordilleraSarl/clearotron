@@ -51,7 +51,7 @@ const runIt = (sessionKey) => runStage("tool-time-stage", {
 const rows = (f) => readFileSync(f, "utf8").trim().split("\n").map((l) => JSON.parse(l));
 
 test("#1111 the per-stage attempt row carries BOTH fields — present and zero on a tool-less turn", async () => {
-  const r = await runIt("prelim-tt");
+  const r = await runIt("clearotron-tt");
   assert.equal(r.ok, true, `the fixture stage failed (${r.fail}) — the arms below would read nothing`);
   const [row] = rows(driverDir(dir, "tool-time-stage.jsonl"));
   assert.ok("toolCalls" in row,
@@ -63,7 +63,7 @@ test("#1111 the per-stage attempt row carries BOTH fields — present and zero o
 });
 
 test("#1111 the SPINE carries them too — or a round has to join two files to ask why a stage was slow", async () => {
-  await runIt("prelim-tt2");
+  await runIt("clearotron-tt2");
   const attempts = rows(driverDir(dir, "run.jsonl")).filter((e) => e.event === "attempt");
   assert.equal(attempts.length, 1);
   assert.ok("toolCalls" in attempts[0], "run.jsonl's attempt event carries no `toolCalls`");
@@ -71,7 +71,7 @@ test("#1111 the SPINE carries them too — or a round has to join two files to a
 });
 
 test("#1111 the two fields carry NO content — a count and a duration can never name a mark", async () => {
-  await runIt("prelim-tt3");
+  await runIt("clearotron-tt3");
   const [row] = rows(driverDir(dir, "tool-time-stage.jsonl"));
   assert.equal(typeof row.toolCalls, "number", "toolCalls must be a NUMBER — a name or a list would be a "
     + "call log, which is what the owner's ruling refuses");
@@ -105,7 +105,7 @@ test("#1111 a REAL tool wait is measured, attributed, and the parts sum to the t
     { name: "register_execute_plan", ms: 80 },
     { name: "perplexity_ask", ms: 60 },
   ]);
-  await runIt("prelim-tooltime-real").catch(() => {});
+  await runIt("clearotron-tooltime-real").catch(() => {});
   const row = rows(driverDir(dir, "tool-time-stage.jsonl"))[0];
   // — THE SPECIMEN, AND DELIBERATELY NOT THE CURE. This arm went red under concurrent full-suite
   // load on run 32690588919, on a diff that cannot reach the tool-time gauge, with only the last of its
@@ -295,7 +295,7 @@ test("#1111 ONE ask for several tools is ONE interval under ONE key — never co
   // A message asking for two tools waits once. Attributing the interval to each name would report roughly
   // double the elapsed wait, and the sum identity above is what makes that visible rather than plausible.
   process.env.MOCK_CLAUDE_TOOL_WAIT = JSON.stringify([{ name: ["band_lookup", "band_record"], ms: 120 }]);
-  await runIt("prelim-tooltime-multi").catch(() => {});
+  await runIt("clearotron-tooltime-multi").catch(() => {});
   const row = rows(driverDir(dir, "tool-time-stage.jsonl"))[0];
   // MEASURED-OR-DECLARED HERE TOO, and this arm was one chunk away from being the next red. A period
   // that opens and closes inside one stdout chunk credits nothing, so `toolWaitByTool` is EMPTY — and
@@ -328,7 +328,7 @@ test("#1111 activeMs separates GENERATING from WAITING, and a no-tool turn repor
   // The field that makes a wall kill readable: a turn killed with most of its elapsed in tool wait is a
   // different event from one that ground for the whole budget generating, and `wall` alone cannot say which.
   process.env.MOCK_CLAUDE_TOOL_WAIT = JSON.stringify([{ name: "register_execute_plan", ms: 250 }]);
-  await runIt("prelim-tooltime-active").catch(() => {});
+  await runIt("clearotron-tooltime-active").catch(() => {});
   const row = rows(driverDir(dir, "tool-time-stage.jsonl"))[0];
   assert.ok("activeMs" in row, "the attempt row carries no `activeMs`");
   assert.ok(row.activeMs >= 0);
@@ -351,7 +351,7 @@ test("#1111 activeMs separates GENERATING from WAITING, and a no-tool turn repor
 test("#1111 a turn that calls no tools reports an EMPTY attribution, not a missing one", async () => {
   // `{}` is a measurement — this engine reports, and there was nothing to report. null would mean the engine
   // cannot report at all, and absent would be indistinguishable from a record written before the field.
-  await runIt("prelim-tooltime-empty").catch(() => {});
+  await runIt("clearotron-tooltime-empty").catch(() => {});
   const row = rows(driverDir(dir, "tool-time-stage.jsonl"))[0];
   assert.ok("toolWaitByTool" in row, "the key must be present even when nothing was called");
   assert.deepEqual(row.toolWaitByTool, {});
@@ -403,7 +403,7 @@ test("#1111 THE IDENTITY: activeMs + toolWaitMs === wall, on a turn with real to
   // have passed everywhere it did not matter.
   process.env.MOCK_CLAUDE_TOOL_WAIT = JSON.stringify([{ name: "Bash", ms: 120 }, { name: "Read", ms: 80 }]);
   try {
-    const r = await runIt("prelim-tt-identity");
+    const r = await runIt("clearotron-tt-identity");
     assert.equal(r.ok, true, `the fixture stage failed (${r.fail})`);
     const [row] = rows(driverDir(dir, "tool-time-stage.jsonl"));
     // ✕ DELIBERATELY NOT GIVEN THE MEASURED-OR-DECLARED ESCAPE, unlike every assertion above. This is
@@ -438,7 +438,7 @@ test("#1111 THE IDENTITY HOLDS ON A TURN KILLED MID-CALL — the case that only 
   process.env.CLEAROTRON_STALL_MS = "2000";
   process.env.MOCK_CLAUDE_TOOL_WAIT = JSON.stringify([{ name: "Bash", ms: 10000 }]);
   try {
-    const r = await runIt("prelim-tt-inflight");
+    const r = await runIt("clearotron-tt-inflight");
     assert.equal(r.ok, false, "the fixture turn was not killed — it must die mid-call for this arm to mean anything");
     const [row] = rows(driverDir(dir, "tool-time-stage.jsonl"));
     // PRECONDITION FIRST, and named as one: a zero here means the fixture never got mid-call, not that

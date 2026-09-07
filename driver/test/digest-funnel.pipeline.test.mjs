@@ -13,10 +13,10 @@ import { envFrom, pinEnv } from "../../shared/env-aliases.mjs";   // — a fixtu
 import { tmpdir as __tmpdir } from "node:os";
 import { join as __join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
-pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK_DIR") || __mkdtemp(__join(__tmpdir(), "prelim-testroot-")));
+pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK_DIR") || __mkdtemp(__join(__tmpdir(), "clearotron-testroot-")));
 // provider-usage.DEFAULT_LEDGER_PATH freezes at FIRST import (module const) — pin the call ledger to a
 // throwaway file BEFORE any pipeline import so the screen-gate's fetched-universe reads OUR ledger.
-const LEDGER = __join(__mkdtemp(__join(__tmpdir(), "prelim-funnel-ledger-")), "corsearch-calls.jsonl");
+const LEDGER = __join(__mkdtemp(__join(__tmpdir(), "clearotron-funnel-ledger-")), "corsearch-calls.jsonl");
 process.env.CLEAROTRON_REGISTER_CALL_LOG = LEDGER;
 __write(LEDGER, "");
 import { test } from "node:test";
@@ -59,7 +59,7 @@ const landingFetcher = (fetched = []) => async (uri, { sessionKey }) => {
 // Fresh module graph + env per run. `reuse` re-enters an EXISTING run (same workspace root + codename)
 // — the resume path the 13-pass defect lives on.
 async function runMockPipeline(env, opts = {}, reuse = null) {
-  const root = reuse?.root ?? mkdtempSync(join(tmpdir(), "prelim-funnel-"));
+  const root = reuse?.root ?? mkdtempSync(join(tmpdir(), "clearotron-funnel-"));
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF",
     "MOCK_ESCALATION_NOOP", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CLAUDE_CALL_LOG"]) delete process.env[k];
   for (const [k, v] of Object.entries({

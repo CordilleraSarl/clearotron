@@ -10,7 +10,7 @@
 // that killed the run was an EVIDENCE-duty refusal — fragment_unbound 106, fragment_absent 84,
 // fragment_too_short 18, segment_* 4, and ZERO ruling_invalid or note_absent. The seat held its ruling the
 // whole time; what it could not do was copy a fragment that binds. So the missing exit was never from the
-// judgment, and the judgment already has one: prelim-common-law/SKILL.md dictates that a row that cannot
+// judgment, and the judgment already has one: clearotron-common-law/SKILL.md dictates that a row that cannot
 // responsibly be called benign or loaded is ruled `loaded` with the note saying what could not be
 // established. A second way to decline a ruling would compete with that, and the same doctrine names an
 // easier road past a hard row as the one outcome no gate detects.

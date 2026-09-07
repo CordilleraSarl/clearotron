@@ -177,7 +177,7 @@ seeding. Frozen sidecars are never silently re-derived; a corrupt one crashes lo
 ```mermaid
 flowchart TD
     subgraph HEAD["Phase 1-2 head (fatal)"]
-        MF[matter-frame] --> PV[prelim-variants]
+        MF[matter-frame] --> PV[clearotron-variants]
         PV --> DER["code derivations:<br/>scope ledger · form neighbourhood ·<br/>register plan freeze · recall probes"]
     end
     DER --> GRID["grid spec dictated by code<br/>(terms × platforms × connotation; A1 split)"]
@@ -217,7 +217,7 @@ flowchart TD
 
 Reading order for the phases, with what code decides at each:
 
-1. **Head stages** — `matter-frame` then `prelim-variants`, both fatal. Code then derives the
+1. **Head stages** — `matter-frame` then `clearotron-variants`, both fatal. Code then derives the
    scope ledger, the *form neighbourhood* (the model picks the distinctive token; the machine
    generates the complete mechanical variant floor), freezes the register plan
    (`_driver/register-plan.json`, frozen for the life of *this run* — a resume never re-plans, and a
@@ -445,7 +445,7 @@ node pipeline.mjs --resume <codename> --experiment <stage> [--label <t>]        
 - **`--from`** forces stages at or after the named ordinal even if their outputs validate; earlier
   stages still skip. A `--from synthesis` fork deliberately does *not* lock the digest.
 - **`--experiment`** runs one stage in a shadow dir (`_experiments/<ts>-<tag>/`) on copies of its
-  inputs, under a `prelim-exp-…` session key that is excluded from the run's provider-usage
+  inputs, under a `clearotron-exp-…` session key that is excluded from the run's provider-usage
   attribution. The canonical run is untouched.
 - **Orphan self-resume**: a manually resumed run that parks has no queue sidecars; the runner scans
   run dirs for due, payload-complete `.postponed` sentinels not owned by any queue and resumes them

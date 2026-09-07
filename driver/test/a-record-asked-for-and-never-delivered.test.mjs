@@ -25,7 +25,7 @@ const { buildAuditMd } = AUDIT;
 const recordsNeverDelivered = AUDIT.recordsNeverDelivered ?? (() => null);
 
 const open = (id, ok, extra = {}) => ({ tool: "band_record", args: { record_id: id }, ok,
-  session: "prelim-x-y-placement-inquiry", ...extra });
+  session: "clearotron-x-y-placement-inquiry", ...extra });
 
 // Minimal spine the builder needs; the reading audit is what these arms are about.
 const SPINE = "## Findings\n\n| # | Mark | Owner | Band |\n|---|---|---|---|\n| 1 | ZEPHYR | Verrit Instruments Ltd | High |\n";

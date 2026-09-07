@@ -32,8 +32,8 @@ import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { forEachLedgerLine, collectRecordBodies, collectRecordReceipts, collectFetchCallMeta,
   assembleRunRecords, ledgerReadError } from "../registry-fidelity.mjs";
 
-const KEY = "prelim-slug-codename-register-unit-primary";
-const PREFIX = "prelim-slug-codename-";
+const KEY = "clearotron-slug-codename-register-unit-primary";
+const PREFIX = "clearotron-slug-codename-";
 const row = (i) => JSON.stringify({ ts: `2026-08-10T0${i % 10}:00:00Z`, sessionKey: KEY,
   target: `/mark/us/U${i}`, body: { record_id: `/mark/us/U${i}`, mark_text: `MARK${i}` } });
 
@@ -80,7 +80,7 @@ test("#582 all three readers walk the same way and agree on the same ledger", ()
     // The call ledger keys on tool:"record_fetch"; these rows are bodies, so it correctly finds none.
     assert.equal(collectFetchCallMeta(p, PREFIX).size, 0);
     // …and the prefix filter still filters.
-    assert.equal(collectRecordBodies(p, "prelim-other-run-").size, 0);
+    assert.equal(collectRecordBodies(p, "clearotron-other-run-").size, 0);
   });
 });
 

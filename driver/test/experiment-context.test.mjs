@@ -68,7 +68,7 @@ const events = (runDir) => readFileSync(driverDir(runDir, "run.jsonl"), "utf8").
 // to happen in the same PR that makes it.
 const FRESHNESS_GOLDEN = {
   "matter-frame": [],
-  "prelim-variants": ["matter-context.md"],
+  "clearotron-variants": ["matter-context.md"],
   "blind-frame": ["inbound-request.txt"],
   "common-law": ["variant-manifest.md", "matter-context.md"],
   "common-law-half": ["variant-manifest.md", "matter-context.md"],
@@ -529,7 +529,7 @@ test("conversion 11: the derivation FILLS A GAP and never overwrites the canonic
   // is a projection taken at dispatch time; re-deriving it after the run reads artifacts that did not
   // exist when the seat saw it (digestAuditRows is empty before the digest writes its findings and
   // non-empty after), so an overwrite hands the arm a context the canonical run never had.
-  const runDir = mkdtempSync(join(tmpdir(), "prelim-facts-copy-"));
+  const runDir = mkdtempSync(join(tmpdir(), "clearotron-facts-copy-"));
   const at = driverDir(runDir, "register-digest-facts.json");
   mkdirSync(dirname(at), { recursive: true });
   const canonical = JSON.stringify({ schema_version: 1, records: [], owed: ["/mark/x"] }) + "\n";
@@ -550,7 +550,7 @@ test("conversion 11: the derivation refuses to claim it derived anything without
   // and every uri the seat cites then refuses by name. Reporting that as derived hands an arm a file
   // that is present and useless, which is an absence dressed as a pass one layer below where anyone
   // would look for it. The runner must return false, not a written file.
-  const runDir = mkdtempSync(join(tmpdir(), "prelim-facts-noband-"));
+  const runDir = mkdtempSync(join(tmpdir(), "clearotron-facts-noband-"));
   const ctx = { paths: ST.paths(runDir), job: {}, run: {} };
   assert.equal(PL.DERIVATION_RUNNERS["register-digest-facts"](ctx), false,
     "no band ⇒ the derivation reports NOT derived");

@@ -171,12 +171,12 @@ test("the chat roster still resolves an agent to its bound number — the packet
 // ── 2026-07-04 incident: the rollup must carry the send state — the completion-watch's primary source ──
 test("lineFor: sendPending renders LOUDLY on delivered AND failed rows; flips off with the flag", () => {
   const del = { ref: "TMP1", markName: "X", state: "delivered", verdict: "CLEAR", url: "https://x/report.html", sendPending: true };
-  assert.match(lineFor(del), /📮 SEND PENDING \(email\/WhatsApp NOT yet out — run prelim-deliver\)/);
+  assert.match(lineFor(del), /📮 SEND PENDING \(email\/WhatsApp NOT yet out — run clearotron-deliver\)/);
   assert.doesNotMatch(lineFor({ ...del, sendPending: false }), /SEND PENDING/);
   const failed = { ref: null, markName: "VENZY", state: "failed", failedStage: "synthesis(blocking)", reason: "x", sendPending: true };
   assert.match(lineFor(failed), /⚠️ FAILED at synthesis\(blocking\)/);
-  assert.match(lineFor(failed), /📮 FAILURE NOTICE PENDING \(run prelim-deliver\)/);
-  assert.doesNotMatch(lineFor({ ...failed, sendPending: undefined }), /PENDING \(run prelim-deliver\)/);
+  assert.match(lineFor(failed), /📮 FAILURE NOTICE PENDING \(run clearotron-deliver\)/);
+  assert.doesNotMatch(lineFor({ ...failed, sendPending: undefined }), /PENDING \(run clearotron-deliver\)/);
 });
 
 test("lineFor: a recovering run renders loudly as AUTO-RECOVERY — never readable as settled", () => {

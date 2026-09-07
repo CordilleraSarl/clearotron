@@ -228,17 +228,17 @@ const READ_SPINE_MD = [
 
 test("# Reading audit renders from the reading log: counts by tool + session, one clipped row per lookup", () => {
   const readingLog = [
-    { ts: "2026-07-29T01:00:00Z", tool: "band_shape", args: { format: "md" }, ok: true, bytes: 4210, session: "prelim-x-y-register-digest" },
-    { ts: "2026-07-29T01:00:05Z", tool: "band_lookup", args: { owner: "synth" }, ok: true, matched: 3, returned: 3, session: "prelim-x-y-register-digest" },
-    { ts: "2026-07-29T01:10:00Z", tool: "band_record", args: { record_id: "/mark/de/9" }, ok: false, session: "prelim-x-y-synthesis" },
-    { ts: "2026-07-29T01:11:00Z", tool: "band_record", args: { record_id: "/mark/us/7" }, ok: false, reason: "unreadable", session: "prelim-x-y-synthesis" },
+    { ts: "2026-07-29T01:00:00Z", tool: "band_shape", args: { format: "md" }, ok: true, bytes: 4210, session: "clearotron-x-y-register-digest" },
+    { ts: "2026-07-29T01:00:05Z", tool: "band_lookup", args: { owner: "synth" }, ok: true, matched: 3, returned: 3, session: "clearotron-x-y-register-digest" },
+    { ts: "2026-07-29T01:10:00Z", tool: "band_record", args: { record_id: "/mark/de/9" }, ok: false, session: "clearotron-x-y-synthesis" },
+    { ts: "2026-07-29T01:11:00Z", tool: "band_record", args: { record_id: "/mark/us/7" }, ok: false, reason: "unreadable", session: "clearotron-x-y-synthesis" },
   ];
   const { md, counts } = buildAuditMd(READ_SPINE_MD, "", { readingLog });
   assert.ok(md.includes("# Reading audit"));
   assert.match(md, /4 lookup\(s\): band_lookup ×1, band_record ×2, band_shape ×1/);
-  assert.match(md, /session prelim-x-y-register-digest: 2 lookup\(s\)/);
+  assert.match(md, /session clearotron-x-y-register-digest: 2 lookup\(s\)/);
   assert.match(md, /\[band_lookup\] \{"owner":"synth"\} — matched 3, returned 3/);
-  assert.match(md, /\[band_record\] \{"record_id":"\/mark\/de\/9"\} — MISS \(prelim-x-y-synthesis\)/, "a miss is disclosed as a miss; a log with no reason renders as before");
+  assert.match(md, /\[band_record\] \{"record_id":"\/mark\/de\/9"\} — MISS \(clearotron-x-y-synthesis\)/, "a miss is disclosed as a miss; a log with no reason renders as before");
   // — a document the run HOLDS but could not open reads differently from one it never fetched.
   assert.match(md, /\[band_record\] \{"record_id":"\/mark\/us\/7"\} — MISS \(unreadable\)/, "…with the cause, where the log recorded one");
   assert.equal(counts.readingLookups, 4);

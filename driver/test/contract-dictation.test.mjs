@@ -191,7 +191,7 @@ test("the corpus reaches every layer the six instances came from", (ctx) => {
   if (corpus == null) return ctx.skip(skipReason(GUARD));
   const files = new Set(corpus.map((c) => c.file));
   for (const f of ["driver/stages.mjs", "driver/gateway.mjs", "driver/connotation-search.mjs",
-    "driver/disposition-union.mjs", "driver/skills/prelim-common-law/SKILL.md"])
+    "driver/disposition-union.mjs", "driver/skills/clearotron-common-law/SKILL.md"])
     assert.ok(files.has(f), `${f} is not in the scanned corpus — the check cannot see the layer it was built for`);
 });
 

@@ -56,7 +56,7 @@ straight through; each declares a skip naming root as the reason, and the suite 
 *failure* rather than a skip on one of those, it is yours.
 
 **`driver/skills/**` is engine input, not documentation.** Those 46 Markdown files are the prompt payload
-served to the model at runtime. `prelim-search/synthesis-rules.md` is a 16,000-word program. Editing them
+served to the model at runtime. `clearotron-search/synthesis-rules.md` is a 16,000-word program. Editing them
 for brevity, tone or tidiness changes what a clearance concludes. Do not touch them as part of any
 documentation task.
 

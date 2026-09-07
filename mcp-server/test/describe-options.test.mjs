@@ -106,7 +106,7 @@ test("products: the closed offering, in offering order, each in words a requeste
 });
 
 test("THE BUNDLES ARE GONE — there is one menu, and it is the offering", () => {
-  // There were three hand-written shortcuts here (`knockout` / `global-prelim` / `deep-dive`), each
+  // There were three hand-written shortcuts here (`knockout` / `global-clearotron` / `deep-dive`), each
   // naming a product — "Full deep dive" — that appeared in no registry, on no report and on no wire.
   // That is what a bundle IS when the wire cannot carry the product: a second menu, invented to say the
   // thing the first one could not. A whole test used to exist to keep it in step, by eye, with three
@@ -382,7 +382,7 @@ test("#305: a declared tool keeps EXACTLY the behaviour it had — this flip cha
   // the NEXT tool somebody adds, not what any client receives today.
   const asClient = { kind: "account", accounts: ["celta"] };
   // passthrough: returned as-is, as before
-  const plan = { depth: "prelim", caps: { runsToday: 1 } };
+  const plan = { depth: "clearotron", caps: { runsToday: 1 } };
   assert.deepEqual(presentForPrincipal(asClient, "plan_run", plan), plan);
   assert.deepEqual(presentForPrincipal(asClient, "describe_options", plan), plan);
   // bounded: returned as-is, as before — the projection happens at the tool

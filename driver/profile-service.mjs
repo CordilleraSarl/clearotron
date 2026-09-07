@@ -441,7 +441,7 @@ export function makeProfileService({
       // The transition is encoded in the message so the config store's git log reads as an audit trail —
       // the same three words saved searches emit (an un-archive reads as "update" there too).
       const transition = exists ? (overlayBody.archived && !priorOverlay?.archived ? "archive" : "update") : "create";
-      const message = `chore(prelim): ${transition} project ${customer}/${project} (via config UI, by ${by})`;
+      const message = `chore(clearotron): ${transition} project ${customer}/${project} (via config UI, by ${by})`;
       // — the row rides IN the commit, so it no longer names a sha. shared/store-in-repo.mjs says why.
       const { commit, commitError } = commitWithAuditRow({ audit, gitCommit, files, message, by,
         row: { event: exists ? "project-update" : "project-create", key: fq, by, fields: Object.keys(overlayBody),
@@ -494,7 +494,7 @@ export function makeProfileService({
     // fault) threw out of the handler, so the user was told "Nothing was written. Try again shortly."
     // about a profile that was already governing production, and the audit() call below was skipped —
     // leaving no record of who changed it. Same guard the project branch above already carries.
-    const message = `chore(prelim): ${exists ? "update" : "create"} customer profile ${key} (via config UI, by ${by})`;
+    const message = `chore(clearotron): ${exists ? "update" : "create"} customer profile ${key} (via config UI, by ${by})`;
     // — the row rides IN the commit, so it no longer names a sha. shared/store-in-repo.mjs says why.
     const { commit, commitError } = commitWithAuditRow({ audit, gitCommit, files, message, by,
       row: { event: exists ? "profile-update" : "profile-create", key, by, fields: Object.keys(effective) } });

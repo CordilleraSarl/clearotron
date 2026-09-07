@@ -3,12 +3,12 @@
 // stdin-guard.mjs — orphan self-termination for stdio-spawned MCP processes.
 //
 // A stdio MCP server lives exactly as long as the client that spawned it: stdin EOF/close means that
-// client (`claude -p` under the prelim engine, or any other stdio MCP client) is gone and no request can ever arrive
+// client (`claude -p` under the clearotron engine, or any other stdio MCP client) is gone and no request can ever arrive
 // again. Without this guard the bridge held its upstream HTTP transport open FOREVER after the parent
 // died (proven orphan: a bridge.mjs --server legaldatahunter process, PPID 1, ran 3.5 days) — still
 // authenticated, still able to run billable upstream calls for a dead session. Exit 0 and abandon any
 // in-flight work: continuing it is exactly the failure mode. Dependency-free on purpose (unit-tested
-// from the prelim-driver suite, which does not install the bridge's SDK).
+// from the clearotron-driver suite, which does not install the bridge's SDK).
 //
 // NOTE: `end` fires only once something reads stdin (the MCP transport does, post-connect); `close`
 // covers a destroyed stream. The steady-state orphan — connected bridge, parent dies later — is the

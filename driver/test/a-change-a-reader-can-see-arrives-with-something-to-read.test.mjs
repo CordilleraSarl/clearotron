@@ -57,7 +57,7 @@ test("a change that ships as code and carries no note is refused", () => {
 test("the same change with a note is let through", () => {
   const repo = repoWith({
     "bin/thing.mjs": "export const a = 1;\n",
-    ".changeset/a-note.md": '---\n"prelim-driver": patch\n---\n\nFixed: Something a reader can see.\n',
+    ".changeset/a-note.md": '---\n"clearotron-driver": patch\n---\n\nFixed: Something a reader can see.\n',
   });
   try {
     const r = run(repo);
@@ -104,7 +104,7 @@ test("the version pull request's own shape is silent, without a carve-out for it
   // shipped code, so the rule answers on its own and nothing here names that branch.
   const repo = repoWith({
     "CHANGELOG.md": "# 0.1.5\n", "driver/CHANGELOG.md": "# 0.1.5\n",
-    "driver/package.json": '{"name":"prelim-driver","version":"0.1.5"}\n',
+    "driver/package.json": '{"name":"clearotron-driver","version":"0.1.5"}\n',
   });
   try {
     const r = run(repo);

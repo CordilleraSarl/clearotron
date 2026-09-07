@@ -9,8 +9,8 @@
 #
 # It did not, and its absence was the one that cost a report rather than a restart. `bin/start.mjs`
 # supervises THREE children — the portal, the engine door, and this worker (`:904`). Units shipped for
-# the first two under 1925. The only units that ever ran the worker were `prelim-driver.service` and
-# `prelim-driver.timer`, and the owner's ruling of 2026-08-26, restated 2026-08-31, retires that whole
+# the first two under 1925. The only units that ever ran the worker were `clearotron-driver.service` and
+# `clearotron-driver.timer`, and the owner's ruling of 2026-08-26, restated 2026-08-31, retires that whole
 # path-watcher/timer posture.
 #
 # So retiring those units without writing this one leaves a hosted deployment with its portal up, its

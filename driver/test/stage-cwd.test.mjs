@@ -74,7 +74,7 @@ test("#524 a model that invents a relative filename writes INSIDE the run, not i
   process.env.MOCK_CLAUDE_CALL_LOG = join(runDir, "calls.jsonl");
   try {
     await runStage("cwd-stage", {
-      agent: "clawdi", message: "BASE TASK", sessionKey: "prelim-cwd-base",
+      agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-cwd-base",
       timeoutSec: 30, runDir, maxRetries: 0,
       validate: () => ({ ok: true }),
     });
@@ -97,7 +97,7 @@ test("#524 a dispatch with NO run still spawns neutrally rather than in the driv
   process.env.MOCK_CLAUDE_STRAY_RELATIVE = strayName;
   try {
     await runStage("cwd-stage-norun", {
-      agent: "clawdi", message: "BASE TASK", sessionKey: "prelim-cwd-norun",
+      agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-cwd-norun",
       timeoutSec: 30, maxRetries: 0, validate: () => ({ ok: true }),
     });
     assert.ok(!existsSync(join(HERE, "..", strayName)), "never the driver's own tree");

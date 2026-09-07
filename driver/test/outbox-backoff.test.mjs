@@ -98,23 +98,10 @@ test("fail-safe: a torn sidecar reads as due (retry, never a wedged agent)", () 
   assert.equal(checkDue("torn").due, true);
 });
 
-test("sidecar location is invisible to prelim-outbox.path's glob (tight-loop precondition)", () => {
-  // The unit watches PathExistsGlob=…/prelim-outbox/*.pending — level-triggered. If a sidecar ever
-  // matched it, every backoff write would itself re-trigger the service. Pin both halves: the unit's
-  // glob shape, and that a real sidecar write leaves the watched glob unmatched.
-  const unit = readFileSync(join(HERE, "..", "systemd", "prelim-outbox.path"), "utf8");
-  const glob = unit.match(/^PathExistsGlob=(.+)$/m)?.[1];
-  assert.ok(glob?.endsWith("/prelim-outbox/*.pending"), `glob is the flat *.pending watch (got ${glob})`);
-  for (const f of nonEmpty(readdirSync(process.env.CLEAROTRON_OUTBOX_DIR), "readdirSync(process.env.CLEAROTRON_OUTBOX_DIR)")) {
-    if (f.endsWith(".pending")) continue;   // real markers are allowed to match, nothing else is
-    assert.equal(f, "backoff", `only the backoff/ subdir lives beside markers (found ${f})`);
-    assert.ok(statSync(join(process.env.CLEAROTRON_OUTBOX_DIR, f)).isDirectory());
-  }
-  // `*` never crosses `/`: no sidecar path can match the flat glob
-  for (const f of nonEmpty(readdirSync(join(process.env.CLEAROTRON_OUTBOX_DIR, "backoff")), "readdirSync(join(process.env.CLEAROTRON_OUTBOX_DIR, \"backof...")) {
-    assert.ok(f.endsWith(".json"), `sidecars are <agent>.json, never *.pending (found ${f})`);
-  }
-});
+// THE VOID CONTROL THAT USED TO LIVE HERE READ A SHIPPED `.path` UNIT. The path-watcher/timer drain
+// posture is retired (ruled 2026-08-26, restated 08-31): the built-in worker is the product's drain and
+// no `.path` or `.timer` unit ships any more, so an arm demanding one asserts the retired posture back
+// into existence. The reader stays covered by the arms above, which hand it unit syntax directly.
 
 // ── rescan ─────────────────────────────────────────────────────────────────────────────────────────
 

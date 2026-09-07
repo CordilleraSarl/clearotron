@@ -310,9 +310,9 @@ export const FIELD_CONSUMERS = {
 
 // Per-customer reasoning-skill selection. frameworkPath is the customer's OWN risk framework — under doc 50
 // it RATES the matter; absent ⇒ the Generic default rates it (DEFAULT_FRAMEWORK in framework.mjs). Constrained to
-// the prelim-search skill dir + a .md suffix so a profile cannot point the synthesis read at an arbitrary
+// the clearotron-search skill dir + a .md suffix so a profile cannot point the synthesis read at an arbitrary
 // path. The SHARED doctrine lives identically across the per-customer frameworks; only the examples diverge.
-const SKILL_PATH_RE = /^skills\/prelim-search\/[A-Za-z0-9._-]+\.md$/;
+const SKILL_PATH_RE = /^skills\/clearotron-search\/[A-Za-z0-9._-]+\.md$/;
 
 // The delivery overlay every run gets. `email` is no longer a choice: every run's mail is a COVER NOTE
 // pointing at the report (one report, one shape, per-lawyer client mail drafted by the assistant).
@@ -530,11 +530,11 @@ function validateProfileShape(key, p, { sparse = false } = {}) {
     die(`marketplaceDensity must be ${MARKETPLACE_DENSITIES.map((v) => `"${v}"`).join(" or ")} `
       + `(got "${p.marketplaceDensity}")`);
   // frameworkPath / workedExamplesPath (optional, Phase 2): a per-customer reasoning-skill file. Constrained
-  // to skills/prelim-search/*.md (no path escape) — a profile selects a SHIPPED skill, never an arbitrary path.
+  // to skills/clearotron-search/*.md (no path escape) — a profile selects a SHIPPED skill, never an arbitrary path.
   for (const k of ["frameworkPath", "workedExamplesPath"]) {
     if (p[k] == null) continue;
     if (typeof p[k] !== "string" || !SKILL_PATH_RE.test(p[k]) || p[k].includes(".."))
-      die(`${k} must be a path of the form "skills/prelim-search/<file>.md" (got ${JSON.stringify(p[k])})`);
+      die(`${k} must be a path of the form "skills/clearotron-search/<file>.md" (got ${JSON.stringify(p[k])})`);
   }
   // defaultProduct (optional): one of the four in the offering, by id. A typo hard-fails at load rather
   // than silently running the wrong-priced product on every job.

@@ -5,7 +5,7 @@
 //
 // ── THE DEFECT THE RULE FIXES ───────────────────────────────────────────────────────────────────────
 //
-// `prelim-variants` strips the DOMINANT ELEMENT to a formative root and sweeps that root as a
+// `clearotron-variants` strips the DOMINANT ELEMENT to a formative root and sweeps that root as a
 // contains-match. It dispatched each generated VARIANT as its full string. Root for the element, full
 // string for the variant — and because these are contains-matches, string length decides reach: a
 // family member of a variant contains the variant's ROOT and does not contain the full variant.
@@ -37,7 +37,7 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const DOCTRINE = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "prelim-variants", "SKILL.md");
+const DOCTRINE = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearotron-variants", "SKILL.md");
 
 /** The clause that CARRIES the rule. Pinned on the rule, never on its example — an example may be reworded. */
 const RULE_CLAUSE = "The root strip applies to every variant you emit, not only to the dominant element.";

@@ -4,7 +4,7 @@
 // Pure-module tests: search-policy.mjs is a leaf (node builtins only), so no env pinning is needed.
 // What must hold forever:
 //   - the registry is CLOSED and self-consistent (every level's components are legal for its pipeline);
-//   - resolution order is job.recipeKey → job.product → profile default → house "prelim", and ANY
+//   - resolution order is job.recipeKey → job.product → profile default → house "clearotron", and ANY
 //     unknown token CLARIFIES (a typo must never silently run a different-priced product);
 //   - the golden rule is STRUCTURAL: recipe keys share nothing with profile keys (a recipe cannot name a
 //     rating-adjacent knob even by accident);
@@ -73,8 +73,8 @@ test("golden rule is structural: RECIPE_KEYS ∩ KNOWN_PROFILE_KEYS = ∅ (a rec
 
 // ── resolution order + clarify-never-substitute ─────────────────────────────────────────────────────
 test("resolution: with nothing named, THE SCOPE names the product; an explicit one beats a profile default", () => {
-  // There is no house-default product any more, and its removal is the change. `prelim` used to be it,
-  // and `prelim` named three different searches depending on where it pointed — so the default was a
+  // There is no house-default product any more, and its removal is the change. `clearotron` used to be it,
+  // and `clearotron` named three different searches depending on where it pointed — so the default was a
   // guess wearing a level key. A clearance that names no product IS whichever product its resolved
   // territories make it.
   const r0 = resolveSearchPolicy({}, {});
@@ -194,7 +194,7 @@ test("gate: every BUILT level passes, with no environment at all — the switche
 test("gateCause is null exactly when gateResolvedPolicy is — one gate, two vocabularies", () => {
   const recipes = new Map([["acme/plain", { label: "Plain", base: "global-preliminary-search" }]]);
   const cases = [
-    ["default prelim", resolveSearchPolicy({}, {})],
+    ["default clearotron", resolveSearchPolicy({}, {})],
     ["knockout", resolveSearchPolicy({ product: "knockout-search" }, {})],
     ["knockout-register", resolveSearchPolicy({ product: "knockout-search" }, {})],
     ["prelim-jx", resolveSearchPolicy({ product: "multi-country-focus-search" }, {})],
@@ -572,7 +572,7 @@ test("config nulls: archived:null is refused, so a retired saved search cannot b
   // `!= null` let archived:null through; the stickiness guard only re-applies on `undefined` and every
   // consumer reads null as falsy, so a null slipped past both and UN-ARCHIVED the recipe — defeating
   // the rule that only an explicit false may do that. Same hole profiles.mjs closed for projects.
-  const r = (extra) => validateRecipe("acme", "us-eu", { label: "US + EU prelim", base: "global-preliminary-search", ...extra });
+  const r = (extra) => validateRecipe("acme", "us-eu", { label: "US + EU clearotron", base: "global-preliminary-search", ...extra });
   assert.equal(r({ archived: null }).ok, false, "an ambiguous value is refused, not guessed at");
   assert.match(r({ archived: null }).errors[0], /archived must be a boolean/);
   assert.equal(r({ archived: true }).ok, true);

@@ -74,7 +74,7 @@ does after the stage's full retry ladder fails ([03 §5](03-run-lifecycle.md#5--
 | # | Stage | Model · effort | Timeout / stall | Gated output (file truth) | Fatality |
 |---|---|---|---|---|---|
 | 1 | `matter-frame` | opus · high | 300 / 300 | `matter-context.md` | fatal |
-| 2 | `prelim-variants` | opus · high | 600 / 450 | `variant-manifest.md` (+ `.json` sibling, strict-parsed) | fatal |
+| 2 | `clearotron-variants` | opus · high | 600 / 450 | `variant-manifest.md` (+ `.json` sibling, strict-parsed) | fatal |
 | 3 | `blind-frame` | opus · high | 600 / 450 | `blind-frame-model.json` (strict-parsed; the prose twin was retired 2026-08-03 — nothing read it) | non-fatal (frame-diff skipped this run) |
 | 4 | `common-law` | haiku · low | 2250 / 1100 | `common-law-findings.md` (+ grid ledger, plugin-written) | fatal at fan-in |
 | 5 | `common-law-half` | per seat: `COMMON_LAW_SEAT_TIER` — halves `a`/`b` haiku · low; meaning seat `m` `CLEAROTRON_MEANING_SEAT_MODEL` \|\| haiku · low | 2250 / 1100 | `common-law-findings.half-{a,b,m}.md` (+ per-seat grid ledgers) | fatal at fan-in; one-half transient quarantine allowed |

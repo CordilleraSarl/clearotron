@@ -20,7 +20,7 @@ import { dirname, join } from "node:path";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const VERIFY = readFileSync(join(ROOT, "verify.mjs"), "utf8");
-const SKILL = readFileSync(join(ROOT, "skills", "prelim-common-law", "SKILL.md"), "utf8");
+const SKILL = readFileSync(join(ROOT, "skills", "clearotron-common-law", "SKILL.md"), "utf8");
 
 // The real gate, imported here rather than beside the behavioural block below: the derived class
 // arm reads `validators` too, and a const declared after it sits in TDZ when the runner reaches it.
@@ -101,7 +101,7 @@ function seatWrittenValidators() {
 // this file rather than a diff nobody reads. `anchor: null` means the validator has no required-section
 // gate at all, which is a different thing from having one that is satisfied.
 const SEAT_WRITTEN = {
-  commonLaw: { anchor: "findings", why: "prelim-common-law's findings file, hand-written by the seat — the artifact 129 was filed about" },
+  commonLaw: { anchor: "findings", why: "clearotron-common-law's findings file, hand-written by the seat — the artifact 129 was filed about" },
   commonLawHalf: { anchor: "findings", why: "the same document per grid half; the meaning seat (half m) is judged on findings + audit-trail alone" },
   placement: { anchor: "placement-tiers", why: "placements.json is rendered from the form, but the .md is the seat's — stages.mjs's own contract declaration says `missing:placement tiers` checks the md for tier words" },
   caseLaw: { anchor: null, why: "nonEmpty plus sibling-JSON joins only — it has no prose section gate, so there is nothing here to key structurally" },

@@ -112,14 +112,14 @@ function svcWithFramework() {
   writeFileSync(join(dir, "generic.json"), JSON.stringify({ name: "House default", platforms: ["amazon.com"] }));
   writeFileSync(join(dir, "zephyr.json"), JSON.stringify({
     name: "Zephyr Beverages", platforms: ["amazon.com"],
-    frameworkPath: "skills/prelim-search/risk-framework-zephyr.md",
-    workedExamplesPath: "skills/prelim-search/worked-examples-zephyr.md",
+    frameworkPath: "skills/clearotron-search/risk-framework-zephyr.md",
+    workedExamplesPath: "skills/clearotron-search/worked-examples-zephyr.md",
     delivery: { email: "summary", privileged: true, style: "plain, direct", template: "standard" },
   }));
   writeFileSync(join(dir, "aurora.json"), JSON.stringify({
     name: "Aurora Interactive", platforms: ["amazon.com"],
-    frameworkPath: "skills/prelim-search/risk-framework-aurora.md",
-    workedExamplesPath: "skills/prelim-search/worked-examples-aurora.md",
+    frameworkPath: "skills/clearotron-search/risk-framework-aurora.md",
+    workedExamplesPath: "skills/clearotron-search/worked-examples-aurora.md",
   }));
   const writeCalls = [];
   const writeProfile = (a) => { writeCalls.push(a); return { files: [`${a.key}.json`] }; };
@@ -131,20 +131,20 @@ test("save PRESERVES the framework selection when the client body omits it (the 
   const { service, writeCalls } = svcWithFramework();
   const r = await service.route("POST", "/profiles/zephyr/save", STAFF, { profile: { name: "Zephyr Beverages", platforms: ["amazon.com", "gnc.com"] } });
   assert.equal(r.status, 200);
-  assert.equal(writeCalls[0].profile.frameworkPath, "skills/prelim-search/risk-framework-zephyr.md",
+  assert.equal(writeCalls[0].profile.frameworkPath, "skills/clearotron-search/risk-framework-zephyr.md",
     "an omitted frameworkPath is preserved from disk — never dropped");
-  assert.equal(writeCalls[0].profile.workedExamplesPath, "skills/prelim-search/worked-examples-zephyr.md");
+  assert.equal(writeCalls[0].profile.workedExamplesPath, "skills/clearotron-search/worked-examples-zephyr.md");
   assert.deepEqual(writeCalls[0].profile.platforms, ["amazon.com", "gnc.com"], "the actual edit still lands");
 });
 
 test("save IGNORES a client-supplied framework selection — on-disk wins, and none can be introduced", async () => {
   const { service, writeCalls } = svcWithFramework();
   await service.route("POST", "/profiles/zephyr/save", STAFF,
-    { profile: { name: "Zephyr Beverages", platforms: ["amazon.com"], frameworkPath: "skills/prelim-search/risk-framework.md" } });
-  assert.equal(writeCalls[0].profile.frameworkPath, "skills/prelim-search/risk-framework-zephyr.md",
+    { profile: { name: "Zephyr Beverages", platforms: ["amazon.com"], frameworkPath: "skills/clearotron-search/risk-framework.md" } });
+  assert.equal(writeCalls[0].profile.frameworkPath, "skills/clearotron-search/risk-framework-zephyr.md",
     "a client-supplied CHANGE to the selection is discarded (git + review gated)");
   await service.route("POST", "/profiles/generic/save", STAFF,
-    { profile: { name: "House default", platforms: ["amazon.com"], frameworkPath: "skills/prelim-search/risk-framework-zephyr.md" } });
+    { profile: { name: "House default", platforms: ["amazon.com"], frameworkPath: "skills/clearotron-search/risk-framework-zephyr.md" } });
   assert.equal("frameworkPath" in writeCalls[1].profile, false, "a client cannot INTRODUCE a selection on a profile that has none");
 });
 
@@ -170,7 +170,7 @@ test("view serves the framework IN FORCE (doc 50): custom flag + manifest ladder
 });
 
 // ── band meanings (doc 50, display-only): lifted from the REAL shipped decks at view time ────────────────
-// ANTI-SILENT-FAILURE: these parse the decks actually shipped in skills/prelim-search/, so a future deck
+// ANTI-SILENT-FAILURE: these parse the decks actually shipped in skills/clearotron-search/, so a future deck
 // edit that breaks extraction fails CI here instead of silently blanking the page's "What the bands mean" box.
 test("view lifts bandMeanings from the REAL shipped decks — matrix table (aurora), band sections (house/zephyr)", async () => {
   const { service } = svcWithFramework();
@@ -209,7 +209,7 @@ test("bandMeanings is best-effort: a missing framework asset serves the view WIT
   writeFileSync(join(dir, "generic.json"), JSON.stringify({ name: "House default", platforms: ["amazon.com"] }));
   writeFileSync(join(dir, "ghost.json"), JSON.stringify({
     name: "Ghost", platforms: ["amazon.com"],
-    frameworkPath: "skills/prelim-search/risk-framework-ghost.md",   // valid shape, no such deck/manifest
+    frameworkPath: "skills/clearotron-search/risk-framework-ghost.md",   // valid shape, no such deck/manifest
   }));
   const service = makeProfileService({ profileDir: dir, writeProfile: () => ({ files: [] }) });
   const r = await service.route("GET", "/profiles/ghost", STAFF);
@@ -219,10 +219,10 @@ test("bandMeanings is best-effort: a missing framework asset serves the view WIT
 });
 
 test("extractBandMeanings: ANY miss ⇒ null (no partial box); garbled input never throws", () => {
-  const msManifest = loadFrameworkManifest(DRIVER_ROOT, "skills/prelim-search/risk-framework-aurora.md");
-  const houseManifest = loadFrameworkManifest(DRIVER_ROOT, "skills/prelim-search/risk-framework.md");
-  const msDeck = readFileSync(join(DRIVER_ROOT, "skills/prelim-search/risk-framework-aurora.md"), "utf8");
-  const houseDeck = readFileSync(join(DRIVER_ROOT, "skills/prelim-search/risk-framework.md"), "utf8");
+  const msManifest = loadFrameworkManifest(DRIVER_ROOT, "skills/clearotron-search/risk-framework-aurora.md");
+  const houseManifest = loadFrameworkManifest(DRIVER_ROOT, "skills/clearotron-search/risk-framework.md");
+  const msDeck = readFileSync(join(DRIVER_ROOT, "skills/clearotron-search/risk-framework-aurora.md"), "utf8");
+  const houseDeck = readFileSync(join(DRIVER_ROOT, "skills/clearotron-search/risk-framework.md"), "utf8");
   // sanity on the real decks (the view test above covers the full contents)
   assert.equal(extractBandMeanings(msDeck, msManifest).length, 5);
   assert.equal(extractBandMeanings(houseDeck, houseManifest).length, 4);
@@ -279,7 +279,7 @@ function svcP({ gitCommit: gitCommitOver = null } = {}) {
     name: "Aurora Interactive Corporation", matchDomains: ["aurora.com"], platforms: ["store.steampowered.com", "itch.io"],
     marketplaceDensity: "sparse", defaultClasses: [9, 41], defaultJurisdictions: ["Global"],
     selfExclusionOwners: ["Aurora Interactive"], delivery: { email: "summary", privileged: true }, industry: "tech",
-    frameworkPath: "skills/prelim-search/risk-framework-aurora.md",
+    frameworkPath: "skills/clearotron-search/risk-framework-aurora.md",
   }));
   const writeCalls = [], commitCalls = [], auditCalls = [];
   const writeProject = (a) => { writeCalls.push(a); return { files: [`projects/${a.customer}/${a.project}.json`] }; };
@@ -495,7 +495,7 @@ function layeredSvc() {
   // the bundled generic shows through carrying a code-owned field the client body will not send.
   const calls = [];
   const shownThroughGeneric = { key: "generic", name: "House default", platforms: ["amazon.com"],
-    frameworkPath: "skills/prelim-search/risk-framework.md" };
+    frameworkPath: "skills/clearotron-search/risk-framework.md" };
   const loadProfiles = (opts = {}) => {
     calls.push(opts);
     if (opts.dir !== undefined) return new Map();                       // the store alone: EMPTY
@@ -531,7 +531,7 @@ test("2080: saving a SHOWN-THROUGH profile preserves its code-owned fields — t
     { profile: { name: "House default", platforms: ["amazon.com", "gnc.com"] } });
   assert.equal(r.status, 200, JSON.stringify(r.json));
   assert.equal(writeCalls.length, 1, "the write lands in the store — override-by-name working");
-  assert.equal(writeCalls[0].profile.frameworkPath, "skills/prelim-search/risk-framework.md",
+  assert.equal(writeCalls[0].profile.frameworkPath, "skills/clearotron-search/risk-framework.md",
     "the shown-through profile's code-owned framework survives a body that omits it");
 });
 

@@ -48,7 +48,7 @@ function runCli(args, env) {
 // agreeing on one value is the documented quiet state ("a half-migrated environment that agrees with
 // itself says nothing"), so this buys the in-process arm correctness at no cost in noise.
 test("enqueue CLI → explicit CLEAROTRON_QUEUE_DIR → runner drains to .done (fully headless intake)", async () => {
-  const root = mkdtempSync(join(tmpdir(), "prelim-encli-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-encli-"));
   const qdir = join(root, "intake-queue"); // NOT under any workspace-<agent> — the headless product shape
   const env = {
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE,
@@ -92,7 +92,7 @@ test("enqueue CLI → explicit CLEAROTRON_QUEUE_DIR → runner drains to .done (
 });
 
 test("refused at the door: no mark → exit 2, queue stays empty; --dry-run writes nothing", () => {
-  const root = mkdtempSync(join(tmpdir(), "prelim-encli-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-encli-"));
   const qdir = join(root, "q");
 
   const bad = runCli(["--goods", "beverages", "--forwarder", "jordan", "--queue-dir", qdir], {});
@@ -116,7 +116,7 @@ test("refused at the door: no mark → exit 2, queue stays empty; --dry-run writ
 });
 
 test("--job file passthrough keeps prose verbatim; flags override; id collision exits 3", () => {
-  const root = mkdtempSync(join(tmpdir(), "prelim-encli-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-encli-"));
   const qdir = join(root, "q");
   const brief = `Confirmation brief with "quotes", a €-sign & <angle brackets> —\ntwo lines.`;
   const jobFile = join(root, "req.json");

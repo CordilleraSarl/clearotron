@@ -65,7 +65,7 @@ test("parseManifestVariants: reads Variants tables, skips Elements + Variant-app
   assert.deepEqual(parseManifestVariants(MANIFEST), ["novapulse", "novapulsea", "转码"]);
 });
 
-test("parseManifestVariants: live prelim-variants format — term in the 'Value' column, not the first", () => {
+test("parseManifestVariants: live clearotron-variants format — term in the 'Value' column, not the first", () => {
   const live = `# Variant manifest
 
 ### Variants

@@ -82,14 +82,14 @@ test("review 2026-07-18: untagged in-hand rides +1 (never one-over-cap); failed 
   // ledger semantics through the REAL runner helpers
   const { recordMatter, dropMatter, findDuplicateMatter, readMatterLedger } = await import("../runner.mjs");
   const q = queueWith({});
-  recordMatter(q, { sig: "f|MARKX|9||-|level:prelim", conversationId: "c1", msgId: "m1", id: "j1", ts: NOW, profileKey: "aurora" });
-  recordMatter(q, { sig: "f|MARKX|9||-|level:prelim", conversationId: "c1", msgId: "m1", id: "j1", ts: NOW + 1, profileKey: "aurora" });
+  recordMatter(q, { sig: "f|MARKX|9||-|level:clearotron", conversationId: "c1", msgId: "m1", id: "j1", ts: NOW, profileKey: "aurora" });
+  recordMatter(q, { sig: "f|MARKX|9||-|level:clearotron", conversationId: "c1", msgId: "m1", id: "j1", ts: NOW + 1, profileKey: "aurora" });
   assert.equal(readMatterLedger(q).length, 1, "a crash re-claim (same msgId) never double-counts the month");
   dropMatter(q, "m1");
   const rows = readMatterLedger(q);
   assert.equal(rows.length, 1, "a failed run is MARKED, never removed");
   assert.equal(rows[0].failed, true);
-  assert.equal(findDuplicateMatter(q, { sig: "f|MARKX|9||-|level:prelim", conversationId: "c1", msgId: "m2" }, NOW + 1000), null,
+  assert.equal(findDuplicateMatter(q, { sig: "f|MARKX|9||-|level:clearotron", conversationId: "c1", msgId: "m2" }, NOW + 1000), null,
     "a failed row never blocks a genuine re-send");
   assert.match(checkRunCaps({ account: "aurora", caps: { monthlyRuns: 1 }, queueDirs: [q], now: NOW }) ?? "",
     /monthlyRuns=1/, "…but the failed run still counts as spend for the monthly cap");

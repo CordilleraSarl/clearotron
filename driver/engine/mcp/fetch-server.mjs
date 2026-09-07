@@ -30,7 +30,7 @@ serve({
       const ctrl = new AbortController();
       const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
       try {
-        const res = await fetch(url, { redirect: "follow", signal: ctrl.signal, headers: { "user-agent": "cordillera-prelim-fetch/0.1" } });
+        const res = await fetch(url, { redirect: "follow", signal: ctrl.signal, headers: { "user-agent": "cordillera-clearotron-fetch/0.1" } });
         const body = await res.text();
         const text = body.length > MAX_CHARS ? body.slice(0, MAX_CHARS) + `\n…[truncated at ${MAX_CHARS} chars]` : body;
         return { isError: res.ok ? undefined : true, text: `HTTP ${res.status} ${res.statusText} — ${url}\n\n${text}` };

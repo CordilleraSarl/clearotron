@@ -127,6 +127,20 @@ passed, and nothing has driven a live register through it.
 **Upgrade production to stables only.** What each channel promises and how often one is cut:
 **[docs/RELEASES.md](docs/RELEASES.md)**.
 
+**Upgrading an install made before 0.2.2: pin the agent id first.** The default agent id changed from
+`clawdi` to `localagent`, and that id is part of a path — your runs live under
+`<workspaceRoot>/workspace-<agent>/studio/prelim-search/`. If you never set an agent id, the upgraded
+install reads a workspace that does not exist yet, and an empty workspace looks like an account with no
+runs rather than like a misconfiguration. Set **both** names in your environment file before starting
+it, because the register-search servers read their own:
+
+```
+CLEAROTRON_DEFAULT_AGENT=clawdi
+CLEAROTRON_GATHER_AGENT=clawdi
+```
+
+If your environment file already sets them, nothing changes. A first-time install needs neither.
+
 The rest of this section is about the two ways a package reaches you, which is a separate question from
 which version it is.
 
@@ -276,45 +290,6 @@ Three more things about it are worth knowing before you write one:
 
 **Or the environment directly** — your shell, a container spec, a systemd `EnvironmentFile`. This is
 what production does, and nothing about it changed.
-
-### An install that used `PRELIM_*` names
-
-The variables an installer types are `CLEAROTRON_*`, and they are the only spelling. The old names are
-not read, not translated and not looked for — a line using one is a line nothing reads.
-
-**Rebuilding is the supported path**, and it is the only one that is tested: `npx clearotron install`
-writes a correct file from scratch, which is the path a new reader walks. If you would rather edit the
-file you have, rename every line in one pass and use the table below — a half-renamed file leaves the
-un-renamed half unset.
-
-| Old name | Write instead |
-|---|---|
-| `PRELIM_ENGINE` | `CLEAROTRON_AI` |
-| `PRELIM_ANTHROPIC_AUTH` · `PRELIM_OPENAI_AUTH` | `CLEAROTRON_AI_BILLING` |
-| `PRELIM_CLAUDE_BIN` | `CLEAROTRON_CLAUDE_PATH` |
-| `PRELIM_CODEX_BIN` | `CLEAROTRON_CODEX_PATH` |
-| `PRELIM_REGISTER_PROVIDER` | `CLEAROTRON_DATABASE` |
-| `PRELIM_POOL_ROOT` · `PRELIM_POOL_URL` | `CLEAROTRON_REPORTS_DIR` · `CLEAROTRON_REPORTS_URL` |
-| `PRELIM_WORKSPACE_ROOT` | `CLEAROTRON_WORK_DIR` |
-| `PRELIM_PROFILES_DIR` | `CLEAROTRON_CUSTOMERS_DIR` |
-| `PRELIM_SKILLS_DIR` | `CLEAROTRON_INSTRUCTIONS_DIR` |
-| `PRELIM_QUEUE_DIR` · `PRELIM_OUTBOX_DIR` | `CLEAROTRON_QUEUE_DIR` · `CLEAROTRON_OUTBOX_DIR` |
-| `PRELIM_GRANTS_FILE` | `CLEAROTRON_ACCESS_FILE` |
-| `PRELIM_NO_ENV_FILE` | `CLEAROTRON_NO_ENV_FILE` |
-| `CF_ACCESS_AUD` · `CLIENT_CF_ACCESS_AUD` | `CLEAROTRON_OIDC_AUDIENCE` · `CLEAROTRON_CLIENT_OIDC_AUDIENCE` |
-| `PRELIM_BRAND_NAME` · `PRELIM_BRAND_TAGLINE` · `PRELIM_BRAND_PRODUCT` | `CLEAROTRON_BRAND_*` |
-| `PRELIM_LANE_<code>` | `CLEAROTRON_NATIVE_LANGUAGE_<code>` |
-| `PRELIM_DELIVERY` | nothing — **retired, see below** |
-
-
-> **A note on the 2026-09-04 rename.** The left column above is HISTORY and keeps the dead spelling on
-> purpose — it is the only thing that makes the table usable, and a text sweep that "corrects" it turns
-> a migration guide into two identical columns. On 2026-09-04 the owner extended the rename to the whole
-> namespace, including the internal variables an installer never types and the two names the August
-> sweep had deliberately exempted as engine internals. There is one prefix now, everywhere, with no
-> compatibility layer and no alias reading: greenfield, no public installs, our own boxes rebuilt rather
-> than migrated. If you are reading this holding a file older than that, the rule is unchanged and
-> simpler than the table: rebuild.
 
 Vendor credentials keep their vendor’s name — `SIGNA_API_KEY`, `PERPLEXITY_API_KEY`,
 `ANTHROPIC_API_KEY` — because those already say who you bought them from.

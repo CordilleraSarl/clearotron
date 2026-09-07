@@ -209,6 +209,10 @@
       0,
       1
     ],
+    "driver/test/clearotron-variants-record.test.mjs": [
+      2,
+      0
+    ],
     "driver/test/config-resolves-outside-the-checkout.test.mjs": [
       1,
       0
@@ -331,10 +335,6 @@
     ],
     "driver/test/preflight-credentials.test.mjs": [
       1,
-      0
-    ],
-    "driver/test/prelim-variants-record.test.mjs": [
-      2,
       0
     ],
     "driver/test/reasoned-negatives.test.mjs": [

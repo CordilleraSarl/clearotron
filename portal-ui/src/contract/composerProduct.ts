@@ -12,8 +12,8 @@
 // There were LEVERS: four booleans and a list of eight script chips, from which the screen DERIVED a
 // registry level and sent that. It could not name what it was selling. Its own footer had to invent
 // labels for "distinctions the registry has no word for" — "Deep dive — United States", "Full clearance"
-// — and the comment saying so was accurate: `prelim` was three different products depending on where it
-// pointed, and the wire carried only `prelim`.
+// — and the comment saying so was accurate: `clearotron` was three different products depending on where it
+// pointed, and the wire carried only `clearotron`.
 //
 // So the levers are gone, and so is everything built on them:
 //
@@ -640,7 +640,7 @@ export function runsNote(i: EffortInput): string {
  * keep searching last month's. So only what the user EXPLICITLY set travels.
  *
  * NULL when no product is chosen — the second wall behind the screen's own (Save is offered only while
- * `blockers()` is empty). This used to read `?? 'prelim'`, which was a silent product substitution the
+ * `blockers()` is empty). This used to read `?? 'clearotron'`, which was a silent product substitution the
  * moment one lever combination stopped resolving.
  */
 export function composeSaved({

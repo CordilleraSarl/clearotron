@@ -23,7 +23,7 @@ const MIN = 60 * 1000;
 const RESET_PAST = new Date(Date.now() - 60 * MIN).toISOString();
 
 const parkedQueue = (extra = {}) => {
-  const root = mkdtempSync(join(tmpdir(), "prelim-1488-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-1488-"));
   const q = join(root, "q");
   const runDir = join(root, "run");
   mkdirSync(q, { recursive: true });
@@ -98,7 +98,7 @@ test("#1488 a pre-fix sentinel with no probeAttempt still records the wake", asy
 // with no queue sidecars — the orphan sweep, and a run a person resumes BY HAND after an incident,
 // which is when the spine is read most closely.
 const orphanPark = (extra = {}) => {
-  const root = mkdtempSync(join(tmpdir(), "prelim-1732-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-1732-"));
   const runDir = join(root, "run");
   mkdirSync(driverDir(runDir, "."), { recursive: true });
   const sentPath = join(runDir, ".postponed");
@@ -135,7 +135,7 @@ test("#1732 a pre-fix run-dir sentinel with no probeAttempt still records the wa
   // Sentinels written before are on disk on test right now. The read-back is best-effort by
   // design, so the arm pins that an unparseable one still leaves a record rather than losing the wake.
   const { resumeRunDirOrphans } = await import(`../runner.mjs?bust=${process.hrtime.bigint()}`);
-  const root = mkdtempSync(join(tmpdir(), "prelim-1732-old-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-1732-old-"));
   const runDir = join(root, "run");
   mkdirSync(driverDir(runDir, "."), { recursive: true });
   const sentPath = join(runDir, ".postponed");

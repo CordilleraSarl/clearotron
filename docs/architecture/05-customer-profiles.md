@@ -16,7 +16,7 @@ rating is refused by pattern guards and by stage-level firewalls.
 ## The bundle
 
 A customer = one git-owned JSON file `profiles/<key>.json`, plus optionally: a prose context pack
-(`<key>.context.md`), a per-customer rating framework pair in `skills/prelim-search/`
+(`<key>.context.md`), a per-customer rating framework pair in `skills/clearotron-search/`
 (`risk-framework-<key>.md` + its `.manifest.json`, plus worked examples), and per-engagement
 project overlays under `profiles/projects/<key>/`.
 
@@ -182,7 +182,7 @@ this source tree.
   `matchDomains` for forwarder-based fallback. A profile with empty `matchDomains` is reachable by
   profileKey only.
 - **Per-customer framework** (optional; git-only, legal-team work — the UI cannot set it): add the
-  deck + manifest + worked examples under `skills/prelim-search/`, set the two paths in the profile
+  deck + manifest + worked examples under `skills/clearotron-search/`, set the two paths in the profile
   JSON via git. Until then the customer rates under the Generic default.
 - **Per-engagement overlay** (optional): `profiles/projects/<key>/<slug>.json` with the 8
   overlayable keys; intake stamps `job.projectKey` to select it.

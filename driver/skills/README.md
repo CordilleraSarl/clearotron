@@ -2,7 +2,7 @@
 
 **Every file here is prompt payload served to the model at runtime.** A stage is one engine turn told to read named
 files and follow them exactly, so an edit for brevity or tone changes what a clearance concludes —
-`prelim-search/synthesis-rules.md` is 1,025 lines of program. Never touch this tree in a documentation or tidy-up
+`clearotron-search/synthesis-rules.md` is 1,025 lines of program. Never touch this tree in a documentation or tidy-up
 task, and never let a mass edit reach it — the [ADR-0005](../../docs/decisions/0005-comments-carry-reasoning.md)
 comment sweep is required to exclude this tree, and that script does not exist yet, so nothing enforces it but you.
 
@@ -20,21 +20,21 @@ One directory per skill. `SKILL.md` is the entry point — YAML frontmatter (`na
 procedure. Every other file beside it is a reference the SKILL.md or the stage message names explicitly, with six
 exceptions: the four `risk-framework*.manifest.json` sidecars, whose paths the code DERIVES from the deck
 (`manifestPathFor()`, `../framework.mjs`) so validators and the renderer read band vocabulary without parsing prose;
-`prelim-search/risk-framework-triage.md`, the knockout lane's default ladder, named in code only
+`clearotron-search/risk-framework-triage.md`, the knockout lane's default ladder, named in code only
 (`../pipeline-knockout.mjs`) because the knockout stage message hands the seat the frozen `_driver/framework.json`
-instead; and `prelim-search/templates/search-request-form.html`, named only in `../publish/index.mjs`.
+instead; and `clearotron-search/templates/search-request-form.html`, named only in `../publish/index.mjs`.
 
 | Skill | What the stage does |
 |---|---|
 | `matter-frame` | Phase 0. Writes the matter's commercial context — sector, customer base, channels of trade, jurisdictions that materially matter, off-field sectors, watchlist seeds — before any search runs. `watchlist-reference.md` is enrichment, not authority. |
-| `prelim-variants` | Classifies the mark into one of six archetypes, derives a risk theory from that, emits the variant manifest both execution skills read. Non-Latin scripts: `transliteration-scripts.md`. |
+| `clearotron-variants` | Classifies the mark into one of six archetypes, derives a risk theory from that, emits the variant manifest both execution skills read. Non-Latin scripts: `transliteration-scripts.md`. |
 | `blind-frame`, `frame-diff` | Re-derives the threat model from the raw instruction alone, deliberately starved of the matter frame, then diffs that model against what the run actually scoped and emits reopen directives the driver acts on. Something has to test the frame instead of reasoning inside it. |
-| `prelim-common-law` | The marketplace / web / social sweep, as structured Perplexity research over the platform list the stage dictates. Prompt templates: `perplexity-prompts.md`. |
-| `prelim-register` | Register execution in the two modes a spawn selects: `unit.md` (the funnel — enumerate one axis to completion, decide nothing) and `digest.md` (judgment over the merged band). Plus `register-recipes.md`, `status-rules.md`, `stealth-filer-indicators.md`, `providers/`. |
+| `clearotron-common-law` | The marketplace / web / social sweep, as structured Perplexity research over the platform list the stage dictates. Prompt templates: `perplexity-prompts.md`. |
+| `clearotron-register` | Register execution in the two modes a spawn selects: `unit.md` (the funnel — enumerate one axis to completion, decide nothing) and `digest.md` (judgment over the merged band). Plus `register-recipes.md`, `status-rules.md`, `stealth-filer-indicators.md`, `providers/`. |
 | `placement-inquiry` | Applies commercial relevance per candidate — headline-candidate / sheet-2 / watchlist-annex / out-of-scope-filtered — before any tiering runs. |
 | `case-law-citation` | Grounds risk-relevant findings in precedent fetched in-session, never from memory. One thin adapter per source in `sources/`; `evals.md` defines what working means. |
 | `narrative-refutation` | Reads the finished narrative against the underlying findings files and returns CLEAR / CONDITIONAL / BLOCKING with itemised flags. Delivery is gated on the verdict. |
-| `prelim-search` | The doctrine the synthesis and delivery stages are held to: `synthesis-rules.md`, the `risk-framework*.md` ladders with their `.manifest.json` band vocabularies, `delivery-contract.md`, `report-prose.md`, `worked-examples.md`, `phase2-execution.md`, `field-doctrine-pharma.md`. |
+| `clearotron-search` | The doctrine the synthesis and delivery stages are held to: `synthesis-rules.md`, the `risk-framework*.md` ladders with their `.manifest.json` band vocabularies, `delivery-contract.md`, `report-prose.md`, `worked-examples.md`, `phase2-execution.md`, `field-doctrine-pharma.md`. |
 | `knockout-frame`, `knockout-assess` | Stages A and C of the knockout doctrine — a broad kill/no-kill triage screen over several candidate names at once (Stage B is a code-side research sweep). Not a clearance. |
 
 ## What reads it
@@ -53,25 +53,25 @@ instead; and `prelim-search/templates/search-request-form.html`, named only in `
 
 ## The provider boundary
 
-Operator syntax and vendor tool tokens like `corsearch_*` live only in `prelim-register/providers/`; the spine names
+Operator syntax and vendor tool tokens like `corsearch_*` live only in `clearotron-register/providers/`; the spine names
 the `register_*` tools, whichever vendor `CLEAROTRON_DATABASE` selects.
 `../test/provider-neutral-prose.test.mjs` holds three of that boundary's lines: no vendor-prefixed tool token
 outside `providers/` and the `engine/mcp/<provider>-server.mjs` glue; no provider record host in a provider-agnostic
 skill file (banned hosts are read FROM the provider docs, so a sixth provider is covered the day its doc lands);
 every register server registering only `register_*`, under the MCP name `register`. Field paths are the open edge —
 the matcher requires `<vendor>_` and cannot see camelCase, so no test fails on one, and
-`prelim-register/status-rules.md` still instructs off Corsearch's own field names (`corsearchStatusCode`,
+`clearotron-register/status-rules.md` still instructs off Corsearch's own field names (`corsearchStatusCode`,
 `onomaticsJurisdictionsStatuses`, the `owners[0].*` owner chain), plus one line of `register-recipes.md` off
-`onomaticsOppositions[]`. `prelim-register/SKILL.md`, `unit.md`, `digest.md` and everything under `prelim-search/`
+`onomaticsOppositions[]`. `clearotron-register/SKILL.md`, `unit.md`, `digest.md` and everything under `clearotron-search/`
 are clean. The authoring rules and the empirical-verification checklist a new provider doc must pass sit in
-`prelim-register/providers/README.md`.
+`clearotron-register/providers/README.md`.
 
 ## Where to start
 
-`prelim-search/SKILL.md` — the orchestrator's own skill, and the one file describing the whole workflow end to end.
-Then `prelim-register/SKILL.md`, the more elaborated of the two execution skills: a spine plus per-mode files
-(`unit.md`, `digest.md`) and per-provider files (`providers/`). The other, `prelim-common-law`, is one spine plus
+`clearotron-search/SKILL.md` — the orchestrator's own skill, and the one file describing the whole workflow end to end.
+Then `clearotron-register/SKILL.md`, the more elaborated of the two execution skills: a spine plus per-mode files
+(`unit.md`, `digest.md`) and per-provider files (`providers/`). The other, `clearotron-common-law`, is one spine plus
 `perplexity-prompts.md`, its two grid modes (deterministic `grid_spec_path` dispatch vs. the legacy authored
 program) being sections inside it — the per-mode split and `providers/` are register-only, not a shape every
-execution skill shares. `prelim-search/phase2-execution.md` is methodology, not sequencing — the pipeline is
+execution skill shares. `clearotron-search/phase2-execution.md` is methodology, not sequencing — the pipeline is
 sequenced in code, in `../stages.mjs` and `../pipeline.mjs`.

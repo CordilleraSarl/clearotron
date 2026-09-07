@@ -34,7 +34,7 @@ const JOB = {
 let lastRoot = null;
 
 async function runOpenaiPipeline(env = {}) {
-  const root = mkdtempSync(join(tmpdir(), "prelim-oai-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-oai-"));
   lastRoot = root;
   const codexLog = join(root, "codex-calls.jsonl");
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_LEDGER_LIMITED", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP"]) delete process.env[k];
@@ -80,8 +80,8 @@ test("E2(openai): full pipeline runs on the openai-agent engine (CLEAR, delivere
   const order = events.filter((e) => e.event === "stage").map((e) => e.stage);
   const idx = (s) => order.findIndex((x) => x.startsWith(s));
   // SAME ordering invariants as the anthropic happy path → the engine swap is structurally transparent.
-  assert.ok(idx("matter-frame") >= 0 && idx("matter-frame") < idx("prelim-variants"), "matter-frame before variants");
-  assert.ok(idx("prelim-variants") < idx("common-law"), "variants before gather");
+  assert.ok(idx("matter-frame") >= 0 && idx("matter-frame") < idx("clearotron-variants"), "matter-frame before variants");
+  assert.ok(idx("clearotron-variants") < idx("common-law"), "variants before gather");
   assert.ok(idx("skeptic") < idx("synthesis"), "skeptic before synthesis");
   assert.ok(idx("synthesis") < idx("narrative-refutation"), "synthesis before refutation");
   for (const ax of ["saturation-probe", "primary-sweep", "transliteration-numeric", "incumbent-class"])

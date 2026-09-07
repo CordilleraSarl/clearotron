@@ -32,7 +32,7 @@ process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const CLAUDE = join(HERE, "mock-claude.mjs");
-const root = mkdtempSync(join(tmpdir(), "prelim-dedup-"));
+const root = mkdtempSync(join(tmpdir(), "clearotron-dedup-"));
 const callLog = join(root, "calls.jsonl");
 for (const [k, v] of Object.entries({
   CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
@@ -104,7 +104,7 @@ test("matterSignature normalizes casing / spacing / class-order; different mark 
 // flight — no error, no marker, just a second ~$40 search. The literals below say what a production
 // matter's signature IS: forwarder|mark|classes|customer|ref, each lowercased and whitespace-collapsed,
 // classes deduped and sorted numerically, plus a |level:<lvl> suffix when the resolved level is neither
-// empty nor "prelim", and with mark becoming the sorted deduped mark SET for a multi-mark knockout batch.
+// empty nor "clearotron", and with mark becoming the sorted deduped mark SET for a multi-mark knockout batch.
 //
 // Added by, whose fix makes a TEST scenario's signature unique per round by suffixing a token onto
 // the harness's own REFS (scripts/e2e.mjs refForRun). That is harness-side by construction — runner.mjs is
@@ -117,7 +117,7 @@ test("the production matter signature composition is PINNED", () => {
   assert.equal(matterSignature({ forwarder: "Sam", markName: " Veltriphen ", classes: [44, 5, 1, 42], customer: "Petcary", ref: "TMP-2201" }),
     "sam|veltriphen|1,5,42,44|petcary|tmp-2201", "the ref is the last field, lowercased");
   assert.equal(matterSignature({ forwarder: "sam", markName: "VELTRIPHEN", classes: [9], customer: "Petcary", ref: "TMP-2201" }, { product: "global-preliminary-search" }),
-    "sam|veltriphen|9|petcary|tmp-2201", "an explicit prelim adds NOTHING — it still collides with a legacy no-field job");
+    "sam|veltriphen|9|petcary|tmp-2201", "an explicit clearotron adds NOTHING — it still collides with a legacy no-field job");
   assert.equal(matterSignature({ forwarder: "sam", markName: "VELTRIPHEN", classes: [9], customer: "Petcary", ref: "TMP-2201" }, { product: "knockout-search" }),
     "sam|veltriphen|9|petcary|tmp-2201|level:knockout-search", "any other resolved level is a signature dimension, so an escalation never dedups");
   assert.equal(matterSignature({ forwarder: "sam", marks: [{ name: "ZED" }, { name: "ALPHA" }], classes: [9], customer: "Acme", ref: "TMP-9" }, { product: "knockout-search" }),
@@ -187,7 +187,7 @@ test("integration: signature + same-mark-thread dedup park .duplicate; distinct-
   assert.equal(velDone.length, 1, `exactly one VELTRIPHEN ran (got ${velDone})`);
   assert.equal(velDup.length, 1, `exactly one VELTRIPHEN parked (got ${velDup})`);
   const velReason = readFileSync(join(q, `${velDup[0]}.duplicate.reason`), "utf8");
-  assert.match(velReason, /duplicate prelim/);
+  assert.match(velReason, /duplicate clearotron/);
   assert.match(velReason, /matched by: matter signature/);
   assert.match(velReason, /to force .*"dupOverride": true/, "reason explains how to force a run (dupOverride)");
   assert.match(velReason, /notify: packet /);

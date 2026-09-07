@@ -93,7 +93,7 @@ test("1911 a CUSTOMER-ONLY key is refused BY NAME, not as a typo", async () => {
   // The generic deny-unknown message would send the reader hunting for a misspelling in a key they
   // spelled correctly. These keys are not misspelled; they are not overlayable, and that is a different
   // sentence.
-  const e = await refusalFrom(async () => assertOverlayable({ frameworkPath: "skills/prelim-search/x.md" }));
+  const e = await refusalFrom(async () => assertOverlayable({ frameworkPath: "skills/clearotron-search/x.md" }));
   assert.match(e.message, /belongs to the brand owner/);
   assert.match(e.message, /never who it is or what rates its matters/,
     "the reason, because rating authority not being overlayable is the point rather than a rule");

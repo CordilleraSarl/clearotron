@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // Phase 0 — PURE CODE (no LLM): derive the slug, codename, run-dir, calendar date, and customer template.
-// Mirrors prelim-search/SKILL.md Phase 0 + Phase 1 slug derivation.
+// Mirrors clearotron-search/SKILL.md Phase 0 + Phase 1 slug derivation.
 
 import { existsSync, appendFileSync, readFileSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -108,7 +108,7 @@ export function archiveDirFor({ slug, date, codename, archiveRoot = config.archi
 
 // ── — THE RUN KEY MUST BE UNIQUE IN THE SCOPE IT IS READ IN, NOT ONLY IN ITS OWN ROOT ────────
 //
-// `prelim-<slug>-<codename>-` is not just a directory name. It is the ONLY thing separating one run's
+// `clearotron-<slug>-<codename>-` is not just a directory name. It is the ONLY thing separating one run's
 // rows from another's in the shared call ledger, and `pipeline.mjs`'s screen gate reads that ledger to
 // build the fetched universe it judges goods-drops against:
 //
@@ -148,7 +148,7 @@ export function archiveDirFor({ slug, date, codename, archiveRoot = config.archi
 export const codenameRegistryPath = () => join(dirname(ledgerPath("call")), "run-codenames.jsonl");
 
 /**
- * Claim `prelim-<slug>-<codename>-` for this run, and report whether we got it.
+ * Claim `clearotron-<slug>-<codename>-` for this run, and report whether we got it.
  *
  * FIRST WRITER WINS, decided by re-reading rather than by locking: append the claim, read every claim
  * back, and the earliest line for this slug+date+codename is the owner. Two runs that append in the same

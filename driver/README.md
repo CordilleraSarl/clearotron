@@ -1,4 +1,4 @@
-# prelim-driver — deterministic driver for the prelim-search trademark workflow
+# clearotron-driver — deterministic driver for the clearotron-search trademark workflow
 
 Orchestration in **code**; the LLM does only judgment leaves. Each pipeline stage is **one blocking
 engine turn** (default engine: `anthropic-agent`, shelling `claude -p` per stage); fan-out/fan-in/
@@ -26,7 +26,7 @@ integrator ──job JSON (enqueue CLI / start_run / queue file)──┐
 
 ## Per-agent execution (multi-queue)
 
-A prelim job runs **as the identity that forwarded it** — derived from the queue LOCATION it was
+A clearotron job runs **as the identity that forwarded it** — derived from the queue LOCATION it was
 claimed from (`<workspacePrefix><agentId>/…/queue`, see `driver.config.mjs`), so there is no
 forwarder→agent map to maintain. The run-dir sits in that identity's workspace and the delivery
 packet names that identity as the reply route. **Publishing stays centralized** — `publish/` writes
@@ -70,7 +70,7 @@ identity ran it. Headless deployments with no per-agent workspaces use one expli
 - The `anthropic-agent` engine shells `claude -p` per stage (stream-json, blocking to the final
   result); warm retries `--resume` the same session, fresh retries start clean — see
   `engine/CONTRACT.md §3` for the model-tier map and `§8` for runtime caveats.
-- Stage identity keys are `prelim-<slug>-<codename>-<stage>`; telemetry ledgers record every attempt.
+- Stage identity keys are `clearotron-<slug>-<codename>-<stage>`; telemetry ledgers record every attempt.
 - A stage's output is judged by **file truth** (the validator on the written artifact), never by the
   engine's own success claim.
 - Retries never re-dispatch the same second an attempt failed: every retry waits
@@ -95,8 +95,8 @@ conformance → paid run).
 
 ## Single path
 
-prelim-search runs **only** via this driver — every intake path lands a job JSON in a queue and the
+clearotron-search runs **only** via this driver — every intake path lands a job JSON in a queue and the
 driver does the rest. There is no legacy spawn path and no enable/dormant flag. (The old
 LLM-orchestrator `sessions_yield` WAIT/PROCEED/SUPPRESS machinery was stripped from
-`skills/prelim-search/phase2-execution.md` — only the historical removal note at its head remains;
+`skills/clearotron-search/phase2-execution.md` — only the historical removal note at its head remains;
 the file is live methodology the stages read.)

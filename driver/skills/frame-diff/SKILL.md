@@ -1,6 +1,6 @@
 ---
 name: frame-diff
-description: The omission detector for the v3 preliminary trademark search workflow. **Invoked exclusively by the `prelim-search` orchestrator/driver** once the register sweeps have landed and before placement runs — do not call directly. Diffs the blind (frame-starved) re-derivation against what the run ACTUALLY scoped and searched, and emits structured reopen directives — one per variant / field / source omission worth acting on, each carrying the observation that should reopen it and a severity. The driver acts on the directives (a targeted supplemental sweep, then re-digest) and on the dominant-element gap (it can block a clean finding). The decision is the driver's; you supply the structured diff.
+description: The omission detector for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearotron-search` orchestrator/driver** once the register sweeps have landed and before placement runs — do not call directly. Diffs the blind (frame-starved) re-derivation against what the run ACTUALLY scoped and searched, and emits structured reopen directives — one per variant / field / source omission worth acting on, each carrying the observation that should reopen it and a severity. The driver acts on the directives (a targeted supplemental sweep, then re-digest) and on the dominant-element gap (it can block a clean finding). The decision is the driver's; you supply the structured diff.
 ---
 
 ## Purpose

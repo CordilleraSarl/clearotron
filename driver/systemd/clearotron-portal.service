@@ -11,7 +11,7 @@
 #
 # ── ONE CONFIGURATION PER SERVER BOX (owner ruling, 2026-08-26) ───────────────────────────────────────
 #
-# `EnvironmentFile=%h/.env`, like prelim-driver.service, and the CF Access audience lives there. The
+# `EnvironmentFile=%h/.env`, like clearotron-driver.service, and the CF Access audience lives there. The
 # alternative — explicit `Environment=` lines carrying the audience, as profile-service.service used to —
 # existed to stop `~/.env` shadowing the trademark AUD. That protection was against a SECOND SOURCE OF
 # TRUTH, and the ruling removes the second source rather than defending against it: a box with these
@@ -44,7 +44,7 @@ After=clearotron-mcp-face.service
 [Service]
 Type=simple
 EnvironmentFile=%h/.env
-# BOTH DOCUMENTED INSTALL LAYOUTS, for the same reason prelim-driver.service carries this line: a reader
+# BOTH DOCUMENTED INSTALL LAYOUTS, for the same reason clearotron-driver.service carries this line: a reader
 # who took the vendor's install script has the binary in ~/.local/bin, and one who took the npm route has
 # it in ~/.npm-global/bin. INSTALL.md §1 names neither, so both are on the path.
 Environment=PATH=%h/.local/bin:%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin

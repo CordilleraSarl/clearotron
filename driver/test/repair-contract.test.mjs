@@ -27,7 +27,7 @@ test("the full-write tail is reserved for a file that was never written", () => 
 });
 
 test("failingTarget picks the member the invalid_file token names", () => {
-  const files = ["/r/prelim-search/x/common-law-findings.half-a.md", "/r/prelim-search/x/common-law-findings.half-b.md"];
+  const files = ["/r/clearotron-search/x/common-law-findings.half-a.md", "/r/clearotron-search/x/common-law-findings.half-b.md"];
   assert.equal(failingTarget("invalid_file:x/common-law-findings.half-b.md:platforms_missing:etsy", files), files[1]);
   assert.equal(failingTarget("invalid_file:x/common-law-findings.half-a.md:connotation_undisposed:q", files), files[0]);
   // single-file stages: the only expect file IS the target, whatever display path the token carries

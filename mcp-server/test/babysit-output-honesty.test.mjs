@@ -64,7 +64,7 @@ const DELIVERED_RUN_ROWS = [
 const RESUMED_RUN_ROWS = [
   { event: "skip", stage: "matter-frame", trigger: "skip", model: "anthropic/claude-opus-5",
     output: { name: "matter-context.md", sha: "b724635aceba", size: 298, present: true } },
-  { event: "skip", stage: "prelim-variants", trigger: "skip", model: "anthropic/claude-opus-5",
+  { event: "skip", stage: "clearotron-variants", trigger: "skip", model: "anthropic/claude-opus-5",
     output: { name: "variant-manifest.md", sha: "c8a2517e36eb", size: 426, present: true } },
   { event: "skip", stage: "skeptic", trigger: "skip", model: "anthropic/claude-sonnet-5",
     output: { name: "skeptic-flags.md", sha: "cdb221212e9f", size: 18, present: true } },

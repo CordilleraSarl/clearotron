@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// scope-ledger.mjs — the machine mirror of the prelim-variants `### Scope ledger` (the frame-omission
+// scope-ledger.mjs — the machine mirror of the clearotron-variants `### Scope ledger` (the frame-omission
 // design: the blind-pass framing fix, approved into this file — the code is its own record).
 //
-// prelim-variants emits a prose `### Scope ledger` table — one row per variant / field / source the
+// clearotron-variants emits a prose `### Scope ledger` table — one row per variant / field / source the
 // run CONSIDERED and DROPPED (or applied), each carrying the observation that should REOPEN it. The
 // driver CODE-DERIVES scope-ledger.json from that prose (renderScopeLedgerJson, called after
-// prelim-variants validates) so the JSON is authored by the driver, never the model, and matches the
+// clearotron-variants validates) so the JSON is authored by the driver, never the model, and matches the
 // prose BY CONSTRUCTION — exactly the coverage-ledger.mjs pattern. The blind frame-diff reads the
 // dropped set + reopen triggers to decide which omissions to escalate.
 //
@@ -115,7 +115,7 @@ export function parseScopeLedgerJson(raw) {
 
 /**
  * CODE-DERIVE the JSON scope ledger FROM the prose `### Scope ledger` table (the driver calls this after
- * prelim-variants validates; never-killed at the call site). PURE. Throws `scope_ledger_unparseable`
+ * clearotron-variants validates; never-killed at the call site). PURE. Throws `scope_ledger_unparseable`
  * when the prose carries a Scope ledger heading but yields no classifiable row, so the caller's catch
  * routes to the manifest-prose-fallback path (the run still delivers). Returns a JSON ARRAY string that
  * round-trips through parseScopeLedgerJson.

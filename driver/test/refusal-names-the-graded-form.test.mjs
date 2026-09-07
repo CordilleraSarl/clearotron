@@ -60,8 +60,8 @@ process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 const { runStage, gradedArtifact, repairTarget, requiredFileClause } = await import("../gateway.mjs");
 const { CONNOTATION_FORM_REASONS } = await import("../connotation-search.mjs");
 
-const MD = "/r/prelim-search/x/common-law-findings.half-m.md";
-const FORM = "/r/prelim-search/x/common-law-dispositions.half-m.json";
+const MD = "/r/clearotron-search/x/common-law-findings.half-m.md";
+const FORM = "/r/clearotron-search/x/common-law-dispositions.half-m.json";
 
 // ── 1. the meaning seat: every clause of the split names the form ────────────────────────────────────
 
@@ -75,8 +75,8 @@ test("arm 1 — B: the connotation family grades at the stage's own output — t
     assert.equal(gradedArtifact(`connotation_${reason}:${reason}=79`, MD), MD,
       `connotation_${reason} must grade at the stage's own output — a sibling name would aim the seat at a file it cannot affect`);
   }
-  assert.equal(gradedArtifact("connotation_call_partial:call_partial=3", "/r/prelim-search/x/common-law-findings.half-a.md"),
-    "/r/prelim-search/x/common-law-findings.half-a.md", "…for every member, half or canonical");
+  assert.equal(gradedArtifact("connotation_call_partial:call_partial=3", "/r/clearotron-search/x/common-law-findings.half-a.md"),
+    "/r/clearotron-search/x/common-law-findings.half-a.md", "…for every member, half or canonical");
 });
 
 test("arm 3 — the coverage family grades at the stage's own output; the ledger is still told apart", () => {
@@ -84,7 +84,7 @@ test("arm 3 — the coverage family grades at the stage's own output; the ledger
   // is no graded sibling and a form-family refusal names the stage's own output — the remedy is a
   // `record_coverage` call, and the one artifact a refusal may name to a seat is its own output, never
   // the `_driver/` accumulator (the era-stamp argument, exactly as arm 1 states it for dispositions).
-  const dg = "/r/prelim-search/x/register-findings.md";
+  const dg = "/r/clearotron-search/x/register-findings.md";
   for (const reason of ["coverage_no_status:no_status=3", "coverage_form_damaged:form_damaged=1",
     "coverage_form_axis_invalid:CS-1 [axis=<empty>]", "coverage_form_engine_vocabulary:CS-2"]) {
     assert.equal(gradedArtifact(reason, dg), dg,
@@ -113,9 +113,9 @@ test("arm 5 — gradedArtifact and repairTarget agree, because they are one deri
   for (const [reason, out] of [
     ["connotation_call_partial:call_partial=79", MD],
     ["connotation_cite_absent:cite_absent=36", MD],
-    ["coverage_no_status:no_status=3", "/r/prelim-search/x/register-findings.md"],
-    ["coverage_axis_invalid:all axes", "/r/prelim-search/x/register-findings.md"],
-    ["framediff_severity_invalid:major", "/r/prelim-search/x/frame-diff.md"],
+    ["coverage_no_status:no_status=3", "/r/clearotron-search/x/register-findings.md"],
+    ["coverage_axis_invalid:all axes", "/r/clearotron-search/x/register-findings.md"],
+    ["framediff_severity_invalid:major", "/r/clearotron-search/x/frame-diff.md"],
   ]) {
     assert.equal(gradedArtifact(reason, out), repairTarget(`invalid_file:x/${basename(out)}:${reason}`, [out]),
       `${reason}: the file the operator reads about is the file the repair writes`);
@@ -173,7 +173,7 @@ test("arm 6 — the attempt row carries the FORM's sha, and two attempts that mo
   process.env.MOCK_FORM_SIBLING = join(dir, SIB);
   process.env.MOCK_FORM_STEPS = JSON.stringify([formWith(1), formWith(3)]);
   const r = await runStage("test-stage", {
-    agent: "clawdi", message: "BASE TASK", sessionKey: "prelim-graded-1",
+    agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-graded-1",
     timeoutSec: 30, maxRetries: 2, runDir: dir, expectFile: s.expectFile, validate: s.validate,
   });
   assert.equal(r.ok, true, "attempt 2 rules every row");
@@ -195,7 +195,7 @@ test("arm 7 — the refusal the seat is handed names the form", async () => {
   process.env.MOCK_FORM_SIBLING = join(dir, SIB);
   process.env.MOCK_FORM_STEPS = JSON.stringify([formWith(0), formWith(0), formWith(0)]);
   const r = await runStage("test-stage", {
-    agent: "clawdi", message: "BASE TASK", sessionKey: "prelim-graded-2",
+    agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-graded-2",
     timeoutSec: 30, maxRetries: 2, runDir: dir, expectFile: s.expectFile, validate: s.validate,
   });
   assert.equal(r.ok, false);
@@ -209,7 +209,7 @@ test("arm 8 — the quarantine lane still recognises a finding token after the s
   // quarantineSynth (pipeline.mjs) gates on the SHAPE of this string: `^invalid_file:` and `:finding_[a-z]`
   // and NOT `:findings_`. `finding_` is sibling-routed to findings.json, so the path moves — and a run
   // that lost this gate would fail whole clearances that used to salvage.
-  const narrative = "/r/prelim-search/x/report.md";
+  const narrative = "/r/clearotron-search/x/report.md";
   const graded = gradedArtifact("finding_meter_token_invalid:goods_proximity:unknown", narrative);
   assert.equal(basename(graded), "findings.json", "a finding-shape defect is in findings.json, not the prose");
   const fail = `invalid_file:x/${basename(graded)}:finding_meter_token_invalid:goods_proximity:unknown`;
@@ -229,7 +229,7 @@ test("arm 9 — the repair anchor did NOT move: `file` is still the stage's own 
   process.env.MOCK_FORM_SIBLING = join(dir, SIB);
   process.env.MOCK_FORM_STEPS = JSON.stringify([formWith(1), formWith(2), formWith(3)]);
   await runStage("test-stage", {
-    agent: "clawdi", message: "BASE TASK", sessionKey: "prelim-graded-3",
+    agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-graded-3",
     timeoutSec: 30, maxRetries: 2, runDir: dir, expectFile: s.expectFile, validate: s.validate,
   });
   const rows = stageRows().filter((x) => x.attempt);
@@ -251,7 +251,7 @@ test("arm 11 — a stage that owns no form records none, rather than echoing its
   delete process.env.MOCK_FORM_SIBLING;
   process.env.MOCK_FORM_STEPS = JSON.stringify(["still wrong", "still wrong", "still wrong"]);
   const r = await runStage("test-stage", {
-    agent: "clawdi", message: "BASE TASK", sessionKey: "prelim-graded-4",
+    agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-graded-4",
     timeoutSec: 30, maxRetries: 1, runDir: dir, expectFile: out,
     validate: () => ({ ok: false, reason: "platforms_missing:etsy" }),
   });
@@ -276,7 +276,7 @@ test("arm 10 — the connotation family has NO name source left — deleting it 
 // second file: rulings ride `record_dispositions`, the stage output is the only file the seat owes, and
 // re-adding a second name here would re-open the exact contradiction measured.
 
-const FINDINGS_M = "prelim-search/tmp8729-sample/2026-01-01-specimen/common-law-findings.half-m.md";
+const FINDINGS_M = "clearotron-search/tmp8729-sample/2026-01-01-specimen/common-law-findings.half-m.md";
 
 test("B: every token — the connotation family included — keeps ONE required-file sentence", () => {
   for (const t of ["grid_join_missing", "coverage_ledger_empty", "named_band_state_invalid", "findings_use_check_missing",

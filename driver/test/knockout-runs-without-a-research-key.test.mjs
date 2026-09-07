@@ -133,7 +133,7 @@ test("#1223 a keyless screen LAUNCHES — it passes the preflight that used to k
   await withoutKey(async () => {
     const id = "cli-no-research-key";
     const studioRoot = join(ROOT, "studio", id);
-    const runDir = join(studioRoot, "prelim-search", "runs", "wanderer", "2026-08-20-teal-gantry");
+    const runDir = join(studioRoot, "clearotron-search", "runs", "wanderer", "2026-08-20-teal-gantry");
     mkdirSync(driverDir(runDir), { recursive: true });
     const run = { runDir, studioRoot, slug: "wanderer", date: "2026-08-20", codename: "teal-gantry",
       archiveDir: join(studioRoot, "archive", "2026-08-20-teal-gantry") };

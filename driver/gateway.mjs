@@ -33,7 +33,7 @@ import { MODEL_FILE as BLIND_FRAME_MODEL_FILE } from "./blind-frame-record.mjs";
 import { FLAGS_FILE as SKEPTIC_FLAGS_FILE } from "./skeptic-record.mjs";
 import { MODEL_FILE as FRAME_DIFF_MODEL_FILE, PROSE_FILE as FRAME_DIFF_PROSE_FILE } from "./frame-diff-record.mjs";
 import { MATTER_CONTEXT_FILE } from "./matter-frame-record.mjs";
-import { MODEL_FILE as VARIANT_MODEL_FILE, PROSE_FILE as VARIANT_PROSE_FILE } from "./prelim-variants-record.mjs";
+import { MODEL_FILE as VARIANT_MODEL_FILE, PROSE_FILE as VARIANT_PROSE_FILE } from "./clearotron-variants-record.mjs";
 import { PROSE_FILE as REPORT_OVERVIEW_FILE } from "./report-overview-record.mjs";
 import { NARRATIVE_FILE, FINDINGS_FILE, refusalsFor } from "./synthesis-record.mjs";
 import { FINDINGS_FILE as REGISTER_FINDINGS_FILE, refusalsFor as registerDigestRefusalsFor } from "./register-digest-record.mjs";
@@ -1983,7 +1983,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
 }
 
 function rel(p) {
-  const i = p.indexOf("/prelim-search/");
+  const i = p.indexOf("/clearotron-search/");
   return i >= 0 ? p.slice(i + 1) : p;
 }
 

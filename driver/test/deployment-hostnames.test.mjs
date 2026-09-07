@@ -225,8 +225,17 @@ test("the git-tracked systemd unit pins no deployment hostname", () => {
   // A hostname baked into the unit becomes every deployment's hostname — and a PLACEHOLDER pinned there is
   // worse than unset, because the fail-closed branches key on the var being EMPTY. That is exactly how the
   // client export shipped a dead clients-mcp.example.com link.
-  const unit = readFileSync(join(DRIVER, "systemd", "prelim-driver.service"), "utf8");
-  const pinned = unit.split("\n").filter((l) => /^Environment=CLEAROTRON_\w*(URL|DOMAIN)=/.test(l.trim()));
+  // Every tracked unit, not one named file: naming one meant the arm went quiet the day that unit was
+  // retired, and a hostname pinned in a sibling would have shipped unremarked.
+  const dir = join(DRIVER, "systemd");
+  const units = readdirSync(dir).filter((f) => /\.(service|path|timer|socket)$/.test(f)).sort();
+  assert.ok(units.length > 0, "no tracked units to read — an empty corpus is not a pass");
+  const pinned = [];
+  for (const u of units) {
+    for (const l of readFileSync(join(dir, u), "utf8").split("\n")) {
+      if (/^Environment=CLEAROTRON_\w*(URL|DOMAIN)=/.test(l.trim())) pinned.push(`${u}: ${l.trim()}`);
+    }
+  }
   assert.deepEqual(pinned, [], `deployment hostnames belong in the EnvironmentFile, not the unit:\n${pinned.join("\n")}`);
 });
 

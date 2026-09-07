@@ -36,7 +36,7 @@ const JOB = {
 };
 
 async function run(env, id) {
-  const root = mkdtempSync(join(tmpdir(), "prelim-receipts-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-receipts-"));
   for (const k of ["MOCK_CL_SHORT", "MOCK_NO_GRID_LEDGER"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),

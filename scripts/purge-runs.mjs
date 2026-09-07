@@ -128,7 +128,7 @@ const POOL_NON_RUN = new Set(["assets", "customer", "_state"]);
 // system's own state is not.
 const RUN_ARTIFACTS = ["meta.json", "report.html", "report.md", "findings.json", "status.json"];
 const looksLikeRun = (dir) => RUN_ARTIFACTS.some((f) => existsSync(join(dir, f)));
-// Not matter directories inside a workspace prelim-search root.
+// Not matter directories inside a workspace clearotron-search root.
 const WS_NON_MATTER = new Set(["STATUS.md", "archive", "queue", "_known-conflicts"]);
 
 const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };

@@ -65,7 +65,7 @@ const REASON = (tok, n) => `connotation_${tok}:${tok}=${n};Q-1F4YWF87 [x]`;
 const FAIL = (tok, n) => `invalid_file:common-law-findings.half-m.md:${REASON(tok, n)}`;
 
 const stage = (over = {}) => runStage("test-stage", {
-  agent: "clawdi", message: "BASE TASK", sessionKey: "prelim-test-base",
+  agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-test-base",
   timeoutSec: 30, expectFile: process.env.MOCK_OUT_FILE, maxRetries: 2, ...over,
 });
 

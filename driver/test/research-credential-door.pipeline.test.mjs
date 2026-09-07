@@ -41,7 +41,7 @@ const JOB = {
 
 /** CLEAROTRON_REPORTS_DIR is set INSIDE the temp root on purpose: unset, the driver default is production. */
 function harness(env = {}) {
-  const root = mkdtempSync(join(tmpdir(), "prelim-research-door-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-research-door-"));
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE_MOCK,
     CLEAROTRON_DATABASE: "corsearch", CORSEARCH_SESSION_KEY: "test-offline",

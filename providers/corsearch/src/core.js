@@ -53,7 +53,7 @@ export const MATCH_MODE_PREFIX = {
 // `provider` discriminator on every row.
 //
 // SECURITY — the ids logged (agentId / sessionKey / sessionId) are the GATEWAY tool-call context
-// (e.g. "clawdi", "prelim-acme-…"), the per-run attribution. They are NOT the Corsearch `sessionKey`
+// (e.g. "clawdi", "clearotron-acme-…"), the per-run attribution. They are NOT the Corsearch `sessionKey`
 // COOKIE (the live credential, which merely shares the name). logCall is only ever handed `tctx`
 // (kind + gateway ids + target) and response metrics — the cookie is never passed in. Keep it so.
 export const { logCall, logRecordBody, tctxOf } = makeLedger("corsearch");
@@ -427,7 +427,7 @@ export async function doExpandPhoneme(sessionKey, params, tctx) {
 // brand-json hydrates ~100 candidate URIs in ONE POST with the screening data the thin search row lacks
 // (classes/status/owner/dates/jurisdictions/image/transliteration) — but NOT goodsAndServices. It replaces
 // the per-candidate record_fetch for the SCREENING majority (status/class/owner keep-or-drop); finalists +
-// any G&S-dependent decision still deep-fetch (the skill enforces that — skills/prelim-register/unit.md).
+// any G&S-dependent decision still deep-fetch (the skill enforces that — skills/clearotron-register/unit.md).
 // The tool is registered but left OUT of every agent's tools.allow until the live probe + Alex recall A/B +
 // sign-off (the GATE) — so it is inert today.
 

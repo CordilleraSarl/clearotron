@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// variant-manifest-model.mjs — strict parser for the prelim-variants stage's machine output
+// variant-manifest-model.mjs — strict parser for the clearotron-variants stage's machine output
 // (variant-manifest.json, the structured SIBLING of variant-manifest.md).
 //
 // WS2 (F2 — reproducible search): the model reasons ONCE about what to search (elements,
@@ -34,7 +34,7 @@ export const ELEMENT_KINDS = ["distinctive", "common", "saturated-common"];
 // transliteration-numeric axis); composite = the element inside a larger mark.
 //
 // — THE DOCTRINE'S FOUR UNIVERSAL TAGS ARE WRITABLE. The variants doctrine
-// (prelim-variants SKILL.md, "Universal categories") tells the seat to tag rows `exact-phrase`,
+// (clearotron-variants SKILL.md, "Universal categories") tells the seat to tag rows `exact-phrase`,
 // `exact-element`, `plural-root` and `formative-family`, and this enum refused every one — a manifest
 // that obeyed the doctrine literally failed the stage, so seats substituted (`other` on one run,
 // `composite` in the fixture corpus) and the family lane's contains-not-exact mandate had nothing to
@@ -171,7 +171,7 @@ export function parseVariantManifestModel(raw) {
   // compromise: it is the granularity at which BOTH sides are typed, and the only one where the join
   // cannot go quietly wrong.
   //
-  // WHY IT IS DESIGNATED HERE AND JUDGED ELSEWHERE. prelim-variants designates; prelim-register writes the
+  // WHY IT IS DESIGNATED HERE AND JUDGED ELSEWHERE. clearotron-variants designates; clearotron-register writes the
   // coverage row that either honours it or does not. Different stage, earlier turn, before any outcome is
   // known — which is the whole mechanism. A floor field on the coverage row itself would let the seat that
   // missed the work also decide the work was never obliged: the self-grading loophole rebuilt inside its
@@ -266,7 +266,7 @@ export function variantRomanizationGaps(model) {
  * deferred row both stop the nil search, and neither one tells the stage that AUTHORED the string.
  * A `**`-wrapped variant silently becomes a deferred row and the manifest still says the family was
  * covered — the search shrinks and nothing asks for it back. This arm hands the reason to the
- * corrective ladder in-turn, so prelim-variants restates the term while the run is still cheap: the
+ * corrective ladder in-turn, so clearotron-variants restates the term while the run is still cheap: the
  * half of the issue's first acceptance criterion the plan-side screen cannot reach.
  *
  * MARKUP ARM ONLY, deliberately. The prose/long-form arm is legitimately shielded for a slogan mark

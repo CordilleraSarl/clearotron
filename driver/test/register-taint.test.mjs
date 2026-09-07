@@ -36,9 +36,9 @@ test("the plain retry ladder — attempt 1 killed BEFORE any success, attempt 2 
 // copper-lattice legacy rows predate the killed/signals/followup fields — fail/code alone classify.
 test("legacy rows (no killed/signals/followup fields) still classify — the verbatim copper-lattice rows", () => {
   const r = bandPassTaint(L([
-    { ts: "2026-07-08T09:00:00Z", attempt: 1, key: "prelim-x-register-unit-primary-sweep", code: 0, wall: 431.4, status: "ok", fail: null },
-    { ts: "2026-07-08T09:26:00Z", attempt: 1, key: "prelim-x-register-unit-primary-sweep", code: 137, wall: 1560.0, status: "timeout", fail: "timeout" },
-    { ts: "2026-07-08T09:40:00Z", attempt: 1, key: "prelim-x-register-unit-primary-sweep-reopen-retry", code: 0, wall: 468.1, status: "ok", fail: null },
+    { ts: "2026-07-08T09:00:00Z", attempt: 1, key: "clearotron-x-register-unit-primary-sweep", code: 0, wall: 431.4, status: "ok", fail: null },
+    { ts: "2026-07-08T09:26:00Z", attempt: 1, key: "clearotron-x-register-unit-primary-sweep", code: 137, wall: 1560.0, status: "timeout", fail: "timeout" },
+    { ts: "2026-07-08T09:40:00Z", attempt: 1, key: "clearotron-x-register-unit-primary-sweep-reopen-retry", code: 0, wall: 468.1, status: "ok", fail: null },
   ]));
   assert.equal(r.tainted, true, "fail:timeout + code:137 rows classify without the new fields");
 });

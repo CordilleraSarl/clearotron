@@ -222,7 +222,7 @@ test("#1117 the derivation is disclosure-only — it cannot gate, re-tier or sen
 // costs no artifact — a derivation that throws loses the very account the floor reads.
 
 test("#1955 the era stamp is written, read back, and says nothing about counts", () => {
-  const runDir = mkdtempSync(join(tmpdir(), "prelim-floorstamp-"));
+  const runDir = mkdtempSync(join(tmpdir(), "clearotron-floorstamp-"));
   assert.equal(floorDutyArmed(runDir), false, "an unstamped run is NOT armed — the archived and knockout case");
   assert.equal(armFloorDuty(runDir), true);
   assert.equal(floorDutyArmed(runDir), true);

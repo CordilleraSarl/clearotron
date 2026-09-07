@@ -1,12 +1,12 @@
 ---
-name: prelim-common-law
-description: Common-law / marketplace execution for the v3 preliminary trademark search workflow. **Invoked exclusively by the `prelim-search` orchestrator** — do not call directly. Reads the variant manifest produced by `prelim-variants` and runs structured Perplexity research across the DICTATED platform list (the task message's PLATFORMS block names the exact store domains for this customer; the gaming default is 6 stores) plus general web, social, e-commerce, and industry press. Produces a common-law findings file consumed by the orchestrator for synthesis and Excel assembly. Runs alongside `prelim-register`.
+name: clearotron-common-law
+description: Common-law / marketplace execution for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearotron-search` orchestrator** — do not call directly. Reads the variant manifest produced by `clearotron-variants` and runs structured Perplexity research across the DICTATED platform list (the task message's PLATFORMS block names the exact store domains for this customer; the gaming default is 6 stores) plus general web, social, e-commerce, and industry press. Produces a common-law findings file consumed by the orchestrator for synthesis and Excel assembly. Runs alongside `clearotron-register`.
 ---
 
 ## Spawned session
 
-Invoked from `prelim-search` (orchestrator) alongside `prelim-register`. Reads:
-- The variant manifest at `studio/prelim-search/<slug>/<date>/variant-manifest.md` (produced by `prelim-variants`)
+Invoked from `clearotron-search` (orchestrator) alongside `clearotron-register`. Reads:
+- The variant manifest at `studio/prelim-search/<slug>/<date>/variant-manifest.md` (produced by `clearotron-variants`)
 - The request context (classes, jurisdiction scope, industry, manner of use)
 
 Writes:
@@ -29,7 +29,7 @@ Companion files:
 
 ## Trigger
 
-Called by `prelim-search` after `prelim-variants` has produced the manifest. Runs alongside `prelim-register` against the same manifest. Not invoked directly by operators.
+Called by `clearotron-search` after `clearotron-variants` has produced the manifest. Runs alongside `clearotron-register` against the same manifest. Not invoked directly by operators.
 
 ## Model
 
@@ -37,8 +37,8 @@ The model tier is set **by the deterministic driver** — `driver/stages.mjs` is
 source of truth (currently Haiku, low thinking). This worker is extraction, not open analysis: it
 fills templated Perplexity prompts from the manifest and transcribes what Perplexity returns into
 the fixed finding taxonomy. The creative variant/strategy work is already done upstream by
-`prelim-variants` (Opus), and the cross-cutting risk synthesis is the orchestrator's (Opus). If the
-orchestrator's skeptic review (prelim-search Step 2.6) finds this worker shortcut the manifest's
+`clearotron-variants` (Opus), and the cross-cutting risk synthesis is the orchestrator's (Opus). If the
+orchestrator's skeptic review (clearotron-search Step 2.6) finds this worker shortcut the manifest's
 coverage, it is re-spawned escalated to Opus.
 
 ## Tool call budget
@@ -61,7 +61,7 @@ the artifacts this stage writes, so there is nothing here to call and nothing to
 
 ## Search approval (HITL exception)
 
-The full HITL exception covering this workflow is declared **once** in the orchestrator at [prelim-search/SKILL.md](../prelim-search/SKILL.md#hitl-exception-shared-across-sub-skills). It is pre-approved at workflow trigger time when the requesting lawyer or a staff lawyer forwards the request email.
+The full HITL exception covering this workflow is declared **once** in the orchestrator at [clearotron-search/SKILL.md](../clearotron-search/SKILL.md#hitl-exception-shared-across-sub-skills). It is pre-approved at workflow trigger time when the requesting lawyer or a staff lawyer forwards the request email.
 
 Operative rules for this sub-skill (Perplexity-side):
 - **Include in queries:** mark name, product type, relevant industry context
@@ -105,14 +105,14 @@ so there is **no partial-delivery fallback**:
 
 ### Out of scope (register-layer concerns)
 
-- USPTO / WIPO / national trademark office database searches — handled by `prelim-register`
+- USPTO / WIPO / national trademark office database searches — handled by `clearotron-register`
 - Class-specific register queries
 - Register statistics and filing volumes
 - Stealth-filing pattern analysis
 - Formal enforcement history analysis (organic mentions OK; targeted register-based enforcement search NOT)
 - Prior-art register-based analysis
 
-**Bleed rule:** if register information surfaces organically during a common-law search (e.g., a news article mentions a filing), note it briefly and flag it in the findings file's `Cross-checks suggested` section. Do not pursue it — the orchestrator hands such flags to `prelim-register` for cross-pollination.
+**Bleed rule:** if register information surfaces organically during a common-law search (e.g., a news article mentions a filing), note it briefly and flag it in the findings file's `Cross-checks suggested` section. Do not pursue it — the orchestrator hands such flags to `clearotron-register` for cross-pollination.
 
 ## Output — common-law findings file
 
@@ -165,14 +165,14 @@ For game-title rows, the `developer_of_record` and `publisher_of_record` columns
 
 | Finding | Source / Platform | URL | Notes |
 |---|---|---|---|
-| "Raising Your Play" | HP marketing | https://... | HP uses tagline for gaming hardware; no register protection found (flagged for prelim-register cross-check) |
+| "Raising Your Play" | HP marketing | https://... | HP uses tagline for gaming hardware; no register protection found (flagged for clearotron-register cross-check) |
 | 1,600+ "Dawn" titles on Steam | Steam | https://... | Crowded field — supportive evidence |
 
 ### Competitor intelligence
 
 | Finding | Source / Platform | URL | Notes |
 |---|---|---|---|
-| Sony "Pulse Elevate" portfolio | Sony products | https://... | Sony uses "Elevate" in audio products; flagged for prelim-register cross-check |
+| Sony "Pulse Elevate" portfolio | Sony products | https://... | Sony uses "Elevate" in audio products; flagged for clearotron-register cross-check |
 | Aurora "Borealis" console "Raise Your Play" tagline (prior usage) | Aurora Interactive marketing | https://... | Client's own prior use — note as supportive |
 
 ### PR / reputational risk
@@ -356,7 +356,7 @@ forms (and the gap form) — this is what the driver's receipt gate counts:
 ### Coverage ledger (feeds synthesis coverage-honesty + skeptic audit)
 <!-- clearotron:section=coverage-ledger -->
 
-One row per planned coverage unit (each mandatory platform; the field-scoped general search; non-Latin / transliteration platform reach), with status + one-line reason. Same three statuses as the register side (see `prelim-register/SKILL.md` → *Coverage ledger*): `confirmed-clean` (ran to completion), `coverage-limited` (the search **ran and reached the platform** but could not be exhausted — thin data, non-Latin reach), `deferred` (planned but **not run, or the platform/tool could not be reached**). Per the keystone doctrine: a could-not-reach gap (a platform/tool that was unavailable) is `deferred`, never `coverage-limited` — the latter is a searched-but-unexhausted DATA limit. This is the structured form of the Open-verification-flags prose — a `coverage-limited` row is **not** a clean negative downstream.
+One row per planned coverage unit (each mandatory platform; the field-scoped general search; non-Latin / transliteration platform reach), with status + one-line reason. Same three statuses as the register side (see `clearotron-register/SKILL.md` → *Coverage ledger*): `confirmed-clean` (ran to completion), `coverage-limited` (the search **ran and reached the platform** but could not be exhausted — thin data, non-Latin reach), `deferred` (planned but **not run, or the platform/tool could not be reached**). Per the keystone doctrine: a could-not-reach gap (a platform/tool that was unavailable) is `deferred`, never `coverage-limited` — the latter is a searched-but-unexhausted DATA limit. This is the structured form of the Open-verification-flags prose — a `coverage-limited` row is **not** a clean negative downstream.
 
 | Coverage unit | Status | Reason |
 |---|---|---|
@@ -364,7 +364,7 @@ One row per planned coverage unit (each mandatory platform; the field-scoped gen
 | field-scoped general search (collab / non-gaming goods) | confirmed-clean | run per matter scope |
 | non-Latin platform reach (translit variants) | coverage-limited | marketplace data thin for non-Latin scripts; absence not confirmed clean |
 
-### Cross-checks suggested (handed to orchestrator for prelim-register dispatch)
+### Cross-checks suggested (handed to orchestrator for clearotron-register dispatch)
 
 | Trigger | Suggested cross-check |
 |---|---|
@@ -446,7 +446,7 @@ filling in:
 
 The tool returns the program's stdout JSON (`cells` + `extras` + `gaps`) and the program code as an
 audit receipt. **Trademark-register lookups stay out of scope** — the grid only searches
-marketplaces/web (the register layer is `prelim-register`'s).
+marketplaces/web (the register layer is `clearotron-register`'s).
 
 **LEGACY path only (no `grid_spec_path` given) — immediately after the grid call(s): save the stdout
 JSON verbatim** to `studio/prelim-search/<slug>/<date>/common-law-grid.json` — one call → the stdout
@@ -486,7 +486,7 @@ common word) does not. Then categorise each finding into one of:
 - **Competitor intelligence** — watchlist matches; existing partnerships major brands have in the space
 - **PR / reputational risk** — the meaning read of the mark AND its near-forms, scoped by the run's OWN dictated sweep: the fixed meaning / slang / gang / offensive / lookup shapes plus the matter frame's derived `Meaning angles:` queries (cultural origin/appropriation, charged history of the term or its imagery, category-specific controversy — as THIS matter's frame reasoned them). Never a generic sensitivities checklist — the scope IS the dictated sweep. NOT scored on legal-risk framework — separate category. **Every recorded query with results carries a ruling recorded through `record_dispositions`, whatever this section concludes** — reporting a loaded reading does not discharge the rest of the sweep (see the PR / reputational risk contract above). `None identified` is additionally a clean *receipt* ONLY when the meaning sweep ran — cite a `Connotation-search source:` line; the driver rejects an unsearched clean claim (`connotation_search_missing`) and refuses the turn while any ruling is unrecorded (the `connotation_call_*` family). A dictionary gloss is never a clearance.
 - **Negative results** — **one row for EVERY variant × platform grid cell** (the full grid accounting the driver's receipt gate counts), **plus rows for the field-scoped cells** (collab / non-gaming goods) when run. **Each row carries its receipt:** `No results` (the search returned nothing), `No similar listings (N candidates reviewed)` (returned N candidates, none prima facie similar), `Similar listing(s) found — see Findings (N candidates)` (the cell produced findings), or `not executed — coverage-limited (see ledger)` (the cell is in the grid's `gaps` — never a clean negative).
-- **Cross-checks suggested** — register-side checks the orchestrator should dispatch to `prelim-register` (every common-law owner found → ONE register check)
+- **Cross-checks suggested** — register-side checks the orchestrator should dispatch to `clearotron-register` (every common-law owner found → ONE register check)
 
 **100% URL coverage is mandatory.** Every finding row must have a clickable URL. If a finding cannot be verified with a URL, mark it as an Open verification flag and note the source.
 

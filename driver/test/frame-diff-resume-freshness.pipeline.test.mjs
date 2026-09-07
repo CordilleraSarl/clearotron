@@ -22,10 +22,10 @@ import { envFrom, pinEnv } from "../../shared/env-aliases.mjs";   // — a fixtu
 import { tmpdir as __tmpdir } from "node:os";
 import { join as __join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
-pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK_DIR") || __mkdtemp(__join(__tmpdir(), "prelim-testroot-")));
+pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK_DIR") || __mkdtemp(__join(__tmpdir(), "clearotron-testroot-")));
 // provider-usage.DEFAULT_LEDGER_PATH freezes at FIRST import (module const) — pin the call ledger to a
 // throwaway file BEFORE any pipeline import so the screen-gate's fetched-universe reads OUR ledger.
-const LEDGER = __join(__mkdtemp(__join(__tmpdir(), "prelim-fdfresh-ledger-")), "corsearch-calls.jsonl");
+const LEDGER = __join(__mkdtemp(__join(__tmpdir(), "clearotron-fdfresh-ledger-")), "corsearch-calls.jsonl");
 process.env.CLEAROTRON_REGISTER_CALL_LOG = LEDGER;
 __write(LEDGER, "");
 import { test } from "node:test";
@@ -60,7 +60,7 @@ const ESCALATE_SKEPTIC = "- transliteration-numeric extra script group looks thi
 
 // `reuse` re-enters an EXISTING run (same workspace root + codename) — the resume path this defect lives on.
 async function runMockPipeline(env, opts = {}, reuse = null) {
-  const root = reuse?.root ?? mkdtempSync(join(tmpdir(), "prelim-fdfresh-"));
+  const root = reuse?.root ?? mkdtempSync(join(tmpdir(), "clearotron-fdfresh-"));
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_SCREEN_DROP",
     "MOCK_FRAME_DIFF", "MOCK_ESCALATION_NOOP", "MOCK_LEDGER_LIMITED", "MOCK_CLAUDE_CALL_LOG"]) delete process.env[k];
   for (const [k, v] of Object.entries({
@@ -134,7 +134,7 @@ test("a restamp aimed at a file the stage does NOT declare lands a restamp-miss 
   const { writeStamp } = await import("../stage-freshness.mjs");
   const { mkdirSync, writeFileSync } = await import("node:fs");
 
-  const d = mkdtempSync(join(tmpdir(), "prelim-fdmiss-"));
+  const d = mkdtempSync(join(tmpdir(), "clearotron-fdmiss-"));
   mkdirSync(driverDir(d), { recursive: true });
   const declared = join(d, "register-named-band.json");
   const undeclared = join(d, "register-findings.md");

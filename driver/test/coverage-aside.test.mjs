@@ -29,7 +29,7 @@ import { fileURLToPath } from "node:url";
 import { deriveScopeFacts } from "../scope-facts.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const RULES = readFileSync(join(HERE, "..", "skills", "prelim-search", "synthesis-rules.md"), "utf8");
+const RULES = readFileSync(join(HERE, "..", "skills", "clearotron-search", "synthesis-rules.md"), "utf8");
 // ~100-column hard wrap means a sentence is split across lines in the source; the seat reads it as one.
 const FLAT = RULES.replace(/\s+/g, " ");
 

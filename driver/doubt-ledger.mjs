@@ -6,7 +6,7 @@
 // by design (the audit is the defensibility record of everything considered). copper-gantry shipped three
 // fragments about ONE mark side by side: an asserted "closest analogue, active nationwide product" block,
 // a direct-search "does NOT appear on the owner's official sites" block, and a prose "requires
-// prelim-register layer cross-check" note that NOTHING parses. The resolutions usually EXIST — in
+// clearotron-register layer cross-check" note that NOTHING parses. The resolutions usually EXIST — in
 // findings.json dispositions/actions, in the coverage ledger, in register-findings answer/watchlist
 // lines — the missing piece was the JOIN back to the fragment that raised the doubt. This module is
 // that join, and nothing more.
@@ -179,7 +179,7 @@ function twoTokenMatch(sig, candidateText) {
 // ── minting: gather cross-check hand-offs ─────────────────────────────────────────────────────────
 // The gather stages are DICTATED (stages.mjs) to record any check they could not perform, on its own
 // line, in EXACTLY this shape. The prefix is exact and the parse is deterministic ON PURPOSE: legacy
-// artifacts (and free prose like "requires prelim-register layer cross-check" buried in a paragraph —
+// artifacts (and free prose like "requires clearotron-register layer cross-check" buried in a paragraph —
 // the copper-gantry note nothing parsed) mint NOTHING. Carrying prose doubts is the dictation's job at
 // the source, not a fuzzy parser's job here. A leading list bullet is tolerated (models bullet
 // everything); anything else about the shape is strict, including the em-dash between what and why.

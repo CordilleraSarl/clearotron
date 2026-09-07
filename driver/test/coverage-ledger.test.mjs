@@ -102,7 +102,7 @@ test("deriveFloorKeys: carries BOTH the root and the full token; guards a garbag
 
 // ---- fixtures ------------------------------------------------------------------------------------
 
-// The canonical prose table, verbatim from skills/prelim-register/digest.md:86-92 — including the
+// The canonical prose table, verbatim from skills/clearotron-register/digest.md:86-92 — including the
 // SUFFIXED status row (the shape that must classify in prose but is banned as a bare JSON token).
 const PROSE_LEDGER = `### Coverage ledger (orchestrator: feeds synthesis coverage-honesty + skeptic audit)
 

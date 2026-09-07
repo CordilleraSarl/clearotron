@@ -5,7 +5,7 @@
  *
  * The Status cell used to render this, verbatim, on a page a client or a partner lands on:
  *
- *   Stopped at common-law-half:b. invalid_file:prelim-search/tmpe2er1-vibrante-frostplum/
+ *   Stopped at common-law-half:b. invalid_file:clearotron-search/tmpe2er1-vibrante-frostplum/
  *   2026-08-02-fixture/common-law-findings.half-b.md:connotation_undisposed:VIBRANTE
  *   FROSTPLUM urban dictionary,FROSTPLUM meaning slang,FR
  *
@@ -50,7 +50,7 @@
  */
 export const STAGE_PHRASE: Readonly<Record<string, string>> = {
   'matter-frame': 'while framing the matter',
-  'prelim-variants': 'while working out which variants to search',
+  'clearotron-variants': 'while working out which variants to search',
   'blind-frame': 'while framing the matter',
   'common-law': 'during the common-law search',
   'common-law-half': 'during the common-law search',

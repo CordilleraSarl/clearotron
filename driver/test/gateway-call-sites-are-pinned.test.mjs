@@ -29,7 +29,7 @@ import { driverDir } from "../../shared/driver-dir.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 
 process.env.CORSEARCH_SESSION_KEY ||= "test-offline";
-const ROOT = mkdtempSync(join(tmpdir(), "prelim-callsite-pin-"));
+const ROOT = mkdtempSync(join(tmpdir(), "clearotron-callsite-pin-"));
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", join(ROOT, "pool"));
 process.env.CLEAROTRON_AGENT = "clawdi";
@@ -69,7 +69,7 @@ test("the stderr digest is applied AT THE RECORD, not merely available as a help
   const runDir = freshRun("loud");
   await withEnv({ CLEAROTRON_AI: "loud-failing-engine", CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0" }, () =>
     GW.runStage("loud-stage", { agent: "clawdi", message: "go", model: "haiku",
-      sessionKey: "prelim-loud", timeoutSec: 30, runDir }));
+      sessionKey: "clearotron-loud", timeoutSec: 30, runDir }));
 
   const tail = rows(runDir, "loud-stage").map((r) => r.stderrTail).filter(Boolean).pop();
   assert.ok(tail, "the failing turn recorded no stderrTail at all — nothing to digest and nothing to read");
@@ -104,7 +104,7 @@ test("#713 — every dispatch in one ladder receives the SAME codexHome, and it 
   const runDir = freshRun("home");
   await withEnv({ CLEAROTRON_AI: CODEX, CLEAROTRON_MAX_RETRIES: "2", CLEAROTRON_RECOVERY_MAX: "0" }, () =>
     GW.runStage("home-stage", { agent: "clawdi", message: "go", model: "haiku",
-      sessionKey: "prelim-home", timeoutSec: 30, runDir }));
+      sessionKey: "clearotron-home", timeoutSec: 30, runDir }));
 
   assert.ok(seen.length >= 2, `the ladder must dispatch more than once for this to mean anything — got ${seen.length}`);
   for (const [i, h] of seen.entries())

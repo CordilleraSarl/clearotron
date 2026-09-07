@@ -95,7 +95,7 @@ A framework is two files that travel together:
 | `risk-framework.manifest.json` | A small sidecar carrying the framework's **vocabulary**: band labels, their severity order, the entity label, provenance. |
 
 The Generic default ships at
-[`driver/skills/prelim-search/risk-framework.md`](../driver/skills/prelim-search/risk-framework.md)
+[`driver/skills/clearotron-search/risk-framework.md`](../driver/skills/clearotron-search/risk-framework.md)
 with bands Very High · High · Moderate · Manageable.
 
 **Replace it with your firm's own.** Write your rubric as prose, add a manifest naming your bands,

@@ -123,30 +123,6 @@ export const UNIT_INVENTORY = Object.freeze([
       + "`systemctl --user enable --now clearotron-deploy.timer` once bin/onboard.mjs has written both files.",
   },
   {
-    unit: "prelim-driver", runsOn: ["prod", "test"],
-    tracked: ["prelim-driver.service", "prelim-driver.path", "prelim-driver.timer"],
-    resolved: ["prelim-driver.path"],   // option B — see RESOLVED below
-    retired: {
-      ruled: "2026-08-26, restated 2026-08-31",
-      filesStayUntil: "prod",
-      why: "the path-watcher/timer drain posture is retired (tracker issue 1863): the built-in worker "
-        + "is the product's drain, and a hosted deployment gets ONE plain service unit invoking the "
-        + "entrypoint directly rather than a oneshot woken by a timer and a queue glob. Absence on any "
-        + "box is now the EXPECTED direction rather than drift. The replacement is deliberately not "
-        + "named here — a pointer outlives the file it points at, which is why `supersedes:` was "
-        + "removed from this file once already; the pinned background list is where the current drain "
-        + "is stated, and it is code rather than prose.",
-    },
-    note: "the driver itself — the one unit the drift check has always been able to compare. "
-      + "SETTLED (tracker issue 1888, measured on the owner's fresh production install 2026-08-31): "
-      + "the documented install creates NO units at all — not even the unit directory — and a knockout "
-      + "delivered end to end without them, so units are the hosted-deployment OPT-IN step, never the "
-      + "install's output. Absent on a box is the install's normal state; present means someone ran the "
-      + "hosted step there. `runsOn` lists exactly the boxes MEASURED to carry it, which is why absence "
-      + "anywhere else is not drift — the earlier expectation that the .path unit ships with the install "
-      + "was the wrong half of the disagreement.",
-  },
-  {
     // ── `tracked` WAS A CLAIM ABOUT A FILE THAT HAS NEVER EXISTED (tracker issue 175) ──────────────
     //
     // This entry named `profile-service.service` as tracked. `git log --all` on that path is empty: it is
@@ -259,20 +235,6 @@ export const UNIT_INVENTORY = Object.freeze([
       + "hosted posture is an opt-in step no install performs (tracker issue 1888). It must NOT be "
       + "started beside `clearotron start`, which supervises its own worker — the two postures are "
       + "alternatives, and running both puts a second claimant on one queue.",
-  },
-  {
-    unit: "prelim-outbox", runsOn: ["prod"],
-    tracked: ["prelim-outbox.service", "prelim-outbox.path", "prelim-outbox.timer"],
-    retired: {
-      ruled: "2026-08-31",
-      filesStayUntil: "prod",
-      why: "the timer retires with the watcher it backstopped, by name in the ruling. That watcher also "
-        + "carried the last dead OpenClaw literal in the tree. Channel delivery is the "
-        + "integrator's (INSTALL.md §9), so retiring these takes away nothing the product promises — "
-        + "the worked example moves into the document rather than being deleted with them.",
-    },
-    note: "LIVE ON PRODUCTION (path and timer active-waiting). Was absent from the health check's unit "
-      + "list, so its drift was never checked despite being tracked.",
   },
   {
     unit: "trademark-portal", runsOn: ["prod"],

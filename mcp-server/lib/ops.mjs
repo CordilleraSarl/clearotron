@@ -3,7 +3,7 @@
 // lib/ops.mjs — the OPS write-face for the MCP server: start_run / stop_run / feed_context.
 //
 // ops-token-only (enforced centrally in scope.authorize — these are never reachable by a user/internal
-// session). Writes ONLY within an agent's own prelim queue + run dirs (the same surface the runner already
+// session). Writes ONLY within an agent's own clearotron queue + run dirs (the same surface the runner already
 // drains); shells nothing, spawns nothing. start_run enqueues a job the live runner picks up; stop_run
 // dequeues a not-yet-claimed job (a real cancel) or files a cancel request for a running one; feed_context
 // writes the late-bind applicant binding (customer-bind.json) the pipeline's pre-start bind already reads.
@@ -229,7 +229,7 @@ export function assertScopedProfileKey(args, scope, verb) {
     throw new Error(`${verb}: an accounts-scoped session must set profileKey explicitly (domain-based customer resolution is not available to scoped tokens)`);
 }
 
-// start_run — enqueue a prelim job the runner will drain. Returns the queue id + slug; the runId/codename is
+// start_run — enqueue a clearotron job the runner will drain. Returns the queue id + slug; the runId/codename is
 // assigned by the runner on claim, so the caller polls list_runs(slug) / run_changes for it.
 export function startRun(args = {}, { scope } = {}) {
   const agent = args.agent ? String(args.agent) : "";

@@ -1,6 +1,6 @@
 ---
 name: case-law-citation
-description: Grounds risk-relevant trademark findings in cited case law and decisions instead of asserting them. Invoked by the prelim-search orchestrator at Step 4.5 to profile an aggressive enforcer or test a likelihood-of-confusion question against precedent, and usable inline in chat for ad-hoc conflict/enforcement questions. Queries live legal sources — CourtListener (US federal incl. CAFC), EUR-Lex (EU CJEU + General Court judgments, verbatim), and Legal Data Hunter (108-country statutes and case law) — and returns, per finding, on-point authorities (case or decision, forum, date, one-line holding, stable identifier) with relevance notes, or an explicit no-precedent result. Cites only from documents fetched in the session, never from memory. Use when grounding watchlist or aggressive-enforcer hits, or when a trademark conflict, confusability, or enforcement-history question needs precedent.
+description: Grounds risk-relevant trademark findings in cited case law and decisions instead of asserting them. Invoked by the clearotron-search orchestrator at Step 4.5 to profile an aggressive enforcer or test a likelihood-of-confusion question against precedent, and usable inline in chat for ad-hoc conflict/enforcement questions. Queries live legal sources — CourtListener (US federal incl. CAFC), EUR-Lex (EU CJEU + General Court judgments, verbatim), and Legal Data Hunter (108-country statutes and case law) — and returns, per finding, on-point authorities (case or decision, forum, date, one-line holding, stable identifier) with relevance notes, or an explicit no-precedent result. Cites only from documents fetched in the session, never from memory. Use when grounding watchlist or aggressive-enforcer hits, or when a trademark conflict, confusability, or enforcement-history question needs precedent.
 ---
 
 # Case-law citation
@@ -17,7 +17,7 @@ cannot reach any other stage's context, because no stage shares one — and it i
 arranges or can lose. Nothing here spawns a session; sequencing, fan-in and retries are the driver's.
 
 The identical skill is also valid **inline** in ad-hoc chat when a conflict / confusability / enforcer
-question arises outside a prelim run.
+question arises outside a clearotron run.
 
 **Reads** — from the dispatch message (plain markdown, not JSON), for each finding to ground:
 - the proposed mark and the conflicting mark / owner / entity,
@@ -40,17 +40,17 @@ Companion files (one level deep — read the one you need):
 
 Still-future adapter (drops in here with no change to this file): `sources/euipo.md` (EUIPO
 Boards-of-Appeal decisions — no free API today). EUIPO *register* lookups are a different layer
-(`prelim-register`), not this skill.
+(`clearotron-register`), not this skill.
 
 ## Trigger
 
-Called by `prelim-search` after synthesis flags the risk-relevant findings (Step 4.5). Also triggers in
+Called by `clearotron-search` after synthesis flags the risk-relevant findings (Step 4.5). Also triggers in
 chat when the user raises a trademark conflict, likelihood-of-confusion, or enforcement-history question.
-Gated and optional: if this skill is absent, prelim skips Step 4.5 and delivers normally.
+Gated and optional: if this skill is absent, clearotron skips Step 4.5 and delivers normally.
 
 ## Model
 
-**Sonnet, eval-gated** when spawned from the `prelim-search` Step 4.5 seam. The work is extraction
+**Sonnet, eval-gated** when spawned from the `clearotron-search` Step 4.5 seam. The work is extraction
 from documents fetched **this session** — the fetch-before-cite discipline (cite only what you
 fetched; read the holding from the fetched text; refuse to invent when sources are empty), not model
 recall, is what keeps citations honest. That makes it a Sonnet-tier task **provided** Sonnet reliably

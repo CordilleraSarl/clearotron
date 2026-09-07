@@ -39,7 +39,7 @@ process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 const PROSE_SUFFIXES = Object.values(PROSE_PARTS);
 
 test("prose sidecars assemble + run; legacy inline still works; missing-subject & broken-manifest park + ping + cleanup", async () => {
-  const root = mkdtempSync(join(tmpdir(), "prelim-promptparts-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-promptparts-"));
   const callLog = join(root, "calls.jsonl");
   const claudeLog = join(root, "claude-calls.jsonl");   // {argv, prompt} rows — the stage prompts ride stdin
   for (const [k, v] of Object.entries({
@@ -207,7 +207,7 @@ pinEnv(process.env, "CLEAROTRON_CUSTOMERS_DIR", customersDir);
   }
 
   // Exactly one outbox event packet per parked job (nosubject, brokenman) — none for the three that ran
-  // (handoff default: the notice is a packet, not a gateway ping — no prelim-intake-* gateway calls at all).
+  // (handoff default: the notice is a packet, not a gateway ping — no clearotron-intake-* gateway calls at all).
   const outbox = join(root, "prelim-outbox");
   for (const base of ["nosubject", "brokenman"]) {
     const packet = JSON.parse(readFileSync(join(outbox, `intake-${base}.failed.pending`), "utf8"));

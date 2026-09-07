@@ -34,7 +34,7 @@ const RUNS = [
 ];
 
 function pool(runs = RUNS) {
-  const root = mkdtempSync(join(tmpdir(), "prelim-purge-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-purge-"));
   const poolRoot = join(root, "pool");
   for (const [runId, customerKey] of runs) {
     mkdirSync(join(poolRoot, runId), { recursive: true });

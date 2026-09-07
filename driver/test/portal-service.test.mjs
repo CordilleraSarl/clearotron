@@ -529,7 +529,7 @@ test("the new refusals name no switch, variable or internal level key either", a
     const body = JSON.stringify(r.json);
     assert.ok(!/CLEAROTRON_|PORTAL_/.test(body), `a switch name reached the client: ${body}`);
     assert.doesNotMatch(body, /[A-Z][A-Z0-9]*_[A-Z0-9_]+/, `a variable-shaped name reached the client: ${body}`);
-    // bare `prelim` included: it is a ORDERABLE_PRODUCTS key, these lines render verbatim in a client browser,
+    // bare `clearotron` included: it is a ORDERABLE_PRODUCTS key, these lines render verbatim in a client browser,
     // and the rule this gate states six lines up is the STAGE label or plain words — never the level key.
     // The assertion omitted it while its own title claimed to check it (review 2026-07-27).
     assert.ok(!/jxLanes|registerProbe|commonLawGrid|\bprelim\b|prelim-jx|prelim-register-only/.test(body),
@@ -1613,7 +1613,7 @@ test("a saved search is PLANNABLE — the door it used to be refused at has no s
 
 test("the plan door names the product it QUOTED — one resolution, not two", async () => {
   // The regression this exists for: the door named the product with
-  // `policyFor(body.product || "prelim")` while quoting effort off the RESOLVED policy. Those are
+  // `policyFor(body.product || "clearotron")` while quoting effort off the RESOLVED policy. Those are
   // two different answers. On the recipeKey arm the first was null outright, so the review modal — the
   // last screen before money is spent — showed the headline "saved search" above an effort figure and a
   // turnaround computed for a Depth 1 knockout. An account whose profile defaults to a knockout got the
@@ -1630,7 +1630,7 @@ test("the plan door names the product it QUOTED — one resolution, not two", as
     assert.equal(res.json.name, "Knockout search", "the recipe's BASE level names the plan");
     assert.equal(res.json.stageLabel, "Knockout search", "no longer the placeholder 'saved search'");
     // The turnaround must come off the same level as the name. A knockout quotes 5–10 min; a clearance
-    // quotes 1.5–2.5 hours, which is what the old `|| "prelim"` fallback would have quoted here. The two
+    // quotes 1.5–2.5 hours, which is what the old `|| "clearotron"` fallback would have quoted here. The two
     // are unmistakable for each other, which is the property this arm needs — it is checking that ONE
     // resolution produced both the name and the figure, not that the figure has any particular value.
     // ( ruled the knockout quote down from ~45 min against 4–6 min delivered.)

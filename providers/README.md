@@ -141,7 +141,7 @@ Case-law setup is an OAuth flow, **not** an environment variable — see
 
 ## Adding or changing a register adapter
 
-Read [`../driver/skills/prelim-register/providers/README.md`](../driver/skills/prelim-register/providers/README.md)
+Read [`../driver/skills/clearotron-register/providers/README.md`](../driver/skills/clearotron-register/providers/README.md)
 first — it carries the mandatory empirical-verification checklist. The short version: **never inherit a
 capability claim by analogy from another provider.** Every operator, filter, pagination shape and
 composition rule is probed against the live API before it is written down, and the observed figure is

@@ -143,7 +143,7 @@ const MODEL = (variants) => JSON.stringify({
 });
 const JOB = { jobKey: "TMP9999-lumengarde", classes: ["9"], jurisdictions: ["EU"] };
 const compileWith = (variants) => compileRegisterPlan({
-  manifest: parseVariantManifestModel(MODEL(variants)), job: JOB, skillVersion: "prelim-register@spec48",
+  manifest: parseVariantManifestModel(MODEL(variants)), job: JOB, skillVersion: "clearotron-register@spec48",
 });
 const CYRILLIC = [
   { value: "Чертополох", category: "transliteration", rationale: "cyrillic" },

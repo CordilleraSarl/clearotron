@@ -23,7 +23,7 @@
 //
 // Env: CLEAROTRON_REPLAY_ROOTS  colon-separated corpus roots
 //        (default: <workspaceRoot>/workspace-*/studio/prelim-search — live slugs + archive/)
-//      CLEAROTRON_REPLAY_SNAPSHOT  snapshot path (default: ~/.prelim-replay-snapshot.json)
+//      CLEAROTRON_REPLAY_SNAPSHOT  snapshot path (default: ~/.clearotron-replay-snapshot.json)
 
 import "../shared/env-local.mjs";   // — FIRST: the CLEAROTRON_* translation must land before any
                                      // module-top capture below it evaluates. A call in this file's BODY
@@ -217,7 +217,7 @@ export function diffSnapshots(prev, curr) {
 
 function main() {
   const args = new Set(process.argv.slice(2));
-  const snapshotPath = process.env.CLEAROTRON_REPLAY_SNAPSHOT || join(homedir(), ".prelim-replay-snapshot.json");
+  const snapshotPath = process.env.CLEAROTRON_REPLAY_SNAPSHOT || join(homedir(), ".clearotron-replay-snapshot.json");
   const roots = process.env.CLEAROTRON_REPLAY_ROOTS
     ? process.env.CLEAROTRON_REPLAY_ROOTS.split(":").filter(Boolean)
     : names(config.workspaceRoot)

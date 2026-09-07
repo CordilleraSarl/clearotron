@@ -110,7 +110,7 @@ test("productFor never names a product its own scope is illegal at — except fo
 test("an unknown or absent pipeline names no product — a guess here would be a claim about a run nobody described", () => {
   assert.equal(productFor({ pipeline: null, territories: ["US"] }), null);
   assert.equal(productFor({ pipeline: "", territories: [] }), null);
-  assert.equal(productFor({ pipeline: "prelim", territories: [] }), null, "a LEVEL key is not a pipeline");
+  assert.equal(productFor({ pipeline: "clearotron", territories: [] }), null, "a LEVEL key is not a pipeline");
   assert.equal(productFor({}), null);
   assert.equal(productFor(), null);
   // spelling and padding are tolerated, because resolveSearchPolicy's own values arrive that way

@@ -229,7 +229,7 @@ const flag = (name) => ["1", "true", "yes", "on"].includes(String(process.env[na
 // — the private copy is gone; laneArmed (driver.config.mjs) is the one reader.
 
 // ── The frozen lane decision: minted once (cold), read verbatim forever (a resume NEVER re-decides —
-// the freezeProfile doctrine). Plain-prelim runs never reach this (the caller gates on the component).
+// the freezeProfile doctrine). Plain-clearotron runs never reach this (the caller gates on the component).
 export function attachJxLanes(ctx) {
   const sidecarPath = driverDir(ctx.run.runDir, "jx-lanes.json");
   let raw = null;

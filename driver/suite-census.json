@@ -1047,6 +1047,12 @@
           "skips": 0,
           "todos": 0
         },
+        "clearotron-variants-record.test.mjs": {
+          "tests": 13,
+          "asserts": 56,
+          "skips": 0,
+          "todos": 0
+        },
         "client-door.test.mjs": {
           "tests": 38,
           "asserts": 161,
@@ -1427,7 +1433,7 @@
         },
         "deployment-hostnames.test.mjs": {
           "tests": 13,
-          "asserts": 36,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
@@ -2578,8 +2584,8 @@
           "todos": 0
         },
         "outbox-backoff.test.mjs": {
-          "tests": 17,
-          "asserts": 65,
+          "tests": 16,
+          "asserts": 61,
           "skips": 0,
           "todos": 0
         },
@@ -2859,12 +2865,6 @@
           "skips": 0,
           "todos": 0
         },
-        "prelim-variants-record.test.mjs": {
-          "tests": 13,
-          "asserts": 56,
-          "skips": 0,
-          "todos": 0
-        },
         "presence-reconciliation.test.mjs": {
           "tests": 10,
           "asserts": 37,
@@ -3004,8 +3004,8 @@
           "todos": 0
         },
         "queue-watch-verdict.test.mjs": {
-          "tests": 20,
-          "asserts": 52,
+          "tests": 19,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },
@@ -3433,12 +3433,6 @@
           "tests": 12,
           "asserts": 17,
           "skips": 1,
-          "todos": 0
-        },
-        "retired-env-spellings.test.mjs": {
-          "tests": 6,
-          "asserts": 15,
-          "skips": 0,
           "todos": 0
         },
         "retired-envelope-is-not-an-absent-value.test.mjs": {

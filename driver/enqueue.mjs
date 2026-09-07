@@ -245,7 +245,7 @@ async function main(argv) {
   try { job = assembleFromFlags(flags); } catch (e) { fail(`could not assemble the job: ${e.message}`); }
   if (!job.forwarder) fail("missing --forwarder — the requester/reply-routing key; the delivery packet needs it to route the report (there is deliberately no default)", 2);
   // THE EARLY --product CHECK IS GONE, and its deletion is the fix. It fired before validateJob and said
-  // the same thing in different words — `--product "prelim"` rather than `product "prelim"`, and without
+  // the same thing in different words — `--product "clearotron"` rather than `product "clearotron"`, and without
   // the `(or omit it for the account's default)` clause, which is the one clause that tells a requester
   // the field is optional. So the CLI's real answer to a typo was not the shared one, and a test that
   // started at assembleFromFlags could never see it. validateJob refuses it now, in the sentence every

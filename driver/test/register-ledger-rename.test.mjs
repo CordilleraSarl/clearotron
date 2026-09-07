@@ -152,7 +152,7 @@ test("#594/#743 a spawned register server is handed a RESOLVED call ledger and T
   fakeHome({ "corsearch-records.jsonl": "x", "corsearch-calls.jsonl": "x" });
   try {
     const runDir = mkdtempSync(join(tmpdir(), "run743-"));
-    const cfg = buildGatherMcpConfig(["register"], { sessionKey: "prelim-x-y-z", agent: "clawdi", runDir });
+    const cfg = buildGatherMcpConfig(["register"], { sessionKey: "clearotron-x-y-z", agent: "clawdi", runDir });
     const env = cfg.mcpServers.register.env;
     assert.ok(env.CLEAROTRON_REGISTER_CALL_LOG, "unconditional — the old line forwarded nothing on every real box");
     assert.match(env.CLEAROTRON_REGISTER_CALL_LOG, /corsearch-calls\.jsonl$/,
@@ -172,12 +172,12 @@ test("#1390 no run dir REFUSES — the box-global record ledger is retired, not 
   fakeHome({ "corsearch-records.jsonl": "x" });
   try {
     assert.throws(
-      () => buildGatherMcpConfig(["register"], { sessionKey: "prelim-x-y-z", agent: "clawdi" }),
+      () => buildGatherMcpConfig(["register"], { sessionKey: "clearotron-x-y-z", agent: "clawdi" }),
       /record bodies\s+belong to their run|needs the run it is fetching for/,
       "a register server was built with no run — its bodies would land in the retired global ledger");
     // And the refusal is about the RUN, not about registers in general: with one, it builds.
     const runDir = mkdtempSync(join(tmpdir(), "run1390-"));
-    const cfg = buildGatherMcpConfig(["register"], { sessionKey: "prelim-x-y-z", agent: "clawdi", runDir });
+    const cfg = buildGatherMcpConfig(["register"], { sessionKey: "clearotron-x-y-z", agent: "clawdi", runDir });
     assert.equal(cfg.mcpServers.register.env.CLEAROTRON_REGISTER_RECORD_LOG, RUN_LOG(runDir));
   } finally { restoreHome(); }
 });

@@ -1,6 +1,6 @@
 node_modules/
 
-# Prelim run directories — preventive: keep stray run dirs out of the nightly `git add -A`.
+# Clearotron run directories — preventive: keep stray run dirs out of the nightly `git add -A`.
 # Run dirs look like norefXXXX-<slug>-<date>-<codename>, tmp<n>-<slug>, <date>-<codename>.
 # (The already-tracked ...-DOC52 dir is purged via a separate ops runbook; this does not untrack it.)
 noref*/

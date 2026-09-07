@@ -182,7 +182,7 @@ test("runStage: rate-limit -> fail 'rate_limited' (NOT nonzero_exit), carries re
   const saved = {};
   for (const k of Object.keys(env)) { saved[k] = process.env[k]; pinEnv(process.env, k, env[k]); }
   try {
-    const r = await runStage("matter-frame", { agent: "clawdi", message: "do it", model: "opus", thinking: "high", sessionKey: "prelim-test-rl", timeoutSec: 60, maxRetries: 2 });
+    const r = await runStage("matter-frame", { agent: "clawdi", message: "do it", model: "opus", thinking: "high", sessionKey: "clearotron-test-rl", timeoutSec: 60, maxRetries: 2 });
     assert.equal(r.ok, false);
     assert.equal(r.fail, "rate_limited", "classified distinctly — not the fallback-eligible nonzero_exit_1");
     assert.equal(r.resetsAt, new Date(resetsEpoch * 1000).toISOString(), "resetsAt rides the runStage result");
@@ -213,10 +213,10 @@ test("absolutizeSkillRefs: rewrites bare skills/…md under skillsDir's parent; 
     absolutizeSkillRefs("First, read and follow exactly: skills/matter-frame/SKILL.md.", "/ws/skills"),
     "First, read and follow exactly: /ws/skills/matter-frame/SKILL.md.");
   // multiple refs in one message (synthesis reads three) — each rewritten exactly once
-  const m = absolutizeSkillRefs("read skills/prelim-search/synthesis-rules.md, skills/prelim-search/risk-framework.md, skills/prelim-search/worked-examples.md.", "/ws/skills");
-  assert.equal(m, "read /ws/skills/prelim-search/synthesis-rules.md, /ws/skills/prelim-search/risk-framework.md, /ws/skills/prelim-search/worked-examples.md.");
+  const m = absolutizeSkillRefs("read skills/clearotron-search/synthesis-rules.md, skills/clearotron-search/risk-framework.md, skills/clearotron-search/worked-examples.md.", "/ws/skills");
+  assert.equal(m, "read /ws/skills/clearotron-search/synthesis-rules.md, /ws/skills/clearotron-search/risk-framework.md, /ws/skills/clearotron-search/worked-examples.md.");
   // provider doc stays inside the rewrite
-  assert.equal(absolutizeSkillRefs("read skills/prelim-register/providers/corsearch.md", "/ws/skills"), "read /ws/skills/prelim-register/providers/corsearch.md");
+  assert.equal(absolutizeSkillRefs("read skills/clearotron-register/providers/corsearch.md", "/ws/skills"), "read /ws/skills/clearotron-register/providers/corsearch.md");
   assert.equal(absolutizeSkillRefs("no skill ref here at all", "/ws/skills"), "no skill ref here at all");
   assert.equal(absolutizeSkillRefs("skills/x/y.md", undefined), "skills/x/y.md", "no skillsDir → unchanged");
 });
@@ -801,7 +801,7 @@ test("INTEGRATION: runStage on CLEAROTRON_AI=anthropic-agent writes file + retur
   pinEnv(process.env, "CLEAROTRON_CLAUDE_PATH", MOCK);
   try {
     const r = await runStage("teststage", {
-      agent: "clawdi", sessionKey: "prelim-test-abc-matterframe",
+      agent: "clawdi", sessionKey: "clearotron-test-abc-matterframe",
       message: `Do the task. Write to the ABSOLUTE path for the stage output: ${out}`,
       model: "opus", thinking: "medium", timeoutSec: 60, expectFile: out, validate: () => ({ ok: true }),
     });

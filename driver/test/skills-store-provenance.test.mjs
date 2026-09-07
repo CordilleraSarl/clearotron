@@ -31,8 +31,8 @@ function repo({ branch = "main" } = {}) {
   git(root, "init", "-q", "-b", branch);
   git(root, "config", "user.email", "guard@example.invalid");
   git(root, "config", "user.name", "guard");
-  mkdirSync(join(root, "skills", "prelim-search"), { recursive: true });
-  writeFileSync(join(root, "skills", "prelim-search", "digest.md"), "committed doctrine\n");
+  mkdirSync(join(root, "skills", "clearotron-search"), { recursive: true });
+  writeFileSync(join(root, "skills", "clearotron-search", "digest.md"), "committed doctrine\n");
   writeFileSync(join(root, "README.md"), "outside the store\n");
   git(root, "add", "-A");
   git(root, "commit", "-qm", "doctrine");
@@ -95,7 +95,7 @@ test("a detached HEAD at a commit contained in the main line passes — a pinned
 
 test("an uncommitted edit under the served path fails", () => {
   const { store } = repo();
-  writeFileSync(join(store, "prelim-search", "digest.md"), "draft nobody committed\n");
+  writeFileSync(join(store, "clearotron-search", "digest.md"), "draft nobody committed\n");
   const r = classifySkillsStore(store);
   assert.equal(r.outcome, "fail");
   assert.deepEqual(r.findings, ["dirty"]);
@@ -104,7 +104,7 @@ test("an uncommitted edit under the served path fails", () => {
 
 test("an UNTRACKED file under the served path fails too — a stray doctrine file matches no commit", () => {
   const { store } = repo();
-  writeFileSync(join(store, "prelim-search", "stray.md"), "nobody's document\n");
+  writeFileSync(join(store, "clearotron-search", "stray.md"), "nobody's document\n");
   const r = classifySkillsStore(store);
   assert.equal(r.outcome, "fail");
   assert.deepEqual(r.findings, ["dirty"]);
@@ -113,7 +113,7 @@ test("an UNTRACKED file under the served path fails too — a stray doctrine fil
 test("a store on a feature branch fails, and names the branch", () => {
   const { root, store } = repo();
   git(root, "checkout", "-q", "-b", "rescue/580-worktree");
-  writeFileSync(join(store, "prelim-search", "digest.md"), "branch doctrine\n");
+  writeFileSync(join(store, "clearotron-search", "digest.md"), "branch doctrine\n");
   git(root, "add", "-A");
   git(root, "commit", "-qm", "branch work");
   const r = classifySkillsStore(store);
@@ -126,7 +126,7 @@ test("a store on a feature branch fails, and names the branch", () => {
 test("a detached HEAD off the main line fails — detached is not collapsed into either answer", () => {
   const { root, store } = repo();
   git(root, "checkout", "-q", "-b", "side");
-  writeFileSync(join(store, "prelim-search", "digest.md"), "side doctrine\n");
+  writeFileSync(join(store, "clearotron-search", "digest.md"), "side doctrine\n");
   git(root, "add", "-A");
   git(root, "commit", "-qm", "side");
   git(root, "checkout", "-q", "--detach", git(root, "rev-parse", "HEAD"));
@@ -139,10 +139,10 @@ test("a detached HEAD off the main line fails — detached is not collapsed into
 test("both faults at once are both reported", () => {
   const { root, store } = repo();
   git(root, "checkout", "-q", "-b", "wip");
-  writeFileSync(join(store, "prelim-search", "digest.md"), "branch doctrine\n");
+  writeFileSync(join(store, "clearotron-search", "digest.md"), "branch doctrine\n");
   git(root, "add", "-A");
   git(root, "commit", "-qm", "branch work");
-  writeFileSync(join(store, "prelim-search", "digest.md"), "and an uncommitted draft on top\n");
+  writeFileSync(join(store, "clearotron-search", "digest.md"), "and an uncommitted draft on top\n");
   const r = classifySkillsStore(store);
   assert.equal(r.outcome, "fail");
   assert.deepEqual(r.findings.sort(), ["dirty", "off-main"]);
@@ -212,7 +212,7 @@ test("no main-line ref to compare against is BLOCKED, not a pass", () => {
 
 test("the door WARNS by default and REFUSES only under the strict flag", () => {
   const { store } = repo();
-  writeFileSync(join(store, "prelim-search", "digest.md"), "draft\n");
+  writeFileSync(join(store, "clearotron-search", "digest.md"), "draft\n");
 
   const soft = preflightSkillsStore({ CLEAROTRON_INSTRUCTIONS_DIR: store });
   assert.equal(soft.result.outcome, "fail");
@@ -230,7 +230,7 @@ test("strict mode refuses on BLOCKED too — could-not-determine is not a pass a
 
 test("the strict flag follows the house on/off idiom — `0`, `off` and `false` do NOT arm it", () => {
   const { store } = repo();
-  writeFileSync(join(store, "prelim-search", "digest.md"), "draft\n");
+  writeFileSync(join(store, "clearotron-search", "digest.md"), "draft\n");
   for (const off of ["0", "off", "false", "no", ""])
     assert.equal(preflightSkillsStore({ CLEAROTRON_INSTRUCTIONS_DIR: store, [STRICT_VAR]: off }).result.outcome, "fail",
       `${STRICT_VAR}=${JSON.stringify(off)} must not arm hard mode — the bare-truthiness spelling arms on the value an operator uses to switch it off`);

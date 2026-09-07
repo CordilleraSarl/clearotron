@@ -17,8 +17,8 @@
   "delivery": { "email": "summary", "privileged": false },
   "riskAppetite": "Evidence-first. Lead with the register position, then say plainly what the common-law picture adds or fails to settle. Name coverage limits in the body rather than in a footnote — an unread source is a fact about the search, not a caveat about the report. Keep crowded-field noise brief.",
   "defaultProduct": "multi-country-focus-search",
-  "frameworkPath": "skills/prelim-search/risk-framework-demo.md",
-  "workedExamplesPath": "skills/prelim-search/worked-examples-demo.md",
+  "frameworkPath": "skills/clearotron-search/risk-framework-demo.md",
+  "workedExamplesPath": "skills/clearotron-search/worked-examples-demo.md",
   "jxPolicy": { "laneDepth": { "ja": "full", "ko": "candidates" } },
   "runCaps": { "dailyRuns": 12, "maxQueued": 2 }
 }

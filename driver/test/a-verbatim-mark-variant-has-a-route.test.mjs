@@ -25,7 +25,7 @@ import { readFileSync } from "node:fs";
 import { variantTermIssue } from "../register-plan.mjs";
 import { termMarkupIssue, termShapeIssue } from "../../providers/_shared/term-shape.mjs";
 
-const SKILL = readFileSync(new URL("../skills/prelim-variants/SKILL.md", import.meta.url), "utf8");
+const SKILL = readFileSync(new URL("../skills/clearotron-variants/SKILL.md", import.meta.url), "utf8");
 // `literalStamp`, restated here rather than imported — it is module-private, and pinning the PREDICATE
 // is the point: if it stops shielding the ratified mark, the arms below are asserting a route that no
 // longer exists.
@@ -71,7 +71,7 @@ test("#1622 the variants doctrine states the route, so an author meeting the ref
   assert.match(FLAT, /not this stage's to certify/);
   assert.match(FLAT, /not reachable from this stage and there is no\s*call for you to make/,
     "the doctrine must say the route exists AND that it is not this stage's to take");
-  // AND IT MUST NOT NAME A TOOL THIS STAGE CANNOT CALL. `prelim-variants` is granted only
+  // AND IT MUST NOT NAME A TOOL THIS STAGE CANNOT CALL. `clearotron-variants` is granted only
   // `record_prelim_variants`; serving it the supplemental tool's name invites a call that cannot
   // succeed and burns a turn. contract-dictation.test.mjs enforces this across every served surface —
   // it caught the first draft of this very paragraph, which named the tool outright.

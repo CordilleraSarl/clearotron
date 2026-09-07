@@ -770,7 +770,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // visible from the definition rather than inferred from an absence.
   const STRIPPED_CATEGORIES = new Set(["phonetic", "transliteration", "visual"]);
   // — THE DOCTRINE'S OWN DISPATCH TABLE, NOW BINDABLE. The universal-categories table
-  // (prelim-variants SKILL.md) states the mode per tag: `exact-element` sweeps default, `plural-root`
+  // (clearotron-variants SKILL.md) states the mode per tag: `exact-element` sweeps default, `plural-root`
   // is a root (the contains match is its whole purpose), and `formative-family` is "never exact-only".
   // Until the enum accepted these tags the mandate bound to nothing — measured: three root-shaped
   // strings dispatched exact, 4/2/4 records, the family they exist to reach retrieved zero times.
@@ -2066,7 +2066,7 @@ function undisclosedDeferredQids(skeletonAxis, text) {
  * WHY THIS AND NOT A LOUDER HINT. The doctrine already reached the stage as advice on the first dispatch
  * (deferredSlicesRequiredRows, formerly the A8 "hint") and the stage claimed clean anyway, then complied
  * the moment the identical fact came back as a validator failure — R1 681s→202s, R2 515s→77s, every
- * prelim run that reaches the digest. A fact that is obeyed as a failure and ignored as an input is not
+ * clearotron run that reaches the digest. A fact that is obeyed as a failure and ignored as an input is not
  * being said too quietly; it is being offered rather than required. So it is required here.
  *
  * DELIBERATELY A SUPERSET of the deferred branch below, and the older gate is kept rather than folded

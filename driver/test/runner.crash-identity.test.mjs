@@ -97,7 +97,7 @@ test("SIGKILLed claimer with identity meta → re-drain RESUMES the same codenam
   const slug = "tmp9101-crash-probe";
   writeFileSync(join(Q, "job-a.json"), JSON.stringify(J));
 
-  // Barrier2 holds the prelim-variants turn, so matter-frame COMPLETES and the run is provably mid-flight.
+  // Barrier2 holds the clearotron-variants turn, so matter-frame COMPLETES and the run is provably mid-flight.
   const barrier2 = join(root, "release-variants");
   const env = envFor(root, { MOCK_BARRIER2_FILE: barrier2 });
   const claimer = spawnRunner(env);

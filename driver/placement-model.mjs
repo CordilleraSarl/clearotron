@@ -76,7 +76,7 @@ const ENTRY_KEYS = ["mark", "owner", "jurisdiction", "records", "tier", "reason"
 // decides it — a fluent, specific, entirely wrong reason passes this test, and should, because it is
 // arguable and arguing with it is the digest's job, not the parser's. B2 puts that judgment where it
 // belongs: the digest is instructed to adopt-or-counter each tier BY ENGAGING ITS STATED REASON
-// (stages.mjs + prelim-register/digest.md + synthesis-rules.md §1/§2), and narrative-refutation joins
+// (stages.mjs + clearotron-register/digest.md + synthesis-rules.md §1/§2), and narrative-refutation joins
 // on the same JSON. This function only guarantees there is a reason to engage WITH. It is a floor
 // against a degenerate write, not a measure of quality, and it is deliberately the only test here that
 // looks at the reason's words at all.

@@ -110,8 +110,8 @@ test("spawn error: a missing binary resolves with { spawnError }, never rejects"
 // ── pure helpers ─────────────────────────────────────────────────────────────────────────────────────
 test("absolutizeSkillRefs: rewrites skills/… refs under dirname(skillsDir), idempotently", () => {
   const skillsDir = "/opt/driver/skills";
-  const once = absolutizeSkillRefs("read skills/prelim-register/SKILL.md now", skillsDir);
-  assert.equal(once, "read /opt/driver/skills/prelim-register/SKILL.md now");
+  const once = absolutizeSkillRefs("read skills/clearotron-register/SKILL.md now", skillsDir);
+  assert.equal(once, "read /opt/driver/skills/clearotron-register/SKILL.md now");
   assert.equal(absolutizeSkillRefs(once, skillsDir), once, "already-absolute path must not be double-prefixed");
   assert.equal(absolutizeSkillRefs("no refs here", skillsDir), "no refs here");
 });

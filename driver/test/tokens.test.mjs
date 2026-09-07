@@ -13,7 +13,7 @@ import { rollupTokens } from "../tokens.mjs";
 
 // Build a temp runDir with _driver/<stage>.jsonl files (one record per line); caller cleans up.
 function mkRun(stages) {
-  const runDir = mkdtempSync(join(tmpdir(), "prelim-tokens-"));
+  const runDir = mkdtempSync(join(tmpdir(), "clearotron-tokens-"));
   mkdirSync(driverDir(runDir));
   for (const [stage, records] of Object.entries(stages)) {
     writeFileSync(driverDir(runDir, `${stage}.jsonl`), records.map((r) => JSON.stringify(r)).join("\n") + "\n");

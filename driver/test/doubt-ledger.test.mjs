@@ -17,7 +17,7 @@ const GATHER_MD = [
   "## Supplementary search summary",
   "Direct search of nutrivolt.example for all variants returned no product matches.",
   "CROSS-CHECK REQUIRED: VOLTMAX ENERGYCORE US/Madrid designations — direct owner-site search found no such product; only the register can say whether a dormant filing exists",
-  "Some later prose noting this requires prelim-register layer cross-check, but not in the dictated form.",
+  "Some later prose noting this requires clearotron-register layer cross-check, but not in the dictated form.",
 ].join("\n");
 
 // The synthetic PROPEL-shaped trio: assertion, refutation, unrelated bystander.
@@ -69,7 +69,7 @@ test("mintCrossCheckDoubts parses the dictated line and IGNORES free prose (the 
 });
 
 test("a legacy artifact with no dictated line mints nothing at all", () => {
-  const legacy = "## Findings\nRequires prelim-register layer cross-check for designations.\nCross-check required for VOLTMAX (lowercase prefix, wrong shape).";
+  const legacy = "## Findings\nRequires clearotron-register layer cross-check for designations.\nCross-check required for VOLTMAX (lowercase prefix, wrong shape).";
   assert.deepEqual(mintCrossCheckDoubts(legacy, "common-law-findings.md"), []);
 });
 

@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // env-aliases.mjs — ONE SPELLING, and the settings that no longer exist at all.
 //
-// A variable name must mean something to someone who has never read this code. `PRELIM` names nothing
+// A variable name must mean something to someone who has never read this code. `CLEAROTRON` names nothing
 // to anyone — it is the internal codename of the first product this engine shipped — so the names an
 // installer types are `CLEAROTRON_*`. Vendor keys are deliberately untouched: `SIGNA_API_KEY` already
 // says who you bought it from.
@@ -85,48 +85,6 @@ export function envFrom(env, name) {
   return v === "" ? undefined : v;
 }
 
-/** The prefix every retired spelling carries. The rename moved the stem and nothing else. */
-export const RETIRED_PREFIX = "PRELIM_";
-
-/**
- * Every retired-spelling line SET in `env`, each with the name in force where there is one.
- *
- * ── THE DETECTION NEEDS NO TABLE, AND THAT IS DELIBERATE ────────────────────────────────────────
- *
- * No product code reads a `PRELIM_*` name — nothing on this tree does, and an arm holds it that way
- * (driver/test/retired-env-spellings.test.mjs). So a `PRELIM_*` line that is SET is dead, full stop,
- * and this cannot go stale against a list somebody forgot to update. A table-driven detection would
- * have exactly the failure mode the issue was filed about: silence for the name nobody wrote down.
- *
- * The table decides only the SECOND half of the sentence — which name to use instead — because that
- * is the half that can be wrong. `NAMES_IN_FORCE` is derived from the build's own readers
- * (scripts/mint-names-in-force.mjs), so a replacement is named only when something actually reads it.
- * Where no `CLEAROTRON_` partner exists the setting did not move, it went, and `replacement` is null.
- * Sending an operator to a variable nothing reads would replace one silent failure with another.
- *
- * EMPTY IS UNSET, as everywhere else here: an `X=` line in an EnvironmentFile means "not configured",
- * so it is not reported. An operator who blanked a line has already stopped setting it.
- */
-export function retiredSpellingsIn(env = process.env) {
-  const inForce = new Set(NAMES_IN_FORCE);
-  const found = [];
-  for (const name of Object.keys(env ?? {})) {
-    if (!name.startsWith(RETIRED_PREFIX) || !has(env, name)) continue;
-    const candidate = `CLEAROTRON_${name.slice(RETIRED_PREFIX.length)}`;
-    found.push({ name, replacement: inForce.has(candidate) ? candidate : null });
-  }
-  return found.sort((a, b) => a.name.localeCompare(b.name));
-}
-
-/** The one sentence a retired spelling is worth, used by every surface that reports one. */
-export function retiredSpellingLine({ name, replacement }) {
-  return replacement
-    ? `${name} is a RETIRED spelling and nothing reads it — the name in force is ${replacement}. `
-      + `Rename the line in your environment file; its value is being ignored until you do.`
-    : `${name} is a RETIRED spelling and nothing reads it — this setting no longer exists under any `
-      + `name. Delete the line from your environment file.`;
-}
-
 /**
  * Say so when a DELETED setting is still set. Nothing is applied and nothing is translated.
  *
@@ -140,12 +98,6 @@ export function warnRetiredEnv({ env = process.env, note = defaultNote } = {}) {
     note(`[env] ${name} is set but was RETIRED and does nothing — ${why} Delete the line from your `
       + `environment file.\n`);
     said.push(name);
-  }
-  // The retired SPELLINGS, on the same footing and through the same emitter — so every service that
-  // already announces its posture at boot announces this too, rather than one service happening to.
-  for (const row of retiredSpellingsIn(env)) {
-    note(`[env] ${retiredSpellingLine(row)}\n`);
-    said.push(row.name);
   }
   return said;
 }

@@ -27,7 +27,7 @@ chmodSync(CLAUDE, 0o755);
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 
-const root = mkdtempSync(join(tmpdir(), "prelim-ko-e2e-"));
+const root = mkdtempSync(join(tmpdir(), "clearotron-ko-e2e-"));
 const FIXTURES = join(root, "sweep-fixtures");
 mkdirSync(FIXTURES, { recursive: true });
 // canned research payloads (the $0 sweep): IRONWHISK carries a citable URL; CLUVENDRA is clean;

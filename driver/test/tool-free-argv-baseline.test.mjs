@@ -90,11 +90,11 @@ const CONVERTED_BEFORE = Object.freeze({
   // at 21 calls with a write, so its row is the record of what a genuinely tool-USING stage looked like
   // before it was constrained for the first time.
   "matter-frame": { groups: 0, allowedTools: false, mcpConfig: false, strictMcpConfig: false },
-  // prelim-variants, retired by conversion 3 — measured on the same walk as the four above and identical
+  // clearotron-variants, retired by conversion 3 — measured on the same walk as the four above and identical
   // to them. Its differential is not the argv flags (every converted stage gains those) but what the
   // stage stopped being TRUSTED to do: it hand-wrote two artifacts a downstream parser then re-read, and
   // the row is the record of the surface it was passed while that was true.
-  "prelim-variants": { groups: 0, allowedTools: false, mcpConfig: false, strictMcpConfig: false },
+  "clearotron-variants": { groups: 0, allowedTools: false, mcpConfig: false, strictMcpConfig: false },
   // report-overview, retired by conversion 4. The row is UNCHANGED from the one that sat in BASELINE —
   // moved, never re-measured, because it is a historical fact about a stage that no longer exists in that
   // state. It is also the heaviest measured Bash user to convert so far (O3c: 61 calls, 8 writes / 17

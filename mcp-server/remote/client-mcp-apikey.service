@@ -42,7 +42,7 @@ Environment=CLIENT_MCP_HTTP_HOST=127.0.0.1
 # hostname must point here, and that hostname must have NO Access application in front of it.
 Environment=CLIENT_MCP_HTTP_PORT=18812
 Environment=CLIENT_MCP_ALLOWED_HOSTS=agent-mcp.example.com
-# NO WorkingDirectory=, deliberately -- see prelim-driver.service for the full reasoning. systemd does
+# NO WorkingDirectory=, deliberately -- see clearotron-driver.service for the full reasoning. systemd does
 # not expand variables in WorkingDirectory=, it does expand ${VAR} in ExecStart= arguments, and nothing
 # here reads the working directory: this entry point resolves what it needs from its OWN file location.
 ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/mcp-server/http-server-client.mjs

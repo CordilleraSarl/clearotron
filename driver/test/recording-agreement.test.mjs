@@ -107,7 +107,7 @@ const KO_CTX = Object.freeze({
   // ordering a seat to read a file that is not there is this module's own subject. An invented path is
   // therefore not a harmless fixture: it is an unreadable pointer, and the guard fails on it exactly as
   // it would on a real one. `risk-framework-triage.md` is the triage deck this lane actually rates in.
-  frameworkPath: "skills/prelim-search/risk-framework-triage.md",
+  frameworkPath: "skills/clearotron-search/risk-framework-triage.md",
   probeNote: null,
 });
 
@@ -208,7 +208,7 @@ function unionFor(stage, artifacts) {
 
   // ── DOCTRINE THE DISPATCH NAMES AT RUNTIME, WHICH `skillReads` CANNOT HOLD ──────────────────────────
   //
-  // register-unit's dispatch orders, in prose: "Read and follow skills/prelim-register/providers/<name>.md
+  // register-unit's dispatch orders, in prose: "Read and follow skills/clearotron-register/providers/<name>.md
   // for THIS provider's exact tool names + operator vocabulary." That file is chosen by CLEAROTRON_DATABASE
   // at dispatch time, so it can never be a `skillReads` literal — and a union built from the literals alone
   // has not read a document the seat is explicitly ordered to read and follow.
@@ -272,7 +272,7 @@ function unionFor(stage, artifacts) {
  * THE SURFACES THAT ARE PROVIDER-CONDITIONAL BY CONSTRUCTION —.
  *
  * The active provider's own deck is selected BY the provider (the dispatch names
- * `skills/prelim-register/providers/<name>.md` at runtime), so it cannot assert a capability of a
+ * `skills/clearotron-register/providers/<name>.md` at runtime), so it cannot assert a capability of a
  * deployment it does not describe. Derived from the provider name, never a list anyone maintains.
  *
  * An UNRESOLVED provider yields an empty set — no guess. And the derivation fails LOUD rather than
@@ -281,7 +281,7 @@ function unionFor(stage, artifacts) {
  */
 function providerConditionalSurfacesFor() {
   if (!REGISTER_PROVIDER) return new Set();
-  return new Set([`pointer:driver/skills/prelim-register/providers/${REGISTER_PROVIDER}.md`]);
+  return new Set([`pointer:driver/skills/clearotron-register/providers/${REGISTER_PROVIDER}.md`]);
 }
 
 /** Everything the guard needs for one stage, resolved once. */
@@ -861,7 +861,7 @@ test("tracker issue 1924: directions (a) and (c) hold for EVERY stage, not only 
   // doctrine rather than by narrowing the grant, and the distinction is the whole of it. Every record
   // `register_enumerate` returns is already batch-screened and already whole, and the frozen plan's
   // entries are fetched by the executor — so reaching for that tool means the QUERY is wrong, and
-  // `prelim-register/unit.md` now says exactly that, for `register_record_fetch` and
+  // `clearotron-register/unit.md` now says exactly that, for `register_record_fetch` and
   // `register_image_fetch` beside it. A seat told nothing about a tool it holds reaches for whatever the
   // doctrine DOES name and picks wrongly; that is the failure this direction is about, and naming closes
   // it. NARROWING THE GRANT WOULD CHANGE BEHAVIOUR and waits for a measurement of how often those
@@ -936,7 +936,7 @@ test("tracker issue 1924: a tool named in a multi-reader doc is granted to every
   // ✕ PINNED, NOT EMPTY, AND THE FIRST CUT OF THIS ARM HAD IT WRONG.
   //
   // It asserted `[]` and reported NINE rows, every one of them true and none of them a defect. The two
-  // documents involved are explicitly multi-mode: `prelim-register/SKILL.md` says in its own header that
+  // documents involved are explicitly multi-mode: `clearotron-register/SKILL.md` says in its own header that
   // it "runs in one of two modes the orchestrator selects", and labels the sections **Unit mode (the
   // FUNNEL — Layer A)** and **Digest mode (judgment — Layer B)**. It names `register_enumerate` inside the
   // unit half and the band tools inside the digest half, and each stage holds the half it is dispatched
@@ -951,22 +951,22 @@ test("tracker issue 1924: a tool named in a multi-reader doc is granted to every
   // A row LEAVING this list is good news and still wants the entry removed in the same commit, or the
   // list slowly becomes a licence rather than a record.
   const MODE_SCOPED = [
-    "skills/prelim-register/SKILL.md names band_lookup, not held by: register-unit",
-    "skills/prelim-register/SKILL.md names band_record, not held by: register-unit",
-    "skills/prelim-register/SKILL.md names band_shape, not held by: register-unit",
-    "skills/prelim-register/SKILL.md names record_coverage, not held by: register-unit",
+    "skills/clearotron-register/SKILL.md names band_lookup, not held by: register-unit",
+    "skills/clearotron-register/SKILL.md names band_record, not held by: register-unit",
+    "skills/clearotron-register/SKILL.md names band_shape, not held by: register-unit",
+    "skills/clearotron-register/SKILL.md names record_coverage, not held by: register-unit",
     // Conversion 11 — the TENTH row, and it is the same mode-scoped shape as the four above it rather
     // than the finding this list was left open for. The mention sits in SKILL.md's **Digest mode
     // (judgment — Layer B)** bullet, the same sentence that already names `record_coverage` and the band
     // tools; register-unit reads the shared spine and is dispatched as the FUNNEL, which that bullet is
     // explicitly not addressing. Scoping it further is not available — the spine is one file by design,
     // and the section labels are the scoping.
-    "skills/prelim-register/SKILL.md names record_register_digest, not held by: register-unit",
-    "skills/prelim-register/SKILL.md names register_enumerate, not held by: register-digest",
-    "skills/prelim-register/SKILL.md names register_execute_plan, not held by: register-digest",
-    "skills/prelim-search/synthesis-rules.md names band_lookup, not held by: report-overview",
-    "skills/prelim-search/synthesis-rules.md names band_record, not held by: report-overview",
-    "skills/prelim-search/synthesis-rules.md names perplexity_research, not held by: report-overview",
+    "skills/clearotron-register/SKILL.md names record_register_digest, not held by: register-unit",
+    "skills/clearotron-register/SKILL.md names register_enumerate, not held by: register-digest",
+    "skills/clearotron-register/SKILL.md names register_execute_plan, not held by: register-digest",
+    "skills/clearotron-search/synthesis-rules.md names band_lookup, not held by: report-overview",
+    "skills/clearotron-search/synthesis-rules.md names band_record, not held by: report-overview",
+    "skills/clearotron-search/synthesis-rules.md names perplexity_research, not held by: report-overview",
   ];
   assert.deepEqual(offenders.sort(), [...MODE_SCOPED].sort(),
     "a shared document names a tool that some of its readers cannot call, and it is not one of the ten "
@@ -1160,7 +1160,7 @@ test("2019: the rule does NOT reach a tool the provider serves — only the ones
 test("2019 ANTI-ROT: every marker still matches the live dispatch it was written for", () => {
   // The same arm WRITE_ORDER_MARKERS carries, for the same reason: these match declared PROSE, and prose
   // is edited. A marker that stops matching anything is a rule that silently stopped applying.
-  const unit = readFileSync(join(DRIVER, "skills/prelim-register/unit.md"), "utf8");
+  const unit = readFileSync(join(DRIVER, "skills/clearotron-register/unit.md"), "utf8");
   const live = PROVIDER_CONDITIONAL_MARKERS.filter((k) => k.re.test(unit));
   assert.ok(live.length >= 1,
     "no provider-conditional marker matches the register unit dispatch any more. Either the carve-out was "

@@ -14,7 +14,7 @@
 //
 // AND IT PRESENTED AS SEARCHED, which is the part that made it a compliance defect rather than a
 // coverage one. The disclosure machinery only describes territories the compiler recorded as
-// UNREACHABLE. These were recorded as reached, so there was no row to render, and `prelim-search`'s
+// UNREACHABLE. These were recorded as reached, so there was no row to render, and `clearotron-search`'s
 // rule against rendering a deferred jurisdiction as a clean negative had nothing to fire on.
 //
 // ── TWO FACTS, KEPT APART ON PURPOSE ────────────────────────────────────────────────────────────────

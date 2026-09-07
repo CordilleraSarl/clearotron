@@ -76,7 +76,7 @@ test("#1345 a caller cannot smuggle a dispatch field in, even by accident", () =
   const d = tmpRun();
   try {
     recordSpan(d, "register-repair", { startedMs: 0, endedMs: 1_000 },
-      { attempt: 3, key: "prelim-x-register-unit-y", status: "ok", repair: "kept" });
+      { attempt: 3, key: "clearotron-x-register-unit-y", status: "ok", repair: "kept" });
     const [row] = rowsOf(d, "register-repair");
     for (const f of DISPATCH_FIELDS) assert.equal(f in row, false, `${f} must be dropped, not written`);
     assert.equal(row.repair, "kept", "everything else survives — this refuses three names, not the detail");

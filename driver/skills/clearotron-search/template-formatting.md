@@ -1,4 +1,4 @@
-# Prelim Template — HTML Formatting Spec
+# Clearotron Template — HTML Formatting Spec
 
 > **THIS FILE IS HALF LIVE, AND THE HALVES HAVE DIFFERENT READERS. Check which half you are in before
 > you trust a line.**

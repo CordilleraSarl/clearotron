@@ -13,7 +13,7 @@ import { recordConsumption, recordRunConsumption, accountConsumption, consumptio
 const DAY = 86400000;
 
 function mkWorkspace(agents = ["clawdi"]) {
-  const root = mkdtempSync(join(tmpdir(), "prelim-consumption-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-consumption-"));
   const studios = {};
   for (const a of agents) {
     const studio = join(root, `workspace-${a}`, "studio", "prelim-search");

@@ -761,7 +761,7 @@ test("tracker 97 the release note a customer reads is the sentence, not the comm
   try {
     mkdirSync(join(dir, "driver"), { recursive: true });
     writeFileSync(join(dir, "driver", "CHANGELOG.md"),
-      "# prelim-driver\n\n## 0.1.1-beta.0\n\n- f7c1570: Fixed: The demo offers the two example accounts it ships with.\n"
+      "# clearotron-driver\n\n## 0.1.1-beta.0\n\n- f7c1570: Fixed: The demo offers the two example accounts it ships with.\n"
       + "- 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b: Fixed: A clearance now names the registers it searched.\n");
     const { groups } = assembleRoot("0.1.1-beta.0", dir);
     assert.deepEqual(groups.Fixed, [
@@ -770,7 +770,7 @@ test("tracker 97 the release note a customer reads is the sentence, not the comm
     ]);
     // A sentence that merely CONTAINS a colon keeps every word of itself.
     writeFileSync(join(dir, "driver", "CHANGELOG.md"),
-      "# prelim-driver\n\n## 0.2.0\n\n- Fixed: Removing the demo is one directory again: nothing it writes lands outside it.\n");
+      "# clearotron-driver\n\n## 0.2.0\n\n- Fixed: Removing the demo is one directory again: nothing it writes lands outside it.\n");
     assert.deepEqual(assembleRoot("0.2.0", dir).groups.Fixed,
       ["Removing the demo is one directory again: nothing it writes lands outside it."]);
   } finally {

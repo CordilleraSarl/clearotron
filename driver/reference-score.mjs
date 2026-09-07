@@ -1107,7 +1107,7 @@ export function planSubQueries({ plan = null, execution = null, scopeTerritories
   // ── THE IN-SCOPE SWEEP'S OWN STATE — what decides whether a narrow was OWED at all ───────────────
   //
   // `subQueryState` returns `none` for a territory with no entry of its own, and that one value covers
-  // two opposite situations. The doctrine (`skills/prelim-register/SKILL.md`, Recipe 1 §2b) says a slice
+  // two opposite situations. The doctrine (`skills/clearotron-register/SKILL.md`, Recipe 1 §2b) says a slice
   // gets its own `register_enumerate` ONLY on the guarded crowd-narrow path — when Step 2, the
   // region-scoped in-scope sweep, returned `incomplete` and a major may sit in the un-paged remainder.
   // When Step 2 returns `enumerated` the complete set provably contains every in-scope slice and the

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// progress.mjs — live run status for the prelim-search driver.
+// progress.mjs — live run status for the clearotron-search driver.
 //
 // Two artifacts, both written by the driver into the FORWARDING agent's own workspace
 // (so the agent's sandboxed read tool can see them — agents can't exec, so on-demand status is a
@@ -8,7 +8,7 @@
 //   1. <runDir>/status.json        — the machine-readable per-run truth (travels into the archive on
 //                                     success, since the run-dir is renamed there).
 //   2. <studioRoot>/STATUS.md       — a human-readable rollup of recent runs, newest-first, the ONE file
-//                                     the prelim-status skill reads to answer "where is it at?".
+//                                     the clearotron-status skill reads to answer "where is it at?".
 //
 // Both writes are atomic (temp + rename) and idempotent — status is DERIVED from the current run, never
 // blindly incremented — so the resumable pipeline can re-drive a run without corrupting either file.
@@ -29,7 +29,7 @@ import { engineCommit, engineCommitSource } from "./engine-build.mjs";   // — 
 // driver's execution units (fan-out register axes, skeptic-escalation re-runs, corrective re-synthesis,
 // two refutation passes) onto a clean forward-only sequence, so the displayed step never jumps backward.
 export const DISPLAY_STEPS = [
-  "Framing the matter",     // 1  matter-frame, prelim-variants
+  "Framing the matter",     // 1  matter-frame, clearotron-variants
   "Register sweeps",        // 2  common-law + register-unit:* (fan-out + escalation re-runs collapse here)
   "Placement & digest",     // 3  placement-inquiry, register-digest (+ re-digest)
   "Skeptic review",         // 4  skeptic
@@ -48,7 +48,7 @@ export const DISPLAY_STEPS = [
 // UNLABELLED GAP on the stepper the client watches — the run looks stalled while it is working. Three
 // stages were sitting in that state (blind-frame, frame-diff, doubt-closure); each now says so by name.
 export const STAGE_TO_STEP = {
-  "matter-frame": 0, "prelim-variants": 0,
+  "matter-frame": 0, "clearotron-variants": 0,
   "common-law": 1, "common-law-half": 1, "register-unit": 1,
   "placement-inquiry": 2, "register-digest": 2,
   skeptic: 3,
@@ -440,15 +440,15 @@ export function lineFor(s) {
   // 2026-07-04 incident: STATUS.md showed marble-spire as plain "delivered" and VENZY as plain
   // "FAILED" while BOTH still had their email/WhatsApp queued (sendPending) behind a wedged outbox
   // lane — so the heartbeat completion-watch read the rollup, saw nothing pending, and stood down.
-  // The rollup now carries the send state loudly; prelim-deliver flips sendPending:false on send.
-  const pending = s.sendPending === true ? " — 📮 SEND PENDING (email/WhatsApp NOT yet out — run prelim-deliver)" : "";
+  // The rollup now carries the send state loudly; clearotron-deliver flips sendPending:false on send.
+  const pending = s.sendPending === true ? " — 📮 SEND PENDING (email/WhatsApp NOT yet out — run clearotron-deliver)" : "";
   if (s.state === "delivered") {
     const v = s.verdict ? ` (${s.verdict})` : "";
     return `- ${head} — delivered${v}${s.url ? ` — ${s.url}` : ""}${pending}`;
   }
   if (s.state === "failed") {
     const at = s.failedStage ?? s.lastStage ?? stepTxt;
-    return `- ${head} — ⚠️ FAILED at ${at}${s.reason ? ` — ${trunc(s.reason)}` : ""}${pending ? " — 📮 FAILURE NOTICE PENDING (run prelim-deliver)" : ""}`;
+    return `- ${head} — ⚠️ FAILED at ${at}${s.reason ? ` — ${trunc(s.reason)}` : ""}${pending ? " — 📮 FAILURE NOTICE PENDING (run clearotron-deliver)" : ""}`;
   }
   if (s.state === "recovering") {
     // 2026-07-04 production doctrine: a recoverable failure AUTO-RESUMES — the report is still owed.
@@ -513,8 +513,8 @@ export function rollupStatus(studioRoot) {
       .sort((a, b) => String(b.updatedAt ?? "").localeCompare(String(a.updatedAt ?? "")))
       .slice(0, MAX_RUNS);
     const agent = agentFromStudioRoot(studioRoot);
-    const body = runs.length ? runs.map(lineFor).join("\n") : "_No prelim searches running or recently finished._";
-    const md = `# Prelim-search status — ${agent}\n_updated ${nowISO()}_\n\n${body}\n`;
+    const body = runs.length ? runs.map(lineFor).join("\n") : "_No clearotron searches running or recently finished._";
+    const md = `# Clearotron-search status — ${agent}\n_updated ${nowISO()}_\n\n${body}\n`;
     atomicWrite(join(studioRoot, "STATUS.md"), md);
   } catch { /* never throw */ }
 }

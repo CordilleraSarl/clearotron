@@ -35,7 +35,7 @@ const ON_DISK = [{ extras: { pr_risk: LEDGER } }];
 const FRAGMENT = "1871 Meridian race riot";
 
 function fixture() {
-  const root = mkdtempSync(join(tmpdir(), "prelim-disp-tool-"));
+  const root = mkdtempSync(join(tmpdir(), "clearotron-disp-tool-"));
   const runDir = join(root, "studio", "prelim-search", "tmp9001-novapulse", "2026-08-16-quiet-harbour");
   mkdirSync(driverDir(runDir), { recursive: true });
   const output_path = join(runDir, "common-law-grid.half-m.json");

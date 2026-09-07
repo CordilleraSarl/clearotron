@@ -165,7 +165,7 @@ test("validatePlacement is exported for per-entry checks (offline unit path)", (
 // The rule that keeps it out of the client's report travels with the file, stated once.
 test("every stage told to read placements.json is also told what borderline is NOT for", async () => {
   const { STAGES, PLACEMENT_BORDERLINE_NOTE, paths } = await import("../stages.mjs");
-  const P = paths("/r/prelim-search/x/y");
+  const P = paths("/r/clearotron-search/x/y");
   const ctx = { paths: P, run: { slug: "x", codename: "y" }, axes: ["primary-sweep"], searchPolicy: { components: {} } };
   const readers = ["register-digest", "synthesis", "narrative-refutation", "report-overview"];
   for (const name of readers) {

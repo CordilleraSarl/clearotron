@@ -384,7 +384,7 @@ export function connotationQueriesOf(spec) {
  * Build the sandbox task from the DICTATED spec — the term and platform keys reach Perplexity's program
  * from code, never re-typed by the calling model (this is what kills re-typed-key corruption (VIBRANTE→VIBRNTE-class typos)).
  * CRITICAL: this carries the PINNED pplx_sdk access idiom (the same one in
- * skills/prelim-common-law/perplexity-prompts.md). Without it the sandbox agent free-styles the SDK and
+ * skills/clearotron-common-law/perplexity-prompts.md). Without it the sandbox agent free-styles the SDK and
  * dies with "TypeError: 'pplx_sdk.WebHit' object is not iterable" on every cell (the teal-vault /
  * a 1-of-154 fold failure). The result object supports ITERATION + ATTRIBUTE
  * access only. The per-cell try/except keeps one bad cell from aborting the whole grid.

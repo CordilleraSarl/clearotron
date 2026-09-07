@@ -65,7 +65,7 @@ export function refuseUndeclared(params, declared, token, path = "") {
     // does not declare it: `narrative.corrections`, accepted and dropped. That is what this refuses.
     //
     // Refusing unknown TOP-LEVEL keys as well was the first cut, and it was wrong. Real traffic carries
-    // envelope fields the tool schema does not declare — the prelim-variants mock sends
+    // envelope fields the tool schema does not declare — the clearotron-variants mock sends
     // `schema_version`, which `acceptPrelimVariants` ignores because it writes its OWN
     // `schema_version: SCHEMA_VERSION` into the model. Inert for as long as it has existed, and the
     // strict version made it FATAL: the whole stage refused, the run dead, for a key nobody reads.

@@ -18,7 +18,7 @@ import assert from "node:assert/strict";
 import { bashWriteTargets } from "../engine/deny-authority-write.mjs";
 import { authorityTrees, denyReason } from "../authority-trees.mjs";
 
-const RUN = "/run/prelim-search/2026-08-16-a-run";
+const RUN = "/run/clearotron-search/2026-08-16-a-run";
 const trees = () => authorityTrees({ runDir: RUN });
 const denied = (cmd) => bashWriteTargets(cmd).filter((t) => denyReason(t, trees()));
 

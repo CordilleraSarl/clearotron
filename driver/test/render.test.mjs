@@ -20,7 +20,7 @@ import { parseReport } from "../publish/parse.mjs";
 import { renderHtml, homeButton } from "../publish/render.mjs";
 
 function parsedOf(reportMd) {
-  const dir = mkdtempSync(join(tmpdir(), "prelim-render-"));
+  const dir = mkdtempSync(join(tmpdir(), "clearotron-render-"));
   const path = join(dir, "f.report.md");
   writeFileSync(path, reportMd);
   try { return parseReport(path); }
@@ -310,7 +310,7 @@ test("W2: a record artifact carrying _receipt renders the verified-fetched line;
   const f = [{ ...FINDINGS[0], owner: { name: "Doruk", country: "TR", registrations: [
     { uri: "/mark/tr/2009-53984", classes: ["5"], jurisdiction: "TR" } ] } }];
   // WITH receipt + provider config: the line names the provider + fetch date, the uri links via recordOrigin
-  const withReceipt = new Map([["/mark/tr/2009-53984", { ...rec, _receipt: { fetched_at: "2026-07-05T12:00:00Z", context: "prelim-x-register-digest" } }]]);
+  const withReceipt = new Map([["/mark/tr/2009-53984", { ...rec, _receipt: { fetched_at: "2026-07-05T12:00:00Z", context: "clearotron-x-register-digest" } }]]);
   const html = renderHtml(parsedOf(REPORT), f, COVERAGE, { recordsByUri: withReceipt, recordOrigin: "https://tm.corsearch.com", providerLabel: "Corsearch" });
   assert.match(html, /verified — Corsearch record fetched 2026-07-05/);
   assert.match(html, /href="https:\/\/tm\.corsearch\.com\/mark\/tr\/2009-53984"/, "path uri links via the provider record origin");

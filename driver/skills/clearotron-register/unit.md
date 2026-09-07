@@ -1,4 +1,4 @@
-# prelim-register — MODE A (UNIT)
+# clearotron-register — MODE A (UNIT)
 
 > Read `SKILL.md` first (the shared spine: Spawned session, Model, Provider, Tool call budget, the band-block coverage model, Failure fallback). This file is the UNIT-mode procedure only. **Do NOT read `digest.md`** — that is digest-mode judgment a unit must never run.
 

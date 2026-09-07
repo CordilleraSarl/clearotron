@@ -578,7 +578,7 @@ export const REPAIR_COMPOSERS = [
     //
     // `samplesForStage` IS REQUIRED, and for the reason `*:lint-repair`'s note above gives rather than the
     // one it looks like: a `stage: "*"` composer is walked for EVERY recording stage, so the fixed sample's
-    // `record_frame_diff` is read as an order handed to blind-frame, matter-frame, prelim-variants,
+    // `record_frame_diff` is read as an order handed to blind-frame, matter-frame, clearotron-variants,
     // report-overview, report-card and doubt-closure — six ordered-but-not-granted findings that are
     // artifacts of the SAMPLE, not of the tree. At dispatch the tool is always the walking stage's own,
     // because it is derived from `out`. Removing this hook reproduces all six.

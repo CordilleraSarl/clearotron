@@ -25,7 +25,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { auditDispositionCalls, callPairs, capturedCalls, CALL_FAILURE_REASONS, TOOL_NAME } from "../disposition-call-audit.mjs";
 
-const dir = () => mkdtempSync(join(tmpdir(), "prelim-call-audit-"));
+const dir = () => mkdtempSync(join(tmpdir(), "clearotron-call-audit-"));
 
 // Rows in the shape stdio-server.mjs actually writes — read off its logToolEvent calls, not invented.
 const started = (seq, tool = TOOL_NAME, server = "perplexity") => JSON.stringify({ ts: "2026-08-16T10:00:00Z", event: "started", seq, server, tool });

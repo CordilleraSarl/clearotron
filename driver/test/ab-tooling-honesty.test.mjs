@@ -30,7 +30,7 @@ chmodSync(CLAUDE, 0o755);
 
 process.env.CORSEARCH_SESSION_KEY ||= "test-offline";
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
-const ROOT = mkdtempSync(join(tmpdir(), "prelim-ab-honesty-"));
+const ROOT = mkdtempSync(join(tmpdir(), "clearotron-ab-honesty-"));
 process.env.CLEAROTRON_AI = "anthropic-agent";
 pinEnv(process.env, "CLEAROTRON_CLAUDE_PATH", CLAUDE);
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
@@ -242,7 +242,7 @@ async function oneTurn({ model, wire, env = {} } = {}) {
   const r = await withEnv({ MOCK_CLAUDE_WIRE_MODEL: wire ?? null, MOCK_CLAUDE_FILE: "ok\n", ...env }, () =>
     GW.runStage("wire-stage", {
       agent: "clawdi", message: `Write your output to the ABSOLUTE path: ${out}`, model,
-      sessionKey: "prelim-wire-test", timeoutSec: 30, expectFile: out, runDir,
+      sessionKey: "clearotron-wire-test", timeoutSec: 30, expectFile: out, runDir,
       // A REAL retry budget, overriding this file's CLEAROTRON_MAX_RETRIES=0: the ladder break is the
       // thing under test in the mismatch case, and with no budget "it did not retry" would be
       // trivially true and would prove nothing.
@@ -309,7 +309,7 @@ test("#238 corruption 3 zero semantics: a wire that reports NO model records `un
   writeFileSync(out, "ok\n");
   const r = await withEnv({ CLEAROTRON_AI: "silent-engine" }, () =>
     GW.runStage("silent-stage", { agent: "clawdi", message: "go", model: "haiku",
-      sessionKey: "prelim-silent", timeoutSec: 30, expectFile: out, runDir }));
+      sessionKey: "clearotron-silent", timeoutSec: 30, expectFile: out, runDir }));
   assert.equal(r.ok, true, "an engine that cannot report a model must not have its turns failed for it");
   const row = JSON.parse(readFileSync(driverDir(runDir, "silent-stage.jsonl"), "utf8").trim().split("\n").pop());
   assert.equal(row.modelActual, null, "no wire answer ⇒ null, NEVER the requested alias wearing the word actual");

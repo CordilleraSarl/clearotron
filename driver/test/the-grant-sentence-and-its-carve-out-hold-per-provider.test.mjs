@@ -44,13 +44,13 @@ const subjectOn = (surface) => ({
     text: "Your register key also carries `register_image_fetch`, which you do not call." }],
   toolUniverse: ["register_image_fetch"],
   providerUnavailable: new Set(["register_image_fetch"]),
-  providerConditionalSurfaces: new Set(["pointer:driver/skills/prelim-register/providers/acmereg.md"]),
+  providerConditionalSurfaces: new Set(["pointer:driver/skills/clearotron-register/providers/acmereg.md"]),
 });
 
 test("⭐ PLANT: the ACTIVE PROVIDER'S OWN DECK is a carve-out by construction — no phrase required", () => {
   // The sentence carries none of PROVIDER_CONDITIONAL_MARKERS' four phrases on purpose: if this passes
   // only because the text happens to match one, the arm is measuring the old mechanism.
-  const f = agreementFindings(subjectOn("pointer:driver/skills/prelim-register/providers/acmereg.md"));
+  const f = agreementFindings(subjectOn("pointer:driver/skills/clearotron-register/providers/acmereg.md"));
   assert.deepEqual(f, [],
     "a withheld tool named in the ACTIVE provider's own deck is still reported. That deck is selected BY "
     + "the provider, so it cannot assert a capability of a deployment it does not describe — this is the "
@@ -60,7 +60,7 @@ test("⭐ PLANT: the ACTIVE PROVIDER'S OWN DECK is a carve-out by construction �
 test("⭐ PLANT: the SAME sentence in provider-independent doctrine is NOT excused", () => {
   // The other half, and the reason the carve-out is on the surface and never on the tool: identical text,
   // identical withheld set, different provenance. Excusing the TOOL would silence this too.
-  const f = agreementFindings(subjectOn("skill:driver/skills/prelim-register/unit.md"));
+  const f = agreementFindings(subjectOn("skill:driver/skills/clearotron-register/unit.md"));
   assert.deepEqual(f.map((x) => [x.direction, x.tool]), [["ordered-but-not-granted", "register_image_fetch"]],
     "shared doctrine asserting a capability the active provider lacks is a real finding, and it went "
     + "quiet. Every deployment reads that sentence, including the ones it is false for.");

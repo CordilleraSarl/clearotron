@@ -14,7 +14,7 @@ The active register provider is mounted under the single, neutral server key `re
 named `register_*` — so the namespaced ids the prompts and allowlists carry (`mcp__register__register_enumerate`)
 stay stable across a provider swap. What is PINNED is the vendor's TOOL tokens, not its name:
 `../../test/provider-neutral-prose.test.mjs` walks `driver/` (skipping `fixtures/`) and fails any `<vendor>_<tool>`
-outside the six `<provider>-server.mjs` files and `../../skills/prelim-register/providers/`, exempting a core's own
+outside the six `<provider>-server.mjs` files and `../../skills/clearotron-register/providers/`, exempting a core's own
 `ERROR: … HTTP` diagnostics. The plain vendor NAME is unrestricted: `REGISTER_SERVERS` is keyed by it, and 134 other
 files under `driver/` carry `corsearch`.
 

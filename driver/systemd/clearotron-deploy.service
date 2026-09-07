@@ -1,5 +1,5 @@
 # GENERIC UNIT — safe to sync verbatim on deploy: no deployment-specific values live here; the checkout
-# path comes from EnvironmentFile=%h/.env, as it does for prelim-driver.service.
+# path comes from EnvironmentFile=%h/.env, as it does for clearotron-driver.service.
 [Unit]
 Description=Clearotron deploy — fast-forward this checkout to origin/main, never over a live run
 Documentation=https://github.com/CordilleraSarl/Clearotron/blob/main/docs/architecture/06-operations-runbook.md
@@ -9,7 +9,7 @@ Documentation=https://github.com/CordilleraSarl/Clearotron/blob/main/docs/archit
 Type=oneshot
 EnvironmentFile=%h/.env
 Environment=PATH=%h/.local/bin:%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
-# Same reason as prelim-driver.service: this deployment's configuration is the EnvironmentFile above and
+# Same reason as clearotron-driver.service: this deployment's configuration is the EnvironmentFile above and
 # nothing else, so a stray .env left in the checkout cannot reconfigure a deploy.
 Environment=CLEAROTRON_NO_ENV_FILE=1
 

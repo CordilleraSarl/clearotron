@@ -31,7 +31,7 @@ import { trackedFiles as trackedCorpus, skipReason } from "../../shared/tracked-
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const GUARD = "disposition-row-kinds-documented";
-const DOCTRINE = "driver/skills/prelim-common-law/SKILL.md";
+const DOCTRINE = "driver/skills/clearotron-common-law/SKILL.md";
 
 // The kinds as the EMITTER writes them, read from the source rather than from a list I maintain here —
 // a hand-kept list is the second copy that drifts, which is the defect class this round has fixed four

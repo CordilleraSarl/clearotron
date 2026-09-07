@@ -28,7 +28,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { STAGES, PROSE_VOICE } from "../stages.mjs";
 
-const SKILLS = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "prelim-search");
+const SKILLS = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearotron-search");
 const skill = (f) => readFileSync(join(SKILLS, f), "utf8");
 
 // A paths object that answers any key with a plausible path (and reportCard as the per-axis function).

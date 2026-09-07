@@ -42,7 +42,7 @@ function hook(toolName, filePath, { trees = TREES, runDir = null } = {}) {
 }
 
 test("the incident: a write into the doctrine tree is denied", () => {
-  const d = hook("Write", join(SKILLS, "prelim-register", "SKILL.md")).decision;
+  const d = hook("Write", join(SKILLS, "clearotron-register", "SKILL.md")).decision;
   assert.equal(d?.permissionDecision, "deny");
   // The refusal must NAME the alternative. A refusal that does not is one a model answers by trying the
   // neighbouring path — which is a retry loop, not a boundary.
@@ -50,7 +50,7 @@ test("the incident: a write into the doctrine tree is denied", () => {
 });
 
 test("the overlay is protected too — the customer's doctrine is doctrine", () => {
-  assert.equal(hook("Edit", join(OVERLAY, "prelim-search", "method.md")).decision?.permissionDecision, "deny");
+  assert.equal(hook("Edit", join(OVERLAY, "clearotron-search", "method.md")).decision?.permissionDecision, "deny");
 });
 
 test("the profile store is denied (defensive: it is granted by no --add-dir today)", () => {

@@ -60,7 +60,7 @@ export function namesInEnvFile(text) {
 }
 /** Every house or vendor variable MENTIONED in a script — the shape the config repo's bin/ writes. */
 export function namesMentioned(text) {
-  return [...text.matchAll(/\b(?:PRELIM|CLEAROTRON|PORTAL|TRADEMARK_MCP|CLIENT_MCP|CLIENT_ACCESS|PROFILE|RECIPE|MOCK)_[A-Z0-9_]+/g)].map((m) => m[0]);
+  return [...text.matchAll(/\b(?:CLEAROTRON|CLEAROTRON|PORTAL|TRADEMARK_MCP|CLIENT_MCP|CLIENT_ACCESS|PROFILE|RECIPE|MOCK)_[A-Z0-9_]+/g)].map((m) => m[0]);
 }
 
 /**

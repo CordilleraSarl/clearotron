@@ -29,7 +29,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pinEnv } from "../../shared/env-aliases.mjs";
 
-const ROOT = mkdtempSync(join(tmpdir(), "prelim-2137-"));
+const ROOT = mkdtempSync(join(tmpdir(), "clearotron-2137-"));
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 

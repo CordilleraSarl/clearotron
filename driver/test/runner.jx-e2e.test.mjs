@@ -4,7 +4,7 @@
 // runner.jx-e2e.test.mjs — the zh candidate lane end to end through the REAL runner at $0: a prelim-jx job
 // (CN in scope) runs the FULL mock clearance with the zh candidate lane on fixtures — the frozen lane
 // decision, the fold onto transliteration-numeric, the auto-spawned unit, receipts/ledger — and a
-// plain-prelim control job in the same process proves the component gate (no jx artifacts at all).
+// plain-clearotron control job in the same process proves the component gate (no jx artifacts at all).
 //
 // SAFETY GUARD (2026-07-14 convention): every env var is set BEFORE the dynamic runner import.
 import { mkdtempSync as __mkdtemp } from "node:fs";
@@ -139,7 +139,7 @@ test("component gate: a clearance without the investigation, in the SAME process
   const frozen = JSON.parse(readFileSync(driverDir(rd, "search-policy.json"), "utf8"));
   assert.equal(frozen.level, "multi-country-focus-search", "the scope names the product, at the freeze as at the wall");
   assert.equal(frozen.components.jxLanes, false, "the toggle was not ticked, so the investigation is not part of this search");
-  assert.ok(!existsSync(driverDir(rd, "jx-lanes.json")), "no lane sidecar — a plain prelim never touches jx machinery");
+  assert.ok(!existsSync(driverDir(rd, "jx-lanes.json")), "no lane sidecar — a plain clearotron never touches jx machinery");
   assert.ok(!existsSync(driverDir(rd, "jx-completions.jsonl")), "no ledger");
   const plan = JSON.parse(readFileSync(driverDir(rd, "register-plan.json"), "utf8"));
   assert.ok(plan.entries.every((e) => !e.qid.startsWith("jx-")), "no jx entries in the plan");

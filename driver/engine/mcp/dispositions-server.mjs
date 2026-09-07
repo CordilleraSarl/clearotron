@@ -12,7 +12,7 @@
 // held by FOUR stages — `common-law`, `common-law-half`, `narrative-refutation`, `synthesis`. Because
 // `allowedToolsFor` enumerates every tool on every entry a group resolves to, all four carried
 // `mcp__perplexity__record_dispositions`, while every doctrinal mention of the tool is common-law's:
-// `driver/skills/prelim-common-law/SKILL.md`, and the two common-law stage dictations in `stages.mjs`.
+// `driver/skills/clearotron-common-law/SKILL.md`, and the two common-law stage dictations in `stages.mjs`.
 // Zero occurrences in synthesis's dictation block, zero in narrative-refutation's doctrine.
 //
 // That is GRANTED-BUT-NEVER-ORDERED, the defect class, in its mirror form: not a stage ordered to

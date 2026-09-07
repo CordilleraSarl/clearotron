@@ -136,7 +136,7 @@ function matterSignature(job, { product = null } = {}) {
   const base = `${forwarder}|${mark}|${classes}|${customer}|${ref}`;
   // Product dimension. ONE product adds nothing to the string, and it has to be one or every legacy
   // ledger row would stop colliding with its own re-send: the pre-spine signature had no suffix at all,
-  // and the level that ran then was `prelim`. That level's SUCCESSOR is the Global preliminary search —
+  // and the level that ran then was `clearotron`. That level's SUCCESSOR is the Global preliminary search —
   // the clearance a request with nothing named resolves to — so it is the one that stays silent, and
   // `sigLevel`'s default reads a suffixless row as it. The key name stays `level:` for the same reason:
   // it is a string already written into every ledger on disk.
@@ -342,7 +342,7 @@ async function intakeNotify(agentId, base, job, v) {
   const what = v?.classify === "clarify"
     ? `needs clarification before it can run: ${v.errors.join("; ")}`
     : `was rejected at intake: ${(v?.errors ?? ["unparseable job file"]).join("; ")}`;
-  const text = `⚠️ Prelim request "${mark}" ${what}. Nothing has been searched or delivered. ` +
+  const text = `⚠️ Clearotron request "${mark}" ${what}. Nothing has been searched or delivered. ` +
     `Job parked as ${base}.failed in the ${agentId} queue.`;
   const p = writeOutboxPacket(`intake-${base}.failed`, {
     kind: "intake-rejected", classify: v?.classify ?? "reject", base, agent: agentId,
@@ -598,7 +598,7 @@ async function duplicateNotify(agentId, base, job, prior = null, sig = null) {
   const which = prior?.msgId
     ? ` The run already under way was submitted as ${prior.msgId}${when ? ` at ${when}` : ""} — that is the one that will deliver.`
     : " The earlier run will deliver.";
-  const text = `⚠️ Prelim request "${mark}" matches a matter already in progress or just delivered, so it was `
+  const text = `⚠️ Clearotron request "${mark}" matches a matter already in progress or just delivered, so it was `
     + `NOT run — a second search would spend twice for one answer.${which}`
     + ` If you genuinely need a fresh run of the same matter, re-submit it with dupOverride (\`--dup-override\` on the`
     + ` command line) and it will go through.`;
@@ -631,7 +631,7 @@ async function parkDuplicate(procPath, qdir, base, agentId, job, prior, sig) {
   const conv = String(job.conversationId ?? "").trim();
   const matchedBy = prior.conversationId && prior.conversationId === conv ? "thread (conversationId)" : "matter signature";
   const reason = [
-    `duplicate prelim — not run (a second search for the same matter)`,
+    `duplicate clearotron — not run (a second search for the same matter)`,
     `matched by: ${matchedBy}`,
     `matter: ${sig}`,
     `conversationId: ${conv || "-"}`,
@@ -666,7 +666,7 @@ function preRunFailNotify(agentId, base, job, reason) {
   // terminalReasonFields `reason`, so this cut is a no-op today — which is exactly why it survived: a
   // latent second cap, unmarked, waiting for the next caller to pass a raw reason. It collapses and
   // trims identically, so this is the same string with the cut made visible when there is one.
-  const text = `❌ Prelim request "${mark}" FAILED before the run could start: ${terminalReasonFields(reason).reason} — ` +
+  const text = `❌ Clearotron request "${mark}" FAILED before the run could start: ${terminalReasonFields(reason).reason} — ` +
     `nothing has been searched or delivered. Job parked as ${base}.failed in the ${agentId} queue.`;
   // `intake-${base}.` PREFIX, not a third scheme: scripts/e2e.mjs's outboxPackets matches by runId
   // first and by that prefix second, so a name outside it is a notice the harness reports as
@@ -716,7 +716,7 @@ async function backstopFailureNotice({ res, job, agentId, base, codename, studio
       shortReason, reasonVerbatim: reason.slice(0, 1000), whatsappTo: AGENT_WHATSAPP[agentId] ?? null,
     });
     // same per-send invariant as the pipeline's failure path: a fresh notice supersedes an older .sent
-    // and its per-channel receipts (B4 — stale receipts would make prelim-deliver skip this notice)
+    // and its per-channel receipts (B4 — stale receipts would make clearotron-deliver skip this notice)
     try { rmSync(join(owned.dir, ".sent"), { force: true }); } catch { /* none */ }
     try { rmSync(driverDir(owned.dir, "send-receipts.json"), { force: true }); } catch { /* none */ }
     ensureDriverDir(owned.dir);
@@ -860,11 +860,11 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
     }
   }
   // Search-depth spine — resolve WHICH product shape this job selects (job selector → project/customer
-  // default → house prelim), then gate on what this deployment can actually run. A selection that cannot
+  // default → house clearotron), then gate on what this deployment can actually run. A selection that cannot
   // run here CLARIFIES loudly (parked + requester notified) — it must never silently run as a different-
   // priced product, and never silently drop. Fail-open discipline (review 2026-07-17): infra trouble may
   // NO FAIL-OPEN LEFT ON THIS PATH, and its removal is the point. It used to fall back to the literal
-  // level `prelim` when resolution errored and the job "provably" wanted a plain clearance — but `prelim`
+  // level `clearotron` when resolution errored and the job "provably" wanted a plain clearance — but `clearotron`
   // named THREE products depending on where it pointed, so the fallback was a guess wearing a level key:
   // an account whose defaults hold one country would have run a Full country search, case law and all,
   // off a config read that failed. Under the offering the product is a function of the scope, and a scope

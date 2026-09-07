@@ -80,7 +80,7 @@ test("#700 the sandbox dispatches on the same label production does — one cons
 // ══ every stage: arm wiring == production wiring ═════════════════════════════════════════════════
 
 test("#700 for EVERY stage, an arm's tool wiring equals the production dispatch's", () => {
-  const opts = { sessionKey: "prelim-x-y-z", agent: "prelim-agent-1", runDir: "/srv/x/studio/prelim-search/j/c" };
+  const opts = { sessionKey: "clearotron-x-y-z", agent: "clearotron-agent-1", runDir: "/srv/x/studio/prelim-search/j/c" };
   const armOpts = { ...opts, sessionKey: "prelim-exp-x-y-z", runDir: `${opts.runDir}/_experiments/2026-01-01-x` };
   let tooled = 0;
   for (const name of Object.keys(STAGES)) {
@@ -103,7 +103,7 @@ test("#700 for EVERY stage, an arm's tool wiring equals the production dispatch'
 
 test("#700 a common-law-half arm DOES hold the research tool — the issue's premise, tested", () => {
   const arm = experimentWiring("common-law-half", "m",
-    { sessionKey: "prelim-exp-a", agent: "prelim-agent-1", runDir: "/srv/x/studio/prelim-search/j/c/_experiments/e" });
+    { sessionKey: "prelim-exp-a", agent: "clearotron-agent-1", runDir: "/srv/x/studio/prelim-search/j/c/_experiments/e" });
   // — TWO groups and two servers. The disposition transport left the shared `perplexity` entry
   // for its own key; an experiment arm resolves the SAME map as the production dispatch, so it picks up
   // the split without a second declaration — which is the property the sweep above exists to keep.

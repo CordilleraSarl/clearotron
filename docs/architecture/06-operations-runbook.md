@@ -110,6 +110,18 @@ and the environment file holding the secrets.
 - **A scheduled gateway restart** (chat-channel session and plugin-loader hygiene) should *defer*
   off live work rather than skip: wait while a run is live, up to a bound, then restart anyway.
   `XDG_RUNTIME_DIR` must be set for `systemctl --user` to work from cron.
+- **Pin the agent id before upgrading an install made before 0.2.2.** The default agent id changed
+  from `clawdi` to `localagent`, and that id is a path segment: runs live under
+  `<workspaceRoot>/workspace-<agent>/studio/prelim-search/`. An install that never set one starts
+  reading an empty workspace, and empty reads as "no runs" rather than as an error. Set **both**
+  variables in the environment file — the gather servers read their own:
+
+  ```
+  CLEAROTRON_DEFAULT_AGENT=clawdi
+  CLEAROTRON_GATHER_AGENT=clawdi
+  ```
+
+  An install that already sets them is unaffected, and a fresh install needs neither.
 - **Integrator-platform upgrades** go through that platform's own guarded upgrade path — dry-run,
   exact-version confirm, stop → update → start. Never `npm i -g` / `pnpm add -g` directly.
 

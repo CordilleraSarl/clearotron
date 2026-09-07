@@ -64,7 +64,7 @@ test("#814 a knockout WITH a counts block scores normally", () => {
 test("#814 the clearance lane is untouched — a similar-marks sheet is the RIGHT reference there", () => {
   // The other half of the issue: the lawyer sheets stay the gold sets where the product promises
   // retrieval of similar marks. A refusal that fired on R2/R6 would delete the programme's main measure.
-  for (const lane of ["clearance", "register", "prelim"])
+  for (const lane of ["clearance", "register", "clearotron"])
     assert.equal(referenceLaneMismatch({ lane, ref: SIMILAR_MARKS_SHEET }), null, `${lane} must still score`);
 });
 

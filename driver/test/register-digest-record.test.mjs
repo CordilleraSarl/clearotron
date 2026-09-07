@@ -426,7 +426,7 @@ const BAND_REC = { record_id: "/mark/eu/000000001", mark_text: "VOLTMAX", owner_
 
 /** A run dir carrying a band and, optionally, a placements.json written from `placementsRaw`. */
 function fixtureRunDir({ placementsRaw = undefined } = {}) {
-  const runDir = mkdtempSync(join(tmpdir(), "prelim-facts-drive-"));
+  const runDir = mkdtempSync(join(tmpdir(), "clearotron-facts-drive-"));
   const P = runPaths(runDir);
   mkdirSync(driverDir(runDir), { recursive: true });
   writeFileSync(P.registerNamedBand, JSON.stringify({ enumerated: [BAND_REC] }) + "\n");

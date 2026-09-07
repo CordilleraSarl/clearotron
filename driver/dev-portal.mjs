@@ -373,7 +373,7 @@ export function startPortal({ poolRoot = null, port = 18899, host = "127.0.0.1",
       if (url.pathname === "/dev/enqueue" && req.method === "POST") {
         let body;
         try { body = await readJsonBody(req); } catch (e) { return sendJson(res, 400, { ok: false, error: e.message }); }
-        // `searchLevel` IS REFUSED, NOT DROPPED. This form offered a "Search level" menu (prelim · Depth 4
+        // `searchLevel` IS REFUSED, NOT DROPPED. This form offered a "Search level" menu (clearotron · Depth 4
         // / knockout · Depth 1) and posted the field to an assembler that stopped reading it, so picking
         // "knockout" enqueued a job naming no product at all and ran whatever the account default or the
         // request's own territories named — a silent product substitution at a live door, from a control

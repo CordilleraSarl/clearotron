@@ -250,7 +250,7 @@ test("2164 the tool descriptions a CLIENT reads carry no operator vocabulary —
   // THE HOLE. visibleTools() filters tool NAMES per audience; nothing filtered the text riding with
   // them, so a lawyer's assistant was handed "ENGINEERING/AUDIT view", run.jsonl, the skeptic stage —
   // and start_run opening with "OPS-ONLY" at the one principal entitled to call it.
-  const OPERATOR_VOCAB = /HEARTBEAT\.md|STATUS\.md|prelim-deliver|ENGINEERING\/AUDIT|run-dir|run\.jsonl|status\.json|agent workspace|pipeline stage|skeptic|ops only|OPS-ONLY|the driver|queue dir|docs\/|internal working documents|_history|_experiments|failover/i;
+  const OPERATOR_VOCAB = /HEARTBEAT\.md|STATUS\.md|clearotron-deliver|ENGINEERING\/AUDIT|run-dir|run\.jsonl|status\.json|agent workspace|pipeline stage|skeptic|ops only|OPS-ONLY|the driver|queue dir|docs\/|internal working documents|_history|_experiments|failover/i;
   for (const kind of ["user", "account"]) {
     for (const t of await servedTools(kind)) {
       assert.doesNotMatch(t.description, OPERATOR_VOCAB,

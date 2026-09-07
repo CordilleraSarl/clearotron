@@ -1653,7 +1653,7 @@ export const validators = {
   // HERE, where a miss re-prompts the stage that authors it.
   //
   // The floor's gate is the driver-written stage-contract marker (_driver/stage-contracts.json,
-  // "prelim-variants".romanization — written by pipeline.mjs recordStageContract at DISPATCH), i.e.
+  // "clearotron-variants".romanization — written by pipeline.mjs recordStageContract at DISPATCH), i.e.
   // evidence the artifact was MINTED under the romanisation-carriage prompt. It must never be the
   // instructed-scope sentinel: that sentinel is written at INTAKE and present on EVERY current-era
   // run — archived and parked ones included — so gating the new requirement on it (the first cut of
@@ -1682,7 +1682,7 @@ export const validators = {
       let contract = null;
       const marker = driverDir(dir, "stage-contracts.json");
       if (existsSync(marker)) {
-        try { contract = JSON.parse(readFileSync(marker, "utf8"))?.["prelim-variants"] ?? null; }
+        try { contract = JSON.parse(readFileSync(marker, "utf8"))?.["clearotron-variants"] ?? null; }
         catch { return fail("stagecontracts_invalid"); }
       }
       if (!contract?.romanization && !contract?.completeness && !contract?.term_shape) return sib;

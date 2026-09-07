@@ -44,7 +44,7 @@ import { VARIANT_DIRECTIONS, RANKING_BASES } from "../../blind-frame-model.mjs";
 import { recordSkeptic } from "../../skeptic-record.mjs";
 import { recordFrameDiff } from "../../frame-diff-record.mjs";
 import { recordMatterFrame, INTAKE_ASK_OWNERS, SCOPE_BASES } from "../../matter-frame-record.mjs";
-import { recordPrelimVariants, SCOPE_LAYERS, SCOPE_STATUS } from "../../prelim-variants-record.mjs";
+import { recordPrelimVariants, SCOPE_LAYERS, SCOPE_STATUS } from "../../clearotron-variants-record.mjs";
 import { recordReportOverview } from "../../report-overview-record.mjs";
 import { recordReportCard } from "../../report-card-record.mjs";      // conversion 5 — the fan-out transport
 import { recordRefutation, REVIEW_VERDICTS } from "../../narrative-refutation-record.mjs";   // conversion 9

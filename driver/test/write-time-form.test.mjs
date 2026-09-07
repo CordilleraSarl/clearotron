@@ -97,7 +97,7 @@ const arm = (s, ...contents) => {
   return { expectFile: s.out, validate: s.validate };
 };
 const stage = (over = {}) => runStage("test-stage", {
-  agent: "clawdi", message: "BASE TASK", sessionKey: "prelim-test-base",
+  agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-test-base",
   timeoutSec: 30, maxRetries: 2, runDir: dir, ...over,
 });
 const stageRows = () => readFileSync(driverDir(dir, "test-stage.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
@@ -106,12 +106,12 @@ const spine = () => readFileSync(driverDir(dir, "run.jsonl"), "utf8").trim().spl
 // ── the routing itself: the file a repair is aimed at is the file the message names ──────────────────
 
 test("repairTarget names the SIBLING for every sibling-routed token, and the expectFile otherwise", () => {
-  const md = "/r/prelim-search/x/frame-diff.md";
+  const md = "/r/clearotron-search/x/frame-diff.md";
   assert.equal(repairTarget("invalid_file:x/frame-diff.md:framediff_severity_invalid:major", [md]),
-    "/r/prelim-search/x/frame-diff.json", "a framediff_ repair writes frame-diff.json, never the .md");
-  const dg = "/r/prelim-search/x/register-findings.md";
+    "/r/clearotron-search/x/frame-diff.json", "a framediff_ repair writes frame-diff.json, never the .md");
+  const dg = "/r/clearotron-search/x/register-findings.md";
   assert.equal(repairTarget("invalid_file:x/register-findings.md:coverage_axis_invalid:all axes", [dg]),
-    "/r/prelim-search/x/register-coverage-ledger.json");
+    "/r/clearotron-search/x/register-coverage-ledger.json");
   // the one admitted token that is NOT sibling-routed: a prose cell in the digest itself
   assert.equal(repairTarget("invalid_file:x/register-findings.md:coverage_status_offenum:N/A", [dg]), dg);
   assert.equal(repairTarget("missing_file:x/frame-diff.md", [md]), md);

@@ -75,7 +75,7 @@ import { Refusal, storeForAdd } from "../shared/onboarding-store.mjs";
  * Broken means someone TRIED to select one and it does not resolve, and falling back there would rate a
  * client's matters under a framework nobody chose while the output said everything was fine.
  *
- * The profile validator checks the SHAPE of this string only (`skills/prelim-search/<file>.md`, no
+ * The profile validator checks the SHAPE of this string only (`skills/clearotron-search/<file>.md`, no
  * escape) and never whether the file is there — so a shape-valid path to a document that does not exist
  * validates cleanly and fails at rating time, which is the wrong place to find out.
  */
@@ -89,9 +89,9 @@ export function resolveFramework(requested, {
   const path = String(requested).trim();
   // Shape first, and by the profile validator's own rule rather than a second copy of it: a path that
   // would be refused at load must be refused here, in the same words, before anything is written.
-  if (!/^skills\/prelim-search\/[^/]+\.md$/.test(path) || path.includes(".."))
+  if (!/^skills\/clearotron-search\/[^/]+\.md$/.test(path) || path.includes(".."))
     throw new Refusal(
-      `--framework must name a document of the form "skills/prelim-search/<file>.md" (got ${JSON.stringify(path)}). `
+      `--framework must name a document of the form "skills/clearotron-search/<file>.md" (got ${JSON.stringify(path)}). `
       + `A profile selects a SHIPPED framework, never an arbitrary path.`);
 
   // RESOLVED THE WAY THE RATING STAGE RESOLVES IT, never by joining the repo root. `skills/...` paths
@@ -271,7 +271,7 @@ const USAGE = `
     --domains    comma-separated email domains that resolve to this owner
     --platforms  comma-separated marketplaces their searches cover
                  omitted ⇒ the Generic default's platforms are applied and named in the output
-    --framework  their risk framework, as skills/prelim-search/<file>.md
+    --framework  their risk framework, as skills/clearotron-search/<file>.md
                  omitted ⇒ the Generic default is applied and named in the output
     --industry   free text, shown on their profile
     --context    a file whose contents become this owner's context pack

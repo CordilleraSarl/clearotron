@@ -65,7 +65,7 @@ successfully fetch and verify.
   would close this gap; none is wired today.)
 - **Not** the EUIPO administrative layer: **EUIPO Boards-of-Appeal decisions** have no free API and are
   not searched — report that as a coverage gap. EUIPO *register* lookups are a different layer
-  (`prelim-register`), not this skill.
+  (`clearotron-register`), not this skill.
 
 ## Citing convention
 

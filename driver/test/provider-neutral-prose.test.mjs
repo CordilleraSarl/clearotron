@@ -3,9 +3,9 @@
 // The register tool surface is PROVIDER-NEUTRAL: every register tool is `register_*`, served under the
 // MCP key `register`, whichever vendor REGISTER_PROVIDER selects (engine/mcp/gather-config.mjs).
 //
-// This test is the enforcement the boundary rule in skills/prelim-register/providers/README.md always
+// This test is the enforcement the boundary rule in skills/clearotron-register/providers/README.md always
 // stated but nothing checked — and which was, in fact, already being violated by SKILL.md and
-// prelim-search/phase2-execution.md before the neutral-namespace change.
+// clearotron-search/phase2-execution.md before the neutral-namespace change.
 //
 // Why it matters: the driver interpolates tool names into the instructions handed to register sub-agents.
 // A vendor token that survives there tells the agent to call a tool that is not loaded under any provider
@@ -13,7 +13,7 @@
 //
 // ALLOWED to carry vendor tokens:
 //   - engine/mcp/<provider>-server.mjs   — the per-provider glue; the vendor name legitimately lives here
-//   - skills/prelim-register/providers/  — the provider vocabulary docs, which exist to be provider-specific
+//   - skills/clearotron-register/providers/  — the provider vocabulary docs, which exist to be provider-specific
 //   - providers/<id>/src/core.js          — provider cores (their error strings name the vendor, by design)
 //   - test fixtures asserting a provider CORE ERROR STRING (e.g. "ERROR: corsearch_search HTTP 414") —
 //     those are diagnostics emitted by the core, not tool invocations. Matched by the ERROR_STRING_RE below.
@@ -50,7 +50,7 @@ const ERROR_STRING_RE = /(ERROR:\s*)?\b(corsearch|clarivate|signa|uspto)_[a-z_]+
 const SKIP_DIRS = new Set(["node_modules", ".git", "fixtures"]);
 const isAllowedFile = (rel) =>
   /^engine\/mcp\/(corsearch|clarivate|signa|uspto-local|euipo|free-tier)-server\.mjs$/.test(rel) ||
-  rel.startsWith("skills/prelim-register/providers/");
+  rel.startsWith("skills/clearotron-register/providers/");
 
 // The vacuity check sits on the WALK'S RESULT (`walked` below), not on each read —. An
 // empty leaf directory is ordinary and the product writes them; guarding every recursive read turned
@@ -83,7 +83,7 @@ test("no vendor tool tokens outside the provider glue and provider vocabulary do
   }
   assert.deepEqual(offenders, [],
     `Vendor register tool names must not appear outside engine/mcp/<provider>-server.mjs and ` +
-    `skills/prelim-register/providers/. Use the neutral register_* names — they resolve to whichever ` +
+    `skills/clearotron-register/providers/. Use the neutral register_* names — they resolve to whichever ` +
     `provider REGISTER_PROVIDER selects. Offenders:\n  ${offenders.join("\n  ")}`);
 });
 
@@ -91,7 +91,7 @@ test("no vendor tool tokens outside the provider glue and provider vocabulary do
 //
 // VENDOR_TOOL_RE catches a vendor-prefixed TOOL name. It cannot catch a bare vendor HOST, and that is
 // the form that survived two de-vendoring passes: fixed the rule in status-rules.md, and
-// `prelim-register/digest.md` and `prelim-search/delivery-contract.md` went on naming the Corsearch
+// `clearotron-register/digest.md` and `clearotron-search/delivery-contract.md` went on naming the Corsearch
 // host as THE base host — digest.md loads on every digest run whatever the provider, so the vendored
 // instruction outranked the de-vendored one and a clarivate run composed Corsearch links.
 //
@@ -104,10 +104,10 @@ test("no vendor tool tokens outside the provider glue and provider vocabulary do
 // instruction to compose one, and `>` is the mark the document already uses for the difference.
 test("#798 no provider-agnostic skill file states a record base host", () => {
   const SKILLS = join(DRIVER, "skills");
-  const PROVIDER_DOCS = join("skills", "prelim-register", "providers");
+  const PROVIDER_DOCS = join("skills", "clearotron-register", "providers");
 
   const hosts = new Set();
-  for (const path of walked(join(SKILLS, "prelim-register", "providers"))) {
+  for (const path of walked(join(SKILLS, "clearotron-register", "providers"))) {
     for (const m of readFileSync(path, "utf8").matchAll(/https?:\/\/([a-zA-Z0-9._-]+)/g)) hosts.add(m[1]);
   }
   assert.ok(hosts.size >= 3,

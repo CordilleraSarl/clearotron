@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// lib/runs.mjs — discover + resolve prelim run-dirs (in-flight AND archived) across every agent workspace.
+// lib/runs.mjs — discover + resolve clearotron run-dirs (in-flight AND archived) across every agent workspace.
 //
 // Read-only. We MIRROR the driver's own status walk (progress.mjs `findStatusFiles`) here rather than
 // importing it, so the MCP stays a pure additive consumer (no edit to the shared driver file the parallel
