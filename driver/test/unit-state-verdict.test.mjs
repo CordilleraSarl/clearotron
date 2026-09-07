@@ -4,8 +4,8 @@
 //
 // The "units active" arm failed `prelim-driver` for DOING ITS JOB. It is a `Type=oneshot` fired by a
 // 90-second timer, so every drain passes through `activating`, and the arm called anything that was
-// neither `active` nor `inactive` a fault. deploy-test.sh gates the hourly test-instance deploy on this
-// script's exit code, so the false red took a healthy deploy to exit 1.
+// neither `active` nor `inactive` a fault. The hourly test-instance deploy gates on this script's exit
+// code, so the false red took a healthy deploy to exit 1.
 //
 // The property under test is not "activating is allowed". It is: **the check fails a unit for being
 // broken, and for nothing else.** Which means every test below that proves a state is tolerated is
@@ -136,8 +136,8 @@ test("a broken unit outranks an unrecognised one — fail is not downgraded to w
 // argument for widening the count is genuinely tempting, and it will be made again.
 
 test("#395 GUARD: {5 services activating, 3 inactive} is a SKIP — nothing is running on that box", () => {
-  // deploy-test.sh restarts the long-running services immediately before running this check, so this is
-  // the ORDINARY shape of the box mid-deploy, not a corner. Counting the 5 as up returned `pass` with a
+  // The hourly deploy restarts the long-running services immediately before running this check, so this
+  // is the ORDINARY shape of the instance mid-deploy, not a corner. Counting the 5 as up returned `pass` with a
   // message beginning "0 active" — the deploy's final gate going green having confirmed zero services up.
   const units = [...SERVICES.slice(0, 5).map((u) => ({ ...u, active: "activating" })),
     ...SERVICES.slice(5).map((u) => ({ ...u, active: "inactive" })),

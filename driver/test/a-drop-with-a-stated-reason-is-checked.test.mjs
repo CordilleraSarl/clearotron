@@ -4,7 +4,7 @@
 //
 // THE GAP. `silentlyLostFindings` covers `step-silent` — a finding-ending followed by silence. It is
 // correct and its boundary is deliberate. The stated case sat outside it and is the one that reached a
-// client: on R2 `russet-kestrel` the sibling reported `{checked:5, matched:5, lost:0}` while two marks
+// client: on a delivered R2 run the sibling reported `{checked:5, matched:5, lost:0}` while two marks
 // from the lawyer's final list, one rated HIGH, were absent from `findings.json` — dropped WITH a reason.
 //
 // A silent drop leaves a hole. A stated drop leaves a SENTENCE, and the sentence reads as diligence.

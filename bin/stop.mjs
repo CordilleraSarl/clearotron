@@ -19,12 +19,16 @@ import { existsSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { homedir } from "node:os";
 import { execFileSync } from "node:child_process";
+import { systemdSaid, looksLikeBusFailure, busRemedy, CAPTURE_STDERR } from "../shared/systemd-failure.mjs";   // tracker issue 270 — a stop that could not look must not report that it stopped
 import { BACKGROUND_UNITS } from "./start.mjs";
 import { CLIENT_DOOR_UNIT } from "../shared/client-door.mjs";
 import { invoke } from "../shared/invocation.mjs";
 
 const UNIT_DIR = join(homedir(), ".config", "systemd", "user");
 const say = (s = "") => console.log(s);
+// ON STDERR, because a refusal that scrolls past in the same stream as the success lines is a
+// refusal a script cannot act on and a reader skims (tracker issue 270).
+const err = (s = "") => console.error(s);
 
 const argv = process.argv.slice(2);
 if (argv.includes("--help") || argv.includes("-h")) {
@@ -39,20 +43,76 @@ if (argv.includes("--help") || argv.includes("-h")) {
 }
 
 let found = 0;
+const failures = [];
 for (const u of BACKGROUND_UNITS) {
   if (u === CLIENT_DOOR_UNIT) continue;   // structurally unreachable (the pin's census forbids it); belt anyway
   const file = join(UNIT_DIR, u);
   if (!existsSync(file)) continue;
   found++;
-  try { execFileSync("systemctl", ["--user", "disable", "--now", u], { stdio: "ignore" }); } catch { /* already down */ }
+  // ── THE STOP IS VERIFIED, AND THE FILE GOES ONLY IF IT WORKED (tracker issue 270) ────────────────
+  //
+  // This was `catch { /* already down */ }` — a COMMENT standing in for a check. The comment guessed why
+  // the call failed, the next line deleted the unit file regardless, and the line after that announced
+  // "stopped and removed". Measured on a test box: `disable --now` failed for want of a session bus, all
+  // four services stayed up on unchanged pids holding all three ports, three unit files were deleted, and
+  // the command exited 0 saying the box ran nothing. The services were then unmanageable — running, with
+  // no unit file to stop them by — which is strictly worse than leaving both alone.
+  //
+  // `is-active` is what decides, not the exit code of the disable, because the exit code is what lied.
+  let stopped = false;
+  let why = null;
+  try {
+    execFileSync("systemctl", ["--user", "disable", "--now", u], CAPTURE_STDERR);
+  } catch (e) {
+    why = systemdSaid(e);
+  }
+  // ASKED AFTER, WHATEVER THE DISABLE SAID. A disable that reported failure may still have stopped it,
+  // and one that reported success may not have — only the state answers.
+  try {
+    const state = execFileSync("systemctl", ["--user", "is-active", u], { ...CAPTURE_STDERR, stdio: ["ignore", "pipe", "pipe"] });
+    stopped = String(state).trim() !== "active";
+  } catch (e) {
+    // `is-active` exits non-zero for an inactive unit, which is the answer we want — but it exits
+    // non-zero for "cannot reach systemd" too, and those must not read the same. The stdout is the
+    // discriminator: an unreachable systemd prints nothing there.
+    const said = String(e?.stdout ?? "").trim();
+    if (said && said !== "active") stopped = true;
+    else why = why ?? systemdSaid(e);
+  }
+
+  if (!stopped) {
+    // NOT DELETED. A running service with no unit file cannot be stopped by any ordinary means.
+    failures.push({ unit: u, why: why ?? "systemd still reports it active" });
+    say(`  COULD NOT STOP ${u} — its unit file is left in place, so it can still be stopped`);
+    continue;
+  }
   try { rmSync(file, { force: true }); } catch { /* already gone */ }
   say(`  stopped and removed ${u}`);
 }
-try { execFileSync("systemctl", ["--user", "daemon-reload"], { stdio: "ignore" }); } catch { /* no user bus */ }
+// THE COMMENT HERE ALREADY NAMED THE CAUSE AND SHRUGGED AT IT. If there is no user bus, the disables
+// above did not happen either — which is the whole of tracker issue 270 — so this is where that is said.
+try {
+  execFileSync("systemctl", ["--user", "daemon-reload"], CAPTURE_STDERR);
+} catch (e) {
+  const said = systemdSaid(e);
+  err(`  could not ask systemd to reload its units — ${said}`);
+  if (looksLikeBusFailure(said)) err(`\n${busRemedy()}\n`);
+}
 
 if (!found) {
   say("  Nothing was running in the background — no pinned unit is installed on this box.");
   say("  Nothing to do, and nothing was changed.");
+} else if (failures.length) {
+  // THE SENTENCE THAT WAS WRONG. "The background product is stopped and the box runs nothing again" was
+  // printed unconditionally — including on the run where four services stayed up. A reader who is told
+  // that has no reason to look, which is what made the state unmanageable rather than merely wrong.
+  err("");
+  err(`  ${failures.length} of ${found} service(s) could NOT be stopped, and their unit files are left in place:`);
+  for (const f of failures) err(`    ${f.unit}: ${f.why}`);
+  if (failures.some((f) => looksLikeBusFailure(f.why))) err(`\n${busRemedy()}\n`);
+  err("  Nothing was removed for these, so they can still be stopped once systemd can be reached.");
+  err("  The box is NOT idle. This exits non-zero.");
+  process.exitCode = 1;
 } else {
   say("");
   say("  The background product is stopped and the box runs nothing again — plain `clearotron start`");
@@ -60,4 +120,6 @@ if (!found) {
   const door = existsSync(join(UNIT_DIR, CLIENT_DOOR_UNIT));
   if (door) say(`  Your assistant connection is untouched and still up; \`${invoke("disconnect")}\` is what closes it and revokes its key.`);
 }
-process.exit(0);
+// NOT A BARE ZERO. A stop that could not stop something sets `exitCode` above, and exiting 0 here would
+// discard it — printing the refusal and then reporting success, which is the shape this change removes.
+process.exit(process.exitCode ?? 0);

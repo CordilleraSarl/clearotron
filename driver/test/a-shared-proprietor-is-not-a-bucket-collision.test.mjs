@@ -9,7 +9,7 @@
 //
 // WHY IT MATTERED MORE THAN A SPURIOUS LINE. score.mjs prints a collision as "do not read the recall
 // numbers above until these are resolved". So one large proprietor suppressed a whole run's recall
-// measurement, and did: on R2 `russet-kestrel`, `Novartis AG` held withheld `DELFITY` and surfaced
+// measurement, and did: on a delivered R2 run, one large filer held withheld `DELFITY` and surfaced
 // `DELPHINA`, and a real 88% → 63% recall movement went unquoted on the regression issue because of it.
 //
 // WHAT IS ASSERTED. The spurious pair no longer collides; the predicate still fires on the shape the

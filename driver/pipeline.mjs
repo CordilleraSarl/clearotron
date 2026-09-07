@@ -13291,7 +13291,7 @@ async function pipelineInner(job, opts = {}) {
         // one, because the sibling's population boundary is deliberate and correct. It covers a
         // finding-ending followed by SILENCE; this covers one followed by a SENTENCE.
         //
-        // On R2 `russet-kestrel` the sibling logged `checked:5 matched:5 lost:0` — correctly — on a
+        // On a delivered R2 run the sibling logged `checked:5 matched:5 lost:0` — correctly — on a
         // delivery missing two marks from the lawyer's final list, one rated HIGH. They were dropped with
         // a reason, so they were outside its population by design. A drop with a reason nobody verifies
         // is not accounted for; it is unexamined with a paper trail, and that delivery carried 66 of them.
