@@ -110,7 +110,8 @@ export const UNIT_INVENTORY = Object.freeze([
     // rather than the day it first runs, because a unit file no entry claims is exactly what this file
     // exists to make impossible — and a mechanism that installs itself is the easiest kind to ship
     // undeclared.
-    unit: "clearotron-deploy", runsOn: [],
+    unit: "clearotron-deploy", runsOn: ["test"],
+      measured: "2026-09-07, test box: the timer and its service are installed under ~/.config/systemd/user/ and the service has run — see /home/testuser/deploy/autodeploy.log. The timer's ARMED state is not part of this claim; a lane may hold it, and a hold is recorded in the deploy log rather than inferred from ActiveState.",
     tracked: ["clearotron-deploy.service", "clearotron-deploy.timer"],
     note: "the install's own updater. Ships tracked, runs nowhere yet.",
     orphanReason: "SHIPPED AND PLACED ON NO BOX YET, which is a THIRD kind of orphan and not either of "
@@ -185,7 +186,8 @@ export const UNIT_INVENTORY = Object.freeze([
     // say "the repo ships this, nothing runs it, and here is the decision it waits on" — orphans are
     // REPORTED, never a fault, for exactly this case. It becomes `["prod"]` in the change that DEPLOYS
     // it, against a fresh enumeration, which is the ratchet working rather than being edited around.
-    unit: "clearotron-portal", runsOn: [], tracked: ["clearotron-portal.service"],
+    unit: "clearotron-portal", runsOn: ["test"], tracked: ["clearotron-portal.service"],
+      measured: "2026-09-07, test box, `systemctl --user show` with a working user bus: ActiveState=active, UnitFileState=enabled, fragment under ~/.config/systemd/user/.",
     note: "NEW, tracker issue 1925, SHIPPED BUT NOT YET DEPLOYED. The portal had NO unit at all — it "
       + "and the MCP face are the two children bin/start.mjs supervises, and neither ran under systemd, "
       + "so a hosted deployment kept them alive with a hand launcher and `clearotron start` had nothing "
@@ -201,7 +203,8 @@ export const UNIT_INVENTORY = Object.freeze([
   {
     // Same as clearotron-portal above: shipped, running nowhere, declared as an orphan rather than
     // asserting a production state no enumeration has ever shown.
-    unit: "clearotron-mcp-face", runsOn: [], tracked: ["clearotron-mcp-face.service"],
+    unit: "clearotron-mcp-face", runsOn: ["test"], tracked: ["clearotron-mcp-face.service"],
+      measured: "2026-09-07, test box, `systemctl --user show` with a working user bus: ActiveState=active, UnitFileState=enabled, fragment under ~/.config/systemd/user/.",
     note: "NEW, tracker issue 1925, SHIPPED BUT NOT YET DEPLOYED. The engine door the portal calls over "
       + "MCP; the other of the two processes that had no unit.",
     orphanReason: "THE ENGINE DOOR THE PORTAL CALLS, shipped with no box carrying it yet. Same kind as "
@@ -229,7 +232,8 @@ export const UNIT_INVENTORY = Object.freeze([
     // So it is now an orphan of the FIRST kind, awaiting a box, exactly like the portal and the engine
     // door beside it: it is in SERVER_INSTALL_SET, and it leaves this list on the day a measured
     // enumeration of a box shows it running.
-    unit: "clearotron-client-mcp", runsOn: [], tracked: ["clearotron-client-mcp.service"],
+    unit: "clearotron-client-mcp", runsOn: ["test"], tracked: ["clearotron-client-mcp.service"],
+      measured: "2026-09-07, test box, `systemctl --user show` with a working user bus: ActiveState=active, UnitFileState=enabled, fragment under ~/.config/systemd/user/.",
     note: "tracker issue 1976, and INSTALLED WITH THE PRODUCT since tracker issue 2148. The client door "
       + "— the one surface that accepts an account-scoped key, and a separate process from the engine "
       + "door, which refuses one outright.",
@@ -246,7 +250,8 @@ export const UNIT_INVENTORY = Object.freeze([
     // supervises the portal, the engine door and this worker; 1925 shipped units for the first two.
     // Written as part of retiring the path-watcher posture, because retiring `prelim-driver.*` without
     // it leaves a hosted box healthy-looking and draining nothing.
-    unit: "clearotron-worker", runsOn: [], tracked: ["clearotron-worker.service"],
+    unit: "clearotron-worker", runsOn: ["test"], tracked: ["clearotron-worker.service"],
+      measured: "2026-09-07, test box, `systemctl --user show` with a working user bus: ActiveState=active, UnitFileState=enabled, fragment under ~/.config/systemd/user/.",
     note: "NEW, tracker issue 1863. The drain, as one plain service unit invoking the entrypoint "
       + "directly (owner ruling 2026-08-31). Ships tracked, runs nowhere yet — production takes it at "
       + "its rebuild, which is the same event that lets the retired units' files leave the tree.",
@@ -270,7 +275,8 @@ export const UNIT_INVENTORY = Object.freeze([
       + "list, so its drift was never checked despite being tracked.",
   },
   {
-    unit: "trademark-portal", runsOn: ["prod", "test"], tracked: null,
+    unit: "trademark-portal", runsOn: ["prod"],
+      measured: "2026-09-07, test box: LoadState=not-found. No unit of this name exists there. The `test` claim was inherited from before the rename to clearotron-* and was never remeasured; the `prod` claim is left alone because production was NOT measured here.", tracked: null,
     untrackedReason: "the deployed copy carries real Cloudflare Access team/AUD/domain values inline. "
       + "A tracked file would be the placeholder TEMPLATE, merged by hand after a "
       + "diff — writing one carelessly replaces working auth with placeholders that look configured.",
@@ -281,11 +287,13 @@ export const UNIT_INVENTORY = Object.freeze([
     supersededName: "portal-service.service (deleted, owner-ruled 2026-08-14)",
   },
   {
-    unit: "trademark-ops-mcp", runsOn: ["prod", "test"], tracked: null,
+    unit: "trademark-ops-mcp", runsOn: ["prod"],
+      measured: "2026-09-07, test box: LoadState=not-found. No unit of this name exists there. The `test` claim was inherited from before the rename to clearotron-* and was never remeasured; the `prod` claim is left alone because production was NOT measured here.", tracked: null,
     untrackedReason: "same CF Access inline-values shape as the portal it serves.",
   },
   {
-    unit: "client-mcp", runsOn: ["prod", "test"], tracked: ["client-mcp.service"],
+    unit: "client-mcp", runsOn: ["prod"],
+      measured: "2026-09-07, test box: LoadState=not-found. No unit of this name exists there. The `test` claim was inherited from before the rename to clearotron-* and was never remeasured; the `prod` claim is left alone because production was NOT measured here.", tracked: ["client-mcp.service"],
     note: "TRACKED, in mcp-server/remote/ — this entry said it had no file, and the file was there. It is "
       + "a banner-marked TEMPLATE, so the live copy differing from it is the arrangement, not drift. "
       + "#1147 ADDED THE TEST BOX (2026-08-18): the client surface ran nowhere but production, so the test "
@@ -415,7 +423,8 @@ export const UNIT_INVENTORY = Object.freeze([
       + "checkout's bridge, not this clone's.",
   },
   {
-    unit: "trademark-test-deploy", runsOn: ["test"], tracked: null,
+    unit: "trademark-test-deploy", runsOn: [],
+      measured: "2026-09-07, test box: LoadState=not-found. The hourly deploy runs as clearotron-deploy.timer, which has its own entry; this name is what that one used to be called.", tracked: null,
     untrackedReason: "the hourly --ff-only deploy of the TEST instance. It exists on the test box only "
       + "and by design: production never auto-deploys, so a tracked file shipped to both would be a unit "
       + "production must be trusted never to enable.",
@@ -508,6 +517,19 @@ export function unitInventoryVerdict({
   const unaccountedFiles = files.filter((f) => !accounted.has(f)).sort();
   const orphaned = UNIT_INVENTORY.filter((u) => u.runsOn.length === 0).map((u) => u.unit).sort();
 
+  // RUNNING HERE, DECLARED TO RUN NOWHERE. The defect the rename to clearotron-* left behind: the new
+  // units shipped WITH entries, those entries kept `runsOn: []`, and the pre-rename names kept the
+  // boxes. Every arm scoped to CHECKED_UNITS — which filters on a NON-EMPTY runsOn — therefore asked
+  // systemd about sixteen names that mostly named nothing and reported "0 active; 16 at rest", while
+  // four services ran under names no entry claimed. Measured on the test box 2026-09-07.
+  //
+  // This needs NO knowledge of which box it is running on, which is what makes it the right shape: an
+  // entry saying a unit runs on no box is contradicted by that unit running HERE, wherever here is.
+  // The mirror — declared for a box and absent from it — cannot be judged without a box identity this
+  // tree does not carry, and is reported as information rather than as a verdict.
+  const orphanSet = new Set(orphaned);
+  const runningButDeclaredNowhere = liveBases.filter((u) => orphanSet.has(u)).sort();
+
   // THE RATCHET THAT MAKES THIS FILE'S OWN DEFECT UNREPRESENTABLE. An entry with no tracked file states
   // a fact about the tree, and until the lookup went repo-wide it was a fact nothing could check —
   // client-mcp, client-mcp-apikey and trademark-artifacts-http each declared "no tracked file, and here
@@ -571,6 +593,11 @@ export function unitInventoryVerdict({
     faults.push(`${undeclared.length} live unit(s) the repo does not declare: ${undeclared.join(", ")}. `
       + "A unit nothing declares is compared against nothing and reported by nothing — add it to "
       + "driver/unit-inventory.mjs, tracked or with the reason it is not.");
+  }
+  if (runningButDeclaredNowhere.length) {
+    faults.push(`${runningButDeclaredNowhere.join(", ")} — ${runningButDeclaredNowhere.length} unit(s) are `
+      + `RUNNING on this box while their inventory entry declares runsOn: [], so every check scoped to `
+      + `the declared list is judging a population that excludes them`);
   }
   if (misdeclared.length) {
     faults.push(`${misdeclared.length} entr(y/ies) claim NO tracked file while a unit file of that name is `

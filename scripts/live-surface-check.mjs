@@ -236,7 +236,7 @@ function serviceClones() {
   const out = [];
   let reached = 0, lastErr = null;
   for (const u of units) {
-    let wd = null, active = null, type = null, since = null, mainPid = null, fragment = null;
+    let wd = null, active = null, type = null, since = null, mainPid = null, fragment = null, load = null;
     try {
       // — `Type` and `StateChangeTimestamp` ride along on a call that was already being made. Both
       // are for the MESSAGE, never for the verdict: Type tells a reader whether an `activating` unit is a
@@ -249,7 +249,7 @@ function serviceClones() {
       // field that looks like it names the tree is the one field that does not.
       const shown = execFileSync("systemctl", ["--user", "show", u,
         "-p", "WorkingDirectory", "-p", "ActiveState", "-p", "Type", "-p", "StateChangeTimestamp",
-        "-p", "MainPID", "-p", "FragmentPath"],
+        "-p", "MainPID", "-p", "FragmentPath", "-p", "LoadState"],
         { encoding: "utf8", env, stdio: ["ignore", "pipe", "pipe"] });
       // `show` answers for a unit that does not exist too (ActiveState=inactive), so a PARSED answer is
       // proof the bus was reachable — which is exactly the fact the old catch destroyed.
@@ -262,6 +262,10 @@ function serviceClones() {
         if (k === "StateChangeTimestamp") since = v.join("=") || null;
         if (k === "MainPID") mainPid = v.join("=") || null;
         if (k === "FragmentPath") fragment = v.join("=") || null;
+        // `LoadState` is the discriminator the comment above names and nothing acted on: `not-found`
+        // means this deployment DECLARES a unit that does not exist on this box — a defect in the
+        // declaration, not a unit at rest. Both used to arrive here as `ActiveState=inactive`.
+        if (k === "LoadState") load = v.join("=") || null;
       }
     } catch (e) { lastErr = String(e?.stderr || e?.message || e).replace(/\s+/g, " ").trim().slice(0, 160); }
 
@@ -318,12 +322,12 @@ function serviceClones() {
     // attributed is a gap, and the reason names both halves.
     if (!chosen.clone) {
       const idle = !wd && !pid;
-      out.push({ unit: u, active, type, since, clone: null, head: null, source: null,
+      out.push({ unit: u, active, load, type, since, clone: null, head: null, source: null,
         unreadable: idle ? null : chosen.why });
       continue;
     }
     const head = gitTry(chosen.clone, "rev-parse", "HEAD");
-    out.push({ unit: u, active, type, since, clone: chosen.clone, source: chosen.source,
+    out.push({ unit: u, active, load, type, since, clone: chosen.clone, source: chosen.source,
       disagreement: chosen.disagreement,
       head: head.ok ? head.out : null,
       unreadable: head.ok ? null : `git could not read HEAD in ${chosen.clone}: ${head.err}` });

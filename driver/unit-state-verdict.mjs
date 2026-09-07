@@ -138,15 +138,23 @@ export function unitsActiveVerdict({ units, probe }) {
   // where the hourly deploy has just restarted every long-running service. Scope names one thing, the
   // state vocabulary of the FAULT branch above. Transitional units are named in the messages here so
   // they are never swallowed; they are counted as up nowhere.
+  // A unit this inventory declares can be absent from THIS box for a legitimate reason: the inventory
+  // spans prod and test, so on the test box every prod-only entry reports `LoadState=not-found`. So the
+  // count is INFORMATION in the message and never a verdict of its own — a warn here would fire on every
+  // run of the test box and be ignored by the second week. The finding that matters is the mirror of it
+  // and lives in unitInventoryVerdict: a unit RUNNING here whose entry claims it runs on no box.
+  const absentHere = (units ?? []).filter((u) => u.load === "not-found").length;
+  const notHere = absentHere ? `; ${absentHere} declared unit(s) do not exist on this box` : "";
+
   const activeCount = (units ?? []).filter((u) => u.active === "active").length;
   const alsoSeen = (by.transitional.length ? `; ${by.transitional.length} starting or stopping — ${by.transitional.map(label).join(", ")}` : "")
     + (by["at-rest"].length ? `; ${by["at-rest"].length} at rest` : "");
 
   if (activeCount === 0)
     return { state: "skip", message: "systemd --user answered and reported 0 active units — nothing was probed, "
-      + `which is not the same as nothing being wrong${alsoSeen}` };
+      + `which is not the same as nothing being wrong${alsoSeen}${notHere}` };
 
-  return { state: "pass", message: `${activeCount} active`
+  return { state: "pass", message: `${activeCount} active${notHere}`
     + (by.transitional.length ? `; ${by.transitional.length} starting or stopping — ${by.transitional.map(label).join(", ")}, which is a unit doing its job, not a fault` : "")
     + (by["at-rest"].length ? `; ${by["at-rest"].length} at rest` : "") };
 }
