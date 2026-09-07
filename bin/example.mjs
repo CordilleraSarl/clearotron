@@ -40,7 +40,7 @@ import "../shared/env-local.mjs";   // step 4 / — FIRST: this program read a
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, statSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { invoke } from "../shared/invocation.mjs";   // — the printed command is resolved once, for the reader who is actually standing there
-import { join, resolve, dirname, sep } from "node:path";
+import { basename, dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { BRAND } from "../shared/brand.mjs";   // — the installer's own name, from the tenant seam
@@ -100,11 +100,26 @@ const DEMO_ROOT = join(REPO, "demo");
 // name is PRINTED below rather than assumed, because "the demo" is about to mean one of several.
 const wanted = flag("--product");
 const children = demoChildren(DEMO_ROOT);
-const sampleDir = resolve(
-  flag("--run-dir")
-  ?? (wanted ? join(DEMO_ROOT, wanted) : (children[0] ? join(DEMO_ROOT, children[0]) : DEMO_ROOT)),
-);
-if (!isFrozen(sampleDir)) {
+
+// ── ALL OF THEM, UNLESS THE CALLER NARROWED IT (tracker issue 277) ──────────────────────────────────
+//
+// This used to replay `children[0]` and stop. The package ships one finished report per product, and a
+// first-time reader met one of them with nothing on screen saying the other three existed — so three
+// quarters of what was shipped was reachable only by someone who already knew to ask for it. The owner's
+// ruling is that they auto-load: "it should auto-load since it is NOT obvious these runs are there unless
+// you know about it."
+//
+// `--product` and `--run-dir` still narrow to one, because "show me just this one" is a real thing to
+// want. Neither given now means every product this tree ships, in the container's own order.
+const sampleDirs = flag("--run-dir")
+  ? [resolve(flag("--run-dir"))]
+  : wanted
+    ? [resolve(join(DEMO_ROOT, wanted))]
+    : children.map((c) => resolve(join(DEMO_ROOT, c)));
+// The refusal below is about ONE directory, and with nothing shipped there is no directory to name — so
+// the container itself is what it looks at, which is what it always did when `demo/` was empty.
+const sampleDir = sampleDirs[0] ?? resolve(DEMO_ROOT);
+if (!sampleDirs.length || !isFrozen(sampleDir)) {
   // AN ABSENCE IS A FINDING, AND IT NAMES WHAT IT LOOKED AT. This exits 1 and always has; tracker issue
   // 2193 reported it exiting 0, which did not reproduce at v0.1.0 or at main's tip. An arm pins it.
   die(
@@ -128,10 +143,17 @@ if (!isFrozen(sampleDir)) {
 // PUBLISHING WRITES A RECEIPT INTO THE RUN DIRECTORY, and `demo/` is tracked — so a reader who only READ
 // the demo came back to a dirty checkout. `publishSource` is the one definition of that rule, shared with
 // the launcher, which seeds the pool from the same container on every `--demo` start.
-const publishFrom = publishSource(sampleDir, { repoRoot: REPO });
-
-const meta = JSON.parse(readFileSync(join(sampleDir, "meta.json"), "utf8"));
-if (!meta?.runId) die(`example: ${join(sampleDir, "meta.json")} names no runId — it is not a frozen example manifest.`);
+// EVERY ONE THAT WAS ASKED FOR IS READ BEFORE ANY IS PUBLISHED, so a manifest missing a runId is a
+// refusal about that demo by name rather than a partial pool nobody can account for.
+const samples = sampleDirs.map((dir) => {
+  const manifest = join(dir, "meta.json");
+  if (!isFrozen(dir)) die(`demo: ${dir} is not a frozen demo — it holds no meta.json and lane entry file.`);
+  const m = JSON.parse(readFileSync(manifest, "utf8"));
+  if (!m?.runId) die(`example: ${manifest} names no runId — it is not a frozen example manifest.`);
+  return { dir, meta: m, publishFrom: publishSource(dir, { repoRoot: REPO }), name: basename(dir) };
+});
+const publishFrom = samples[0].publishFrom;
+const meta = samples[0].meta;
 
 // ── 2. the pool guard ────────────────────────────────────────────────────────────────────────────────
 // Resolve through symlinks. A $HOME that resolves inside the archive is exactly the shape a `===` test
@@ -192,19 +214,38 @@ if (existsSync(poolRoot) && !statSync(poolRoot).isDirectory()) die(`demo: ${pool
 
 // ── 3. replay ────────────────────────────────────────────────────────────────────────────────────────
 console.log(`\n  ${BRAND.name} ${BRAND.product.toLowerCase()} — demo\n`);
-console.log(`  sample:  ${sampleDir}`);
+console.log(samples.length === 1
+  ? `  sample:  ${samples[0].dir}`
+  : `  samples: ${samples.length} — ${samples.map((x) => x.name).join(", ")}`);
 console.log(`  pool:    ${poolRoot}\n`);
 
 mkdirSync(poolRoot, { recursive: true });
 const { republishRun } = await import(join(REPO, "driver", "publish", "report-registry.mjs"));
-let published;
-try {
-  // poolUrl "" on purpose: the report's own link block is for a deployment that serves the pool at a
-  // public URL. This one is served from this process, at a port picked below.
-  published = await republishRun({ runId: meta.runId, meta, pool: poolRoot, poolUrl: "", runDir: join(publishFrom, "run") });
-} catch (e) {
-  die(`demo: replaying the sample failed: ${String(e?.message ?? e)}`);
+
+// ── ONE FAILURE MUST NOT COST THE OTHERS, AND MUST NOT BE A QUIET COUNT (tracker issue 277) ─────────
+//
+// Publishing stopped at the first error, which was right when there was one demo and is wrong now: a
+// reader whose knockout capture is unreadable should still get the other three, and should be TOLD which
+// one is missing. "3 published" with no other line is the shape this repository calls a silent count —
+// the number is true and the reader cannot tell it is short.
+//
+// The failures are collected and reported together at the end, and the process exits non-zero, because a
+// demo that came up missing a quarter of itself is not a success however good the three look.
+const results = [];
+const failures = [];
+for (const s0 of samples) {
+  try {
+    // poolUrl "" on purpose: the report's own link block is for a deployment that serves the pool at a
+    // public URL. This one is served from this process, at a port picked below.
+    results.push({ ...s0, published: await republishRun({ runId: s0.meta.runId, meta: s0.meta, pool: poolRoot, poolUrl: "", runDir: join(s0.publishFrom, "run") }) });
+  } catch (e) {
+    failures.push({ name: s0.name, why: String(e?.message ?? e) });
+  }
 }
+if (!results.length) {
+  die(`demo: no demo could be replayed.`, "", ...failures.map((f) => `  ${f.name}: ${f.why}`));
+}
+const published = results[0].published;
 
 // THE LABEL. The reader is about to look at a document that reads like advice about a real mark. It is
 // not, and the demo says so before the browser opens rather than in a footnote nobody reaches.
@@ -227,18 +268,34 @@ console.log("  re-rendered from its artifacts. It is an example, not advice.\n")
 //
 // The third branch is the point: a lane whose publisher reports no count says so. This line printed a
 // bare "?" to the knockout — a could-not-look wearing the costume of a number.
-const spine =
-  Number.isFinite(published.counts?.findings)
-    ? `${published.counts.findings} finding(s) recorded in the run's audit spine; the report shows
+// PER LANE, FOR EVERY DEMO — not for the first one with the rest reduced to a product name. The three
+// branches below are the whole point of this sentence: two lanes count different populations and a third
+// counts none, and printing one lane's number beside four reports would state the wrong population three
+// times.
+const spineOf = (pub) =>
+  Number.isFinite(pub.counts?.findings)
+    ? `${pub.counts.findings} finding(s) recorded in the run's audit spine; the report shows
              the ones it retains`
-    : Number.isFinite(published.receipts?.findings)
-      ? `${published.receipts.findings} finding(s) with citations traced to this run's own held
-             evidence, on ${published.receipts.citing}/${published.receipts.marks} mark(s)`
+    : Number.isFinite(pub.receipts?.findings)
+      ? `${pub.receipts.findings} finding(s) with citations traced to this run's own held
+             evidence, on ${pub.receipts.citing}/${pub.receipts.marks} mark(s)`
       : `this lane's publisher reported no finding count — the report itself is the record`;
-console.log(`  published: ${published.runId}  (${spine})`);
+for (const r of results) console.log(`  published: ${r.published.runId}\n             ${r.name} — ${spineOf(r.published)}`);
+if (results.length > 1) console.log(`\n  ${results.length} demo reports are published and listed — one per product.`);
+// LOUD, AND ON STDERR, AND NON-ZERO. Said after the successes so a reader sees what they DID get first,
+// and cannot mistake the run for a clean one.
+if (failures.length) {
+  console.error(`\n  ${failures.length} of ${samples.length} demo(s) could NOT be replayed:`);
+  for (const f of failures) console.error(`    ${f.name}: ${f.why}`);
+  console.error(`  The portal below lists the ${results.length} that published. This exits non-zero.`);
+  process.exitCode = 1;
+}
 
 if (has("--once")) {
-  console.log(`\n  report: ${join(poolRoot, meta.runId, "report.html")}`);
+  // EVERY REPORT THAT WAS PUBLISHED, not the first one. Naming one of four here is the same defect as
+  // publishing one of four: the reader is handed a path and has no way to learn the others exist.
+  console.log("");
+  for (const r of results) console.log(`  report: ${join(poolRoot, r.published.runId, "report.html")}`);
   //, criterion 5 — SAY WHAT WAS CREATED, ON EVERY PATH THAT CREATES SOMETHING.
   //
   // The portal path below prints this and `--once` did not, so the one invocation a reader is most
@@ -251,7 +308,11 @@ if (has("--once")) {
   // does — worse than silence, because it reads as an answer.
   const created = flag("--pool") ? poolRoot : demoBase;
   console.log(`  Removing it later is one directory:  rm -rf ${created}\n`);
-  process.exit(0);
+  // NOT A BARE ZERO. A demo that failed to replay one of its four sets `exitCode` above, and exiting 0
+  // here would discard it — printing the failure and then reporting success, which is the shape this
+  // change exists to remove. `--once` is also the invocation a script is most likely to use, so it is
+  // the one where a swallowed code does the most damage.
+  process.exit(process.exitCode ?? 0);
 }
 
 /**

@@ -105,12 +105,20 @@ export function frozenSamples(examplesDir) {
  */
 export async function seedPool({ pool, examplesDir, republish }) {
   const existing = poolRunIds(pool);
-  if (existing.length) {
-    // Named with the count, not just refused. "It did not seed" and "it did not seed BECAUSE there are
-    // already 14 runs here" are the same non-event to the code and different facts to a reader.
-    return { seeded: [], skipped: `the pool already holds ${existing.length} run(s)`, problems: [] };
-  }
-
+  // ── A POOL THAT ALREADY HOLDS SOMETHING IS TOPPED UP, NOT SKIPPED (tracker issue 277) ──────────────
+  //
+  // This used to return early on any non-empty pool. That was invisible while `demo/` shipped one child:
+  // seeding one and seeding all were the same act. When the other three landed, every box seeded before
+  // that day kept its single demo through every upgrade, because the pool was no longer empty and this
+  // returned without looking at what the package now carried.
+  //
+  // DEMOS ARE PACKAGE CONTENT, NOT USER DATA, so the package's set is the one that should be there. What
+  // is already published is left exactly as it is — this adds what is missing and removes nothing, so a
+  // pool holding a run this package does not ship keeps it.
+  //
+  // AND IT IS ONLY EVER A DEMO POOL. `bin/start.mjs` calls this inside its `--demo` branch alone; a real
+  // install is told its archive is empty and pointed at the demo command. Nothing here can put an example
+  // into a pool holding a customer's work, and that gate is the reason this can top up safely at all.
   const { samples, problems } = frozenSamples(examplesDir);
   if (!samples.length) {
     // The empty archive is now the SYMPTOM of something, and this is where the something is named.
@@ -118,11 +126,13 @@ export async function seedPool({ pool, examplesDir, republish }) {
   }
 
   const seeded = [];
+  const already = [];
   const failures = [];
   for (const s of samples) {
-    // Belt and braces against a partial pool: the emptiness check above already means nothing is here,
-    // but a sample list carrying the same runId twice would otherwise overwrite silently.
+    // A sample list carrying the same runId twice would otherwise overwrite silently.
     if (seeded.includes(s.meta.runId)) { failures.push(`${s.name}: runId ${s.meta.runId} appears twice under ${examplesDir}`); continue; }
+    // Already published: left alone, and NAMED. Silence here is what the old early return produced.
+    if (existing.includes(s.meta.runId)) { already.push(s.meta.runId); continue; }
     try {
       // poolUrl "" for the same reason the demo passes it: the report's link block addresses a
       // deployment that serves the pool at a public URL, and this one is served from this machine.
@@ -133,5 +143,10 @@ export async function seedPool({ pool, examplesDir, republish }) {
       failures.push(`${s.name}: ${String(e?.message ?? e)}`);
     }
   }
-  return { seeded, skipped: null, problems: [...problems, ...failures] };
+  // `skipped` still carries a sentence when there was nothing to add, because "seeded 0" and "seeded 0
+  // BECAUSE all four were already here" are the same number and different facts.
+  const skipped = !seeded.length && already.length
+    ? `the pool already holds all ${already.length} example(s) this package ships`
+    : null;
+  return { seeded, already, skipped, problems: [...problems, ...failures] };
 }
