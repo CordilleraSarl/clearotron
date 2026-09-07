@@ -80,7 +80,7 @@ test("2148 the client door IS placed now, and the superseded ruling is named", (
   // the door WAS the consent that opened client-account access, so an installer placing it would have
   // made that consent meaningless. That reasoning was right under that ruling.
   //
-  // He superseded it knowingly (, settled point 2): the door auto-starts and THE
+  // He superseded it knowingly (settled point 2): the door auto-starts and THE
   // PER-ACCOUNT KEY IS THE GATE, not whether a process runs. A door with no key issued refuses
   // everything — the same protection by a mechanism that does not depend on a reader finding a verb.
   const { dir, placed } = apply();

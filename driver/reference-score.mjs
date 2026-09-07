@@ -235,7 +235,7 @@ export function matchesReference(ref, candidate, { sameOwner = false } = {}) {
     return null;
   }
 
-  // 3 — ALIAS. splits this in two, on the same precedent as rules 1 and 4 (, "the scorer calls
+  // 3 — ALIAS. splits this in two, on the same precedent as rules 1 and 4 ("the scorer calls
   // a different owner's longer mark a hit"). This rule was the one cross-owner escape left open.
   //
   // FULL IDENTITY — one name on each side and they are the same name — is NOT a relaxation and stays

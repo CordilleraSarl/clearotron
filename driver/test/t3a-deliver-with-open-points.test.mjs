@@ -23,7 +23,7 @@ const pipelineSrc = () => readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8")
 const review = (verdict, ...flags) =>
   [verdict, "", "## Flags", "", ...flags.map((f, i) => `${i + 1}. [kind: fact] [on: -] ${f}`)].join("\n");
 
-// ✕ RE-AIMED, NOT DELETED (, T3b). This arm used to be titled "renders only where the
+// ✕ RE-AIMED, NOT DELETED (T3b). This arm used to be titled "renders only where the
 // reviewer refused to sign" and its second assertion gave the reason: CONDITIONAL flags already reach the
 // corrective pass, so widening would rewrite reports that ship correctly. The owner overruled that on
 // 2026-08-26 — an objection the run tried and failed to fix prints whatever the verdict — and the arm
@@ -152,7 +152,7 @@ test("T3b: BLOCKING keeps every cited ground AND gains the unfixed ones, deduped
     + "twice reads it as two problems");
 });
 
-// ── THE CALL SITE, NOT THE FUNCTION (, T3b) ──────────────────────────────────────
+// ── THE CALL SITE, NOT THE FUNCTION (T3b) ──────────────────────────────────────
 //
 // Every arm above hands `buildReviewerOpenPointsSection` its rows directly. That leaves the half this
 // change actually added UNDRIVEN: assembly reading `corrections-applied.json` off the run dir and

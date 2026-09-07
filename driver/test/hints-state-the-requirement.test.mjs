@@ -18,7 +18,7 @@
 //
 // It is worth pinning anyway, because a corrective dispatch whose opening contradicts its own remedy
 // spends the seat's attention reconciling them — and this is the one text in the engine we call the fix
-// for exactly this class of defect (,: the instruction asserted the wrong thing).
+// for exactly this class of defect (: the instruction asserted the wrong thing).
 //
 // These tests compose through `warmPatchMessage`, the shipped composer, not through a prefix retyped
 // here. If the template ever stops saying "ensure", they stop testing the right thing loudly rather than

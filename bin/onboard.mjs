@@ -141,7 +141,7 @@ const PROBE_PROVIDERS = has("--probe-providers");
 const PROBE_CONNECTOR = has("--probe-connector");
 
 // ── output ───────────────────────────────────────────────────────────────────────────────────────────
-// WEIGHT WHERE THE MEANING IS (, owner ruling 2026-08-31). Every line here used to
+// WEIGHT WHERE THE MEANING IS (owner ruling 2026-08-31). Every line here used to
 // be the same weight, which is why the passphrase and the coverage reason both disappeared into their
 // surroundings — two defects on that issue that are formatting defects wearing other clothes.
 //
@@ -2182,7 +2182,7 @@ export async function runCheck() {
     const doorEnvKnown = !hosted || unitEnv?.known === true;
     const doorEnv = hosted && unitEnv?.known === true ? unitEnv.env : process.env;
     if (!doorEnvKnown) warn(couldNotDetermine("CLIENT_MCP_ACCOUNT_ACCESS", unitEnv));
-    // THE PORT AND ITS ALLOW-LIST ARE ONE SETTING, AND NOTHING SAID SO (, Hera's
+    // THE PORT AND ITS ALLOW-LIST ARE ONE SETTING, AND NOTHING SAID SO (Hera's
     // operator pass). `start` derives CLIENT_MCP_ALLOWED_HOSTS from the port it resolved, so moving the
     // port THROUGH start works. Moving it in the env file the units load does not: the door binds the
     // new port and then answers "403 Invalid Host header" on every request, because the allow-list still
@@ -2247,7 +2247,7 @@ export async function runCheck() {
       problem("a valid key is on record but NO revocation list is configured (TRADEMARK_MCP_TOKEN_DENYLIST unset) "
         + `— \`${invoke("disconnect")}\` could not actually revoke it. \`${invoke("connect")}\` arms one; set the variable or reconnect.`);
     }
-    // THE PUBLISHED ADDRESS, AND WHETHER IT ANSWERS (, acceptance 2). Reported here
+    // THE PUBLISHED ADDRESS, AND WHETHER IT ANSWERS (acceptance 2). Reported here
     // rather than beside the unit, because the unit running and the address being reachable are
     // different facts and the second is the one a client depends on.
     const { clientDoorReachability } = await import(pathToFileURL(join(REPO, "shared", "client-door.mjs")).href);
@@ -2511,7 +2511,7 @@ try {
   // is DERIVED: the engines from ENGINE_BINARIES, the search vendors from the same adapter tables the
   // prompts loop over, each wearing its own table row's where-to-get line. A hand-kept copy here would
   // be the SERPAPI defect again, one screen earlier. Everything is skippable; the list says so.
-  // THE BANNER — once, on entry, named (, owner ruling 2026-08-31). Not on every
+  // THE BANNER — once, on entry, named (owner ruling 2026-08-31). Not on every
   // command: a banner every verb prints is how a product becomes tiresome to use twice. It sits here
   // rather than at the top of main() so that `--check`, which writes nothing and is run repeatedly,
   // does not wear it either.
@@ -3269,13 +3269,13 @@ try {
   // They are `clearotron` verbs now for a second reason as well: from an INSTALLED package there is
   // no `npm run example` to type — no package.json, no scripts block — so the old advice was not
   // merely misordered there, it was unrunnable.
-  // ONE COMMAND, AND WHAT TO EXPECT FROM IT (, the owner's point 10). This screen
+  // ONE COMMAND, AND WHAT TO EXPECT FROM IT (the owner's point 10). This screen
   // offered three, each with a sentence, and a reader who has just answered a page of questions is
   // being asked to make one more choice at the moment they most want to be told what to do. Three
   // equally-weighted options is not generosity; it is the decision handed back.
   //
   // `start` is the one, because it is the product — the other two were already ordered behind it for
-  // that reason (, when this screen offered `npm run example` and a raw pipeline invocation and
+  // that reason (when this screen offered `npm run example` and a raw pipeline invocation and
   // named the product nowhere). They keep their place as an afterthought line rather than an option.
   // THE COMMAND LINE STAYS A PLAIN LITERAL, DELIBERATELY. onboard-wizard.test.mjs reads this screen
   // STATICALLY — it extracts every say() literal and asserts which command leads — and that guard is

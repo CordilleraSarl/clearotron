@@ -651,7 +651,7 @@ export function parseVerdict(content) {
  * `UPSTREAM_STALE_REPAIR["narrative-refutation"]` re-runs the reviewer at DELIVERY time, long after the
  * verdict gate. Its caller re-reads what the repaired stage wrote — findings.json, the case-law layer —
  * but not `senior-eye-review.md`, which is the one artifact that stage authors. So the reviewer could
- * refuse to sign at 00:52 and the run would deliver on the verdict it settled at 00:22 (,
+ * refuse to sign at 00:52 and the run would deliver on the verdict it settled at 00:22 (
  * `bf21580e`, 2026-08-23: a registration date contradicting the fetched record reached the client).
  *
  * ONE DIRECTION ONLY, and that is deliberate. This returns the file's verdict when it is STRICTER than

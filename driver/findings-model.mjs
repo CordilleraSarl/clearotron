@@ -813,7 +813,7 @@ const onlyKeys = (obj, allowed, tokenFor) => {
  *   | finding_bears_on_invalid:<ordinal> | finding_disposition_invalid:<v> | finding_impact_invalid:<ordinal>
  *   | finding_deadline_invalid:<ordinal> | finding_deadline_key_unknown:<key> | finding_deadline_date_missing:<ordinal>
  *   | findings_context_note_invalid | findings_context_note_key_unknown:<key> | findings_context_note_type_invalid:<v>
- *   | findings_net_chained:<ordinal>   (, v7 only — PLURAL on purpose; see validateNetShape)
+ *   | findings_net_chained:<ordinal>   (v7 only — PLURAL on purpose; see validateNetShape)
  * (the composite>=3 NON-EMPTY-source gate for use_check/own_rights is raised by the caller in verify.mjs —
  *  this parser only enforces SHAPE: object / key-allowlist / source-is-a-string. Both fields are OPTIONAL.)
  *
@@ -1642,7 +1642,7 @@ function validateBand(f, ord, mode) {
 //   · FACTS AND ASSESSMENT, NEVER AN ACTION PRESCRIPTION. The reader is a lawyer who layers their own
 //     advice on top. The house prose contract already rules prescriptions out everywhere; on this field
 //     it is checked, because it is the sentence most likely to drift into advice.
-//   · A CONCLUSION, NEVER A CHAIN (, 2026-08-06). See validateNetShape below for the ruling, the two
+//   · A CONCLUSION, NEVER A CHAIN (2026-08-06). See validateNetShape below for the ruling, the two
 //     mechanical markers it refuses, and why it is the one net rule that had to be version-gated.
 //   · STILL NO LENGTH MAXIMUM, and now for a second reason. It never came from the validator (a model
 //     told to be brief writes a shorter sentence and drops a fact), and build 1.3 deletes the renderer's

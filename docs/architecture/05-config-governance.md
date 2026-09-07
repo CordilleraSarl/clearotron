@@ -97,7 +97,7 @@ product doc.
 | **Client allowlist** (`{version, grants:[{email, customer}]}`) | T2 | git + PR on the `CLIENT_ACCESS_MAP` file | see §2 row 4 | LIVE, file-only; surfaced read-only at `admin.access` |
 | **Ops tokens** (scope ops/user, verbs, accounts, TTL) | T4 | `mint-token.mjs` CLI; jti denylist file | operator-held tokens | LIVE, CLI |
 
-## 4b. The install surface names (,)
+## 4b. The install surface names ()
 
 The variables a **customer or installer** ever types carry the product’s own prefix. They are listed
 by name in §5 below and in the upgrade table in INSTALL.md.
@@ -319,7 +319,7 @@ systemd, writes no heartbeat, and must keep saying "waiting to start" rather tha
 repo** — `git grep process.env.CLIENT_ACCESS` here returns nothing, so they are governed here and
 never appear in the audit).
 
-**Which identity source the portal runs (,) — T4, and it is chosen by name, never inferred.**
+**Which identity source the portal runs () — T4, and it is chosen by name, never inferred.**
 `PORTAL_AUTH_MODE` selects the door: unset or `auth-proxy` (the default for a hosted deployment) means
 any login system in front that authenticates in the browser and forwards a verifiable JWT per request.
 **Any OIDC or JWT proxy is a choice per deployment** — for example Cloudflare Access, which is not a

@@ -371,7 +371,7 @@ test("#243 — BOTH card renderers read the typed field; compactCard was the one
 // The parser refuses the chain at schema_version 7. This row judges the RECORD instead of the version it
 // declares, for the two paths a version-gated throw cannot reach — the lenient/quarantine parse (which
 // validateNetShape exempts by design) and a down-level emission that would disengage the gate silently.
-// It was the whole gate until FINDINGS_SCHEMA_VERSION reached 7 (, 2026-08-06); it is now the half
+// It was the whole gate until FINDINGS_SCHEMA_VERSION reached 7 (2026-08-06); it is now the half
 // of it that a version-gated throw can never cover.
 // (contentModelChecks is already imported by the block above — ESM hoists it.)
 

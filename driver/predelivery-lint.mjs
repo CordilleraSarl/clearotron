@@ -1547,7 +1547,7 @@ export function markAssessmentChecks({ markAssessment, expected }) {
 }
 
 /**
- * The DECLARED CONTRACT VERSION (, moved out of contentModelChecks by).
+ * The DECLARED CONTRACT VERSION (moved out of contentModelChecks by).
  *
  * It used to live inside contentModelChecks, whose first line is `if (!expected) return []`, where
  * `expected` is derived as `schema_version >= 5`. So the one check written to report a down-level

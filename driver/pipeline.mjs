@@ -2293,7 +2293,7 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
   // Repair-first D, hotfixed 2026-07-06 (The Quiet Trail e2e): the gate now applies the round's own
   // doctrine to itself — A REPAIRABLE CONDITION NEVER TERMINATES A RUN.
   //   - `repairable` issues (OR-stack width/name length): log-only from ANY provenance — the executor
-  //     chunks oversized stacks at runtime (, proven live). The 2026-07-06 failure was exactly this
+  //     chunks oversized stacks at runtime (proven live). The 2026-07-06 failure was exactly this
   //     gate throwing on a 674-name entry INHERITED byte-identical from a pre-split July-3 store via
   //     the recall-monotone extension — a run the executor would have completed.
   //   - `unexecutable` issues (empty terms, unknown predicate, non-numeric classes, dangling guards):
@@ -3176,7 +3176,7 @@ function plannedChannelsFor(P) {
 
 // ── part 2 — THE CHANNEL COMPARISON, AT SEARCH-STAGE EXIT ────────────────────────────────────
 //
-// Part 1 shipped the comparison and wired the plan into it (,), and it runs at PUBLISH —
+// Part 1 shipped the comparison and wired the plan into it (), and it runs at PUBLISH —
 // where the rest of the carry trace is derived, about two hours after the sweep it describes. The issue
 // asked whether plan-vs-executed is knowable earlier. It is: the merged grid has just been written and
 // the spec has been on disk since dispatch, so both inputs exist at this instant and neither changes.
@@ -7222,7 +7222,7 @@ export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), wit
   // Terminal punctuation on the ask BEFORE the subject join. This was written to work around a cut —
   // actYouConditions ended its bound line at the first '.' or ':' before whitespace, and the subject's
   // own "(re:" qualified, so a period-less ask (the synthesis prompt demands one sentence but nothing
-  // enforces terminal punctuation) delivered as a mangled "…terms (re". THAT CUT IS GONE (, owner
+  // enforces terminal punctuation) delivered as a mangled "…terms (re". THAT CUT IS GONE (owner
   // ruling 2026-08-10): the conditions box now renders the ask and its subject whole. The punctuation
   // stays because it was always the right output — "Instruct counsel on the joined-script forms (re: X)"
   // reads as one run-on sentence, and the period is what separates the ask from the driver's own note.
@@ -7332,7 +7332,7 @@ export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), wit
 // senior-eye-review.md through `parseVerdict` and `parseCorrections` — the SHIPPED parsers, the same
 // ones the corrective ladder builds its worklist from — and never asks a model to restate them.
 //
-// ── NOT BLOCKING-ONLY ANY MORE — OWNER DECISION, 2026-08-26 (, T3b) ─────────────
+// ── NOT BLOCKING-ONLY ANY MORE — OWNER DECISION, 2026-08-26 (T3b) ─────────────
 //
 // This section used to return "" on every verdict but BLOCKING, and the reason it gave was that
 // CONDITIONAL reviews already deliver and their flags already reach the corrective pass. That is true
@@ -14136,7 +14136,7 @@ async function pipelineInner(job, opts = {}) {
               // thousands of lines earlier, at the gate. Nothing re-reads it, so a reviewer that refuses to
               // sign DURING this repair is written to disk and never heard.
               //
-              // Measured on `bf21580e` (, round of 2026-08-23): verdict-2 CONDITIONAL at 00:22:11;
+              // Measured on `bf21580e` (round of 2026-08-23): verdict-2 CONDITIONAL at 00:22:11;
               // `delivery-stale-repair` at 00:38:35 naming narrative-refutation; the review landing BLOCKING
               // at 00:52:01; delivered. The narrative printed a registration date of 1 March 2011 against a
               // fetched record reading 25 February 2011 — the reviewer said so, in the document nobody read.

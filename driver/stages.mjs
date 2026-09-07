@@ -1391,7 +1391,7 @@ export const STAGES = {
     // review round.
     // `completeness` (A7, 2026-07-31) arms verify.mjs's variantCompletenessGaps floor the same way —
     // its own key, so an archived output minted under the romanisation prompt alone keeps its verdict.
-    // `term_shape` (, 2026-08-08) arms variantTermShapeGaps: a manifest value carrying markdown
+    // `term_shape` (2026-08-08) arms variantTermShapeGaps: a manifest value carrying markdown
     // emphasis or a `, etc.` enumeration compiles to a nil search that reads as CLEAN, and the plan-side
     // screen stops the search without ever telling this stage. Its own key for the same reason as above.
     contract: { romanization: 1, completeness: 1, term_shape: 1 },
@@ -2218,7 +2218,7 @@ export const STAGES = {
       inScope
         ? `IN-SCOPE NICE CLASSES = [${inScope}]. Pin EVERY ${supplementalLane ? "proposal" : "register_enumerate"} to these — pass nice_classes:[${inScope}] AND in_scope_classes:[${inScope}] on every ${supplementalLane ? "proposal" : "call"}. ${supplementalLane ? "A proposal" : "An enumerate"} WITHOUT nice_classes (all-class default / starts_with / ends_with / phonetic / fuzzy) is FORBIDDEN: it pulls an all-45-class crowd that floods the band and times the stage out — it is not breadth. A bare saturated element with no class filter is a COUNT-ONLY descriptor (register_search limit:1), never enumerated. ONLY exception: the exact-IDENTICAL cross-class merch check (nice_classes:[25], match_mode:exact).`
         : `Pin EVERY ${supplementalLane ? "proposal" : "register_enumerate"} to the matter's in-scope Nice classes (from the matter frame) via nice_classes — an unscoped all-class ${supplementalLane ? "proposal" : "enumerate"} is FORBIDDEN (it floods the band + times out the stage). Only exception: the exact-identical cross-class merch check (nice_classes:[25]).`,
-      // CROWD BOUND (, a REMOVAL): gate the dangerous-category substring enumeration on the class-scoped
+      // CROWD BOUND (a REMOVAL): gate the dangerous-category substring enumeration on the class-scoped
       // RESULT (tractable vs crowd), not the manifest label — a slice that returns a crowd is terminal (stop the
       // per-major/phonetic fan-out). On a crowd, WRITE a block only for the distinctive anchor (material); for a
       // stripped common component (GREAT/OUTDOORS) write none — saturation-probe already counted it (immaterial).
@@ -2606,7 +2606,7 @@ export const STAGES = {
       // (digestDispatchExtra appends coverageFormBrief, which enumerates every row with its computed
       // identifiers), and the tool's every answer re-lists what is outstanding.
       `Your Coverage ledger is a set of driver-computed obligations, enumerated in this dispatch (the coverage block below, with a row_id per row). Record a "status" and a "reason" on EVERY row ONLY by calling the \`record_coverage\` tool — the driver validates each row as it arrives, holds the record itself, and renders both the ## Coverage ledger table and the coverage JSON from it. Never write or edit any coverage file, and do NOT write a ## Coverage ledger table into your findings — nothing you hand-write in either place is read. Each row is discharged only by ITSELF: a status on one row never accounts for another row's slice. If this dispatch carries NO coverage block, the run's coverage form is a driver-written declaration of absence — a complete answer; there is nothing for you to record.`,
-      // ── CONVERTED (, conversion 11). A bare write-return naming the findings path
+      // ── CONVERTED (conversion 11). A bare write-return naming the findings path
       // stood here
       // and the sections above dictated a document skeleton the seat typed and nine parsers read back.
       // What survives is every sentence that says what a JUDGMENT MEANS — the relevance gate, the

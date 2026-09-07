@@ -191,7 +191,7 @@ test('THE PAIR HELD APART: what the frame loads is never what the link goes to',
 
 // ── the cross-mark assessment ────────────────────────────────────────────────────────────────────────
 //
-// The grouped page carries the paragraph that reads the names against each other (, owner ruling
+// The grouped page carries the paragraph that reads the names against each other (owner ruling
 // 2026-08-26). The server answers it for ANY run that has one, because `report.md` is written on every
 // run and a 404 for some of them would report an absence that is not true. Which view renders it is this
 // screen's question, and it has exactly one rule.

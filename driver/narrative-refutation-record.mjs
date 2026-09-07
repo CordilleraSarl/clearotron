@@ -179,7 +179,7 @@ export function acceptRefutation(params, { receiptPresent = false } = {}) {
   // ADDED rather than repurposed: changing what `flags` means would move every reader silently, and a
   // field with two meanings across a version boundary is the shape this repo keeps finding.
   //
-  // WHY THE ARRAY HAS TO LEAVE THIS FUNCTION AT ALL (, T3b). The corrective pass builds
+  // WHY THE ARRAY HAS TO LEAVE THIS FUNCTION AT ALL (T3b). The corrective pass builds
   // its worklist by RE-PARSING the rendered markdown through `parseCorrections`. That parse is exactly
   // what the conversion removed the need for — the flags were typed values a moment earlier — and it can
   // miss, which is the defect the whole conversion exists to close. A consumer that reads the accepted
@@ -209,7 +209,7 @@ export function recordRefutation(runDir, received, { now = () => new Date().toIS
   let captureFailed = cap.failed;
   const capture = (outcome) => { if (!mergeCapture(cap.path, outcome)) captureFailed ??= "the outcome could not be merged into the capture"; };
 
-  // ✕ CAPTURED TWICE, AND THE SECOND WRITE IS THE POINT (, T3b).
+  // ✕ CAPTURED TWICE, AND THE SECOND WRITE IS THE POINT (T3b).
   //
   // The capture ran ONCE, before validation, to a fixed filename — so a refused call and an accepted one
   // left byte-identical evidence and nothing on disk said which. On a turn where the seat sends a

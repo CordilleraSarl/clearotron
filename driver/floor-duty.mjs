@@ -93,7 +93,7 @@ export const FLOOR_DUTY_STAGE = "placement-inquiry";
  * the chance to place the floor or name it with a ground.
  *
  * SAFE TO RE-RUN, and that is measured rather than hoped: the placement form is UNIONED into an
- * accumulator before it is judged and `placements.json` is rendered from the accumulator (, after an
+ * accumulator before it is judged and `placements.json` is rendered from the accumulator (after an
  * incident where a killed attempt's finished tiers were thrown away). A second pass merges; it does not
  * start from nothing.
  *

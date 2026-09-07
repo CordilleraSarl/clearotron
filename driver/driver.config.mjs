@@ -229,7 +229,7 @@ export const config = {
   /**
    * Every skills root handed to the engine's file tools (overlay + base, deduped).
    *
-   * NAMED FOR WHAT IT IS, not what we want it to be (, 2026-08-14): it was `skillsReadRoots`, and the
+   * NAMED FOR WHAT IT IS, not what we want it to be (2026-08-14): it was `skillsReadRoots`, and the
    * engine passes it to `--add-dir`, which has no read-only form. The read-only INTENT is real and is
    * enforced by the deny-hook at driver/engine/deny-authority-write.mjs — not by this name.
    */

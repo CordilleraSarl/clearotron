@@ -171,7 +171,7 @@ test("2176-F26 a door that CANNOT bind is reported as not running — driven, no
   const { spawn } = await import("node:child_process");
   const { mkdtempSync, writeFileSync } = await import("node:fs");
   const { tmpdir } = await import("node:os");
-  // The squatter asks the KERNEL for the port rather than naming one (, same class as
+  // The squatter asks the KERNEL for the port rather than naming one (same class as
   // the arm above). Here there is no race left at all: this arm's whole purpose is to hold the port, so
   // binding :0 and reading back what it was given is both collision-free and a more honest expression of
   // "a port something else already has".

@@ -24,7 +24,7 @@
 //
 // `_driver/` is the sharpest inclusion. It holds the frozen plan, the grid specs, the plan-execution
 // receipt, the form sidecars and `run.jsonl` — and it sits inside `runDir`, which is granted READ+WRITE
-// by design. Every diagnosis run on 2026-08-14 (,) read those files as ground
+// by design. Every diagnosis run on 2026-08-14 () read those files as ground
 // truth. A seat writing them would be forging the record the engine is judged by.
 //
 // `profilesDir` is DEFENSIVE, not a live hole: it appears in no `--add-dir`, so the file tools cannot

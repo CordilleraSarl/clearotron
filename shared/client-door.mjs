@@ -263,7 +263,7 @@ export function describeDoorState(door, {
         + "so this says the door is set up, not that it answers" };
   }
   if (door.active === false) {
-    // NAME THE STATE, AND NEVER ASSERT AN EMPTY PORT WITHOUT LOOKING (, Hera).
+    // NAME THE STATE, AND NEVER ASSERT AN EMPTY PORT WITHOUT LOOKING (Hera).
     //
     // This said "nothing is listening on the client door" from `active === false` alone, while a probe
     // of that very port had already been taken and passed in — and read nowhere on this branch. With a
@@ -477,7 +477,7 @@ export function enablePlan({ env = {}, address, identity, accessFile = null, por
     }
   }
 
-  // ── THE PORT IS CHECKED, NOT ASSUMED (, and measured 2026-08-31) ──────────────────────────
+  // ── THE PORT IS CHECKED, NOT ASSUMED (and measured 2026-08-31) ──────────────────────────
   //
   // A default port is a guess about which instance you are. Driving this verb on a shared box found
   // 18811 ALREADY HELD by another user's client face: the unit was installed, started, and crash-looped,
@@ -987,7 +987,7 @@ export function applyDisablePlan(plan, io) {
   return { done };
 }
 
-// ── IS THE PUBLISHED ADDRESS REAL? (, acceptance 2) ────────────────────────────────
+// ── IS THE PUBLISHED ADDRESS REAL? (acceptance 2) ────────────────────────────────
 //
 // The criterion is deliberate about which question this answers: "doctor reports the door's
 // REACHABILITY, not its configuration — the address is set AND answers from outside the box. An address

@@ -286,7 +286,7 @@ if (missingDeps.length) {
   process.exit(1);
 }
 
-// ── THE SUITE CANNOT READ THE OPERATOR'S CONFIGURATION, IN OR OUT (,) ──────────────────
+// ── THE SUITE CANNOT READ THE OPERATOR'S CONFIGURATION, IN OR OUT () ──────────────────
 //
 // TWO DIRECTIONS, ONE SEAT. The guard below refuses when a data-plane ROOT escapes; these two stop the
 // suite reading the operator's configuration and stop it writing into their data plane. Same wrapper,

@@ -206,7 +206,7 @@ test("#1390 a config with NO register server still builds without a run — the 
 const LEDGER_VENDOR_NAME = /CORSEARCH_(CALL|RECORD)_LOG|corsearch-(calls|records)\.jsonl/;
 const RESOLVER = "providers/_shared/ledger-path.mjs";   // must name them: it is what maps old to new
 
-// EMPTY, AND THAT IS THE POINT (, second pass). It carried one entry: a historical note inside
+// EMPTY, AND THAT IS THE POINT (second pass). It carried one entry: a historical note inside
 // driver/pipeline.mjs that named the old env var, left alone because another agent was mid-flight in
 // that file. The `tallyCorsearchCalls` rename took the line with it, exactly as the note above said it
 // would, so the allowlist has nothing left to excuse.

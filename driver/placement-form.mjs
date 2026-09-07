@@ -13,7 +13,7 @@
 // fails `placementmodel_missing` while the structured sibling `placements.json` is absent — and the seat
 // wrote the prose first (on disk that run: md at 09:08:58, json at 09:15:50, by attempt 2). The kill
 // landed in the gap between the two files, so 31 minutes of finished work were discarded and re-derived
-// from scratch. Raising the wall (, `638f885`) made that less likely; it did not make finished work
+// from scratch. Raising the wall (`638f885`) made that less likely; it did not make finished work
 // survivable, and this does.
 //
 // THE CURE IS AUTHORSHIP, NOT A GUARD. The seat stops writing `placements.json`. The driver renders it

@@ -439,7 +439,7 @@ export const BACKGROUND_EXCLUDED = Object.freeze({
   // that included it would have made that consent meaningless. That reasoning was right under that
   // ruling and the exclusion was not an oversight.
   //
-  // The owner superseded it knowingly (, settled point 2): the door auto-starts with
+  // The owner superseded it knowingly (settled point 2): the door auto-starts with
   // the product and the per-account key is the gate. It is now in SERVER_INSTALL_SET — which IS
   // BACKGROUND_UNITS — and the pin/exclusion partition means it cannot be in both, so the row is gone
   // rather than reworded. `--background` writes its settings from `enablePlan` before installing it.
@@ -957,7 +957,7 @@ if (isMain) {
     catch (e) { fatal(`could not create the grants file at ${paths.grants} (${String(e?.message ?? e)}).`); }
     say(`  created        ${paths.grants} (an empty roster — one staff address, no clients yet)`);
   }
-  // THE REVOCATION LIST, CREATED — not merely named (, bb8's F14).
+  // THE REVOCATION LIST, CREATED — not merely named (bb8's F14).
   //
   // The door is started with TRADEMARK_MCP_TOKEN_DENYLIST pointing here, and since this branch
   // `isRevoked` fails CLOSED on an unreadable file — it refuses the token rather than assuming it was
@@ -1468,7 +1468,7 @@ if (isMain) {
     }
     // enable --now on an ALREADY-ACTIVE unit is a no-op, so a refresh would leave the old process
     // running the old files. EVERY long-running unit in the set is restarted, not a hardcoded pair
-    // (, Hera's review): the pair here matched the pair the health check used three
+    // (Hera's review): the pair here matched the pair the health check used three
     // lines down, and carried the same stale justification about "the oneshot and its triggers". There
     // is no oneshot in the set. So a refresh restarted the portal and the engine door onto new code and
     // left the worker and the client door on the old — while the check below now reports all four up,

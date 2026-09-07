@@ -237,7 +237,7 @@ export function absolutizeSkillRefs(message, skillsDir, resolve = null) {
 //
 // ANTHROPIC-ONLY, AND MEASURED RATHER THAN ASSUMED. The obvious next step is to apply the same rule to
 // openai-agent's `--add-dir` (buildCodexArgs pushes the identical root), and it would accomplish nothing:
-// that engine spawns with `cwd = resolveSpawnCwd({cwd, runDir})` — the RUN DIR (, deliberately) —
+// that engine spawns with `cwd = resolveSpawnCwd({cwd, runDir})` — the RUN DIR (deliberately) —
 // under `--sandbox workspace-write`, which makes cwd a writable root on its own. Dropping the flag there
 // would remove a grant the seat still holds by another door and let this comment claim an isolation the
 // engine does not have. Codex-side isolation is a cwd question, and a separate decision.

@@ -5,7 +5,7 @@
 //
 // Three findings from one stranger install, and they are one class: prose that was true of the box the
 // authors were sitting at. The same class as the units that hardcoded the authors' own checkout name
-// (,) and the wizard that named five retired variables.
+// () and the wizard that named five retired variables.
 //
 // The dangerous one is, and it is the reason this file exists rather than three review comments:
 // §7 told a reader the HTTP MCP face is read-only and cannot spend, and then told them to publish it.

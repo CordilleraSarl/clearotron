@@ -465,7 +465,7 @@ export const KO_STAGES = {
       `IT IS THE SHORTER DIGEST ABOVE THE PER-MARK ASSESSMENTS, not a rival to them. A reader opens this`,
       `to decide which name to read about; the mark's own page is where the full read lives. Keep it`,
       `tighter than any one mark's assessment.`,
-      // ── THE RETURN IS A CALL, NOT A FILE (, item B) ────────────────────────────
+      // ── THE RETURN IS A CALL, NOT A FILE (item B) ────────────────────────────
       //
       // THE DISPATCH NAMES NO PATH, and on this stage that is not merely the house pattern. This seat
       // spent 2026-08 writing its chunk through a Bash redirect because the Write tool was already

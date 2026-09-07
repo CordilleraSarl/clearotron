@@ -1736,7 +1736,7 @@ test("doc-54: '[Time-critical]' never reaches a delivered conditions line, and n
   assert.equal(conds.length, 5, "every condition survives — the 5th is not silently dropped");
   assert.ok(conds.every((c) => !/\[Time-critical\]/.test(c)), "the tag is stripped even when authored inside '**…**'");
   assert.ok(conds.every((c) => !/…/.test(c)), "no ellipsis truncation on any condition");
-  // RE-POINTED AGAIN (, 2026-08-10). This read `/^Identify the publisher of The Unbeatable Path$/`
+  // RE-POINTED AGAIN (2026-08-10). This read `/^Identify the publisher of The Unbeatable Path$/`
   // — the bold lead ALONE was the head, and the clause after it was dropped. That was one of three
   // cuts in this function and the owner ruled all three out: the box renders the ask as authored. The
   // doc-54 property is untouched and is what this test is for — the tag never reaches a client line,

@@ -92,7 +92,7 @@ export function arm1Unaccounted(stages) {
 /**
  * ARM 2 — a declared element no validator token speaks about. A RATCHET, not a red build.
  *
- * The owner's ruling (, 2026-08-13) is four conditions, and they are the ruling rather than
+ * The owner's ruling (2026-08-13) is four conditions, and they are the ruling rather than
  * suggestions: the baseline is PER STAGE and carries the ELEMENT NAMES (it is the audit object, not a
  * bare count); CI fails on any per-stage INCREASE so a new hole cannot hide behind a fix elsewhere; arm 1
  * is exempt from the ratchet; and wave 1's moves are expected to move the number.

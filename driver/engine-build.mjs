@@ -87,7 +87,7 @@ export function resetEngineCommit() { cached = undefined; source = undefined; re
 // So attribution has been a reflog reconstruction: join a checkout's reflog against each run's
 // `startedAt`. That reconstruction expires with the reflog, cannot survive a re-clone, is wrong for
 // every run made while the checkout sat detached, and mixes a local-time reflog against UTC stamps.
-// It decided three certifications in one morning (,) and produced two near-miss
+// It decided three certifications in one morning () and produced two near-miss
 // wrong rulings in two days.
 //
 // A SIBLING, NOT A WIDER RETURN TYPE. `engineCommit()` keeps its bare-string contract exactly:

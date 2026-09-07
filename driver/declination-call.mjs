@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // declination-call.mjs — a record that reached the findings surface leaves it BY A STATED DECISION.
 //
-// ── THE DEFECT THIS CLOSES (, and 's half of the same seam) ────────────────────────────────
+// ── THE DEFECT THIS CLOSES (and 's half of the same seam) ────────────────────────────────
 //
 // `record-carry.json` on R2 round `e48f7056` read `unreasoned: 0` and was telling the truth in the weak
 // sense only: every drop had a LABEL, and on 102 of them the label was inferred from where the record

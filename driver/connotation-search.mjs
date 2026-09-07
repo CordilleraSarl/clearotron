@@ -18,7 +18,7 @@
 //      citing the receipt. A PR/reputational section that ASSERTS a clean result must additionally cite a
 //      Connotation-search source line. A searched-clean (recorded queries, empty results) passes.
 //
-// ARMING (, owner's ruling 2026-08-04 — "arm on data, never on prose"): the disposition join, the
+// ARMING (owner's ruling 2026-08-04 — "arm on data, never on prose"): the disposition join, the
 // recurrence floor and the did-the-search-run check all arm on `opts.recorded` being passed, which the
 // caller keys on the grid-spec's `connotation.disposition_required` stamp — a structural fact the DRIVER
 // writes and no model can redraft away. They used to arm on a phrase match over the model's own prose
@@ -1917,7 +1917,7 @@ export function obligationRows(ob, { spotChecks = QUOTE_SPOT_CHECKS } = {}) {
 /**
  * Find meaning-sweep obligations the seat has not ruled on, and a dictated sweep that never ran.
  *
- * ARMED ON DATA, NEVER ON PROSE (, owner's ruling 2026-08-04). `opts.recorded` being passed is the
+ * ARMED ON DATA, NEVER ON PROSE (owner's ruling 2026-08-04). `opts.recorded` being passed is the
  * whole arming condition and it is UNCHANGED by — the caller keys it on the grid-spec's own
  * `connotation.disposition_required` stamp, a structural fact the DRIVER writes and no model can redraft
  * away. Two consequences, both deliberate and both load-bearing:

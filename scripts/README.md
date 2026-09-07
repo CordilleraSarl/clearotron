@@ -70,7 +70,7 @@ returns `stale-probe` and refuses, where at one zoom level it used to hand back 
 were a measurement. Same six failures, one honest reason. The obstacle was one level up:
 `--virtual-time-budget` services the outer page and starves that subframe.
 
-**That rewrite has landed (, 2026-08-21) and the check measures.** It drives Chrome on real time
+**That rewrite has landed (2026-08-21) and the check measures.** It drives Chrome on real time
 and the page POSTs its state to a loopback server when it is ready, so the harness is *told* rather than
 guessing with a budget; a page that never signals fails by name and can no longer be mistaken for a
 measurement. Baseline before: four consecutive runs gave 4, 6, 1 and 4 failures, with the settle loop

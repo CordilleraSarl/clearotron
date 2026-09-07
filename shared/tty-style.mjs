@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // tty-style.mjs — weight where the meaning is, and NOTHING when the reader is not a terminal.
 //
-// ── why this exists (, owner ruling 2026-08-31) ────────────────────────────────────
+// ── why this exists (owner ruling 2026-08-31) ────────────────────────────────────
 //
 // "new terminals can do things like bold and colours etc — good formatting impresses people because it's
 // made clear to them someone put the time in." That is a product argument, not a decorative one: setup

@@ -39,7 +39,7 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 // The seat-record reader, imported rather than re-derived: "does this run have work in it" must be the
-// SAME question the retry instrument asks, or two tools disagree about one fact (,).
+// SAME question the retry instrument asks, or two tools disagree about one fact ().
 import { dispatchRows } from "../driver/seat-attempts.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
 

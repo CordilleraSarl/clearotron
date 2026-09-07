@@ -390,7 +390,7 @@ export const E3_BACKLOG = [
     kind: "dictated-line-shape",
     // ── (a) THE ORIGINAL SUBJECT WAS DELETED BY DESIGN — DISCHARGED, NOT FAILED. This row quoted
     // "ARM 2 — a run with NO coverage form … Write one row per coverage unit | Coverage unit | Status |
-    // Reason |". M6 (, 2026-08-14) deleted the code arm and (cdf38676) deleted this
+    // Reason |". M6 (2026-08-14) deleted the code arm and (cdf38676) deleted this
     // skill-file half two days later — exactly the both-sites deletion this row's removedByMove
     // demanded. `git grep "ARM 2"` on the skill file returns nothing. Its evidence sat in
     // E3_EVIDENCE_UNRESOLVED from the day the checker landed; per the ruling the row is
@@ -804,7 +804,7 @@ export const E3_UNPLANNED = E3_BACKLOG.filter((e) => e.removedByMove === "NOTHIN
  * The registry's failure mode was that a MOVE could delete a dictation and leave the row: the count
  * then overstates the work, and the next agent spends a conversion slot on a hole already filled. Two
  * instances existed when this was written — M6's register-digest arm (deleted 2026-08-14, row survived)
- * and synthesis's disposition list (, deleted the same morning by the agent adding this check).
+ * and synthesis's disposition list (deleted the same morning by the agent adding this check).
  * Both are gone; this list is what remains.
  *
  * A BLANKET ASSERTION WAS THE OBVIOUS BUILD AND IT WOULD HAVE BEEN NOISE. Measured before choosing:

@@ -26,7 +26,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 // index header, nav brand, Excel metadata, connector instructions). Env-overridable per deployment —
 // branding is tenant config, not code. Read once at import (deployment-static, like the systemd env).
 //
-// CASING: THE VALUE IS PROSE, SO IT IS CAPITALISED (, superseding ruling 2026-08-20). The rule is
+// CASING: THE VALUE IS PROSE, SO IT IS CAPITALISED (superseding ruling 2026-08-20). The rule is
 // Clearotron in prose and UI, `clearotron` in config values, commands, binary names and identifiers.
 // This DEFAULT is prose in every place it lands — report and portal <title>, the pool index header,
 // Excel `creator`, the connector steps, "You reached X" — so it takes the capital. The VARIABLE that
@@ -481,7 +481,7 @@ export const REPORT_ROOT_DARK_EXPLICIT = darkBlock(REPORT_DARK_TOKENS, REPORT_DA
 // the pack (#17150f ground, #ece5d8 text) and error colours with no home at all. Two copies of a palette
 // is how the light palettes drifted before PALETTE existed.
 //
-// THE GATING IS `[data-theme]` ONLY (, correcting what shipped). The portal's doctrine is
+// THE GATING IS `[data-theme]` ONLY (correcting what shipped). The portal's doctrine is
 // that a CLIENT surface never follows the OS colour preference: first view is always light, and dark
 // arrives only from a choice the visitor made themselves. kept the media query on the argument
 // that these pages have no toggle, so removing it would leave a first-time visitor no route to dark —

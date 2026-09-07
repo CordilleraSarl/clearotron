@@ -1391,7 +1391,7 @@ export function makePortalService({
           controls: { stop: { available: stopControl.available !== false,
             reason: principal.role === "staff" ? (stopControl.reason ?? null) : null } } } };
       }
-      // /portal/api/about — the AGPL §13 source offer (,)
+      // /portal/api/about — the AGPL §13 source offer ()
       //
       // UNAUTHENTICATED, DELIBERATELY, and it is the only route here that is. §13 obliges an operator
       // running a modified version to offer the source to the users interacting with it — the offer is
@@ -2655,7 +2655,7 @@ export function makePortalService({
         // report every switch as off on a box where they are on — and this page, of all pages, would be
         // believed.
         if (parts[2] === "config" && method === "GET") {
-          // THE AUTH ROW IS READ LIVE, HERE, and not from the snapshot (, ruled 2026-08-21).
+          // THE AUTH ROW IS READ LIVE, HERE, and not from the snapshot (ruled 2026-08-21).
           // Everything else on this page is RENDERED from the snapshot. The reason recorded here used
           // to be "because this process has no engine environment", and that has not been true since
           // the owner's 2026-08-26 one-configuration-per-server-box ruling gave every unit the same

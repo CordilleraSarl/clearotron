@@ -678,7 +678,7 @@ export function productAvailability(policy, { built = BUILT, registerCanCount = 
  */
 export const UNAVAILABLE_NOTE = {
   unbuilt: "Not part of the current release.",
-  // `demo` IS DELETED FROM THIS MAP (, owner ruling 2026-08-31 14:47), and
+  // `demo` IS DELETED FROM THIS MAP (owner ruling 2026-08-31 14:47), and
   // deleting it is what makes the reversal structural rather than a filter somebody can undo by
   // accident. Every client-facing surface renders a product's refusal as `UNAVAILABLE_NOTE[cause]`;
   // while a sentence sat here for a demo, the greyed control was one `return "demo"` away from coming
@@ -692,7 +692,7 @@ export const UNAVAILABLE_NOTE = {
   // a baked-in provider name, no CLEAROTRON_* string in scope here, and it says the one thing a reader can
   // act on — this is a coverage limit, so a newer version will not fix it.
   //
-  // `register-not-worldwide` IS DELETED FROM THIS MAP (, owner ruling
+  // `register-not-worldwide` IS DELETED FROM THIS MAP (owner ruling
   // 2026-08-31), and deleting it is what makes the ruling structural rather than a filter somebody can
   // reverse by accident. Every client-facing surface renders a product's refusal as
   // `UNAVAILABLE_NOTE[cause]`; while a sentence sat here for that cause, the ruling held only as long as

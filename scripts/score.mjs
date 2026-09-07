@@ -159,7 +159,7 @@ function findingsOf(runDir) {
       // Its finding rows carry no typed source at all: a `type` ("Active Business", "Famous Brand") that
       // is free model prose, and a `url`. The class is not missing by accident — the lane's register
       // component is a two-predicate count of the mark string and structurally cannot reach a register
-      // family (, ruled and closed). Everything it PUBLISHES comes off the common-law screen.
+      // family (ruled and closed). Everything it PUBLISHES comes off the common-law screen.
       //
       // So the class is asserted here rather than guessed from `type`, and it is asserted in the
       // direction that cannot overstate recall: a register gold entry is never satisfied by a knockout

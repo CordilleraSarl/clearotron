@@ -44,7 +44,7 @@ test("a CLIENT principal is briefed, and with the pack that matches what it can 
 });
 
 test("no principal gets the CLIENT pack wrongly — ops gets its own, staff still gets none", () => {
-  // THIS ARM CHANGED DELIBERATELY (, owner ruling 7). It used to assert that ops got
+  // THIS ARM CHANGED DELIBERATELY (owner ruling 7). It used to assert that ops got
   // NOTHING, and that was right while ops meant OUR agents — briefed separately by the Claude Code
   // plugin, and reaching an engineering tool set the client pack does not describe.
   //

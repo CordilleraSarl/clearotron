@@ -52,7 +52,7 @@
 //
 // Whether `/` opens a regex or divides is decided by the previous significant character, which is the
 // standard heuristic and is exact for everything in this tree (a `/` after a value divides; after
-// `( , = : [ ! & | ? { } ; return` it opens a pattern).
+// `(= : [ ! & | ? { } ; return` it opens a pattern).
 const REGEX_PRECEDERS = new Set(["(", ",", "=", ":", "[", "!", "&", "|", "?", "{", "}", ";", "\n", "+", "-", "*", "%", "<", ">", "~", "^"]);
 
 /**

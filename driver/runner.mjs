@@ -389,7 +389,7 @@ export function retireMarker(procPath, destPath, what = "") {   // exported for 
     // <dest> is on disk. On this branch the rename did NOT happen, so <dest> was never created by this
     // call, and the parenthetical named the outcome the caller intended rather than the one an operator
     // would find. It is the single line an operator reads to discover where a job went, and it was
-    // pointing at a file that is not there. The reproduction (, PR) ends with the queue dir
+    // pointing at a file that is not there. The reproduction (PR) ends with the queue dir
     // holding `job-race.processing` and `job-race.processing.pid` and NO `.json` at all, under a log
     // line that said the orphan had been returned to the queue.
     note(`[runner] ${basename(procPath)} was already retired by another runner — this call did NOT create ${basename(destPath)} (it wanted: ${what || "retire the marker"}); the marker is in whatever state that runner left it`);

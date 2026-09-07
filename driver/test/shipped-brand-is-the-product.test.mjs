@@ -50,7 +50,7 @@ test("#1376 arm A — the shipped defaults name the PRODUCT, and the tagline def
   const src = read("shared/brand.mjs");
   const literal = src.match(/export const BRAND = \{([\s\S]*?)\n\};/)?.[1];
   assert.ok(literal, "the BRAND object literal is still declared the way this arm reads it");
-  // Capital C: the superseding casing ruling (, 2026-08-20) is Clearotron in prose and UI,
+  // Capital C: the superseding casing ruling (2026-08-20) is Clearotron in prose and UI,
   // `clearotron` in config values, commands and identifiers. This default is the NAME stamped into
   // titles, chrome and Excel metadata — prose — so it carries the capital. Pinned, because the first
   // ruling said lowercase-always and a sweep run under it would land back here.

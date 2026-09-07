@@ -50,7 +50,7 @@ import { randomUUID } from "node:crypto";
 
 // ── WHICH RUNS A WHAT-IF MAY TOUCH — ONE DECLARATION, TWO READERS ───────────────────────────────────
 //
-// FOUND BY DRIVING IT (, 2026-09-03). There were THREE copies of this question and
+// FOUND BY DRIVING IT (2026-09-03). There were THREE copies of this question and
 // they did not agree. `whatIfPlan` and `whatIfEnqueue` refused `location === "archive" || state ===
 // "delivered"`; the worker refused the presence of any of `.delivered`, `.failed`, `.cancelled`,
 // `.cancel`. A run that had FAILED passed the first two and was refused by the third — so a client could

@@ -64,7 +64,7 @@ export function isRevoked(jti, { denylistPath = process.env.TRADEMARK_MCP_TOKEN_
  *
  * NOT AN AUTHENTICATOR. This parses without verifying, which is safe for exactly one job: reading the
  * revocation handle out of our own `mintToken` output so `clearotron connect` can write it down
- * (, owner ruling: record key IDs, never secrets). Anything answering "is this token
+ * (owner ruling: record key IDs, never secrets). Anything answering "is this token
  * good" goes through `verifyToken`; a caller handing this function a token from the WIRE is the defect.
  *
  * Returns null rather than throwing on a malformed string — the caller is recording, and a record of
@@ -302,7 +302,7 @@ export const USER_ARTIFACTS = new Set(["report"]);
 //   SEALED  MODEL IDENTITY, BILLED COUNTS, and THE ENGINE'S JUDGMENT OF ITS OWN OUTPUT. Which model tier
 //           ran a stage and what it cost is the firm's cost structure, not an audit fact — and
 //           `withdrawn_reason` ("confabulated attribution") is an assessment of our own quality that the
-//           client has no counterpart for, already ruled un-forwardable (, scrub.mjs).
+//           client has no counterpart for, already ruled un-forwardable (scrub.mjs).
 //
 // That line is cheap to hold because the code had already drawn it: events.mjs says "Model identity is
 // deliberately NOT projected here: decision_timeline / run_changes are narrative surfaces", trace.mjs and

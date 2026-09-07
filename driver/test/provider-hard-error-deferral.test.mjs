@@ -10,7 +10,7 @@
 // else and its end of the ladder is a StageFailure. So one index having a bad day killed the run class
 // with the most slices, and nothing shipped.
 //
-// THE CONTRACT THIS MUST NOT WEAKEN (,). A clean can never ship over a slice the plan dictated
+// THE CONTRACT THIS MUST NOT WEAKEN (). A clean can never ship over a slice the plan dictated
 // and nothing ran. Two conditions keep that exactly as strong:
 //
 //   1. the provider must have ANSWERED — a band block stamped `error:true` carrying its own reason. A

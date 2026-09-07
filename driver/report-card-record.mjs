@@ -187,7 +187,7 @@ export function renderReportCard(model, finding, { registerLabel = "" } = {}) {
 // ── THE RISK READ IS A STRUCTURE, NOT A DICTATED HABIT ( D3) ─────────────────────────────────
 //
 // render.mjs suppresses the typed `legal_position` / `practical_position` pair on any card whose prose
-// already carries a "Risk assessment"-led bullet (, ONE ACCOUNT PER FACT). That gate reads a lead
+// already carries a "Risk assessment"-led bullet (ONE ACCOUNT PER FACT). That gate reads a lead
 // this stage's dispatch calls OPTIONAL and this acceptance never checked — the card contract's §L
 // requirement was a HABIT, in exactly the sense the card index was one before the driver bound it.
 //

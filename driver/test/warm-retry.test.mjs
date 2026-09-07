@@ -225,7 +225,7 @@ test("D1 warm eligibility: coverage_status_offenum warms, and its patch targets 
 });
 
 // ── The write-mode branch (E2E R2): a file that EXISTS is patched; a file never written is written whole ──
-// THE WITNESS MOVED, and the move is the point rather than an adjustment (, the same
+// THE WITNESS MOVED, and the move is the point rather than an adjustment (the same
 // shape recorded for blind-frame). This arm used `narrative.md` to witness the Edit branch. After
 // the writer's conversion no repair may name that file at all: the seat holds no Write and gateway's
 // warm-patch branch sends it back through `record_synthesis`. An arm that kept demanding the hand-write

@@ -75,7 +75,7 @@
 /** Where a unit is expected to be installed. "none" is a claim, not an absence — see ORPHANED below. */
 export const BOXES = Object.freeze(["prod", "test", "dev"]);
 
-// ── RESOLVED UNITS (, owner ruling 2026-08-25 — option B) ──────────────────────
+// ── RESOLVED UNITS (owner ruling 2026-08-25 — option B) ──────────────────────
 //
 // `resolved: [...]` names tracked files the INSTALLER rewrites before installing. Three units carry
 // `@NAME@` placeholders because configuration cannot reach them: a `.path` unit reads no environment at
@@ -209,7 +209,7 @@ export const UNIT_INVENTORY = Object.freeze([
     // are then enabled like anything else. This one is shipped and DELIBERATELY NOT INSTALLED BY ANY
     // INSTALL PATH — `clearotron start` neither installs nor starts it, and a rebuild must not either.
     //
-    // ── IT INSTALLS WITH THE PRODUCT SINCE 2026-09-03 (, settled point 2) ────────
+    // ── IT INSTALLS WITH THE PRODUCT SINCE 2026-09-03 (settled point 2) ────────
     //
     // Until then it was an orphan BY DESIGN: `clearotron connect` installed and started it on demand,
     // because starting it turned on client-account access and a unit that came up with everything else
@@ -546,7 +546,7 @@ export function unitInventoryVerdict({
   // reporting every production unit missing on a dev box is a false alarm, and it would train a reader
   // to skim this check. But an arm that did not run is not an arm that passed — this file's whole
   // thesis — so an unnameable box is STATED rather than silently skipped.
-  // ABSENT-AND-EXPECTED-TO-BE vs ABSENT-AND-SHOULD-NOT-BE (, criterion 3). A retired
+  // ABSENT-AND-EXPECTED-TO-BE vs ABSENT-AND-SHOULD-NOT-BE (criterion 3). A retired
   // unit that is gone from a box is the ruling taking effect, not drift; reporting it as a fault trains
   // a reader to skim the arm that would have caught a real one. Both are still REPORTED — the
   // distinction is which of them is a fault.

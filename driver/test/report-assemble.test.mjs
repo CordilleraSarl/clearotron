@@ -212,7 +212,7 @@ test("PR-3 buildOnlyYouSection: the ask's subject is CODE-JOINED from its ordina
 // punctuation on the ask BEFORE the subject; this drives the assembled lines through the real extractor
 // so the interaction can never regress uncovered again.
 //
-// RE-POINTED (, 2026-08-10). The cut is gone — it fired on punctuation rather than length, so an
+// RE-POINTED (2026-08-10). The cut is gone — it fired on punctuation rather than length, so an
 // ask naming a company shipped as "Obtain consent from Matchday, Inc". The punctuation normalisation
 // STAYS, because it was always the right output, and this test now records what the extractor returns
 // with nothing shortening it: the ask, its subject and its deadline, whole.

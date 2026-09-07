@@ -225,7 +225,7 @@ test("two concurrent runners over one dead claim → exactly one dispatch, one r
   // window. The queue is left with a recoverable `.processing` and nothing dispatched — which in
   // production is a delay, because the next activation re-claims it, and here was a red suite,
   // because both processes had exited and there was no next activation. That is what made this
-  // ~17% flake on a loaded box (, absorbing).
+  // ~17% flake on a loaded box (absorbing).
   //
   // So the run of the test now models what production has instead of hoping the schedule is kind.
   // Every safety assertion below is unchanged and unconditional, and they are what this test is for:

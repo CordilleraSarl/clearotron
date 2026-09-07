@@ -10,7 +10,7 @@
 //
 // ── WHY THIS FILE WAS REWRITTEN, AND IT IS THE WHOLE LESSON ─────────────────────────────────────────
 //
-// The first version of this guard (, 35c99792, 00:52) said it pinned "the RULE, not the path". It
+// The first version of this guard (35c99792, 00:52) said it pinned "the RULE, not the path". It
 // walked `stages.mjs` as SOURCE TEXT for two literal shapes — `out: (P) => P.<key>` and
 // `writeReturn(P.<key>)` — and flagged a declaration only when the declaration's own text contained
 // `join("_driver"`.

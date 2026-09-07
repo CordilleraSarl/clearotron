@@ -42,7 +42,7 @@ import { BRAND } from "../../shared/brand.mjs";   // — the operator name in th
 // whether to buy it.
 export const PLAN_CAVEAT = "Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction.";
 
-// THE INVERTED CAVEAT WENT WITH THE LEVEL (, 2026-08-06). A second caveat existed for one reason:
+// THE INVERTED CAVEAT WENT WITH THE LEVEL (2026-08-06). A second caveat existed for one reason:
 // register-only ran the halves the other way round, so "ratings reflect our common law assessment" would
 // have described an assessment that never ran. That level is retired and no resolution reaches this file
 // without one — a plan describes a run that WOULD start, and none of them can be register-only — so

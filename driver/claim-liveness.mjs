@@ -45,7 +45,7 @@ export function procStarttime(pid, readStat = undefined,
   { platform = process.platform, readPsStart = defaultReadPsStart } = {}) {
   // AN INJECTED READER IS THE CALLER'S STATEMENT ABOUT HOW TO READ, and it outranks the platform.
   //
-  // Measured on macOS (, the verification run): the arm that pins the field-22
+  // Measured on macOS (the verification run): the arm that pins the field-22
   // parse hands this function its own `readStat` and asserts the parse. With the platform deciding
   // first, that injection was silently ignored off Linux and the arm read `null` — the seam was there
   // and nothing went through it. A caller that supplies a reader is not asking which box this is.

@@ -3255,7 +3255,7 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
         : `Do not stop until the tool's answer reports nothing outstanding.`);
   }
   const sibling = repairSiblingName(lastFail, files);
-  // ── THE SIBLING BRANCH MUST NOT OUTRANK THE TOOL-WRITTEN ONE (, third conversion) ────────────
+  // ── THE SIBLING BRANCH MUST NOT OUTRANK THE TOOL-WRITTEN ONE (third conversion) ────────────
   //
   // This branch orders "Re-save the COMPLETE corrected JSON at <sibling>", which is a hand-write. For
   // frame-diff the sibling IS the tool-written artifact — `frame-diff.json`, with `frame-diff.md` as the
@@ -3317,7 +3317,7 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
   // "the turn wrote nothing" — the driver writes the file, so an absent model means the TOOL WAS NEVER
   // CALLED. `blindframe_*` means the call arrived and its values failed the parser. One remedy: call it.
   //
-  // THE TOKEN-FAMILY LIST IS GONE (, third conversion), and its removal is the root-cause half. It
+  // THE TOKEN-FAMILY LIST IS GONE (third conversion), and its removal is the root-cause half. It
   // read `/blindframe_|skeptic_/`, which is a second authoring of "which stages are converted" — one that
   // this conversion would have had to extend with `framediff_`, and the next one with its own prefix,
   // each time by somebody remembering. The right question is not which token fired but whether the

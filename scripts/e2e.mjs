@@ -60,7 +60,7 @@ import { matterLedgerPath } from "../driver/usage-ledger.mjs";
 import { probeWorker } from "../driver/queue-watch-probe.mjs";   // the drain this deployment actually has
 // Teardown asks whether a process is actually producing a run before it rewrites the record that says so.
 import { claimLivenessForCodename, claimForbidsDestruction } from "../driver/claim-liveness.mjs";
-// The store admission sweep (, moved here from a bundled-store CI test when the bundled scenarios
+// The store admission sweep (moved here from a bundled-store CI test when the bundled scenarios
 // were deleted): every job block in the configured store must be treated by the doors exactly the way
 // its scenario declares, and the check has to run where the store exists — CI cannot read it.
 import { validateJob } from "../driver/enqueue-schema.mjs";

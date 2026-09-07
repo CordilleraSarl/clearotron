@@ -38,7 +38,7 @@ const usage = (queueDirs) => accountUsage({ queueDirs, account: "petcary", now: 
 // ── One calculation, not two that agree today ──────────────────────────────────────────────────────
 
 test("the wall and the pre-check share ONE ledger-path function — the SAME function object", () => {
-  // Reference equality, not equal output: two copies that currently agree is the defect (,),
+  // Reference equality, not equal output: two copies that currently agree is the defect (),
   // and only identity can fail when someone reintroduces a second correct copy.
   assert.equal(fromRunner, fromLeaf, "runner.mjs and usage-ledger.mjs hold two ledger-path functions again");
 });

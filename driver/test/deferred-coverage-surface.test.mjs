@@ -15,7 +15,7 @@
 //
 // ── THE TWO FACTS THAT MUST NEVER FUSE ──────────────────────────────────────────────────────────────
 //
-//   deferredScope     the provider does not cover this territory AT ALL          (, here)
+//   deferredScope     the provider does not cover this territory AT ALL          (here)
 //   officeScope       the provider covers it and this DEPLOYMENT cannot reach it
 //
 // Different remedies — "switch provider" against "configure the member" — so an operator handed the
