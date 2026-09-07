@@ -2005,6 +2005,31 @@ test("264 the version commit answers the signature check, on every push and neve
   assert.match(step, /-f context=cla\b/, "the status is posted under a context that is not `cla`");
   assert.match(step, /-f state=success\b/, "the status is not a passing one");
 
+  // THE SHA COMES FROM THE REF, NOT FROM THE PULL REQUEST OBJECT. Measured 2026-09-07: the version
+  // commit landed at 17:04:00Z, this step read the pull request at 17:04:03Z, and the API handed back
+  // the PREVIOUS head — so the status went onto a commit that was no longer the head and the pull
+  // request stayed blocked. `head.sha` is a cached view of the branch; `git/ref/heads/<branch>` is the
+  // branch. Reading provenance and the branch NAME from the pull request is safe because neither moves.
+  assert.match(step, /git\/ref\/heads\//,
+    "the sha is not read from the branch ref — a cached `head.sha` lags the push this job just made, "
+    + "and the status then lands on a commit that is no longer the head");
+  // SCOPED TO THE COMMAND, not the step text. A bare negative over the whole step reds on prose: a
+  // sentence writing "the pull request's .head.sha field" would trip it, and today it passes only
+  // because the surrounding comment happens to spell it with a backtick. What must not come back is the
+  // FIELD being read, so the assertion is about the read.
+  assert.ok(!/--jq[^\n]*\.head\.sha/.test(step),
+    "the step still reads `head.sha` from the pull request object, which is the stale read this replaced");
+
+  // AND IT CHECKS THE BRANCH DID NOT MOVE UNDER IT. Which surface is authoritative is a mechanism I
+  // cannot prove from here, so the step does not depend on it: it re-reads after posting and refuses if
+  // the tip changed. Without this the failure mode is silent — exit zero with a sha in the log — which
+  // is how the first version survived a green run.
+  const post = step.slice(step.indexOf("-X POST"));
+  assert.match(post, /git\/ref\/heads\//,
+    "the step does not re-read the ref after posting, so a branch that moved mid-step is not noticed");
+  assert.match(post, /exit 1/,
+    "the step notices a moved branch and does not fail on it — the status is then on the wrong commit, silently");
+
   // ON EVERY PUSH, not only a dispatched cut. Provenance is true the moment the commit exists; gating
   // this on the dispatch would leave the same commit answered or unanswered according to history, and
   // the standing pull request would show four of five until somebody asked for a cut.
