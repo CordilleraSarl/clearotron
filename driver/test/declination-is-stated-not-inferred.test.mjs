@@ -305,7 +305,7 @@ test("the dictation names the tool's ACTUAL refusal, and no other — the drift 
 // for taking up space.
 
 test("a live record in an instructed class cannot be declined for want of room", () => {
-  const scope = { classes: [5, 42, 44], marks: ["BIODELPHIS"] };
+  const scope = { classes: [5, 42, 44], marks: ["BIOVELTRIN"] };
   const live = { mark: "OSLER DELPHI", status: "REGISTERED", classes: [1, 5, 9, 42] };
   const clash = contradictionFor("not-worth-the-line", live, scope);
   assert.ok(clash, "a live in-class record declined on economy must be refused");
@@ -319,7 +319,7 @@ test("a live record in an instructed class cannot be declined for want of room",
 test("EVERY OTHER REASON still passes on that same record — this is not a ban on declining it", () => {
   // The control that separates this from the refusal that was removed. If these start failing, the
   // change has become a class-overlap ban and the engine is deciding relatedness, which is not its call.
-  const scope = { classes: [5, 42, 44], marks: ["BIODELPHIS"] };
+  const scope = { classes: [5, 42, 44], marks: ["BIOVELTRIN"] };
   const live = { mark: "OSLER DELPHI", status: "REGISTERED", classes: [1, 5, 9, 42] };
   for (const reason of ["unrelated-goods", "off-field-not-major", "own-right", "duplicate-of-delivered"])
     assert.equal(contradictionFor(reason, live, scope), "",
@@ -327,7 +327,7 @@ test("EVERY OTHER REASON still passes on that same record — this is not a ban 
 });
 
 test("the refusal rests on BOTH facts, so a dead record and an out-of-class one still pass", () => {
-  const scope = { classes: [5, 42, 44], marks: ["BIODELPHIS"] };
+  const scope = { classes: [5, 42, 44], marks: ["BIOVELTRIN"] };
   // Not live: the rule is about a live right. An unknown status is not live either — the refusal must
   // rest on a fact, and "we never established it" is not one.
   for (const status of ["EXPIRED", "DEAD", "", null, "SOMETHING WE DO NOT KNOW"])
