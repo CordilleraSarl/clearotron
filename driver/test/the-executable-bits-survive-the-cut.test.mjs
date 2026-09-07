@@ -28,10 +28,9 @@
 // unrecorded fails too. One-directional would pass over the cut's inverse.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
+import { trackedIndexModes, skipReason } from "../../shared/tracked-files.mjs";
 
 const GUARD = "executable bits";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -64,18 +63,11 @@ const EXECUTABLE = [
 // Modes from the INDEX, not from disk. A working tree on a filesystem that does not carry the bit —
 // or a checkout made with a umask that dropped it — would answer for the machine rather than for what
 // ships, and what ships is the whole question here.
-const indexModes = () => {
-  const files = trackedFiles(GUARD, { root: ROOT });
-  if (files === null) return null;
-  const out = new Map();
-  const raw = execFileSync("git", ["ls-files", "-s"], { cwd: ROOT, encoding: "utf8", maxBuffer: 1 << 28 });
-  for (const line of raw.split("\n")) {
-    if (!line.trim()) continue;
-    const [meta, path] = line.split("\t");
-    if (path) out.set(path, meta.split(" ")[0]);
-  }
-  return out;
-};
+// ONE call, through the helper (tracker issue 235). This asked the helper for its skip contract and
+// then spawned git a second time, raw, for the modes. That was correct — the raw call sat behind the
+// null check — but it read exactly like an unguarded enumeration, and the guard that forbids those
+// cannot tell the difference. `trackedIndexModes` carries the mode and the skip together.
+const indexModes = () => trackedIndexModes(GUARD, { root: ROOT });
 
 test("every recorded executable is still executable in the index", (ctx) => {
   const modes = indexModes();

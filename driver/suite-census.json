@@ -2850,7 +2850,7 @@
         "production-dependencies.test.mjs": {
           "tests": 4,
           "asserts": 7,
-          "skips": 0,
+          "skips": 3,
           "todos": 0
         },
         "products.test.mjs": {
@@ -2988,7 +2988,7 @@
         "reading-the-demo-does-not-edit-the-repository.test.mjs": {
           "tests": 2,
           "asserts": 8,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "reason-cut-is-visible.test.mjs": {
@@ -4362,7 +4362,7 @@
         "the-reference-strip-left-sentences-unfinished.test.mjs": {
           "tests": 6,
           "asserts": 13,
-          "skips": 0,
+          "skips": 3,
           "todos": 0
         },
         "the-repair-order-and-the-tool-schema-agree.test.mjs": {

@@ -24,9 +24,11 @@ import { readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
+import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";   // tracker issue 235
 import { collect } from "../../scripts/third-party-notices.mjs";
 
 const REPO = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
+const GUARD = "production-dependencies";
 
 /** Every manifest that declares production dependencies shipped with the product. */
 const MANIFESTS = ["package.json", "driver/package.json", "portal-ui/package.json"];
@@ -54,14 +56,17 @@ function manifestDeps(rel) {
 
 /** Non-test source that ships. `.js` and `.ts` are in: providers carry non-test `.js`. */
 function shippedSources() {
-  const tracked = execFileSync("git", ["-C", REPO, "ls-files", "*.mjs", "*.js", "*.ts", "*.tsx"], {
-    encoding: "utf8", maxBuffer: 64 * 1024 * 1024,
-  }).split("\n").filter(Boolean);
+  // Through the helper (tracker issue 235): off a checkout, `execFileSync` THREW, and a source-zip
+  // reader met a stack trace about "not a git repository" instead of a suite that says it skipped.
+  // `null` here is that stated skip, and every caller must forward it rather than walk an empty list.
+  const tracked = trackedFiles(GUARD, { root: REPO, pathspec: ["*.mjs", "*.js", "*.ts", "*.tsx"] });
+  if (tracked === null) return null;
   return tracked.filter((f) => !/(^|\/)(test|tests|bench)\//.test(f) && !/\.test\.(mjs|ts|js|tsx)$/.test(f));
 }
 
-test("tracker issue 99 — every production dependency is imported by something that ships", () => {
+test("tracker issue 99 — every production dependency is imported by something that ships", (ctx) => {
   const sources = shippedSources();
+  if (sources === null) return ctx.skip(skipReason(GUARD));
   nonEmpty(sources, "no shipped sources were walked, so every dependency would read as unused");
   const text = sources.map((f) => readFileSync(join(REPO, f), "utf8")).join("\n");
 
@@ -92,10 +97,11 @@ test("tracker issue 99 — every production dependency is imported by something 
     + "manifest, or add it to NO_IMPORT_EXPECTED with the reason it is needed without an import");
 });
 
-test("tracker issue 99 — the import check fails on a package nothing imports", () => {
+test("tracker issue 99 — the import check fails on a package nothing imports", (ctx) => {
   // THE GUARD HAS TO FAIL BEFORE IT PASSES. A green tree on the day it was written is exactly the
   // evidence that was not enough last time. Drive the negative through the same predicate.
   const sources = shippedSources();
+  if (sources === null) return ctx.skip(skipReason(GUARD));
   const text = sources.map((f) => readFileSync(join(REPO, f), "utf8")).join("\n");
   const fake = "a-package-this-tree-does-not-import-0000";
   const q = fake.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -108,7 +114,7 @@ test("tracker issue 99 — the import check fails on a package nothing imports",
   assert.equal(real, true, "the predicate cannot see a real import, so its `false` means nothing");
 });
 
-test("tracker issue 115 — every production package npm resolves has a notices entry", () => {
+test("tracker issue 115 — every production package npm resolves has a notices entry", (ctx) => {
   // ── DERIVED WITHOUT ASKING THE GENERATOR ─────────────────────────────────────────────────────
   //
   // The population comes from `npm ls` and is walked HERE, with a traversal that visits every
@@ -133,13 +139,12 @@ test("tracker issue 115 — every production package npm resolves has a notices 
   // OUR OWN PACKAGES ARE NOT THIRD PARTIES. Derived from every package.json TRACKED IN THIS REPO —
   // workspaces and the vendored clean-room `buffers` alike — rather than by calling the generator's
   // own `ourNames`, which would make this arm depend on the thing it is checking.
-  const ours = new Set(
-    execFileSync("git", ["-C", REPO, "ls-files", "package.json", "*/package.json", "*/*/package.json"],
-      { encoding: "utf8" })
-      .split("\n").filter(Boolean)
-      .map((rel) => { try { return JSON.parse(readFileSync(join(REPO, rel), "utf8")).name; } catch { return null; } })
-      .filter(Boolean),
-  );
+  const manifests = trackedFiles(GUARD, { root: REPO,
+    pathspec: ["package.json", "*/package.json", "*/*/package.json"] });
+  if (manifests === null) return ctx.skip(skipReason(GUARD));
+  const ours = new Set(manifests
+    .map((rel) => { try { return JSON.parse(readFileSync(join(REPO, rel), "utf8")).name; } catch { return null; } })
+    .filter(Boolean));
   nonEmpty([...ours], "no local package names were derived, so our own workspaces would read as third parties");
 
   const resolved = new Map();

@@ -23,12 +23,14 @@ import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { demoChildren, publishSource } from "../demo-container.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
+import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";   // tracker issue 235
 
 const REPO = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
+const GUARD = "reading-the-demo";
 const DEMO = join(REPO, "demo");
 const RECEIPT = "run/_driver/predelivery-lint.json";
 
-test("157 reading the demo leaves the repository exactly as it found it", { timeout: 300_000 }, () => {
+test("157 reading the demo leaves the repository exactly as it found it", { timeout: 300_000 }, (ctx) => {
   const children = demoChildren(DEMO);
   nonEmpty(children, "the demo products in this tree");
   // The knockout lane is the one that was measured writing back; drive that one when it is here, and
@@ -37,8 +39,11 @@ test("157 reading the demo leaves the repository exactly as it found it", { time
 
   // Every tracked file under the child, by content. The receipt is the one that moved, and naming only
   // it would miss the next file the publisher learns to write.
-  const listed = execFileSync("git", ["ls-files", "-z", join("demo", product)], { cwd: REPO, encoding: "utf8" })
-    .split("\0").filter(Boolean);
+  // Through the helper (tracker issue 235). It drops `-z`, and that costs nothing here: a path this
+  // pathspec can reach is publisher-written under demo/, and git only quotes on characters no such
+  // path carries. What it buys is the stated skip below instead of a throw off a checkout.
+  const listed = trackedFiles(GUARD, { root: REPO, pathspec: [join("demo", product)] });
+  if (listed === null) return ctx.skip(skipReason(GUARD));
   nonEmpty(listed, `the tracked files under demo/${product}`);
   assert.ok(listed.some((f) => f.endsWith(RECEIPT)) || true, "the receipt need not exist yet — its absence is not the subject");
   const before = new Map(listed.map((f) => [f, readFileSync(join(REPO, f))]));
