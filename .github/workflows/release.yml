@@ -116,12 +116,13 @@ on:
   workflow_dispatch:
     inputs:
       cut:
-        description: Rehearse the pipeline, or cut one beta
+        description: Rehearse the pipeline, cut one beta, or cut the stable
         type: choice
         default: rehearse
         options:
           - rehearse
           - beta
+          - stable
 
 concurrency:
   group: release-${{ github.ref }}
@@ -151,7 +152,7 @@ jobs:
     if: >-
       github.repository == 'CordilleraSarl/clearotron'
       && ((github.event_name == 'push' && github.ref == 'refs/heads/main')
-          || (github.event_name == 'workflow_dispatch' && inputs.cut == 'beta'
+          || (github.event_name == 'workflow_dispatch' && inputs.cut != 'rehearse'
               && github.ref == 'refs/heads/main'))
     runs-on: ubuntu-latest
     # 15 OF THESE MINUTES CAN BE THE WAIT BELOW (tracker issue 208), so this is not the 20 it was: a
@@ -237,6 +238,42 @@ jobs:
       # take their new spellings; @v2 shims the old input names, which is exactly why using them would
       # leave the next reader thinking the version did not matter. `push-with-git-cli: true` keeps @v1's
       # behaviour rather than taking @v2's new default, because one variable moves at a time.
+      # ── THE INPUT DECIDES THE CHANNEL, AND THE CHANNEL IS PRE MODE (tracker issue 279) ──────────────
+      #
+      # The channel is derived from the VERSION, and the version is decided by whether `.changeset/pre.json`
+      # says this tree is in pre-release mode when `changeset version` runs. So the input has to put the
+      # tree in the right mode before that, or the label on the button and the artefact disagree.
+      #
+      # THIS IS NOT HYPOTHETICAL AND IT POINTED THE DANGEROUS WAY. After the 0.2.1 stable, `pre.json` was
+      # not left saying "exit" — `changeset version` DELETED it. A `cut: beta` dispatch in that state would
+      # have computed a stable version and published it to `latest`: a stable release out of a button
+      # marked beta, with nothing in the run saying so.
+      #
+      # Both directions are idempotent by construction: entering pre when already in it, or exiting when
+      # already out, is a no-op here rather than an error, because the state a cut needs is a fact about
+      # the tree and not about what the last cut happened to do.
+      - name: Put the tree in the mode this cut needs
+        if: github.event_name == 'workflow_dispatch' && inputs.cut != 'rehearse'
+        run: |
+          set -euo pipefail
+          mode=$(node -p "try{require('./.changeset/pre.json').mode}catch(e){'none'}")
+          echo "pre-release mode before this cut: $mode"
+          if [ "${{ inputs.cut }}" = "beta" ]; then
+            if [ "$mode" != "pre" ]; then
+              npx changeset pre enter beta
+              echo "entered pre-release mode with tag beta"
+            else
+              echo "already in pre-release mode — nothing to do"
+            fi
+          else
+            if [ "$mode" = "pre" ]; then
+              npx changeset pre exit
+              echo "left pre-release mode"
+            else
+              echo "not in pre-release mode — nothing to do"
+            fi
+          fi
+
       - name: Open or update the standing version pull request
         id: changesets
         # PINNED TO A COMMIT, because `v1` and `v2` are BRANCHES here, not tags — there is no tag `v1`
@@ -282,17 +319,46 @@ jobs:
       # everything on main. Saying so is the whole point: a dispatch that published nothing and exited 0
       # would read as a cut that happened.
       - name: A cut needs something to cut
-        if: github.event_name == 'workflow_dispatch' && inputs.cut == 'beta' && steps.changesets.outputs.pr-number == ''
+        if: github.event_name == 'workflow_dispatch' && inputs.cut != 'rehearse' && steps.changesets.outputs.pr-number == ''
         run: |
           echo "::error::Nothing to cut: no release notes have accumulated since the last beta, so there is no version pull request to merge. Land a change carrying a note in .changeset/, then dispatch again."
           exit 1
+
+      # ── THE ARTEFACT DECIDES, NOT THE INTENT (tracker issue 279) ────────────────────────────────────
+      #
+      # Everything above arranges for the right version to be computed. This checks that it WAS, by asking
+      # the version itself rather than by trusting the arrangement — because the arrangement is what will
+      # drift. A mechanism can be changed, a mode file can be deleted by a tool, a future input can be
+      # added; none of that can make this step pass while the number says otherwise.
+      #
+      # It is the difference between "we entered pre mode, so this must be a beta" and "this version has a
+      # pre-release suffix". Only the second is a fact about what would be published.
+      #
+      # Placed after the nothing-to-cut refusal on purpose: with no version pull request there is no new
+      # version, and this would otherwise judge the one already on main.
+      - name: The version this cut computed is the channel that was asked for
+        if: github.event_name == 'workflow_dispatch' && inputs.cut != 'rehearse'
+        run: |
+          set -euo pipefail
+          VERSION=$(node -p "require('./package.json').version")
+          PRE=$(node scripts/release-dist-tag.mjs "$VERSION" --prerelease)
+          CHANNEL=$(node scripts/release-dist-tag.mjs "$VERSION")
+          echo "asked for: ${{ inputs.cut }} — computed $VERSION (pre-release: $PRE, channel: $CHANNEL)"
+          if [ "${{ inputs.cut }}" = "beta" ] && [ "$PRE" != "true" ]; then
+            echo "::error::A beta was asked for and this cut computed $VERSION, which is a STABLE version bound for the \`$CHANNEL\` channel. Refusing rather than publishing a stable from a button marked beta. The tree was probably not in pre-release mode when the version was computed."
+            exit 1
+          fi
+          if [ "${{ inputs.cut }}" = "stable" ] && [ "$PRE" = "true" ]; then
+            echo "::error::A stable was asked for and this cut computed $VERSION, which is a PRE-RELEASE bound for the \`$CHANNEL\` channel. Refusing rather than publishing a beta as the stable. The tree was probably still in pre-release mode when the version was computed."
+            exit 1
+          fi
 
       # ONLY ON A DISPATCHED CUT (tracker issue 264). This step used to run on every push, which is what
       # made a beta come out of every merge. The pull request still opens and updates on every push — it
       # is the standing answer to "what would the next version be" — and it merges when a maintainer asks
       # for a cut, days apart, never on its own.
       - name: Let it merge itself once its checks pass
-        if: github.event_name == 'workflow_dispatch' && inputs.cut == 'beta' && steps.changesets.outputs.pr-number != ''
+        if: github.event_name == 'workflow_dispatch' && inputs.cut != 'rehearse' && steps.changesets.outputs.pr-number != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -659,7 +725,7 @@ jobs:
         env:
           # A rehearsal has nothing coming, so it reads once and reports. Set ONLY here — a real run
           # takes the file's own fifteen minutes.
-          CLEAROTRON_RELEASE_WAIT_MS: ${{ github.event_name == 'workflow_dispatch' && inputs.cut != 'beta' && '0' || '' }}
+          CLEAROTRON_RELEASE_WAIT_MS: ${{ github.event_name == 'workflow_dispatch' && inputs.cut == 'rehearse' && '0' || '' }}
         run: node scripts/release-await-cut.mjs
 
   publish:
@@ -672,7 +738,7 @@ jobs:
     if: >-
       !failure() && !cancelled()
       && github.repository == 'CordilleraSarl/clearotron'
-      && ((github.event_name == 'workflow_dispatch' && inputs.cut != 'beta')
+      && ((github.event_name == 'workflow_dispatch' && inputs.cut == 'rehearse')
           || needs.version.outputs.cut == 'true'
           || needs.pending.outputs.cut == 'true')
     runs-on: ubuntu-latest
@@ -736,7 +802,7 @@ jobs:
         run: |
           set -euo pipefail
           VERSION=$(node -p "require('./package.json').version")
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.cut }}" != "beta" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.cut }}" = "rehearse" ]; then
             # A rehearsal, and it stays one on whatever branch it was dispatched from — that is the
             # point of being able to dispatch it. The branch check below is skipped here BECAUSE the
             # dry-run flag is already set: a rehearsal that refused to rehearse anywhere but main would
@@ -958,7 +1024,7 @@ jobs:
       !failure() && !cancelled()
       && github.repository == 'CordilleraSarl/clearotron'
       && (needs.awaited.outputs.cut == 'true'
-          || (github.event_name == 'workflow_dispatch' && inputs.cut != 'beta'))
+          || (github.event_name == 'workflow_dispatch' && inputs.cut == 'rehearse'))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     # THIS NAME IS THE REGISTRY'S, AND IT IS ALL IT IS NOW. npm's trusted publisher for this package is
@@ -1074,7 +1140,7 @@ jobs:
         run: |
           set -euo pipefail
           VERSION=$(node -p "require('./package.json').version")
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.cut }}" != "beta" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.cut }}" = "rehearse" ]; then
             # A rehearsal, and it stays one on whatever branch it was dispatched from — that is the
             # point of being able to dispatch it. The branch check below is skipped here BECAUSE the
             # dry-run flag is already set: a rehearsal that refused to rehearse anywhere but main would
