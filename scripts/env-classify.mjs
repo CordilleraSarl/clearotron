@@ -38,7 +38,7 @@ import "../shared/env-local.mjs";   // — FIRST, and it became REQUIRED here:
                                      // the capture evaluates before the CLEAROTRON_* translation lands. A
                                      // call in this file's BODY would run too late. The guard named the
                                      // file, the module it reaches, and the fix.
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, writeFileSync, existsSync } from "node:fs";
 // — the product-owned-names rule, shared rather than a regex in this file.
 import { makeIsProductOwned, partitionByOwnership, droppedShape, FILTER_DECLARATION }
   from "../shared/product-owned-names.mjs";
@@ -83,7 +83,74 @@ const flag = (name) => {
   return i > 0 && process.argv[i + 1] && !process.argv[i + 1].startsWith("--") ? process.argv[i + 1] : "";
 };
 
-export function gather({ root = ROOT, prodList = read(PROD) } = {}) {
+/**
+ * A SHIPPED FILE THIS SCRIPT CANNOT WORK WITHOUT — read it, or say so and stop.
+ *
+ * `read()` answers "" on ENOENT, which is right where a file is legitimately absent and wrong where its
+ * absence means the tree is broken. Every caller here is the second kind: they are files the product
+ * always ships, and an empty read of one silently empties a source that feeds `everSet` — and a name
+ * nothing is recorded as setting is a name a configuration cleanup removes.
+ *
+ * One helper rather than a check at each site, so a source added later cannot get this wrong by being
+ * written the obvious way: reading through it is how you read.
+ */
+function mustRead(root, rel, why) {
+  const p = join(root, rel);
+  // READ FIRST AND KEEP THE REASON. Going through `read()` and then asking `existsSync` would separate
+  // absent from present only by accident of which case that second call can see: `read()` swallows
+  // EVERY error, so a file that EXISTS and cannot be read — a permission, a directory standing where a
+  // file belongs, a truncated mount — comes back "" and passes straight through as though it held
+  // nothing. Same consequence as absence and the same silence, one test narrower.
+  try {
+    return readFileSync(p, "utf8");
+  } catch (e) {
+    const tail = `${why} Reading it as empty would put every name it holds on the deletion population.`;
+    if (e.code !== "ENOENT")
+      throw new Error(`env-classify: ${p} exists and could not be read (${e.code}). ${tail}`);
+    throw new Error(`env-classify: ${p} is absent. ${tail} Its absence is this script failing to look, `
+      + "not a finding about the tree.");
+  }
+}
+
+/**
+ * Every variable name a WORKFLOW sets, across all of them.
+ *
+ * This source used to read `.github/workflows/ci.yml` and nothing else, which made the release workflow
+ * invisible to it. `CLEAROTRON_CUT_REF` and `CLEAROTRON_RELEASE_WAIT_MS` are set there and nowhere else,
+ * so both reported `everSet: []` and both landed on the deletion population — two names a reviewer would
+ * have been asked to remove because the one file that sets them was not being read. A name being set by
+ * the release surface rather than the test surface says nothing about whether it is a knob.
+ *
+ * AN ABSENT DIRECTORY THROWS instead of returning nothing. `read()` answers "" on ENOENT, so the old
+ * single-file read degraded silently: a renamed or moved ci.yml would have emptied this source, reported
+ * every workflow-set name as never set, and nothing in the output would have said the look had failed.
+ */
+function workflowNames(root) {
+  const dir = join(root, ".github/workflows");
+  let files;
+  try {
+    files = readdirSync(dir).filter((f) => /\.ya?ml$/.test(f)).sort();
+  } catch (e) {
+    throw new Error(`env-classify: cannot read ${dir} (${e.code}). That is this script failing to look, `
+      + "not a tree with no workflows, and an empty CI source silently widens the deletion population.");
+  }
+  if (!files.length)
+    throw new Error(`env-classify: ${dir} holds no .yml files. Every workflow-set name would read as `
+      + "never set, which is the shape this source exists to prevent.");
+  return files.flatMap((f) => [...read(join(dir, f)).matchAll(/^\s*([A-Z][A-Z0-9_]*):/gm)].map((m) => m[1]));
+}
+
+export function gather({ root = ROOT, prodList = null } = {}) {
+  // THE PRODUCTION HALF CAN BE ABSENT, AND ABSENT MUST NOT READ AS "PRODUCTION SETS NOTHING". `read()`
+  // answers "" on ENOENT, so a missing list made all 72 production-set names report `everSet: []` — and
+  // `tuning` with an empty `everSet` IS the deletion population. That is the same failure the CI source
+  // carried, one source over: the file is withheld from the public tree, so on a public checkout this
+  // silently classified production's own configuration as unused. `prodRead` records whether the look
+  // happened, so a caller can tell a real answer from no answer. A list passed in is its caller's claim
+  // to make, and counts as read.
+  const prodGiven = prodList !== null;
+  const prodText = prodGiven ? prodList : read(PROD);
+  const prodRead = prodGiven || existsSync(PROD);
   const set = (xs) => new Set(xs.filter(Boolean));
   const tracked = (glob) => git("ls-files", "--", glob).split("\n").filter(Boolean);
   const sudoRead = (p) => { try { return execFileSync("sudo", ["-n", "cat", p], { encoding: "utf8" }); } catch { return ""; } };
@@ -91,14 +158,16 @@ export function gather({ root = ROOT, prodList = read(PROD) } = {}) {
   const config = flag("config-repo") ? [flag("config-repo")] : [];
   return {
     // COMMITTED, not gathered: the production read needs privilege a reviewer does not have.
-    prod: set(prodList.split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#"))),
+    prod: set(prodText.split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#"))),
+    prodRead,
     test: set(flag("test-env") ? namesInEnvFile(sudoRead(flag("test-env"))) : []),
     config: set(config.flatMap((r) => {
       let files = []; try { files = execFileSync("sudo", ["-n", "find", r, "-type", "f", "-not", "-path", "*/.git/*"], { encoding: "utf8" }).split("\n").filter(Boolean); } catch { return []; }
       return files.flatMap((f) => { const t = sudoRead(f); return [...namesInEnvFile(t), ...namesMentioned(t)]; });
     })),
-    ci: set([...read(join(root, ".github/workflows/ci.yml")).matchAll(/^\s*([A-Z][A-Z0-9_]*):/gm)].map((m) => m[1])),
-    e2e: set(["scripts/e2e.mjs", "scripts/test-run.mjs"].flatMap((f) => namesMentioned(read(join(root, f))))),
+    ci: set(workflowNames(root)),
+    e2e: set(["scripts/e2e.mjs", "scripts/test-run.mjs"]
+      .flatMap((f) => namesMentioned(mustRead(root, f, "It is the end-to-end surface, and the names it sets are set nowhere else.")))),
     // A DESCRIPTION, never a setting. Kept apart so `everSet` cannot be satisfied by documentation.
     docs: set([".env.example", ".env.dev.example", ".env.prod.example"]
       .flatMap((f) => [...read(join(root, f)).matchAll(/^#?\s*([A-Z][A-Z0-9_]*)=/gm)].map((m) => m[1]))),
@@ -108,8 +177,15 @@ export function gather({ root = ROOT, prodList = read(PROD) } = {}) {
 
 /** The setup population: what the wizard WRITES, expanded through the alias table. */
 export function setupNames(root = ROOT) {
-  const onboard = read(join(root, "bin/onboard.mjs"));
-  const cfg = read(join(root, "driver/driver.config.mjs"));
+  // THE WORST ONE TO LOSE, and the reason it is read through `mustRead`. This is the population that
+  // separates "the wizard writes this at install" from "nobody sets this anywhere". Empty, every setup
+  // name falls through the shape tests to `tuning` — the residual bucket — and `tuning` with no recorded
+  // set-site IS the deletion population. So a missing wizard would not merely lose a source; it would
+  // propose the whole install surface for removal, with nothing in the output saying the file was gone.
+  const onboard = mustRead(root, "bin/onboard.mjs",
+    "It is the install wizard, and what it writes is the whole setup population.");
+  const cfg = mustRead(root, "driver/driver.config.mjs",
+    "It carries the table whose credential fields name the rest of that population.");
   const seed = new Set();
   for (const m of onboard.matchAll(/candidate\.([A-Z][A-Z0-9_]*)\s*=/g)) seed.add(m[1]);
   for (const m of onboard.matchAll(/candidate\["([A-Z][A-Z0-9_]*)"\]\s*=/g)) seed.add(m[1]);
@@ -264,12 +340,25 @@ export function classify({ catalogue, sources, setup = setupNames(), readSites =
   //                                          not one: it decides WHETHER a second destination is used, so
   //                                          changing it changes who is told, never what a run concludes.
   //
-  // Found in review, not by the classifier: nothing reconciles the register against this table, so the
-  // two can disagree indefinitely and only a reader notices.
+  // `CLEAROTRON_JX_SUBCLASS_DB` is the fourth, and it is the plainest reading of `deployment` on this
+  // list: the catalogue row says it names WHERE THE SUBCLASS TABLE LIVES, and that what the table says
+  // belongs to the build. Where input lives, with the conclusion a run reaches unchanged — the
+  // definition, almost word for word. The classifier filed it `tuning` because no shape in this file
+  // matches the spelling, and `tuning` is the residual bucket, so the row was not an opinion about the
+  // name so much as the absence of one.
+  //
+  // It is here rather than in a widened pattern because the name has no default and the lane REFUSES
+  // when it is unset. That makes it the worst possible member of a deletion population: removing it
+  // does not retire an unused knob, it takes out the only way the lane can be pointed at a table at all.
+  //
+  // The first three were found in review, not by the classifier, because nothing reconciled the
+  // catalogue's declared effect against this table and the two could disagree indefinitely. That
+  // comparison now runs as an arm, and this entry is the first thing it produced.
   const OVERRIDES = {
     CLEAROTRON_AGENT_WHATSAPP: "deployment",
     CLEAROTRON_REQUESTER_WHATSAPP: "deployment",
     CLEAROTRON_WHATSAPP_OPERATOR_COPY: "deployment",
+    CLEAROTRON_JX_SUBCLASS_DB: "deployment",
   };
 
   const cls = (name) => OVERRIDES[name] ?? (setup.has(name) ? "setup"
@@ -326,6 +415,7 @@ function build() {
   const catalogue = audit.catalogue.rows.map((r) => r.name);
   const sources = gather();
   const { rows, buckets } = classify({ catalogue, sources });
+  const prodRead = sources.prodRead;
   const by = (k) => rows.filter((r) => r.class === k).length;
   return {
     _what: "#1838 step 1 — every catalogued variable classified, and for every TUNING name the environments that have ever set it.",
@@ -343,6 +433,7 @@ function build() {
       "non-numeric-default": buckets["non-numeric-default"], "no-default-found": buckets["no-default-found"],
     },
     rows,
+    _productionListRead: prodRead,
   };
 }
 
@@ -395,6 +486,18 @@ function main() {
     return;
   }
   const next = build();
+  // A COULD-NOT-LOOK IS NOT AN ANSWER, and this is the one place it would have become one. Without the
+  // production list every name production sets reports `everSet: []`, and `tuning` with an empty
+  // `everSet` is the deletion population — so stamping here would record production's own configuration
+  // as a list of names to remove, in the artifact a reviewer reads to authorise removing them. Exit 2,
+  // not 1: this is the look failing, not the tree being stale, and `--check` already has 1.
+  if (!next._productionListRead && (arg === "--apply" || arg === "--check")) {
+    console.error(`env-classify: ${PROD} is absent, so nothing is known about what production sets.\n`
+      + "  Every production-set name would report `everSet: []` and land on the deletion population.\n"
+      + "  That is this script failing to look, not a finding. Refresh it with `--gather-prod` on the\n"
+      + "  production box, or run this where the list is present.");
+    process.exitCode = 2; return;
+  }
   if (arg === "--apply") { writeFileSync(ART, JSON.stringify(next, null, 2) + "\n"); console.log(`wrote ${ART}`); return; }
   if (arg === "--check") {
     const prev = existsSync(ART) ? readFileSync(ART, "utf8") : "";
@@ -404,7 +507,8 @@ function main() {
     return;
   }
   console.log(JSON.stringify(next._counts));
-  console.log(`step-3 population: ${next._stepThreePopulation.count}`);
+  console.log(`step-3 population: ${next._stepThreePopulation.count}`
+    + (next._productionListRead ? "" : "   — WITHOUT the production list, so every name production sets is counted as never set"));
   for (const [k, v] of Object.entries(next._excludedFromDeletion)) console.log(`  excluded ${k.padEnd(24)} ${v.length}`);
 }
 

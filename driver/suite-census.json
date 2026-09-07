@@ -573,6 +573,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-source-the-classifier-could-not-read-is-not-empty.test.mjs": {
+          "tests": 9,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stopped-run-says-why-it-stopped.test.mjs": {
           "tests": 3,
           "asserts": 11,
