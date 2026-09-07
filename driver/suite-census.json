@@ -393,6 +393,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-queued-what-if-is-answered-before-its-run-archives.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-real-install-starts-with-an-empty-archive.test.mjs": {
           "tests": 6,
           "asserts": 16,
@@ -706,8 +712,8 @@
           "todos": 0
         },
         "an-experiment-receipt-names-its-engine.test.mjs": {
-          "tests": 6,
-          "asserts": 22,
+          "tests": 8,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },

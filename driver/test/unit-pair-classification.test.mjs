@@ -69,7 +69,7 @@
 //                               the empty case, and each reads its own per-turn stat snapshot, which the
 //                               site states.
 //   · grounds-grammar.mjs:89    `limits` is spent inside `classifyGroundsNote`'s own precedence ladder.
-//   · pipeline.mjs:2021         `repairable` rides a runLog event. A journal line has no enforcement
+//   · pipeline.mjs:2029         `repairable` rides a runLog event. A journal line has no enforcement
 //                               counterpart — nothing reads it back and acts.
 //   · pipeline.mjs `seniorGap` is read by the coverage floor in the same block, off the
 //                               `ctx.seniorRights` it was computed from. (CITED BY SYMBOL AND NO LINE,
