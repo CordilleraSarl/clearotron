@@ -186,11 +186,12 @@ const KO_CSS = `
   .ko-findev{margin:0;font-size:12.5px;line-height:1.6;word-break:break-word}
   .ko-count{font-family:var(--mono);font-size:13px;color:var(--ink);margin:0}
   .ko-degraded{font-size:13px;color:var(--med-tx,#82550A);margin:8px 0 0;font-style:italic}
-  /* The reviewer-notes legend. It names the convention `.internal` already draws (report.css), so the
-     colour is stated once here and never re-specified — a second purple would be a second vocabulary. */
-  .ko-legend{margin:0 0 14px;font-size:12.5px;color:#6a2b6e;font-style:italic}
-  /* The notes sit inside a mark's column, so the shared `.internal` block needs no top margin fighting
-     the paragraph above it, and its bullets keep the column's own list indent. */
+  /* The reviewer-notes legend. NOT .ko-legend — that name is taken by the framework attribution row
+     above, and reusing it would restyle the caption. It names the purple convention report.css already
+     draws for .internal, so the colour is stated once and never re-specified. */
+  .ko-refnote{margin:0;padding:11px 24px 0;font-size:12px;color:#6a2b6e;font-style:italic}
+  /* The notes sit inside a mark's column, so the shared .internal block's bullets keep the column's
+     own list indent and do not fight the paragraph above them. */
   .ko-row .internal .ko-bul{margin:0 0 4px}
   .ko-row .internal .ko-bul:last-child{margin-bottom:0}
   .ko-counts table{width:100%;border-collapse:collapse;font-size:14px}
@@ -1012,7 +1013,7 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
   // colour no reader can see would be the report describing a convention it did not use.
   const anyNotes = marks.some((m) => (Array.isArray(m?.purpleNotes) ? m.purpleNotes : [])
     .some((n) => String(n ?? '').trim()));
-  const legend = anyNotes ? `<p class="ko-legend">${esc(REVIEWER_NOTES_LEGEND)}</p>` : '';
+  const legend = anyNotes ? `<p class="ko-refnote">${esc(REVIEWER_NOTES_LEGEND)}</p>` : '';
   return `<div class="panel ko-glance">${legend}${cards}</div>`;
 }
 
