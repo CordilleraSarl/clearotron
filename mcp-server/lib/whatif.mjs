@@ -252,7 +252,16 @@ export async function whatIfRun({ confirmationToken } = {}, deps = {}) {
     // askArchivedRun answers {ok:true, memoPath, memoId, parentRunId, assumption, ratedUnder,
     // statedLimits} or {ok:false, fail, detail} — a stable MEMO_FAILS code, never a throw, because the
     // worker records what it is handed and a throw there becomes a string nobody can branch on.
-    return await askArchivedRun({ runId, question: instructions, requestedBy: null });
+    // THE RESOLVER IS HANDED OVER, and this line is the whole of tracker issue 132's first defect.
+    // `askArchivedRun` takes its resolver from `deps` and has no default for it — `reason` was given one
+    // and `resolveRun` was not — so calling it bare returned `memo_run_unresolved` for every memo on
+    // every run, while `resolveRun(runId)` eight lines above had already resolved that same run fine.
+    // The capability was composed, the door opened, and no production caller could execute it.
+    // ✕ NOT fixed by defaulting inside driver/whatif-memo-run.mjs: `resolveRun` lives in this layer
+    // (./runs.mjs), and a default there would make the driver import the mcp-server, which is the
+    // dependency this module's own comment above keeps out of module scope. This is the only production
+    // call site — `driver/whatif-worker.mjs` does not call `askArchivedRun` at all.
+    return await askArchivedRun({ runId, question: instructions, requestedBy: null }, { resolveRun });
   }
 
   const refusal = whatIfRefusal({ location: run.location, state: run.state });
