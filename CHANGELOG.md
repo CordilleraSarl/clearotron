@@ -4,6 +4,12 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.2.1-beta.2
+
+### Fixed
+
+- `doctor` no longer reports a working Cloudflare Access door as unprotected. An API-style door and a failing origin are now told apart, each with its own message. Neither is reported as a pass.
+
 ## 0.2.1-beta.1
 
 ### Fixed
