@@ -213,6 +213,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-dynamic-import-of-a-path-is-a-file-url.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
+          "skips": 1,
+          "todos": 0
+        },
         "a-fact-about-a-named-party.test.mjs": {
           "tests": 30,
           "asserts": 80,

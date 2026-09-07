@@ -26,7 +26,7 @@ const execFileP = promisify(execFile);
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { handRunEnv } from "./drive-env.mjs";   // names the two variables that would make the drive read no file at all
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -215,7 +215,7 @@ const NODE_BIN = (() => {
 })();
 
 const UNITS = await (async () => {
-  const { BACKGROUND_UNITS } = await import(join(REPO, "bin", "start.mjs"));
+  const { BACKGROUND_UNITS } = await import(pathToFileURL(join(REPO, "bin", "start.mjs")).href);
   return BACKGROUND_UNITS;
 })();
 

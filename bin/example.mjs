@@ -41,7 +41,7 @@ import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync,
 import { homedir, tmpdir } from "node:os";
 import { invoke } from "../shared/invocation.mjs";   // — the printed command is resolved once, for the reader who is actually standing there
 import { basename, dirname, join, resolve, sep } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
 import { BRAND } from "../shared/brand.mjs";   // — the installer's own name, from the tenant seam
 import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
@@ -220,7 +220,7 @@ console.log(samples.length === 1
 console.log(`  pool:    ${poolRoot}\n`);
 
 mkdirSync(poolRoot, { recursive: true });
-const { republishRun } = await import(join(REPO, "driver", "publish", "report-registry.mjs"));
+const { republishRun } = await import(pathToFileURL(join(REPO, "driver", "publish", "report-registry.mjs")).href);
 
 // ── ONE FAILURE MUST NOT COST THE OTHERS, AND MUST NOT BE A QUIET COUNT (tracker issue 277) ─────────
 //
