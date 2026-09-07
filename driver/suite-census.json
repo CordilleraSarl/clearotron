@@ -4354,8 +4354,8 @@
           "todos": 0
         },
         "the-notice-goes-to-whoever-asked.test.mjs": {
-          "tests": 6,
-          "asserts": 18,
+          "tests": 8,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -4889,6 +4889,12 @@
         "a-key-has-one-door-and-it-is-not-the-network.test.mjs": {
           "tests": 13,
           "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-trace-survives-the-client-door.test.mjs": {
+          "tests": 8,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
