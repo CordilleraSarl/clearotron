@@ -1474,7 +1474,7 @@ export function makePortalService({
         // The recipeKey arm that used to sit here (a 422 when saved searches were "not switched on") went
         // with CLEAROTRON_RECIPES_MODE on 2026-07-27: a saved search is now honoured wherever it resolves.
         // Asked of the RESOLVED product, not of the body: a request that names none resolves through
-        // the account's default and its own territories, and the old read (`body.searchLevel || "clearotron"`)
+        // the account's default and its own territories, and the old read (`body.searchLevel || "prelim"`)
         // answered about a product nobody had chosen. `resolveFor` fails open to a null resolution, and a
         // null one is not judged here — validateJob and the scope rules below still run, and the runner
         // is the wall.

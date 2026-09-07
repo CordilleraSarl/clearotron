@@ -10,7 +10,7 @@ This boundary is enforced by `test/provider-neutral-prose.test.mjs` — it fails
 
 ```bash
 # manual equivalent
-grep -rnE "corsearch_|clarivate_|signa_" ../../clearotron-{register,variants,search}/*.md
+grep -rnE "corsearch_|clarivate_|signa_" ../../prelim-{register,variants,search}/*.md
 # should return zero hits OUTSIDE this providers/ directory
 ```
 
