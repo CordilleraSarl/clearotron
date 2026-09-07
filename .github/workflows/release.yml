@@ -576,18 +576,28 @@ jobs:
   # the expression parser takes the hyphens as subtraction and the condition silently evaluates to
   # something that is never `'true'`, so the job below would never run and nothing would say why.
   awaited:
-    name: Wait for the version this push cut to merge itself
+    name: Wait for the version this cut asked for to merge itself
     needs: [version, publish]
-    # THE REHEARSAL REACHES THIS JOB, and that is deliberate. A step nobody rehearses is a step whose
-    # first real run is the day it matters. `workflow_dispatch` carries no version pull request to wait
-    # for, so it runs the loop once with a zero budget — which proves the wiring, the checkout, the
-    # credential guard and the decision, and holds a runner for none of it.
+    # A DISPATCHED CUT ONLY, AND THE PUSH ARM IS WHY THIS COMMENT EXISTS (tracker issue 271).
+    #
+    # This job used to arm on a push whenever a version pull request stood, because a push was what armed
+    # auto-merge and the pull request then merged itself minutes later. The cadence change removed that:
+    # auto-merge is armed by a dispatched `cut: beta` and by nothing else. The wait was left pointing at
+    # the event that no longer occurs, so every merge to main held a runner for the full budget — twenty
+    # five minutes — waiting for a self-merge that could not come.
+    #
+    # IT DID NOT GO RED, WHICH IS WHY IT NEEDED FINDING BY EYE. Expiry here is a deliberate quiet exit 0
+    # (see the step below), and only a failure to LOOK exits 2. The run stayed green; what showed was a
+    # long in-progress release job hanging off every merge, which reads as a stuck release.
+    #
+    # THE REHEARSAL STILL REACHES THIS JOB, and that is deliberate. A step nobody rehearses is a step
+    # whose first real run is the day it matters. A rehearsal carries no version pull request to wait for,
+    # so it runs the loop once with a zero budget — proving the wiring, the checkout, the credential guard
+    # and the decision, and holding a runner for none of it.
     if: >-
       !failure() && !cancelled()
       && github.repository == 'CordilleraSarl/clearotron'
-      && ((github.event_name == 'push' && github.ref == 'refs/heads/main'
-           && needs.version.outputs.pr_number != '')
-          || github.event_name == 'workflow_dispatch')
+      && github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     # THE BUDGET CONTAINS THE WAIT, with room for the checkout and the fetches around it. A timeout under
     # the wait cancels this at the moment it was about to answer, and a cancelled job reads as neither a

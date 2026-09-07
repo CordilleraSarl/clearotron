@@ -1223,11 +1223,16 @@ function jobText(id) {
   return nextLine < 0 ? rest : rest.slice(0, nextLine + 1);
 }
 
-test("208 the wait is its own job and arms on any push that cut a version", () => {
+// THIS ARM SAID "arms on any push that cut a version" UNTIL 2026-09-07, and it was right while a push
+// was what armed auto-merge. The cadence change made a requested cut the only thing that merges the
+// version pull request, so keying the wait off a push left it waiting for an event that cannot occur.
+// Rewritten rather than deleted: the next reader needs to see that the trigger moved on purpose.
+test("208 the wait is its own job, and it arms on the cut that can actually merge", () => {
   const job = jobText("awaited");
   assert.ok(job.length > 200, "the waiting job is gone — this arm could not look");
-  assert.match(job, /needs\.version\.outputs\.pr_number != ''/,
-    "the wait no longer keys off a version pull request having been cut, which is the only thing it can wait for");
+  assert.match(job, /github\.event_name == 'workflow_dispatch'/,
+    "the wait no longer keys off the dispatch, which is now the only thing that merges the version pull "
+    + "request — so a requested cut would publish nothing");
   assert.ok(!/needs\.version\.outputs\.cut != 'true'/.test(job),
     "the wait is gated on nothing being stranded again — that is the condition that made it unreachable, "
     + "because a push routinely publishes a stranded version and cuts a new one in the same run");
@@ -1998,4 +2003,23 @@ test("264 pushing a tag cannot publish, because tags are also how this pipeline 
   // protection to the next person who greps for one.
   assert.ok(!/TAG_VERSION/.test(RELEASE_YML),
     "the tag-versus-manifest check is still here, and no run can arrive on a tag ref to exercise it");
+});
+
+test("271 a merge to main starts no wait job — the wait belongs to a requested cut", () => {
+  // This job waits for the standing version pull request to merge itself. Only a requested cut arms
+  // auto-merge, so on a push the wait can only run its budget out — twenty five minutes of a runner per
+  // merge, for an event that cannot happen. It does not go red either: expiry here is a deliberate quiet
+  // success, so the waste never announces itself in a verdict.
+  const awaited = jobBlock("awaited");
+  const condition = awaited.slice(awaited.indexOf("if: >-"), awaited.indexOf("runs-on:"));
+  assert.ok(!/event_name == 'push'/.test(condition),
+    "the wait arms on a push again. Nothing merges the version pull request on a push any more, so this "
+    + `holds a runner for the full budget waiting for something that cannot occur.\n${condition}`);
+  assert.match(condition, /github\.event_name == 'workflow_dispatch'/,
+    `the wait no longer arms on a dispatch, so a requested cut would publish nothing\n${condition}`);
+  // AND THE REHEARSAL MUST STILL REACH IT — a step nobody rehearses is one whose first real run is the
+  // day it matters. The zero budget is what makes that free.
+  const wait = awaited.slice(awaited.indexOf("CLEAROTRON_RELEASE_WAIT_MS"));
+  assert.match(wait.split("\n")[0], /inputs\.cut != 'beta'/,
+    "the rehearsal no longer gets its zero budget, so it would hold a runner for the full wait");
 });
