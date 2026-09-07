@@ -1663,7 +1663,7 @@ export async function runCheck() {
   // could print, and the portal's own config view does — is deliberately not printed here: `doctor` goes
   // to a terminal, into a paste, into an issue.
   // THE ONE CONDITION THAT STOPS THE PORTAL RENDERING, and `doctor` said nothing about it at all
-  // (bb8, F2). `portal-ui/dist` is committed, so an absent bundle means a bad checkout on
+  // (found in review). `portal-ui/dist` is committed, so an absent bundle means a bad checkout on
   // a deployment and an unbuilt tree on a source clone; the service already answers 503 and says so in
   // its boot log, but a reader who runs `doctor` BEFORE `start` — which is the order every document
   // gives — had no way to learn it. The product's OWN predicate decides rather than a second existence
@@ -2093,7 +2093,7 @@ export async function runCheck() {
   } catch (e) { warn(`the submit lane could not be read: ${e.message}`); }
 
   say("\n  Client connector");
-  // THE REVOCATION LIST, REPORTED ( — bb8's F14). `isRevoked` treats an unreadable
+  // THE REVOCATION LIST, REPORTED (found in review). `isRevoked` treats an unreadable
   // denylist as "not revoked", so a named-but-absent file makes every revocation silently ineffective:
   // measured on a default install, a revoked key completed a full handshake with nothing logged. Nothing
   // surfaced that state anywhere, which is why it survived to be found by hand.
@@ -2182,8 +2182,8 @@ export async function runCheck() {
     const doorEnvKnown = !hosted || unitEnv?.known === true;
     const doorEnv = hosted && unitEnv?.known === true ? unitEnv.env : process.env;
     if (!doorEnvKnown) warn(couldNotDetermine("CLIENT_MCP_ACCOUNT_ACCESS", unitEnv));
-    // THE PORT AND ITS ALLOW-LIST ARE ONE SETTING, AND NOTHING SAID SO (Hera's
-    // operator pass). `start` derives CLIENT_MCP_ALLOWED_HOSTS from the port it resolved, so moving the
+    // THE PORT AND ITS ALLOW-LIST ARE ONE SETTING, AND NOTHING SAID SO (found in an operator pass).
+    //  `start` derives CLIENT_MCP_ALLOWED_HOSTS from the port it resolved, so moving the
     // port THROUGH start works. Moving it in the env file the units load does not: the door binds the
     // new port and then answers "403 Invalid Host header" on every request, because the allow-list still
     // names the old one. A door that is up, listening, and refuses everything is the worst of the three
@@ -2205,7 +2205,7 @@ export async function runCheck() {
       }
     }
 
-    // IS ANYTHING ANSWERING? ( — bb8's F11.) The unit file is evidence about the
+    // IS ANYTHING ANSWERING? (found in review) The unit file is evidence about the
     // background shape only. A foreground `clearotron start` runs the door as its own child with no unit
     // at all, and this section then told a reader whose door was listening that it "is not set up here",
     // pointing them at the command they had just run. One loopback connect settles it, and null stays
@@ -2795,7 +2795,7 @@ try {
           }
         }
       }
-      // — bb8's F9, and the same trap closed one prompt over. The default
+      // — found in review, and the same trap closed one prompt over. The default
       // was YES, so Enter re-ran a probe that CANNOT succeed until the reader has signed in somewhere
       // else — and the wizard's own header tells them Enter is the safe key. Driven with Enter it went
       // 19 attempts, no cap and no escape, in a wizard whose header says everything here is skippable.
@@ -3142,7 +3142,7 @@ try {
   candidate.PROFILE_REPO_ROOT = cfg;   // no alias row — this name is current
   for (const k of ["CLEAROTRON_CUSTOMERS_DIR", "PROFILE_REPO_ROOT"]) ok(`${k}=${candidate[k]}`);
 
-  // CLEAROTRON_INSTRUCTIONS_DIR IS DELIBERATELY NOT WRITTEN ( — bb8's F25).
+  // CLEAROTRON_INSTRUCTIONS_DIR IS DELIBERATELY NOT WRITTEN (found in review).
   //
   // Setup used to point it at `<cfg>/skills` and create that directory empty. `clearotron start` then
   // makes `<cfg>` a git repository for saved searches — so the doctrine store ends up INSIDE a checkout

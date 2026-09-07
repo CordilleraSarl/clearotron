@@ -321,7 +321,7 @@ export function portsForFlag(portFlag, ports, env = {}) {
 /**
  * Where the grants file is, for a command that is NOT the supervisor.
  *
- * — bb8's F13. `start` injects CLEAROTRON_ACCESS_FILE into the environment of
+ * — found in review. `start` injects CLEAROTRON_ACCESS_FILE into the environment of
  * the services it supervises (see the child env below) and never persists it, so the door finds the
  * roster and every sibling CLI in the operator's own shell does not. `clearotron grant` then refused
  * with "Set CLEAROTRON_ACCESS_FILE" — a variable nothing writes — and enrolling a client had no working
@@ -854,7 +854,7 @@ if (isMain) {
     s.once("listening", () => s.close(() => resolve(null)));
     s.listen(port, HOST);
   });
-  // ALL THREE DOORS, NOT TWO ( — bb8's F11). The client door's port is resolved
+  // ALL THREE DOORS, NOT TWO (found in review). The client door's port is resolved
   // beside the other two, three lines up, and was left out of the loop written for exactly this
   // principle. So a held client port was discovered AFTER the portal and the engine door had bound: the
   // run fatalled mid-flight, tore down what it had started, and then did not exit — measured at rc=124
@@ -957,7 +957,7 @@ if (isMain) {
     catch (e) { fatal(`could not create the grants file at ${paths.grants} (${String(e?.message ?? e)}).`); }
     say(`  created        ${paths.grants} (an empty roster — one staff address, no clients yet)`);
   }
-  // THE REVOCATION LIST, CREATED — not merely named (bb8's F14).
+  // THE REVOCATION LIST, CREATED — not merely named (found in review).
   //
   // The door is started with TRADEMARK_MCP_TOKEN_DENYLIST pointing here, and since this branch
   // `isRevoked` fails CLOSED on an unreadable file — it refuses the token rather than assuming it was
@@ -1468,7 +1468,7 @@ if (isMain) {
     }
     // enable --now on an ALREADY-ACTIVE unit is a no-op, so a refresh would leave the old process
     // running the old files. EVERY long-running unit in the set is restarted, not a hardcoded pair
-    // (Hera's review): the pair here matched the pair the health check used three
+    // (found in review): the pair here matched the pair the health check used three
     // lines down, and carried the same stale justification about "the oneshot and its triggers". There
     // is no oneshot in the set. So a refresh restarted the portal and the engine door onto new code and
     // left the worker and the client door on the old — while the check below now reports all four up,
@@ -1496,7 +1496,7 @@ if (isMain) {
 
     // STARTED IS NOT RUNNING (the connect lesson): settle, then read each service's own state.
     //
-    // EVERY UNIT THIS FLAG INSTALLS, DERIVED FROM THE SET ( — bb8's F15). This checked
+    // EVERY UNIT THIS FLAG INSTALLS, DERIVED FROM THE SET (found in review). This checked
     // a hardcoded PAIR while `enable --now` had just started FOUR. So a client door crash-looping against
     // a held port got no ✗, was never named in the banner, and `start --background` printed its success
     // block and exited 0 over a product that was two-thirds up. The worker was unchecked for the same

@@ -79,7 +79,7 @@ test("193 a service running from another tree is a CONFLICT, named by unit and t
 });
 
 test("193 the mixed box from the finding: three units on the old tree, one already moved", () => {
-  // Jaw's own table. The one unit `connect` restarted had followed the write; the other three had not,
+  // the deployment's own table. The one unit `connect` restarted had followed the write; the other three had not,
   // and they are the ones that break. A posture that only looked at the door would have said "clear".
   const move = checkoutMove("/opt/clearotron", "/srv/worktree-pr43");
   const p = movePosture({ move, running: [

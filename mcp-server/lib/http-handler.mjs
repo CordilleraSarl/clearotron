@@ -117,7 +117,7 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, 
         try { t = verifyToken(tok); }
         catch (e) {
           // AN OPERATOR FAULT IS NOT A BAD KEY, and it must not read like one ( —
-          // bb8's F14). `isRevoked` now refuses rather than assuming a token was never revoked when the
+          // found in review). `isRevoked` now refuses rather than assuming a token was never revoked when the
           // denylist cannot be read; that is a configuration fault on THIS box, and logged in the same
           // words as a stranger presenting a bad key it would sit unnoticed in auth noise — which is how
           // the original defect survived, silently, on every default install.

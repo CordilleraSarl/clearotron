@@ -90,7 +90,7 @@ test("2176-F38 / 2191-F13 `grant add` CREATES the first tenant instead of refusi
   // WHAT THIS ARM USED TO ASSERT, and why it changed. F38 found the dead end — connect → "run grant" →
   // grant → "a tenant must already exist" → nothing — and its fix printed the JSON shape into the
   // refusal. That was better than a bare stop and still asked a person to hand-edit the file the product
-  // is meant to manage. bb8's F13 found the rest of the road missing too, so the refusal is no longer
+  // is meant to manage. a review found the rest of the road missing too, so the refusal is no longer
   // the right behaviour on an EMPTY roster: this command creates the first tenant now.
   const home = mkdtempSync(join(tmpdir(), "f38-"));
   const file = join(home, "grants.json");

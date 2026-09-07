@@ -98,7 +98,7 @@ export const ON_DEMAND_UNITS = Object.freeze([]);
 /**
  * Which of the installed units a `--background` REFRESH must restart.
  *
- * — Hera's review of the F15 fix. `enable --now` on an ALREADY-ACTIVE unit is a
+ * — A review of that fix. `enable --now` on an ALREADY-ACTIVE unit is a
  * no-op, so a refresh over an updated checkout leaves the old process running the old files. The restart
  * loop that exists for exactly that named a hardcoded PAIR — the same pair the health check named, three
  * lines below it — with the same stale justification: "the oneshot and its triggers pick the new copies

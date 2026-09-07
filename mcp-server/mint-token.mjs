@@ -91,7 +91,7 @@ export function mintFromOptions({ scope, sub = null, runId = null, ttlDays, verb
       : scope === "account" ? "(n/a — the fixed account tool set)"
         : "(n/a — read-only, one run)";
   const acctEcho = t.accounts ? t.accounts.join(",") : scope === "account" ? "(whatever the grants file grants this identity)" : "(all)";
-  // THE LEVERS, IN THE ORDER THAT WORKS ( — bb8's F14).
+  // THE LEVERS, IN THE ORDER THAT WORKS (found in review).
   //
   // The denylist was named FIRST and named without a path — "the TRADEMARK_MCP_TOKEN_DENYLIST file",
   // a variable an operator never set and a file that, on a default install, did not exist. Since

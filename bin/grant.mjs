@@ -59,7 +59,7 @@ import { makePrincipal } from "../driver/portal-access.mjs";
 import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 import { defaultGrantsPath } from "./start.mjs";       // — one owner for the roster's path
 
-// — bb8's F13. This read the variable and nothing else, so it refused with
+// — found in review. This read the variable and nothing else, so it refused with
 // "Set CLEAROTRON_ACCESS_FILE" — a name NOTHING writes. `start` injects it into the environment of the
 // services it supervises and never persists it, so the door found the roster and this command, run in
 // the operator's own shell, could not. Enrolling a client had no working path at all.
@@ -184,7 +184,7 @@ if (cmd === "add") {
   // The route exists — it is the file — and `grant --help` documents it. What was missing is that the
   // refusal which STOPS you did not carry it, so the shape of the object is printed here, against this
   // install's own path, rather than left to a reader to find in another command's help.
-  // — bb8's F13. THE FIRST TENANT IS CREATED HERE. Before this, enrolling anyone
+  // — found in review. THE FIRST TENANT IS CREATED HERE. Before this, enrolling anyone
   // on a fresh install ran out of road: the file is {"tenants":{}}, `brandowner` does not write tenants,
   // and this command refused because none existed. 2176's F38 fix printed the JSON shape into the
   // refusal, which is better than a bare stop and still asks a person to hand-edit the file the product

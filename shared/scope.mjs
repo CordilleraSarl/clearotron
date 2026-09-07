@@ -39,7 +39,7 @@ export function isRevoked(jti, { denylistPath = process.env.TRADEMARK_MCP_TOKEN_
   let text;
   try { text = readFileSync(denylistPath, "utf8"); }
   catch (e) {
-    // FAIL CLOSED ( — bb8's F14; overwatch ruling, recorded on 1889 for the owner's
+    // FAIL CLOSED (found in review; ruled and recorded for the owner's
     // review with the reversal path, which is this function).
     //
     // This returned false — "not revoked" — on any unreadable list, and that is how a revoked key kept

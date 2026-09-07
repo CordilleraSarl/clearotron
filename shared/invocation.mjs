@@ -263,7 +263,7 @@ export const bareInvocation = (verb) => `clearotron ${verb}`;
 /**
  * Refuse a prompt when there is nobody to answer it.
  *
- * — bb8's F14 item 5. `install` has said this since it was written; `connect`
+ * — found in review. `install` has said this since it was written; `connect`
  * and `disconnect` prompt through readline and did not, so piped or redirected they read EOF and took
  * it as an answer. `install`'s exit code and wording are the model, and this is that model shared
  * rather than copied a third time.

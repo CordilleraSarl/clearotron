@@ -48,7 +48,7 @@ export const CLIENT_DOOR_UNIT = "clearotron-client-mcp.service";
 /**
  * Where revoked key ids live, and the one place that decides it.
  *
- * — bb8's F14. This literal was written out in four places (connect, start
+ * — found in review. This literal was written out in four places (connect, start
  * twice, disconnect). `connect` armed the variable AND created the file, with a comment saying exactly
  * why: a named-but-absent file was the same landmine one step later, because `isRevoked` then failed
  * OPEN on an unreadable list. It fails CLOSED now, which makes creating the file more load-bearing
@@ -63,7 +63,7 @@ export const defaultDenylistPath = (home) => join(home, ".config", "clearotron",
 /**
  * The denylist path a door should be given — the operator's, if they set one.
  *
- *, bb8's sharpening of F14. `defaultDenylistPath` answers "where does it live
+ *, a later review's sharpening of it. `defaultDenylistPath` answers "where does it live
  * when nobody said"; this answers "where does it live", which is the question every caller actually had.
  * The client door was composed with the default UNCONDITIONALLY while every other child inherited
  * TRADEMARK_MCP_TOKEN_DENYLIST, so on a box where an operator had placed the list themselves:
@@ -173,7 +173,7 @@ export function clientDoorState({ env = {}, unitDir, exists, active = null, list
   // synonym for false: a caller that cannot reach systemd must not be able to report a door as down
   // any more than it can report one as up. Same discipline as the queue-watch arm's unprobed half.
   return {
-    // — bb8's F11: what is ANSWERING, which the unit file cannot say.
+    // — found in review: what is ANSWERING, which the unit file cannot say.
     // — THE PAIR, NOT ITS BOOLEAN. `active` collapses ActiveState and SubState,
     // so a crash loop (`activating/auto-restart`) and a unit that was never started (`inactive/dead`)
     // reduce to the same `false` and printed the same sentence — one is a fault to read the journal for,
@@ -228,7 +228,7 @@ export function describeDoorState(door, {
         text: `the client door is HALF configured — ${missing}. Something began setting it up and stopped: `
           + `finish with \`${connectCmd}\`, or close it with \`${closeCmd}\`.` };
     }
-    // A DOOR THAT ANSWERS IS SET UP, WHATEVER THE UNITS SAY ( — bb8's F11).
+    // A DOOR THAT ANSWERS IS SET UP, WHATEVER THE UNITS SAY (found in review).
     //
     // `standing` is unit-file + fence, and a FOREGROUND `clearotron start` has neither: it runs the door
     // as its own child. Measured — the door listening on its port while this sentence said "the client
@@ -263,7 +263,7 @@ export function describeDoorState(door, {
         + "so this says the door is set up, not that it answers" };
   }
   if (door.active === false) {
-    // NAME THE STATE, AND NEVER ASSERT AN EMPTY PORT WITHOUT LOOKING (Hera).
+    // NAME THE STATE, AND NEVER ASSERT AN EMPTY PORT WITHOUT LOOKING.
     //
     // This said "nothing is listening on the client door" from `active === false` alone, while a probe
     // of that very port had already been taken and passed in — and read nowhere on this branch. With a

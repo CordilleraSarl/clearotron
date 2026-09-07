@@ -97,7 +97,7 @@ test("revocation: a jti on the denylist is refused; others pass; comments are in
   //
   // It read "missing file are inert", with the reasoning in its own comment: "the denylist can never
   // take all auth down". That is a real trade and it was chosen knowingly — availability over
-  // enforcement. bb8's F14 measured what it cost: on a default `clearotron start` install the door was
+  // enforcement. a review measured what it cost: on a default `clearotron start` install the door was
   // pointed at a denylist nothing created, so EVERY revocation check silently passed and a revoked key
   // completed a full handshake with nothing logged. The inert-missing-file rule is what made the hole
   // invisible rather than loud.
