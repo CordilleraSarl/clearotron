@@ -65,3 +65,64 @@ test("a real start SAYS the archive is empty, and names what to run instead", ()
   assert.match(notSeeded, /clearotron demo/,
     "the reader is told the archive is empty and not what shows them an example instead");
 });
+
+// ── tracker issue 277: a stale demo pool is topped up to the package's set ────────────────────────────
+//
+// `seedPool` returned early on any non-empty pool. That was invisible while `demo/` shipped one child —
+// seeding one and seeding all were the same act — and became a defect the day the other three landed:
+// every box seeded before that kept its single demo through every upgrade, because the pool was no longer
+// empty and nothing looked at what the package now carried.
+import { seedPool, poolRunIds } from "../publish/seed-pool.mjs";
+import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+
+const DEMO_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "demo");
+/** A stub publisher that actually lands the run, so `poolRunIds` can see it on the next pass. */
+const publishInto = async ({ runId, pool }) => {
+  const d = join(pool, runId);
+  mkdirSync(d, { recursive: true });
+  writeFileSync(join(d, "meta.json"), JSON.stringify({ runId }));
+};
+const freshPool = () => mkdtempSync(join(tmpdir(), "seed-pool-arm-"));
+
+test("277 a pool seeded before the other demos shipped is brought up to the package's set", async () => {
+  const pool = freshPool();
+  // EXACTLY THE SHAPE THAT WAS FOUND: one run, published when `demo/` held one child, under a runId this
+  // package no longer ships.
+  const stale = join(pool, "tmp0001-venqori-2026-08-11-sample-capture");
+  mkdirSync(stale, { recursive: true });
+  writeFileSync(join(stale, "meta.json"), JSON.stringify({ runId: "tmp0001-venqori-2026-08-11-sample-capture" }));
+
+  const r = await seedPool({ pool, examplesDir: DEMO_DIR, republish: publishInto });
+  assert.ok(r.seeded.length >= 4,
+    `a stale pool seeded ${r.seeded.length} of the package's examples — before this it seeded none, and `
+    + `skipped with "the pool already holds 1 run(s)"`);
+  assert.deepEqual(r.problems, [], `seeding reported problems: ${r.problems.join("; ")}`);
+  // NOTHING IS REMOVED. A demo pool may hold a run this package does not ship, and deleting it would make
+  // an upgrade destructive on a directory the reader was told is safe to keep.
+  assert.ok(poolRunIds(pool).includes("tmp0001-venqori-2026-08-11-sample-capture"),
+    "the run that was already published was removed — an upgrade must add, never delete");
+});
+
+test("277 an upgrade that has nothing to add says so, rather than reporting a bare zero", async () => {
+  const pool = freshPool();
+  await seedPool({ pool, examplesDir: DEMO_DIR, republish: publishInto });
+  const again = await seedPool({ pool, examplesDir: DEMO_DIR, republish: publishInto });
+  assert.equal(again.seeded.length, 0, "the same examples were published twice");
+  assert.ok(again.already.length >= 4, `nothing was reported as already present: ${JSON.stringify(again.already)}`);
+  assert.match(String(again.skipped ?? ""), /already holds all/,
+    `"seeded 0" was returned with no sentence saying why — the number is true and reads as a failure`);
+});
+
+test("277 every product the package ships gets an example, not just the first", async () => {
+  // The count is derived from the container rather than written down: a fifth demo landing must not need
+  // this arm edited, and must not pass it by accident either.
+  const { frozenSamples } = await import("../publish/seed-pool.mjs");
+  const shipped = frozenSamples(DEMO_DIR);
+  assert.ok(shipped.samples.length >= 4,
+    `the tree ships ${shipped.samples.length} frozen example(s); this arm is about there being several`);
+  const pool = freshPool();
+  const r = await seedPool({ pool, examplesDir: DEMO_DIR, republish: publishInto });
+  assert.equal(r.seeded.length, shipped.samples.length,
+    `${shipped.samples.length} example(s) ship and ${r.seeded.length} were seeded`);
+});
