@@ -90,7 +90,9 @@ import { unitsActiveVerdict } from "../driver/unit-state-verdict.mjs";
 import { deploymentBox } from "../shared/deployment-box.mjs";   // — extracted; one allowlist, two readers
 import { unitFileDriftVerdict } from "../driver/unit-file-drift.mjs";   //
 import { placeholdersIn, resolveValues, renderUnit } from "../driver/systemd/render-units.mjs";   //
-import { CHECKED_UNITS, unitInventoryVerdict, serviceCommitVerdict, unitWorkingDirectory } from "../driver/unit-inventory.mjs";   // · -bundle ·
+import { CHECKED_UNITS, unitInventoryVerdict, serviceCommitVerdict, unitWorkingDirectory, unitClone } from "../driver/unit-inventory.mjs";   // · -bundle ·
+import { entrypointOf } from "../driver/systemd/install-census.mjs";   // the ONE ExecStart parser — a unit says which module it runs
+import { treeOfRunning } from "../shared/checkout-move.mjs";           // …and the live argv says which tree that module came from
 import { findUnitFiles, unitFilePath } from "../driver/unit-files.mjs";   //
 import { managerGroupsVerdict } from "../driver/manager-groups-verdict.mjs";   //
 import { config } from "../driver/driver.config.mjs";                          //
@@ -234,14 +236,20 @@ function serviceClones() {
   const out = [];
   let reached = 0, lastErr = null;
   for (const u of units) {
-    let wd = null, active = null, type = null, since = null;
+    let wd = null, active = null, type = null, since = null, mainPid = null, fragment = null;
     try {
       // — `Type` and `StateChangeTimestamp` ride along on a call that was already being made. Both
       // are for the MESSAGE, never for the verdict: Type tells a reader whether an `activating` unit is a
       // oneshot mid-fire or a service mid-restart, and the timestamp lets a human judge a long
       // `activating` that this check deliberately does not judge (see driver/unit-state-verdict.mjs).
+      //
+      // `MainPID` and `FragmentPath` ride along for the SECOND way to attribute a unit to a checkout,
+      // below. Same call, no extra round trip. Deliberately NOT `ExecStart`: systemd renders it
+      // unexpanded — `argv[]=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/runner.mjs` — so the one
+      // field that looks like it names the tree is the one field that does not.
       const shown = execFileSync("systemctl", ["--user", "show", u,
-        "-p", "WorkingDirectory", "-p", "ActiveState", "-p", "Type", "-p", "StateChangeTimestamp"],
+        "-p", "WorkingDirectory", "-p", "ActiveState", "-p", "Type", "-p", "StateChangeTimestamp",
+        "-p", "MainPID", "-p", "FragmentPath"],
         { encoding: "utf8", env, stdio: ["ignore", "pipe", "pipe"] });
       // `show` answers for a unit that does not exist too (ActiveState=inactive), so a PARSED answer is
       // proof the bus was reachable — which is exactly the fact the old catch destroyed.
@@ -252,19 +260,73 @@ function serviceClones() {
         if (k === "ActiveState") active = v.join("=") || null;
         if (k === "Type") type = v.join("=") || null;
         if (k === "StateChangeTimestamp") since = v.join("=") || null;
+        if (k === "MainPID") mainPid = v.join("=") || null;
+        if (k === "FragmentPath") fragment = v.join("=") || null;
       }
     } catch (e) { lastErr = String(e?.stderr || e?.message || e).replace(/\s+/g, " ").trim().slice(0, 160); }
-    // — an inactive unit reporting nothing is NOT a gap in the population; there is genuinely
-    // nothing to compare, and `unreadable: null` says so. Only the two branches below are gaps.
-    if (!wd) { out.push({ unit: u, active, type, since, clone: null, head: null, unreadable: null }); continue; }
-    const parsed = unitWorkingDirectory(wd);
-    if (!parsed.path) { out.push({ unit: u, active, type, since, clone: null, head: null, unreadable: parsed.why }); continue; }
-    const top = gitTry(parsed.path, "rev-parse", "--show-toplevel");
-    if (!top.ok) { out.push({ unit: u, active, type, since, clone: null, head: null, unreadable: `git could not read ${parsed.path}: ${top.err}` }); continue; }
-    const root = top.out;
-    const head = gitTry(root, "rev-parse", "HEAD");
-    out.push({ unit: u, active, type, since, clone: root, head: head.ok ? head.out : null,
-      unreadable: head.ok ? null : `git could not read HEAD in ${root}: ${head.err}` });
+
+    // ── ATTRIBUTION ONE: THE DECLARATION ────────────────────────────────────────────────────────────
+    let declaredTree = null, declaredWhy = null;
+    if (!wd) declaredWhy = "the unit reported no WorkingDirectory";
+    else {
+      const parsed = unitWorkingDirectory(wd);
+      if (!parsed.path) declaredWhy = parsed.why;
+      else {
+        const top = gitTry(parsed.path, "rev-parse", "--show-toplevel");
+        if (top.ok) declaredTree = top.out;
+        else declaredWhy = `git could not read ${parsed.path}: ${top.err}`;
+      }
+    }
+
+    // ── ATTRIBUTION TWO: WHAT THE PROCESS IS ACTUALLY RUNNING ───────────────────────────────────────
+    //
+    // The unit file names its entrypoint as `${CLEAROTRON_CHECKOUT_DIR}/<module>`; the LIVE process was
+    // started with that expanded, and `/proc/<pid>/cmdline` carries the resolved absolute path. So the
+    // unit file says WHICH module to look for and the process says WHERE it came from. Both readers
+    // already exist and are tested — this composes them rather than parsing anything new.
+    let runningTree = null, runningWhy = null;
+    const pid = Number(mainPid);
+    if (!pid) runningWhy = "the unit reported no MainPID, so no running process could be read";
+    else if (!fragment) runningWhy = `pid ${pid} is running but the unit reported no FragmentPath, so nothing says which module to look for`;
+    else {
+      let unitText = null;
+      try { unitText = readFileSync(fragment, "utf8"); }
+      catch (e) { runningWhy = `the unit file ${fragment} could not be read: ${String(e?.message ?? e).slice(0, 80)}`; }
+      if (unitText !== null) {
+        const { rel, unreadable } = entrypointOf(unitText);
+        if (!rel) runningWhy = unreadable;
+        else {
+          let cmdline = null;
+          try { cmdline = readFileSync(`/proc/${pid}/cmdline`, "utf8"); }
+          catch (e) { runningWhy = `/proc/${pid}/cmdline could not be read: ${String(e?.message ?? e).slice(0, 80)}`; }
+          if (cmdline !== null) {
+            const { tree, why } = treeOfRunning(cmdline, rel);
+            if (!tree) runningWhy = why;
+            else {
+              const top = gitTry(tree, "rev-parse", "--show-toplevel");
+              if (top.ok) runningTree = top.out;
+              else runningWhy = `git could not read ${tree}, which pid ${pid} is running from: ${top.err}`;
+            }
+          }
+        }
+      }
+    }
+
+    const chosen = unitClone({ declaredTree, runningTree, declaredWhy, runningWhy });
+    // — an inactive unit that reported nothing is NOT a gap in the population; there is genuinely
+    // nothing to compare, and `unreadable: null` says so. A unit that IS running and could not be
+    // attributed is a gap, and the reason names both halves.
+    if (!chosen.clone) {
+      const idle = !wd && !pid;
+      out.push({ unit: u, active, type, since, clone: null, head: null, source: null,
+        unreadable: idle ? null : chosen.why });
+      continue;
+    }
+    const head = gitTry(chosen.clone, "rev-parse", "HEAD");
+    out.push({ unit: u, active, type, since, clone: chosen.clone, source: chosen.source,
+      disagreement: chosen.disagreement,
+      head: head.ok ? head.out : null,
+      unreadable: head.ok ? null : `git could not read HEAD in ${chosen.clone}: ${head.err}` });
   }
   const probe = reached > 0
     ? { ok: true, why: null }

@@ -579,6 +579,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-unit-is-attributed-by-what-it-runs-not-only-by-what-it-declares.test.mjs": {
+          "tests": 10,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
         "a-verb-is-a-module-until-it-is-the-command.test.mjs": {
           "tests": 3,
           "asserts": 8,
