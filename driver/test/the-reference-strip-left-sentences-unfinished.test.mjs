@@ -16,22 +16,24 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { SIGNATURES, censusOf, isScannable, RULE_DEFINITIONS } from "../reference-strip-signatures.mjs";
+import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";   // tracker issue 235
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const TABLE = JSON.parse(readFileSync(join(ROOT, "driver/test/fixtures/reference-strip-backlog.json"), "utf8"));
 
-const tracked = () => {
-  const r = execFileSync("git", ["-C", ROOT, "ls-files"], { encoding: "utf8", maxBuffer: 1 << 28 });
-  return r.split("\n").filter(Boolean);
-};
-const census = () => censusOf(ROOT, tracked(), (f) => readFileSync(join(ROOT, f), "utf8"));
+const GUARD = "reference-strip-backlog";
+// Through the helper (tracker issue 235): `null` is a stated skip, not an empty corpus. An empty one
+// here would read as a repaired tree — every count zero, the floor satisfied — which is the precise
+// failure the backlog table exists to make impossible.
+const tracked = () => trackedFiles(GUARD, { root: ROOT });
+const census = () => { const files = tracked(); return files === null ? null : censusOf(ROOT, files, (f) => readFileSync(join(ROOT, f), "utf8")); };
 
-test("185 the reference-strip backlog is a FLOOR — no file may carry more than it is recorded with", () => {
+test("185 the reference-strip backlog is a FLOOR — no file may carry more than it is recorded with", (ctx) => {
   const now = census();
+  if (now === null) return ctx.skip(skipReason(GUARD));
   // An empty corpus reports every absence as a repair. The census in tracker issue 1010 exists for this shape.
   assert.ok(Object.keys(now.files).length > 0 || TABLE.total === 0,
     "the census came back empty against a non-empty table — the corpus was not read, and every "
@@ -49,10 +51,11 @@ test("185 the reference-strip backlog is a FLOOR — no file may carry more than
     + "the table to absorb it.");
 });
 
-test("185 the table is not stale — a repair is RECORDED, so the backlog cannot quietly stop shrinking", () => {
+test("185 the table is not stale — a repair is RECORDED, so the backlog cannot quietly stop shrinking", (ctx) => {
   // The other direction, and the one a floor alone misses: repair ten lines, leave the table at 181, and
   // ten new breaks fit underneath it silently. The table must equal the tree, both ways.
   const now = census();
+  if (now === null) return ctx.skip(skipReason(GUARD));
   assert.equal(now.total, TABLE.total,
     `the committed backlog says ${TABLE.total} and the tree has ${now.total}. Re-mint with `
     + "`node scripts/mint-reference-strip-backlog.mjs` — after repairing, never instead of it.");
@@ -115,12 +118,13 @@ test("185 the one USER-FACING instance is repaired — documentation, not a comm
     + "deciding what to set meets it as documentation that stops mid-clause.");
 });
 
-test("185 the rule's own definition is the ONLY exemption, and every exempt file still exists", () => {
+test("185 the rule's own definition is the ONLY exemption, and every exempt file still exists", (ctx) => {
   // An exemption keyed to a path that has been renamed away stops exempting anything, and the guard then
   // counts its own specimens as backlog — silently, because the number only goes up by two and nobody
   // reads a floor that moved. Both directions: the list is exactly these three, and all three are tracked.
-  const tracked = new Set(execFileSync("git", ["-C", ROOT, "ls-files"], { encoding: "utf8", maxBuffer: 1 << 28 })
-    .split("\n").filter(Boolean));
+  const listed = trackedFiles(GUARD, { root: ROOT });
+  if (listed === null) return ctx.skip(skipReason(GUARD));
+  const tracked = new Set(listed);
   for (const f of RULE_DEFINITIONS) {
     assert.ok(tracked.has(f), `the exemption names ${f}, which this tree does not track — it was renamed `
       + "or deleted, and the exemption now covers nothing");

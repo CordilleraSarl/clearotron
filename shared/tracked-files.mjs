@@ -114,5 +114,36 @@ export function grepTrackedFiles(guard, { root, args }) {
   return files;
 }
 
+/**
+ * The tracked corpus WITH ITS INDEX MODES, or null when this tree has no checkout to read it from.
+ *
+ * WHY THIS IS HERE RATHER THAN LEFT TO ITS ONE CALLER (tracker issue 235). The executable-bits guard
+ * needs `ls-files -s`, which carries the mode, and `trackedFiles` above deliberately returns paths
+ * only. So that guard called the helper for its skip contract and then spawned git a SECOND time,
+ * raw, for the modes — correct, because the raw call sits behind the helper's null check, but
+ * indistinguishable from an unguarded one to any reader or check looking at the call sites.
+ *
+ * The invariant is "corpus enumeration degrades to a stated skip", and `-s` is corpus enumeration.
+ * Extending the helper keeps that true by construction instead of by the ordering of two calls.
+ *
+ * @returns {Map<string,string>|null} path -> index mode ("100644", "100755", …) — null means SKIP
+ */
+export function trackedIndexModes(guard, { root }) {
+  const r = run(root, ["ls-files", "-s"]);
+  if (r.status !== 0) {
+    say(`${GUARD_SKIPPED_MARKER} ${guard} — ${reasonFrom(r)}; ${NO_CORPUS_REMEDY}`);
+    return null;
+  }
+  const out = new Map();
+  for (const line of r.stdout.split("\n")) {
+    if (!line.trim()) continue;
+    // `<mode> <object> <stage>\t<path>` — the tab is the only safe separator, a path may contain spaces.
+    const [meta, path] = line.split("\t");
+    if (path) out.set(path, meta.split(" ")[0]);
+  }
+  say(`${GUARD_OK_MARKER} — ${guard}: ${out.size} tracked file(s) with modes`);
+  return out;
+}
+
 /** The one-line reason a guard hands to `t.skip()`, so the TAP line says it too. */
 export const skipReason = (guard) => `${guard}: not a git checkout — ${NO_CORPUS_REMEDY}`;
