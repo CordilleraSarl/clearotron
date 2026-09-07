@@ -208,8 +208,8 @@
           "todos": 0
         },
         "a-drop-with-a-stated-reason-is-checked.test.mjs": {
-          "tests": 12,
-          "asserts": 27,
+          "tests": 13,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },

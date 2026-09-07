@@ -83,12 +83,39 @@ test("no carry rows is a NAMED refusal — the knockout lane writes none", () =>
 });
 
 test("an empty population is its own state, not a pass", () => {
+  // The population is the CARRY ROWS, so an empty one means no stated drop was recorded — not an empty
+  // reconciliation. A row that ARRIVED is not a population member.
   const r = statedDivergenceFindings({ reconciliation: { computable: true, top_slice: [], residual: [] },
-    carryRows: [STATED_ROW] });
+    carryRows: [{ ...STATED_ROW, reach: "finding" }] });
   assert.equal(r.population_empty, true);
   assert.equal(r.computable, true);
   assert.deepEqual(r.diverged, []);
   assert.ok(r.reason, "a zero population must say so — silence here reads as checked-and-fine");
+});
+
+// ── THE REGRESSION THIS FUNCTION SHIPPED WITH, AND THE FIXTURE THAT HID IT ─────────────────────────
+//
+// The first cut gated on the reconciliation's finding-ended positions, mirroring the sibling — and so
+// inherited the sibling's blind spot. Replayed against the real R2 delivery it reported diverged=0 on a
+// run that lost two of the lawyer's marks. The unit arms all passed because every fixture put the mark
+// in BOTH populations at once, which the real run does not: the reconciliation named five OTHER marks.
+//
+// A fixture that satisfies two joins simultaneously cannot tell you the joins disagree. This arm is the
+// real shape — present in carry, ABSENT from the reconciliation — and it is the one that would have
+// caught it.
+test("REGRESSION: a stated drop the reconciliation never mentions is still reported", () => {
+  const reconciliationNamesOtherMarks = { computable: true, residual: [],
+    top_slice: [{ ending: "finding", mark_text: "DELPHIC HSE", position_records: ["/mark/ch/SOMETHING-ELSE"] }] };
+  const r = statedDivergenceFindings({ reconciliation: reconciliationNamesOtherMarks,
+    carryRows: [STATED_ROW], digestFindingUris: null });
+  assert.equal(r.diverged.length, 1,
+    "the reconciliation's SILENCE about a position is not evidence the position is fine — gating on it "
+    + "is what made this check inert on the delivery it was written for");
+  assert.equal(r.diverged[0].mark, "OSLER DELPHI");
+  assert.equal(r.diverged[0].reconciliation_agrees, false,
+    "and the row says the reconciliation did not corroborate it, rather than hiding that");
+  assert.equal(r.matched, 0, "`matched` now counts corroboration; zero is a fact about the reconciliation");
+  assert.equal(r.checked, 1, "`checked` is the population this check actually walked");
 });
 
 test("disjoint populations refuse rather than answer — overlap is the signal, not a shortfall", () => {

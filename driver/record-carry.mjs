@@ -876,6 +876,36 @@ export function statedDivergenceFindings({ reconciliation = null, carryRows = nu
   if (!Array.isArray(carryRows)) {
     return no("no record-carry rows — the knockout lane writes none, so this join cannot look at that product");
   }
+  // ── THE POPULATION IS THE CARRY ROWS, NOT THE RECONCILIATION (corrected 2026-09-07) ─────────────
+  //
+  // The first cut of this function gated on the reconciliation's finding-ended positions, mirroring the
+  // sibling. That inherited the sibling's BLIND SPOT along with its shape, and the check was inert on
+  // the very delivery it was written for. Replayed against R2 `russet-kestrel`:
+  //
+  //   silentlyLostFindings       checked=5 matched=5 lost=0
+  //   statedDivergenceFindings   checked=5 matched=5 diverged=0   ← should have named two marks
+  //
+  // The reconciliation names five finding-ended positions and they are five OTHER marks — DELPHIS
+  // bioenergetische Kosmetik, DELPHIC HSE, DELPHI, DELPHIN & EMERENCE, DELPHI DIAGNOSTICS. The two that
+  // were lost sit in the CARRY rows and the reconciliation never mentions them:
+  //
+  //   OSLER DELPHI  reach=placed stopped_at=digest reason_source=step-stated reason=digest:reasoned-negative
+  //   DELFITY       reach=placed stopped_at=digest reason_source=step-stated reason=digest:reasoned-negative
+  //
+  // The unit arms all passed because their fixtures put the mark in BOTH populations, which the real run
+  // does not. That is the lesson worth keeping: a fixture that satisfies two joins at once cannot tell
+  // you the joins disagree.
+  //
+  // So the carry rows are the population — they are where a stated drop is RECORDED — and the
+  // reconciliation is demoted to optional corroboration. Measured on that delivery, the correct
+  // population is 70 rows over 34 distinct marks, all `digest:reasoned-negative`, and it contains both.
+  const arrived = new Set(["finding", "findings-surface"]);
+  const population = carryRows.filter((r) => r?.uri
+    && r.reason_source === "step-stated"           // the sibling owns step-silent; step-structural is mechanical
+    && !arrived.has(r.reach));                     // arrived, or arrived somewhere visible, is not a divergence
+
+  // Kept for corroboration only. `ended` no longer gates anything; where the reconciliation DOES name a
+  // position it agrees with, that is recorded on the row so a reader can weigh it.
   const ended = [];
   for (const bucket of ["top_slice", "residual"]) {
     for (const row of reconciliation[bucket] ?? []) {
@@ -883,6 +913,7 @@ export function statedDivergenceFindings({ reconciliation = null, carryRows = nu
       for (const uri of row.position_records ?? []) ended.push({ uri: lc(uri), mark: row.mark_text ?? null });
     }
   }
+  const endedUris = new Set(ended.map((e) => e.uri));
   const byUri = new Map();
   for (const r of carryRows) if (r?.uri) byUri.set(lc(r.uri), r);
 
@@ -895,18 +926,17 @@ export function statedDivergenceFindings({ reconciliation = null, carryRows = nu
         + "disjoint, so this join is examining a different set and its answer cannot be trusted", true);
     }
   }
-  if (!ended.length) {
-    return { computable: true, reason: "the reconciliation carries no finding-ended position — there is "
-      + "no population here, and the digest's typed calls may still name findings on this run",
+  // A ZERO POPULATION IS ITS OWN STATE. No stated drop recorded is a real answer on a healthy run, and
+  // it must not be reported in the same shape as "there were some and none diverged".
+  if (!population.length) {
+    return { computable: true, reason: "no record-carry row records a stated drop on this run — there is "
+      + "no population here, which is the healthy answer and not a comparison that found nothing",
       population_empty: true, cross_checked: false, checked: 0, matched: 0, diverged: [] };
   }
 
-  const seen = ended.filter((e) => byUri.has(e.uri));
   const diverged = [];
-  for (const e of seen) {
-    const row = byUri.get(e.uri);
-    if (row.reach === "finding" || row.reach === "findings-surface") continue;   // arrived, or arrived elsewhere visible
-    if (row.reason_source !== "step-stated") continue;                            // the sibling owns the silent case
+  for (const row of population) {
+    const e = { uri: lc(row.uri), mark: row.mark ?? null };
     // NAME THE ARTIFACT THE REASON POINTS AT. The defect this check exists for is an absence discharged
     // by the WRONG artifact — "already reasoned in register-findings.md" answers a question nobody asked,
     // because the ask was about the findings. Surfacing the cited artifact is what lets a reader see the
@@ -916,14 +946,21 @@ export function statedDivergenceFindings({ reconciliation = null, carryRows = nu
     diverged.push({ uri: e.uri, mark: e.mark ?? row.mark ?? null, reach: row.reach ?? null,
       stopped_at: row.stopped_at ?? null, reason,
       cites_artifact: cites.length ? [...new Set(cites.map(String))] : null,
-      why: "the digest ended this position as a finding, it is absent from the findings, and the reason "
+      // CORROBORATION, NOT A GATE. The reconciliation naming this position is worth a reader knowing;
+      // its SILENCE is not evidence of anything, which is exactly what the first cut got wrong.
+      reconciliation_agrees: endedUris.has(e.uri),
+      why: "this position was dropped with a stated reason and never reached the findings, and the reason "
         + "given points at a different artifact than the one the absence is about" });
   }
   const crossChecked = Array.isArray(digestFindingUris) && digestFindingUris.length > 0;
   return { computable: true,
     reason: crossChecked ? null
       : "no cross-check was possible — this run recorded no typed digest finding rows, so the "
-        + "reconciliation's population was not verified against an independent one",
+        + "population was not verified against an independent one",
     population_empty: false, cross_checked: crossChecked,
-    checked: ended.length, matched: seen.length, diverged };
+    // `checked` is the population this check actually walked, and `matched` how many of them the
+    // reconciliation ALSO named. On the delivery this was written for those are 70 and 0 — which is the
+    // whole point: a `matched` of zero used to mean "report nothing" and now means "the reconciliation
+    // saw none of them", a fact about the reconciliation rather than about the run.
+    checked: population.length, matched: diverged.filter((d) => d.reconciliation_agrees).length, diverged };
 }
